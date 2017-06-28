@@ -1,0 +1,6 @@
+      <div class="col-md-3">
+        <app-categoriestree (categorySelected)="onCategorySelected($event)"></app-categoriestree>
+      </div>
+      <div class="col-md-9">
+        <app-categoryeditor [categorySelected]="categorySelected"></app-categoryeditor>
+      </div>

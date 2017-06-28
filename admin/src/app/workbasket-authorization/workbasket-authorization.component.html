@@ -1,0 +1,106 @@
+<h2>Authorizations</h2>
+<table class="table table-condensed table-hover">
+  <thead>
+    <th>ID</th>
+    <th>UserID</th>
+    <th>GroupID</th>
+    <th>READ</th>
+    <th>OPEN</th>
+    <th>APPEND</th>
+    <th>TRANSFER</th>
+    <th>DISTRIBUTE</th>
+    <th>Actions</th>
+  </thead>
+  <tr>
+    <td></td>
+    <td>
+      <input class="form-control" placeholder="UserId" name="name" [(ngModel)]="workbasketAuthorization.userId" required>
+    </td>
+    <td>
+      <input class="form-control" placeholder="GroupId" name="description" [(ngModel)]="workbasketAuthorization.groupId">
+    </td>
+    <td>
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.read">
+    </td>
+    <td>
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.open">
+    </td>
+    <td>
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.append">
+    </td>
+    <td>
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.transfer">
+    </td>
+    <td>
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.distribute">
+    </td>
+    <td>
+      <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onAdd()">
+        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onClear()">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+      </button>
+    </td>
+  </tr>
+  <tr *ngFor="let workbasketAuthorization of workbasketAuthorizations">
+    <td *ngIf="workbasketAuthorization.id != editing.id">{{ workbasketAuthorization.id }}</td>
+    <td *ngIf="workbasketAuthorization.id == editing.id">
+      <input class="form-control" placeholder="Id" name="editid" [(ngModel)]="editing.id" readonly>
+    </td>
+    <td *ngIf="workbasketAuthorization.id != editing.id">{{ workbasketAuthorization.userId }}</td>
+    <td *ngIf="workbasketAuthorization.id == editing.id">
+      <input class="form-control" placeholder="UserId" name="edituserId" [(ngModel)]="editing.userId">
+    </td>
+    <td *ngIf="workbasketAuthorization.id != editing.id">{{ workbasketAuthorization.groupId }}</td>
+    <td *ngIf="workbasketAuthorization.id == editing.id">
+      <input class="form-control" placeholder="GroupId" name="editgroupId" [(ngModel)]="editing.groupId">
+    </td>
+    <td *ngIf="workbasketAuthorization.id != editing.id">
+      <input type="checkbox" [checked]="workbasketAuthorization.read" disabled>
+    </td>
+    <td *ngIf="workbasketAuthorization.id == editing.id">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.read">
+    </td>
+    <td *ngIf="workbasketAuthorization.id != editing.id">
+      <input type="checkbox" [checked]="workbasketAuthorization.open" disabled>
+    </td>
+    <td *ngIf="workbasketAuthorization.id == editing.id">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.open">
+    </td>
+    <td *ngIf="workbasketAuthorization.id != editing.id">
+      <input type="checkbox" [checked]="workbasketAuthorization.append" disabled>
+    </td>
+    <td *ngIf="workbasketAuthorization.id == editing.id">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.append">
+    </td>
+    <td *ngIf="workbasketAuthorization.id != editing.id">
+      <input type="checkbox" [checked]="workbasketAuthorization.transfer" disabled>
+    </td>
+    <td *ngIf="workbasketAuthorization.id == editing.id">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.transfer">
+    </td>
+    <td *ngIf="workbasketAuthorization.id != editing.id">
+      <input type="checkbox" [checked]="workbasketAuthorization.distribute" disabled>
+    </td>
+    <td *ngIf="workbasketAuthorization.id == editing.id">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.distribute">
+    </td>
+    <td *ngIf="workbasketAuthorization.id != editing.id">
+      <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onEdit(workbasketAuthorization)">
+        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onDelete(workbasketAuthorization)">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+      </button>
+    </td>
+    <td *ngIf="workbasketAuthorization.id == editing.id">
+      <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onSave(workbasketAuthorization)">
+        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onCancel(workbasketAuthorization)">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+      </button>
+    </td>
+  </tr>
+</table>

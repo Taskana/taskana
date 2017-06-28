@@ -1,0 +1,34 @@
+<h2>Distribution Targets</h2>
+<div *ngFor="let alert of alerts">
+  <alert [type]="alert.type" dismissible="true" [dismissOnTimeout]="5000">{{ alert.msg }}</alert>
+</div>
+<div class="col-xs-6 col-md-6">
+  <table class="table">
+    <thead>
+      <th>All Workbaskets</th>
+      <th>Actions</th>
+    </thead>
+    <tr *ngFor="let workbasket of workbaskets">
+      <td>{{ workbasket.name }}</td>
+      <td>
+        <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onAdd(workbasket)">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="col-xs-6 col-md-6">
+  <table class="table">
+    <thead>
+      <th>Selected Workbaskets</th>
+      <th>Actions</th>
+    </thead>
+    <tr *ngFor="let workbasket of workbasket.distributionTargets">
+      <td>{{ resolveName(workbasket) }}</td>
+      <td>
+        <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onDelete(workbasket)">
+      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+      </td>
+    </tr>
+  </table>
+</div>

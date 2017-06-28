@@ -1,0 +1,20 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <p>Taskana Administration</p>
+      </a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a [href]="monitorUrl">Monitor</a></li>
+      <li><a [href]="workplaceUrl">Workplace</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container-fluid">
+  <ul class="nav nav-tabs">
+    <li role="presentation" routerLinkActive="active"><a routerLink="/workbaskets">Workbaskets</a></li>
+    <li role="presentation" routerLinkActive="active"><a routerLink="/categories">Categories</a></li>
+  </ul>
+  <router-outlet></router-outlet>
+</div>

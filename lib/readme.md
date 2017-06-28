@@ -1,0 +1,2 @@
+TODO
+- Framework design checken
