@@ -1,0 +1,25 @@
+<table class="table table-hover">
+  <thead>
+    <th class="clickable" (click)="orderTasks('id')">ID</th>
+    <th class="clickable" (click)="orderTasks('name')">Name</th>
+    <th class="clickable" (click)="orderTasks('due')">Due Date</th>
+    <th class="clickable" (click)="orderTasks('priority')">Priority</th>
+    <th class="clickable" (click)="orderTasks('state')">State</th>
+    <th>Actions</th>
+  </thead>
+  <tr *ngFor="let task of tasks | orderTasksBy: columnForOrdering">
+    <td>{{ task.id }}</td>
+    <td>{{ task.name }}</td>
+    <td>{{ task.due | date:'medium' }}</td>
+    <td>{{ task.priority }}</td>
+    <td>{{ task.state }}</td>
+    <td>
+      <button type="button" title="Open task to work on it" class="btn btn-default" aria-label="Left Align" (click)="openTask(task.id)">
+      <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+      </button>
+      <button type="button" title="View details for task" class="btn btn-default" aria-label="Left Align" (click)="selectTask(task)">
+      <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+      </button>
+    </td>
+  </tr>
+</table>

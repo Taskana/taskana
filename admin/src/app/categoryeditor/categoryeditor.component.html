@@ -1,0 +1,38 @@
+<h3>Category Details of {{categorySelected?.name}} (ID: {{categorySelected?.id}})</h3>
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-2 control-label" for="name">Name</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="name" placeholder="Name" [(ngModel)]="categorySelected.name" name="name">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label" for="descrption">Description</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="description" placeholder="Description" [(ngModel)]="categorySelected.description" name="description">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label" for="owner">Owner</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="owner" placeholder="Owner" [(ngModel)]="categorySelected.owner" name="owner">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label" for="priority">Priority</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="priority" placeholder="Priority" [(ngModel)]="categorySelected.priority" name="priority">
+    </div>
+  </div>  
+  <div class="form-group">
+    <label class="col-sm-2 control-label" for="servicelevel">Service Level</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="servicelevel" placeholder="Service Level" [(ngModel)]="categorySelected.serviceLevel" name="servicelevel">
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default btn-primary">Save changes</button>
+    </div>
+  </div>
+</form>

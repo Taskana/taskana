@@ -1,0 +1,26 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <p>Taskana Workplace</p>
+      </a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a [href]="adminUrl">Admin</a></li>
+      <li><a [href]="monitorUrl">Monitor</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container-fluid">
+  <div class="row form-group">
+    <workbasket-selector (tasks) = "loadTasks($event)"></workbasket-selector>
+  </div>
+  <div *ngIf="tasks?.length > 0" class="row form-group">
+    <div class="col-md-6">
+      <tasklist [tasks]="tasks" (task)="selectTask($event)"></tasklist>
+    </div>
+    <div class="col-md-6">
+      <taskdetails [task]="task"></taskdetails>
+    </div>
+  </div>
+</div>

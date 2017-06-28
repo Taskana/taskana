@@ -1,0 +1,19 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <p>{{ task?.name }}</p>
+      </a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><input class="form-control" auto-complete [(ngModel)]="workbasket" [source]="autoCompleteData" placeholder="Transfer ..." style="margin-top:10px;"/></li>
+      <li><a><button (click)="transferTask()" class="btn-link"><span title="Transfer task to another workbasket" class="glyphicon glyphicon-new-window text-muted"></span></button></a></li>
+      <li><a><button (click)="cancelTask()" class="btn-link"><span title="Cancel task and return to task list" class="glyphicon glyphicon-remove-circle text-muted"></span></button></a></li>
+      <li><a><button (click)="completeTask()" class="btn-link"><span title="Complete task and return to task list" class="glyphicon glyphicon-ok-circle text-success"></span></button></a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <iframe [src]="link"></iframe>
+</div>

@@ -1,0 +1,24 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <p>Taskana Monitor</p>
+      </a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a [href]="adminUrl">Admin</a></li>
+      <li><a [href]="workplaceUrl">Workplace</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+  <tabset #staticTabs>
+    <tab heading="Tasks">
+      <tasks></tasks>
+    </tab>
+    <tab heading="Workbaskets">
+      <workbasket></workbasket>
+    </tab>
+  </tabset>
+  
+</div>

@@ -1,0 +1,20 @@
+<div *ngIf="task != null" class="panel panel-primary">
+  <div class="panel-heading">
+    Details for task '{{ task.name }}' (ID={{ task.id }})
+  </div>
+  <div class="panel-body">
+    <p>{{ task.description }}</p>
+    <p><b>Owner:</b> {{ task.owner }}</p>
+    <p><b>Tenant ID:</b> {{ task.tenantId }}</p>
+    <p><b>Creation Date:</b> {{ task.created | date:'medium' }}</p>
+    <p><b>Claim Date:</b> {{ task.claimed | date:'medium' }}</p>
+    <p><b>Completion Date:</b> {{ task.completed | date:'medium' }}</p>
+    <p><b>Modification Date:</b> {{ task.modified | date:'medium' }}</p>
+    <p><b>Planning Date:</b> {{ task.planned | date:'medium' }}</p>
+    <p><b>Due Date:</b> {{ task.due | date:'medium' }}</p>
+    <p><b>Priority:</b> {{ task.priority }}</p>
+    <p><b>State:</b> {{ task.state }}</p>
+    <p><b>Type:</b> {{ task.type }}</p>
+    <p><b>Workbasket:</b> {{ task.workbasket }}</p>
+  </div>
+<div>
