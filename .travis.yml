@@ -1,0 +1,33 @@
+language: java
+jdk:
+- oraclejdk8
+env:
+  global:
+  - NODE_VERSION: 6
+before_install:
+- nvm install $NODE_VERSION
+script:
+- (cd lib && mvn clean install)
+ && (cd rest && mvn clean install)
+ && (cd workplace && npm install && ng build --environment=prod)
+ && (cd admin && npm install && ng build --environment=prod)
+ && (cd monitor && npm install && ng build --environment=prod)
+
+cache:
+  timeout: 604800 #1 week
+  directories:
+  - "$HOME/.m2"
+  - "workplace/node_modules"
+  - "admin/node_modules"
+  - "monitor/node_modules"
+deploy:
+  provider: cloudfoundry
+  username: tobias.schaefer@novatec-gmbh.de
+  password:
+    secure: GeNGCEcvupwGVB1a/1KprldgIwpGft5oD5L9t9VduJpStNYGGR0pAMDwlAUCnbpOJe+YjKw1TTPXyLMAtginekwEjSeFes8QmCLMwkN2f0QXA+oGjTufVM2T8Iq7pMcMMO076NALdpa8TQBI0Ct/YYWeBR18egMjSZn5k4x11u/+aGu/8N9xFQ0DMLZchGw1tyIz9XpZXtfntAbsEZDWJDJrV4PlqwWQkhhtBu9uXPgLmdmW1farhhNKd3LyE2fuEzFSvk4Qh4PWrHKckOd5eVMEMA2vLw8oVrV/Az6XLCaQa9THJjn+B1TJYIUBOHV1a9C6wD/9s8grVOuAvHEeGrXgbO/RTCntstKKFcRDoOAxUfKo0AdSf7PUeAj3IeTHpo40G5QrhahJE1VwmjoO+GGpudp5g1aLLTrE0MWtkQKIr6m7aPFtpzMSqADB+mcvmq2P2JE2RkCcnHaGlN0/NFODavvfJ0qIhFAafH1cecSnAwa3vzynK0rJM7yVn+/5yYc386K+NDdy8nDzUPX764RKByUWtXIUnklQ7YbVQ7DcUnYP7UdVdXJKaMvhdS257GZpSVOpkKiqp4xnxT8+iHD58R8qYUPIz9RUf4Ob+GcTY2U8pFCtrHiZF0SzBUYpEagsUp5HZ0SRK2+f9AAkccszXLS+RH0jWs5POuUSQX8=
+  api: https://api.ng.bluemix.net
+  organization: '"NovaTec Consulting GmbH"'
+  space: Taskana
+  on:
+    repo: Taskana/taskana
+
