@@ -1,5 +1,7 @@
 package org.taskana.rest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -16,17 +18,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.taskana.TaskService;
-import org.taskana.TaskanaEngine;
 import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.TaskNotFoundException;
 import org.taskana.model.Task;
+import org.taskana.model.TaskState;
 
 @RestController
 @RequestMapping(path = "/v1/tasks", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class TaskController {
 
-	@Autowired
-	TaskanaEngine taskanaEngine;
 	@Autowired
 	private TaskService taskService;
 
@@ -34,21 +34,43 @@ public class TaskController {
 	public ResponseEntity<List<Task>> getTasks(@RequestParam MultiValueMap<String, String> params)
 			throws LoginException {
 		try {
-
 			if (params.keySet().size() == 0) {
 				return ResponseEntity.status(HttpStatus.OK).body(taskService.getTasks());
 			}
-			if (params.containsKey("workbasketid") && params.containsKey("state")) {
-				System.out.println("HOLGER1");
-
+			if (params.containsKey("workbasketid") && params.containsKey("states")) {
+				List<TaskState> states = extractStates(params);
 				return ResponseEntity.status(HttpStatus.OK)
-						.body(taskService.getTasksForWorkbasket(params.get("workbasketid"), params.get("state")));
+						.body(taskService.getTasksForWorkbasket(params.get("workbasketid"), states));
+			}
+			if (params.containsKey("states")) {
+				List<TaskState> states = extractStates(params);
+				return ResponseEntity.status(HttpStatus.OK).body(taskService.findTasks(states));
 			}
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(taskService.getTasksForWorkbasket(params.getFirst("workbasketid")));
 		} catch (NotAuthorizedException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
+	}
+
+	private List<TaskState> extractStates(MultiValueMap<String, String> params) {
+		List<TaskState> states = new ArrayList<>();
+		params.get("states").stream().forEach(item -> {
+			for (String state : Arrays.asList(item.split(","))) {
+				switch (state) {
+				case "READY":
+					states.add(TaskState.READY);
+					break;
+				case "COMPLETED":
+					states.add(TaskState.COMPLETED);
+					break;
+				case "CLAIMED":
+					states.add(TaskState.CLAIMED);
+					break;
+				}
+			}
+		});
+		return states;
 	}
 
 	@RequestMapping(value = "/{taskId}")

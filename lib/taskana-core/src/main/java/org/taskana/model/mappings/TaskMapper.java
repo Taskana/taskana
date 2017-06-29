@@ -84,15 +84,39 @@ public interface TaskMapper {
             @Result(property = "type", column = "TYPE"),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
             @Result(property = "owner", column = "OWNER")})
-	List<Task> findByWorkbasketIdsAndStates(@Param("workbasketIds") List<String> workbasketIds, @Param("states") List<String> states);
+	List<Task> findByWorkbasketIdsAndStates(@Param("workbasketIds") List<String> workbasketIds, @Param("states") List<TaskState> states);
 	
+    @Select("<script>"
+            + "SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER "
+            + "FROM task "
+            + "WHERE STATE IN (<foreach item='item' collection='states' separator=',' >#{item}</foreach>) "
+            + "ORDER BY ID"
+            + "</script>")
+    @Results(value = { 
+            @Result(property = "id", column = "ID"), 
+            @Result(property = "tenantId", column = "TENANT_ID"),
+            @Result(property = "created", column = "CREATED"), 
+            @Result(property = "claimed", column = "CLAIMED"),
+            @Result(property = "completed", column = "COMPLETED"), 
+            @Result(property = "modified", column = "MODIFIED"),
+            @Result(property = "planned", column = "PLANNED"),
+            @Result(property = "due", column = "DUE"),
+            @Result(property = "name", column = "NAME"),
+            @Result(property = "description", column = "DESCRIPTION"),
+            @Result(property = "priority", column = "PRIORITY"),
+            @Result(property = "state", column = "STATE"),
+            @Result(property = "type", column = "TYPE"),
+            @Result(property = "workbasketId", column = "WORKBASKETID"),
+            @Result(property = "owner", column = "OWNER")})
+	List<Task> findByStates(@Param("states") List<TaskState> states);
+    
 	@Select("SELECT * FROM TASK")
 	List<Task> findAll();
 
 	@Select("<script>"
 	        + "SELECT STATE, COUNT (STATE) as counter "
 	        + "FROM TASK "
-	        + "WHERE STATE IN (<foreach collection='status' item='state' separator=','>#{state}</foreach>) "
+	        + "WHERE STATE IN (<foreach collection='status' item='state' separator=','>#{item}</foreach>) "
 	        + "GROUP BY STATE"
 	        + "</script>")
 	@Results({

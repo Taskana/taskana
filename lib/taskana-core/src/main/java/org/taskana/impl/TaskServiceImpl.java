@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.taskana.TaskService;
 import org.taskana.TaskanaEngine;
-import org.taskana.WorkbasketService;
 import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.TaskNotFoundException;
 import org.taskana.exceptions.WorkbasketNotFoundException;
@@ -19,7 +18,6 @@ import org.taskana.model.DueWorkbasketCounter;
 import org.taskana.model.Task;
 import org.taskana.model.TaskState;
 import org.taskana.model.TaskStateCounter;
-import org.taskana.model.Workbasket;
 import org.taskana.model.WorkbasketAuthorization;
 import org.taskana.model.mappings.TaskMapper;
 
@@ -46,7 +44,7 @@ public class TaskServiceImpl implements TaskService {
 			task.setClaimed(now);
 			task.setState(TaskState.CLAIMED);
 			taskMapper.update(task);
-			logger.debug("User '{}' claimed task '{}'.",userName, id);
+			logger.debug("User '{}' claimed task '{}'.", userName, id);
 		} else {
 			throw new TaskNotFoundException(id);
 		}
@@ -61,7 +59,7 @@ public class TaskServiceImpl implements TaskService {
 			task.setModified(now);
 			task.setState(TaskState.COMPLETED);
 			taskMapper.update(task);
-			logger.debug("Task '{}' completed.",id);
+			logger.debug("Task '{}' completed.", id);
 		} else {
 			throw new TaskNotFoundException(id);
 		}
@@ -99,7 +97,12 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public List<Task> getTasksForWorkbasket(List<String> workbasketIds, List<String> states)
+	public List<Task> findTasks(List<TaskState> states) {
+		return taskMapper.findByStates(states);
+	}
+
+	@Override
+	public List<Task> getTasksForWorkbasket(List<String> workbasketIds, List<TaskState> states)
 			throws NotAuthorizedException {
 
 		for (String workbasket : workbasketIds) {
@@ -133,20 +136,22 @@ public class TaskServiceImpl implements TaskService {
 			throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
 		Task task = getTaskById(taskId);
 
-		// transfer requires TRANSFER in source and APPEND on destination workbasket
+		// transfer requires TRANSFER in source and APPEND on destination
+		// workbasket
 		taskanaEngine.getWorkbasketService().checkPermission(destinationWorkbasketId, WorkbasketAuthorization.APPEND);
 		taskanaEngine.getWorkbasketService().checkPermission(task.getWorkbasketId(), WorkbasketAuthorization.TRANSFER);
 
-		// if security is disabled, the implicit existance check on the destination workbasket has been skipped and needs to be performed 
+		// if security is disabled, the implicit existance check on the
+		// destination workbasket has been skipped and needs to be performed
 		if (!taskanaEngine.getConfiguration().isSecurityEnabled()) {
-			taskanaEngine.getWorkbasketService().getWorkbasket(destinationWorkbasketId); 
+			taskanaEngine.getWorkbasketService().getWorkbasket(destinationWorkbasketId);
 		}
-		
+
 		// transfer task from source to destination workbasket
 		task.setWorkbasketId(destinationWorkbasketId);
 		task.setModified(Timestamp.valueOf(LocalDateTime.now()));
 		taskMapper.update(task);
-		
+
 		return getTaskById(taskId);
 	}
 
