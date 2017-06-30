@@ -1,5 +1,6 @@
 package org.taskana.security;
 
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +19,13 @@ import org.slf4j.LoggerFactory;
  */
 public class CurrentUserContext {
 
+	private static final String GET_UNIQUE_SECURITY_NAME_METHOD = "getUniqueSecurityName";
+	private static final String GET_CALLER_SUBJECT_METHOD = "getCallerSubject";
+	private static final String WSSUBJECT_CLASSNAME = "com.ibm.websphere.security.auth.WSSubject";
+
 	private static final Logger logger = LoggerFactory.getLogger(CurrentUserContext.class);
+	
+	private static Boolean runningOnWebSphere = null;
 
 	/**
 	 * Returns the userid of the current user.
@@ -26,6 +33,59 @@ public class CurrentUserContext {
 	 * @return String the userid. null if there is no JAAS subject.
 	 */
 	public static String getUserid() {
+		if (runningOnWebSphere()) {
+			return getUseridFromWSSubject();
+		} else {
+			return getUseridFromJAASSubject();
+		}
+	}
+
+	/**
+	 * Returns the unique security name of the first public credentials found in the WSSubject as userid.
+	 * 
+	 * @return the userid of the caller. If the userid could not be obtained, null is returned.
+	 */
+	private static String getUseridFromWSSubject() {
+		try {
+			Class<?> wsSubjectClass = Class.forName(WSSUBJECT_CLASSNAME);
+			Method getCallerSubjectMethod = wsSubjectClass.getMethod(GET_CALLER_SUBJECT_METHOD, (Class<?>[]) null);
+			Subject callerSubject = (Subject) getCallerSubjectMethod.invoke(null, (Object[]) null);
+			logger.debug("Subject of caller: {}", callerSubject);
+			if (callerSubject != null) {
+				Set<Object> publicCredentials = callerSubject.getPublicCredentials();
+				logger.debug("Public credentials of caller: {}", publicCredentials);
+				for (Object pC : publicCredentials) {
+					Object o = pC.getClass().getMethod(GET_UNIQUE_SECURITY_NAME_METHOD, (Class<?>[]) null).invoke(pC, (Object[]) null);
+					logger.debug("Returning the unique security name of first public credential: {}", o);
+					return o.toString();
+				}
+			}
+		} catch (Exception e) {
+			logger.warn("Could not get user from WSSubject. Going ahead unauthorized.");
+		}
+		return null;
+	}
+
+	/**
+	 * Checks, whether Taskana is running on IBM WebSphere.
+	 * 
+	 * @return true, if it is running on IBM WebSphere
+	 */
+	private static boolean runningOnWebSphere() {
+		if (runningOnWebSphere == null) {
+			try {
+				Class.forName(WSSUBJECT_CLASSNAME);
+				logger.debug("WSSubject detected. Assuming that Taskana runs on IBM WebSphere.");
+				runningOnWebSphere = new Boolean(true);
+			} catch (ClassNotFoundException e) {
+				logger.debug("No WSSubject detected. Using JAAS subject further on.");
+				runningOnWebSphere = new Boolean(false);
+			}
+		}
+		return runningOnWebSphere;
+	}
+
+	private static String getUseridFromJAASSubject() {
 		Subject subject = Subject.getSubject(AccessController.getContext());
 		logger.debug("Subject of caller: {}", subject);
 		if (subject != null) {
