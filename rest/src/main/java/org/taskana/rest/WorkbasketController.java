@@ -21,6 +21,7 @@ import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.WorkbasketNotFoundException;
 import org.taskana.model.Workbasket;
 import org.taskana.model.WorkbasketAccessItem;
+import org.taskana.model.WorkbasketAuthorization;
 
 @RestController
 @RequestMapping(path = "/v1/workbaskets", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -32,15 +33,33 @@ public class WorkbasketController {
 	@GetMapping
 	public List<Workbasket> getWorkbaskets(@RequestParam MultiValueMap<String, String> params) {
 		if (params.containsKey("requiredPermission")) {
-			List<String> permissions = new ArrayList<>();
+			List<WorkbasketAuthorization> authorizations = new ArrayList<>();
 			params.get("requiredPermission").stream().forEach(item -> {
-				permissions.addAll(Arrays.asList(item.split(",")));
+				for (String authorization : Arrays.asList(item.split(","))) {
+					switch (authorization) {
+					case "READ":
+						authorizations.add(WorkbasketAuthorization.READ);
+						break;
+					case "OPEN":
+						authorizations.add(WorkbasketAuthorization.OPEN);
+						break;
+					case "APPEND":
+						authorizations.add(WorkbasketAuthorization.APPEND);
+						break;
+					case "TRANSFER":
+						authorizations.add(WorkbasketAuthorization.TRANSFER);
+						break;
+					case "DISTRIBUTE":
+						authorizations.add(WorkbasketAuthorization.DISTRIBUTE);
+						break;
+					}
+				}
 			});
-			return workbasketService.getWorkbaskets(permissions);
+			return workbasketService.getWorkbaskets(authorizations);
 		} else {
 			return workbasketService.getWorkbaskets();
 		}
-		
+
 	}
 
 	@RequestMapping(value = "/{workbasketid}")
