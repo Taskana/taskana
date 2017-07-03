@@ -49,6 +49,12 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 	}
 
 	@Override
+	public List<Workbasket> getWorkbaskets(List<String> permissions) {
+		List<Workbasket> workbaskets = workbasketMapper.findByPermission(permissions, CurrentUserContext.getUserid());
+		return workbaskets;
+	}
+	
+	@Override
 	public List<Workbasket> getWorkbaskets() {
 		List<Workbasket> workbaskets = workbasketMapper.findAll();
 		return workbaskets;

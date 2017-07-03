@@ -1,46 +1,50 @@
 package org.taskana.impl;
 
-import org.h2.jdbcx.JdbcDataSource;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.taskana.CategoryService;
-import org.taskana.TaskanaEngine;
-import org.taskana.configuration.TaskanaEngineConfiguration;
-import org.taskana.model.Category;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import javax.security.auth.login.LoginException;
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.taskana.model.Category;
+import org.taskana.model.mappings.CategoryMapper;
+
+@RunWith(MockitoJUnitRunner.class)
 public class CategoryServiceImplTest {
-	static int counter = 0;
-	private CategoryService categoryService;
 
-	@Before
-	public void setup() throws FileNotFoundException, SQLException, LoginException {
-		JdbcDataSource ds = new JdbcDataSource();
-		ds.setURL("jdbc:h2:mem:workbasket-test-db" + counter++);
-		ds.setPassword("sa");
-		ds.setUser("sa");
-		TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false);
+	@InjectMocks
+	CategoryServiceImpl categoryService;
 
-		TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
-		categoryService = te.getCategoryService();
-	}
+	@Mock
+	CategoryMapper categoryMapper;
 
 	@Test
 	public void testInsertCategory() {
+		doNothing().when(categoryMapper).insert(any());
+
 		Category category = new Category();
 		category.setId("0");
 		categoryService.insertCategory(category);
+		
+		when(categoryMapper.findById(any())).thenReturn(category);
 
 		Assert.assertNotNull(categoryService.selectCategoryById(category.getId()));
 	}
 
 	@Test
 	public void testFindAllCategories() {
+		doNothing().when(categoryMapper).insert(any());
+
 		Category category0 = new Category();
 		category0.setId("0");
 		category0.setParentCategoryId("");
@@ -49,12 +53,19 @@ public class CategoryServiceImplTest {
 		category1.setId("1");
 		category1.setParentCategoryId("");
 		categoryService.insertCategory(category1);
+		
+		List<Category> categories = new ArrayList<>();
+		categories.add(category0);
+		when(categoryMapper.findByParentId("")).thenReturn(categories);
 
-		Assert.assertEquals(2, categoryService.selectCategories().size());
+		verify(categoryMapper, atLeast(2)).insert(any());
+		Assert.assertEquals(1, categoryService.selectCategories().size());
 	}
 
 	@Test
 	public void testFindByParentCategory() {
+		doNothing().when(categoryMapper).insert(any());
+
 		Category category0 = new Category();
 		category0.setId("0");
 		category0.setParentCategoryId("0");
@@ -64,11 +75,21 @@ public class CategoryServiceImplTest {
 		category1.setParentCategoryId("0");
 		categoryService.insertCategory(category1);
 
+		List<Category> categories = new ArrayList<>();
+		categories.add(category0);
+		categories.add(category1);
+		when(categoryMapper.findByParentId(any())).thenReturn(categories);
+
+		verify(categoryMapper, atLeast(2)).insert(any());
+
 		Assert.assertEquals(2, categoryService.selectCategoriesByParentId("0").size());
 	}
 
 	@Test
 	public void testModifiedCategory() {
+		doNothing().when(categoryMapper).insert(any());
+		doNothing().when(categoryMapper).update(any());
+
 		Category category = new Category();
 		categoryService.insertCategory(category);
 		category.setDescription("TEST EVERYTHING");

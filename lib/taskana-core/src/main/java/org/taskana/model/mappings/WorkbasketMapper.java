@@ -40,7 +40,7 @@ public interface WorkbasketMapper {
 			@Result(property = "distributionTargets", column = "ID", javaType = List.class, many = @Many(fetchType = FetchType.DEFAULT, select="findByDistributionTargets")) })
 	public List<Workbasket> findByDistributionTargets(@Param("id") String id);
 	
-	@Select("Select * FROM WORKBASKET ORDER BY id")
+	@Select("SELECT * FROM WORKBASKET ORDER BY id")
 	@Results(value = { 
 			@Result(property = "id", column = "ID"), 
 			@Result(property = "tenantId", column = "TENANT_ID"),
@@ -51,6 +51,27 @@ public interface WorkbasketMapper {
 			@Result(property = "owner", column = "OWNER"),
 			@Result(property = "distributionTargets", column = "ID", javaType = List.class, many = @Many(fetchType = FetchType.DEFAULT, select="findByDistributionTargets")) })
 	public List<Workbasket> findAll();
+	
+	@Select("<script>SELECT W.ID, W.TENANT_ID, W.CREATED, W.MODIFIED, W.NAME, W.DESCRIPTION, W.OWNER FROM WORKBASKET AS W "
+			+ "INNER JOIN WORKBASKET_ACCESS_LIST AS ACL "
+			+ "ON (W.ID = ACL.WORKBASKET_ID AND USER_ID = #{userId}) "
+			+ "WHERE <foreach collection='permissions' item='permission' separator=' AND '>"
+    		+ "<if test=\"permission == 'OPEN'\">OPEN</if>"
+    		+ "<if test=\"permission == 'READ'\">READ</if>"
+    		+ "<if test=\"permission == 'APPEND'\">APPEND</if>"
+    		+ "<if test=\"permission == 'TRANSFER'\">TRANSFER</if>"
+    		+ "<if test=\"permission == 'DISTRIBUTE'\">DISTRIBUTE</if> = 1 </foreach> "
+			+ "ORDER BY id</script>")
+	@Results(value = { 
+			@Result(property = "id", column = "ID"), 
+			@Result(property = "tenantId", column = "TENANT_ID"),
+			@Result(property = "created", column = "CREATED"), 
+			@Result(property = "modified", column = "MODIFIED"),
+			@Result(property = "name", column = "NAME"), 
+			@Result(property = "description", column = "DESCRIPTION"),
+			@Result(property = "owner", column = "OWNER"),
+			@Result(property = "distributionTargets", column = "ID", javaType = List.class, many = @Many(fetchType = FetchType.DEFAULT, select="findByDistributionTargets")) })
+	public List<Workbasket> findByPermission(@Param("permissions") List<String> permissions, @Param("userId") String userId);
 
 	@Insert("INSERT INTO WORKBASKET (ID, TENANT_ID, CREATED, MODIFIED, NAME, DESCRIPTION, OWNER) VALUES (#{workbasket.id}, #{workbasket.tenantId}, #{workbasket.created}, #{workbasket.modified}, #{workbasket.name}, #{workbasket.description}, #{workbasket.owner})")
 	@Options(keyProperty = "id", keyColumn="ID")
