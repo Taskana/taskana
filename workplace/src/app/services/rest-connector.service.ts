@@ -12,12 +12,11 @@ export class RestConnectorService {
   constructor(private http: Http) { }
 
   getAllWorkBaskets(): Observable<Workbasket[]> {
-    return this.http.get(environment.taskanaRestUrl + "/v1/workbaskets", this.createAuthorizationHeader())
+    return this.http.get(environment.taskanaRestUrl + "/v1/workbaskets?requiredPermission=OPEN", this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
   findTaskWithWorkbaskets(basketName: string): Observable<Task[]> {
-   
     return this.http.get(environment.taskanaRestUrl + "/v1/tasks?workbasketid=" + basketName + "&state=READY&state=CLAIMED", this.createAuthorizationHeader())
       .map(res => res.json());
   }
@@ -42,7 +41,7 @@ export class RestConnectorService {
       .map(res => res.json());
   }
 
-  private createAuthorizationHeader(){
+  private createAuthorizationHeader() {
     let headers: Headers = new Headers();
     headers.append("Authorization", "Basic TWF4OnRlc3Q=");
 
