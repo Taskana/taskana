@@ -108,7 +108,9 @@ public interface TaskService {
 			List<TaskState> states);
 
 	/**
-	 * Put task into another basket
+	 * Transfer task to another workbasket.
+	 * 
+	 * The transfer set the transferred flag and resets the read flag.
 	 * 
 	 * @param workbasketId
 	 * @return the updated task
@@ -116,6 +118,15 @@ public interface TaskService {
 	 */
 	public Task transfer(String taskId, String workbasketId)
 			throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException;
+	
+	/**
+	 * Marks a task as read. 
+	 * 
+	 * @param taskId the id of the task to be updated
+	 * @param isRead the new status of the read flag.
+	 * @return Task the updated Task
+	 */
+	public Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
 
 	public List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast,
 			List<TaskState> states);

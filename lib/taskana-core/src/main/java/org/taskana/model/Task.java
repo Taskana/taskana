@@ -22,6 +22,8 @@ public class Task {
 	private String type;
 	private String workbasketId;
 	private String owner;
+	private boolean isRead;
+	private boolean isTransferred;
 
 	public String getId() {
 		return id;
@@ -143,6 +145,22 @@ public class Task {
 		this.owner = owner;
 	}
 	
+	public boolean isRead() {
+		return isRead;
+	}
+
+	public void setRead(boolean isRead) {
+		this.isRead = isRead;
+	}
+
+	public boolean isTransferred() {
+		return isTransferred;
+	}
+
+	public void setTransferred(boolean isTransferred) {
+		this.isTransferred = isTransferred;
+	}
+
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("TASK(");
@@ -161,6 +179,8 @@ public class Task {
 		sb.append(", type="+type);
 		sb.append(", workbasketId="+workbasketId);
 		sb.append(", owner="+owner);
+		sb.append(", isRead="+isRead);
+		sb.append(", isTransferred="+isTransferred);
 		sb.append(")");
 		return sb.toString();
 
