@@ -1,4 +1,4 @@
-package org.taskana.impl;
+package org.taskana.impl.integration;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
@@ -10,6 +10,8 @@ import org.taskana.TaskanaEngine;
 import org.taskana.configuration.TaskanaEngineConfiguration;
 import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.TaskNotFoundException;
+import org.taskana.impl.TaskServiceImpl;
+import org.taskana.impl.TaskanaEngineImpl;
 import org.taskana.model.Task;
 
 public class TaskServiceImplTransactionTest {
@@ -17,7 +19,7 @@ public class TaskServiceImplTransactionTest {
 	@Test
 	public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
 		JdbcDataSource ds = new JdbcDataSource();
-		ds.setURL("jdbc:h2:mem:workbasket-test-db45");
+		ds.setURL("jdbc:h2:mem:test-db-taskservice-int1");
 		ds.setPassword("sa");
 		ds.setUser("sa");
 		TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, true, false);
@@ -42,7 +44,7 @@ public class TaskServiceImplTransactionTest {
 	public void testStartTransactionFail()
 			throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
 		JdbcDataSource ds = new JdbcDataSource();
-		ds.setURL("jdbc:h2:mem:workbasket-test-db46");
+		ds.setURL("jdbc:h2:mem:test-db-taskservice-int2");
 		ds.setPassword("sa");
 		ds.setUser("sa");
 		TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false);
