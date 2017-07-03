@@ -74,6 +74,8 @@ public class TaskServiceImpl implements TaskService {
 		task.setState(TaskState.READY);
 		task.setCreated(now);
 		task.setModified(now);
+		task.setRead(false);
+		task.setTransferred(false);
 		taskMapper.insert(task);
 		logger.debug("Task '{}' created.", task.getId());
 		return task;
@@ -147,11 +149,15 @@ public class TaskServiceImpl implements TaskService {
 			taskanaEngine.getWorkbasketService().getWorkbasket(destinationWorkbasketId);
 		}
 
+		// reset read flag and set transferred flag
+		task.setRead(false);
+		task.setTransferred(true);
+
 		// transfer task from source to destination workbasket
 		task.setWorkbasketId(destinationWorkbasketId);
 		task.setModified(Timestamp.valueOf(LocalDateTime.now()));
 		taskMapper.update(task);
-
+		
 		return getTaskById(taskId);
 	}
 
@@ -162,6 +168,15 @@ public class TaskServiceImpl implements TaskService {
 		time = time.minusDays(daysInPast);
 		Date fromDate = Date.valueOf(time);
 		return taskMapper.getTaskCountByWorkbasketIdAndDaysInPastAndState(fromDate, states);
+	}
+
+	@Override
+	public Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException {
+		Task task = getTaskById(taskId);
+		task.setRead(true);
+		task.setModified(Timestamp.valueOf(LocalDateTime.now()));
+		taskMapper.update(task);
+		return getTaskById(taskId);
 	}
 
 }

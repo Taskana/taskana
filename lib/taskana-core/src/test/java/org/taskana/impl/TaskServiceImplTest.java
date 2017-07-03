@@ -111,10 +111,14 @@ public class TaskServiceImplTest {
 		Mockito.when(workbasketServiceImpl.getWorkbasket("2")).thenReturn(workbasket2);
 
 		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+		task.setRead(true);
 
 		Assert.assertEquals(taskServiceImpl.getTaskById(task.getId()).getWorkbasketId(), "1");
 		taskServiceImpl.transfer(task.getId(), "2");
 		Assert.assertEquals(taskServiceImpl.getTaskById(task.getId()).getWorkbasketId(), "2");
+		
+		Assert.assertTrue(task.isTransferred());
+		Assert.assertFalse(task.isRead());
 	}
 
 	@Test(expected = WorkbasketNotFoundException.class)
@@ -137,6 +141,14 @@ public class TaskServiceImplTest {
 
 		Assert.assertEquals(taskServiceImpl.getTaskById(task.getId()).getWorkbasketId(), "1");
 		taskServiceImpl.transfer(task.getId(), "invalidWorkbasketId");
+	}
+	
+	@Test
+	public void should_setTheReadFlag_when_taskIsRead() throws TaskNotFoundException {
+		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+		
+		Task readTask = taskServiceImpl.setTaskRead("1", true);
+		Assert.assertTrue(readTask.isRead());
 	}
 
 	private Task createUnitTestTask(String id, String name, String workbasketId) {

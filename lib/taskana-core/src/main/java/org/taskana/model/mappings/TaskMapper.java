@@ -18,7 +18,7 @@ import org.taskana.model.TaskState;
 
 public interface TaskMapper {
 
-    @Select("SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER "
+    @Select("SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, IS_READ, IS_TRANSFERRED "
             + "FROM task "
             + "WHERE ID = #{id}")
     @Results(value = { 
@@ -36,10 +36,12 @@ public interface TaskMapper {
             @Result(property = "state", column = "STATE"),
             @Result(property = "type", column = "TYPE"),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
-            @Result(property = "owner", column = "OWNER")})
+            @Result(property = "owner", column = "OWNER"),
+            @Result(property = "isRead", column = "IS_READ"),
+            @Result(property = "isTransferred", column = "IS_TRANSFERRED")})
 	Task findById(String id);
 
-    @Select("SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER "
+    @Select("SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, IS_READ, IS_TRANSFERRED  "
             + "FROM task "
             + "WHERE WORKBASKETID = #{workbasketId} "
             + "ORDER BY ID")
@@ -58,11 +60,13 @@ public interface TaskMapper {
             @Result(property = "state", column = "STATE"),
             @Result(property = "type", column = "TYPE"),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
-            @Result(property = "owner", column = "OWNER")})
+            @Result(property = "owner", column = "OWNER"),
+            @Result(property = "isRead", column = "IS_READ"),
+            @Result(property = "isTransferred", column = "IS_TRANSFERRED")})
 	List<Task> findByWorkBasketId(String workbasketId);
 
     @Select("<script>"
-            + "SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER "
+            + "SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, IS_READ, IS_TRANSFERRED  "
             + "FROM task "
             + "WHERE WORKBASKETID IN (<foreach item='item' collection='workbasketIds' separator=','>#{item}</foreach>) "
             + "AND STATE IN (<foreach item='item' collection='states' separator=',' >#{item}</foreach>) "
@@ -83,11 +87,13 @@ public interface TaskMapper {
             @Result(property = "state", column = "STATE"),
             @Result(property = "type", column = "TYPE"),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
-            @Result(property = "owner", column = "OWNER")})
+            @Result(property = "owner", column = "OWNER"),
+            @Result(property = "isRead", column = "IS_READ"),
+            @Result(property = "isTransferred", column = "IS_TRANSFERRED")})
 	List<Task> findByWorkbasketIdsAndStates(@Param("workbasketIds") List<String> workbasketIds, @Param("states") List<TaskState> states);
 	
     @Select("<script>"
-            + "SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER "
+            + "SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, IS_READ, IS_TRANSFERRED  "
             + "FROM task "
             + "WHERE STATE IN (<foreach item='item' collection='states' separator=',' >#{item}</foreach>) "
             + "ORDER BY ID"
@@ -107,7 +113,9 @@ public interface TaskMapper {
             @Result(property = "state", column = "STATE"),
             @Result(property = "type", column = "TYPE"),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
-            @Result(property = "owner", column = "OWNER")})
+            @Result(property = "owner", column = "OWNER"),
+            @Result(property = "isRead", column = "IS_READ"),
+            @Result(property = "isTransferred", column = "IS_TRANSFERRED")})
 	List<Task> findByStates(@Param("states") List<TaskState> states);
     
 	@Select("SELECT * FROM TASK")
@@ -148,11 +156,11 @@ public interface TaskMapper {
 	})
 	List<DueWorkbasketCounter> getTaskCountByWorkbasketIdAndDaysInPastAndState(@Param("fromDate") Date fromDate, @Param("status") List<TaskState> states);
 	
-	@Insert("INSERT INTO TASK(ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER) VALUES(#{id}, #{tenantId}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{description}, #{priority}, #{state}, #{type}, #{workbasketId}, #{owner})")
+	@Insert("INSERT INTO TASK(ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, IS_READ, IS_TRANSFERRED) VALUES(#{id}, #{tenantId}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{description}, #{priority}, #{state}, #{type}, #{workbasketId}, #{owner}, #{isRead}, #{isTransferred})")
 	@Options(keyProperty = "id", keyColumn="ID")
 	void insert(Task task);
 
-	@Update("UPDATE TASK SET TENANT_ID = #{tenantId}, CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, PRIORITY = #{priority}, STATE = #{state}, TYPE = #{type}, WORKBASKETID = #{workbasketId}, OWNER = #{owner} WHERE ID = #{id}")
+	@Update("UPDATE TASK SET TENANT_ID = #{tenantId}, CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, PRIORITY = #{priority}, STATE = #{state}, TYPE = #{type}, WORKBASKETID = #{workbasketId}, OWNER = #{owner}, IS_READ = #{isRead}, IS_TRANSFERRED = #{isTransferred} WHERE ID = #{id}")
 	void update(Task task);
 
 	@Delete("DELETE FROM TASK WHERE ID = #{id}")
