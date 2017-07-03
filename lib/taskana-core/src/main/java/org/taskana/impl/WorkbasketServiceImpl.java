@@ -49,15 +49,13 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 	}
 
 	@Override
-	public List<Workbasket> getWorkbaskets(List<String> permissions) {
-		List<Workbasket> workbaskets = workbasketMapper.findByPermission(permissions, CurrentUserContext.getUserid());
-		return workbaskets;
+	public List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permissions) {
+		return workbasketMapper.findByPermission(permissions, CurrentUserContext.getUserid());
 	}
 	
 	@Override
 	public List<Workbasket> getWorkbaskets() {
-		List<Workbasket> workbaskets = workbasketMapper.findAll();
-		return workbaskets;
+		return workbasketMapper.findAll();
 	}
 
 	@Override
@@ -129,7 +127,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 	}
 
 	@Override
-	public void checkPermission(String workbasketId, WorkbasketAuthorization workbasketAuthorization)
+	public void checkAuthorization(String workbasketId, WorkbasketAuthorization workbasketAuthorization)
 			throws NotAuthorizedException {
 
 		// Skip permission check is security is not enabled

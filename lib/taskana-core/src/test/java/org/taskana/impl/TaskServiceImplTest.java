@@ -41,7 +41,7 @@ public class TaskServiceImplTest {
 	@Test
 	public void testCreateSimpleTask() throws NotAuthorizedException {
 		registerBasicMocks(false);
-		Mockito.doNothing().when(workbasketServiceImpl).checkPermission(any(), any());
+		Mockito.doNothing().when(workbasketServiceImpl).checkAuthorization(any(), any());
 		Mockito.doNothing().when(taskMapper).insert(any());
 
 		Task task = new Task();
@@ -124,7 +124,7 @@ public class TaskServiceImplTest {
 	@Test(expected = WorkbasketNotFoundException.class)
 	public void testTransferFailsIfDestinationWorkbasketDoesNotExist_withSecurityDisabled() throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
 		registerBasicMocks(false);
-		Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl).checkPermission(eq("invalidWorkbasketId"), any());
+		Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl).checkAuthorization(eq("invalidWorkbasketId"), any());
 
 		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
 
@@ -135,7 +135,7 @@ public class TaskServiceImplTest {
 	@Test(expected = WorkbasketNotFoundException.class)
 	public void testTransferFailsIfDestinationWorkbasketDoesNotExist_withSecurityEnabled() throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
 		registerBasicMocks(true);
-		Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl).checkPermission(eq("invalidWorkbasketId"), any());
+		Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl).checkAuthorization(eq("invalidWorkbasketId"), any());
 
 		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
 
