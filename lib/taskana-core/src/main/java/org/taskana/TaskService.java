@@ -68,7 +68,8 @@ public interface TaskService {
 	 * @return the list of tasks, which reside in the workbasket
 	 * @throws NotAuthorizedException
 	 */
-	public List<Task> getTasksForWorkbasket(List<String> workbaskets, List<String> states) throws NotAuthorizedException;
+	public List<Task> getTasksForWorkbasket(List<String> workbaskets, List<TaskState> states)
+			throws NotAuthorizedException;
 
 	/**
 	 * This method returns all Tasks
@@ -87,6 +88,14 @@ public interface TaskService {
 	public List<TaskStateCounter> getTaskCountForState(List<TaskState> states);
 
 	/**
+	 * This method returns all tasks with the specified states
+	 * 
+	 * @param states  all List with the needed states
+	 * @return a list of Tasks
+	 */
+	public List<Task> findTasks(List<TaskState> states);
+
+	/**
 	 * Count all Tasks in a given workbasket with daysInPast as Days from today
 	 * in the past and a specific state.
 	 * 
@@ -95,7 +104,8 @@ public interface TaskService {
 	 * @param states
 	 * @return
 	 */
-	public long getTaskCountForWorkbasketByDaysInPastAndState(String workbasketId, long daysInPast, List<TaskState> states);
+	public long getTaskCountForWorkbasketByDaysInPastAndState(String workbasketId, long daysInPast,
+			List<TaskState> states);
 
 	/**
 	 * Put task into another basket
@@ -107,5 +117,7 @@ public interface TaskService {
 	public Task transfer(String taskId, String workbasketId)
 			throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException;
 
-	public List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast, List<TaskState> states);
+	public List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast,
+			List<TaskState> states);
+
 }
