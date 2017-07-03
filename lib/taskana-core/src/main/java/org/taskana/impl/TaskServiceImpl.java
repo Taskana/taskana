@@ -67,7 +67,7 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	public Task create(Task task) throws NotAuthorizedException {
-		taskanaEngine.getWorkbasketService().checkPermission(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
+		taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
 
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		task.setId(UUID.randomUUID().toString());
@@ -93,7 +93,7 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	public List<Task> getTasksForWorkbasket(String workbasketId) throws NotAuthorizedException {
-		taskanaEngine.getWorkbasketService().checkPermission(workbasketId, WorkbasketAuthorization.OPEN);
+		taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.OPEN);
 
 		return taskMapper.findByWorkBasketId(workbasketId);
 	}
@@ -108,7 +108,7 @@ public class TaskServiceImpl implements TaskService {
 			throws NotAuthorizedException {
 
 		for (String workbasket : workbasketIds) {
-			taskanaEngine.getWorkbasketService().checkPermission(workbasket, WorkbasketAuthorization.OPEN);
+			taskanaEngine.getWorkbasketService().checkAuthorization(workbasket, WorkbasketAuthorization.OPEN);
 		}
 
 		return taskMapper.findByWorkbasketIdsAndStates(workbasketIds, states);
@@ -140,8 +140,8 @@ public class TaskServiceImpl implements TaskService {
 
 		// transfer requires TRANSFER in source and APPEND on destination
 		// workbasket
-		taskanaEngine.getWorkbasketService().checkPermission(destinationWorkbasketId, WorkbasketAuthorization.APPEND);
-		taskanaEngine.getWorkbasketService().checkPermission(task.getWorkbasketId(), WorkbasketAuthorization.TRANSFER);
+		taskanaEngine.getWorkbasketService().checkAuthorization(destinationWorkbasketId, WorkbasketAuthorization.APPEND);
+		taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.TRANSFER);
 
 		// if security is disabled, the implicit existance check on the
 		// destination workbasket has been skipped and needs to be performed

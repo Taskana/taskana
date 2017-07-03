@@ -92,7 +92,7 @@ public interface WorkbasketService {
 	 *             if the workbasket do not exist
 	 * @throws NotAuthorizedException
 	 */
-	public void checkPermission(String workbasketId, WorkbasketAuthorization authorization)
+	public void checkAuthorization(String workbasketId, WorkbasketAuthorization authorization)
 			throws NotAuthorizedException;
 
 	/**
@@ -119,6 +119,6 @@ public interface WorkbasketService {
 	 *            as String like in this enum: {@link WorkbasketAuthorization}
 	 * @return all filtered workbaskets
 	 */
-	List<Workbasket> getWorkbaskets(List<String> permission);
+	List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permission);
 
 }
