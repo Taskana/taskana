@@ -8,12 +8,12 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
-import org.taskana.CategoryService;
+import org.taskana.ClassificationService;
 import org.taskana.TaskService;
 import org.taskana.TaskanaEngine;
 import org.taskana.WorkbasketService;
 import org.taskana.configuration.TaskanaEngineConfiguration;
-import org.taskana.model.mappings.CategoryMapper;
+import org.taskana.model.mappings.ClassificationMapper;
 import org.taskana.model.mappings.DistributionTargetMapper;
 import org.taskana.model.mappings.TaskMapper;
 import org.taskana.model.mappings.WorkbasketAccessMapper;
@@ -30,7 +30,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 	private TaskMapper taskMapper;
 	private WorkbasketMapper workbasketMapper;
 	private DistributionTargetMapper distributionTargetMapper;
-	private CategoryMapper categoryMapper;
+	private ClassificationMapper classificationMapper;
 	private WorkbasketAccessMapper workbasketAccessMapper;
 
 	private TaskServiceImpl taskServiceImpl;
@@ -45,7 +45,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 		this.taskMapper = session.getMapper(TaskMapper.class);
 		this.workbasketMapper = session.getMapper(WorkbasketMapper.class);
 		this.distributionTargetMapper = session.getMapper(DistributionTargetMapper.class);
-		this.categoryMapper = session.getMapper(CategoryMapper.class);
+		this.classificationMapper = session.getMapper(ClassificationMapper.class);
 		this.workbasketAccessMapper = session.getMapper(WorkbasketAccessMapper.class);
 	}
 
@@ -63,8 +63,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 	}
 
 	@Override
-	public CategoryService getCategoryService() {
-		return new CategoryServiceImpl(this.categoryMapper);
+	public ClassificationService getClassificationService() {
+		return new ClassificationServiceImpl(this.classificationMapper);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 		configuration.addMapper(TaskMapper.class);
 		configuration.addMapper(WorkbasketMapper.class);
 		configuration.addMapper(DistributionTargetMapper.class);
-		configuration.addMapper(CategoryMapper.class);
+		configuration.addMapper(ClassificationMapper.class);
 		configuration.addMapper(WorkbasketAccessMapper.class);
 		return new SqlSessionFactoryBuilder().build(configuration);
 	}
