@@ -12,6 +12,8 @@ public class Classification {
 	private String id;
 	private String tenantId;
 	private String parentClassificationId;
+	private String category;
+	private String type;
 	private Date created;
 	private Date modified;
 	private String name;
@@ -42,6 +44,22 @@ public class Classification {
 
 	public void setParentClassificationId(String parentClassificationId) {
 		this.parentClassificationId = parentClassificationId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public Date getCreated() {
@@ -103,4 +121,5 @@ public class Classification {
 	public void setChildren(List<Classification> children) {
 		this.children = children;
 	}
+
 }
