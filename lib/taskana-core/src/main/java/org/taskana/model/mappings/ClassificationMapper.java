@@ -12,6 +12,8 @@ public interface ClassificationMapper {
 		@Result(property="id", column="ID"),
 		@Result(property="tenantId", column="TENANT_ID"),
 		@Result(property="parentClassificationId", column="PARENT_CLASSIFICATION_ID"),
+		@Result(property="category", column="CATEGORY"),
+		@Result(property="type", column="TYPE"),
 		@Result(property="created", column="CREATED"),
 		@Result(property="modified", column="MODIFIED"),
 		@Result(property="name", column="NAME"),
@@ -27,9 +29,9 @@ public interface ClassificationMapper {
 	@Select("SELECT * FROM BUSINESS_CLASSIFICATION WHERE ID = #{classificationId}")
 	Classification findById(@Param("classificationId") String classificationId);
 	
-	@Insert("INSERT INTO BUSINESS_CLASSIFICATION (ID, TENANT_ID, PARENT_CLASSIFICATION_ID, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL) VALUES (#{classification.id}, #{classification.tenantId}, #{classification.parentClassificationId}, #{classification.created}, #{classification.name}, #{classification.description}, #{classification.priority}, #{classification.serviceLevel})")
+	@Insert("INSERT INTO BUSINESS_CLASSIFICATION (ID, TENANT_ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL) VALUES (#{classification.id}, #{classification.tenantId}, #{classification.parentClassificationId}, #{classification.category}, #{classification.type}, #{classification.created}, #{classification.name}, #{classification.description}, #{classification.priority}, #{classification.serviceLevel})")
 	void insert(@Param("classification") Classification classification);
 	
-	@Update(value = "UPDATE BUSINESS_CLASSIFICATION SET TENANT_ID = #{classification.tenantId}, PARENT_CLASSIFICATION_ID = #{classification.parentClassificationId}, NAME = #{classification.name}, DESCRIPTION = #{classification.description}, PRIORITY = #{classification.priority}, SERVICE_LEVEL = #{classification.serviceLevel}, MODIFIED = #{classification.modified} WHERE ID = #{classification.id}")
+	@Update(value = "UPDATE BUSINESS_CLASSIFICATION SET TENANT_ID = #{classification.tenantId}, PARENT_CLASSIFICATION_ID = #{classification.parentClassificationId}, CATEGORY = #{classification.category}, TYPE = #{classification.type}, NAME = #{classification.name}, DESCRIPTION = #{classification.description}, PRIORITY = #{classification.priority}, SERVICE_LEVEL = #{classification.serviceLevel}, MODIFIED = #{classification.modified} WHERE ID = #{classification.id}")
 	void update(@Param("classification") Classification classification);
 }
