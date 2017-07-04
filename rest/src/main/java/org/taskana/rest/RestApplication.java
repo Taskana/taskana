@@ -1,9 +1,6 @@
 package org.taskana.rest;
 
-import java.sql.SQLException;
-
-import javax.annotation.PostConstruct;
-
+import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -14,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
-import org.taskana.CategoryService;
+import org.taskana.ClassificationService;
 import org.taskana.TaskService;
 import org.taskana.TaskanaEngine;
 import org.taskana.WorkbasketService;
@@ -23,7 +20,8 @@ import org.taskana.model.Workbasket;
 import org.taskana.rest.serialization.WorkbasketMixIn;
 import org.taskana.sampledata.SampleDataGenerator;
 
-import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
+import javax.annotation.PostConstruct;
+import java.sql.SQLException;
 
 @SpringBootApplication
 public class RestApplication {
@@ -35,8 +33,8 @@ public class RestApplication {
 	}
 
 	@Bean
-	public CategoryService getCategoryService() throws Exception {
-		return getTaskanaEngine().getCategoryService();
+	public ClassificationService getClassificationService() throws Exception {
+		return getTaskanaEngine().getClassificationService();
 	}
 
 	@Bean
