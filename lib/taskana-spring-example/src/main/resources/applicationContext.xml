@@ -5,8 +5,7 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
 		<property name="targetDataSource">
 			<bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 				<property name="driverClass" value="org.h2.Driver" />
@@ -18,31 +17,14 @@
 		</property>
 	</bean>
 
-	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy"> 
-		<property name="targetDataSource"> <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource"> 
-		<property name="driverClass" value="com.ibm.db2.jcc.DB2Driver" /> <property 
-		name="url" value="jdbc:db2://localhost:50000/SAMPLE:retrieveMessagesFromServerOnGetMessage=true;" 
-		/> <property name="username" value="eh" /> <property name="password" value="" 
-		/> </bean> </property> </bean> -->
-
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="taskEngineConfiguration" class="SpringTaskanaEngineConfiguration">
-		<property name="dataSource" ref="dataSource" />
-		<property name="transactionManager" ref="transactionManager" />
-	</bean>
-
-	<bean id="taskEngineConfiguration" class="SpringTaskanaEngineConfiguration">
+	<bean id="taskanaEngineConfiguration" class="org.taskana.configuration.SpringTaskanaEngineConfiguration">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="taskEngine" factory-bean="taskEngineConfiguration"
-		factory-method="createTaskEngineConfiguration">
-		<property name="transactionManager" ref="transactionManager" />
-	</bean>
-	<bean id="taskService" factory-bean="taskEngine" factory-method="getTaskService" />
-
+	<bean id="taskanaEngine" factory-bean="taskanaEngineConfiguration" factory-method="buildTaskanaEngine" />
+	<bean id="taskService" factory-bean="taskanaEngine" factory-method="getTaskService" />
 </beans>
