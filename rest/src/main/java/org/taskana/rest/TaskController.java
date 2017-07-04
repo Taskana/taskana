@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,8 @@ import org.taskana.model.TaskState;
 @RestController
 @RequestMapping(path = "/v1/tasks", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class TaskController {
+
+	private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
 	@Autowired
 	private TaskService taskService;
@@ -112,6 +116,7 @@ public class TaskController {
 			Task createdTask = taskService.create(task);
 			return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
 		} catch (Exception e) {
+			logger.error("Something went wrong: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -122,6 +127,7 @@ public class TaskController {
 			Task updatedTask = taskService.transfer(taskId, workbasketId);
 			return ResponseEntity.status(HttpStatus.CREATED).body(updatedTask);
 		} catch (Exception e) {
+			logger.error("Something went wrong: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
