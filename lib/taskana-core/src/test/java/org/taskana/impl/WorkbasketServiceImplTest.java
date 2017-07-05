@@ -96,6 +96,7 @@ public class WorkbasketServiceImplTest {
 		verify(workbasketMapper).insert(any());
 	}
 
+	@SuppressWarnings("serial")
 	@Test
 	public void should_InitializeAndStoreWorkbasket_when_WorkbasketWithDistributionTargetsIsCreated() throws NotAuthorizedException {
 		doNothing().when(workbasketMapper).insert(any());
@@ -141,6 +142,7 @@ public class WorkbasketServiceImplTest {
 		verify(workbasketMapper).update(any());
 	}
 
+	@SuppressWarnings("serial")
 	@Test
 	public void should_ReturnUpdatedWorkbasket_when_ExistingWorkbasketDistributionTargetIsChanged()
 			throws NotAuthorizedException {
@@ -252,6 +254,7 @@ public class WorkbasketServiceImplTest {
 		workbasketServiceImpl.checkAuthorization("1", WorkbasketAuthorization.READ);
 	}
 
+	@SuppressWarnings("serial")
 	@Test
 	public void should_Pass_when_OperationIsAuthorized() throws NotAuthorizedException {
 		when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
