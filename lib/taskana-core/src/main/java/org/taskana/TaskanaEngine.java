@@ -22,11 +22,11 @@ public interface TaskanaEngine {
 	public WorkbasketService getWorkbasketService();
 
 	/**
-	 * The CategoryService can be used for operations on all Categories
+	 * The ClassificationService can be used for operations on all Categories
 	 * 
 	 * @return the TaskService
 	 */
-	public CategoryService getCategoryService();
+	public ClassificationService getClassificationService();
 
 	/**
 	 * The Taskana configuration
