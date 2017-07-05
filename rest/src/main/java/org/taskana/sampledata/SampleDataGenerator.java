@@ -1,16 +1,14 @@
 package org.taskana.sampledata;
 
+import org.apache.ibatis.jdbc.ScriptRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
-import org.apache.ibatis.jdbc.ScriptRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.taskana.rest.RestApplication;
 
 public class SampleDataGenerator {
 
@@ -23,7 +21,7 @@ public class SampleDataGenerator {
 	private static final String WORKBASKET = SQL + TEST_DATA + "/workbasket.sql";
 	private static final String DISTRIBUTION_TARGETS = SQL + TEST_DATA + "/distribution-targets.sql";
 	private static final String WORKBASKET_ACCESS_LIST = SQL + TEST_DATA + "/workbasket-access-list.sql";
-	private static final String CATEGORY = SQL + TEST_DATA + "/category.sql";
+	private static final String CATEGORY = SQL + TEST_DATA + "/classification.sql";
 
 
 	public SampleDataGenerator(DataSource dataSource) throws SQLException {

@@ -5,20 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Category entity
+ * Classification entity
  */
-public class Category {
+public class Classification {
 
 	private String id;
 	private String tenantId;
-	private String parentCategoryId;
+	private String parentClassificationId;
+	private String category;
+	private String type;
 	private Date created;
 	private Date modified;
 	private String name;
 	private String description;
 	private int priority;
 	private String serviceLevel; //PddDThhHmmM
-	private List<Category> children = new ArrayList<>();
+	private List<Classification> children = new ArrayList<>();
 
 	public String getId() {
 		return id;
@@ -36,12 +38,28 @@ public class Category {
 		this.tenantId = tenantId;
 	}
 
-	public String getParentCategoryId() {
-		return parentCategoryId;
+	public String getParentClassificationId() {
+		return parentClassificationId;
 	}
 
-	public void setParentCategoryId(String parentCategoryId) {
-		this.parentCategoryId = parentCategoryId;
+	public void setParentClassificationId(String parentClassificationId) {
+		this.parentClassificationId = parentClassificationId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public Date getCreated() {
@@ -92,15 +110,16 @@ public class Category {
 		this.serviceLevel = serviceLevel;
 	}
 
-	public List<Category> getChildren() {
+	public List<Classification> getChildren() {
 		return children;
 	}
 
-	public void addChild(Category child) {
+	public void addChild(Classification child) {
 		children.add(child);
 	}
 
-	public void setChildren(List<Category> children) {
+	public void setChildren(List<Classification> children) {
 		this.children = children;
 	}
+
 }
