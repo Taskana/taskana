@@ -16,82 +16,86 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit Test for ClassificationServiceImpl.
+ * @author EH
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ClassificationServiceImplTest {
 
-	@InjectMocks
+    @InjectMocks
     ClassificationServiceImpl classificationService;
 
-	@Mock
+    @Mock
     ClassificationMapper classificationMapper;
 
-	@Test
-	public void testInsertClassification() {
-		doNothing().when(classificationMapper).insert(any());
+    @Test
+    public void testInsertClassification() {
+        doNothing().when(classificationMapper).insert(any());
 
-		Classification classification = new Classification();
-		classification.setId("0");
-		classificationService.insertClassification(classification);
-		
-		when(classificationMapper.findById(any())).thenReturn(classification);
+        Classification classification = new Classification();
+        classification.setId("0");
+        classificationService.insertClassification(classification);
 
-		Assert.assertNotNull(classificationService.selectClassificationById(classification.getId()));
-	}
+        when(classificationMapper.findById(any())).thenReturn(classification);
 
-	@Test
-	public void testFindAllClassifications() {
-		doNothing().when(classificationMapper).insert(any());
+        Assert.assertNotNull(classificationService.selectClassificationById(classification.getId()));
+    }
 
-		Classification classification0 = new Classification();
-		classification0.setId("0");
-		classification0.setParentClassificationId("");
-		classificationService.insertClassification(classification0);
-		Classification classification1 = new Classification();
-		classification1.setId("1");
-		classification1.setParentClassificationId("");
-		classificationService.insertClassification(classification1);
-		
-		List<Classification> classifications = new ArrayList<>();
-		classifications.add(classification0);
-		when(classificationMapper.findByParentId("")).thenReturn(classifications);
+    @Test
+    public void testFindAllClassifications() {
+        doNothing().when(classificationMapper).insert(any());
 
-		verify(classificationMapper, atLeast(2)).insert(any());
-		Assert.assertEquals(1, classificationService.selectClassifications().size());
-	}
+        Classification classification0 = new Classification();
+        classification0.setId("0");
+        classification0.setParentClassificationId("");
+        classificationService.insertClassification(classification0);
+        Classification classification1 = new Classification();
+        classification1.setId("1");
+        classification1.setParentClassificationId("");
+        classificationService.insertClassification(classification1);
 
-	@Test
-	public void testFindByParentClassification() {
-		doNothing().when(classificationMapper).insert(any());
+        List<Classification> classifications = new ArrayList<>();
+        classifications.add(classification0);
+        when(classificationMapper.findByParentId("")).thenReturn(classifications);
 
-		Classification classification0 = new Classification();
-		classification0.setId("0");
-		classification0.setParentClassificationId("0");
-		classificationService.insertClassification(classification0);
-		Classification classification1 = new Classification();
-		classification1.setId("1");
-		classification1.setParentClassificationId("0");
-		classificationService.insertClassification(classification1);
+        verify(classificationMapper, atLeast(2)).insert(any());
+        Assert.assertEquals(1, classificationService.selectClassifications().size());
+    }
 
-		List<Classification> classifications = new ArrayList<>();
-		classifications.add(classification0);
-		classifications.add(classification1);
-		when(classificationMapper.findByParentId(any())).thenReturn(classifications);
+    @Test
+    public void testFindByParentClassification() {
+        doNothing().when(classificationMapper).insert(any());
 
-		verify(classificationMapper, atLeast(2)).insert(any());
+        Classification classification0 = new Classification();
+        classification0.setId("0");
+        classification0.setParentClassificationId("0");
+        classificationService.insertClassification(classification0);
+        Classification classification1 = new Classification();
+        classification1.setId("1");
+        classification1.setParentClassificationId("0");
+        classificationService.insertClassification(classification1);
 
-		Assert.assertEquals(2, classificationService.selectClassificationsByParentId("0").size());
-	}
+        List<Classification> classifications = new ArrayList<>();
+        classifications.add(classification0);
+        classifications.add(classification1);
+        when(classificationMapper.findByParentId(any())).thenReturn(classifications);
 
-	@Test
-	public void testModifiedClassification() {
-		doNothing().when(classificationMapper).insert(any());
-		doNothing().when(classificationMapper).update(any());
+        verify(classificationMapper, atLeast(2)).insert(any());
 
-		Classification classification = new Classification();
-		classificationService.insertClassification(classification);
-		classification.setDescription("TEST EVERYTHING");
-		classificationService.updateClassification(classification);
+        Assert.assertEquals(2, classificationService.selectClassificationsByParentId("0").size());
+    }
 
-		Assert.assertEquals(classification.getModified().toString(), LocalDate.now().toString());
-	}
+    @Test
+    public void testModifiedClassification() {
+        doNothing().when(classificationMapper).insert(any());
+        doNothing().when(classificationMapper).update(any());
+
+        Classification classification = new Classification();
+        classificationService.insertClassification(classification);
+        classification.setDescription("TEST EVERYTHING");
+        classificationService.updateClassification(classification);
+
+        Assert.assertEquals(classification.getModified().toString(), LocalDate.now().toString());
+    }
 }

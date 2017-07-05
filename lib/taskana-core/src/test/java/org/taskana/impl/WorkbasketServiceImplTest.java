@@ -26,258 +26,267 @@ import org.taskana.model.mappings.DistributionTargetMapper;
 import org.taskana.model.mappings.WorkbasketAccessMapper;
 import org.taskana.model.mappings.WorkbasketMapper;
 
+/**
+ * Unit Test for workbasketServiceImpl.
+ * @author EH
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class WorkbasketServiceImplTest {
 
-	@InjectMocks
-	WorkbasketServiceImpl workbasketServiceImpl;
+    private static final int THREE = 3;
 
-	@Mock
-	WorkbasketMapper workbasketMapper;
-	@Mock
-	DistributionTargetMapper distributionTargetMapper;
-	@Mock
-	WorkbasketAccessMapper workbasketAccessMapper;
-	@Mock
-	TaskanaEngine taskanaEngine;
-	@Mock
-	TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private static final int SLEEP_TIME = 100;
 
-	@Test
-	public void should_ReturnWorkbasket_when_WorkbasketIdExists() throws WorkbasketNotFoundException {
-		when(workbasketMapper.findById(any())).thenReturn(new Workbasket());
+    @InjectMocks
+    WorkbasketServiceImpl workbasketServiceImpl;
 
-		Workbasket workbasket = workbasketServiceImpl.getWorkbasket("fail");
+    @Mock
+    WorkbasketMapper workbasketMapper;
+    @Mock
+    DistributionTargetMapper distributionTargetMapper;
+    @Mock
+    WorkbasketAccessMapper workbasketAccessMapper;
+    @Mock
+    TaskanaEngine taskanaEngine;
+    @Mock
+    TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-		verify(workbasketMapper).findById(any());
-		Assert.assertNotNull(workbasket);
-	}
+    @Test
+    public void should_ReturnWorkbasket_when_WorkbasketIdExists() throws WorkbasketNotFoundException {
+        when(workbasketMapper.findById(any())).thenReturn(new Workbasket());
 
-	@Test(expected = WorkbasketNotFoundException.class)
-	public void should_ThrowWorkbasketNotFoundException_when_WorkbasketIdDoesNotExist()
-			throws WorkbasketNotFoundException {
-		workbasketServiceImpl.getWorkbasket("fail");
-	}
+        Workbasket workbasket = workbasketServiceImpl.getWorkbasket("fail");
 
-	@Test
-	public void should_ReturnListOfWorkbaskets_when_PermissionAndUserExists() {
-		when(workbasketMapper.findByPermission(any(), any())).thenReturn(new ArrayList<Workbasket>());
+        verify(workbasketMapper).findById(any());
+        Assert.assertNotNull(workbasket);
+    }
 
-		List<WorkbasketAuthorization> authorizations = new ArrayList<>();
-		authorizations.add(WorkbasketAuthorization.OPEN);
-		authorizations.add(WorkbasketAuthorization.APPEND);
-		List<Workbasket> workbaskets = workbasketServiceImpl.getWorkbaskets(authorizations);
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void should_ThrowWorkbasketNotFoundException_when_WorkbasketIdDoesNotExist()
+            throws WorkbasketNotFoundException {
+        workbasketServiceImpl.getWorkbasket("fail");
+    }
 
-		verify(workbasketMapper).findByPermission(any(), any());
-		Assert.assertNotNull(workbaskets);
-	}
+    @Test
+    public void should_ReturnListOfWorkbaskets_when_PermissionAndUserExists() {
+        when(workbasketMapper.findByPermission(any(), any())).thenReturn(new ArrayList<Workbasket>());
 
-	@Test
-	public void should_ReturnAllWorkbaskets_when_AllWorkbaskets() {
-		when(workbasketMapper.findAll()).thenReturn(new ArrayList<Workbasket>());
+        List<WorkbasketAuthorization> authorizations = new ArrayList<>();
+        authorizations.add(WorkbasketAuthorization.OPEN);
+        authorizations.add(WorkbasketAuthorization.APPEND);
+        List<Workbasket> workbaskets = workbasketServiceImpl.getWorkbaskets(authorizations);
 
-		List<Workbasket> workbaskets = workbasketServiceImpl.getWorkbaskets();
+        verify(workbasketMapper).findByPermission(any(), any());
+        Assert.assertNotNull(workbaskets);
+    }
 
-		verify(workbasketMapper).findAll();
-		Assert.assertNotNull(workbaskets);
-	}
+    @Test
+    public void should_ReturnAllWorkbaskets_when_AllWorkbaskets() {
+        when(workbasketMapper.findAll()).thenReturn(new ArrayList<Workbasket>());
 
-	@Test
-	public void should_InitializeAndStoreWorkbasket_when_WorkbasketIsCreated() throws NotAuthorizedException {
-		doNothing().when(workbasketMapper).insert(any());
-		
-		Workbasket workbasket = new Workbasket();
-		workbasket.setId("1");
-		workbasketServiceImpl.createWorkbasket(workbasket);
+        List<Workbasket> workbaskets = workbasketServiceImpl.getWorkbaskets();
 
-		Assert.assertEquals("1", workbasket.getId());
-		Assert.assertEquals(workbasket.getModified(), workbasket.getCreated());
+        verify(workbasketMapper).findAll();
+        Assert.assertNotNull(workbaskets);
+    }
 
-		verify(workbasketMapper).insert(any());
-	}
+    @Test
+    public void should_InitializeAndStoreWorkbasket_when_WorkbasketIsCreated() throws NotAuthorizedException {
+        doNothing().when(workbasketMapper).insert(any());
 
-	@SuppressWarnings("serial")
-	@Test
-	public void should_InitializeAndStoreWorkbasket_when_WorkbasketWithDistributionTargetsIsCreated() throws NotAuthorizedException {
-		doNothing().when(workbasketMapper).insert(any());
-		doNothing().when(distributionTargetMapper).insert(any(), any());
+        Workbasket workbasket = new Workbasket();
+        workbasket.setId("1");
+        workbasketServiceImpl.createWorkbasket(workbasket);
 
-		Workbasket workbasket = new Workbasket();
-		workbasket.setId("1");
-		Workbasket workbasket1 = new Workbasket();
-		workbasket1.setId("2");
-		Workbasket workbasket2 = new Workbasket();
-		workbasket2.setId("3");
-		workbasket.setDistributionTargets(new ArrayList<Workbasket>() {
-			{
-				add(workbasket1);
-				add(workbasket2);
-			}
-		});
+        Assert.assertEquals("1", workbasket.getId());
+        Assert.assertEquals(workbasket.getModified(), workbasket.getCreated());
 
-		workbasketServiceImpl.createWorkbasket(workbasket);
+        verify(workbasketMapper).insert(any());
+    }
 
-		Assert.assertEquals("1", workbasket.getId());
-		Assert.assertEquals(workbasket.getModified(), workbasket.getCreated());
+    @SuppressWarnings("serial")
+    @Test
+    public void should_InitializeAndStoreWorkbasket_when_WorkbasketWithDistributionTargetsIsCreated()
+            throws NotAuthorizedException {
+        doNothing().when(workbasketMapper).insert(any());
+        doNothing().when(distributionTargetMapper).insert(any(), any());
 
-		verify(workbasketMapper, times(3)).insert(any());
-		verify(distributionTargetMapper, times(2)).insert(any(), any());
-	}
+        Workbasket workbasket = new Workbasket();
+        workbasket.setId("1");
+        Workbasket workbasket1 = new Workbasket();
+        workbasket1.setId("2");
+        Workbasket workbasket2 = new Workbasket();
+        workbasket2.setId("3");
+        workbasket.setDistributionTargets(new ArrayList<Workbasket>() {
+            {
+                add(workbasket1);
+                add(workbasket2);
+            }
+        });
 
-	@Test
-	public void should_ReturnUpdatedWorkbasket_when_ExistingWorkbasketDescriptionIsChanged() throws NotAuthorizedException {
-		doNothing().when(workbasketMapper).insert(any());
+        workbasketServiceImpl.createWorkbasket(workbasket);
 
-		Workbasket workbasket = new Workbasket();
-		workbasket.setId("0");
-		workbasket.setDescription("TestDescription");
-		workbasket.setName("Cool New WorkintheBasket");
-		workbasket.setOwner("Arthur Dent");
-		workbasketServiceImpl.createWorkbasket(workbasket);
+        Assert.assertEquals("1", workbasket.getId());
+        Assert.assertEquals(workbasket.getModified(), workbasket.getCreated());
 
-		doNothing().when(workbasketMapper).update(any());
-		workbasket.setDescription("42");
-		workbasketServiceImpl.updateWorkbasket(workbasket);
+        verify(workbasketMapper, times(THREE)).insert(any());
+        verify(distributionTargetMapper, times(2)).insert(any(), any());
+    }
 
-		verify(workbasketMapper).update(any());
-	}
+    @Test
+    public void should_ReturnUpdatedWorkbasket_when_ExistingWorkbasketDescriptionIsChanged()
+            throws NotAuthorizedException {
+        doNothing().when(workbasketMapper).insert(any());
 
-	@SuppressWarnings("serial")
-	@Test
-	public void should_ReturnUpdatedWorkbasket_when_ExistingWorkbasketDistributionTargetIsChanged()
-			throws NotAuthorizedException {
-		doNothing().when(workbasketMapper).insert(any());
+        Workbasket workbasket = new Workbasket();
+        workbasket.setId("0");
+        workbasket.setDescription("TestDescription");
+        workbasket.setName("Cool New WorkintheBasket");
+        workbasket.setOwner("Arthur Dent");
+        workbasketServiceImpl.createWorkbasket(workbasket);
 
-		Workbasket workbasket = new Workbasket();
-		workbasket.setId("0");
-		Workbasket workbasket1 = new Workbasket();
-		workbasket1.setId("1");
-		workbasket.setDistributionTargets(new ArrayList<Workbasket>() {
-			{
-				add(workbasket1);
-			}
-		});
-		workbasketServiceImpl.createWorkbasket(workbasket);
+        doNothing().when(workbasketMapper).update(any());
+        workbasket.setDescription("42");
+        workbasketServiceImpl.updateWorkbasket(workbasket);
 
-		doNothing().when(workbasketMapper).update(any());
-		when(workbasketMapper.findById(any())).thenReturn(workbasket);
-		workbasket.getDistributionTargets().get(0).setDescription("Test123");
-		Workbasket result = workbasketServiceImpl.updateWorkbasket(workbasket);
+        verify(workbasketMapper).update(any());
+    }
 
-		verify(workbasketMapper).update(any());
-		Assert.assertEquals("Test123", result.getDistributionTargets().get(0).getDescription());
-	}
+    @SuppressWarnings("serial")
+    @Test
+    public void should_ReturnUpdatedWorkbasket_when_ExistingWorkbasketDistributionTargetIsChanged()
+            throws NotAuthorizedException {
+        doNothing().when(workbasketMapper).insert(any());
 
-	@Test
-	public void should_UpdateModifiedTimestamp_when_ExistingWorkbasketDistributionTargetIsChanged()
-			throws Exception {
-		doNothing().when(workbasketMapper).insert(any());
+        Workbasket workbasket = new Workbasket();
+        workbasket.setId("0");
+        Workbasket workbasket1 = new Workbasket();
+        workbasket1.setId("1");
+        workbasket.setDistributionTargets(new ArrayList<Workbasket>() {
+            {
+                add(workbasket1);
+            }
+        });
+        workbasketServiceImpl.createWorkbasket(workbasket);
 
-		Workbasket workbasket0 = new Workbasket();
-		workbasket0.setId("0");
-		Workbasket workbasket1 = new Workbasket();
-		workbasket1.setId("1");
-		Workbasket workbasket2 = new Workbasket();
-		workbasket2.setId("2");
-		workbasket2.getDistributionTargets().add(workbasket0);
-		workbasket2.getDistributionTargets().add(workbasket1);
-		workbasketServiceImpl.createWorkbasket(workbasket2);
+        doNothing().when(workbasketMapper).update(any());
+        when(workbasketMapper.findById(any())).thenReturn(workbasket);
+        workbasket.getDistributionTargets().get(0).setDescription("Test123");
+        Workbasket result = workbasketServiceImpl.updateWorkbasket(workbasket);
 
-		Workbasket workbasket3 = new Workbasket();
-		workbasket3.setId("3");
-		workbasket2.getDistributionTargets().clear();
-		workbasket2.getDistributionTargets().add(workbasket3);
-		Thread.sleep(100);
+        verify(workbasketMapper).update(any());
+        Assert.assertEquals("Test123", result.getDistributionTargets().get(0).getDescription());
+    }
 
-		doNothing().when(workbasketMapper).update(any());
-		workbasketServiceImpl.updateWorkbasket(workbasket2);
+    @Test
+    public void should_UpdateModifiedTimestamp_when_ExistingWorkbasketDistributionTargetIsChanged() throws Exception {
+        doNothing().when(workbasketMapper).insert(any());
 
-		when(workbasketMapper.findById("2")).thenReturn(workbasket2);
-		Workbasket foundBasket = workbasketServiceImpl.getWorkbasket(workbasket2.getId());
+        Workbasket workbasket0 = new Workbasket();
+        workbasket0.setId("0");
+        Workbasket workbasket1 = new Workbasket();
+        workbasket1.setId("1");
+        Workbasket workbasket2 = new Workbasket();
+        workbasket2.setId("2");
+        workbasket2.getDistributionTargets().add(workbasket0);
+        workbasket2.getDistributionTargets().add(workbasket1);
+        workbasketServiceImpl.createWorkbasket(workbasket2);
 
-		when(workbasketMapper.findById("1")).thenReturn(workbasket1);
-		when(workbasketMapper.findById("3")).thenReturn(workbasket1);
+        Workbasket workbasket3 = new Workbasket();
+        workbasket3.setId("3");
+        workbasket2.getDistributionTargets().clear();
+        workbasket2.getDistributionTargets().add(workbasket3);
+        Thread.sleep(SLEEP_TIME);
 
-		List<Workbasket> distributionTargets = foundBasket.getDistributionTargets();
-		Assert.assertEquals(1, distributionTargets.size());
-		Assert.assertEquals("3", distributionTargets.get(0).getId());
+        doNothing().when(workbasketMapper).update(any());
+        workbasketServiceImpl.updateWorkbasket(workbasket2);
 
-		Assert.assertNotEquals(workbasketServiceImpl.getWorkbasket("2").getCreated(),
-				workbasketServiceImpl.getWorkbasket("2").getModified());
-		Assert.assertEquals(workbasketServiceImpl.getWorkbasket("1").getCreated(),
-				workbasketServiceImpl.getWorkbasket("1").getModified());
-		Assert.assertEquals(workbasketServiceImpl.getWorkbasket("3").getCreated(),
-				workbasketServiceImpl.getWorkbasket("3").getModified());
-	}
+        when(workbasketMapper.findById("2")).thenReturn(workbasket2);
+        Workbasket foundBasket = workbasketServiceImpl.getWorkbasket(workbasket2.getId());
 
-	@Test
-	public void should_ReturnWorkbasketAuthorization_when_NewWorkbasketAccessItemIsCreated()
-			throws NotAuthorizedException {
-		doNothing().when(workbasketAccessMapper).insert(any());
+        when(workbasketMapper.findById("1")).thenReturn(workbasket1);
+        when(workbasketMapper.findById("3")).thenReturn(workbasket1);
 
-		WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-		accessItem.setWorkbasketId("1");
-		accessItem.setUserId("Arthur Dent");
-		accessItem.setOpen(true);
-		accessItem.setRead(true);
-		accessItem = workbasketServiceImpl.createWorkbasketAuthorization(accessItem);
+        List<Workbasket> distributionTargets = foundBasket.getDistributionTargets();
+        Assert.assertEquals(1, distributionTargets.size());
+        Assert.assertEquals("3", distributionTargets.get(0).getId());
 
-		Assert.assertNotNull(accessItem.getId());
-	}
+        Assert.assertNotEquals(workbasketServiceImpl.getWorkbasket("2").getCreated(),
+                workbasketServiceImpl.getWorkbasket("2").getModified());
+        Assert.assertEquals(workbasketServiceImpl.getWorkbasket("1").getCreated(),
+                workbasketServiceImpl.getWorkbasket("1").getModified());
+        Assert.assertEquals(workbasketServiceImpl.getWorkbasket("3").getCreated(),
+                workbasketServiceImpl.getWorkbasket("3").getModified());
+    }
 
-	@Test
-	public void should_ReturnWorkbasketAuthorization_when_WorkbasketAccessItemIsUpdated()
-			throws NotAuthorizedException {
-		doNothing().when(workbasketAccessMapper).insert(any());
+    @Test
+    public void should_ReturnWorkbasketAuthorization_when_NewWorkbasketAccessItemIsCreated()
+            throws NotAuthorizedException {
+        doNothing().when(workbasketAccessMapper).insert(any());
 
-		WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-		accessItem.setWorkbasketId("1");
-		accessItem.setUserId("Arthur Dent");
-		accessItem.setOpen(true);
-		accessItem.setRead(true);
-		accessItem = workbasketServiceImpl.createWorkbasketAuthorization(accessItem);
+        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
+        accessItem.setWorkbasketId("1");
+        accessItem.setUserId("Arthur Dent");
+        accessItem.setOpen(true);
+        accessItem.setRead(true);
+        accessItem = workbasketServiceImpl.createWorkbasketAuthorization(accessItem);
 
-		Assert.assertNotNull(accessItem.getId());
+        Assert.assertNotNull(accessItem.getId());
+    }
 
-		doNothing().when(workbasketAccessMapper).update(any());
-		accessItem.setUserId("Zaphod Beeblebrox");
-		workbasketServiceImpl.updateWorkbasketAuthorization(accessItem);
+    @Test
+    public void should_ReturnWorkbasketAuthorization_when_WorkbasketAccessItemIsUpdated()
+            throws NotAuthorizedException {
+        doNothing().when(workbasketAccessMapper).insert(any());
 
-		Assert.assertEquals("Zaphod Beeblebrox", accessItem.getUserId());
-	}
+        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
+        accessItem.setWorkbasketId("1");
+        accessItem.setUserId("Arthur Dent");
+        accessItem.setOpen(true);
+        accessItem.setRead(true);
+        accessItem = workbasketServiceImpl.createWorkbasketAuthorization(accessItem);
 
-	@Test(expected = NotAuthorizedException.class)
-	public void should_ThrowNotAuthorizedException_when_OperationIsNotAuthorized() throws NotAuthorizedException {
-		when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
-		when(taskanaEngine.getConfiguration().isSecurityEnabled()).thenReturn(true);
+        Assert.assertNotNull(accessItem.getId());
 
-		workbasketServiceImpl.checkAuthorization("1", WorkbasketAuthorization.READ);
-	}
+        doNothing().when(workbasketAccessMapper).update(any());
+        accessItem.setUserId("Zaphod Beeblebrox");
+        workbasketServiceImpl.updateWorkbasketAuthorization(accessItem);
 
-	@SuppressWarnings("serial")
-	@Test
-	public void should_Pass_when_OperationIsAuthorized() throws NotAuthorizedException {
-		when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
-		when(taskanaEngine.getConfiguration().isSecurityEnabled()).thenReturn(true);
+        Assert.assertEquals("Zaphod Beeblebrox", accessItem.getUserId());
+    }
 
-		when(workbasketAccessMapper.findByWorkbasketAndUserAndAuthorization(any(), any(), any()))
-				.thenReturn(new ArrayList<WorkbasketAccessItem>() {
-					{
-						add(new WorkbasketAccessItem());
-					}
-				});
+    @Test(expected = NotAuthorizedException.class)
+    public void should_ThrowNotAuthorizedException_when_OperationIsNotAuthorized() throws NotAuthorizedException {
+        when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+        when(taskanaEngine.getConfiguration().isSecurityEnabled()).thenReturn(true);
 
-		workbasketServiceImpl.checkAuthorization("1", WorkbasketAuthorization.READ);
-		
-		verify(workbasketAccessMapper, times(1)).findByWorkbasketAndUserAndAuthorization(any(), any(), any());
-	}
+        workbasketServiceImpl.checkAuthorization("1", WorkbasketAuthorization.READ);
+    }
 
-	@Test
-	public void should_Pass_when_SecurityIsDisabled() throws NotAuthorizedException {
-		when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
-		when(taskanaEngine.getConfiguration().isSecurityEnabled()).thenReturn(false);
+    @SuppressWarnings("serial")
+    @Test
+    public void should_Pass_when_OperationIsAuthorized() throws NotAuthorizedException {
+        when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+        when(taskanaEngine.getConfiguration().isSecurityEnabled()).thenReturn(true);
 
-		workbasketServiceImpl.checkAuthorization("1", WorkbasketAuthorization.READ);
-	}
+        when(workbasketAccessMapper.findByWorkbasketAndUserAndAuthorization(any(), any(), any()))
+                .thenReturn(new ArrayList<WorkbasketAccessItem>() {
+                    {
+                        add(new WorkbasketAccessItem());
+                    }
+                });
+
+        workbasketServiceImpl.checkAuthorization("1", WorkbasketAuthorization.READ);
+
+        verify(workbasketAccessMapper, times(1)).findByWorkbasketAndUserAndAuthorization(any(), any(), any());
+    }
+
+    @Test
+    public void should_Pass_when_SecurityIsDisabled() throws NotAuthorizedException {
+        when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+        when(taskanaEngine.getConfiguration().isSecurityEnabled()).thenReturn(false);
+
+        workbasketServiceImpl.checkAuthorization("1", WorkbasketAuthorization.READ);
+    }
 
 }
