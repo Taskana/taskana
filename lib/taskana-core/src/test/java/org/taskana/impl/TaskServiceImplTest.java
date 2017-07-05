@@ -154,7 +154,7 @@ public class TaskServiceImplTest {
 
 	@Test
 	public void should_setTheReadFlag_when_taskIsRead() throws TaskNotFoundException {
-		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+		createUnitTestTask("1", "Unit Test Task 1", "1");
 
 		Task readTask = taskServiceImpl.setTaskRead("1", true);
 		Assert.assertTrue(readTask.isRead());
