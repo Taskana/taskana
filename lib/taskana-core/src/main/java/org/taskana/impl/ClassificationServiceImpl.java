@@ -10,67 +10,70 @@ import org.taskana.impl.util.IdGenerator;
 import org.taskana.model.Classification;
 import org.taskana.model.mappings.ClassificationMapper;
 
+/**
+ * This is the implementation of ClassificationService.
+ */
 public class ClassificationServiceImpl implements ClassificationService {
 
-	private static final String ID_PREFIX_CLASSIFICATION = "CLI";
-	
-	private ClassificationMapper classificationMapper;
+    private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
-	public ClassificationServiceImpl(ClassificationMapper classificationMapper) {
-		super();
-		this.classificationMapper = classificationMapper;
-	}
+    private ClassificationMapper classificationMapper;
 
-	@Override
-	public List<Classification> selectClassifications() {
-		final List<Classification> rootClassifications = classificationMapper.findByParentId("");
-		populateChildClassifications(rootClassifications);
-		return rootClassifications;
-	}
+    public ClassificationServiceImpl(ClassificationMapper classificationMapper) {
+        super();
+        this.classificationMapper = classificationMapper;
+    }
 
-	private void populateChildClassifications(final List<Classification> classifications) {
-		for (Classification classification : classifications) {
-			List<Classification> childClassifications = classificationMapper.findByParentId(classification.getId());
-			classification.setChildren(childClassifications);
-			populateChildClassifications(childClassifications);
-		}
-	}
+    @Override
+    public List<Classification> selectClassifications() {
+        final List<Classification> rootClassifications = classificationMapper.findByParentId("");
+        populateChildClassifications(rootClassifications);
+        return rootClassifications;
+    }
 
-	@Override
-	public List<Classification> selectClassificationsByParentId(String parentId) {
-		return classificationMapper.findByParentId(parentId);
-	}
+    private void populateChildClassifications(final List<Classification> classifications) {
+        for (Classification classification : classifications) {
+            List<Classification> childClassifications = classificationMapper.findByParentId(classification.getId());
+            classification.setChildren(childClassifications);
+            populateChildClassifications(childClassifications);
+        }
+    }
 
-	@Override
-	public void insertClassification(Classification classification) {
-		classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
-		classification.setCreated(Date.valueOf(LocalDate.now()));
-		classification.setModified(Date.valueOf(LocalDate.now()));
-		this.checkServiceLevel(classification);
+    @Override
+    public List<Classification> selectClassificationsByParentId(String parentId) {
+        return classificationMapper.findByParentId(parentId);
+    }
 
-		classificationMapper.insert(classification);
-	}
+    @Override
+    public void insertClassification(Classification classification) {
+        classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+        classification.setCreated(Date.valueOf(LocalDate.now()));
+        classification.setModified(Date.valueOf(LocalDate.now()));
+        this.checkServiceLevel(classification);
 
-	@Override
-	public void updateClassification(Classification classification) {
-		classification.setModified(Date.valueOf(LocalDate.now()));
-		this.checkServiceLevel(classification);
+        classificationMapper.insert(classification);
+    }
 
-		classificationMapper.update(classification);
-	}
+    @Override
+    public void updateClassification(Classification classification) {
+        classification.setModified(Date.valueOf(LocalDate.now()));
+        this.checkServiceLevel(classification);
 
-	@Override
-	public Classification selectClassificationById(String id) {
-		return classificationMapper.findById(id);
-	}
+        classificationMapper.update(classification);
+    }
 
-	private void checkServiceLevel(Classification classification) {
-		if (classification.getServiceLevel() != null) {
-			try {
-				Duration.parse(classification.getServiceLevel());
-			} catch (Exception e) {
-				throw new IllegalArgumentException("Invalid timestamp. Please use the format 'PddDThhHmmM'");
-			}
-		}
-	}
+    @Override
+    public Classification selectClassificationById(String id) {
+        return classificationMapper.findById(id);
+    }
+
+    private void checkServiceLevel(Classification classification) {
+        if (classification.getServiceLevel() != null) {
+            try {
+                Duration.parse(classification.getServiceLevel());
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Invalid timestamp. Please use the format 'PddDThhHmmM'");
+            }
+        }
+    }
 }
