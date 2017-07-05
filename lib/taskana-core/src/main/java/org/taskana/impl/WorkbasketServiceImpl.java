@@ -17,150 +17,152 @@ import org.taskana.model.mappings.DistributionTargetMapper;
 import org.taskana.model.mappings.WorkbasketAccessMapper;
 import org.taskana.model.mappings.WorkbasketMapper;
 import org.taskana.security.CurrentUserContext;
-
+/**
+ * This is the implementation of WorkbasketService.
+ */
 public class WorkbasketServiceImpl implements WorkbasketService {
 
-	private static final Logger logger = LoggerFactory.getLogger(WorkbasketServiceImpl.class);
-	
-	private static final String ID_PREFIX_WORKBASKET = "WBI";
-	private static final String ID_PREFIX_WORKBASKET_AUTHORIZATION = "WAI";
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketServiceImpl.class);
 
-	private TaskanaEngine taskanaEngine;
+    private static final String ID_PREFIX_WORKBASKET = "WBI";
+    private static final String ID_PREFIX_WORKBASKET_AUTHORIZATION = "WAI";
 
-	private WorkbasketMapper workbasketMapper;
-	private DistributionTargetMapper distributionTargetMapper;
-	private WorkbasketAccessMapper workbasketAccessMapper;
+    private TaskanaEngine taskanaEngine;
 
-	public WorkbasketServiceImpl() {
-	}
+    private WorkbasketMapper workbasketMapper;
+    private DistributionTargetMapper distributionTargetMapper;
+    private WorkbasketAccessMapper workbasketAccessMapper;
 
-	public WorkbasketServiceImpl(TaskanaEngine taskanaEngine, WorkbasketMapper workbasketMapper,
-			DistributionTargetMapper distributionTargetMapper, WorkbasketAccessMapper workbasketAccessMapper) {
-		this.taskanaEngine = taskanaEngine;
-		this.workbasketMapper = workbasketMapper;
-		this.distributionTargetMapper = distributionTargetMapper;
-		this.workbasketAccessMapper = workbasketAccessMapper;
-	}
+    public WorkbasketServiceImpl() {
+    }
 
-	@Override
-	public Workbasket getWorkbasket(String workbasketId) throws WorkbasketNotFoundException {
-		Workbasket workbasket = workbasketMapper.findById(workbasketId);
-		if (workbasket == null) {
-			throw new WorkbasketNotFoundException(workbasketId);
-		}
-		return workbasket;
-	}
+    public WorkbasketServiceImpl(TaskanaEngine taskanaEngine, WorkbasketMapper workbasketMapper,
+            DistributionTargetMapper distributionTargetMapper, WorkbasketAccessMapper workbasketAccessMapper) {
+        this.taskanaEngine = taskanaEngine;
+        this.workbasketMapper = workbasketMapper;
+        this.distributionTargetMapper = distributionTargetMapper;
+        this.workbasketAccessMapper = workbasketAccessMapper;
+    }
 
-	@Override
-	public List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permissions) {
-		return workbasketMapper.findByPermission(permissions, CurrentUserContext.getUserid());
-	}
-	
-	@Override
-	public List<Workbasket> getWorkbaskets() {
-		return workbasketMapper.findAll();
-	}
+    @Override
+    public Workbasket getWorkbasket(String workbasketId) throws WorkbasketNotFoundException {
+        Workbasket workbasket = workbasketMapper.findById(workbasketId);
+        if (workbasket == null) {
+            throw new WorkbasketNotFoundException(workbasketId);
+        }
+        return workbasket;
+    }
 
-	@Override
-	public Workbasket createWorkbasket(Workbasket workbasket) {
-		Timestamp now = new Timestamp(System.currentTimeMillis());
-		workbasket.setCreated(now);
-		workbasket.setModified(now);
-		if (workbasket.getId() == null || workbasket.getId().isEmpty()) {
-			workbasket.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET));
-		}
-		workbasketMapper.insert(workbasket);
-		logger.debug("Workbasket '{}' created", workbasket.getId());
-		if (workbasket.getDistributionTargets() != null) {
-			for (Workbasket distributionTarget : workbasket.getDistributionTargets()) {
-				if (workbasketMapper.findById(distributionTarget.getId()) == null) {
-					distributionTarget.setCreated(now);
-					distributionTarget.setModified(now);
-					workbasketMapper.insert(distributionTarget);
-					logger.debug("Workbasket '{}' created", distributionTarget.getId());
-				}
-				distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
-			}
-		}
-		return workbasketMapper.findById(workbasket.getId());
-	}
+    @Override
+    public List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permissions) {
+        return workbasketMapper.findByPermission(permissions, CurrentUserContext.getUserid());
+    }
 
-	@Override
-	public Workbasket updateWorkbasket(Workbasket workbasket) throws NotAuthorizedException {
-		workbasket.setModified(new Timestamp(System.currentTimeMillis()));
-		workbasketMapper.update(workbasket);
-		List<String> oldDistributionTargets = distributionTargetMapper.findBySourceId(workbasket.getId());
-		List<Workbasket> distributionTargets = workbasket.getDistributionTargets();
-		for (Workbasket distributionTarget : distributionTargets) {
-			if (!oldDistributionTargets.contains(distributionTarget.getId())) {
-				if (workbasketMapper.findById(distributionTarget.getId()) == null) {
-					workbasketMapper.insert(distributionTarget);
-					logger.debug("Workbasket '{}' created", distributionTarget.getId());
-				}
-				distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
-			} else {
-				oldDistributionTargets.remove(distributionTarget.getId());
-			}
-		}
-		distributionTargetMapper.deleteMultiple(workbasket.getId(), oldDistributionTargets);
-		logger.debug("Workbasket '{}' updated", workbasket.getId());
-		return workbasketMapper.findById(workbasket.getId());
-	}
+    @Override
+    public List<Workbasket> getWorkbaskets() {
+        return workbasketMapper.findAll();
+    }
 
-	@Override
-	public WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem) {
-		workbasketAccessItem.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
-		workbasketAccessMapper.insert(workbasketAccessItem);
-		return workbasketAccessItem;
-	}
+    @Override
+    public Workbasket createWorkbasket(Workbasket workbasket) {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        workbasket.setCreated(now);
+        workbasket.setModified(now);
+        if (workbasket.getId() == null || workbasket.getId().isEmpty()) {
+            workbasket.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET));
+        }
+        workbasketMapper.insert(workbasket);
+        LOGGER.debug("Workbasket '{}' created", workbasket.getId());
+        if (workbasket.getDistributionTargets() != null) {
+            for (Workbasket distributionTarget : workbasket.getDistributionTargets()) {
+                if (workbasketMapper.findById(distributionTarget.getId()) == null) {
+                    distributionTarget.setCreated(now);
+                    distributionTarget.setModified(now);
+                    workbasketMapper.insert(distributionTarget);
+                    LOGGER.debug("Workbasket '{}' created", distributionTarget.getId());
+                }
+                distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
+            }
+        }
+        return workbasketMapper.findById(workbasket.getId());
+    }
 
-	@Override
-	public WorkbasketAccessItem getWorkbasketAuthorization(String id) {
-		return workbasketAccessMapper.findById(id);
-	}
+    @Override
+    public Workbasket updateWorkbasket(Workbasket workbasket) throws NotAuthorizedException {
+        workbasket.setModified(new Timestamp(System.currentTimeMillis()));
+        workbasketMapper.update(workbasket);
+        List<String> oldDistributionTargets = distributionTargetMapper.findBySourceId(workbasket.getId());
+        List<Workbasket> distributionTargets = workbasket.getDistributionTargets();
+        for (Workbasket distributionTarget : distributionTargets) {
+            if (!oldDistributionTargets.contains(distributionTarget.getId())) {
+                if (workbasketMapper.findById(distributionTarget.getId()) == null) {
+                    workbasketMapper.insert(distributionTarget);
+                    LOGGER.debug("Workbasket '{}' created", distributionTarget.getId());
+                }
+                distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
+            } else {
+                oldDistributionTargets.remove(distributionTarget.getId());
+            }
+        }
+        distributionTargetMapper.deleteMultiple(workbasket.getId(), oldDistributionTargets);
+        LOGGER.debug("Workbasket '{}' updated", workbasket.getId());
+        return workbasketMapper.findById(workbasket.getId());
+    }
 
-	@Override
-	public void deleteWorkbasketAuthorization(String id) {
-		workbasketAccessMapper.delete(id);
-	}
+    @Override
+    public WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem) {
+        workbasketAccessItem.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
+        workbasketAccessMapper.insert(workbasketAccessItem);
+        return workbasketAccessItem;
+    }
 
-	@Override
-	public List<WorkbasketAccessItem> getAllAuthorizations() {
-		return workbasketAccessMapper.findAll();
-	}
+    @Override
+    public WorkbasketAccessItem getWorkbasketAuthorization(String id) {
+        return workbasketAccessMapper.findById(id);
+    }
 
-	@Override
-	public void checkAuthorization(String workbasketId, WorkbasketAuthorization workbasketAuthorization)
-			throws NotAuthorizedException {
+    @Override
+    public void deleteWorkbasketAuthorization(String id) {
+        workbasketAccessMapper.delete(id);
+    }
 
-		// Skip permission check is security is not enabled
-		if (!taskanaEngine.getConfiguration().isSecurityEnabled()) {
-			logger.debug("Skipping permissions check since security is disabled.");
-			return;
-		}
+    @Override
+    public List<WorkbasketAccessItem> getAllAuthorizations() {
+        return workbasketAccessMapper.findAll();
+    }
 
-		String userId = CurrentUserContext.getUserid();
-		logger.debug("Verifying that {} has the permission {} on workbasket {}", userId, workbasketAuthorization.name(),
-				workbasketId);
+    @Override
+    public void checkAuthorization(String workbasketId, WorkbasketAuthorization workbasketAuthorization)
+            throws NotAuthorizedException {
 
-		List<WorkbasketAccessItem> accessItems = workbasketAccessMapper
-				.findByWorkbasketAndUserAndAuthorization(workbasketId, userId, workbasketAuthorization.name());
+        // Skip permission check is security is not enabled
+        if (!taskanaEngine.getConfiguration().isSecurityEnabled()) {
+            LOGGER.debug("Skipping permissions check since security is disabled.");
+            return;
+        }
 
-		if (accessItems.size() <= 0) {
-			throw new NotAuthorizedException("Not authorized. Authorization '" + workbasketAuthorization.name()
-					+ "' on workbasket '" + workbasketId + "' is needed.");
+        String userId = CurrentUserContext.getUserid();
+        LOGGER.debug("Verifying that {} has the permission {} on workbasket {}", userId, workbasketAuthorization.name(),
+                workbasketId);
 
-		}
-	}
+        List<WorkbasketAccessItem> accessItems = workbasketAccessMapper
+                .findByWorkbasketAndUserAndAuthorization(workbasketId, userId, workbasketAuthorization.name());
 
-	@Override
-	public WorkbasketAccessItem updateWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem) {
-		workbasketAccessMapper.update(workbasketAccessItem);
-		return workbasketAccessItem;
-	}
+        if (accessItems.size() <= 0) {
+            throw new NotAuthorizedException("Not authorized. Authorization '" + workbasketAuthorization.name()
+                    + "' on workbasket '" + workbasketId + "' is needed.");
 
-	@Override
-	public List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketId) {
-		return workbasketAccessMapper.findByWorkbasketId(workbasketId);
-	}
+        }
+    }
+
+    @Override
+    public WorkbasketAccessItem updateWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem) {
+        workbasketAccessMapper.update(workbasketAccessItem);
+        return workbasketAccessItem;
+    }
+
+    @Override
+    public List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketId) {
+        return workbasketAccessMapper.findByWorkbasketId(workbasketId);
+    }
 }
