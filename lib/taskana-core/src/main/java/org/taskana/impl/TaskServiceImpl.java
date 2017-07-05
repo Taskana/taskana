@@ -15,10 +15,12 @@ import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.TaskNotFoundException;
 import org.taskana.exceptions.WorkbasketNotFoundException;
 import org.taskana.model.DueWorkbasketCounter;
+import org.taskana.model.ObjectReference;
 import org.taskana.model.Task;
 import org.taskana.model.TaskState;
 import org.taskana.model.TaskStateCounter;
 import org.taskana.model.WorkbasketAuthorization;
+import org.taskana.model.mappings.ObjectReferenceMapper;
 import org.taskana.model.mappings.TaskMapper;
 
 public class TaskServiceImpl implements TaskService {
@@ -27,11 +29,13 @@ public class TaskServiceImpl implements TaskService {
 
 	private TaskanaEngine taskanaEngine;
 	private TaskMapper taskMapper;
+	private ObjectReferenceMapper objectReferenceMapper;
 
-	public TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper) {
+	public TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper, ObjectReferenceMapper objectReferenceMapper) {
 		super();
 		this.taskanaEngine = taskanaEngine;
 		this.taskMapper = taskMapper;
+		this.objectReferenceMapper = objectReferenceMapper;
 	}
 
 	@Override
@@ -76,7 +80,19 @@ public class TaskServiceImpl implements TaskService {
 		task.setModified(now);
 		task.setRead(false);
 		task.setTransferred(false);
-		taskMapper.insert(task);
+		
+		// insert ObjectReference if needed.
+		if (task.getPrimaryObjRef() != null) {
+			ObjectReference objectReference = this.objectReferenceMapper.findByObjectReference(task.getPrimaryObjRef());
+			if (objectReference == null) {
+				objectReference = task.getPrimaryObjRef();
+				objectReference.setId(UUID.randomUUID().toString());
+				this.objectReferenceMapper.insert(objectReference);
+			}
+			task.setPrimaryObjRef(objectReference);
+		}
+		this.taskMapper.insert(task);
+		
 		logger.debug("Task '{}' created.", task.getId());
 		return task;
 	}

@@ -22,6 +22,7 @@ public class Task {
 	private String type;
 	private String workbasketId;
 	private String owner;
+	private ObjectReference primaryObjRef;
 	private boolean isRead;
 	private boolean isTransferred;
 
@@ -144,7 +145,15 @@ public class Task {
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
-	
+
+	public ObjectReference getPrimaryObjRef() {
+		return primaryObjRef;
+	}
+
+	public void setPrimaryObjRef(ObjectReference primaryObjRef) {
+		this.primaryObjRef = primaryObjRef;
+	}
+
 	public boolean isRead() {
 		return isRead;
 	}
@@ -164,25 +173,25 @@ public class Task {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("TASK(");
-		sb.append("id="+id);
-		sb.append(", tenantId="+tenantId);
-		sb.append(", created="+created);
-		sb.append(", claimed="+claimed);
-		sb.append(", completed="+completed);
-		sb.append(", modified="+modified);
-		sb.append(", planned="+planned);
-		sb.append(", due="+due);
-		sb.append(", name="+name);
-		sb.append(", description="+description);
-		sb.append(", priority="+priority);
-		sb.append(", state="+state);
-		sb.append(", type="+type);
-		sb.append(", workbasketId="+workbasketId);
-		sb.append(", owner="+owner);
-		sb.append(", isRead="+isRead);
-		sb.append(", isTransferred="+isTransferred);
+		sb.append("id=" + id);
+		sb.append(", tenantId=" + tenantId);
+		sb.append(", created=" + created);
+		sb.append(", claimed=" + claimed);
+		sb.append(", completed=" + completed);
+		sb.append(", modified=" + modified);
+		sb.append(", planned=" + planned);
+		sb.append(", due=" + due);
+		sb.append(", name=" + name);
+		sb.append(", description=" + description);
+		sb.append(", priority=" + priority);
+		sb.append(", state=" + state);
+		sb.append(", type=" + type);
+		sb.append(", workbasketId=" + workbasketId);
+		sb.append(", owner=" + owner);
+		sb.append(", primaryObjRef=" + primaryObjRef);
+		sb.append(", isRead=" + isRead);
+		sb.append(", isTransferred=" + isTransferred);
 		sb.append(")");
 		return sb.toString();
-
 	}
 }
