@@ -16,14 +16,21 @@ public class DbScriptRunner {
 	private static final Logger logger = LoggerFactory.getLogger(DbScriptRunner.class);
 
 	private static final String SQL = "/sql";
-	private static final String DB_STRUCTURE = SQL + "/db-structure.sql";
+	private static final String DB_SCHEMA = SQL + "/taskana-schema.sql";
+	private static final String DB_SCHEMA_DETECTION = SQL + "/schema-detection.sql";
 
 	private DataSource dataSource;
+
+	private StringWriter outWriter = new StringWriter();
+	private PrintWriter logWriter = new PrintWriter(outWriter);
+	private StringWriter errorWriter = new StringWriter();
+	private PrintWriter errorLogWriter = new PrintWriter(errorWriter);
 
 	public DbScriptRunner(DataSource dataSource) {
 		super();
 		this.dataSource = dataSource;
 	}
+
 
 	/**
 	 * Run all db scripts
@@ -31,12 +38,6 @@ public class DbScriptRunner {
 	 * @throws SQLException
 	 */
 	public void run() throws SQLException {
-		StringWriter outWriter = new StringWriter();
-		PrintWriter logWriter = new PrintWriter(outWriter);
-
-		StringWriter errorWriter = new StringWriter();
-		PrintWriter errorLogWriter = new PrintWriter(errorWriter);
-
 		ScriptRunner runner = new ScriptRunner(dataSource.getConnection());
 		logger.debug(dataSource.getConnection().getMetaData().toString());
 
@@ -44,13 +45,26 @@ public class DbScriptRunner {
 		runner.setLogWriter(logWriter);
 		runner.setErrorLogWriter(errorLogWriter);
 
-		runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_STRUCTURE)));
+		if (!isSchemaPreexisting(runner)) {
+			runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_SCHEMA)));
+		}
 		runner.closeConnection();
 
 		logger.debug(outWriter.toString());
 		if (!errorWriter.toString().trim().isEmpty()) {
 			logger.error(errorWriter.toString());
 		}
+	}
+
+	private boolean isSchemaPreexisting(ScriptRunner runner) {
+		try {
+			runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_SCHEMA_DETECTION)));
+		} catch (Exception e) {
+			logger.debug("Schema does not exist.");
+			return false;
+		}
+		logger.debug("Schema does exist.");
+		return true;
 	}
 
 	public DataSource getDataSource() {
