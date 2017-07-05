@@ -10,7 +10,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.taskana.TaskanaEngine;
 import org.taskana.configuration.TaskanaEngineConfiguration;
-
+/**
+ * Integration Test for TaskanaEngineConfiguration.
+ * @author EH
+ */
 public class TaskanaEngineConfigurationTest {
 
     @Test
