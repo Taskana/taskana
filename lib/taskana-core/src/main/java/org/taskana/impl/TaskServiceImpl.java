@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,7 @@ import org.taskana.TaskanaEngine;
 import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.TaskNotFoundException;
 import org.taskana.exceptions.WorkbasketNotFoundException;
+import org.taskana.impl.util.IdGenerator;
 import org.taskana.model.DueWorkbasketCounter;
 import org.taskana.model.ObjectReference;
 import org.taskana.model.Task;
@@ -26,6 +26,9 @@ import org.taskana.model.mappings.TaskMapper;
 public class TaskServiceImpl implements TaskService {
 
 	private static final Logger logger = LoggerFactory.getLogger(TaskServiceImpl.class);
+	
+	private static final String ID_PREFIX_OBJECTR_EFERENCE = "ORI";
+	private static final String ID_PREFIX_TASK = "TKI";
 
 	private TaskanaEngine taskanaEngine;
 	private TaskMapper taskMapper;
@@ -74,25 +77,25 @@ public class TaskServiceImpl implements TaskService {
 		taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
 
 		Timestamp now = new Timestamp(System.currentTimeMillis());
-		task.setId(UUID.randomUUID().toString());
+		task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
 		task.setState(TaskState.READY);
 		task.setCreated(now);
 		task.setModified(now);
 		task.setRead(false);
 		task.setTransferred(false);
-		
+
 		// insert ObjectReference if needed.
 		if (task.getPrimaryObjRef() != null) {
 			ObjectReference objectReference = this.objectReferenceMapper.findByObjectReference(task.getPrimaryObjRef());
 			if (objectReference == null) {
 				objectReference = task.getPrimaryObjRef();
-				objectReference.setId(UUID.randomUUID().toString());
+				objectReference.setId(IdGenerator.generateWithPrefix(ID_PREFIX_OBJECTR_EFERENCE));
 				this.objectReferenceMapper.insert(objectReference);
 			}
 			task.setPrimaryObjRef(objectReference);
 		}
 		this.taskMapper.insert(task);
-		
+
 		logger.debug("Task '{}' created.", task.getId());
 		return task;
 	}
@@ -157,7 +160,7 @@ public class TaskServiceImpl implements TaskService {
 		// transfer requires TRANSFER in source and APPEND on destination
 		// workbasket
 		taskanaEngine.getWorkbasketService().checkAuthorization(destinationWorkbasketId, WorkbasketAuthorization.APPEND);
-		taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.TRANSFER);
+		taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(),	WorkbasketAuthorization.TRANSFER);
 
 		// if security is disabled, the implicit existance check on the
 		// destination workbasket has been skipped and needs to be performed
@@ -173,7 +176,7 @@ public class TaskServiceImpl implements TaskService {
 		task.setWorkbasketId(destinationWorkbasketId);
 		task.setModified(Timestamp.valueOf(LocalDateTime.now()));
 		taskMapper.update(task);
-		
+
 		return getTaskById(taskId);
 	}
 

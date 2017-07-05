@@ -7,8 +7,8 @@ import org.taskana.exceptions.TaskNotFoundException;
 import org.taskana.exceptions.WorkbasketNotFoundException;
 import org.taskana.model.DueWorkbasketCounter;
 import org.taskana.model.Task;
-import org.taskana.model.TaskStateCounter;
 import org.taskana.model.TaskState;
+import org.taskana.model.TaskStateCounter;
 
 public interface TaskService {
 

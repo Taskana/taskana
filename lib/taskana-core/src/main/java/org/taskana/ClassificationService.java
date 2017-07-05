@@ -1,8 +1,8 @@
 package org.taskana;
 
-import org.taskana.model.Classification;
-
 import java.util.List;
+
+import org.taskana.model.Classification;
 
 public interface ClassificationService {
 
@@ -25,7 +25,7 @@ public interface ClassificationService {
 	/**
 	 * Get a Classification for a given id
 	 * 
-	 * @param id 
+	 * @param id
 	 * @return the requested Classification
 	 */
 	public Classification selectClassificationById(String id);
