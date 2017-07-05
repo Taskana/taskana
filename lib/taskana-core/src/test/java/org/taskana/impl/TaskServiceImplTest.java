@@ -19,9 +19,11 @@ import org.taskana.configuration.TaskanaEngineConfiguration;
 import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.TaskNotFoundException;
 import org.taskana.exceptions.WorkbasketNotFoundException;
+import org.taskana.model.ObjectReference;
 import org.taskana.model.Task;
 import org.taskana.model.TaskState;
 import org.taskana.model.Workbasket;
+import org.taskana.model.mappings.ObjectReferenceMapper;
 import org.taskana.model.mappings.TaskMapper;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -37,6 +39,8 @@ public class TaskServiceImplTest {
 	WorkbasketServiceImpl workbasketServiceImpl;
 	@Mock
 	TaskMapper taskMapper;
+	@Mock
+	ObjectReferenceMapper objectReferenceMapper;
 
 	@Test
 	public void testCreateSimpleTask() throws NotAuthorizedException {
@@ -99,13 +103,14 @@ public class TaskServiceImplTest {
 		tasks.add(createUnitTestTask("2", "Unit Test Task 2", "1"));
 		tasks.add(createUnitTestTask("3", "Unit Test Task 3", "1"));
 		Mockito.when(taskMapper.findByWorkBasketId("1")).thenReturn(tasks);
-		
+
 		List<Task> list = taskServiceImpl.getTasksForWorkbasket("1");
 		Assert.assertEquals(list.size(), 3);
 	}
 
 	@Test
-	public void testTransferTaskZuDestinationWorkbasket() throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
+	public void testTransferTaskZuDestinationWorkbasket()
+			throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
 		registerBasicMocks(false);
 		Workbasket workbasket2 = createWorkbasket2();
 		Mockito.when(workbasketServiceImpl.getWorkbasket("2")).thenReturn(workbasket2);
@@ -116,15 +121,17 @@ public class TaskServiceImplTest {
 		Assert.assertEquals(taskServiceImpl.getTaskById(task.getId()).getWorkbasketId(), "1");
 		taskServiceImpl.transfer(task.getId(), "2");
 		Assert.assertEquals(taskServiceImpl.getTaskById(task.getId()).getWorkbasketId(), "2");
-		
+
 		Assert.assertTrue(task.isTransferred());
 		Assert.assertFalse(task.isRead());
 	}
 
 	@Test(expected = WorkbasketNotFoundException.class)
-	public void testTransferFailsIfDestinationWorkbasketDoesNotExist_withSecurityDisabled() throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
+	public void testTransferFailsIfDestinationWorkbasketDoesNotExist_withSecurityDisabled()
+			throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
 		registerBasicMocks(false);
-		Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl).checkAuthorization(eq("invalidWorkbasketId"), any());
+		Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl)
+				.checkAuthorization(eq("invalidWorkbasketId"), any());
 
 		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
 
@@ -133,22 +140,63 @@ public class TaskServiceImplTest {
 	}
 
 	@Test(expected = WorkbasketNotFoundException.class)
-	public void testTransferFailsIfDestinationWorkbasketDoesNotExist_withSecurityEnabled() throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
+	public void testTransferFailsIfDestinationWorkbasketDoesNotExist_withSecurityEnabled()
+			throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
 		registerBasicMocks(true);
-		Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl).checkAuthorization(eq("invalidWorkbasketId"), any());
+		Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl)
+				.checkAuthorization(eq("invalidWorkbasketId"), any());
 
 		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
 
 		Assert.assertEquals(taskServiceImpl.getTaskById(task.getId()).getWorkbasketId(), "1");
 		taskServiceImpl.transfer(task.getId(), "invalidWorkbasketId");
 	}
-	
+
 	@Test
 	public void should_setTheReadFlag_when_taskIsRead() throws TaskNotFoundException {
 		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
-		
+
 		Task readTask = taskServiceImpl.setTaskRead("1", true);
 		Assert.assertTrue(readTask.isRead());
+	}
+
+	@Test
+	public void should_InsertObjectReference_when_TaskIsCreated() throws NotAuthorizedException {
+		Mockito.when(taskanaEngine.getWorkbasketService()).thenReturn(workbasketServiceImpl);
+		Mockito.doNothing().when(workbasketServiceImpl).checkAuthorization(any(), any());
+		Mockito.when(objectReferenceMapper.findByObjectReference(any())).thenReturn(null);
+
+		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+		ObjectReference primaryObjRef = new ObjectReference();
+		primaryObjRef.setSystem("Sol");
+		task.setPrimaryObjRef(primaryObjRef);
+		Task createdTask = taskServiceImpl.create(task);
+
+		Assert.assertNotNull(createdTask.getPrimaryObjRef());
+		Assert.assertNotNull(createdTask.getPrimaryObjRef().getId());
+		Assert.assertEquals("Sol", createdTask.getPrimaryObjRef().getSystem());
+	}
+
+	@Test
+	public void should_LinkObjectReference_when_TaskIsCreated() throws NotAuthorizedException {
+		Mockito.when(taskanaEngine.getWorkbasketService()).thenReturn(workbasketServiceImpl);
+		Mockito.doNothing().when(workbasketServiceImpl).checkAuthorization(any(), any());
+
+		Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+		ObjectReference primaryObjRef = new ObjectReference();
+		primaryObjRef.setSystem("Sol");
+		task.setPrimaryObjRef(primaryObjRef);
+		
+		ObjectReference returnPrimaryObjRef = new ObjectReference();
+		returnPrimaryObjRef.setId("1");
+		returnPrimaryObjRef.setSystem("Sol");
+
+		Mockito.when(objectReferenceMapper.findByObjectReference(any())).thenReturn(returnPrimaryObjRef);
+		Task createdTask = taskServiceImpl.create(task);
+
+		Assert.assertNotNull(createdTask.getPrimaryObjRef());
+		Assert.assertEquals("1", createdTask.getPrimaryObjRef().getId());
+		Assert.assertEquals("Sol", createdTask.getPrimaryObjRef().getSystem());
 	}
 
 	private Task createUnitTestTask(String id, String name, String workbasketId) {

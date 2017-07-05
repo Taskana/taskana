@@ -15,6 +15,7 @@ import org.taskana.WorkbasketService;
 import org.taskana.configuration.TaskanaEngineConfiguration;
 import org.taskana.model.mappings.ClassificationMapper;
 import org.taskana.model.mappings.DistributionTargetMapper;
+import org.taskana.model.mappings.ObjectReferenceMapper;
 import org.taskana.model.mappings.TaskMapper;
 import org.taskana.model.mappings.WorkbasketAccessMapper;
 import org.taskana.model.mappings.WorkbasketMapper;
@@ -32,6 +33,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 	private DistributionTargetMapper distributionTargetMapper;
 	private ClassificationMapper classificationMapper;
 	private WorkbasketAccessMapper workbasketAccessMapper;
+	private ObjectReferenceMapper objectReferenceMapper;
 
 	private TaskServiceImpl taskServiceImpl;
 	private WorkbasketServiceImpl workbasketServiceImpl;
@@ -47,11 +49,12 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 		this.distributionTargetMapper = session.getMapper(DistributionTargetMapper.class);
 		this.classificationMapper = session.getMapper(ClassificationMapper.class);
 		this.workbasketAccessMapper = session.getMapper(WorkbasketAccessMapper.class);
+		this.objectReferenceMapper = session.getMapper(ObjectReferenceMapper.class);
 	}
 
 	@Override
 	public TaskService getTaskService() {
-		this.taskServiceImpl = new TaskServiceImpl(this, this.taskMapper);
+		this.taskServiceImpl = new TaskServiceImpl(this, this.taskMapper, this.objectReferenceMapper);
 		return taskServiceImpl;
 	}
 
@@ -82,13 +85,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 	}
 
 	/**
-	 * This method creates the sqlSessionFactory of myBatis. It integrates all
-	 * the SQL mappers
+	 * This method creates the sqlSessionFactory of myBatis. It integrates all the
+	 * SQL mappers
 	 * 
 	 * @return a {@link SqlSessionFactory}
 	 */
 	private SqlSessionFactory createSqlSessionFactory() {
-		Environment environment = new Environment(DEFAULT, this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+		Environment environment = new Environment(DEFAULT, this.transactionFactory,
+				taskanaEngineConfiguration.getDatasource());
 		Configuration configuration = new Configuration(environment);
 		// add mappers
 		configuration.addMapper(TaskMapper.class);
@@ -96,6 +100,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 		configuration.addMapper(DistributionTargetMapper.class);
 		configuration.addMapper(ClassificationMapper.class);
 		configuration.addMapper(WorkbasketAccessMapper.class);
+		configuration.addMapper(ObjectReferenceMapper.class);
 		return new SqlSessionFactoryBuilder().build(configuration);
 	}
 

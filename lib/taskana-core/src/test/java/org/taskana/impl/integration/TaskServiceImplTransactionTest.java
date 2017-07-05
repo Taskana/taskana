@@ -44,7 +44,7 @@ public class TaskServiceImplTransactionTest {
 	public void testStartTransactionFail()
 			throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
 		JdbcDataSource ds = new JdbcDataSource();
-		ds.setURL("jdbc:h2:mem:test-db-taskservice-int2");
+		ds.setURL("jdbc:h2:~/data/test-db-taskservice-trans2");
 		ds.setPassword("sa");
 		ds.setUser("sa");
 		TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false);
