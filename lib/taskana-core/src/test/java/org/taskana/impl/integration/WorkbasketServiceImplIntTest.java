@@ -41,6 +41,7 @@ public class WorkbasketServiceImplIntTest {
 		int before = workbasketServiceImpl.getWorkbaskets().size();
 		Workbasket workbasket = new Workbasket();
 		workbasket.setId("1");
+		workbasket.setName("Megabasket");
 		workbasketServiceImpl.createWorkbasket(workbasket);
 		Assert.assertEquals(before + 1, workbasketServiceImpl.getWorkbaskets().size());
 	}
@@ -50,12 +51,15 @@ public class WorkbasketServiceImplIntTest {
 		int before = workbasketServiceImpl.getWorkbaskets().size();
 		Workbasket workbasket0 = new Workbasket();
 		workbasket0.setId("0");
+		workbasket0.setName("Superbasket");
 		workbasketServiceImpl.createWorkbasket(workbasket0);
 		Workbasket workbasket1 = new Workbasket();
 		workbasket1.setId("1");
+		workbasket1.setName("Megabasket");
 		workbasketServiceImpl.createWorkbasket(workbasket1);
 		Workbasket workbasket2 = new Workbasket();
 		workbasket2.setId("2");
+		workbasket2.setName("Hyperbasket");
 		workbasketServiceImpl.createWorkbasket(workbasket2);
 		Assert.assertEquals(before + 3, workbasketServiceImpl.getWorkbaskets().size());
 	}
@@ -64,12 +68,15 @@ public class WorkbasketServiceImplIntTest {
 	public void testSelectWorkbasket() throws WorkbasketNotFoundException, NotAuthorizedException {
 		Workbasket workbasket0 = new Workbasket();
 		workbasket0.setId("0");
+		workbasket0.setName("Superbasket");
 		workbasketServiceImpl.createWorkbasket(workbasket0);
 		Workbasket workbasket1 = new Workbasket();
 		workbasket1.setId("1");
+		workbasket1.setName("Megabasket");
 		workbasketServiceImpl.createWorkbasket(workbasket1);
 		Workbasket workbasket2 = new Workbasket();
 		workbasket2.setId("2");
+		workbasket2.setName("Hyperbasket");
 		workbasketServiceImpl.createWorkbasket(workbasket2);
 		Workbasket foundWorkbasket = workbasketServiceImpl.getWorkbasket("2");
 		Assert.assertEquals("2", foundWorkbasket.getId());
@@ -84,10 +91,13 @@ public class WorkbasketServiceImplIntTest {
 	public void testSelectWorkbasketWithDistribution() throws WorkbasketNotFoundException, NotAuthorizedException {
 		Workbasket workbasket0 = new Workbasket();
 		workbasket0.setId("0");
+		workbasket0.setName("Superbasket");
 		Workbasket workbasket1 = new Workbasket();
 		workbasket1.setId("1");
+		workbasket1.setName("Megabasket");
 		Workbasket workbasket2 = new Workbasket();
 		workbasket2.setId("2");
+		workbasket2.setName("Hyperbasket");
 		workbasket2.setDistributionTargets(new ArrayList<>());
 		workbasket2.getDistributionTargets().add(workbasket0);
 		workbasket2.getDistributionTargets().add(workbasket1);
@@ -101,16 +111,20 @@ public class WorkbasketServiceImplIntTest {
 	public void testUpdateWorkbasket() throws Exception {
 		Workbasket workbasket0 = new Workbasket();
 		workbasket0.setId("0");
+		workbasket0.setName("Superbasket");
 		Workbasket workbasket1 = new Workbasket();
 		workbasket1.setId("1");
+		workbasket1.setName("Megabasket");
 		Workbasket workbasket2 = new Workbasket();
 		workbasket2.setId("2");
+		workbasket2.setName("Hyperbasket");
 		workbasket2.getDistributionTargets().add(workbasket0);
 		workbasket2.getDistributionTargets().add(workbasket1);
 		workbasketServiceImpl.createWorkbasket(workbasket2);
 
 		Workbasket workbasket3 = new Workbasket();
 		workbasket3.setId("3");
+		workbasket3.setName("hm ... irgend ein basket");
 		workbasket2.getDistributionTargets().clear();
 		workbasket2.getDistributionTargets().add(workbasket3);
 		Thread.sleep(100);
