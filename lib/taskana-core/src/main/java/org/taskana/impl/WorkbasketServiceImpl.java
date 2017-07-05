@@ -2,7 +2,6 @@ package org.taskana.impl;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +9,7 @@ import org.taskana.TaskanaEngine;
 import org.taskana.WorkbasketService;
 import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.WorkbasketNotFoundException;
+import org.taskana.impl.util.IdGenerator;
 import org.taskana.model.Workbasket;
 import org.taskana.model.WorkbasketAccessItem;
 import org.taskana.model.WorkbasketAuthorization;
@@ -21,6 +21,9 @@ import org.taskana.security.CurrentUserContext;
 public class WorkbasketServiceImpl implements WorkbasketService {
 
 	private static final Logger logger = LoggerFactory.getLogger(WorkbasketServiceImpl.class);
+	
+	private static final String ID_PREFIX_WORKBASKET = "WBI";
+	private static final String ID_PREFIX_WORKBASKET_AUTHORIZATION = "WAI";
 
 	private TaskanaEngine taskanaEngine;
 
@@ -64,7 +67,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 		workbasket.setCreated(now);
 		workbasket.setModified(now);
 		if (workbasket.getId() == null || workbasket.getId().isEmpty()) {
-			workbasket.setId(UUID.randomUUID().toString());
+			workbasket.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET));
 		}
 		workbasketMapper.insert(workbasket);
 		logger.debug("Workbasket '{}' created", workbasket.getId());
@@ -106,7 +109,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
 	@Override
 	public WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem) {
-		workbasketAccessItem.setId(UUID.randomUUID().toString());
+		workbasketAccessItem.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
 		workbasketAccessMapper.insert(workbasketAccessItem);
 		return workbasketAccessItem;
 	}
