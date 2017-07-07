@@ -2,6 +2,7 @@ package org.taskana.model.mappings;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -12,18 +13,24 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.type.JdbcType;
+import org.taskana.impl.persistence.MapTypeHandler;
 import org.taskana.model.DueWorkbasketCounter;
 import org.taskana.model.ObjectReference;
 import org.taskana.model.Task;
 import org.taskana.model.TaskState;
 import org.taskana.model.TaskStateCounter;
+
 /**
  * This class is the mybatis mapping of task.
  */
 public interface TaskMapper {
 
-    @Select("SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED "
-            + "FROM TASK " + "WHERE ID = #{id}")
+    String OBJECTREFERENCEMAPPER_FINDBYID = "org.taskana.model.mappings.ObjectReferenceMapper.findById";
+
+    @Select("SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES "
+            + "FROM TASK "
+            + "WHERE ID = #{id}")
     @Results(value = {
             @Result(property = "id", column = "ID"),
             @Result(property = "tenantId", column = "TENANT_ID"),
@@ -40,13 +47,16 @@ public interface TaskMapper {
             @Result(property = "type", column = "TYPE"),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
             @Result(property = "owner", column = "OWNER"),
-            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = "org.taskana.model.mappings.ObjectReferenceMapper.findById")),
+            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
             @Result(property = "isRead", column = "IS_READ"),
-            @Result(property = "isTransferred", column = "IS_TRANSFERRED") })
+            @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
+            @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.BLOB, javaType = Map.class, typeHandler = MapTypeHandler.class) })
     Task findById(@Param("id") String id);
 
     @Select("SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED  "
-            + "FROM TASK " + "WHERE WORKBASKETID = #{workbasketId} " + "ORDER BY ID")
+            + "FROM TASK "
+            + "WHERE WORKBASKETID = #{workbasketId} "
+            + "ORDER BY ID")
     @Results(value = {
             @Result(property = "id", column = "ID"),
             @Result(property = "tenantId", column = "TENANT_ID"),
@@ -63,7 +73,7 @@ public interface TaskMapper {
             @Result(property = "type", column = "TYPE"),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
             @Result(property = "owner", column = "OWNER"),
-            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = "org.taskana.model.mappings.ObjectReferenceMapper.findById")),
+            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
             @Result(property = "isRead", column = "IS_READ"),
             @Result(property = "isTransferred", column = "IS_TRANSFERRED") })
     List<Task> findByWorkBasketId(@Param("workbasketId") String workbasketId);
@@ -73,7 +83,8 @@ public interface TaskMapper {
             + "FROM TASK "
             + "WHERE WORKBASKETID IN (<foreach item='item' collection='workbasketIds' separator=','>#{item}</foreach>) "
             + "AND STATE IN (<foreach item='item' collection='states' separator=',' >#{item}</foreach>) "
-            + "ORDER BY ID" + "</script>")
+            + "ORDER BY ID"
+            + "</script>")
     @Results(value = {
             @Result(property = "id", column = "ID"),
             @Result(property = "tenantId", column = "TENANT_ID"),
@@ -90,7 +101,7 @@ public interface TaskMapper {
             @Result(property = "type", column = "TYPE"),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
             @Result(property = "owner", column = "OWNER"),
-            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = "org.taskana.model.mappings.ObjectReferenceMapper.findById")),
+            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
             @Result(property = "isRead", column = "IS_READ"),
             @Result(property = "isTransferred", column = "IS_TRANSFERRED") })
     List<Task> findByWorkbasketIdsAndStates(@Param("workbasketIds") List<String> workbasketIds, @Param("states") List<TaskState> states);
@@ -117,22 +128,30 @@ public interface TaskMapper {
             @Result(property = "type", column = "TYPE"),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
             @Result(property = "owner", column = "OWNER"),
-            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = "org.taskana.model.mappings.ObjectReferenceMapper.findById")),
+            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
             @Result(property = "isRead", column = "IS_READ"),
             @Result(property = "isTransferred", column = "IS_TRANSFERRED") })
     List<Task> findByStates(@Param("states") List<TaskState> states);
 
     @Select("SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED "
             + "FROM TASK ")
-    @Results(value = { @Result(property = "id", column = "ID"), @Result(property = "tenantId", column = "TENANT_ID"),
-            @Result(property = "created", column = "CREATED"), @Result(property = "claimed", column = "CLAIMED"),
-            @Result(property = "completed", column = "COMPLETED"), @Result(property = "modified", column = "MODIFIED"),
-            @Result(property = "planned", column = "PLANNED"), @Result(property = "due", column = "DUE"),
-            @Result(property = "name", column = "NAME"), @Result(property = "description", column = "DESCRIPTION"),
-            @Result(property = "priority", column = "PRIORITY"), @Result(property = "state", column = "STATE"),
-            @Result(property = "type", column = "TYPE"), @Result(property = "workbasketId", column = "WORKBASKETID"),
+    @Results(value = {
+            @Result(property = "id", column = "ID"),
+            @Result(property = "tenantId", column = "TENANT_ID"),
+            @Result(property = "created", column = "CREATED"),
+            @Result(property = "claimed", column = "CLAIMED"),
+            @Result(property = "completed", column = "COMPLETED"),
+            @Result(property = "modified", column = "MODIFIED"),
+            @Result(property = "planned", column = "PLANNED"),
+            @Result(property = "due", column = "DUE"),
+            @Result(property = "name", column = "NAME"),
+            @Result(property = "description", column = "DESCRIPTION"),
+            @Result(property = "priority", column = "PRIORITY"),
+            @Result(property = "state", column = "STATE"),
+            @Result(property = "type", column = "TYPE"),
+            @Result(property = "workbasketId", column = "WORKBASKETID"),
             @Result(property = "owner", column = "OWNER"),
-            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = "org.taskana.model.mappings.ObjectReferenceMapper.findById")),
+            @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
             @Result(property = "isRead", column = "IS_READ"),
             @Result(property = "isTransferred", column = "IS_TRANSFERRED") })
     List<Task> findAll();
@@ -167,12 +186,12 @@ public interface TaskMapper {
             @Result(column = "counter", property = "taskCounter") })
     List<DueWorkbasketCounter> getTaskCountByWorkbasketIdAndDaysInPastAndState(@Param("fromDate") Date fromDate, @Param("status") List<TaskState> states);
 
-    @Insert("INSERT INTO TASK(ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED) "
-            + "VALUES(#{id}, #{tenantId}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{description}, #{priority}, #{state}, #{type}, #{workbasketId}, #{owner}, #{primaryObjRef.id}, #{isRead}, #{isTransferred})")
+    @Insert("INSERT INTO TASK(ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, TYPE, WORKBASKETID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES) "
+            + "VALUES(#{id}, #{tenantId}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{description}, #{priority}, #{state}, #{type}, #{workbasketId}, #{owner}, #{primaryObjRef.id}, #{isRead}, #{isTransferred}, #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=org.taskana.impl.persistence.MapTypeHandler})")
     @Options(keyProperty = "id", keyColumn = "ID")
     void insert(Task task);
 
-    @Update("UPDATE TASK SET TENANT_ID = #{tenantId}, CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, PRIORITY = #{priority}, STATE = #{state}, TYPE = #{type}, WORKBASKETID = #{workbasketId}, OWNER = #{owner}, PRIMARY_OBJ_REF_ID = #{primaryObjRef.id}, IS_READ = #{isRead}, IS_TRANSFERRED = #{isTransferred} WHERE ID = #{id}")
+    @Update("UPDATE TASK SET TENANT_ID = #{tenantId}, CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, PRIORITY = #{priority}, STATE = #{state}, TYPE = #{type}, WORKBASKETID = #{workbasketId}, OWNER = #{owner}, PRIMARY_OBJ_REF_ID = #{primaryObjRef.id}, IS_READ = #{isRead}, IS_TRANSFERRED = #{isTransferred}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=org.taskana.impl.persistence.MapTypeHandler} WHERE ID = #{id}")
     void update(Task task);
 
     @Delete("DELETE FROM TASK WHERE ID = #{id}")
