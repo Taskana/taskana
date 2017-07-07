@@ -13,6 +13,7 @@ import org.taskana.TaskService;
 import org.taskana.TaskanaEngine;
 import org.taskana.WorkbasketService;
 import org.taskana.configuration.TaskanaEngineConfiguration;
+import org.taskana.impl.persistence.MapTypeHandler;
 import org.taskana.model.mappings.ClassificationMapper;
 import org.taskana.model.mappings.DistributionTargetMapper;
 import org.taskana.model.mappings.ObjectReferenceMapper;
@@ -103,6 +104,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         configuration.addMapper(ClassificationMapper.class);
         configuration.addMapper(WorkbasketAccessMapper.class);
         configuration.addMapper(ObjectReferenceMapper.class);
+        configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 

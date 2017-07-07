@@ -1,6 +1,8 @@
 package org.taskana.model;
 
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Task entity.
@@ -25,6 +27,8 @@ public class Task {
     private ObjectReference primaryObjRef;
     private boolean isRead;
     private boolean isTransferred;
+    // All objects have to be serializable
+    private Map<String, Object> customAttributes = Collections.emptyMap();
 
     public String getId() {
         return id;
@@ -168,6 +172,14 @@ public class Task {
 
     public void setTransferred(boolean isTransferred) {
         this.isTransferred = isTransferred;
+    }
+
+    public Map<String, Object> getCustomAttributes() {
+        return customAttributes;
+    }
+
+    public void setCustomAttributes(Map<String, Object> customAttributes) {
+        this.customAttributes = customAttributes;
     }
 
     public String toString() {
