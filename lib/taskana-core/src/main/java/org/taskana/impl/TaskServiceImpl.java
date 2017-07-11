@@ -13,6 +13,7 @@ import org.taskana.TaskanaEngine;
 import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.TaskNotFoundException;
 import org.taskana.exceptions.WorkbasketNotFoundException;
+import org.taskana.impl.persistence.TaskQueryImpl;
 import org.taskana.impl.util.IdGenerator;
 import org.taskana.model.DueWorkbasketCounter;
 import org.taskana.model.ObjectReference;
@@ -22,6 +23,8 @@ import org.taskana.model.TaskStateCounter;
 import org.taskana.model.WorkbasketAuthorization;
 import org.taskana.model.mappings.ObjectReferenceMapper;
 import org.taskana.model.mappings.TaskMapper;
+import org.taskana.persistence.TaskQuery;
+
 /**
  * This is the implementation of TaskService.
  */
@@ -114,34 +117,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTasksForWorkbasket(String workbasketId) throws NotAuthorizedException {
-        taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.OPEN);
-
-        return taskMapper.findByWorkBasketId(workbasketId);
-    }
-
-    @Override
-    public List<Task> findTasks(List<TaskState> states) {
-        return taskMapper.findByStates(states);
-    }
-
-    @Override
-    public List<Task> getTasksForWorkbasket(List<String> workbasketIds, List<TaskState> states)
-            throws NotAuthorizedException {
-
-        for (String workbasket : workbasketIds) {
-            taskanaEngine.getWorkbasketService().checkAuthorization(workbasket, WorkbasketAuthorization.OPEN);
-        }
-
-        return taskMapper.findByWorkbasketIdsAndStates(workbasketIds, states);
-    }
-
-    @Override
-    public List<Task> getTasks() {
-        return taskMapper.findAll();
-    }
-
-    @Override
     public List<TaskStateCounter> getTaskCountForState(List<TaskState> states) {
         return taskMapper.getTaskCountForState(states);
     }
@@ -203,4 +178,8 @@ public class TaskServiceImpl implements TaskService {
         return getTaskById(taskId);
     }
 
+    @Override
+    public TaskQuery createTaskQuery() {
+        return new TaskQueryImpl(taskanaEngine);
+    }
 }

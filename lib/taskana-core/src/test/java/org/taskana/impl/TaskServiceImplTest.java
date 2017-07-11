@@ -4,8 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +31,6 @@ import org.taskana.model.mappings.TaskMapper;
 @RunWith(MockitoJUnitRunner.class)
 public class TaskServiceImplTest {
 
-    private static final int LIST_SIZE = 3;
     private static final int SLEEP_TIME = 100;
     @InjectMocks
     TaskServiceImpl taskServiceImpl;
@@ -99,19 +96,6 @@ public class TaskServiceImplTest {
     @Test(expected = TaskNotFoundException.class)
     public void testCompleteFailsWithNonExistingTaskId() throws TaskNotFoundException {
         taskServiceImpl.complete("test");
-    }
-
-    @Test
-    public void testGetTasksForWorkbasket() throws NotAuthorizedException {
-        registerBasicMocks(false);
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        tasks.add(createUnitTestTask("1", "Unit Test Task 1", "1"));
-        tasks.add(createUnitTestTask("2", "Unit Test Task 2", "1"));
-        tasks.add(createUnitTestTask("3", "Unit Test Task 3", "1"));
-        Mockito.when(taskMapper.findByWorkBasketId("1")).thenReturn(tasks);
-
-        List<Task> list = taskServiceImpl.getTasksForWorkbasket("1");
-        Assert.assertEquals(LIST_SIZE, list.size());
     }
 
     @Test
