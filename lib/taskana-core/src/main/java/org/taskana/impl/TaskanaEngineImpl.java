@@ -17,6 +17,7 @@ import org.taskana.impl.persistence.MapTypeHandler;
 import org.taskana.model.mappings.ClassificationMapper;
 import org.taskana.model.mappings.DistributionTargetMapper;
 import org.taskana.model.mappings.ObjectReferenceMapper;
+import org.taskana.model.mappings.QueryMapper;
 import org.taskana.model.mappings.TaskMapper;
 import org.taskana.model.mappings.WorkbasketAccessMapper;
 import org.taskana.model.mappings.WorkbasketMapper;
@@ -71,7 +72,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     @Override
     public ClassificationService getClassificationService() {
-        return new ClassificationServiceImpl(this.classificationMapper);
+        return new ClassificationServiceImpl(this, this.classificationMapper);
     }
 
     @Override
@@ -104,6 +105,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         configuration.addMapper(ClassificationMapper.class);
         configuration.addMapper(WorkbasketAccessMapper.class);
         configuration.addMapper(ObjectReferenceMapper.class);
+        configuration.addMapper(QueryMapper.class);
         configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
@@ -114,6 +116,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         } else {
             this.transactionFactory = new JdbcTransactionFactory();
         }
+    }
+
+    public SqlSession getSession() {
+        return session;
+    }
+
+    public void setSession(SqlSession session) {
+        this.session = session;
     }
 
 }
