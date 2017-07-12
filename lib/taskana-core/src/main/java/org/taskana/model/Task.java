@@ -21,7 +21,7 @@ public class Task {
     private String description;
     private int priority;
     private TaskState state;
-    private String type;
+    private Classification classification;
     private String workbasketId;
     private String owner;
     private ObjectReference primaryObjRef;
@@ -136,12 +136,12 @@ public class Task {
         this.state = state;
     }
 
-    public String getType() {
-        return type;
+    public Classification getClassification() {
+        return classification;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setClassification(Classification classification) {
+        this.classification = classification;
     }
 
     public String getWorkbasketId() {
@@ -287,7 +287,7 @@ public class Task {
         sb.append(", description=" + description);
         sb.append(", priority=" + priority);
         sb.append(", state=" + state);
-        sb.append(", type=" + type);
+        sb.append(", classification=" + classification);
         sb.append(", workbasketId=" + workbasketId);
         sb.append(", owner=" + owner);
         sb.append(", primaryObjRef=" + primaryObjRef);
