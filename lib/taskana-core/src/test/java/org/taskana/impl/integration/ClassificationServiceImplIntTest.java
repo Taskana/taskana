@@ -80,4 +80,24 @@ public class ClassificationServiceImplIntTest {
 
         Assert.assertEquals(classification.getModified().toString(), LocalDate.now().toString());
     }
+
+    @Test
+    public void testFindByDomainAndCategory() {
+        Classification classification1 = new Classification();
+        classification1.setDomain("domain1");
+        classification1.setCategory("category1");
+        classificationService.insertClassification(classification1);
+        Classification classification2 = new Classification();
+        classification2.setDomain("domain2");
+        classification2.setCategory("category1");
+        classificationService.insertClassification(classification2);
+        Classification classification3 = new Classification();
+        classification3.setDomain("domain1");
+        classification3.setCategory("category2");
+        classificationService.insertClassification(classification3);
+
+        int sizeOfReturn = classificationService.selectClassificationByDomainAndCategory("domain1", "category1").size();
+        Assert.assertEquals(sizeOfReturn, 1);
+    }
+
 }
