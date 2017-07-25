@@ -1,10 +1,5 @@
 package org.taskana.impl;
 
-import java.sql.Date;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.List;
-
 import org.taskana.ClassificationService;
 import org.taskana.TaskanaEngine;
 import org.taskana.impl.persistence.ClassificationQueryImpl;
@@ -12,6 +7,11 @@ import org.taskana.impl.util.IdGenerator;
 import org.taskana.model.Classification;
 import org.taskana.model.mappings.ClassificationMapper;
 import org.taskana.persistence.ClassificationQuery;
+
+import java.sql.Date;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * This is the implementation of ClassificationService.
@@ -72,6 +72,26 @@ public class ClassificationServiceImpl implements ClassificationService {
         return classificationMapper.findById(id);
     }
 
+    @Override
+    public List<Classification> selectClassificationByDomain(String domain) {
+        return classificationMapper.findByDomain(domain);
+    }
+
+    @Override
+    public List<Classification> selectClassificationByDomainAndType(String domain, String type) {
+        return classificationMapper.getClassificationByDomainAndType(domain, type);
+    }
+
+    @Override
+    public List<Classification> selectClassificationByDomainAndCategory(String domain, String category) {
+        return classificationMapper.getClassificationByDomainAndCategory(domain, category);
+    }
+
+    @Override
+    public List<Classification> selectClassificationByCategoryAndType(String category, String type) {
+        return classificationMapper.getClassificationByCategoryAndType(category, type);
+    }
+
     private void checkServiceLevel(Classification classification) {
         if (classification.getServiceLevel() != null) {
             try {
@@ -86,4 +106,5 @@ public class ClassificationServiceImpl implements ClassificationService {
     public ClassificationQuery createClassificationQuery() {
         return new ClassificationQueryImpl(taskanaEngine);
     }
+
 }
