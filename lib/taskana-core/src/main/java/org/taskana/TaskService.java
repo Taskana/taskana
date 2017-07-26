@@ -9,6 +9,7 @@ import org.taskana.model.DueWorkbasketCounter;
 import org.taskana.model.Task;
 import org.taskana.model.TaskState;
 import org.taskana.model.TaskStateCounter;
+import org.taskana.persistence.TaskQuery;
 
 /**
  * The Task Service manages all operations on tasks.
@@ -50,44 +51,12 @@ public interface TaskService {
     Task getTaskById(String taskId) throws TaskNotFoundException;
 
     /**
-     * Query all tasks for a workbasket.
-     * @param workbasketId
-     *            the workbasket to query
-     * @return the list of tasks, which reside in the workbasket
-     * @throws NotAuthorizedException
-     */
-    List<Task> getTasksForWorkbasket(String workbasketId) throws NotAuthorizedException;
-
-    /**
-     * Query all tasks for a workbasket.
-     * @param workbasketId
-     *            the workbasket to query
-     * @return the list of tasks, which reside in the workbasket
-     * @throws NotAuthorizedException
-     */
-    List<Task> getTasksForWorkbasket(List<String> workbaskets, List<TaskState> states) throws NotAuthorizedException;
-
-    /**
-     * This method returns all Tasks.
-     * @return a {@link List<Task>} of {@link Task}
-     */
-    List<Task> getTasks();
-
-    /**
      * This method counts all tasks with a given state.
      * @param states
      *            the countable states
      * @return a List of {@link TaskStateCounter}
      */
     List<TaskStateCounter> getTaskCountForState(List<TaskState> states);
-
-    /**
-     * This method returns all tasks with the specified states.
-     * @param states
-     *            all List with the needed states
-     * @return a list of Tasks
-     */
-    List<Task> findTasks(List<TaskState> states);
 
     /**
      * Count all Tasks in a given workbasket with daysInPast as Days from today in
@@ -98,6 +67,8 @@ public interface TaskService {
      * @return
      */
     long getTaskCountForWorkbasketByDaysInPastAndState(String workbasketId, long daysInPast, List<TaskState> states);
+
+    List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast, List<TaskState> states);
 
     /**
      * Transfer task to another workbasket. The transfer set the transferred flag
@@ -119,6 +90,10 @@ public interface TaskService {
      */
     Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
 
-    List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast, List<TaskState> states);
+    /**
+     * This method provides a query builder for quering the database.
+     * @return a {@link TaskQuery}
+     */
+    TaskQuery createTaskQuery();
 
 }
