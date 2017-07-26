@@ -3,6 +3,7 @@ package org.taskana;
 import java.util.List;
 
 import org.taskana.model.Classification;
+import org.taskana.persistence.ClassificationQuery;
 
 /**
  * This class manages the classifications.
@@ -43,4 +44,10 @@ public interface ClassificationService {
      *            the Classification to update
      */
     void updateClassification(Classification classification);
+
+    /**
+     * This method provides a query builder for quering the database.
+     * @return a {@link ClassificationQuery}
+     */
+    ClassificationQuery createClassificationQuery();
 }

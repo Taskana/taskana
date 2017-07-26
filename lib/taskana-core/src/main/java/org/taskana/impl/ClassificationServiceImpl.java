@@ -6,9 +6,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.taskana.ClassificationService;
+import org.taskana.TaskanaEngine;
+import org.taskana.impl.persistence.ClassificationQueryImpl;
 import org.taskana.impl.util.IdGenerator;
 import org.taskana.model.Classification;
 import org.taskana.model.mappings.ClassificationMapper;
+import org.taskana.persistence.ClassificationQuery;
 
 /**
  * This is the implementation of ClassificationService.
@@ -18,9 +21,11 @@ public class ClassificationServiceImpl implements ClassificationService {
     private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
     private ClassificationMapper classificationMapper;
+    private TaskanaEngine taskanaEngine;
 
-    public ClassificationServiceImpl(ClassificationMapper classificationMapper) {
+    public ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper) {
         super();
+        this.taskanaEngine = taskanaEngine;
         this.classificationMapper = classificationMapper;
     }
 
@@ -75,5 +80,10 @@ public class ClassificationServiceImpl implements ClassificationService {
                 throw new IllegalArgumentException("Invalid timestamp. Please use the format 'PddDThhHmmM'");
             }
         }
+    }
+
+    @Override
+    public ClassificationQuery createClassificationQuery() {
+        return new ClassificationQueryImpl(taskanaEngine);
     }
 }
