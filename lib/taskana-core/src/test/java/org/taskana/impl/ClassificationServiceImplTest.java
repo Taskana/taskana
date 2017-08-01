@@ -37,7 +37,7 @@ public class ClassificationServiceImplTest {
         classification.setId("0");
         classificationService.insertClassification(classification);
 
-        when(classificationMapper.findById(any())).thenReturn(classification);
+        when(classificationMapper.findByIdAndDomain(any(), any())).thenReturn(classification);
 
         Assert.assertNotNull(classificationService.selectClassificationById(classification.getId()));
     }
@@ -81,7 +81,7 @@ public class ClassificationServiceImplTest {
         classifications.add(classification1);
         when(classificationMapper.findByParentId(any())).thenReturn(classifications);
 
-        verify(classificationMapper, atLeast(2)).insert(any());
+        verify(classificationMapper, times(2)).insert(any());
 
         Assert.assertEquals(2, classificationService.selectClassificationsByParentId("0").size());
     }
@@ -93,9 +93,15 @@ public class ClassificationServiceImplTest {
 
         Classification classification = new Classification();
         classificationService.insertClassification(classification);
-        classification.setDescription("TEST EVERYTHING");
-        classificationService.updateClassification(classification);
 
-        Assert.assertEquals(classification.getModified().toString(), LocalDate.now().toString());
+        when(classificationMapper.findByIdAndDomain(any(), any())).thenReturn(classification);
+
+        Classification classification2 = classification;
+        classification2.setDescription("TEST EVERYTHING");
+        classificationService.updateClassification(classification2);
+
+        verify(classificationMapper, times(1)).update(any());
+        //TODO!!!
+        Assert.assertEquals(classification.getValidFrom().toString(), LocalDate.now().toString());
     }
 }

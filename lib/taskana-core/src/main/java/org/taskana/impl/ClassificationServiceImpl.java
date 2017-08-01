@@ -53,23 +53,59 @@ public class ClassificationServiceImpl implements ClassificationService {
     public void insertClassification(Classification classification) {
         classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
         classification.setCreated(Date.valueOf(LocalDate.now()));
-        classification.setModified(Date.valueOf(LocalDate.now()));
+        classification.setValidFrom(Date.valueOf(LocalDate.now()));
+        classification.setValidUntil(Date.valueOf("9999-12-31"));
         this.checkServiceLevel(classification);
+        if (classification.getDomain() == null) {
+            classification.setDomain("");
+        }
 
         classificationMapper.insert(classification);
     }
 
     @Override
     public void updateClassification(Classification classification) {
-        classification.setModified(Date.valueOf(LocalDate.now()));
         this.checkServiceLevel(classification);
+        Date today = Date.valueOf(LocalDate.now());
 
-        classificationMapper.update(classification);
+        Classification oldClassification = classificationMapper.findByIdAndDomain(classification.getId(), classification.getDomain());
+
+        if (oldClassification != null) {
+            if (oldClassification.getValidFrom().equals(today)) {
+                // if we insert a new Classification, oldClassification gets a negative Duration
+                classificationMapper.update(classification);
+            } else {
+                oldClassification.setValidUntil(Date.valueOf(LocalDate.now().minusDays(1)));
+                classificationMapper.update(oldClassification);
+
+                classification.setValidFrom(today);
+                classification.setValidUntil(Date.valueOf("9999-12-31"));
+                classificationMapper.insert(classification);
+            }
+        } else {
+            if (classificationMapper.findByIdAndDomain(classification.getId(), "").equals(null)) {
+                throw new IllegalArgumentException("There is no Default-Classification with this ID!");
+            } else {
+                classification.setValidFrom(today);
+                classification.setValidUntil(Date.valueOf("9999-12-31"));
+                classificationMapper.insert(classification);
+            }
+        }
     }
 
     @Override
     public Classification selectClassificationById(String id) {
-        return classificationMapper.findById(id);
+        return classificationMapper.findByIdAndDomain(id, "");
+    }
+
+    @Override
+    public Classification selectClassificationByIdAndDomain(String id, String domain) {
+        Classification classification = classificationMapper.findByIdAndDomain(id, domain);
+        if (classification.equals(null)) {
+            return classificationMapper.findByIdAndDomain(id, "");
+        } else {
+            return classification;
+        }
     }
 
     @Override
