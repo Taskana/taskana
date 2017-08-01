@@ -11,6 +11,7 @@ import org.taskana.model.Classification;
 
 import javax.security.auth.login.LoginException;
 import java.io.FileNotFoundException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
@@ -73,12 +74,13 @@ public class ClassificationServiceImplIntTest {
 
     @Test
     public void testModifiedClassification() {
+
         Classification classification = new Classification();
         classificationService.insertClassification(classification);
-        classification.setDescription("TEST EVERYTHING");
+        classification.setDescription("TEST SOMETHING");
         classificationService.updateClassification(classification);
 
-        Assert.assertEquals(classification.getModified().toString(), LocalDate.now().toString());
+        Assert.assertEquals(classification.getValidFrom(), Date.valueOf(LocalDate.now()));
     }
 
     @Test
