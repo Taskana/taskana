@@ -1,7 +1,5 @@
 package org.taskana.model.mappings;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -13,13 +11,15 @@ import org.taskana.model.Classification;
 import org.taskana.model.ObjectReference;
 import org.taskana.model.Task;
 
+import java.util.List;
+
 /**
  * This class provides a mapper for all queries.
  */
 public interface QueryMapper {
 
     String OBJECTREFERENCEMAPPER_FINDBYID = "org.taskana.model.mappings.ObjectReferenceMapper.findById";
-    String CLASSIFICATION_FINDBYID = "org.taskana.model.mappings.ClassificationMapper.findById";
+    String CLASSIFICATION_FINDBYID = "org.taskana.model.mappings.ClassificationMapper.findByIdAndDomain";
 
     @Select("<script>SELECT t.ID, t.TENANT_ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.PRIORITY, t.STATE, t.CLASSIFICATION_ID, t.WORKBASKETID, t.OWNER, t.PRIMARY_OBJ_REF_ID, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
             + "FROM TASK t "

@@ -26,10 +26,21 @@ public interface ClassificationService {
 
     /**
      * Get a Classification for a given id.
+     * Returns just the DEFAULT Classification!!!
+     * Better use selectClassificationByIdAndDomain.
+     *
      * @param id
-     * @return the requested Classification
+     * @return the requested Default-Classification
      */
     Classification selectClassificationById(String id);
+
+    /**
+     * Get the Classification for id and domain.
+     * @param id
+     * @param domain
+     * @return If exist: domain-specific classification, else default classification
+     */
+    Classification selectClassificationByIdAndDomain(String id, String domain);
 
     /**
      * Get all Classifications from a domain.
