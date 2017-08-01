@@ -17,7 +17,6 @@ public class Classification {
     private String domain;
     private Boolean isValidInDomain;
     private Date created;
-    private Date modified;
     private String name;
     private String description;
     private int priority;
@@ -31,6 +30,8 @@ public class Classification {
     private String custom6;
     private String custom7;
     private String custom8;
+    private Date validFrom;
+    private Date validUntil;
 
     public String getId() {
         return id;
@@ -94,14 +95,6 @@ public class Classification {
 
     public void setCreated(Date created) {
         this.created = created;
-    }
-
-    public Date getModified() {
-        return modified;
-    }
-
-    public void setModified(Date modified) {
-        this.modified = modified;
     }
 
     public String getName() {
@@ -210,6 +203,22 @@ public class Classification {
 
     public void setCustom8(String custom8) {
         this.custom8 = custom8;
+    }
+
+    public Date getValidFrom() {
+        return validFrom;
+    }
+
+    public void setValidFrom(Date validFrom) {
+        this.validFrom = validFrom;
+    }
+
+    public Date getValidUntil() {
+        return validUntil;
+    }
+
+    public void setValidUntil(Date validUntil) {
+        this.validUntil = validUntil;
     }
 
 }

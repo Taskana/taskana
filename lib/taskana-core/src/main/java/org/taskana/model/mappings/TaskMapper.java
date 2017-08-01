@@ -1,26 +1,13 @@
 package org.taskana.model.mappings;
 
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.type.JdbcType;
+import org.taskana.impl.persistence.MapTypeHandler;
+import org.taskana.model.*;
+
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.type.JdbcType;
-import org.taskana.impl.persistence.MapTypeHandler;
-import org.taskana.model.Classification;
-import org.taskana.model.DueWorkbasketCounter;
-import org.taskana.model.ObjectReference;
-import org.taskana.model.Task;
-import org.taskana.model.TaskState;
-import org.taskana.model.TaskStateCounter;
 
 /**
  * This class is the mybatis mapping of task.
@@ -28,7 +15,7 @@ import org.taskana.model.TaskStateCounter;
 public interface TaskMapper {
 
     String OBJECTREFERENCEMAPPER_FINDBYID = "org.taskana.model.mappings.ObjectReferenceMapper.findById";
-    String CLASSIFICATION_FINDBYID = "org.taskana.model.mappings.ClassificationMapper.findById";
+    String CLASSIFICATION_FINDBYID = "org.taskana.model.mappings.ClassificationMapper.findByIdAndDomain";
 
     @Select("SELECT ID, TENANT_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_ID, WORKBASKETID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10 "
             + "FROM TASK "
