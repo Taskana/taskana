@@ -1,9 +1,9 @@
 package org.taskana;
 
-import java.util.List;
-
 import org.taskana.model.Classification;
 import org.taskana.persistence.ClassificationQuery;
+
+import java.util.List;
 
 /**
  * This class manages the classifications.
@@ -26,10 +26,52 @@ public interface ClassificationService {
 
     /**
      * Get a Classification for a given id.
+     * Returns just the DEFAULT Classification!!!
+     * Better use selectClassificationByIdAndDomain.
+     *
      * @param id
-     * @return the requested Classification
+     * @return the requested Default-Classification
      */
     Classification selectClassificationById(String id);
+
+    /**
+     * Get the Classification for id and domain.
+     * @param id
+     * @param domain
+     * @return If exist: domain-specific classification, else default classification
+     */
+    Classification selectClassificationByIdAndDomain(String id, String domain);
+
+    /**
+     * Get all Classifications from a domain.
+     * @param domain
+     * @return
+     */
+    List<Classification> selectClassificationByDomain(String domain);
+
+    /**
+     * Get all Classifications from a domain with a specific type.
+     * @param domain
+     * @param type
+     * @return
+     */
+    List<Classification> selectClassificationByDomainAndType(String domain, String type);
+
+    /**
+     * Get all Classifications from a category for a domain.
+     * @param domain
+     * @param category
+     * @return
+     */
+    List<Classification> selectClassificationByDomainAndCategory(String domain, String category);
+
+    /**
+     * Get all Classifications from a category and a type.
+     * @param category
+     * @param type
+     * @return
+     */
+    List<Classification> selectClassificationByCategoryAndType(String category, String type);
 
     /**
      * Insert a new Classification.

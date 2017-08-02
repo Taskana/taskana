@@ -11,6 +11,7 @@ import org.taskana.model.Classification;
 
 import javax.security.auth.login.LoginException;
 import java.io.FileNotFoundException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
@@ -73,11 +74,32 @@ public class ClassificationServiceImplIntTest {
 
     @Test
     public void testModifiedClassification() {
+
         Classification classification = new Classification();
         classificationService.insertClassification(classification);
-        classification.setDescription("TEST EVERYTHING");
+        classification.setDescription("TEST SOMETHING");
         classificationService.updateClassification(classification);
 
-        Assert.assertEquals(classification.getModified().toString(), LocalDate.now().toString());
+        Assert.assertEquals(classification.getValidFrom(), Date.valueOf(LocalDate.now()));
     }
+
+    @Test
+    public void testFindByDomainAndCategory() {
+        Classification classification1 = new Classification();
+        classification1.setDomain("domain1");
+        classification1.setCategory("category1");
+        classificationService.insertClassification(classification1);
+        Classification classification2 = new Classification();
+        classification2.setDomain("domain2");
+        classification2.setCategory("category1");
+        classificationService.insertClassification(classification2);
+        Classification classification3 = new Classification();
+        classification3.setDomain("domain1");
+        classification3.setCategory("category2");
+        classificationService.insertClassification(classification3);
+
+        int sizeOfReturn = classificationService.selectClassificationByDomainAndCategory("domain1", "category1").size();
+        Assert.assertEquals(sizeOfReturn, 1);
+    }
+
 }
