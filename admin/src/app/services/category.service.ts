@@ -9,7 +9,7 @@ import { Category } from '../categoriesadministration/category';
 
 @Injectable()
 export class CategoryService {
-  private categoryServiceUrl = environment.taskanaRestUrl + '/v1/categories';  // URL to web API
+  private categoryServiceUrl = environment.taskanaRestUrl + '/v1/classifications';  // URL to web API
   constructor(private http: Http) { }
   getCategories(): Observable<Category[]> {
     return this.http.get(this.categoryServiceUrl, this.createAuthorizationHeader())
