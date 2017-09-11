@@ -11,7 +11,7 @@ export class CategoryeditorComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.categorySelected = new Category('', '', '', 0,'');
+    this.categorySelected = new Category('', '', '', '', 0,'');
   }
 
   @Input()

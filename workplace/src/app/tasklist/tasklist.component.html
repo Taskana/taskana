@@ -7,7 +7,7 @@
     <th class="clickable" (click)="orderTasks('state')">State</th>
     <th>Actions</th>
   </thead>
-  <tr *ngFor="let task of tasks | orderTasksBy: columnForOrdering">
+  <tr *ngFor="let task of tasks">
     <td>{{ task.id }}</td>
     <td>{{ task.name }}</td>
     <td>{{ task.due | date:'medium' }}</td>
