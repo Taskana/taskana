@@ -1,5 +1,6 @@
 package org.taskana;
 
+import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.model.Classification;
 import org.taskana.persistence.ClassificationQuery;
 
@@ -11,28 +12,19 @@ import java.util.List;
 public interface ClassificationService {
 
     /**
-     * Get all available Classifications.
+     * Get all available Classifications as a tree.
      * @return The List of all Classifications
      */
-    List<Classification> selectClassifications();
+    List<Classification> getClassificationTree() throws NotAuthorizedException;
 
     /**
-     * Get all Classifications with given parent.
-     * @param parentId
-     *            the ID of the parent Classification
-     * @return
-     */
-    List<Classification> selectClassificationsByParentId(String parentId);
-
-    /**
-     * Get a Classification for a given id.
-     * Returns just the DEFAULT Classification!!!
-     * Better use selectClassificationByIdAndDomain.
+     * Get all Classifications with the given id.
+     * Returns also older and domain-specific versions of the classification.
      *
      * @param id
-     * @return the requested Default-Classification
+     * @return List with all versions of the Classification
      */
-    Classification selectClassificationById(String id);
+    List<Classification> getAllClassificationsWithId(String id, String domain);
 
     /**
      * Get the Classification for id and domain.
@@ -40,45 +32,14 @@ public interface ClassificationService {
      * @param domain
      * @return If exist: domain-specific classification, else default classification
      */
-    Classification selectClassificationByIdAndDomain(String id, String domain);
-
-    /**
-     * Get all Classifications from a domain.
-     * @param domain
-     * @return
-     */
-    List<Classification> selectClassificationByDomain(String domain);
-
-    /**
-     * Get all Classifications from a domain with a specific type.
-     * @param domain
-     * @param type
-     * @return
-     */
-    List<Classification> selectClassificationByDomainAndType(String domain, String type);
-
-    /**
-     * Get all Classifications from a category for a domain.
-     * @param domain
-     * @param category
-     * @return
-     */
-    List<Classification> selectClassificationByDomainAndCategory(String domain, String category);
-
-    /**
-     * Get all Classifications from a category and a type.
-     * @param category
-     * @param type
-     * @return
-     */
-    List<Classification> selectClassificationByCategoryAndType(String category, String type);
+    Classification getClassification(String id, String domain);
 
     /**
      * Insert a new Classification.
      * @param classification
      *            the classification to insert
      */
-    void insertClassification(Classification classification);
+    void addClassification(Classification classification);
 
     /**
      * Update a Classification.

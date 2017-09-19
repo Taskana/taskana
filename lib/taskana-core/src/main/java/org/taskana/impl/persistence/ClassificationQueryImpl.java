@@ -1,12 +1,13 @@
 package org.taskana.impl.persistence;
 
-import java.util.List;
-
 import org.apache.ibatis.session.RowBounds;
 import org.taskana.TaskanaEngine;
 import org.taskana.impl.TaskanaEngineImpl;
 import org.taskana.model.Classification;
 import org.taskana.persistence.ClassificationQuery;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Implementation of ClassificationQuery interface.
@@ -20,10 +21,16 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private String[] parentClassificationId;
     private String[] category;
     private String[] type;
+    private String[] domain;
+    private Boolean validInDomain;
+    private Date[] created;
     private String[] name;
     private String description;
     private int[] priority;
     private String[] serviceLevel;
+    private String[] customFields;
+    private Date[] validFrom;
+    private Date[] validUntil;
 
     public ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
@@ -54,6 +61,24 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
+    public ClassificationQuery domain(String... domain) {
+        this.domain = domain;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery validInDomain(Boolean validInDomain) {
+        this.validInDomain = validInDomain;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery created(Date... created) {
+        this.created = created;
+        return this;
+    }
+
+    @Override
     public ClassificationQuery name(String... name) {
         this.name = name;
         return this;
@@ -74,6 +99,24 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public ClassificationQuery serviceLevel(String... serviceLevel) {
         this.serviceLevel = serviceLevel;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery customFields(String... customFields) {
+        this.customFields = customFields;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery validFrom(Date... validFrom) {
+        this.validFrom = validFrom;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery validUntil(Date... validUntil) {
+        this.validUntil = validUntil;
         return this;
     }
 
@@ -155,5 +198,53 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     public void setServiceLevel(String[] serviceLevel) {
         this.serviceLevel = serviceLevel;
+    }
+
+    public String[] getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String[] domain) {
+        this.domain = domain;
+    }
+
+    public Boolean getValidInDomain() {
+        return validInDomain;
+    }
+
+    public void setValidInDomain(Boolean validInDomain) {
+        this.validInDomain = validInDomain;
+    }
+
+    public Date[] getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date[] created) {
+        this.created = created;
+    }
+
+    public String[] getCustomFields() {
+        return customFields;
+    }
+
+    public void setCustomFields(String[] customFields) {
+        this.customFields = customFields;
+    }
+
+    public Date[] getValidFrom() {
+        return validFrom;
+    }
+
+    public void setValidFrom(Date[] validFrom) {
+        this.validFrom = validFrom;
+    }
+
+    public Date[] getValidUntil() {
+        return validUntil;
+    }
+
+    public void setValidUntil(Date[] validUntil) {
+        this.validUntil = validUntil;
     }
 }

@@ -1,8 +1,6 @@
 package org.taskana.model;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classification entity.
@@ -21,7 +19,6 @@ public class Classification {
     private String description;
     private int priority;
     private String serviceLevel; // PddDThhHmmM
-    private List<Classification> children = new ArrayList<>();
     private String custom1;
     private String custom2;
     private String custom3;
@@ -127,18 +124,6 @@ public class Classification {
 
     public void setServiceLevel(String serviceLevel) {
         this.serviceLevel = serviceLevel;
-    }
-
-    public List<Classification> getChildren() {
-        return children;
-    }
-
-    public void addChild(Classification child) {
-        children.add(child);
-    }
-
-    public void setChildren(List<Classification> children) {
-        this.children = children;
     }
 
     public String getCustom1() {
