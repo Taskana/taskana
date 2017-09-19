@@ -1,10 +1,8 @@
 package org.taskana.impl.integration;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.List;
-
 import org.h2.jdbcx.JdbcDataSource;
+import org.h2.store.fs.FileUtils;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.taskana.TaskanaEngine;
@@ -19,6 +17,10 @@ import org.taskana.model.Task;
 import org.taskana.model.TaskState;
 import org.taskana.persistence.ClassificationQuery;
 import org.taskana.persistence.ObjectReferenceQuery;
+
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Integration Test for TaskServiceImpl transactions.
@@ -123,4 +125,8 @@ public class TaskServiceImplTransactionTest {
 
     }
 
+    @AfterClass
+    public static void cleanUp() {
+        FileUtils.deleteRecursive("~/data", true);
+    }
 }

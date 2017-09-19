@@ -21,19 +21,29 @@ public class ClassificationController {
 	private ClassificationService classificationService;
 
 	@RequestMapping
-	public List<Classification> getClassifications() {
-		return classificationService.selectClassifications();
+	public ResponseEntity<List<Classification>> getClassifications() {
+		try {
+			List<Classification> classificationTree = classificationService.getClassificationTree();
+			return ResponseEntity.status(HttpStatus.CREATED).body(classificationTree);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
 	}
 
 	@RequestMapping(value = "/{classificationId}")
 	public Classification getClassification(@PathVariable String classificationId) {
-		return classificationService.selectClassificationById(classificationId);
+		return classificationService.getClassification(classificationId, "");
+	}
+
+	@RequestMapping(value = "/{classificationId}/{domain}")
+	public Classification getClassification(@PathVariable String classificationId, @PathVariable String domain) {
+		return classificationService.getClassification(classificationId, domain);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Classification> createClassification(@RequestBody Classification classification) {
 		try {
-			classificationService.insertClassification(classification);
+			classificationService.addClassification(classification);
 			return ResponseEntity.status(HttpStatus.CREATED).body(classification);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

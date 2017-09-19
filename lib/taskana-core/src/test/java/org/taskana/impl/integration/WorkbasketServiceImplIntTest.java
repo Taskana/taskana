@@ -1,13 +1,8 @@
 package org.taskana.impl.integration;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.login.LoginException;
-
 import org.h2.jdbcx.JdbcDataSource;
+import org.h2.store.fs.FileUtils;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +13,12 @@ import org.taskana.exceptions.NotAuthorizedException;
 import org.taskana.exceptions.WorkbasketNotFoundException;
 import org.taskana.model.Workbasket;
 import org.taskana.model.WorkbasketAccessItem;
+
+import javax.security.auth.login.LoginException;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -181,4 +182,8 @@ public class WorkbasketServiceImplIntTest {
                 workbasketServiceImpl.getWorkbasketAuthorization(accessItem.getId()).getUserId());
     }
 
+    @AfterClass
+    public static void cleanUp() {
+        FileUtils.deleteRecursive("~/data", true);
+    }
 }
