@@ -43,10 +43,16 @@ public interface QueryMapper {
             + "<if test='classificationQuery.parentClassificationId != null'>AND c.PARENT_CLASSIFICATION_ID IN(<foreach item='item' collection='classificationQuery.parentClassificationId' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.category != null'>AND c.CATEGORY IN(<foreach item='item' collection='classificationQuery.category' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.type != null'>AND c.TYPE IN(<foreach item='item' collection='classificationQuery.type' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='classificationQuery.domain != null'>AND c.DOMAIN IN(<foreach item='item' collection='classificationQuery.domain' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='classificationQuery.validInDomain != null'>AND c.VALID_IN_DOMAIN like #{classificationQuery.validInDomain}</if> "
+            + "<if test='classificationQuery.created != null'>AND c.CREATED IN(<foreach item='item' collection='classificationQuery.created' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.name != null'>AND c.NAME IN(<foreach item='item' collection='classificationQuery.name' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.description != null'>AND c.DESCRIPTION like #{classificationQuery.description}</if> "
             + "<if test='classificationQuery.priority != null'>AND c.PRIORITY IN(<foreach item='item' collection='classificationQuery.priority' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.serviceLevel != null'>AND c.SERVICE_LEVEL IN(<foreach item='item' collection='classificationQuery.serviceLevel' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='classificationQuery.customFields != null'>AND (c.CUSTOM_1 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_2 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_3 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_4 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_5 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_6 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_7 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_8 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>))</if> "
+            + "<if test='classificationQuery.validFrom != null'>AND c.VALID_FROM IN(<foreach item='item' collection='classificationQuery.validFrom' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='classificationQuery.validUntil != null'>AND c.VALID_UNTIL IN(<foreach item='item' collection='classificationQuery.validUntil' separator=',' >#{item}</foreach>)</if> "
             + "</if>"
             // Object Reference Query
             + "<if test='objectReferenceQuery != null'>"
@@ -64,7 +70,6 @@ public interface QueryMapper {
             @Result(property = "created", column = "CREATED"),
             @Result(property = "claimed", column = "CLAIMED"),
             @Result(property = "completed", column = "COMPLETED"),
-            @Result(property = "modified", column = "MODIFIED"),
             @Result(property = "planned", column = "PLANNED"),
             @Result(property = "due", column = "DUE"),
             @Result(property = "name", column = "NAME"),
@@ -89,17 +94,23 @@ public interface QueryMapper {
             @Result(property = "custom10", column = "CUSTOM_10") })
     List<Task> queryTasks(TaskQueryImpl taskQuery);
 
-    @Select("<script>SELECT ID, TENANT_ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL "
+    @Select("<script>SELECT ID, TENANT_ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL "
             + "FROM CLASSIFICATION "
             + "<where>"
             + "<if test='tenantId != null'>TENANT_ID = #{tenantId}</if> "
             + "<if test='parentClassificationId != null'>AND PARENT_CLASSIFICATION_ID IN(<foreach item='item' collection='parentClassificationId' separator=',' >#{item}</foreach>)</if> "
             + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
             + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='validInDomain != null'>AND VALID_IN_DOMAIN like #{validInDomain}</if> "
+            + "<if test='created != null'>AND CREATED IN(<foreach item='item' collection='created' separator=',' >#{item}</foreach>)</if> "
             + "<if test='name != null'>AND NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
             + "<if test='description != null'>AND DESCRIPTION like #{description}</if> "
-            + "<if test='priority != null'>AND PRIORITY IN(<foreach item='item' collection='.priority' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='priority != null'>AND PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
             + "<if test='serviceLevel != null'>AND SERVICE_LEVEL IN(<foreach item='item' collection='serviceLevel' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='customFields != null'>AND (CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
+            + "<if test='validFrom != null'>AND VALID_FROM IN(<foreach item='item' collection='validFrom' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='validUntil != null'>AND VALID_UNTIL IN(<foreach item='item' collection='validUntil' separator=',' >#{item}</foreach>)</if> "
             + "</where>"
             + "</script>")
     @Results({ @Result(property = "id", column = "ID"),
@@ -108,7 +119,6 @@ public interface QueryMapper {
             @Result(property = "category", column = "CATEGORY"),
             @Result(property = "type", column = "TYPE"),
             @Result(property = "created", column = "CREATED"),
-            @Result(property = "modified", column = "MODIFIED"),
             @Result(property = "name", column = "NAME"),
             @Result(property = "description", column = "DESCRIPTION"),
             @Result(property = "priority", column = "PRIORITY"),
