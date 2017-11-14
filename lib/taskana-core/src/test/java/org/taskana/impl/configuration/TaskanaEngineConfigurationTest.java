@@ -28,7 +28,7 @@ public class TaskanaEngineConfigurationTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfigurationTest.class);
 
     @Test
-    public void testCreateTaskEngine() throws FileNotFoundException, SQLException, LoginException {
+    public void testCreateTaskanaEngine() throws FileNotFoundException, SQLException, LoginException {
         DataSource ds = getDataSource();
         TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false);
 
