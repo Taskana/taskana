@@ -111,7 +111,7 @@ public class ClassificationServiceImplIntTest {
 
         System.out.println(classification.getParentClassificationId());
 
-        list = classificationService.getClassificationTree();
+        List<Classification> allClassifications = classificationService.getClassificationTree();
         Assert.assertEquals(2, list.size());
     }
 
@@ -271,5 +271,5 @@ public class ClassificationServiceImplIntTest {
     public static void cleanUpClass() {
         FileUtils.deleteRecursive("~/data", true);
     }
-      
+
 }
