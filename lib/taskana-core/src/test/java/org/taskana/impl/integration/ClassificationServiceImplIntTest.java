@@ -1,7 +1,16 @@
 package org.taskana.impl.integration;
 
-import org.h2.jdbcx.JdbcDataSource;
+import java.io.FileNotFoundException;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+
 import org.h2.store.fs.FileUtils;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,14 +19,10 @@ import org.taskana.ClassificationService;
 import org.taskana.TaskanaEngine;
 import org.taskana.configuration.TaskanaEngineConfiguration;
 import org.taskana.exceptions.NotAuthorizedException;
+import org.taskana.impl.TaskanaEngineImpl;
+import org.taskana.impl.configuration.DBCleaner;
+import org.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import org.taskana.model.Classification;
-
-import javax.security.auth.login.LoginException;
-import java.io.FileNotFoundException;
-import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Integration Test for ClassificationServiceImpl.
@@ -25,18 +30,23 @@ import java.util.List;
  */
 public class ClassificationServiceImplIntTest {
     static int counter = 0;
+
+    private DataSource dataSource;
     private ClassificationService classificationService;
+    private TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private TaskanaEngine taskanaEngine;
+    private TaskanaEngineImpl taskanaEngineImpl;
+
 
     @Before
     public void setup() throws FileNotFoundException, SQLException, LoginException {
-        JdbcDataSource ds = new JdbcDataSource();
-        ds.setURL("jdbc:h2:mem:test-db-classification" + counter++);
-        ds.setPassword("sa");
-        ds.setUser("sa");
-        TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false);
-
-        TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
-        classificationService = te.getClassificationService();
+        dataSource = TaskanaEngineConfigurationTest.getDataSource();
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
+        taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
+        classificationService = taskanaEngine.getClassificationService();
+        taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        DBCleaner cleaner = new DBCleaner();
+        cleaner.clearDb(dataSource);
     }
 
     @Test
@@ -252,8 +262,14 @@ public class ClassificationServiceImplIntTest {
         Assert.assertEquals(1, list.size());
     }
 
+    @After
+    public void cleanUp() {
+        taskanaEngineImpl.closeSession();
+    }
+
     @AfterClass
-    public static void cleanUp() {
+    public static void cleanUpClass() {
         FileUtils.deleteRecursive("~/data", true);
     }
+      
 }
