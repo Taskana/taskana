@@ -39,7 +39,6 @@ public interface QueryMapper {
             + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
             // Classification Query
             + "<if test='classificationQuery != null'>"
-            + "<if test='classificationQuery.tenantId != null'>AND c.TENANT_ID = #{classificationQuery.tenantId}</if> "
             + "<if test='classificationQuery.parentClassificationId != null'>AND c.PARENT_CLASSIFICATION_ID IN(<foreach item='item' collection='classificationQuery.parentClassificationId' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.category != null'>AND c.CATEGORY IN(<foreach item='item' collection='classificationQuery.category' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.type != null'>AND c.TYPE IN(<foreach item='item' collection='classificationQuery.type' separator=',' >#{item}</foreach>)</if> "
@@ -94,10 +93,9 @@ public interface QueryMapper {
             @Result(property = "custom10", column = "CUSTOM_10") })
     List<Task> queryTasks(TaskQueryImpl taskQuery);
 
-    @Select("<script>SELECT ID, TENANT_ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL "
+    @Select("<script>SELECT ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL "
             + "FROM CLASSIFICATION "
             + "<where>"
-            + "<if test='tenantId != null'>TENANT_ID = #{tenantId}</if> "
             + "<if test='parentClassificationId != null'>AND PARENT_CLASSIFICATION_ID IN(<foreach item='item' collection='parentClassificationId' separator=',' >#{item}</foreach>)</if> "
             + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
             + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
@@ -114,15 +112,26 @@ public interface QueryMapper {
             + "</where>"
             + "</script>")
     @Results({ @Result(property = "id", column = "ID"),
-            @Result(property = "tenantId", column = "TENANT_ID"),
             @Result(property = "parentClassificationId", column = "PARENT_CLASSIFICATION_ID"),
             @Result(property = "category", column = "CATEGORY"),
             @Result(property = "type", column = "TYPE"),
+            @Result(property = "domain", column = "DOMAIN"),
+            @Result(property = "validInDomain", column = "VALID_IN_DOMAIN"),
             @Result(property = "created", column = "CREATED"),
             @Result(property = "name", column = "NAME"),
             @Result(property = "description", column = "DESCRIPTION"),
             @Result(property = "priority", column = "PRIORITY"),
-            @Result(property = "serviceLevel", column = "SERVICE_LEVEL") })
+            @Result(property = "serviceLevel", column = "SERVICE_LEVEL"),
+            @Result(property = "custom1", column = "CUSTOM_1"),
+            @Result(property = "custom2", column = "CUSTOM_2"),
+            @Result(property = "custom3", column = "CUSTOM_3"),
+            @Result(property = "custom4", column = "CUSTOM_4"),
+            @Result(property = "custom5", column = "CUSTOM_5"),
+            @Result(property = "custom6", column = "CUSTOM_6"),
+            @Result(property = "custom7", column = "CUSTOM_7"),
+            @Result(property = "custom8", column = "CUSTOM_8"),
+            @Result(property = "validFrom", column = "VALID_FROM"),
+            @Result(property = "validUntil", column = "VALID_UNTIL") })
     List<Classification> queryClassification(ClassificationQueryImpl classificationQuery);
 
 

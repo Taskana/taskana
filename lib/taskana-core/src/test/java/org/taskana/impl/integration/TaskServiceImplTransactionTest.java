@@ -1,18 +1,7 @@
 package org.taskana.impl.integration;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-
 import org.h2.store.fs.FileUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.taskana.TaskanaEngine;
 import org.taskana.configuration.TaskanaEngineConfiguration;
 import org.taskana.exceptions.NotAuthorizedException;
@@ -28,6 +17,12 @@ import org.taskana.model.Task;
 import org.taskana.model.TaskState;
 import org.taskana.persistence.ClassificationQuery;
 import org.taskana.persistence.ObjectReferenceQuery;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Integration Test for TaskServiceImpl transactions.
@@ -112,7 +107,7 @@ public class TaskServiceImplTransactionTest {
         task = taskServiceImpl.create(task);
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-        ClassificationQuery classificationQuery = new ClassificationQueryImpl(taskanaEngineImpl).tenantId("asdasdasd")
+        ClassificationQuery classificationQuery = new ClassificationQueryImpl(taskanaEngineImpl)
                 .parentClassification("pId1", "pId2").category("cat1", "cat2").type("oneType").name("1Name", "name2")
                 .descriptionLike("my desc").priority(1, 2, 1).serviceLevel("me", "and", "you");
 

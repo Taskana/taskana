@@ -34,14 +34,13 @@ public class TaskFilter {
     private static final String IS_TRANSFERRED = "isTransferred";
     private static final String IS_READ = "isRead";
 
-    private static final String CLASSIFICATION_TENANT_ID = CLASSIFICATION + DOT + "tenantId";
-    private static final String CLASSIFICATION_SERVICE_LEVEL = CLASSIFICATION + DOT + "serviceLevel";
-    private static final String CLASSIFICATION_PRIORITY = CLASSIFICATION + DOT + "priority";
-    private static final String CLASSIFICATION_DESCRIPTION = CLASSIFICATION + DOT + "description";
-    private static final String CLASSIFICATION_NAME = CLASSIFICATION + DOT + "name";
-    private static final String CLASSIFICATION_TYPE = CLASSIFICATION + DOT + "type";
-    private static final String CLASSIFICATION_CATEGORY = CLASSIFICATION + DOT + "category";
     private static final String CLASSIFICATION_PARENT_ID = CLASSIFICATION + DOT + "parentClassificationId";
+    private static final String CLASSIFICATION_CATEGORY = CLASSIFICATION + DOT + "category";
+    private static final String CLASSIFICATION_TYPE = CLASSIFICATION + DOT + "type";
+    private static final String CLASSIFICATION_NAME = CLASSIFICATION + DOT + "name";
+    private static final String CLASSIFICATION_DESCRIPTION = CLASSIFICATION + DOT + "description";
+    private static final String CLASSIFICATION_PRIORITY = CLASSIFICATION + DOT + "priority";
+    private static final String CLASSIFICATION_SERVICE_LEVEL = CLASSIFICATION + DOT + "serviceLevel";
 
     private static final String POR_VALUE = POR + DOT + "value";
     private static final String POR_TYPE = POR + DOT + "type";
@@ -91,9 +90,6 @@ public class TaskFilter {
         // classification
         if (params.keySet().stream().filter(s -> s.startsWith(CLASSIFICATION)).toArray().length > 0) {
             ClassificationQuery classificationQuery = classificationService.createClassificationQuery();
-            if (params.containsKey(CLASSIFICATION_TENANT_ID)) {
-                classificationQuery.tenantId(params.get(CLASSIFICATION_TENANT_ID).get(0));
-            }
             if (params.containsKey(CLASSIFICATION_PARENT_ID)) {
                 String[] parentClassifications = extractCommaSeperatedFields(params.get(CLASSIFICATION_PARENT_ID));
                 classificationQuery.parentClassification(parentClassifications);
