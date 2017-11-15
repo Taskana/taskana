@@ -29,7 +29,6 @@ public class ClassificationController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 	}
-
 	@RequestMapping(value = "/{classificationId}")
 	public Classification getClassification(@PathVariable String classificationId) {
 		return classificationService.getClassification(classificationId, "");
