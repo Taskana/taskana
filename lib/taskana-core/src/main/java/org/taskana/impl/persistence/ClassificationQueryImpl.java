@@ -17,7 +17,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     private static final String LINK_TO_MAPPER = "org.taskana.model.mappings.QueryMapper.queryClassification";
     private TaskanaEngineImpl taskanaEngine;
-    private String tenantId;
     private String[] parentClassificationId;
     private String[] category;
     private String[] type;
@@ -34,12 +33,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     public ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
-    }
-
-    @Override
-    public ClassificationQuery tenantId(String tenantId) {
-        this.tenantId = tenantId;
-        return this;
     }
 
     @Override
@@ -134,14 +127,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public Classification single() {
         return taskanaEngine.getSession().selectOne(LINK_TO_MAPPER, this);
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 
     public String[] getParentClassificationId() {

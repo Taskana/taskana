@@ -9,13 +9,6 @@ import java.util.Date;
  */
 public interface ClassificationQuery extends BaseQuery<Classification> {
 
-    /**
-     * Add your tenant id to your query.
-     * @param tenantId
-     *            the tenant id as String
-     * @return the query
-     */
-    ClassificationQuery tenantId(String tenantId);
 
     /**
      * Add your parentClassification to your query.

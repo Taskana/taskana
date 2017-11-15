@@ -24,11 +24,6 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery tenantId(String tenantId) {
-        return this;
-    }
-
-    @Override
     public ClassificationQuery parentClassification(String... parentClassificationId) {
         parentId = parentClassificationId;
         return this;

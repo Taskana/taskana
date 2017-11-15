@@ -11,13 +11,12 @@ import java.util.List;
  */
 public interface ClassificationMapper {
 
-    @Select("SELECT ID, TENANT_ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
+    @Select("SELECT ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
             + "FROM CLASSIFICATION "
             + "WHERE ID = #{id}"
             + "AND DOMAIN = #{domain}"
             + "AND VALID_UNTIL = #{valid_until}")
     @Results({@Result(property = "id", column = "ID"),
-            @Result(property = "tenantId", column = "TENANT_ID"),
             @Result(property = "parentClassificationId", column = "PARENT_CLASSIFICATION_ID"),
             @Result(property = "category", column = "CATEGORY"),
             @Result(property = "type", column = "TYPE"),
@@ -40,10 +39,10 @@ public interface ClassificationMapper {
             @Result(property = "validUntil", column = "VALID_UNTIL")})
     Classification findByIdAndDomain(@Param("id") String id, @Param("domain") String domain, @Param("valid_until")Date validUntil);
 
-    @Insert("INSERT INTO CLASSIFICATION (ID, TENANT_ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL) VALUES (#{classification.id}, #{classification.tenantId}, #{classification.parentClassificationId}, #{classification.category}, #{classification.type}, #{classification.domain}, #{classification.isValidInDomain}, #{classification.created}, #{classification.name}, #{classification.description}, #{classification.priority}, #{classification.serviceLevel}, #{classification.custom1}, #{classification.custom2}, #{classification.custom3}, #{classification.custom4}, #{classification.custom5}, #{classification.custom6}, #{classification.custom7}, #{classification.custom8}, #{classification.validFrom}, #{classification.validUntil})")
+    @Insert("INSERT INTO CLASSIFICATION (ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL) VALUES (#{classification.id}, #{classification.parentClassificationId}, #{classification.category}, #{classification.type}, #{classification.domain}, #{classification.isValidInDomain}, #{classification.created}, #{classification.name}, #{classification.description}, #{classification.priority}, #{classification.serviceLevel}, #{classification.custom1}, #{classification.custom2}, #{classification.custom3}, #{classification.custom4}, #{classification.custom5}, #{classification.custom6}, #{classification.custom7}, #{classification.custom8}, #{classification.validFrom}, #{classification.validUntil})")
     void insert(@Param("classification") Classification classification);
 
-    @Update(value = "UPDATE CLASSIFICATION SET TENANT_ID = #{classification.tenantId}, PARENT_CLASSIFICATION_ID = #{classification.parentClassificationId}, CATEGORY = #{classification.category}, TYPE = #{classification.type}, NAME = #{classification.name}, DESCRIPTION = #{classification.description}, PRIORITY = #{classification.priority}, SERVICE_LEVEL = #{classification.serviceLevel}, DOMAIN = #{classification.domain}, VALID_IN_DOMAIN = #{classification.isValidInDomain}, CUSTOM_1 = #{classification.custom1}, CUSTOM_2 = #{classification.custom2}, CUSTOM_3 = #{classification.custom3}, CUSTOM_4 = #{classification.custom4}, CUSTOM_5 = #{classification.custom5}, CUSTOM_6 = #{classification.custom6}, CUSTOM_7 = #{classification.custom7}, CUSTOM_8 = #{classification.custom8}, VALID_FROM = #{classification.validFrom}, VALID_UNTIL = #{classification.validUntil} WHERE ID = #{classification.id}")
+    @Update(value = "UPDATE CLASSIFICATION SET PARENT_CLASSIFICATION_ID = #{classification.parentClassificationId}, CATEGORY = #{classification.category}, TYPE = #{classification.type}, NAME = #{classification.name}, DESCRIPTION = #{classification.description}, PRIORITY = #{classification.priority}, SERVICE_LEVEL = #{classification.serviceLevel}, DOMAIN = #{classification.domain}, VALID_IN_DOMAIN = #{classification.isValidInDomain}, CUSTOM_1 = #{classification.custom1}, CUSTOM_2 = #{classification.custom2}, CUSTOM_3 = #{classification.custom3}, CUSTOM_4 = #{classification.custom4}, CUSTOM_5 = #{classification.custom5}, CUSTOM_6 = #{classification.custom6}, CUSTOM_7 = #{classification.custom7}, CUSTOM_8 = #{classification.custom8}, VALID_FROM = #{classification.validFrom}, VALID_UNTIL = #{classification.validUntil} WHERE ID = #{classification.id}")
     void update(@Param("classification") Classification classification);
 
     @Select("<script>"
@@ -54,7 +53,6 @@ public interface ClassificationMapper {
             + "ORDER BY VALID_FROM DESC"
             + "</script>")
     @Results({@Result(property = "id", column = "ID"),
-            @Result(property = "tenantId", column = "TENANT_ID"),
             @Result(property = "parentClassificationId", column = "PARENT_CLASSIFICATION_ID"),
             @Result(property = "category", column = "CATEGORY"),
             @Result(property = "type", column = "TYPE"),
