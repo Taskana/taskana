@@ -8,7 +8,6 @@ import java.sql.Date;
 public class Classification {
 
     private String id;
-    private String tenantId;
     private String parentClassificationId;
     private String category;
     private String type;
@@ -36,14 +35,6 @@ public class Classification {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 
     public String getParentClassificationId() {
