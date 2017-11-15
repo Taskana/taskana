@@ -108,7 +108,7 @@ public class TaskServiceImplTransactionTest {
         task.setWorkbasketId("1");
         task = taskServiceImpl.create(task);
 
-        ClassificationQuery classificationQuery = new ClassificationQueryImpl(te).tenantId("asdasdasd")
+        ClassificationQuery classificationQuery = new ClassificationQueryImpl(te)
                 .parentClassification("pId1", "pId2").category("cat1", "cat2").type("oneType").name("1Name", "name2")
                 .descriptionLike("my desc").priority(1, 2, 1).serviceLevel("me", "and", "you");
 

@@ -127,13 +127,13 @@ public class ClassificationServiceImplIntTest {
     }
 
     @Test
-    public void testFindWithClassificationMapperTenantCustomAndCategory() throws NotAuthorizedException {
+    public void testFindWithClassificationMapperCustomAndCategory() throws NotAuthorizedException {
         Classification classification1 = new Classification();
-        classification1.setTenantId("tenant1");
+        classification1.setDescription("DESC1");
         classification1.setCategory("category1");
         classificationService.addClassification(classification1);
         Classification classification2 = new Classification();
-        classification2.setTenantId("tenant1");
+        classification2.setDescription("DESC1");
         classification2.setCustom1("custom1");
         classification2.setCategory("category1");
         classificationService.addClassification(classification2);
@@ -143,16 +143,16 @@ public class ClassificationServiceImplIntTest {
         classification3.setCategory("category2");
         classificationService.addClassification(classification3);
         Classification classification4 = new Classification();
-        classification4.setTenantId("tenant2");
+        classification4.setDescription("description2");
         classification4.setCustom8("custom2");
         classification4.setCategory("category1");
         classificationService.addClassification(classification4);
 
-        List<Classification> list = classificationService.createClassificationQuery().tenantId("tenant1").customFields("custom1").list();
+        List<Classification> list = classificationService.createClassificationQuery().descriptionLike("DESC1").customFields("custom1").list();
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery().customFields("custom2").list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().tenantId("tenant1").category("category1").list();
+        list = classificationService.createClassificationQuery().descriptionLike("DESC1").category("category1").list();
         Assert.assertEquals(2, list.size());
     }
 
