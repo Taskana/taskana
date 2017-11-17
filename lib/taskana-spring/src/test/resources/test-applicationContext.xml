@@ -23,7 +23,7 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="taskEngineConfiguration" class="org.taskana.SpringTaskEngineConfiguration">
+	<bean id="taskEngineConfiguration" class="pro.taskana.SpringTaskEngineConfiguration">
 		<property name="dataSource" ref="dataSource" />
 		<property name="transactionManager" ref="transactionManager" />
 	</bean>
@@ -31,5 +31,5 @@
 	<bean id="taskEngine" factory-bean="taskEngineConfiguration" factory-method="createTaskEngineConfiguration" />
 	<bean id="taskService" factory-bean="taskEngine" factory-method="getTaskService" />
 
-	<bean class="org.taskana.TaskanaComponent" />
+	<bean class="pro.taskana.TaskanaComponent" />
 </beans>

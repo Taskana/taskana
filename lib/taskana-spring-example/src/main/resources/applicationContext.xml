@@ -21,7 +21,7 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="taskanaEngineConfiguration" class="org.taskana.configuration.SpringTaskanaEngineConfiguration">
+	<bean id="taskanaEngineConfiguration" class="pro.taskana.configuration.SpringTaskanaEngineConfiguration">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
