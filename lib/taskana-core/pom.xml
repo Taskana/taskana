@@ -104,9 +104,9 @@
   -->   
   <repositories>
     <repository>
-      <id>camunda public</id>
-      <name>camunda</name>
-      <url>https://app.camunda.com/nexus/content/groups/public/</url>
+      <id>novatec public</id>
+      <name>novatec-repository</name>
+      <url>https://repository.novatec-gmbh.de/content/repositories/novatec/</url>
     </repository>
   </repositories>
 	
