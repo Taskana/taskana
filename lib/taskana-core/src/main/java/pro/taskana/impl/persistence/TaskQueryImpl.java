@@ -22,7 +22,6 @@ public class TaskQueryImpl implements TaskQuery {
 
     private TaskanaEngineImpl taskanaEngine;
 
-    private String tenantId;
     private String[] name;
     private String description;
     private int[] priority;
@@ -37,12 +36,6 @@ public class TaskQueryImpl implements TaskQuery {
 
     public TaskQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
-    }
-
-    @Override
-    public TaskQuery tenantId(String tenantId) {
-        this.tenantId = tenantId;
-        return this;
     }
 
     @Override
@@ -149,14 +142,6 @@ public class TaskQueryImpl implements TaskQuery {
 
     public void setTaskanaEngine(TaskanaEngineImpl taskanaEngine) {
         this.taskanaEngine = taskanaEngine;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 
     public String[] getName() {

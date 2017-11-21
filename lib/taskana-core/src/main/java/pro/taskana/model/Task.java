@@ -10,7 +10,6 @@ import java.util.Map;
 public class Task {
 
     private String id;
-    private String tenantId;
     private Timestamp created;
     private Timestamp claimed;
     private Timestamp completed;
@@ -46,14 +45,6 @@ public class Task {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 
     public Timestamp getCreated() {
@@ -276,7 +267,6 @@ public class Task {
         StringBuffer sb = new StringBuffer();
         sb.append("TASK(");
         sb.append("id=" + id);
-        sb.append(", tenantId=" + tenantId);
         sb.append(", created=" + created);
         sb.append(", claimed=" + claimed);
         sb.append(", completed=" + completed);

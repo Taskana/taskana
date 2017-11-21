@@ -6,7 +6,6 @@ package pro.taskana.model;
 public class ObjectReference {
 
     private String id;
-    private String tenantId;
     private String company;
     private String system;
     private String systemInstance;
@@ -19,14 +18,6 @@ public class ObjectReference {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 
     public String getCompany() {
@@ -74,7 +65,6 @@ public class ObjectReference {
         StringBuffer sb = new StringBuffer();
         sb.append("ObjectReference(");
         sb.append("id=" + id);
-        sb.append(", tenantId=" + tenantId);
         sb.append(", company=" + company);
         sb.append(", system=" + system);
         sb.append(", systemInstance=" + systemInstance);
