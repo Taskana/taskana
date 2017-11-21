@@ -40,7 +40,7 @@ public class TaskQueryImplTest {
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
         List<Task> result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)
@@ -50,7 +50,7 @@ public class TaskQueryImplTest {
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<Task> result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)
@@ -60,7 +60,7 @@ public class TaskQueryImplTest {
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new Task());
 
         Task result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)

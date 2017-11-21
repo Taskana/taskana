@@ -16,7 +16,7 @@ import java.util.List;
 public class ClassificationQueryImpl implements ClassificationQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryClassification";
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngineImpl taskanaEngineImpl;
     private String[] parentClassificationId;
     private String[] category;
     private String[] type;
@@ -32,7 +32,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private Date[] validUntil;
 
     public ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     }
 
     @Override
@@ -115,18 +115,33 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public List<Classification> list() {
-        return taskanaEngine.getSession().selectList(LINK_TO_MAPPER, this);
+        try {
+            taskanaEngineImpl.openConnection();
+            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     @Override
     public List<Classification> list(int offset, int limit) {
-        RowBounds rowBounds = new RowBounds(offset, limit);
-        return taskanaEngine.getSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+        try {
+            taskanaEngineImpl.openConnection();
+            RowBounds rowBounds = new RowBounds(offset, limit);
+            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     @Override
     public Classification single() {
-        return taskanaEngine.getSession().selectOne(LINK_TO_MAPPER, this);
+        try {
+            taskanaEngineImpl.openConnection();
+            return taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     public String[] getParentClassificationId() {

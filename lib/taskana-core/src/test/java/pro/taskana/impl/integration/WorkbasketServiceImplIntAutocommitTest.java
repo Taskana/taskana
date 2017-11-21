@@ -2,7 +2,9 @@ package pro.taskana.impl.integration;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.*;
+
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -23,10 +25,10 @@ import java.util.List;
 
 
 /**
- * Integration Test for workbasketServiceImpl.
+ * Integration Test for workbasketServiceImpl with connection management mode AUTOCOMMIT.
  * @author EH
  */
-public class WorkbasketServiceImplIntTest {
+public class WorkbasketServiceImplIntAutocommitTest {
 
     private static final int SLEEP_TIME = 100;
     private static final int THREE = 3;
@@ -45,6 +47,7 @@ public class WorkbasketServiceImplIntTest {
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         workBasketService = taskanaEngine.getWorkbasketService();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource);
@@ -205,7 +208,7 @@ public class WorkbasketServiceImplIntTest {
 
     @After
     public void cleanUp() {
-        taskanaEngineImpl.closeSession();
+        taskanaEngineImpl.returnConnection();
     }
 
     @AfterClass

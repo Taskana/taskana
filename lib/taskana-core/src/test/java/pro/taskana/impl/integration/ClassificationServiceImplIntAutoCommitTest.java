@@ -10,13 +10,14 @@ import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import org.h2.store.fs.FileUtils;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.TaskanaEngineImpl;
@@ -25,10 +26,10 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.model.Classification;
 
 /**
- * Integration Test for ClassificationServiceImpl.
+ * Integration Test for ClassificationServiceImpl with connection management mode AUTOCOMMIT.
  * @author EH
  */
-public class ClassificationServiceImplIntTest {
+public class ClassificationServiceImplIntAutoCommitTest {
     static int counter = 0;
 
     private DataSource dataSource;
@@ -45,6 +46,7 @@ public class ClassificationServiceImplIntTest {
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource);
     }
@@ -112,7 +114,7 @@ public class ClassificationServiceImplIntTest {
         System.out.println(classification.getParentClassificationId());
 
         List<Classification> allClassifications = classificationService.getClassificationTree();
-        Assert.assertEquals(2, list.size());
+        Assert.assertEquals(2, allClassifications.size());
     }
 
     @Test
@@ -260,11 +262,6 @@ public class ClassificationServiceImplIntTest {
         Assert.assertEquals(0, list.size());
         list = classificationService.createClassificationQuery().validFrom(Date.valueOf((LocalDate.now()))).validUntil(Date.valueOf(LocalDate.now().minusDays(1))).list();
         Assert.assertEquals(1, list.size());
-    }
-
-    @After
-    public void cleanUp() {
-        taskanaEngineImpl.closeSession();
     }
 
     @AfterClass
