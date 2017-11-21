@@ -3,6 +3,7 @@ package pro.taskana.impl.configuration;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -30,8 +31,9 @@ public class DBCleaner {
      * @throws SQLException
      */
     public void clearDb(DataSource dataSource) throws SQLException {
-        ScriptRunner runner = new ScriptRunner(dataSource.getConnection());
-        LOGGER.debug(dataSource.getConnection().getMetaData().toString());
+        Connection connection = dataSource.getConnection();
+        ScriptRunner runner = new ScriptRunner(connection);
+        LOGGER.debug(connection.getMetaData().toString());
 
         runner.setStopOnError(true);
         runner.setLogWriter(logWriter);

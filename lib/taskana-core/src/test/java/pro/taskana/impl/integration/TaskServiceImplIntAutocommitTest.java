@@ -1,8 +1,20 @@
 package pro.taskana.impl.integration;
 
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+
 import org.h2.store.fs.FileUtils;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -18,17 +30,11 @@ import pro.taskana.model.TaskState;
 import pro.taskana.persistence.ClassificationQuery;
 import pro.taskana.persistence.ObjectReferenceQuery;
 
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.List;
-
 /**
- * Integration Test for TaskServiceImpl transactions.
+ * Integration Test for TaskServiceImpl transactions with connection management mode AUTOCOMMIT.
  * @author EH
  */
-public class TaskServiceImplTransactionTest {
+public class TaskServiceImplIntAutocommitTest {
 
     private DataSource dataSource;
     private TaskServiceImpl taskServiceImpl;
@@ -43,6 +49,7 @@ public class TaskServiceImplTransactionTest {
 
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource);
@@ -50,13 +57,12 @@ public class TaskServiceImplTransactionTest {
 
     @Test
     public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
-
         Task task = new Task();
         task.setName("Unit Test Task");
         String id1 = IdGenerator.generateWithPrefix("TWB");
         task.setWorkbasketId(id1);
         task = taskServiceImpl.create(task);
-        taskanaEngineImpl.getSession().commit();  // needed so that the change is visible in the other session
+        //skanaEngineImpl.getSqlSession().commit();  // needed so that the change is visible in the other session
 
         TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
@@ -67,7 +73,6 @@ public class TaskServiceImplTransactionTest {
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
             throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
-
         Task task = new Task();
         task.setName("Unit Test Task");
         String id1 = IdGenerator.generateWithPrefix("TWB");
@@ -99,7 +104,6 @@ public class TaskServiceImplTransactionTest {
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException {
-
         Task task = new Task();
         task.setName("Unit Test Task");
         String id1 = IdGenerator.generateWithPrefix("TWB");
@@ -122,11 +126,6 @@ public class TaskServiceImplTransactionTest {
 
         Assert.assertEquals(0, results.size());
 
-    }
-
-    @After
-    public void cleanUp() {
-        taskanaEngineImpl.closeSession();
     }
 
     @AfterClass

@@ -16,7 +16,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryObjectReference";
 
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngineImpl taskanaEngineImpl;
     private String[] company;
     private String[] system;
     private String[] systemInstance;
@@ -24,7 +24,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     private String[] value;
 
     public ObjectReferenceQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     }
 
     @Override
@@ -59,18 +59,33 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
     @Override
     public List<ObjectReference> list() {
-        return taskanaEngine.getSession().selectList(LINK_TO_MAPPER, this);
+        try {
+            taskanaEngineImpl.openConnection();
+            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     @Override
     public List<ObjectReference> list(int offset, int limit) {
-        RowBounds rowBounds = new RowBounds(offset, limit);
-        return taskanaEngine.getSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+        try {
+            taskanaEngineImpl.openConnection();
+            RowBounds rowBounds = new RowBounds(offset, limit);
+            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     @Override
     public ObjectReference single() {
-        return taskanaEngine.getSession().selectOne(LINK_TO_MAPPER, this);
+        try {
+            taskanaEngineImpl.openConnection();
+            return taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     public String[] getCompany() {

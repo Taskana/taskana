@@ -39,7 +39,7 @@ public class ObjectReferenceQueryImplTest {
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
         List<ObjectReference> result = objectReferenceQueryImpl.value("test", "asd", "blubber").type("cool", "bla")
@@ -49,7 +49,7 @@ public class ObjectReferenceQueryImplTest {
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<ObjectReference> result = objectReferenceQueryImpl.value("test", "asd", "blubber").type("cool", "bla")
@@ -59,7 +59,7 @@ public class ObjectReferenceQueryImplTest {
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new ObjectReference());
 
         ObjectReference result = objectReferenceQueryImpl.value("test", "asd", "blubber").type("cool", "bla")

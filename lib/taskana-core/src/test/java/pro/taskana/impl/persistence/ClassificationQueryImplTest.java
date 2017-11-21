@@ -39,7 +39,7 @@ public class ClassificationQueryImplTest {
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
         List<Classification> result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)
@@ -49,7 +49,7 @@ public class ClassificationQueryImplTest {
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<Classification> result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)
@@ -59,7 +59,7 @@ public class ClassificationQueryImplTest {
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new Classification());
 
         Classification result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)

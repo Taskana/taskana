@@ -6,13 +6,16 @@ import static org.mockito.ArgumentMatchers.eq;
 import java.sql.Timestamp;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import pro.taskana.TaskanaEngine;
+
+import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -32,25 +35,39 @@ import pro.taskana.model.mappings.TaskMapper;
 public class TaskServiceImplTest {
 
     private static final int SLEEP_TIME = 100;
+    @Mock
+    TaskanaEngineConfiguration taskanaEngineConfiguration;
+
     @InjectMocks
     TaskServiceImpl taskServiceImpl;
     @Mock
-    TaskanaEngine taskanaEngine;
+    TaskanaEngineImpl taskanaEngine;
     @Mock
-    TaskanaEngineConfiguration taskanaEngineConfiguration;
-    @Mock
-    WorkbasketServiceImpl workbasketServiceImpl;
+    TaskanaEngineImpl taskanaEngineImpl;
     @Mock
     TaskMapper taskMapper;
     @Mock
     ObjectReferenceMapper objectReferenceMapper;
+    @Mock
+    WorkbasketService workbasketService;
+
+
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+        Mockito.when(taskanaEngine.getWorkbasketService()).thenReturn(workbasketService);
+        try {
+            Mockito.doNothing().when(workbasketService).checkAuthorization(any(), any());
+        } catch (NotAuthorizedException e) {
+             e.printStackTrace();
+        }
+        Mockito.doNothing().when(taskanaEngineImpl).openConnection();
+        Mockito.doNothing().when(taskanaEngineImpl).returnConnection();
+    }
 
     @Test
     public void testCreateSimpleTask() throws NotAuthorizedException {
-        registerBasicMocks(false);
-        Mockito.doNothing().when(workbasketServiceImpl).checkAuthorization(any(), any());
         Mockito.doNothing().when(taskMapper).insert(any());
-
         Task task = new Task();
         task.setName("Unit Test Task");
         task.setWorkbasketId("1");
@@ -101,12 +118,16 @@ public class TaskServiceImplTest {
     @Test
     public void testTransferTaskZuDestinationWorkbasket()
             throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
-        registerBasicMocks(false);
         Workbasket workbasket2 = createWorkbasket2();
-        Mockito.when(workbasketServiceImpl.getWorkbasket("2")).thenReturn(workbasket2);
+
+        Mockito.when(taskanaEngine.getWorkbasketService().getWorkbasket("2")).thenReturn(workbasket2);
 
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
         task.setRead(true);
+
+        // taskanaEngine.getConfiguration().isSecurityEnabled())
+        Mockito.when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+        Mockito.when(taskanaEngineConfiguration.isSecurityEnabled()).thenReturn(false);
 
         Assert.assertEquals(taskServiceImpl.getTaskById(task.getId()).getWorkbasketId(), "1");
         taskServiceImpl.transfer(task.getId(), "2");
@@ -119,8 +140,7 @@ public class TaskServiceImplTest {
     @Test(expected = WorkbasketNotFoundException.class)
     public void testTransferFailsIfDestinationWorkbasketDoesNotExist_withSecurityDisabled()
             throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
-        registerBasicMocks(false);
-        Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl)
+        Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketService)
                 .checkAuthorization(eq("invalidWorkbasketId"), any());
 
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
@@ -132,9 +152,7 @@ public class TaskServiceImplTest {
     @Test(expected = WorkbasketNotFoundException.class)
     public void testTransferFailsIfDestinationWorkbasketDoesNotExist_withSecurityEnabled()
             throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
-        registerBasicMocks(true);
-        Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceImpl)
-                .checkAuthorization(eq("invalidWorkbasketId"), any());
+        Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketService).checkAuthorization(eq("invalidWorkbasketId"), any());
 
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
 
@@ -152,8 +170,6 @@ public class TaskServiceImplTest {
 
     @Test
     public void should_InsertObjectReference_when_TaskIsCreated() throws NotAuthorizedException {
-        Mockito.when(taskanaEngine.getWorkbasketService()).thenReturn(workbasketServiceImpl);
-        Mockito.doNothing().when(workbasketServiceImpl).checkAuthorization(any(), any());
         Mockito.when(objectReferenceMapper.findByObjectReference(any())).thenReturn(null);
 
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
@@ -169,9 +185,6 @@ public class TaskServiceImplTest {
 
     @Test
     public void should_LinkObjectReference_when_TaskIsCreated() throws NotAuthorizedException {
-        Mockito.when(taskanaEngine.getWorkbasketService()).thenReturn(workbasketServiceImpl);
-        Mockito.doNothing().when(workbasketServiceImpl).checkAuthorization(any(), any());
-
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
         ObjectReference primaryObjRef = new ObjectReference();
         primaryObjRef.setSystem("Sol");
@@ -206,12 +219,6 @@ public class TaskServiceImplTest {
         workbasket2.setId("2");
         workbasket2.setName("Workbasket 2");
         return workbasket2;
-    }
-
-    private void registerBasicMocks(boolean securityEnabled) {
-        Mockito.when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
-        Mockito.when(taskanaEngineConfiguration.isSecurityEnabled()).thenReturn(securityEnabled);
-        Mockito.when(taskanaEngine.getWorkbasketService()).thenReturn(workbasketServiceImpl);
     }
 
 }
