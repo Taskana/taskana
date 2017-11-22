@@ -1,8 +1,5 @@
 package pro.taskana.impl;
 
-import java.sql.Timestamp;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaEngine;
@@ -17,6 +14,13 @@ import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.model.mappings.WorkbasketMapper;
 import pro.taskana.security.CurrentUserContext;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * This is the implementation of WorkbasketService.
  */
@@ -55,7 +59,14 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permissions) {
-        return workbasketMapper.findByPermission(permissions, CurrentUserContext.getUserid());
+        //use a set to avoid duplicates
+        Set<Workbasket> workbaskets = new HashSet<>();
+        for (String accessId : CurrentUserContext.getAccessIds()) {
+            workbaskets.addAll(workbasketMapper.findByPermission(permissions, accessId));
+        }
+        List<Workbasket> workbasketList = new ArrayList<Workbasket>();
+        workbasketList.addAll(workbaskets);
+        return workbasketList;
     }
 
     @Override
@@ -135,18 +146,18 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public void checkAuthorization(String workbasketId, WorkbasketAuthorization workbasketAuthorization)
             throws NotAuthorizedException {
 
-        // Skip permission check is security is not enabled
+        // Skip permission check if security is not enabled
         if (!taskanaEngine.getConfiguration().isSecurityEnabled()) {
             LOGGER.debug("Skipping permissions check since security is disabled.");
             return;
         }
 
-        String userId = CurrentUserContext.getUserid();
-        LOGGER.debug("Verifying that {} has the permission {} on workbasket {}", userId, workbasketAuthorization.name(),
-                workbasketId);
+        List<String> accessIds = CurrentUserContext.getAccessIds();
+        LOGGER.debug("Verifying that {} has the permission {} on workbasket {}",
+                CurrentUserContext.getUserid(), workbasketAuthorization.name(), workbasketId);
 
         List<WorkbasketAccessItem> accessItems = workbasketAccessMapper
-                .findByWorkbasketAndUserAndAuthorization(workbasketId, userId, workbasketAuthorization.name());
+                .findByWorkbasketAndAccessIdAndAuthorizations(workbasketId, accessIds, workbasketAuthorization.name());
 
         if (accessItems.size() <= 0) {
             throw new NotAuthorizedException("Not authorized. Authorization '" + workbasketAuthorization.name()

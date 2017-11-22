@@ -2,8 +2,7 @@
 <table class="table table-condensed table-hover">
   <thead>
     <th>ID</th>
-    <th>UserID</th>
-    <th>GroupID</th>
+    <th>AccessID</th>
     <th>READ</th>
     <th>OPEN</th>
     <th>APPEND</th>
@@ -14,25 +13,22 @@
   <tr>
     <td></td>
     <td>
-      <input class="form-control" placeholder="UserId" name="name" [(ngModel)]="workbasketAuthorization.userId" required>
+      <input class="form-control" placeholder="AccessId" name="name" [(ngModel)]="workbasketAuthorization.accessId" required>
     </td>
     <td>
-      <input class="form-control" placeholder="GroupId" name="description" [(ngModel)]="workbasketAuthorization.groupId">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permRead">
     </td>
     <td>
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.read">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permOpen">
     </td>
     <td>
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.open">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permAppend">
     </td>
     <td>
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.append">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permTransfer">
     </td>
     <td>
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.transfer">
-    </td>
-    <td>
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.distribute">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permDistribute">
     </td>
     <td>
       <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onAdd()">
@@ -48,43 +44,39 @@
     <td *ngIf="workbasketAuthorization.id == editing.id">
       <input class="form-control" placeholder="Id" name="editid" [(ngModel)]="editing.id" readonly>
     </td>
-    <td *ngIf="workbasketAuthorization.id != editing.id">{{ workbasketAuthorization.userId }}</td>
+    <td *ngIf="workbasketAuthorization.id != editing.id">{{ workbasketAuthorization.accessId }}</td>
     <td *ngIf="workbasketAuthorization.id == editing.id">
-      <input class="form-control" placeholder="UserId" name="edituserId" [(ngModel)]="editing.userId">
-    </td>
-    <td *ngIf="workbasketAuthorization.id != editing.id">{{ workbasketAuthorization.groupId }}</td>
-    <td *ngIf="workbasketAuthorization.id == editing.id">
-      <input class="form-control" placeholder="GroupId" name="editgroupId" [(ngModel)]="editing.groupId">
+      <input class="form-control" placeholder="AccessId" name="editAccessId" [(ngModel)]="editing.accessId">
     </td>
     <td *ngIf="workbasketAuthorization.id != editing.id">
-      <input type="checkbox" [checked]="workbasketAuthorization.read" disabled>
+      <input type="checkbox" [checked]="workbasketAuthorization.permRead" disabled>
     </td>
     <td *ngIf="workbasketAuthorization.id == editing.id">
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.read">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permRead">
     </td>
     <td *ngIf="workbasketAuthorization.id != editing.id">
-      <input type="checkbox" [checked]="workbasketAuthorization.open" disabled>
+      <input type="checkbox" [checked]="workbasketAuthorization.permOpen" disabled>
     </td>
     <td *ngIf="workbasketAuthorization.id == editing.id">
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.open">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permOpen">
     </td>
     <td *ngIf="workbasketAuthorization.id != editing.id">
-      <input type="checkbox" [checked]="workbasketAuthorization.append" disabled>
+      <input type="checkbox" [checked]="workbasketAuthorization.permAppend" disabled>
     </td>
     <td *ngIf="workbasketAuthorization.id == editing.id">
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.append">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permAppend">
     </td>
     <td *ngIf="workbasketAuthorization.id != editing.id">
-      <input type="checkbox" [checked]="workbasketAuthorization.transfer" disabled>
+      <input type="checkbox" [checked]="workbasketAuthorization.permTransfer" disabled>
     </td>
     <td *ngIf="workbasketAuthorization.id == editing.id">
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.transfer">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permTransfer">
     </td>
     <td *ngIf="workbasketAuthorization.id != editing.id">
-      <input type="checkbox" [checked]="workbasketAuthorization.distribute" disabled>
+      <input type="checkbox" [checked]="workbasketAuthorization.permDistribute" disabled>
     </td>
     <td *ngIf="workbasketAuthorization.id == editing.id">
-      <input type="checkbox" [(ngModel)]="workbasketAuthorization.distribute">
+      <input type="checkbox" [(ngModel)]="workbasketAuthorization.permDistribute">
     </td>
     <td *ngIf="workbasketAuthorization.id != editing.id">
       <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onEdit(workbasketAuthorization)">
