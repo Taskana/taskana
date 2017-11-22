@@ -1,19 +1,7 @@
 package pro.taskana.impl.integration;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-
 import org.h2.store.fs.FileUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -25,6 +13,13 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -181,9 +176,9 @@ public class WorkbasketServiceImplIntTest {
         WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         accessItem.setWorkbasketId(id1);
-        accessItem.setUserId("Arthur Dent");
-        accessItem.setOpen(true);
-        accessItem.setRead(true);
+        accessItem.setAccessId("Arthur Dent");
+        accessItem.setPermOpen(true);
+        accessItem.setPermRead(true);
         workBasketService.createWorkbasketAuthorization(accessItem);
 
         Assert.assertEquals(1, workBasketService.getAllAuthorizations().size());
@@ -194,18 +189,18 @@ public class WorkbasketServiceImplIntTest {
         WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         accessItem.setWorkbasketId(id1);
-        accessItem.setUserId("Arthur Dent");
-        accessItem.setOpen(true);
-        accessItem.setRead(true);
+        accessItem.setAccessId("Arthur Dent");
+        accessItem.setPermOpen(true);
+        accessItem.setPermRead(true);
         workBasketService.createWorkbasketAuthorization(accessItem);
 
         Assert.assertEquals(1, workBasketService.getAllAuthorizations().size());
 
-        accessItem.setUserId("Zaphod Beeblebrox");
+        accessItem.setAccessId("Zaphod Beeblebrox");
         workBasketService.updateWorkbasketAuthorization(accessItem);
 
         Assert.assertEquals("Zaphod Beeblebrox",
-                workBasketService.getWorkbasketAuthorization(accessItem.getId()).getUserId());
+                workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
     }
 
     @After

@@ -1,19 +1,11 @@
 package pro.taskana.model.mappings;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAuthorization;
+
+import java.util.List;
 /**
  * This class is the mybatis mapping of workbaskets.
  */
@@ -52,7 +44,7 @@ public interface WorkbasketMapper {
     List<Workbasket> findAll();
 
     @Select("<script>SELECT W.ID, W.CREATED, W.MODIFIED, W.NAME, W.DESCRIPTION, W.OWNER FROM WORKBASKET AS W "
-            + "INNER JOIN WORKBASKET_ACCESS_LIST AS ACL " + "ON (W.ID = ACL.WORKBASKET_ID AND USER_ID = #{userId}) "
+            + "INNER JOIN WORKBASKET_ACCESS_LIST AS ACL " + "ON (W.ID = ACL.WORKBASKET_ID AND ACL.ACCESS_ID = #{accessId}) "
             + "WHERE <foreach collection='authorizations' item='authorization' separator=' AND '>"
             + "<if test=\"authorization.name() == 'OPEN'\">OPEN</if>"
             + "<if test=\"authorization.name() == 'READ'\">READ</if>"
@@ -68,7 +60,7 @@ public interface WorkbasketMapper {
             @Result(property = "description", column = "DESCRIPTION"),
             @Result(property = "owner", column = "OWNER"),
             @Result(property = "distributionTargets", column = "ID", javaType = List.class, many = @Many(fetchType = FetchType.DEFAULT, select = "findByDistributionTargets")) })
-    List<Workbasket> findByPermission(@Param("authorizations") List<WorkbasketAuthorization> authorizations, @Param("userId") String userId);
+    List<Workbasket> findByPermission(@Param("authorizations") List<WorkbasketAuthorization> authorizations, @Param("accessId") String accessId);
 
     @Insert("INSERT INTO WORKBASKET (ID, CREATED, MODIFIED, NAME, DESCRIPTION, OWNER) VALUES (#{workbasket.id}, #{workbasket.created}, #{workbasket.modified}, #{workbasket.name}, #{workbasket.description}, #{workbasket.owner})")
     @Options(keyProperty = "id", keyColumn = "ID")
