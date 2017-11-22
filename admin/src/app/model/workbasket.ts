@@ -1,7 +1,6 @@
 export class Workbasket {
     constructor(
         public id: string,
-        public tenantId: string,
         public created: string,
         public modified: string,
         public name: string,

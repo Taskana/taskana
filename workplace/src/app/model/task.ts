@@ -1,7 +1,6 @@
 export class Task {
     
     id: string;
-    tenantId: string;
     created: any;
     claimed: any;
     completed: any;
@@ -22,7 +21,6 @@ export class Task {
   
   constructor(data){
     this.id = data.id;
-    this.tenantId = data.tenantId;
     this.created = data.created;
     this.claimed = data.claimed;
     this.completed = data.completed;

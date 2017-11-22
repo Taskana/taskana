@@ -10,7 +10,6 @@ import java.util.List;
 public class Workbasket {
 
     private String id;
-    private String tenantId;
     private Timestamp created;
     private Timestamp modified;
     private String name;
@@ -24,14 +23,6 @@ public class Workbasket {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 
     public Timestamp getCreated() {

@@ -13,9 +13,6 @@
 <dl class="dl-horizontal">
   <dt>Id</dt>
   <dd>{{ workbasketClone.id }}</dd>
-  <dt>Tenant Id</dt>
-  <dd *ngIf="!editMode">{{ workbasketClone.tenantId }}</dd>
-  <dd *ngIf="editMode"><input class="form-control" placeholder="Name" name="editName" [(ngModel)]="workbasketClone.tenantId"></dd>
   <dt>Created Date</dt>
   <dd>{{ workbasketClone.created | date: 'dd/MM/yyyy HH:mm' }}</dd>
   <dt>Modified Date</dt>

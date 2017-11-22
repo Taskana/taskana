@@ -17,7 +17,6 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryObjectReference";
 
     private TaskanaEngineImpl taskanaEngine;
-    private String tenantId;
     private String[] company;
     private String[] system;
     private String[] systemInstance;
@@ -26,12 +25,6 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
     public ObjectReferenceQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
-    }
-
-    @Override
-    public ObjectReferenceQuery tenantId(String tenantIds) {
-        this.tenantId = tenantIds;
-        return this;
     }
 
     @Override
@@ -78,14 +71,6 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     @Override
     public ObjectReference single() {
         return taskanaEngine.getSession().selectOne(LINK_TO_MAPPER, this);
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 
     public String[] getCompany() {

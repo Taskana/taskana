@@ -26,7 +26,6 @@ public class TaskFilter {
     private static final String STATE = "state";
     private static final String PRIORITY = "priority";
     private static final String DESCRIPTION = "description";
-    private static final String TENANT_ID = "tenantId";
     private static final String NAME = "name";
     private static final String OWNER = "owner";
     private static final String WORKBASKET_ID = "workbasketId";
@@ -47,7 +46,6 @@ public class TaskFilter {
     private static final String POR_SYSTEM_INSTANCE = POR + DOT + "systemInstance";
     private static final String POR_SYSTEM = POR + DOT + "system";
     private static final String POR_COMPANY = POR + DOT + "company";
-    private static final String POR_TENANT_ID = POR + DOT + "tenantId";
 
     private static final String CLAIMED = "CLAIMED";
     private static final String COMPLETED = "COMPLETED";
@@ -68,9 +66,6 @@ public class TaskFilter {
         TaskQuery taskQuery = taskService.createTaskQuery();
 
         // apply filters
-        if (params.containsKey(TENANT_ID)) {
-            taskQuery.workbasketId(params.get(TENANT_ID).toArray(new String[0]));
-        }
         if (params.containsKey(NAME)) {
             String[] names = extractCommaSeperatedFields(params.get(NAME));
             taskQuery.name(names);
@@ -131,9 +126,6 @@ public class TaskFilter {
         // objectReference
         if (params.keySet().stream().filter(s -> s.startsWith(POR)).toArray().length > 0) {
             ObjectReferenceQuery objectReferenceQuery = taskQuery.createObjectReferenceQuery();
-            if (params.containsKey(POR_TENANT_ID)) {
-                objectReferenceQuery.tenantId(params.get(POR_TENANT_ID).get(0));
-            }
             if (params.containsKey(POR_COMPANY)) {
                 String[] companies = extractCommaSeperatedFields(params.get(POR_COMPANY));
                 objectReferenceQuery.company(companies);

@@ -21,13 +21,12 @@ public interface QueryMapper {
     String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.model.mappings.ObjectReferenceMapper.findById";
     String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findByIdAndDomain";
 
-    @Select("<script>SELECT t.ID, t.TENANT_ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.PRIORITY, t.STATE, t.CLASSIFICATION_ID, t.WORKBASKETID, t.OWNER, t.PRIMARY_OBJ_REF_ID, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
+    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.PRIORITY, t.STATE, t.CLASSIFICATION_ID, t.WORKBASKETID, t.OWNER, t.PRIMARY_OBJ_REF_ID, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
             + "FROM TASK t "
             // Joins if Classification or Object Reference Query is needed
             + "<if test='classificationQuery != null'>LEFT OUTER JOIN CLASSIFICATION c on t.CLASSIFICATION_ID = c.ID</if> "
             + "<if test='objectReferenceQuery != null'>LEFT OUTER JOIN OBJECT_REFERENCE o on t.PRIMARY_OBJ_REF_ID = o.ID</if> "
             + "<where>"
-            + "<if test='tenantId != null'>t.TENANT_ID = #{tenantId}</if> "
             + "<if test='name != null'>AND t.NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
             + "<if test='description != null'>AND t.DESCRIPTION like #{description}</if> "
             + "<if test='priority != null'>AND t.PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
@@ -55,7 +54,6 @@ public interface QueryMapper {
             + "</if>"
             // Object Reference Query
             + "<if test='objectReferenceQuery != null'>"
-            + "<if test='objectReferenceQuery.tenantId != null'>AND o.TENANT_ID = #{objectReferenceQuery.tenantId}</if> "
             + "<if test='objectReferenceQuery.company != null'>AND o.COMPANY IN(<foreach item='item' collection='objectReferenceQuery.company' separator=',' >#{item}</foreach>)</if> "
             + "<if test='objectReferenceQuery.system != null'>AND o.SYSTEM IN(<foreach item='item' collection='objectReferenceQuery.system' separator=',' >#{item}</foreach>)</if> "
             + "<if test='objectReferenceQuery.systemInstance != null'>AND o.SYSTEM_INSTANCE IN(<foreach item='item' collection='objectReferenceQuery.systemInstance' separator=',' >#{item}</foreach>)</if> "
@@ -65,7 +63,6 @@ public interface QueryMapper {
             + "</where>"
             + "</script>")
     @Results(value = { @Result(property = "id", column = "ID"),
-            @Result(property = "tenantId", column = "TENANT_ID"),
             @Result(property = "created", column = "CREATED"),
             @Result(property = "claimed", column = "CLAIMED"),
             @Result(property = "completed", column = "COMPLETED"),
@@ -135,10 +132,9 @@ public interface QueryMapper {
     List<Classification> queryClassification(ClassificationQueryImpl classificationQuery);
 
 
-    @Select("<script>SELECT ID, TENANT_ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
+    @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
             + "FROM OBJECT_REFERENCE "
             + "<where>"
-            + "<if test='tenantId != null'>TENANT_ID = #{tenantId}</if> "
             + "<if test='company != null'>AND COMPANY IN(<foreach item='item' collection='company' separator=',' >#{item}</foreach>)</if> "
             + "<if test='system != null'>AND SYSTEM IN(<foreach item='item' collection='system' separator=',' >#{item}</foreach>)</if> "
             + "<if test='systemInstance != null'>AND SYSTEM_INSTANCE IN(<foreach item='item' collection='systemInstance' separator=',' >#{item}</foreach>)</if> "
@@ -148,7 +144,6 @@ public interface QueryMapper {
             + "</script>")
     @Results({
         @Result(property = "id", column = "ID"),
-        @Result(property = "tenantId", column = "TENANT_ID"),
         @Result(property = "company", column = "COMPANY"),
         @Result(property = "system", column = "SYSTEM"),
         @Result(property = "systemInstance", column = "SYSTEM_INSTANCE"),
