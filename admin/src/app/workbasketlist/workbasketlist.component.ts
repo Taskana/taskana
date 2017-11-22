@@ -92,7 +92,7 @@ export class WorkbasketlistComponent implements OnInit {
   }
 
   getEmptyObject() {
-    return new Workbasket("", "", "", "", "", "", "", null);
+    return new Workbasket("", "", "", "", "", "", null);
   }
 
   onClickWB() {

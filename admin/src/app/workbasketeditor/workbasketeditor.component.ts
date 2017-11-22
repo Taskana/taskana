@@ -15,7 +15,7 @@ export class WorkbasketeditorComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.workbasket = new Workbasket("", "", "", "", "", "", "", null);
+    this.workbasket = new Workbasket("", "", "", "", "", "", null);
   }
 
   onSubmit() {

@@ -10,14 +10,6 @@ import pro.taskana.model.TaskState;
 public interface TaskQuery extends BaseQuery<Task> {
 
     /**
-     * Add your tenant id to your query.
-     * @param tenantId
-     *            the tenant id as String
-     * @return the query
-     */
-    TaskQuery tenantId(String tenantId);
-
-    /**
      * Add your names to your query.
      * @param name
      *            the names as Strings

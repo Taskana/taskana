@@ -111,11 +111,11 @@ public class TaskServiceImplTransactionTest {
                 .parentClassification("pId1", "pId2").category("cat1", "cat2").type("oneType").name("1Name", "name2")
                 .descriptionLike("my desc").priority(1, 2, 1).serviceLevel("me", "and", "you");
 
-        ObjectReferenceQuery objectReferenceQuery = new ObjectReferenceQueryImpl(taskanaEngineImpl).tenantId("tenant1")
+        ObjectReferenceQuery objectReferenceQuery = new ObjectReferenceQueryImpl(taskanaEngineImpl)
                 .company("first comp", "sonstwo gmbh").system("sys").type("type1", "type2")
                 .systemInstance("sysInst1", "sysInst2").value("val1", "val2", "val3");
 
-        List<Task> results = taskServiceImpl.createTaskQuery().tenantId("1").name("bla", "test").descriptionLike("test")
+        List<Task> results = taskServiceImpl.createTaskQuery().name("bla", "test").descriptionLike("test")
                 .priority(1, 2, 2).state(TaskState.CLAIMED).workbasketId("asd", "asdasdasd")
                 .owner("test", "test2", "bla").customFields("test").classification(classificationQuery)
                 .objectReference(objectReferenceQuery).list();

@@ -88,7 +88,6 @@ export class WorkbasketDistributiontargetsComponent implements OnInit {
         this.workbasket.name = result.name;
         this.workbasket.description = result.description;
         this.workbasket.owner = result.owner;
-        this.workbasket.tenantId = result.tenantId;
         this.workbasket.distributionTargets = result.distributionTargets;
       }, (err) => {
         this.alerts = [{

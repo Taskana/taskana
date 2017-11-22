@@ -7,14 +7,6 @@ import pro.taskana.model.ObjectReference;
  */
 public interface ObjectReferenceQuery extends BaseQuery<ObjectReference> {
     /**
-     * Add your tenant id to your query.
-     * @param tenantId
-     *            the tenant id as String
-     * @return the query
-     */
-    ObjectReferenceQuery tenantId(String tenantId);
-
-    /**
      * Add your company to your query.
      * @param companies
      *            as Strings
@@ -53,5 +45,4 @@ public interface ObjectReferenceQuery extends BaseQuery<ObjectReference> {
      * @return the query
      */
     ObjectReferenceQuery value(String... values);
-
 }
