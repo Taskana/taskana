@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -42,7 +43,6 @@ public class TaskController {
                 // get all
                 return ResponseEntity.status(HttpStatus.OK).body(taskLogic.getAll());
             }
-
             return ResponseEntity.status(HttpStatus.OK).body(taskLogic.inspectPrams(params));
         } catch (NotAuthorizedException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

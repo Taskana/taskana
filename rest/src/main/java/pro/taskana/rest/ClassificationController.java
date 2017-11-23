@@ -29,9 +29,10 @@ public class ClassificationController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 	}
+	
 	@RequestMapping(value = "/{classificationId}")
 	public Classification getClassification(@PathVariable String classificationId) {
-		return classificationService.getClassification(classificationId, "");
+		return classificationService.getClassification(classificationId, "nova-domain");
 	}
 
 	@RequestMapping(value = "/{classificationId}/{domain}")
@@ -58,5 +59,4 @@ public class ClassificationController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-
 }

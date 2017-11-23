@@ -12,38 +12,40 @@ export class RestConnectorService {
   constructor(private http: Http) { }
 
   getAllWorkBaskets(): Observable<Workbasket[]> {
-    return this.http.get(environment.taskanaRestUrl + "/v1/workbaskets?requiredPermission=OPEN", this.createAuthorizationHeader())
+    return this.http.get(environment.taskanaRestUrl + '/v1/workbaskets?requiredPermission=OPEN', this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
   findTaskWithWorkbaskets(basketName: string): Observable<Task[]> {
-    return this.http.get(environment.taskanaRestUrl + "/v1/tasks?workbasketid=" + basketName + "&state=READY&state=CLAIMED", this.createAuthorizationHeader())
+    return this.http.get(environment.taskanaRestUrl + '/v1/tasks?workbasketid='
+      + basketName + '&state=READY&state=CLAIMED', this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
   getTask(id: string): Observable<Task> {
-    return this.http.get(environment.taskanaRestUrl + "/v1/tasks/" + id, this.createAuthorizationHeader())
+    return this.http.get(environment.taskanaRestUrl + '/v1/tasks/' + id, this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
   completeTask(id: string): Observable<Task> {
-    return this.http.post(environment.taskanaRestUrl + "/v1/tasks/" + id + "/complete", "", this.createAuthorizationHeader())
+    return this.http.post(environment.taskanaRestUrl + '/v1/tasks/' + id + '/complete', '', this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
   claimTask(id: string): Observable<Task> {
-    return this.http.post(environment.taskanaRestUrl + "/v1/tasks/" + id + "/claim", "test", this.createAuthorizationHeader())
+    return this.http.post(environment.taskanaRestUrl + '/v1/tasks/' + id + '/claim', 'test', this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
   transferTask(taskId: string, workbasketId: string) {
-    return this.http.post(environment.taskanaRestUrl + "/v1/tasks/" + taskId + "/transfer/" + workbasketId, "", this.createAuthorizationHeader())
+    return this.http.post(environment.taskanaRestUrl + '/v1/tasks/' + taskId
+      + '/transfer/' + workbasketId, '', this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
   private createAuthorizationHeader() {
-    let headers: Headers = new Headers();
-    headers.append("Authorization", "Basic TWF4OnRlc3Q=");
+    const headers: Headers = new Headers();
+    headers.append('Authorization', 'Basic TWF4OnRlc3Q=');
 
     return new RequestOptions({ headers: headers });
   }
