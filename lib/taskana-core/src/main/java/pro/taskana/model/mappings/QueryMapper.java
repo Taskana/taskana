@@ -19,7 +19,8 @@ import java.util.List;
 public interface QueryMapper {
 
     String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.model.mappings.ObjectReferenceMapper.findById";
-    String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findByIdAndDomain";
+    String CLASSIFICATION_FINDBYIDANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByIdAndDomain";
+    String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findById";
 
     @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.PRIORITY, t.STATE, t.CLASSIFICATION_ID, t.WORKBASKETID, t.OWNER, t.PRIMARY_OBJ_REF_ID, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
             + "FROM TASK t "

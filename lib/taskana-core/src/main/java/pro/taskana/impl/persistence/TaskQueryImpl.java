@@ -3,6 +3,7 @@ package pro.taskana.impl.persistence;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
+
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.TaskanaEngineImpl;
@@ -112,7 +113,8 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public List<Task> list() throws NotAuthorizedException {
         checkAuthorization();
-        return taskanaEngine.getSession().selectList(LINK_TO_MAPPER, this);
+        List<Task> tempTaskList = taskanaEngine.getSession().selectList(LINK_TO_MAPPER, this);
+        return tempTaskList;
     }
 
     @Override

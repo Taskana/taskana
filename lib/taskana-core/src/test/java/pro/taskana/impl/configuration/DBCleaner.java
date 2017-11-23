@@ -46,6 +46,4 @@ public class DBCleaner {
             LOGGER.error(errorWriter.toString());
         }
     }
-
-
 }

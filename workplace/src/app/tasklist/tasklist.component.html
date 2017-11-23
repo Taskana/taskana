@@ -1,11 +1,13 @@
 <table class="table table-hover">
   <thead>
-    <th class="clickable" (click)="orderTasks('id')">ID</th>
-    <th class="clickable" (click)="orderTasks('name')">Name</th>
-    <th class="clickable" (click)="orderTasks('due')">Due Date</th>
-    <th class="clickable" (click)="orderTasks('priority')">Priority</th>
-    <th class="clickable" (click)="orderTasks('state')">State</th>
-    <th>Actions</th>
+  	<tr>
+	    <th class="clickable" (click)="orderTasks('id')">ID</th>
+	    <th class="clickable" (click)="orderTasks('name')">Name</th>
+	    <th class="clickable" (click)="orderTasks('due')">Due Date</th>
+	    <th class="clickable" (click)="orderTasks('priority')">Priority</th>
+	    <th class="clickable" (click)="orderTasks('state')">State</th>
+	    <th>Actions</th>
+    </tr>
   </thead>
   <tr *ngFor="let task of tasks">
     <td>{{ task.id }}</td>

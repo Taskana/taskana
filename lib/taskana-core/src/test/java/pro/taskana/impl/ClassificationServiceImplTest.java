@@ -34,7 +34,6 @@ public class ClassificationServiceImplTest {
     @Mock
     ClassificationMapper classificationMapper;
 
-
     @Test
     public void testAddClassification() {
         doNothing().when(classificationMapper).insert(any());
