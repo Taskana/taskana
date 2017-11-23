@@ -1,12 +1,12 @@
 package pro.taskana;
 
-import java.util.List;
-
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
+
+import java.util.List;
 
 /**
  * This service manages the Workbaskets.
@@ -43,11 +43,9 @@ public interface WorkbasketService {
     Workbasket updateWorkbasket(Workbasket workbasket) throws NotAuthorizedException;
 
     /**
-     * Create a new authorization for a specific workbasket and a specific user.
-     * @param workbasket
-     *            the choosen workbasket
-     * @param user
-     *            the choosen user
+     * Create a new Workbasket Authorization with a Workbasket and a AccessId.
+     * @param workbasketAccessItem
+     *            the new workbasketAccessItem
      * @return
      */
     WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem);
@@ -74,11 +72,10 @@ public interface WorkbasketService {
     void deleteWorkbasketAuthorization(String id);
 
     /**
-     * This method checks the authorization with the saved one.
-     * @param workbasket
-     *            the workbasket to check
-     * @param userId
-     *            the user to check
+     * This method checks the authorization with the saved one for the actual User.
+     *
+     * @param workbasketId
+     *            the workbasket we want to access
      * @param authorization
      *            the needed Authorization
      * @throws WorkbasketNotFoundException
