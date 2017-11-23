@@ -17,18 +17,18 @@ export class TasklistComponent implements OnInit {
 
   @Input() tasks: Task[];
 
-  constructor(private restConnectorService:RestConnectorService, private router:Router) {
+  constructor(private restConnectorService: RestConnectorService, private router: Router) {
     this.columnForOrdering = 'id';  // default: order tasks by id
   }
 
   ngOnInit() {
   }
-  
+
   selectTask(task: Task) {
     this.task.next(task);
   }
 
-  orderTasks(column:string) {
+  orderTasks(column: string) {
     this.columnForOrdering = column;
   }
 

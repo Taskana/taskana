@@ -1,5 +1,5 @@
 export class Task {
-    
+
     id: string;
     created: any;
     claimed: any;
@@ -14,12 +14,12 @@ export class Task {
     type: string;
     workbasket: string;
     owner: string;
-  
-  static create(data){
+
+  static create(data) {
     return new Task(data);
   }
-  
-  constructor(data){
+
+  constructor(data) {
     this.id = data.id;
     this.created = data.created;
     this.claimed = data.claimed;
