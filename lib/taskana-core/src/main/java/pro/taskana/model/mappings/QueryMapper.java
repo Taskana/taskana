@@ -90,7 +90,7 @@ public interface QueryMapper {
             @Result(property = "custom10", column = "CUSTOM_10") })
     List<Task> queryTasks(TaskQueryImpl taskQuery);
 
-    @Select("<script>SELECT ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL "
+    @Select("<script>SELECT ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
             + "FROM CLASSIFICATION "
             + "<where>"
             + "<if test='parentClassificationId != null'>AND PARENT_CLASSIFICATION_ID IN(<foreach item='item' collection='parentClassificationId' separator=',' >#{item}</foreach>)</if> "

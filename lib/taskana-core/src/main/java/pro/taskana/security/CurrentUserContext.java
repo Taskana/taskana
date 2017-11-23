@@ -1,14 +1,14 @@
 package pro.taskana.security;
 
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.util.List;
-import java.util.Set;
-
-import javax.security.auth.Subject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.security.auth.Subject;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Provides the context information about the current (calling) user. The
@@ -105,4 +105,15 @@ public final class CurrentUserContext {
         return null;
     }
 
+    public static List<String> getAccessIds() {
+        List<String> accessIds = new ArrayList<>();
+        accessIds.add(getUserid());
+        if (getGroupIds() != null) {
+            accessIds.addAll(getGroupIds());
+        }
+        if (accessIds.isEmpty()) {
+            return null;
+        }
+        return accessIds;
+    }
 }
