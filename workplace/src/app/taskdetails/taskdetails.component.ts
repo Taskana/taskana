@@ -11,10 +11,9 @@ export class TaskdetailsComponent implements OnInit {
   @Input()
   task: Task = null;
 
-  constructor() { 
+  constructor() {
   }
 
   ngOnInit() {
   }
-
 }

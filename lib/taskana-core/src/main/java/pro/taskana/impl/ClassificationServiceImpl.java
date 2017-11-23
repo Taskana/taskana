@@ -20,9 +20,7 @@ import java.util.List;
 public class ClassificationServiceImpl implements ClassificationService {
 
     private static final String ID_PREFIX_CLASSIFICATION = "CLI";
-
     public static final Date CURRENT_CLASSIFICATIONS_VALID_UNTIL = Date.valueOf("9999-12-31");
-
     private ClassificationMapper classificationMapper;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -60,8 +58,6 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngineImpl.returnConnection();
         }
     }
-
-
 
     @Override
     public void addClassification(Classification classification) {
@@ -134,7 +130,6 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     }
 
-
     @Override
     public List<Classification> getAllClassificationsWithId(String id, String domain) {
         try {
@@ -167,5 +162,4 @@ public class ClassificationServiceImpl implements ClassificationService {
     public ClassificationQuery createClassificationQuery() {
         return new ClassificationQueryImpl(taskanaEngine);
     }
-
 }
