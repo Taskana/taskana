@@ -1,8 +1,7 @@
-package pro.taskana.impl.persistence;
+package pro.taskana.impl;
 
 import org.apache.ibatis.session.RowBounds;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.model.Classification;
 import pro.taskana.persistence.ClassificationQuery;
 

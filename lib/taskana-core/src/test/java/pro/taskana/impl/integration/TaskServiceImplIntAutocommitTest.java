@@ -11,6 +11,7 @@ import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pro.taskana.TaskanaEngine;
@@ -18,12 +19,12 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.impl.ClassificationQueryImpl;
+import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.impl.persistence.ClassificationQueryImpl;
-import pro.taskana.impl.persistence.ObjectReferenceQueryImpl;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
@@ -42,6 +43,13 @@ public class TaskServiceImplIntAutocommitTest {
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
 
+    @BeforeClass
+    public static void resetDb() throws SQLException {
+        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
+        DBCleaner cleaner = new DBCleaner();
+        cleaner.clearDb(ds, true);
+    }
+
     @Before
     public void setup() throws FileNotFoundException, SQLException, LoginException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
@@ -52,7 +60,7 @@ public class TaskServiceImplIntAutocommitTest {
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource);
+        cleaner.clearDb(dataSource, false);
     }
 
     @Test

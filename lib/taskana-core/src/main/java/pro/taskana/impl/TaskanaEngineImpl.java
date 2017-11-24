@@ -1,6 +1,5 @@
 package pro.taskana.impl;
 
-import java.sql.SQLException;
 import java.util.Stack;
 
 import org.apache.ibatis.mapping.Environment;
@@ -20,6 +19,7 @@ import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.AutocommitFailedException;
 import pro.taskana.exceptions.ConnectionNotSetException;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.model.mappings.ClassificationMapper;
@@ -80,102 +80,24 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
-     *  Open the connection to the database.
-     *  to be called at the begin of each Api call that accesses the database
-     *
-     */
-    public void openConnection() {
-        initSqlSession();
-        if (mode != ConnectionManagementMode.EXPLICIT) {
-            pushSessionToStack(this.sessionManager);
-        }
-    }
-
-    /**
-     *  Initializes the SqlSessionManager.
-     *
-     */
-    void initSqlSession() {
-        if (mode == ConnectionManagementMode.EXPLICIT && this.connection == null) {
-            throw new ConnectionNotSetException();
-        } else if (mode != ConnectionManagementMode.EXPLICIT) {
-            if (!this.sessionManager.isManagedSessionStarted()) {
-                this.sessionManager.startManagedSession();
-            }
-        }
-    }
-
-    /**
-     *  closes the connection to the database in mode EXPLICIT.
-     *  In mode EXPLICIT, closes the client's connection, sets it to null and switches to mode PARTICIPATE
-     *  Has the same effect as setConnection(null)
-     */
-    @Override
-    public void closeConnection() {
-        if (this.mode == ConnectionManagementMode.EXPLICIT) {
-            this.connection = null;
-            if (sessionManager.isManagedSessionStarted()) {
-                sessionManager.close();
-            }
-            mode = ConnectionManagementMode.PARTICIPATE;
-        }
-    }
-
-    /**
-     *  Returns the database connection into the pool.
-     *  In the case of nested calls, simply pops the latest session from the session stack.
-     *  Closes the connection if the session stack is empty.
-     *  In mode AUTOCOMMIT commits before the connection is closed.
-     *  To be called at the end of each Api call that accesses the database
-     */
-    public void returnConnection() {
-        if (this.mode != ConnectionManagementMode.EXPLICIT) {
-            popSessionFromStack();
-            if (getSessionStack().isEmpty()
-                    && this.sessionManager != null && this.sessionManager.isManagedSessionStarted()) {
-                if (this.mode == ConnectionManagementMode.AUTOCOMMIT) {
-                    try {
-                        this.sessionManager.commit();
-                    } catch (Exception e) {
-                        LOGGER.debug("closeSession(): Tried to Autocommit and caught exception" + e);
-                    }
-                }
-                this.sessionManager.close();
-            }
-        }
-    }
-
-    /**
      * sets the connection management mode.
      *
      * @param mode  - the connection management mode
      *   Valid values are
-     *   PARTICIPATE   - to be used in managed environments where taskana participates in surrounding transactions
-     *   AUTOCOMMIT    - to be used in non-managed environments. Taskana commits each single API call explicitly
-     *   EXPLICIT      - to be used in non-managed environments. Gives commit control to the client.
+     *   PARTICIPATE       - taskana participates in global transaction. This is the default mode
+     *   AUTOCOMMIT        - taskana commits each API call separately
+     *   EXPLICIT          - commit processing is managed explicitly by the client
      */
     @Override
     public void setConnectionManagementMode(ConnectionManagementMode mode) {
         if (this.mode == ConnectionManagementMode.EXPLICIT && connection != null
                 && mode != ConnectionManagementMode.EXPLICIT) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                LOGGER.debug("setConnectionManagementMode(" + mode + ") tried to close connection and caught " + e);
+            if (sessionManager.isManagedSessionStarted()) {
+                sessionManager.close();
             }
             connection = null;
-            this.mode = mode;
-        } else {
-            this.mode = mode;
         }
-    }
-
-    /**
-     * retrieve the SqlSession used by taskana.
-     * @return  the myBatis SqlSession object used by taskana
-     */
-    public SqlSession getSqlSession() {
-        return this.sessionManager;
+        this.mode = mode;
     }
 
     /**
@@ -200,6 +122,81 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             }
             mode = ConnectionManagementMode.PARTICIPATE;
         }
+    }
+
+    /**
+     *  closes the connection to the database in mode EXPLICIT.
+     *  In mode EXPLICIT, closes the client's connection, sets it to null and switches to mode PARTICIPATE
+     *  Has the same effect as setConnection(null)
+     */
+    @Override
+    public void closeConnection() {
+        if (this.mode == ConnectionManagementMode.EXPLICIT) {
+            this.connection = null;
+            if (sessionManager.isManagedSessionStarted()) {
+                sessionManager.close();
+            }
+            mode = ConnectionManagementMode.PARTICIPATE;
+        }
+    }
+
+    /**
+     *  Open the connection to the database.
+     *  to be called at the begin of each Api call that accesses the database
+     *
+     */
+    void openConnection() {
+        initSqlSession();
+        if (mode != ConnectionManagementMode.EXPLICIT) {
+            pushSessionToStack(this.sessionManager);
+        }
+    }
+
+    /**
+     *  Initializes the SqlSessionManager.
+     *
+     */
+    void initSqlSession() {
+        if (mode == ConnectionManagementMode.EXPLICIT && this.connection == null) {
+            throw new ConnectionNotSetException();
+        } else if (mode != ConnectionManagementMode.EXPLICIT) {
+            if (!this.sessionManager.isManagedSessionStarted()) {
+                this.sessionManager.startManagedSession();
+            }
+        }
+    }
+
+    /**
+     *  Returns the database connection into the pool.
+     *  In the case of nested calls, simply pops the latest session from the session stack.
+     *  Closes the connection if the session stack is empty.
+     *  In mode AUTOCOMMIT commits before the connection is closed.
+     *  To be called at the end of each Api call that accesses the database
+     */
+    void returnConnection() {
+        if (this.mode != ConnectionManagementMode.EXPLICIT) {
+            popSessionFromStack();
+            if (getSessionStack().isEmpty()
+                    && this.sessionManager != null && this.sessionManager.isManagedSessionStarted()) {
+                if (this.mode == ConnectionManagementMode.AUTOCOMMIT) {
+                    try {
+                        this.sessionManager.commit();
+                    } catch (Exception e) {
+                        LOGGER.error("closeSession(): Tried to Autocommit and caught exception" + e);
+                        throw new AutocommitFailedException(e);
+                    }
+                }
+                this.sessionManager.close();
+            }
+        }
+    }
+
+    /**
+     * retrieve the SqlSession used by taskana.
+     * @return  the myBatis SqlSession object used by taskana
+     */
+    SqlSession getSqlSession() {
+        return this.sessionManager;
     }
 
     /**

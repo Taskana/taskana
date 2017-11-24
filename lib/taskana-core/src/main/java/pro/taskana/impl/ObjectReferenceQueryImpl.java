@@ -1,10 +1,9 @@
-package pro.taskana.impl.persistence;
+package pro.taskana.impl;
 
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.persistence.ObjectReferenceQuery;
 

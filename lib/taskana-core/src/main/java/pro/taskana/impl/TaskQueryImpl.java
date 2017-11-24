@@ -1,11 +1,10 @@
-package pro.taskana.impl.persistence;
+package pro.taskana.impl;
 
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAuthorization;

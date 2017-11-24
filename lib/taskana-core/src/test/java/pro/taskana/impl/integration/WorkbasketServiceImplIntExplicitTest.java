@@ -14,6 +14,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pro.taskana.TaskanaEngine;
@@ -47,6 +48,13 @@ public class WorkbasketServiceImplIntExplicitTest {
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workBasketService;
 
+    @BeforeClass
+    public static void resetDb() throws SQLException {
+        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
+        DBCleaner cleaner = new DBCleaner();
+        cleaner.clearDb(ds, true);
+    }
+
     @Before
     public void setup() throws FileNotFoundException, SQLException, LoginException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
@@ -55,7 +63,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource);
+        cleaner.clearDb(dataSource, false);
     }
 
     @Test

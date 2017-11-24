@@ -19,6 +19,7 @@ import pro.taskana.configuration.DbScriptRunner;
 public class DBCleaner {
     private static final Logger LOGGER = LoggerFactory.getLogger(DbScriptRunner.class);
     private static final String DB_CLEAR_SCRIPT = "/sql/clear-db.sql";
+    private static final String DB_DROP_TABLES_SCRIPT = "/sql/drop-tables.sql";
 
     private StringWriter outWriter = new StringWriter();
     private PrintWriter logWriter = new PrintWriter(outWriter);
@@ -28,21 +29,26 @@ public class DBCleaner {
 
     /**
      * Clears the db.
+     * @param dropTables if true drop tables, else clean tables
      * @throws SQLException
      */
-    public void clearDb(DataSource dataSource) throws SQLException {
-        Connection connection = dataSource.getConnection();
-        ScriptRunner runner = new ScriptRunner(connection);
-        LOGGER.debug(connection.getMetaData().toString());
+    public void clearDb(DataSource dataSource, boolean dropTables) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            ScriptRunner runner = new ScriptRunner(connection);
+            LOGGER.debug(connection.getMetaData().toString());
 
-        runner.setStopOnError(true);
-        runner.setLogWriter(logWriter);
-        runner.setErrorLogWriter(errorLogWriter);
+            runner.setStopOnError(true);
+            runner.setLogWriter(logWriter);
+            runner.setErrorLogWriter(errorLogWriter);
+            if (dropTables) {
+                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_DROP_TABLES_SCRIPT)));
+            } else {
+                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_CLEAR_SCRIPT)));
+            }
 
-        runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_CLEAR_SCRIPT)));
-
-        runner.closeConnection();
-
+        } catch (Exception e) {
+            LOGGER.error("caught Exception " + e);
+        }
         LOGGER.debug(outWriter.toString());
         if (!errorWriter.toString().trim().isEmpty()) {
             LOGGER.error(errorWriter.toString());
