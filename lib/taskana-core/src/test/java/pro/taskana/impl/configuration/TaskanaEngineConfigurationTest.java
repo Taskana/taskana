@@ -11,12 +11,12 @@ import java.util.Properties;
 import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
-import org.h2.jdbcx.JdbcDataSource;
+import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pro.taskana.TaskanaEngine;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 /**
@@ -26,6 +26,7 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 public class TaskanaEngineConfigurationTest {
     private static DataSource dataSource = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfigurationTest.class);
+    private static final int POOL_TIME_TO_WAIT = 50;
 
     @Test
     public void testCreateTaskanaEngine() throws FileNotFoundException, SQLException, LoginException {
@@ -71,10 +72,20 @@ public class TaskanaEngineConfigurationTest {
      * @return
      */
     private static DataSource createDefaultDataSource() {
-        JdbcDataSource ds = new JdbcDataSource();
-        ds.setURL("jdbc:h2:mem:taskana");
-        ds.setPassword("sa");
-        ds.setUser("sa");
+//        JdbcDataSource ds = new JdbcDataSource();
+//        ds.setURL("jdbc:h2:mem:taskana");
+//        ds.setPassword("sa");
+//        ds.setUser("sa");
+
+        String jdbcDriver = "org.h2.Driver";
+        String jdbcUrl = "jdbc:h2:mem:taskana";
+        String dbUserName = "sa";
+        String dbPassword = "sa";
+        DataSource ds = new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver,
+                jdbcUrl, dbUserName, dbPassword);
+        ((PooledDataSource) ds).setPoolTimeToWait(POOL_TIME_TO_WAIT);
+        ((PooledDataSource) ds).forceCloseAll();  // otherwise the MyBatis pool is not initialized correctly
+
         return ds;
     }
 
@@ -112,8 +123,9 @@ public class TaskanaEngineConfigurationTest {
             }
 
             if (propertiesFileIsComplete) {
-                ds = new UnpooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver,
+                ds = new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver,
                                             jdbcUrl, dbUserName, dbPassword);
+                ((PooledDataSource) ds).forceCloseAll();  // otherwise the MyBatis pool is not initialized correctly
             } else {
                 LOGGER.warn("propertiesFile " + propertiesFileName + " is incomplete" + warningMessage);
                 LOGGER.warn("Using default Datasource for Test");

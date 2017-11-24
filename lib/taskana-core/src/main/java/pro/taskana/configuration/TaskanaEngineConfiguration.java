@@ -55,7 +55,7 @@ public class TaskanaEngineConfiguration {
         this.securityEnabled = securityEnabled;
     }
 
-    public DataSource createDefaultDataSource() {
+    public static DataSource createDefaultDataSource() {
         LOGGER.warn("No datasource is provided. A inmemory db is used: "
                 + "'org.h2.Driver', 'jdbc:h2:mem:taskana', 'sa', 'sa'");
         return createDatasource(H2_DRIVER, JDBC_H2_MEM_TASKANA, USER_NAME, USER_PASSWORD);
@@ -75,7 +75,7 @@ public class TaskanaEngineConfiguration {
      * @param dbConfiguration
      * @return DataSource
      */
-    public DataSource createDatasource(String driver, String jdbcUrl, String username, String password) {
+    public static DataSource createDatasource(String driver, String jdbcUrl, String username, String password) {
         return new PooledDataSource(driver, jdbcUrl, username, password);
     }
 

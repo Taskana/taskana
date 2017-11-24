@@ -1,12 +1,15 @@
 package pro.taskana.impl;
 
+import static org.mockito.Mockito.times;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import pro.taskana.TaskanaEngine;
+
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -44,10 +47,16 @@ public class WorkbasketServiceImplTest {
     @Mock
     WorkbasketAccessMapper workbasketAccessMapper;
     @Mock
-    TaskanaEngine taskanaEngine;
+    TaskanaEngineImpl taskanaEngine;
+    @Mock
+    TaskanaEngineImpl taskanaEngineImpl;
     @Mock
     TaskanaEngineConfiguration taskanaEngineConfiguration;
 
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+    }
     @Test
     public void should_ReturnWorkbasket_when_WorkbasketIdExists() throws WorkbasketNotFoundException {
         when(workbasketMapper.findById(any())).thenReturn(new Workbasket());

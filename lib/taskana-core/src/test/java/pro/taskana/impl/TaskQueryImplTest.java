@@ -1,4 +1,4 @@
-package pro.taskana.impl.persistence;
+package pro.taskana.impl;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -13,18 +13,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.model.ObjectReference;
+import pro.taskana.model.Task;
+import pro.taskana.model.TaskState;
 
 /**
- * Test for ObjectReferenceQueryImpl.
+ * Test for TaskQueryImpl.
  * @author EH
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ObjectReferenceQueryImplTest {
+public class TaskQueryImplTest {
 
-    ObjectReferenceQueryImpl objectReferenceQueryImpl;
+    TaskQueryImpl taskQueryImpl;
 
     @Mock
     TaskanaEngineImpl taskanaEngine;
@@ -34,36 +35,36 @@ public class ObjectReferenceQueryImplTest {
 
     @Before
     public void setup() {
-        objectReferenceQueryImpl = new ObjectReferenceQueryImpl(taskanaEngine);
+        taskQueryImpl = new TaskQueryImpl(taskanaEngine);
     }
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
-        List<ObjectReference> result = objectReferenceQueryImpl.value("test", "asd", "blubber").type("cool", "bla")
-                .systemInstance("1", "2").system("superId").list();
+        List<Task> result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)
+                .state(TaskState.CLAIMED, TaskState.COMPLETED).list();
         Assert.assertNotNull(result);
     }
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
-        List<ObjectReference> result = objectReferenceQueryImpl.value("test", "asd", "blubber").type("cool", "bla")
-                .systemInstance("1", "2").system("superId").list(1, 1);
+        List<Task> result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)
+                .state(TaskState.CLAIMED, TaskState.COMPLETED).list(1, 1);
         Assert.assertNotNull(result);
     }
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
-        when(sqlSession.selectOne(any(), any())).thenReturn(new ObjectReference());
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+        when(sqlSession.selectOne(any(), any())).thenReturn(new Task());
 
-        ObjectReference result = objectReferenceQueryImpl.value("test", "asd", "blubber").type("cool", "bla")
-                .systemInstance("1", "2").system("superId").single();
+        Task result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)
+                .state(TaskState.CLAIMED, TaskState.COMPLETED).single();
         Assert.assertNotNull(result);
     }
 }

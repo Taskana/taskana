@@ -4,9 +4,10 @@ import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
-import pro.taskana.impl.persistence.ClassificationQueryImpl;
-import pro.taskana.impl.persistence.ObjectReferenceQueryImpl;
-import pro.taskana.impl.persistence.TaskQueryImpl;
+
+import pro.taskana.impl.ClassificationQueryImpl;
+import pro.taskana.impl.ObjectReferenceQueryImpl;
+import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.model.Classification;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;

@@ -1,5 +1,18 @@
 package pro.taskana.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,18 +20,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.persistence.TestClassificationQuery;
 import pro.taskana.model.Classification;
 import pro.taskana.model.mappings.ClassificationMapper;
-
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 /**
  * Unit Test for ClassificationServiceImpl.
@@ -33,6 +38,9 @@ public class ClassificationServiceImplTest {
 
     @Mock
     ClassificationMapper classificationMapper;
+
+    @Mock
+    TaskanaEngineImpl taskanaEngineImpl;
 
 
     @Test
@@ -52,6 +60,8 @@ public class ClassificationServiceImplTest {
     public void testModifiedClassification() {
         doNothing().when(classificationMapper).insert(any());
         doNothing().when(classificationMapper).update(any());
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doNothing().when(taskanaEngineImpl).returnConnection();
 
         int insert = 0;
 
@@ -86,6 +96,8 @@ public class ClassificationServiceImplTest {
     @Test
     public void testFindAllClassifications() throws NotAuthorizedException {
         doNothing().when(classificationMapper).insert(any());
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doNothing().when(taskanaEngineImpl).returnConnection();
 
         // insert Classifications
         Classification classification0 = new Classification();
@@ -118,7 +130,8 @@ public class ClassificationServiceImplTest {
     @Test
     public void testClassificationQuery() throws NotAuthorizedException {
         doNothing().when(classificationMapper).insert(any());
-
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doNothing().when(taskanaEngineImpl).returnConnection();
         Classification classification = new Classification();
         classification.setDescription("DESC");
         classificationService.addClassification(classification);

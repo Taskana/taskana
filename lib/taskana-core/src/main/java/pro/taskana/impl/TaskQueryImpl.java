@@ -1,11 +1,10 @@
-package pro.taskana.impl.persistence;
+package pro.taskana.impl;
 
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -20,7 +19,7 @@ public class TaskQueryImpl implements TaskQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryTasks";
 
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngineImpl taskanaEngineImpl;
 
     private String[] name;
     private String description;
@@ -35,7 +34,7 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] customFields;
 
     public TaskQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     }
 
     @Override
@@ -106,42 +105,57 @@ public class TaskQueryImpl implements TaskQuery {
 
     @Override
     public ObjectReferenceQuery createObjectReferenceQuery() {
-        return new ObjectReferenceQueryImpl(taskanaEngine);
+        return new ObjectReferenceQueryImpl(taskanaEngineImpl);
     }
 
     @Override
     public List<Task> list() throws NotAuthorizedException {
-        checkAuthorization();
-        return taskanaEngine.getSession().selectList(LINK_TO_MAPPER, this);
+        try {
+            taskanaEngineImpl.openConnection();
+            checkAuthorization();
+            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     @Override
     public List<Task> list(int offset, int limit) throws NotAuthorizedException {
-        checkAuthorization();
-        RowBounds rowBounds = new RowBounds(offset, limit);
-        return taskanaEngine.getSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+        try {
+            taskanaEngineImpl.openConnection();
+            checkAuthorization();
+            RowBounds rowBounds = new RowBounds(offset, limit);
+            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     @Override
     public Task single() throws NotAuthorizedException {
-        checkAuthorization();
-        return taskanaEngine.getSession().selectOne(LINK_TO_MAPPER, this);
+        try {
+            taskanaEngineImpl.openConnection();
+            checkAuthorization();
+            return taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     private void checkAuthorization() throws NotAuthorizedException {
         if (this.workbasketId != null && this.workbasketId.length > 0) {
             for (String workbasket : this.workbasketId) {
-                taskanaEngine.getWorkbasketService().checkAuthorization(workbasket, WorkbasketAuthorization.OPEN);
+                taskanaEngineImpl.getWorkbasketService().checkAuthorization(workbasket, WorkbasketAuthorization.OPEN);
             }
         }
     }
 
     public TaskanaEngineImpl getTaskanaEngine() {
-        return taskanaEngine;
+        return taskanaEngineImpl;
     }
 
     public void setTaskanaEngine(TaskanaEngineImpl taskanaEngine) {
-        this.taskanaEngine = taskanaEngine;
+        this.taskanaEngineImpl = taskanaEngine;
     }
 
     public String[] getName() {
