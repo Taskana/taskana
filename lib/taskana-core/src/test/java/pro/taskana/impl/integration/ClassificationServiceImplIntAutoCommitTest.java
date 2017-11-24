@@ -13,6 +13,7 @@ import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pro.taskana.ClassificationService;
@@ -38,6 +39,12 @@ public class ClassificationServiceImplIntAutoCommitTest {
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
 
+    @BeforeClass
+    public static void resetDb() throws SQLException {
+        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
+        DBCleaner cleaner = new DBCleaner();
+        cleaner.clearDb(ds, true);
+    }
 
     @Before
     public void setup() throws FileNotFoundException, SQLException, LoginException {
@@ -48,7 +55,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource);
+        cleaner.clearDb(dataSource, false);
     }
 
     @Test

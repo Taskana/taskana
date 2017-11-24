@@ -14,7 +14,6 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.persistence.TaskQueryImpl;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.ObjectReference;

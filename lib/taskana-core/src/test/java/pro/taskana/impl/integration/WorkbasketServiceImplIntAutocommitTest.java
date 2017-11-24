@@ -1,7 +1,19 @@
 package pro.taskana.impl.integration;
 
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+
 import org.h2.store.fs.FileUtils;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
@@ -15,13 +27,6 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
-
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -41,6 +46,13 @@ public class WorkbasketServiceImplIntAutocommitTest {
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workBasketService;
 
+    @BeforeClass
+    public static void resetDb() throws SQLException {
+        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
+        DBCleaner cleaner = new DBCleaner();
+        cleaner.clearDb(ds, true);
+    }
+
     @Before
     public void setup() throws FileNotFoundException, SQLException, LoginException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
@@ -50,7 +62,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         workBasketService = taskanaEngine.getWorkbasketService();
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource);
+        cleaner.clearDb(dataSource, false);
     }
 
     @Test
@@ -204,11 +216,6 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         Assert.assertEquals("Zaphod Beeblebrox",
                 workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
-    }
-
-    @After
-    public void cleanUp() {
-        taskanaEngineImpl.returnConnection();
     }
 
     @AfterClass
