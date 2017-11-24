@@ -1,8 +1,24 @@
 package pro.taskana.impl.integration;
 
+import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+
 import org.h2.store.fs.FileUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -14,19 +30,12 @@ import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
 
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
- * Integration Test for workbasketServiceImpl.
- * @author EH
+ * Integration Test for workbasketServiceImpl with connection mode EXPLICIT.
+ * @author bbr
+ *
  */
-public class WorkbasketServiceImplIntTest {
+public class WorkbasketServiceImplIntExplicitTest {
 
     private static final int SLEEP_TIME = 100;
     private static final int THREE = 3;
@@ -39,19 +48,29 @@ public class WorkbasketServiceImplIntTest {
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workBasketService;
 
+    @BeforeClass
+    public static void resetDb() throws SQLException {
+        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
+        DBCleaner cleaner = new DBCleaner();
+        cleaner.clearDb(ds, true);
+    }
+
     @Before
     public void setup() throws FileNotFoundException, SQLException, LoginException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-        workBasketService = taskanaEngine.getWorkbasketService();
+        taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource);
+        cleaner.clearDb(dataSource, false);
     }
 
     @Test
-    public void testInsertWorkbasket() throws NotAuthorizedException {
+    public void testInsertWorkbasket() throws NotAuthorizedException, SQLException {
+        Connection connection = dataSource.getConnection();
+        taskanaEngineImpl.setConnection(connection);
+        workBasketService = taskanaEngine.getWorkbasketService();
         int before = workBasketService.getWorkbaskets().size();
         Workbasket workbasket = new Workbasket();
         String id1 = IdGenerator.generateWithPrefix("TWB");
@@ -59,10 +78,14 @@ public class WorkbasketServiceImplIntTest {
         workbasket.setName("Megabasket");
         workBasketService.createWorkbasket(workbasket);
         Assert.assertEquals(before + 1, workBasketService.getWorkbaskets().size());
+        connection.close();
     }
 
     @Test
-    public void testSelectAllWorkbaskets() throws NotAuthorizedException {
+    public void testSelectAllWorkbaskets() throws NotAuthorizedException, SQLException {
+        Connection connection = dataSource.getConnection();
+        taskanaEngineImpl.setConnection(connection);
+        workBasketService = taskanaEngine.getWorkbasketService();
         int before = workBasketService.getWorkbaskets().size();
         Workbasket workbasket0 = new Workbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
@@ -80,10 +103,15 @@ public class WorkbasketServiceImplIntTest {
         workbasket2.setName("Hyperbasket");
         workBasketService.createWorkbasket(workbasket2);
         Assert.assertEquals(before + THREE, workBasketService.getWorkbaskets().size());
+        connection.commit();
+        connection.close();
     }
 
     @Test
-    public void testSelectWorkbasket() throws WorkbasketNotFoundException, NotAuthorizedException {
+    public void testSelectWorkbasket() throws WorkbasketNotFoundException, NotAuthorizedException, SQLException {
+        Connection connection = dataSource.getConnection();
+        taskanaEngineImpl.setConnection(connection);
+        workBasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket0 = new Workbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
@@ -101,15 +129,25 @@ public class WorkbasketServiceImplIntTest {
         workBasketService.createWorkbasket(workbasket2);
         Workbasket foundWorkbasket = workBasketService.getWorkbasket(id2);
         Assert.assertEquals(id2, foundWorkbasket.getId());
+        connection.commit();
+        connection.close();
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
-    public void testGetWorkbasketFail() throws WorkbasketNotFoundException {
+    public void testGetWorkbasketFail() throws WorkbasketNotFoundException, SQLException {
+        Connection connection = dataSource.getConnection();
+        taskanaEngineImpl.setConnection(connection);
+        workBasketService = taskanaEngine.getWorkbasketService();
         workBasketService.getWorkbasket("fail");
+        connection.commit();
+        connection.close();
     }
 
     @Test
-    public void testSelectWorkbasketWithDistribution() throws WorkbasketNotFoundException, NotAuthorizedException {
+    public void testSelectWorkbasketWithDistribution() throws WorkbasketNotFoundException, NotAuthorizedException, SQLException {
+        Connection connection = dataSource.getConnection();
+        taskanaEngineImpl.setConnection(connection);
+        workBasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket0 = new Workbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
@@ -129,10 +167,15 @@ public class WorkbasketServiceImplIntTest {
         Workbasket foundWorkbasket = workBasketService.getWorkbasket(id2);
         Assert.assertEquals(id2, foundWorkbasket.getId());
         Assert.assertEquals(2, foundWorkbasket.getDistributionTargets().size());
+        connection.commit();
+        connection.close();
     }
 
     @Test
     public void testUpdateWorkbasket() throws Exception {
+        Connection connection = dataSource.getConnection();
+        taskanaEngineImpl.setConnection(connection);
+        workBasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket0 = new Workbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
@@ -169,10 +212,15 @@ public class WorkbasketServiceImplIntTest {
                 workBasketService.getWorkbasket(id1).getModified());
         Assert.assertEquals(workBasketService.getWorkbasket(id3).getCreated(),
                 workBasketService.getWorkbasket(id3).getModified());
+        connection.commit();
+        connection.close();
     }
 
     @Test
-    public void testInsertWorkbasketAccessUser() throws NotAuthorizedException {
+    public void testInsertWorkbasketAccessUser() throws NotAuthorizedException, SQLException {
+        Connection connection = dataSource.getConnection();
+        taskanaEngineImpl.setConnection(connection);
+        workBasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         accessItem.setWorkbasketId(id1);
@@ -182,10 +230,15 @@ public class WorkbasketServiceImplIntTest {
         workBasketService.createWorkbasketAuthorization(accessItem);
 
         Assert.assertEquals(1, workBasketService.getAllAuthorizations().size());
+        connection.commit();
+        connection.close();
     }
 
     @Test
-    public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException {
+    public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException, SQLException {
+        Connection connection = dataSource.getConnection();
+        taskanaEngineImpl.setConnection(connection);
+        workBasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         accessItem.setWorkbasketId(id1);
@@ -201,11 +254,13 @@ public class WorkbasketServiceImplIntTest {
 
         Assert.assertEquals("Zaphod Beeblebrox",
                 workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
-    }
+        connection.commit();
+        connection.close();
+   }
 
     @After
     public void cleanUp() {
-        taskanaEngineImpl.closeSession();
+        taskanaEngineImpl.setConnection(null);
     }
 
     @AfterClass
