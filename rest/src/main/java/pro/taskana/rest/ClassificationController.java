@@ -20,24 +20,34 @@ public class ClassificationController {
 	@Autowired
 	private ClassificationService classificationService;
 
-	@RequestMapping
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<Classification>> getClassifications() {
 		try {
 			List<Classification> classificationTree = classificationService.getClassificationTree();
-			return ResponseEntity.status(HttpStatus.CREATED).body(classificationTree);
+			return ResponseEntity.status(HttpStatus.OK).body(classificationTree);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 	}
 	
-	@RequestMapping(value = "/{classificationId}")
-	public Classification getClassification(@PathVariable String classificationId) {
-		return classificationService.getClassification(classificationId, "nova-domain");
+	@RequestMapping(value = "/{classificationId}", method = RequestMethod.GET)
+	public ResponseEntity<Classification> getClassification(@PathVariable String classificationId) {
+	    try {
+	        Classification classification = classificationService.getClassification(classificationId, "");
+	        return ResponseEntity.status(HttpStatus.OK).body(classification);
+	    } catch(Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 
-	@RequestMapping(value = "/{classificationId}/{domain}")
-	public Classification getClassification(@PathVariable String classificationId, @PathVariable String domain) {
-		return classificationService.getClassification(classificationId, domain);
+	@RequestMapping(value = "/{classificationId}/{domain}", method = RequestMethod.GET)
+	public ResponseEntity<Classification> getClassification(@PathVariable String classificationId, @PathVariable String domain) {
+	    try {
+            Classification classification = classificationService.getClassification(classificationId, domain);
+            return ResponseEntity.status(HttpStatus.OK).body(classification);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
 	}
 
 	@RequestMapping(method = RequestMethod.POST)

@@ -114,13 +114,13 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public Classification getClassification(String id, String domain) {
-        Classification classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-
-        if (classification == null) {
-            return classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+        Classification classification;
+        if (domain == null) {
+            classification = classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
         } else {
-            return classification;
+            classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
         }
+        return classification;
     }
 
     @Override
