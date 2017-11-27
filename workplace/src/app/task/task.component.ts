@@ -14,7 +14,7 @@ import { SafeResourceUrl, DomSanitizer} from '@angular/platform-browser';
 export class TaskComponent implements OnInit {
 
   task: Task = null;
-  link: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl("https://duckduckgo.com/?q=");
+  link: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://duckduckgo.com/?q=');
   autoCompleteData: string[] = new Array;
   workbasket: string = null;
   workbasketId: string;
@@ -22,18 +22,20 @@ export class TaskComponent implements OnInit {
 
   private sub: any;
 
-  constructor(private restConnectorService:RestConnectorService, private route:ActivatedRoute, private router:Router, private sanitizer: DomSanitizer) { }
+  constructor(private restConnectorService: RestConnectorService,
+              private route: ActivatedRoute, private router: Router,
+              private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
-        let id = this.route.snapshot.params['id'];
+        const id = this.route.snapshot.params['id'];
         this.restConnectorService.getTask(id).subscribe(
                        t =>  {
-                         this.task = t; 
-                         this.link = this.sanitizer.bypassSecurityTrustResourceUrl("https://duckduckgo.com/?q=" + this.task.name );
+                         this.task = t;
+                         this.link = this.sanitizer.bypassSecurityTrustResourceUrl('https://duckduckgo.com/?q=' + this.task.name );
                          this.restConnectorService.getAllWorkBaskets().subscribe( w => {
                             this.workbaskets = w;
                             this.workbaskets.forEach(workbasket => {
-                            if(workbasket.id != this.task.workbasket) {
+                            if (workbasket.id !== this.task.workbasket) {
                               this.autoCompleteData.push(workbasket.name);
                             }
                           });
@@ -42,9 +44,9 @@ export class TaskComponent implements OnInit {
   }
 
   transferTask() {
-    if(this.workbasket) {
+    if (this.workbasket) {
       this.workbaskets.forEach(workbasket => {
-        if (workbasket.name == this.workbasket) {
+        if (workbasket.name === this.workbasket) {
           this.workbasketId = workbasket.id;
         }
       });

@@ -42,7 +42,6 @@ public class ClassificationServiceImplTest {
     @Mock
     TaskanaEngineImpl taskanaEngineImpl;
 
-
     @Test
     public void testAddClassification() {
         doNothing().when(classificationMapper).insert(any());

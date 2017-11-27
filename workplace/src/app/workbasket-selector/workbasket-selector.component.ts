@@ -27,23 +27,23 @@ export class SelectorComponent implements OnInit {
         this.autoCompleteData.push(workbasket.name);
       });
     });
-    if(this.dataService.workbasketId) {
+    if (this.dataService.workbasketId) {
       this.getTasks(this.dataService.workbasketId);
       this.result = this.dataService.workbasketName;
     }
   }
 
   searchBasket() {
-    if(this.workbaskets) {
+    if (this.workbaskets) {
       this.workbaskets.forEach(workbasket => {
-        if (workbasket.name == this.result) {
+        if (workbasket.name === this.result) {
           this.resultId = workbasket.id;
         }
       });
       this.getTasks(this.resultId);
       this.dataService.workbasketId = this.resultId;
       this.dataService.workbasketName = this.result;
-    }  
+    }
   }
 
   getTasks(id: string) {

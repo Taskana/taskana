@@ -59,7 +59,6 @@ public class WorkbasketController {
 		} else {
 			return workbasketService.getWorkbaskets();
 		}
-
 	}
 
 	@RequestMapping(value = "/{workbasketid}")

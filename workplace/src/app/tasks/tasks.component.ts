@@ -18,11 +18,11 @@ export class TasksComponent {
   @Input()
   task: Task;
 
-  loadTasks(tasks: Task[]){
+  loadTasks(tasks: Task[]) {
     this.tasks = tasks;
   }
 
-  selectTask(task: Task){
+  selectTask(task: Task) {
     this.task = task;
   }
 
