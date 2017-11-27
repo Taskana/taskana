@@ -22,7 +22,6 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.persistence.TestClassificationQuery;
 import pro.taskana.model.Classification;
 import pro.taskana.model.mappings.ClassificationMapper;
 
@@ -39,6 +38,9 @@ public class ClassificationServiceImplTest {
 
     @Mock
     ClassificationMapper classificationMapper;
+
+    @Mock
+    TaskanaEngineImpl taskanaEngineImpl;
 
     @Test
     public void testAddClassification() {
@@ -57,6 +59,8 @@ public class ClassificationServiceImplTest {
     public void testModifiedClassification() {
         doNothing().when(classificationMapper).insert(any());
         doNothing().when(classificationMapper).update(any());
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doNothing().when(taskanaEngineImpl).returnConnection();
 
         int insert = 0;
 
@@ -91,6 +95,8 @@ public class ClassificationServiceImplTest {
     @Test
     public void testFindAllClassifications() throws NotAuthorizedException {
         doNothing().when(classificationMapper).insert(any());
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doNothing().when(taskanaEngineImpl).returnConnection();
 
         // insert Classifications
         Classification classification0 = new Classification();
@@ -123,7 +129,8 @@ public class ClassificationServiceImplTest {
     @Test
     public void testClassificationQuery() throws NotAuthorizedException {
         doNothing().when(classificationMapper).insert(any());
-
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doNothing().when(taskanaEngineImpl).returnConnection();
         Classification classification = new Classification();
         classification.setDescription("DESC");
         classificationService.addClassification(classification);

@@ -1,21 +1,15 @@
 package pro.taskana.impl;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import pro.taskana.TaskanaEngine;
+
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -25,6 +19,12 @@ import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.model.mappings.WorkbasketMapper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit Test for workbasketServiceImpl.
@@ -47,10 +47,16 @@ public class WorkbasketServiceImplTest {
     @Mock
     WorkbasketAccessMapper workbasketAccessMapper;
     @Mock
-    TaskanaEngine taskanaEngine;
+    TaskanaEngineImpl taskanaEngine;
+    @Mock
+    TaskanaEngineImpl taskanaEngineImpl;
     @Mock
     TaskanaEngineConfiguration taskanaEngineConfiguration;
 
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+    }
     @Test
     public void should_ReturnWorkbasket_when_WorkbasketIdExists() throws WorkbasketNotFoundException {
         when(workbasketMapper.findById(any())).thenReturn(new Workbasket());
@@ -226,9 +232,9 @@ public class WorkbasketServiceImplTest {
 
         WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
         accessItem.setWorkbasketId("1");
-        accessItem.setUserId("Arthur Dent");
-        accessItem.setOpen(true);
-        accessItem.setRead(true);
+        accessItem.setAccessId("Arthur Dent");
+        accessItem.setPermOpen(true);
+        accessItem.setPermRead(true);
         accessItem = workbasketServiceImpl.createWorkbasketAuthorization(accessItem);
 
         Assert.assertNotNull(accessItem.getId());
@@ -241,18 +247,18 @@ public class WorkbasketServiceImplTest {
 
         WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
         accessItem.setWorkbasketId("1");
-        accessItem.setUserId("Arthur Dent");
-        accessItem.setOpen(true);
-        accessItem.setRead(true);
+        accessItem.setAccessId("Arthur Dent");
+        accessItem.setPermOpen(true);
+        accessItem.setPermRead(true);
         accessItem = workbasketServiceImpl.createWorkbasketAuthorization(accessItem);
 
         Assert.assertNotNull(accessItem.getId());
 
         doNothing().when(workbasketAccessMapper).update(any());
-        accessItem.setUserId("Zaphod Beeblebrox");
+        accessItem.setAccessId("Zaphod Beeblebrox");
         workbasketServiceImpl.updateWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals("Zaphod Beeblebrox", accessItem.getUserId());
+        Assert.assertEquals("Zaphod Beeblebrox", accessItem.getAccessId());
     }
 
     @Test(expected = NotAuthorizedException.class)
@@ -269,7 +275,7 @@ public class WorkbasketServiceImplTest {
         when(taskanaEngine.getConfiguration()).thenReturn(taskanaEngineConfiguration);
         when(taskanaEngine.getConfiguration().isSecurityEnabled()).thenReturn(true);
 
-        when(workbasketAccessMapper.findByWorkbasketAndUserAndAuthorization(any(), any(), any()))
+        when(workbasketAccessMapper.findByWorkbasketAndAccessIdAndAuthorizations(any(), any(), any()))
                 .thenReturn(new ArrayList<WorkbasketAccessItem>() {
                     {
                         add(new WorkbasketAccessItem());
@@ -278,7 +284,7 @@ public class WorkbasketServiceImplTest {
 
         workbasketServiceImpl.checkAuthorization("1", WorkbasketAuthorization.READ);
 
-        verify(workbasketAccessMapper, times(1)).findByWorkbasketAndUserAndAuthorization(any(), any(), any());
+        verify(workbasketAccessMapper, times(1)).findByWorkbasketAndAccessIdAndAuthorizations(any(), any(), any());
     }
 
     @Test
