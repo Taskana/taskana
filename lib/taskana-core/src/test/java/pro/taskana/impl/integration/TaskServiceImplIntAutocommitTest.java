@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import pro.taskana.ClassificationQuery;
+import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -28,8 +30,6 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
-import pro.taskana.persistence.ClassificationQuery;
-import pro.taskana.persistence.ObjectReferenceQuery;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode AUTOCOMMIT.

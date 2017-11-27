@@ -3,14 +3,15 @@ package pro.taskana.impl;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
+
+import pro.taskana.ClassificationQuery;
+import pro.taskana.ObjectReferenceQuery;
+import pro.taskana.TaskQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.persistence.ClassificationQuery;
-import pro.taskana.persistence.ObjectReferenceQuery;
-import pro.taskana.persistence.TaskQuery;
 
 /**
  * TaskQuery for generating dynamic sql.
