@@ -147,7 +147,6 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngineImpl.openConnection();
             Classification result = null;
             Classification classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-
             if (classification == null) {
                 return classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
             } else {
@@ -156,6 +155,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         } finally {
             taskanaEngineImpl.returnConnection();
         }
+
     }
 
     @Override
