@@ -5,7 +5,7 @@ package pro.taskana.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class ConnectionNotSetException extends RuntimeException {
+public class ConnectionNotSetException extends TaskanaRuntimeException {
 
     public ConnectionNotSetException() {
         super("Connection not set");
