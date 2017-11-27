@@ -1,4 +1,4 @@
-package pro.taskana.impl.persistence;
+package pro.taskana.impl;
 
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.Classification;

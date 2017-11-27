@@ -1,4 +1,4 @@
-package pro.taskana.impl.persistence;
+package pro.taskana.impl;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -13,18 +13,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.model.Classification;
+import pro.taskana.model.ObjectReference;
 
 /**
- * Test for ClassificationQueryImpl.
+ * Test for ObjectReferenceQueryImpl.
  * @author EH
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ClassificationQueryImplTest {
+public class ObjectReferenceQueryImplTest {
 
-    ClassificationQueryImpl classificationQueryImpl;
+    ObjectReferenceQueryImpl objectReferenceQueryImpl;
 
     @Mock
     TaskanaEngineImpl taskanaEngine;
@@ -34,36 +34,36 @@ public class ClassificationQueryImplTest {
 
     @Before
     public void setup() {
-        classificationQueryImpl = new ClassificationQueryImpl(taskanaEngine);
+        objectReferenceQueryImpl = new ObjectReferenceQueryImpl(taskanaEngine);
     }
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
-        List<Classification> result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)
-                .parentClassification("superId").list();
+        List<ObjectReference> result = objectReferenceQueryImpl.value("test", "asd", "blubber").type("cool", "bla")
+                .systemInstance("1", "2").system("superId").list();
         Assert.assertNotNull(result);
     }
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
-        List<Classification> result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)
-                .parentClassification("superId").list(1, 1);
+        List<ObjectReference> result = objectReferenceQueryImpl.value("test", "asd", "blubber").type("cool", "bla")
+                .systemInstance("1", "2").system("superId").list(1, 1);
         Assert.assertNotNull(result);
     }
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException {
-        when(taskanaEngine.getSession()).thenReturn(sqlSession);
-        when(sqlSession.selectOne(any(), any())).thenReturn(new Classification());
+        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+        when(sqlSession.selectOne(any(), any())).thenReturn(new ObjectReference());
 
-        Classification result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)
-                .parentClassification("superId").single();
+        ObjectReference result = objectReferenceQueryImpl.value("test", "asd", "blubber").type("cool", "bla")
+                .systemInstance("1", "2").system("superId").single();
         Assert.assertNotNull(result);
     }
 }

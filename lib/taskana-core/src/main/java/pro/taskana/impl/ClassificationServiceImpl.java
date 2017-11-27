@@ -3,7 +3,6 @@ package pro.taskana.impl;
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.persistence.ClassificationQueryImpl;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.Classification;
 import pro.taskana.model.mappings.ClassificationMapper;
@@ -24,62 +23,85 @@ public class ClassificationServiceImpl implements ClassificationService {
     public static final Date CURRENT_CLASSIFICATIONS_VALID_UNTIL = Date.valueOf("9999-12-31");
     private ClassificationMapper classificationMapper;
     private TaskanaEngine taskanaEngine;
+    private TaskanaEngineImpl taskanaEngineImpl;
 
     public ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper) {
         super();
         this.taskanaEngine = taskanaEngine;
+        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.classificationMapper = classificationMapper;
     }
 
     @Override
     public List<Classification> getClassificationTree() throws NotAuthorizedException {
-        List<Classification> rootClassifications;
-        rootClassifications = this.createClassificationQuery().parentClassification("").validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL).list();
-        return this.populateChildClassifications(rootClassifications);
+        try {
+            taskanaEngineImpl.openConnection();
+            List<Classification> rootClassifications;
+            rootClassifications = this.createClassificationQuery().parentClassification("").validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL).list();
+            return this.populateChildClassifications(rootClassifications);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     private List<Classification> populateChildClassifications(List<Classification> classifications) throws NotAuthorizedException {
-        List<Classification> children = new ArrayList<>();
-        for (Classification classification : classifications) {
-            List<Classification> childClassifications = this.createClassificationQuery().parentClassification(classification.getId()).validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL).list();
-            children.addAll(populateChildClassifications(childClassifications));
+        try {
+            taskanaEngineImpl.openConnection();
+            List<Classification> children = new ArrayList<>();
+            for (Classification classification : classifications) {
+                List<Classification> childClassifications = this.createClassificationQuery().parentClassification(classification.getId()).validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL).list();
+                children.addAll(populateChildClassifications(childClassifications));
+            }
+            classifications.addAll(children);
+            return classifications;
+        } finally {
+            taskanaEngineImpl.returnConnection();
         }
-        classifications.addAll(children);
-        return classifications;
     }
 
     @Override
     public void addClassification(Classification classification) {
-        classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
-        classification.setCreated(Date.valueOf(LocalDate.now()));
+        try {
+            taskanaEngineImpl.openConnection();
+            classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+            classification.setCreated(Date.valueOf(LocalDate.now()));
 
-        this.setDefaultValues(classification);
+            this.setDefaultValues(classification);
 
-        classificationMapper.insert(classification);
+            classificationMapper.insert(classification);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 
     @Override
     public void updateClassification(Classification classification) {
-        this.setDefaultValues(classification);
+        try {
+            taskanaEngineImpl.openConnection();
+            this.setDefaultValues(classification);
 
-        Classification oldClassification = this.getClassification(classification.getId(), classification.getDomain());
+            Classification oldClassification = this.getClassification(classification.getId(), classification.getDomain());
 
-        if (oldClassification == null) {
-            classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
-            classification.setCreated(Date.valueOf(LocalDate.now()));
-            classificationMapper.insert(classification);
+            if (oldClassification == null) {
+                classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+                classification.setCreated(Date.valueOf(LocalDate.now()));
+                classificationMapper.insert(classification);
+            } else {
+
+                // ! If you update an classification twice the same day,
+                // the older version is valid from today until yesterday.
+                if (!oldClassification.getDomain().equals(classification.getDomain())) {
+                    classification.setCreated(Date.valueOf(LocalDate.now()));
+                    classificationMapper.insert(classification);
+                } else {
+                    oldClassification.setValidUntil(Date.valueOf(LocalDate.now().minusDays(1)));
+                    classificationMapper.update(oldClassification);
+                    classificationMapper.insert(classification);
+                }
+            }
             return;
-        }
-
-        // ! If you update an classification twice the same day,
-        // the older version is valid from today until yesterday.
-        if (!oldClassification.getDomain().equals(classification.getDomain())) {
-            classification.setCreated(Date.valueOf(LocalDate.now()));
-            classificationMapper.insert(classification);
-        } else {
-            oldClassification.setValidUntil(Date.valueOf(LocalDate.now().minusDays(1)));
-            classificationMapper.update(oldClassification);
-            classificationMapper.insert(classification);
+        } finally {
+            taskanaEngineImpl.returnConnection();
         }
     }
 
@@ -105,20 +127,32 @@ public class ClassificationServiceImpl implements ClassificationService {
         if (classification.getDomain() == null) {
             classification.setDomain("");
         }
+
     }
 
     @Override
     public List<Classification> getAllClassificationsWithId(String id, String domain) {
-        return classificationMapper.getAllClassificationsWithId(id, domain);
+        try {
+            taskanaEngineImpl.openConnection();
+            return classificationMapper.getAllClassificationsWithId(id, domain);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
+
     }
 
     @Override
     public Classification getClassification(String id, String domain) {
-        Classification classification;
-        if (domain == null) {
-            classification = classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-        } else {
-            classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+        Classification classification = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            if (domain == null) {
+                classification = classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            } else {
+                classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            }
+        } finally {
+            taskanaEngineImpl.returnConnection();
         }
         return classification;
     }
