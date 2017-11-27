@@ -1,15 +1,23 @@
 package pro.taskana.model.mappings;
 
-import org.apache.ibatis.annotations.*;
-import pro.taskana.model.Classification;
-
 import java.sql.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import pro.taskana.model.Classification;
 
 /**
  * This class is the mybatis mapping of classifications.
  */
 public interface ClassificationMapper {
+
+    String VALID_UNTIL = "9999-12-31";
 
     @Select("SELECT ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
             + "FROM CLASSIFICATION "
@@ -41,7 +49,8 @@ public interface ClassificationMapper {
 
     @Select("SELECT ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
             + "FROM CLASSIFICATION "
-            + "WHERE ID = #{id}")
+            + "WHERE ID = #{id} "
+            + "AND VALID_UNTIL = '" + VALID_UNTIL + "'")
     @Results({@Result(property = "id", column = "ID"),
             @Result(property = "parentClassificationId", column = "PARENT_CLASSIFICATION_ID"),
             @Result(property = "category", column = "CATEGORY"),
