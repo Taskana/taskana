@@ -5,7 +5,7 @@ package pro.taskana.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class AutocommitFailedException extends RuntimeException {
+public class AutocommitFailedException extends TaskanaRuntimeException {
     public AutocommitFailedException(Throwable cause) {
         super("Autocommit failed", cause);
     }
