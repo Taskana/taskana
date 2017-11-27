@@ -7,15 +7,18 @@ import { Task } from '../model/task';
 })
 export class OrderTasksByPipe implements PipeTransform {
 
-    transform(value:Task[], column:string) {
-        if(value === null) return null;
+    transform(value: Task[], column: string) {
+        if (value === null) { return null; }
         value.sort((a, b) => {
-            if(typeof a[column] === 'string') return _compareString(a[column], b[column]);
-            else return _compareNumber(a[column], b[column]);
+            if (typeof a[column] === 'string') {
+              return _compareString(a[column], b[column]);
+            } else {
+              return _compareNumber(a[column], b[column]);
+            }
         });
         return value;
 
-        function _compareString(a:string, b:string): number {
+        function _compareString(a: string, b: string): number {
             if (a.toLowerCase() < b.toLowerCase()) {
                 return -1;
             } else if (a.toLowerCase() > b.toLowerCase()) {
@@ -24,8 +27,8 @@ export class OrderTasksByPipe implements PipeTransform {
                 return 0;
             }
         }
-        
-        function _compareNumber(a:number, b:number): number {
+
+        function _compareNumber(a: number, b: number): number {
             return _compareString(a.toString(), b.toString());
         }
     }
