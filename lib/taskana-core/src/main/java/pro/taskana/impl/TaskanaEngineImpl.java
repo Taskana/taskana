@@ -115,7 +115,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             this.connection = connection;
             mode = ConnectionManagementMode.EXPLICIT;
             sessionManager.startManagedSession(connection);
-        } else {
+        } else if (this.connection != null) {
             this.connection = null;
             if (sessionManager.isManagedSessionStarted()) {
                 sessionManager.close();

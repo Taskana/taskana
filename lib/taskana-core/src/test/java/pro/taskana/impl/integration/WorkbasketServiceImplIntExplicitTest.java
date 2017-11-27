@@ -78,7 +78,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket.setName("Megabasket");
         workBasketService.createWorkbasket(workbasket);
         Assert.assertEquals(before + 1, workBasketService.getWorkbaskets().size());
-        connection.close();
+        taskanaEngineImpl.closeConnection();
     }
 
     @Test
@@ -104,7 +104,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         workBasketService.createWorkbasket(workbasket2);
         Assert.assertEquals(before + THREE, workBasketService.getWorkbaskets().size());
         connection.commit();
-        connection.close();
+        taskanaEngineImpl.closeConnection();
     }
 
     @Test
@@ -130,7 +130,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         Workbasket foundWorkbasket = workBasketService.getWorkbasket(id2);
         Assert.assertEquals(id2, foundWorkbasket.getId());
         connection.commit();
-        connection.close();
+        taskanaEngineImpl.closeConnection();
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
@@ -140,7 +140,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         workBasketService = taskanaEngine.getWorkbasketService();
         workBasketService.getWorkbasket("fail");
         connection.commit();
-        connection.close();
+        taskanaEngineImpl.closeConnection();
     }
 
     @Test
@@ -168,7 +168,6 @@ public class WorkbasketServiceImplIntExplicitTest {
         Assert.assertEquals(id2, foundWorkbasket.getId());
         Assert.assertEquals(2, foundWorkbasket.getDistributionTargets().size());
         connection.commit();
-        connection.close();
     }
 
     @Test
@@ -213,7 +212,6 @@ public class WorkbasketServiceImplIntExplicitTest {
         Assert.assertEquals(workBasketService.getWorkbasket(id3).getCreated(),
                 workBasketService.getWorkbasket(id3).getModified());
         connection.commit();
-        connection.close();
     }
 
     @Test
@@ -231,7 +229,6 @@ public class WorkbasketServiceImplIntExplicitTest {
 
         Assert.assertEquals(1, workBasketService.getAllAuthorizations().size());
         connection.commit();
-        connection.close();
     }
 
     @Test
@@ -255,7 +252,6 @@ public class WorkbasketServiceImplIntExplicitTest {
         Assert.assertEquals("Zaphod Beeblebrox",
                 workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
         connection.commit();
-        connection.close();
    }
 
     @After
