@@ -1,8 +1,8 @@
 package pro.taskana.impl;
 
+import pro.taskana.ClassificationQuery;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.Classification;
-import pro.taskana.persistence.ClassificationQuery;
 
 import java.util.ArrayList;
 import java.util.Date;

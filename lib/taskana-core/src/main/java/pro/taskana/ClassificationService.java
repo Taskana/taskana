@@ -2,7 +2,6 @@ package pro.taskana;
 
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.Classification;
-import pro.taskana.persistence.ClassificationQuery;
 
 import java.util.List;
 

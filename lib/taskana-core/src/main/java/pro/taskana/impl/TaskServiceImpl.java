@@ -9,6 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -23,7 +24,6 @@ import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
-import pro.taskana.persistence.TaskQuery;
 
 /**
  * This is the implementation of TaskService.

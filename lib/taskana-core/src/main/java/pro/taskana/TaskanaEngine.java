@@ -1,6 +1,5 @@
 package pro.taskana;
 
-import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 /**
