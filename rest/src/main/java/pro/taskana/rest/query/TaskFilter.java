@@ -7,14 +7,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+
+import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
+import pro.taskana.ObjectReferenceQuery;
+import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
-import pro.taskana.persistence.ClassificationQuery;
-import pro.taskana.persistence.ObjectReferenceQuery;
-import pro.taskana.persistence.TaskQuery;
 
 @Component
 public class TaskFilter {

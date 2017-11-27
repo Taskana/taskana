@@ -1,12 +1,12 @@
 package pro.taskana.impl;
 
+import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.Classification;
 import pro.taskana.model.mappings.ClassificationMapper;
-import pro.taskana.persistence.ClassificationQuery;
 
 import java.sql.Date;
 import java.time.Duration;

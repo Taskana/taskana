@@ -9,7 +9,6 @@ import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
-import pro.taskana.persistence.TaskQuery;
 
 /**
  * The Task Service manages all operations on tasks.
