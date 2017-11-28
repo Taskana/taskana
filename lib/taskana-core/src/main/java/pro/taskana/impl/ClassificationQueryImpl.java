@@ -1,9 +1,10 @@
 package pro.taskana.impl;
 
 import org.apache.ibatis.session.RowBounds;
+
+import pro.taskana.ClassificationQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.model.Classification;
-import pro.taskana.persistence.ClassificationQuery;
 
 import java.util.Date;
 import java.util.List;

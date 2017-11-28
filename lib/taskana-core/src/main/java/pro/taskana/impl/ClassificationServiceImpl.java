@@ -1,12 +1,12 @@
 package pro.taskana.impl;
 
+import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.Classification;
 import pro.taskana.model.mappings.ClassificationMapper;
-import pro.taskana.persistence.ClassificationQuery;
 
 import java.sql.Date;
 import java.time.Duration;
@@ -143,18 +143,18 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public Classification getClassification(String id, String domain) {
-        Classification classification = null;
-        try {
+         try {
             taskanaEngineImpl.openConnection();
-            if (domain == null) {
-                classification = classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            Classification classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            if (classification == null) {
+                return classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
             } else {
-                classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+                return classification;
             }
         } finally {
             taskanaEngineImpl.returnConnection();
         }
-        return classification;
+
     }
 
     @Override

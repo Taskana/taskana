@@ -1,4 +1,4 @@
-package pro.taskana.persistence;
+package pro.taskana;
 
 import pro.taskana.model.ObjectReference;
 
