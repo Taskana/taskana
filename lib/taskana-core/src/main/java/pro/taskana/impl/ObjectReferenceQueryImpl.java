@@ -3,9 +3,10 @@ package pro.taskana.impl;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
+
+import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.model.ObjectReference;
-import pro.taskana.persistence.ObjectReferenceQuery;
 
 /**
  * Implementation of ObjectReferenceQuery interface.
