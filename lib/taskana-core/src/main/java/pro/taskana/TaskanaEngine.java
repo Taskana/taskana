@@ -26,6 +26,13 @@ public interface TaskanaEngine {
     ClassificationService getClassificationService();
 
     /**
+     * Can be used for each operation for summaries with short-infos about
+     * one or more objects.
+     * @return a SummaryService-BEAN
+     */
+    SummaryService getSummaryService();
+
+    /**
      * The Taskana configuration.
      * @return the TaskanaConfiguration
      */
