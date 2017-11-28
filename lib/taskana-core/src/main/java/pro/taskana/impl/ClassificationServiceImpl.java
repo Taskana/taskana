@@ -143,9 +143,8 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public Classification getClassification(String id, String domain) {
-        try {
+         try {
             taskanaEngineImpl.openConnection();
-            Classification result = null;
             Classification classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
             if (classification == null) {
                 return classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
