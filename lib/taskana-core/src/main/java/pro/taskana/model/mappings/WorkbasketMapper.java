@@ -46,11 +46,11 @@ public interface WorkbasketMapper {
     @Select("<script>SELECT W.ID, W.CREATED, W.MODIFIED, W.NAME, W.DESCRIPTION, W.OWNER FROM WORKBASKET AS W "
             + "INNER JOIN WORKBASKET_ACCESS_LIST AS ACL " + "ON (W.ID = ACL.WORKBASKET_ID AND ACL.ACCESS_ID = #{accessId}) "
             + "WHERE <foreach collection='authorizations' item='authorization' separator=' AND '>"
-            + "<if test=\"authorization.name() == 'OPEN'\">OPEN</if>"
-            + "<if test=\"authorization.name() == 'READ'\">READ</if>"
-            + "<if test=\"authorization.name() == 'APPEND'\">APPEND</if>"
-            + "<if test=\"authorization.name() == 'TRANSFER'\">TRANSFER</if>"
-            + "<if test=\"authorization.name() == 'DISTRIBUTE'\">DISTRIBUTE</if> = 1 </foreach> "
+            + "<if test=\"authorization.name() == 'OPEN'\">PERM_OPEN</if>"
+            + "<if test=\"authorization.name() == 'READ'\">PERM_READ</if>"
+            + "<if test=\"authorization.name() == 'APPEND'\">PERM_APPEND</if>"
+            + "<if test=\"authorization.name() == 'TRANSFER'\">PERM_TRANSFER</if>"
+            + "<if test=\"authorization.name() == 'DISTRIBUTE'\">PERM_DISTRIBUTE</if> = 1 </foreach> "
             + "ORDER BY id</script>")
     @Results(value = {
             @Result(property = "id", column = "ID"),
