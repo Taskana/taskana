@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
 import pro.taskana.ClassificationService;
+import pro.taskana.SummaryService;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketService;
@@ -46,6 +47,11 @@ public class RestApplication {
 	public WorkbasketService getWorkbasketService() throws Exception {
 		return getTaskanaEngine().getWorkbasketService();
 	}
+	
+	@Bean
+    public SummaryService getSummaryService() throws Exception {
+        return getTaskanaEngine().getSummaryService();
+    }
 
 	@Bean
 	@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
