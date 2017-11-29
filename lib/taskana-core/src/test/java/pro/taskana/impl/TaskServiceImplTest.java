@@ -223,6 +223,8 @@ public class TaskServiceImplTest {
             Mockito.doThrow(NotAuthorizedException.class).when(workbasketServiceMock).checkAuthorization(any(), any());
             Task task = new Task();
             task.setWorkbasketId("1");
+        task.setBusinessProcessId("BPI1");
+        task.setParentBusinessProcessId("PBPI1");
 
             cut.create(task);
         } catch (Exception e) {

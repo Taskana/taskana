@@ -297,6 +297,8 @@ public class Task {
         sb.append(", state=" + state);
         sb.append(", classification=" + classification);
         sb.append(", workbasketId=" + workbasketId);
+        sb.append(", businessProcessId=" + businessProcessId);
+        sb.append(", parentBusinessProcessId=" + parentBusinessProcessId);
         sb.append(", owner=" + owner);
         sb.append(", primaryObjRef=" + primaryObjRef);
         sb.append(", isRead=" + isRead);
