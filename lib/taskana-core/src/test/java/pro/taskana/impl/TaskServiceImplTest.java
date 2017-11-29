@@ -177,7 +177,6 @@ public class TaskServiceImplTest {
         expectedObjectReference.setId("1");
         expectedObjectReference.setType("DUMMY");
 
-        Workbasket workbasket = new Workbasket();
         Classification classification = new Classification();
         classification.setName("Name");
         classification.setCategory("MANUAL");
