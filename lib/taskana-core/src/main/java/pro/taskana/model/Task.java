@@ -22,6 +22,8 @@ public class Task {
     private TaskState state;
     private Classification classification;
     private String workbasketId;
+    private String businessProcessId;
+    private String parentBusinessProcessId;
     private String owner;
     private ObjectReference primaryObjRef;
     private boolean isRead;
@@ -141,6 +143,22 @@ public class Task {
 
     public void setWorkbasketId(String workbasketId) {
         this.workbasketId = workbasketId;
+    }
+
+    public String getBusinessProcessId() {
+        return businessProcessId;
+    }
+
+    public void setBusinessProcessId(String businessProcessId) {
+        this.businessProcessId = businessProcessId;
+    }
+
+    public String getParentBusinessProcessId() {
+        return parentBusinessProcessId;
+    }
+
+    public void setParentBusinessProcessId(String parentBusinessProcessId) {
+        this.parentBusinessProcessId = parentBusinessProcessId;
     }
 
     public String getOwner() {
@@ -279,6 +297,8 @@ public class Task {
         sb.append(", state=" + state);
         sb.append(", classification=" + classification);
         sb.append(", workbasketId=" + workbasketId);
+        sb.append(", businessProcessId=" + businessProcessId);
+        sb.append(", parentBusinessProcessId=" + parentBusinessProcessId);
         sb.append(", owner=" + owner);
         sb.append(", primaryObjRef=" + primaryObjRef);
         sb.append(", isRead=" + isRead);
