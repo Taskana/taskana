@@ -1,6 +1,5 @@
 package pro.taskana;
 
-import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 /**
@@ -25,6 +24,13 @@ public interface TaskanaEngine {
      * @return the TaskService
      */
     ClassificationService getClassificationService();
+
+    /**
+     * Can be used for each operation for summaries with short-infos about
+     * one or more objects.
+     * @return a SummaryService-BEAN
+     */
+    SummaryService getSummaryService();
 
     /**
      * The Taskana configuration.
