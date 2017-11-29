@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.taskana.TaskQuery;
@@ -244,6 +245,18 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskQuery createTaskQuery() {
         return new TaskQueryImpl(taskanaEngine);
+    }
+    @Override
+    public List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws WorkbasketNotFoundException, NotAuthorizedException, Exception {
+        List<Task> resultList = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
+            resultList = taskMapper.findTasksByWorkbasketIdAndState(workbasketId, taskState);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
+        return (resultList == null) ? new ArrayList<>() : resultList;
     }
 
     private void standardSettings(Task task) {
