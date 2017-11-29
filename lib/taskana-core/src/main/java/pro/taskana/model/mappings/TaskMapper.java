@@ -34,6 +34,8 @@ public interface TaskMapper {
             @Result(property = "state", column = "STATE"),
             @Result(property = "classification", column = "CLASSIFICATION_ID", javaType = Classification.class, one = @One(select = CLASSIFICATION_FINDBYID)),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
+            @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
+            @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
             @Result(property = "owner", column = "OWNER"),
             @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
             @Result(property = "isRead", column = "IS_READ"),
@@ -82,12 +84,12 @@ public interface TaskMapper {
             @Result(column = "counter", property = "taskCounter") })
     List<DueWorkbasketCounter> getTaskCountByWorkbasketIdAndDaysInPastAndState(@Param("fromDate") Date fromDate, @Param("status") List<TaskState> states);
 
-    @Insert("INSERT INTO TASK(ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_ID, WORKBASKETID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10) "
-            + "VALUES(#{id}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{description}, #{priority}, #{state}, #{classification.id}, #{workbasketId}, #{owner}, #{primaryObjRef.id}, #{isRead}, #{isTransferred}, #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, #{custom1}, #{custom2}, #{custom3}, #{custom4}, #{custom5}, #{custom6}, #{custom7}, #{custom8}, #{custom9}, #{custom10})")
+    @Insert("INSERT INTO TASK(ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_ID, WORKBASKETID, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10) "
+            + "VALUES(#{id}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{description}, #{priority}, #{state}, #{classification.id}, #{workbasketId}, #{businessProcessId}, #{parentBusinessProcessId}, #{owner}, #{primaryObjRef.id}, #{isRead}, #{isTransferred}, #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, #{custom1}, #{custom2}, #{custom3}, #{custom4}, #{custom5}, #{custom6}, #{custom7}, #{custom8}, #{custom9}, #{custom10})")
     @Options(keyProperty = "id", keyColumn = "ID")
     void insert(Task task);
 
-    @Update("UPDATE TASK SET CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, PRIORITY = #{priority}, STATE = #{state}, CLASSIFICATION_ID = #{classification.id}, WORKBASKETID = #{workbasketId}, OWNER = #{owner}, PRIMARY_OBJ_REF_ID = #{primaryObjRef.id}, IS_READ = #{isRead}, IS_TRANSFERRED = #{isTransferred}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, CUSTOM_1 = #{custom1}, CUSTOM_2 = #{custom2}, CUSTOM_3 = #{custom3}, CUSTOM_4 = #{custom4}, CUSTOM_5 = #{custom5}, CUSTOM_6 = #{custom6}, CUSTOM_7 = #{custom7}, CUSTOM_8 = #{custom8}, CUSTOM_9 = #{custom9}, CUSTOM_10 = #{custom10} "
+    @Update("UPDATE TASK SET CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, PRIORITY = #{priority}, STATE = #{state}, CLASSIFICATION_ID = #{classification.id}, WORKBASKETID = #{workbasketId}, BUSINESS_PROCESS_ID = #{businessProcessId}, PARENT_BUSINESS_PROCESS_ID = #{parentBusinessProcessId}, OWNER = #{owner}, PRIMARY_OBJ_REF_ID = #{primaryObjRef.id}, IS_READ = #{isRead}, IS_TRANSFERRED = #{isTransferred}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, CUSTOM_1 = #{custom1}, CUSTOM_2 = #{custom2}, CUSTOM_3 = #{custom3}, CUSTOM_4 = #{custom4}, CUSTOM_5 = #{custom5}, CUSTOM_6 = #{custom6}, CUSTOM_7 = #{custom7}, CUSTOM_8 = #{custom8}, CUSTOM_9 = #{custom9}, CUSTOM_10 = #{custom10} "
             + "WHERE ID = #{id}")
     void update(Task task);
 
