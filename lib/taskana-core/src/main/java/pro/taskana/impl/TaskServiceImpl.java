@@ -263,6 +263,84 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.returnConnection();
         }
         return (resultList == null) ? new ArrayList<>() : resultList;
+        }
+ 
+       private void standardSettings(Task task) {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
+        task.setState(TaskState.READY);
+        task.setCreated(now);
+        task.setModified(now);
+        task.setRead(false);
+        task.setTransferred(false);
+
+        if (task.getPlanned() == null) {
+            task.setPlanned(now);
+        }
+
+
+        // insert Classification specifications if Classification is given.
+        Classification classification = task.getClassification();
+        if (classification != null) {
+            if (classification.getServiceLevel() != null) {
+                Duration serviceLevel = Duration.parse(task.getClassification().getServiceLevel());
+                LocalDateTime due = task.getPlanned().toLocalDateTime().plus(serviceLevel);
+                task.setDue(Timestamp.valueOf(due));
+            }
+
+            if (task.getName() == null) {
+                task.setName(classification.getName());
+            }
+
+            if (task.getDescription() == null) {
+                task.setDescription(classification.getDescription());
+            }
+
+            if (task.getPriority() == 0) {
+                task.setPriority(classification.getPriority());
+            }
+        }
+
+        // insert ObjectReference if needed.
+        if (task.getPrimaryObjRef() != null) {
+            ObjectReference objectReference = this.objectReferenceMapper.findByObjectReference(task.getPrimaryObjRef());
+            if (objectReference == null) {
+                objectReference = task.getPrimaryObjRef();
+                objectReference.setId(IdGenerator.generateWithPrefix(ID_PREFIX_OBJECTR_EFERENCE));
+                this.objectReferenceMapper.insert(objectReference);
+            }
+            task.setPrimaryObjRef(objectReference);
+        }
+    }
+
+    private void setCustomers(Task task) {
+        if (task.getCustomAttributes() != null) {
+            for (String custom : task.getCustomAttributes().keySet()) {
+                if (task.getCustom1() == null) {
+                    task.setCustom1(custom);
+                } else if (task.getCustom2() == null) {
+                    task.setCustom2(custom);
+                } else if (task.getCustom3() == null) {
+                    task.setCustom3(custom);
+                } else if (task.getCustom4() == null) {
+                    task.setCustom4(custom);
+                } else if (task.getCustom5() == null) {
+                    task.setCustom5(custom);
+                } else if (task.getCustom6() == null) {
+                    task.setCustom6(custom);
+                } else if (task.getCustom7() == null) {
+                    task.setCustom7(custom);
+                } else if (task.getCustom8() == null) {
+                    task.setCustom8(custom);
+                } else if (task.getCustom9() == null) {
+                    task.setCustom9(custom);
+                } else if (task.getCustom10() == null) {
+                    task.setCustom10(custom);
+                } else {
+                    break;
+                }
+            }
+        }
     }
 
     private void standardSettings(Task task) {
