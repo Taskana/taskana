@@ -150,4 +150,44 @@ public class WorkbasketAccessItem {
     public void setPermCustom8(boolean permCustom8) {
         this.permCustom8 = permCustom8;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("WorkbasketAccessItem [id=");
+        builder.append(id);
+        builder.append(", workbasketId=");
+        builder.append(workbasketId);
+        builder.append(", accessId=");
+        builder.append(accessId);
+        builder.append(", permRead=");
+        builder.append(permRead);
+        builder.append(", permOpen=");
+        builder.append(permOpen);
+        builder.append(", permAppend=");
+        builder.append(permAppend);
+        builder.append(", permTransfer=");
+        builder.append(permTransfer);
+        builder.append(", permDistribute=");
+        builder.append(permDistribute);
+        builder.append(", permCustom1=");
+        builder.append(permCustom1);
+        builder.append(", permCustom2=");
+        builder.append(permCustom2);
+        builder.append(", permCustom3=");
+        builder.append(permCustom3);
+        builder.append(", permCustom4=");
+        builder.append(permCustom4);
+        builder.append(", permCustom5=");
+        builder.append(permCustom5);
+        builder.append(", permCustom6=");
+        builder.append(permCustom6);
+        builder.append(", permCustom7=");
+        builder.append(permCustom7);
+        builder.append(", permCustom8=");
+        builder.append(permCustom8);
+        builder.append("]");
+        return builder.toString();
+    }
+
 }

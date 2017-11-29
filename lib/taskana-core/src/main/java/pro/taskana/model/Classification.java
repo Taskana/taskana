@@ -197,4 +197,54 @@ public class Classification {
         this.validUntil = validUntil;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Classification [id=");
+        builder.append(id);
+        builder.append(", parentClassificationId=");
+        builder.append(parentClassificationId);
+        builder.append(", category=");
+        builder.append(category);
+        builder.append(", type=");
+        builder.append(type);
+        builder.append(", domain=");
+        builder.append(domain);
+        builder.append(", isValidInDomain=");
+        builder.append(isValidInDomain);
+        builder.append(", created=");
+        builder.append(created);
+        builder.append(", name=");
+        builder.append(name);
+        builder.append(", description=");
+        builder.append(description);
+        builder.append(", priority=");
+        builder.append(priority);
+        builder.append(", serviceLevel=");
+        builder.append(serviceLevel);
+        builder.append(", custom1=");
+        builder.append(custom1);
+        builder.append(", custom2=");
+        builder.append(custom2);
+        builder.append(", custom3=");
+        builder.append(custom3);
+        builder.append(", custom4=");
+        builder.append(custom4);
+        builder.append(", custom5=");
+        builder.append(custom5);
+        builder.append(", custom6=");
+        builder.append(custom6);
+        builder.append(", custom7=");
+        builder.append(custom7);
+        builder.append(", custom8=");
+        builder.append(custom8);
+        builder.append(", validFrom=");
+        builder.append(validFrom);
+        builder.append(", validUntil=");
+        builder.append(validUntil);
+        builder.append("]");
+        return builder.toString();
+    }
+
+
 }
