@@ -1,24 +1,5 @@
 package pro.taskana.impl;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,21 +8,29 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-
+import pro.taskana.ClassificationService;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.DueWorkbasketCounter;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
-import pro.taskana.model.Workbasket;
-import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.*;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit Test for TaskServiceImpl.
@@ -73,11 +62,14 @@ public class TaskServiceImplTest {
     @Mock
     private WorkbasketService workbasketServiceMock;
 
+    @Mock
+    private ClassificationService classificationServiceMock;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         doReturn(workbasketServiceMock).when(taskanaEngineMock).getWorkbasketService();
+        doReturn(classificationServiceMock).when(taskanaEngineMock).getClassificationService();
         try {
             Mockito.doNothing().when(workbasketServiceMock).checkAuthorization(any(), any());
         } catch (NotAuthorizedException e) {
@@ -177,6 +169,53 @@ public class TaskServiceImplTest {
         assertThat(actualTask.getName(), equalTo(expectedTask.getName()));
         assertThat(actualTask.getState(), equalTo(TaskState.READY));
         assertThat(actualTask.getPrimaryObjRef(), equalTo(expectedObjectReference));
+    }
+
+    @Test
+    public void testCreateManualTask() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+        ObjectReference expectedObjectReference = new ObjectReference();
+        expectedObjectReference.setId("1");
+        expectedObjectReference.setType("DUMMY");
+
+        Workbasket workbasket = new Workbasket();
+        Classification classification = new Classification();
+        classification.setName("Name");
+        classification.setCategory("MANUAL");
+
+        Mockito.doReturn(classification).when(classificationServiceMock).getClassification(any(), any());
+        Mockito.doNothing().when(taskMapperMock).insert(any());
+        Mockito.doNothing().when(objectReferenceMapperMock).insert(any());
+
+        Task manualTask = cut.createManualTask("workbasketId", "classification", "domain", null, null, "simply awesome task", expectedObjectReference, null);
+
+        Task manualTask2 = cut.createManualTask("workbasketId", "classification", "domain", Timestamp.valueOf(LocalDateTime.now().minusHours(1)), "Task2", "simply awesome task", expectedObjectReference, null);
+
+        verify(taskanaEngineImpl, times(2)).openConnection();
+        verify(taskanaEngineMock, times(2 + 2)).getWorkbasketService();
+        verify(taskanaEngineMock, times(2)).getClassificationService();
+        verify(workbasketServiceMock, times(2)).checkAuthorization(any(), any());
+        verify(workbasketServiceMock, times(2)).getWorkbasket(any());
+        verify(objectReferenceMapperMock, times(2)).findByObjectReference(any());
+        verify(objectReferenceMapperMock, times(2)).insert(any());
+        verify(taskMapperMock, times(1)).insert(manualTask);
+        verify(taskMapperMock, times(1)).insert(manualTask2);
+        verify(taskanaEngineImpl, times(2)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+
+        assertNull(manualTask.getOwner());
+        assertNotNull(manualTask.getCreated());
+        assertNotNull(manualTask.getModified());
+        assertNull(manualTask.getCompleted());
+        assertNull(manualTask.getDue());
+        assertThat(manualTask.getWorkbasketId(), equalTo(manualTask2.getWorkbasketId()));
+        assertThat(manualTask.getName(), equalTo(classification.getName()));
+        assertThat(manualTask.getState(), equalTo(TaskState.READY));
+        assertThat(manualTask.getPrimaryObjRef(), equalTo(expectedObjectReference));
+        assertThat(manualTask.getName(), not(manualTask2.getName()));
+        assertThat(manualTask.getPlanned(), not(manualTask2.getPlanned()));
+        assertThat(manualTask2.getPlanned(), not(manualTask2.getCreated()));
+
     }
 
     @Test(expected = NotAuthorizedException.class)

@@ -1,29 +1,26 @@
 package pro.taskana.impl;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.model.DueWorkbasketCounter;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
-import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.*;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is the implementation of TaskService.
@@ -100,24 +97,43 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
 
-            Timestamp now = new Timestamp(System.currentTimeMillis());
-            task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
-            task.setState(TaskState.READY);
-            task.setCreated(now);
-            task.setModified(now);
-            task.setRead(false);
-            task.setTransferred(false);
+            standardSettings(task);
 
-            // insert ObjectReference if needed.
-            if (task.getPrimaryObjRef() != null) {
-                ObjectReference objectReference = this.objectReferenceMapper.findByObjectReference(task.getPrimaryObjRef());
-                if (objectReference == null) {
-                    objectReference = task.getPrimaryObjRef();
-                    objectReference.setId(IdGenerator.generateWithPrefix(ID_PREFIX_OBJECTR_EFERENCE));
-                    this.objectReferenceMapper.insert(objectReference);
-                }
-                task.setPrimaryObjRef(objectReference);
+            this.taskMapper.insert(task);
+
+            LOGGER.debug("Task '{}' created.", task.getId());
+            return task;
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
+    }
+
+    @Override
+    public Task createManualTask(String workbasketId, String classificationId, String domain, Timestamp planned, String name, String description, ObjectReference primaryObjectReference, Map<String, Object> customAttributes) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+        try {
+            taskanaEngineImpl.openConnection();
+            taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.APPEND);
+
+            taskanaEngine.getWorkbasketService().getWorkbasket(workbasketId);
+            Classification classification = taskanaEngine.getClassificationService().getClassification(classificationId, domain);
+
+            if (classification.getCategory() != "MANUAL") {
+                throw new NotAuthorizedException("You're not allowed to add a task manually to a '" + classification.getCategory() + "'- Classification!");
             }
+
+            Task task = new Task();
+
+            task.setWorkbasketId(workbasketId);
+            task.setClassification(classification);
+            task.setPlanned(planned);
+            task.setPrimaryObjRef(primaryObjectReference);
+            task.setCustomAttributes(customAttributes);
+            task.setName(name);
+            task.setDescription(description);
+
+            this.standardSettings(task);
+            this.setCustomers(task);
+
             this.taskMapper.insert(task);
 
             LOGGER.debug("Task '{}' created.", task.getId());
@@ -228,5 +244,82 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskQuery createTaskQuery() {
         return new TaskQueryImpl(taskanaEngine);
+    }
+
+    private void standardSettings(Task task) {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
+        task.setState(TaskState.READY);
+        task.setCreated(now);
+        task.setModified(now);
+        task.setRead(false);
+        task.setTransferred(false);
+
+        if (task.getPlanned() == null) {
+            task.setPlanned(now);
+        }
+
+        // insert Classification specifications if Classification is given.
+        Classification classification = task.getClassification();
+        if (classification != null) {
+            if (classification.getServiceLevel() != null) {
+                Duration serviceLevel = Duration.parse(task.getClassification().getServiceLevel());
+                LocalDateTime due = task.getPlanned().toLocalDateTime().plus(serviceLevel);
+                task.setDue(Timestamp.valueOf(due));
+            }
+
+            if (task.getName() == null) {
+                task.setName(classification.getName());
+            }
+
+            if (task.getDescription() == null) {
+                task.setDescription(classification.getDescription());
+            }
+
+            if (task.getPriority() == 0) {
+                task.setPriority(classification.getPriority());
+            }
+        }
+
+        // insert ObjectReference if needed.
+        if (task.getPrimaryObjRef() != null) {
+            ObjectReference objectReference = this.objectReferenceMapper.findByObjectReference(task.getPrimaryObjRef());
+            if (objectReference == null) {
+                objectReference = task.getPrimaryObjRef();
+                objectReference.setId(IdGenerator.generateWithPrefix(ID_PREFIX_OBJECTR_EFERENCE));
+                this.objectReferenceMapper.insert(objectReference);
+            }
+            task.setPrimaryObjRef(objectReference);
+        }
+    }
+
+    private void setCustomers(Task task) {
+        if (task.getCustomAttributes() != null) {
+            for (String custom : task.getCustomAttributes().keySet()) {
+                if (task.getCustom1() == null) {
+                    task.setCustom1(custom);
+                } else if (task.getCustom2() == null) {
+                    task.setCustom2(custom);
+                } else if (task.getCustom3() == null) {
+                    task.setCustom3(custom);
+                } else if (task.getCustom4() == null) {
+                    task.setCustom4(custom);
+                } else if (task.getCustom5() == null) {
+                    task.setCustom5(custom);
+                } else if (task.getCustom6() == null) {
+                    task.setCustom6(custom);
+                } else if (task.getCustom7() == null) {
+                    task.setCustom7(custom);
+                } else if (task.getCustom8() == null) {
+                    task.setCustom8(custom);
+                } else if (task.getCustom9() == null) {
+                    task.setCustom9(custom);
+                } else if (task.getCustom10() == null) {
+                    task.setCustom10(custom);
+                } else {
+                    break;
+                }
+            }
+        }
     }
 }
