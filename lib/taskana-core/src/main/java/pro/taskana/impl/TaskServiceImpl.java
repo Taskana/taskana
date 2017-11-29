@@ -253,6 +253,18 @@ public class TaskServiceImpl implements TaskService {
     public TaskQuery createTaskQuery() {
         return new TaskQueryImpl(taskanaEngine);
     }
+    @Override
+    public List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws WorkbasketNotFoundException, NotAuthorizedException, Exception {
+        List<Task> resultList = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
+            resultList = taskMapper.findTasksByWorkbasketIdAndState(workbasketId, taskState);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
+        return (resultList == null) ? new ArrayList<>() : resultList;
+    }
 
     @Override
     public List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws WorkbasketNotFoundException, NotAuthorizedException, Exception {
