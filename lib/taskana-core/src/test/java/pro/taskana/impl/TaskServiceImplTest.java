@@ -71,12 +71,16 @@ public class TaskServiceImplTest {
         Task task = new Task();
         task.setName("Unit Test Task");
         task.setWorkbasketId("1");
+        task.setBusinessProcessId("BPI1");
+        task.setParentBusinessProcessId("PBPI1");
         task = taskServiceImpl.create(task);
         Assert.assertNull(task.getOwner());
         Assert.assertNotNull(task.getCreated());
         Assert.assertNotNull(task.getModified());
         Assert.assertNull(task.getCompleted());
         Assert.assertEquals(task.getWorkbasketId(), "1");
+        Assert.assertEquals(task.getBusinessProcessId(), "BPI1");
+        Assert.assertEquals(task.getParentBusinessProcessId(), "PBPI1");
         Assert.assertEquals(task.getState(), TaskState.READY);
     }
 
