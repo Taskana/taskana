@@ -7,6 +7,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -52,21 +53,26 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public Workbasket getWorkbasket(String workbasketId) throws WorkbasketNotFoundException {
+        LOGGER.debug("entry to getWorkbasket(workbasketId = {})", workbasketId);
+        Workbasket result = null;
         try {
             taskanaEngineImpl.openConnection();
-            Workbasket workbasket = workbasketMapper.findById(workbasketId);
-            if (workbasket == null) {
+            result = workbasketMapper.findById(workbasketId);
+            if (result == null) {
+                LOGGER.warn("Method getWorkbasket() didn't find workbasket with id {}. Throwing WorkbasketNotFoundException", workbasketId);
                 throw new WorkbasketNotFoundException(workbasketId);
             }
-
-            return workbasket;
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getWorkbasket(workbasketId). Returning result {} ", result);
         }
     }
 
     @Override
     public List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permissions) {
+        LOGGER.debug("entry to getWorkbaskets(permissions = {})", LoggerUtils.listToString(permissions));
+        List<Workbasket> result = null;
         try {
             taskanaEngineImpl.openConnection();
             //use a set to avoid duplicates
@@ -74,26 +80,35 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             for (String accessId : CurrentUserContext.getAccessIds()) {
                 workbaskets.addAll(workbasketMapper.findByPermission(permissions, accessId));
             }
-            List<Workbasket> workbasketList = new ArrayList<Workbasket>();
-            workbasketList.addAll(workbaskets);
-            return workbasketList;
+            result = new ArrayList<Workbasket>();
+            result.addAll(workbaskets);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            int numberOfResultObjects = result == null ? 0 : result.size();
+            LOGGER.debug("exit from getWorkbaskets(permissions). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
         }
     }
 
     @Override
     public List<Workbasket> getWorkbaskets() {
+        LOGGER.debug("entry to getWorkbaskets()");
+        List<Workbasket> result = null;
         try {
             taskanaEngineImpl.openConnection();
-            return workbasketMapper.findAll();
+            result = workbasketMapper.findAll();
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            int numberOfResultObjects = result == null ? 0 : result.size();
+            LOGGER.debug("exit from getWorkbaskets(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
         }
     }
 
     @Override
     public Workbasket createWorkbasket(Workbasket workbasket) {
+        LOGGER.debug("entry to createtWorkbasket(workbasket)", workbasket);
+        Workbasket result = null;
         try {
             taskanaEngineImpl.openConnection();
             Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -103,26 +118,31 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 workbasket.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET));
             }
             workbasketMapper.insert(workbasket);
-            LOGGER.debug("Workbasket '{}' created", workbasket.getId());
+            LOGGER.info("Method createWorkbasket() created Workbasket '{}'", workbasket);
             if (workbasket.getDistributionTargets() != null) {
                 for (Workbasket distributionTarget : workbasket.getDistributionTargets()) {
                     if (workbasketMapper.findById(distributionTarget.getId()) == null) {
                         distributionTarget.setCreated(now);
                         distributionTarget.setModified(now);
                         workbasketMapper.insert(distributionTarget);
-                        LOGGER.debug("Workbasket '{}' created", distributionTarget.getId());
+                        LOGGER.info("Method createWorkbasket() created distributionTarget '{}'", distributionTarget);
                     }
                     distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
+                    LOGGER.info("Method createWorkbasket() created distributiontarget for source '{}' and target {}", workbasket.getId(), distributionTarget.getId());
                 }
             }
-            return workbasketMapper.findById(workbasket.getId());
+            result = workbasketMapper.findById(workbasket.getId());
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from createWorkbasket(workbasket). Returning result {} ", result);
         }
     }
 
     @Override
     public Workbasket updateWorkbasket(Workbasket workbasket) throws NotAuthorizedException {
+        LOGGER.debug("entry to updateWorkbasket(workbasket)", workbasket);
+        Workbasket result = null;
         try {
             taskanaEngineImpl.openConnection();
             workbasket.setModified(new Timestamp(System.currentTimeMillis()));
@@ -133,66 +153,88 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 if (!oldDistributionTargets.contains(distributionTarget.getId())) {
                     if (workbasketMapper.findById(distributionTarget.getId()) == null) {
                         workbasketMapper.insert(distributionTarget);
-                        LOGGER.debug("Workbasket '{}' created", distributionTarget.getId());
+                        LOGGER.info(" Method updateWorkbasket() created distributionTarget '{}'", distributionTarget);
                     }
                     distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
+                    LOGGER.info("Method updateWorkbasket() created distributionTarget for '{}' and '{}'", workbasket.getId(), distributionTarget.getId());
                 } else {
                     oldDistributionTargets.remove(distributionTarget.getId());
                 }
             }
             distributionTargetMapper.deleteMultiple(workbasket.getId(), oldDistributionTargets);
-            LOGGER.debug("Workbasket '{}' updated", workbasket.getId());
-            return workbasketMapper.findById(workbasket.getId());
+            LOGGER.info("Method updateWorkbasket() deleted distributionTargets for '{}' and old distribution targets {}",
+                                            workbasket.getId(), LoggerUtils.listToString(oldDistributionTargets));
+
+            LOGGER.info("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
+            result = workbasketMapper.findById(workbasket.getId());
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from updateWorkbasket(). Returning result {} ", result);
         }
     }
 
     @Override
     public WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem) {
+        LOGGER.debug("entry to createWorkbasketAuthorization(workbasketAccessItem = {})", workbasketAccessItem);
         try {
             taskanaEngineImpl.openConnection();
             workbasketAccessItem.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
             workbasketAccessMapper.insert(workbasketAccessItem);
+            LOGGER.info("Method createWorkbasketAuthorization() created workbaskteAccessItem {}", workbasketAccessItem);
             return workbasketAccessItem;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from createWorkbasketAuthorization(workbasketAccessItem). Returning result {}", workbasketAccessItem);
         }
     }
 
     @Override
     public WorkbasketAccessItem getWorkbasketAuthorization(String id) {
-        try {
+       LOGGER.debug("entry to getWorkbasketAuthorization(id = {})", id);
+       WorkbasketAccessItem result = null;
+       try {
             taskanaEngineImpl.openConnection();
-            return workbasketAccessMapper.findById(id);
+            result = workbasketAccessMapper.findById(id);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getWorkbasketAuthorization(id). Returning result {}", result);
         }
     }
 
     @Override
     public void deleteWorkbasketAuthorization(String id) {
+        LOGGER.debug("entry to deleteWorkbasketAuthorization(id = {})", id);
         try {
             taskanaEngineImpl.openConnection();
             workbasketAccessMapper.delete(id);
+            LOGGER.info("Method deleteWorkbasketAuthorization() deleted workbasketAccessItem wit Id {}", id);
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from deleteWorkbasketAuthorization(id).");
         }
     }
 
     @Override
     public List<WorkbasketAccessItem> getAllAuthorizations() {
+        LOGGER.debug("entry to getAllAuthorizations()");
+        List<WorkbasketAccessItem> result = null;
         try {
             taskanaEngineImpl.openConnection();
-            return workbasketAccessMapper.findAll();
+            result = workbasketAccessMapper.findAll();
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            int numberOfResultObjects = result == null ? 0 : result.size();
+            LOGGER.debug("exit from getAllAuthorizations(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
         }
     }
 
     @Override
     public void checkAuthorization(String workbasketId, WorkbasketAuthorization workbasketAuthorization)
             throws NotAuthorizedException {
+        LOGGER.debug("entry to checkAuthorization(workbasketId = {}, workbasketAuthorization = {})", workbasketId, workbasketAuthorization);
         try {
             taskanaEngineImpl.openConnection();
             // Skip permission check is security is not enabled
@@ -202,16 +244,19 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             }
 
             List<String> accessIds = CurrentUserContext.getAccessIds();
-            LOGGER.debug("Verifying that {} has the permission {} on workbasket {}",
+            LOGGER.debug("checkAuthorization: Verifying that {} has the permission {} on workbasket {}",
                 CurrentUserContext.getUserid(), workbasketAuthorization.name(), workbasketId);
 
             List<WorkbasketAccessItem> accessItems = workbasketAccessMapper
                 .findByWorkbasketAndAccessIdAndAuthorizations(workbasketId, accessIds, workbasketAuthorization.name());
 
             if (accessItems.size() <= 0) {
+                LOGGER.debug("exit from checkAuthorization() with NotAuthorizedExeption");
                 throw new NotAuthorizedException("Not authorized. Authorization '" + workbasketAuthorization.name()
                 + "' on workbasket '" + workbasketId + "' is needed.");
             }
+
+            LOGGER.debug("normal exit from checkAuthorization(). The user is authorized.");
 
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -220,22 +265,30 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public WorkbasketAccessItem updateWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem) {
+        LOGGER.debug("entry to updateWorkbasketAuthorization(workbasketAccessItem = {}", workbasketAccessItem);
         try {
             taskanaEngineImpl.openConnection();
             workbasketAccessMapper.update(workbasketAccessItem);
+            LOGGER.info("Method updateWorkbasketAuthorization() updated workbasketAccessItem {}", workbasketAccessItem);
             return workbasketAccessItem;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from updateWorkbasketAuthorization(workbasketAccessItem). Returning {}", workbasketAccessItem);
         }
     }
 
     @Override
     public List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketId) {
+        LOGGER.debug("entry to getWorkbasketAuthorizations(workbasketId = {})", workbasketId);
+        List<WorkbasketAccessItem> result = null;
         try {
             taskanaEngineImpl.openConnection();
-            return workbasketAccessMapper.findByWorkbasketId(workbasketId);
+            result = workbasketAccessMapper.findByWorkbasketId(workbasketId);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            int numberOfResultObjects = result == null ? 0 : result.size();
+            LOGGER.debug("exit from getWorkbasketAuthorizations(workbasketId). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
         }
     }
 }
