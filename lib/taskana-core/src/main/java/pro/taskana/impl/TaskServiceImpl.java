@@ -33,7 +33,10 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_OBJECTR_EFERENCE = "ORI";
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
+<<<<<<< HEAD
     private static final String TYPE_MANUAL = "MANUAL";
+=======
+>>>>>>> TSK-43 Add businessProcessId and parentBusinessProcessId to Task and
 
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
