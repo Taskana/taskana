@@ -3,6 +3,7 @@ package pro.taskana.impl;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.Classification;
@@ -80,13 +81,9 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngineImpl.openConnection();
             this.setDefaultValues(classification);
 
-            Classification oldClassification = this.getClassification(classification.getId(), classification.getDomain());
-
-            if (oldClassification == null) {
-                classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
-                classification.setCreated(Date.valueOf(LocalDate.now()));
-                classificationMapper.insert(classification);
-            } else {
+            Classification oldClassification = null;
+            try {
+                oldClassification = this.getClassification(classification.getId(), classification.getDomain());
 
                 // ! If you update an classification twice the same day,
                 // the older version is valid from today until yesterday.
@@ -98,8 +95,11 @@ public class ClassificationServiceImpl implements ClassificationService {
                     classificationMapper.update(oldClassification);
                     classificationMapper.insert(classification);
                 }
+            } catch (ClassificationNotFoundException e) {
+                classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+                classification.setCreated(Date.valueOf(LocalDate.now()));
+                classificationMapper.insert(classification);
             }
-            return;
         } finally {
             taskanaEngineImpl.returnConnection();
         }
@@ -142,15 +142,18 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public Classification getClassification(String id, String domain) {
+    public Classification getClassification(String id, String domain) throws ClassificationNotFoundException {
          try {
             taskanaEngineImpl.openConnection();
             Classification classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
             if (classification == null) {
-                return classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-            } else {
-                return classification;
+                classification = classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
             }
+            if (classification == null) {
+                throw new ClassificationNotFoundException(id);
+            }
+            return classification;
+
         } finally {
             taskanaEngineImpl.returnConnection();
         }
