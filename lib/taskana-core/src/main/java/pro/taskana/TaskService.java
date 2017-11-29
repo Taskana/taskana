@@ -95,4 +95,16 @@ public interface TaskService {
      */
     TaskQuery createTaskQuery();
 
+    /**
+     * Getting a list of all Tasks which got matching workbasketIds and states.
+     *
+     * @param workbasketId where the tasks need to be in.
+     * @param taskState which is required for the request,
+     * @return a filled/empty list of tasks with attributes which are matching given params.
+     *
+     * @throws WorkbasketNotFoundException if the workbasketId can´t be resolved to a existing workbasket.
+     * @throws NotAuthorizedException if the current user got no rights for reading on this workbasket.
+     * @throws Exception if no result can be found by @{link TaskMapper}.
+     */
+    List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws  WorkbasketNotFoundException, NotAuthorizedException, Exception;
 }
