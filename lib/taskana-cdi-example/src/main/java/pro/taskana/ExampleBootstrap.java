@@ -8,6 +8,7 @@ import javax.enterprise.event.Observes;
 
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.Task;
 
 @ApplicationScoped
@@ -17,7 +18,7 @@ public class ExampleBootstrap {
 	private TaskanaEjb taskanaEjb;
 
 	@PostConstruct
-	public void init(@Observes @Initialized(ApplicationScoped.class) Object init) throws TaskNotFoundException, NotAuthorizedException {
+	public void init(@Observes @Initialized(ApplicationScoped.class) Object init) throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
 		System.out.println("---------------------------> Start App");
 		Task task = taskanaEjb.getTaskService().create(new Task());
 		System.out.println("---------------------------> Task started: " + task.getId());

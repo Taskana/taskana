@@ -32,6 +32,7 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+
     @Autowired
     private TaskFilter taskLogic;
 
@@ -45,6 +46,7 @@ public class TaskController {
             }
             return ResponseEntity.status(HttpStatus.OK).body(taskLogic.inspectPrams(params));
         } catch (NotAuthorizedException e) {
+            logger.error("Somthing went wrong whith the Authorisation, while getting all Tasks.", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
@@ -55,6 +57,7 @@ public class TaskController {
             Task task = taskService.getTaskById(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (TaskNotFoundException e) {
+            logger.error("The searched Task couldn´t be found or does not exist.", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -67,6 +70,7 @@ public class TaskController {
             Task updatedTask = taskService.getTaskById(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
+            logger.error("The given Task coundn´t be found/claimd or does not Exist.", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

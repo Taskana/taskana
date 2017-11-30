@@ -23,6 +23,7 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskServiceImpl;
@@ -65,7 +66,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
+    public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Task task = new Task();
@@ -84,7 +85,7 @@ public class TaskServiceImplIntExplicitTest {
 
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
+            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 //        taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
@@ -105,7 +106,7 @@ public class TaskServiceImplIntExplicitTest {
 
     @Test
     public void testCreateTaskInTaskanaWithDefaultDb()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
+            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
         DataSource ds = TaskanaEngineConfiguration.createDefaultDataSource();
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -126,7 +127,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException {
+    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException {
 
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);

@@ -21,6 +21,7 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskServiceImpl;
@@ -64,7 +65,8 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     @Test
-    public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
+    public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException,
+                WorkbasketNotFoundException, NotAuthorizedException {
         Task task = new Task();
         task.setName("Unit Test Task");
         String id1 = IdGenerator.generateWithPrefix("TWB");
@@ -80,7 +82,7 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
+            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
         Task task = new Task();
         task.setName("Unit Test Task");
         String id1 = IdGenerator.generateWithPrefix("TWB");
@@ -95,7 +97,7 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test
     public void testCreateTaskInTaskanaWithDefaultDb()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException {
+            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl = (TaskServiceImpl) te.getTaskService();
@@ -111,7 +113,7 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException {
+    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException {
         Task task = new Task();
         task.setName("Unit Test Task");
         String id1 = IdGenerator.generateWithPrefix("TWB");
