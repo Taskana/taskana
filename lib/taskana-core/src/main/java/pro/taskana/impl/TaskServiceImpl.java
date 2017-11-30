@@ -176,7 +176,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskStateCounter> getTaskCountForState(List<TaskState> states) {
-        LOGGER.debug("entry to getTaskCountForState(states = {})", LoggerUtils.listToString(states));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getTaskCountForState(states = {})", LoggerUtils.listToString(states));
+        }
         List<TaskStateCounter> result = null;
         try {
             taskanaEngineImpl.openConnection();
@@ -184,15 +186,19 @@ public class TaskServiceImpl implements TaskService {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from getTaskCountForState(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getTaskCountForState(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
     @Override
     public long getTaskCountForWorkbasketByDaysInPastAndState(String workbasketId, long daysInPast, List<TaskState> states) {
-        LOGGER.debug("entry to getTaskCountForWorkbasketByDaysInPastAndState(workbasketId {}, daysInPast={}, states = {})",
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getTaskCountForWorkbasketByDaysInPastAndState(workbasketId {}, daysInPast={}, states = {})",
                                                                     workbasketId, daysInPast, LoggerUtils.listToString(states));
+        }
         long result = -1;
         try {
             taskanaEngineImpl.openConnection();
@@ -247,7 +253,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast,
             List<TaskState> states) {
-        LOGGER.debug("entry to getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast = {}, states = {})", daysInPast, LoggerUtils.listToString(states));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast = {}, states = {})", daysInPast, LoggerUtils.listToString(states));
+        }
         List<DueWorkbasketCounter> result = null;
         try {
             taskanaEngineImpl.openConnection();
@@ -258,9 +266,11 @@ public class TaskServiceImpl implements TaskService {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast,states). Returning {} resulting Objects: {} ",
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast,states). Returning {} resulting Objects: {} ",
                                                                 numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 

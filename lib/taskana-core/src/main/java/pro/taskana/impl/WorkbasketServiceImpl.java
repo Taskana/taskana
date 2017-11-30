@@ -71,7 +71,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permissions) {
-        LOGGER.debug("entry to getWorkbaskets(permissions = {})", LoggerUtils.listToString(permissions));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getWorkbaskets(permissions = {})", LoggerUtils.listToString(permissions));
+        }
         List<Workbasket> result = null;
         try {
             taskanaEngineImpl.openConnection();
@@ -85,8 +87,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from getWorkbaskets(permissions). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getWorkbaskets(permissions). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
@@ -100,8 +104,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from getWorkbaskets(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getWorkbaskets(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
@@ -162,10 +168,12 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 }
             }
             distributionTargetMapper.deleteMultiple(workbasket.getId(), oldDistributionTargets);
-            LOGGER.info("Method updateWorkbasket() deleted distributionTargets for '{}' and old distribution targets {}",
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Method updateWorkbasket() deleted distributionTargets for '{}' and old distribution targets {}",
                                             workbasket.getId(), LoggerUtils.listToString(oldDistributionTargets));
 
-            LOGGER.info("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
+                LOGGER.info("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
+            }
             result = workbasketMapper.findById(workbasket.getId());
             return result;
         } finally {
@@ -226,8 +234,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from getAllAuthorizations(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getAllAuthorizations(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
@@ -287,8 +297,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from getWorkbasketAuthorizations(workbasketId). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getWorkbasketAuthorizations(workbasketId). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 }
