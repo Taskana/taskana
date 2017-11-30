@@ -33,6 +33,7 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_OBJECTR_EFERENCE = "ORI";
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
+    private static final String TYPE_MANUAL = "MANUAL";
 
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -124,7 +125,7 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngine.getWorkbasketService().getWorkbasket(workbasketId);
             Classification classification = taskanaEngine.getClassificationService().getClassification(classificationId, domain);
 
-            if (classification.getCategory() != "MANUAL") {
+            if (!TYPE_MANUAL.equals(classification.getCategory())) {
                 throw new NotAuthorizedException("You're not allowed to add a task manually to a '" + classification.getCategory() + "'- Classification!");
             }
 
@@ -139,7 +140,7 @@ public class TaskServiceImpl implements TaskService {
             task.setDescription(description);
 
             this.standardSettings(task);
-            this.setCustomers(task);
+            this.setCustomAttributes(task);
 
             this.taskMapper.insert(task);
 
@@ -263,9 +264,9 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.returnConnection();
         }
         return (resultList == null) ? new ArrayList<>() : resultList;
-        }
- 
-       private void standardSettings(Task task) {
+    }
+
+    private void standardSettings(Task task) {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
         task.setState(TaskState.READY);
@@ -313,7 +314,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private void setCustomers(Task task) {
+    private void setCustomAttributes(Task task) {
         if (task.getCustomAttributes() != null) {
             for (String custom : task.getCustomAttributes().keySet()) {
                 if (task.getCustom1() == null) {
