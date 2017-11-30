@@ -21,17 +21,19 @@ public interface TaskService {
      *            task id
      * @param userName
      *            user who claims the task
+     * @return modified claimed Task
      * @throws TaskNotFoundException
      */
-    void claim(String id, String userName) throws TaskNotFoundException;
+    Task claim(String id, String userName) throws TaskNotFoundException;
 
     /**
      * Set task to completed.
      * @param taskId
      *            the task id
+     * @return changed Task after update.
      * @throws TaskNotFoundException
      */
-    void complete(String taskId) throws TaskNotFoundException;
+    Task complete(String taskId) throws TaskNotFoundException;
 
     /**
      * Create a task by a task object.
@@ -39,7 +41,7 @@ public interface TaskService {
      * @return the created task
      * @throws NotAuthorizedException
      */
-    Task create(Task task) throws NotAuthorizedException;
+    Task create(Task task) throws NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
      * Get the details of a task.
