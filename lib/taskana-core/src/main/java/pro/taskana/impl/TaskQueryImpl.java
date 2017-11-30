@@ -125,8 +125,10 @@ public class TaskQueryImpl implements TaskQuery {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
@@ -142,8 +144,10 @@ public class TaskQueryImpl implements TaskQuery {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 

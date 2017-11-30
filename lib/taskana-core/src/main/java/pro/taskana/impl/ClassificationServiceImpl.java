@@ -50,8 +50,10 @@ public class ClassificationServiceImpl implements ClassificationService {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from getClassificationTree(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getClassificationTree(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
@@ -158,8 +160,10 @@ public class ClassificationServiceImpl implements ClassificationService {
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            int numberOfResultObjects = result == null ? 0 : result.size();
-            LOGGER.debug("exit from getAllClassificationsWithId(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getAllClassificationsWithId(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
