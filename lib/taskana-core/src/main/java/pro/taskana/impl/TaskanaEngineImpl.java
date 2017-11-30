@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.ClassificationService;
+import pro.taskana.SummaryService;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketService;
@@ -26,6 +27,7 @@ import pro.taskana.model.mappings.ClassificationMapper;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.QueryMapper;
+import pro.taskana.model.mappings.SummaryMapper;
 import pro.taskana.model.mappings.TaskMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.model.mappings.WorkbasketMapper;
@@ -66,6 +68,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
                 session.getMapper(DistributionTargetMapper.class),
                 session.getMapper(WorkbasketAccessMapper.class));
         return workbasketServiceImpl;
+    }
+
+    @Override
+    public SummaryService getSummaryService() {
+        SqlSession session = this.sessionManager;
+        SummaryServiceImpl summaryServiceImpl = new SummaryServiceImpl(this, session.getMapper(SummaryMapper.class));
+        return summaryServiceImpl;
     }
 
     @Override
@@ -216,6 +225,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         configuration.addMapper(WorkbasketAccessMapper.class);
         configuration.addMapper(ObjectReferenceMapper.class);
         configuration.addMapper(QueryMapper.class);
+        configuration.addMapper(SummaryMapper.class);
         configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
         SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(configuration);
         SqlSessionManager sessionManager = SqlSessionManager.newInstance(sessionFactory);

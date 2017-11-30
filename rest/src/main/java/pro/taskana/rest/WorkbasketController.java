@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -29,7 +30,7 @@ public class WorkbasketController {
 
 	@Autowired
 	private WorkbasketService workbasketService;
-
+	
 	@GetMapping
 	public List<Workbasket> getWorkbaskets(@RequestParam MultiValueMap<String, String> params) {
 		if (params.containsKey("requiredPermission")) {
