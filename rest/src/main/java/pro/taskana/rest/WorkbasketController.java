@@ -71,7 +71,7 @@ public class WorkbasketController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-
+	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> createWorkbasket(@RequestBody Workbasket workbasket) {
 		Workbasket createdWorkbasket = workbasketService.createWorkbasket(workbasket);
