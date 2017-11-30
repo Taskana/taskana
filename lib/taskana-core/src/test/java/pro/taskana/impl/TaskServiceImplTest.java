@@ -218,52 +218,6 @@ public class TaskServiceImplTest {
 
     }
 
-    @Test
-    public void testCreateManualTask() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
-        ObjectReference expectedObjectReference = new ObjectReference();
-        expectedObjectReference.setId("1");
-        expectedObjectReference.setType("DUMMY");
-
-        Classification classification = new Classification();
-        classification.setName("Name");
-        classification.setCategory("MANUAL");
-
-        Mockito.doReturn(classification).when(classificationServiceMock).getClassification(any(), any());
-        Mockito.doNothing().when(taskMapperMock).insert(any());
-        Mockito.doNothing().when(objectReferenceMapperMock).insert(any());
-
-        Task manualTask = cut.createManualTask("workbasketId", "classification", "domain", null, null, "simply awesome task", expectedObjectReference, null);
-
-        Task manualTask2 = cut.createManualTask("workbasketId", "classification", "domain", Timestamp.valueOf(LocalDateTime.now().minusHours(1)), "Task2", "simply awesome task", expectedObjectReference, null);
-
-        verify(taskanaEngineImpl, times(2)).openConnection();
-        verify(taskanaEngineMock, times(2 + 2)).getWorkbasketService();
-        verify(taskanaEngineMock, times(2)).getClassificationService();
-        verify(workbasketServiceMock, times(2)).checkAuthorization(any(), any());
-        verify(workbasketServiceMock, times(2)).getWorkbasket(any());
-        verify(objectReferenceMapperMock, times(2)).findByObjectReference(any());
-        verify(objectReferenceMapperMock, times(2)).insert(any());
-        verify(taskMapperMock, times(1)).insert(manualTask);
-        verify(taskMapperMock, times(1)).insert(manualTask2);
-        verify(taskanaEngineImpl, times(2)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
-                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
-
-        assertNull(manualTask.getOwner());
-        assertNotNull(manualTask.getCreated());
-        assertNotNull(manualTask.getModified());
-        assertNull(manualTask.getCompleted());
-        assertNull(manualTask.getDue());
-        assertThat(manualTask.getWorkbasketId(), equalTo(manualTask2.getWorkbasketId()));
-        assertThat(manualTask.getName(), equalTo(classification.getName()));
-        assertThat(manualTask.getState(), equalTo(TaskState.READY));
-        assertThat(manualTask.getPrimaryObjRef(), equalTo(expectedObjectReference));
-        assertThat(manualTask.getName(), not(manualTask2.getName()));
-        assertThat(manualTask.getPlanned(), not(manualTask2.getPlanned()));
-        assertThat(manualTask2.getPlanned(), not(manualTask2.getCreated()));
-
-    }
-
     @Test(expected = NotAuthorizedException.class)
     public void testCreateThrowingAuthorizedOnWorkbasket() throws NotAuthorizedException, WorkbasketNotFoundException {
         try {
