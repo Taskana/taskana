@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.Task;
 
 @Component
@@ -17,7 +18,7 @@ public class TaskanaComponent {
 		return taskService;
 	}
 
-	public void triggerRollback() throws NotAuthorizedException {
+	public void triggerRollback() throws NotAuthorizedException, WorkbasketNotFoundException {
 		Task task = new Task();
 		task.setName("Unit Test Task");
 		task.setWorkbasketId("1");

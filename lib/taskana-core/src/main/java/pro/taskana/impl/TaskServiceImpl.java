@@ -51,10 +51,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void claim(String id, String userName) throws TaskNotFoundException {
+    public Task claim(String id, String userName) throws TaskNotFoundException {
+        Task task = null;
         try {
             taskanaEngineImpl.openConnection();
-            Task task = taskMapper.findById(id);
+            task = taskMapper.findById(id);
             if (task != null) {
                 Timestamp now = new Timestamp(System.currentTimeMillis());
                 task.setOwner(userName);
@@ -69,13 +70,15 @@ public class TaskServiceImpl implements TaskService {
         } finally {
             taskanaEngineImpl.returnConnection();
         }
+        return task;
     }
 
     @Override
-    public void complete(String id) throws TaskNotFoundException {
+    public Task complete(String id) throws TaskNotFoundException {
+        Task task = null;
         try {
             taskanaEngineImpl.openConnection();
-            Task task = taskMapper.findById(id);
+            task = taskMapper.findById(id);
             if (task != null) {
                 Timestamp now = new Timestamp(System.currentTimeMillis());
                 task.setCompleted(now);
@@ -89,10 +92,11 @@ public class TaskServiceImpl implements TaskService {
         } finally {
             taskanaEngineImpl.returnConnection();
         }
+        return task;
     }
 
     @Override
-    public Task create(Task task) throws NotAuthorizedException {
+    public Task create(Task task) throws NotAuthorizedException, WorkbasketNotFoundException {
         try {
             taskanaEngineImpl.openConnection();
             taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
