@@ -33,10 +33,7 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_OBJECTR_EFERENCE = "ORI";
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
-<<<<<<< HEAD
     private static final String TYPE_MANUAL = "MANUAL";
-=======
->>>>>>> TSK-43 Add businessProcessId and parentBusinessProcessId to Task and
 
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -255,18 +252,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskQuery createTaskQuery() {
         return new TaskQueryImpl(taskanaEngine);
-    }
-    @Override
-    public List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws WorkbasketNotFoundException, NotAuthorizedException, Exception {
-        List<Task> resultList = null;
-        try {
-            taskanaEngineImpl.openConnection();
-            taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
-            resultList = taskMapper.findTasksByWorkbasketIdAndState(workbasketId, taskState);
-        } finally {
-            taskanaEngineImpl.returnConnection();
-        }
-        return (resultList == null) ? new ArrayList<>() : resultList;
     }
 
     @Override
