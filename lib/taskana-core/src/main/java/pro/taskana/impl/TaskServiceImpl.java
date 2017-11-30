@@ -253,6 +253,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskQuery createTaskQuery() {
         return new TaskQueryImpl(taskanaEngine);
     }
+
     @Override
     public List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws WorkbasketNotFoundException, NotAuthorizedException, Exception {
         List<Task> resultList = null;
