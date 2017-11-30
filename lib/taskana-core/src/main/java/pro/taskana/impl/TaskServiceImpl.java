@@ -34,6 +34,7 @@ public class TaskServiceImpl implements TaskService {
 
     private static final String ID_PREFIX_OBJECTR_EFERENCE = "ORI";
     private static final String ID_PREFIX_TASK = "TKI";
+    private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
 
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -103,6 +104,11 @@ public class TaskServiceImpl implements TaskService {
             task.setModified(now);
             task.setRead(false);
             task.setTransferred(false);
+
+            // if no business process id is provided, a unique id is created.
+            if (task.getBusinessProcessId() == null) {
+                task.setBusinessProcessId(IdGenerator.generateWithPrefix(ID_PREFIX_BUSINESS_PROCESS));
+            }
 
             // insert ObjectReference if needed.
             if (task.getPrimaryObjRef() != null) {
