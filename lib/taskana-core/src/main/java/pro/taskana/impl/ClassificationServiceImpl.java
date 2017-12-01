@@ -118,7 +118,8 @@ public class ClassificationServiceImpl implements ClassificationService {
                 classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
                 classification.setCreated(Date.valueOf(LocalDate.now()));
                 classificationMapper.insert(classification);
-            }
+                LOGGER.info("Method updateClassification() inserted classification {}.", classification);
+       }
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from updateClassification().");

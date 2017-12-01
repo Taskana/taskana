@@ -153,6 +153,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngineImpl.openConnection();
             workbasket.setModified(new Timestamp(System.currentTimeMillis()));
             workbasketMapper.update(workbasket);
+            LOGGER.info("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
             List<String> oldDistributionTargets = distributionTargetMapper.findBySourceId(workbasket.getId());
             List<Workbasket> distributionTargets = workbasket.getDistributionTargets();
             for (Workbasket distributionTarget : distributionTargets) {
@@ -171,8 +172,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Method updateWorkbasket() deleted distributionTargets for '{}' and old distribution targets {}",
                                             workbasket.getId(), LoggerUtils.listToString(oldDistributionTargets));
-
-                LOGGER.info("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
             }
             result = workbasketMapper.findById(workbasket.getId());
             return result;
@@ -245,11 +244,13 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public void checkAuthorization(String workbasketId, WorkbasketAuthorization workbasketAuthorization)
             throws NotAuthorizedException {
         LOGGER.debug("entry to checkAuthorization(workbasketId = {}, workbasketAuthorization = {})", workbasketId, workbasketAuthorization);
+        boolean isAuthorized = false;
         try {
             taskanaEngineImpl.openConnection();
             // Skip permission check is security is not enabled
             if (!taskanaEngine.getConfiguration().isSecurityEnabled()) {
                 LOGGER.debug("Skipping permissions check since security is disabled.");
+                isAuthorized = true;
                 return;
             }
 
@@ -261,15 +262,15 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 .findByWorkbasketAndAccessIdAndAuthorizations(workbasketId, accessIds, workbasketAuthorization.name());
 
             if (accessItems.size() <= 0) {
-                LOGGER.debug("exit from checkAuthorization() with NotAuthorizedExeption");
                 throw new NotAuthorizedException("Not authorized. Authorization '" + workbasketAuthorization.name()
                 + "' on workbasket '" + workbasketId + "' is needed.");
             }
 
-            LOGGER.debug("normal exit from checkAuthorization(). The user is authorized.");
+            isAuthorized = true;
 
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from checkAuthorization(). User is authorized = {}.", isAuthorized);
         }
     }
 
