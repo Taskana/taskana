@@ -1,14 +1,14 @@
 package pro.taskana;
 
-import java.util.List;
-
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.DueWorkbasketCounter;
-import pro.taskana.model.Task;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
+import pro.taskana.model.*;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Task Service manages all operations on tasks.
@@ -43,6 +43,19 @@ public interface TaskService {
      */
     Task create(Task task) throws NotAuthorizedException, WorkbasketNotFoundException;
 
+    /**
+     * Create a task manually by filling the fields.
+     * @param workbasketId not null
+     * @param classificationId not null
+     * @param domain
+     * @param planned
+     * @param name
+     * @param description
+     * @param primaryObjectReference
+     * @param customAttributes
+     * @return
+     */
+    Task createManualTask(String workbasketId, String classificationId, String domain, Timestamp planned, String name, String description, ObjectReference primaryObjectReference, Map<String, Object> customAttributes) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException;
     /**
      * Get the details of a task.
      * @param taskId
