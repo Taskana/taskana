@@ -102,11 +102,6 @@ public class TaskServiceImpl implements TaskService {
 
             standardSettings(task);
 
-            // if no business process id is provided, a unique id is created.
-            if (task.getBusinessProcessId() == null) {
-                task.setBusinessProcessId(IdGenerator.generateWithPrefix(ID_PREFIX_BUSINESS_PROCESS));
-            }
-
             this.taskMapper.insert(task);
 
             LOGGER.debug("Task '{}' created.", task.getId());
@@ -280,6 +275,10 @@ public class TaskServiceImpl implements TaskService {
             task.setPlanned(now);
         }
 
+        // if no business process id is provided, a unique id is created.
+        if (task.getBusinessProcessId() == null) {
+            task.setBusinessProcessId(IdGenerator.generateWithPrefix(ID_PREFIX_BUSINESS_PROCESS));
+        }
 
         // insert Classification specifications if Classification is given.
         Classification classification = task.getClassification();
