@@ -1,11 +1,15 @@
 package pro.taskana.impl;
 
 import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pro.taskana.ClassificationQuery;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.Classification;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +20,7 @@ import java.util.List;
 public class ClassificationQueryImpl implements ClassificationQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryClassification";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
     private String[] parentClassificationId;
     private String[] category;
@@ -115,32 +120,50 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public List<Classification> list() {
+        LOGGER.debug("entry to list(), this = {}", this);
+        List<Classification> result = null;
         try {
             taskanaEngineImpl.openConnection();
-            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
     @Override
     public List<Classification> list(int offset, int limit) {
+        LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
+        List<Classification> result = null;
         try {
             taskanaEngineImpl.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
     @Override
     public Classification single() {
+        LOGGER.debug("entry to single(), this = {}", this);
+        Classification result = null;
         try {
             taskanaEngineImpl.openConnection();
-            return taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            result = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from single(). Returning result {} ", result);
         }
     }
 
@@ -247,4 +270,40 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     public void setValidUntil(Date[] validUntil) {
         this.validUntil = validUntil;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ClassificationQueryImpl [taskanaEngineImpl=");
+        builder.append(taskanaEngineImpl);
+        builder.append(", parentClassificationId=");
+        builder.append(Arrays.toString(parentClassificationId));
+        builder.append(", category=");
+        builder.append(Arrays.toString(category));
+        builder.append(", type=");
+        builder.append(Arrays.toString(type));
+        builder.append(", domain=");
+        builder.append(Arrays.toString(domain));
+        builder.append(", validInDomain=");
+        builder.append(validInDomain);
+        builder.append(", created=");
+        builder.append(Arrays.toString(created));
+        builder.append(", name=");
+        builder.append(Arrays.toString(name));
+        builder.append(", description=");
+        builder.append(description);
+        builder.append(", priority=");
+        builder.append(Arrays.toString(priority));
+        builder.append(", serviceLevel=");
+        builder.append(Arrays.toString(serviceLevel));
+        builder.append(", customFields=");
+        builder.append(Arrays.toString(customFields));
+        builder.append(", validFrom=");
+        builder.append(Arrays.toString(validFrom));
+        builder.append(", validUntil=");
+        builder.append(Arrays.toString(validUntil));
+        builder.append("]");
+        return builder.toString();
+    }
+
 }

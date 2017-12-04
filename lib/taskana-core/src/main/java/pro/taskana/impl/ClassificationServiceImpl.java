@@ -6,6 +6,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.Classification;
 import pro.taskana.model.mappings.ClassificationMapper;
 
@@ -15,6 +16,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This is the implementation of ClassificationService.
  */
@@ -22,6 +26,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     private static final String ID_PREFIX_CLASSIFICATION = "CLI";
     public static final Date CURRENT_CLASSIFICATIONS_VALID_UNTIL = Date.valueOf("9999-12-31");
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
     private ClassificationMapper classificationMapper;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -35,13 +40,20 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public List<Classification> getClassificationTree() throws NotAuthorizedException {
+        LOGGER.debug("entry to getClassificationTree()");
+        List<Classification> result = null;
         try {
             taskanaEngineImpl.openConnection();
             List<Classification> rootClassifications;
             rootClassifications = this.createClassificationQuery().parentClassification("").validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL).list();
-            return this.populateChildClassifications(rootClassifications);
+            result = this.populateChildClassifications(rootClassifications);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getClassificationTree(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
@@ -62,7 +74,8 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public void addClassification(Classification classification) {
-        try {
+        LOGGER.debug("entry to addClassification(classification = {})", classification);
+       try {
             taskanaEngineImpl.openConnection();
             classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
             classification.setCreated(Date.valueOf(LocalDate.now()));
@@ -70,13 +83,16 @@ public class ClassificationServiceImpl implements ClassificationService {
             this.setDefaultValues(classification);
 
             classificationMapper.insert(classification);
+            LOGGER.debug("Method addClassification added classification {}.", classification);
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from addClassification()");
         }
     }
 
     @Override
     public void updateClassification(Classification classification) {
+        LOGGER.debug("entry to updateClassification(Classification = {})", classification);
         try {
             taskanaEngineImpl.openConnection();
             this.setDefaultValues(classification);
@@ -84,24 +100,29 @@ public class ClassificationServiceImpl implements ClassificationService {
             Classification oldClassification = null;
             try {
                 oldClassification = this.getClassification(classification.getId(), classification.getDomain());
+                LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
 
                 // ! If you update an classification twice the same day,
                 // the older version is valid from today until yesterday.
                 if (!oldClassification.getDomain().equals(classification.getDomain())) {
                     classification.setCreated(Date.valueOf(LocalDate.now()));
                     classificationMapper.insert(classification);
+                    LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
                 } else {
                     oldClassification.setValidUntil(Date.valueOf(LocalDate.now().minusDays(1)));
                     classificationMapper.update(oldClassification);
                     classificationMapper.insert(classification);
+                    LOGGER.debug("Method updateClassification() updated old classification {} and inserted new {}.", oldClassification, classification);
                 }
             } catch (ClassificationNotFoundException e) {
                 classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
                 classification.setCreated(Date.valueOf(LocalDate.now()));
                 classificationMapper.insert(classification);
-            }
+                LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
+       }
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from updateClassification().");
         }
     }
 
@@ -132,32 +153,40 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public List<Classification> getAllClassificationsWithId(String id, String domain) {
+        LOGGER.debug("entry to getAllClassificationsWithId(id = {}, domain = {})", id, domain);
+        List<Classification> result = null;
         try {
             taskanaEngineImpl.openConnection();
-            return classificationMapper.getAllClassificationsWithId(id, domain);
+            result = classificationMapper.getAllClassificationsWithId(id, domain);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getAllClassificationsWithId(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
-
     }
 
     @Override
     public Classification getClassification(String id, String domain) throws ClassificationNotFoundException {
-         try {
+        LOGGER.debug("entry to getClassification(id = {}, domain = {})", id, domain);
+        Classification result = null;
+        try {
             taskanaEngineImpl.openConnection();
-            Classification classification = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-            if (classification == null) {
-                classification = classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            result = classificationMapper.findByIdAndDomain(id, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            if (result == null) {
+                result = classificationMapper.findByIdAndDomain(id, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
             }
-            if (classification == null) {
+            if (result == null) {
                 throw new ClassificationNotFoundException(id);
             }
-            return classification;
+            return result;
 
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getClassification(). Returning result {} ", result);
         }
-
     }
 
     @Override
