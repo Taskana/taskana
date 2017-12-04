@@ -83,7 +83,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             this.setDefaultValues(classification);
 
             classificationMapper.insert(classification);
-            LOGGER.info("Method addClassification added classification {}.", classification);
+            LOGGER.debug("Method addClassification added classification {}.", classification);
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from addClassification()");
@@ -100,25 +100,25 @@ public class ClassificationServiceImpl implements ClassificationService {
             Classification oldClassification = null;
             try {
                 oldClassification = this.getClassification(classification.getId(), classification.getDomain());
-                LOGGER.info("Method updateClassification() inserted classification {}.", classification);
+                LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
 
                 // ! If you update an classification twice the same day,
                 // the older version is valid from today until yesterday.
                 if (!oldClassification.getDomain().equals(classification.getDomain())) {
                     classification.setCreated(Date.valueOf(LocalDate.now()));
                     classificationMapper.insert(classification);
-                    LOGGER.info("Method updateClassification() inserted classification {}.", classification);
+                    LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
                 } else {
                     oldClassification.setValidUntil(Date.valueOf(LocalDate.now().minusDays(1)));
                     classificationMapper.update(oldClassification);
                     classificationMapper.insert(classification);
-                    LOGGER.info("Method updateClassification() updated old classification {} and inserted new {}.", oldClassification, classification);
+                    LOGGER.debug("Method updateClassification() updated old classification {} and inserted new {}.", oldClassification, classification);
                 }
             } catch (ClassificationNotFoundException e) {
                 classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
                 classification.setCreated(Date.valueOf(LocalDate.now()));
                 classificationMapper.insert(classification);
-                LOGGER.info("Method updateClassification() inserted classification {}.", classification);
+                LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
        }
         } finally {
             taskanaEngineImpl.returnConnection();

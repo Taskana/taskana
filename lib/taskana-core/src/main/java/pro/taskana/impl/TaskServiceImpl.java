@@ -71,7 +71,7 @@ public class TaskServiceImpl implements TaskService {
                 task.setClaimed(now);
                 task.setState(TaskState.CLAIMED);
                 taskMapper.update(task);
-                LOGGER.info("Method claim() claimed task '{}' for user '{}'.", id, userName);
+                LOGGER.debug("Method claim() claimed task '{}' for user '{}'.", id, userName);
             } else {
                 LOGGER.warn("Method claim() didn't find task with id {}. Throwing TaskNotFoundException", id);
                 throw new TaskNotFoundException(id);
@@ -96,7 +96,7 @@ public class TaskServiceImpl implements TaskService {
                 task.setModified(now);
                 task.setState(TaskState.COMPLETED);
                 taskMapper.update(task);
-                LOGGER.info("Method complete() completed Task '{}'.", id);
+                LOGGER.debug("Method complete() completed Task '{}'.", id);
             } else {
                 LOGGER.warn("Method complete() didn't find task with id {}. Throwing TaskNotFoundException", id);
                 throw new TaskNotFoundException(id);
@@ -119,7 +119,7 @@ public class TaskServiceImpl implements TaskService {
 
             this.taskMapper.insert(task);
 
-            LOGGER.info("Method create() created Task '{}'.", task.getId());
+            LOGGER.debug("Method create() created Task '{}'.", task.getId());
             return task;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -161,7 +161,7 @@ public class TaskServiceImpl implements TaskService {
 
             this.taskMapper.insert(task);
 
-            LOGGER.info("Method create() created Task '{}'.", task.getId());
+            LOGGER.debug("Method create() created Task '{}'.", task.getId());
             return task;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -256,7 +256,7 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.update(task);
 
             result = getTaskById(taskId);
-            LOGGER.info("Method transfer() transferred Task '{}' to destination workbasket {}", taskId, destinationWorkbasketId);
+            LOGGER.debug("Method transfer() transferred Task '{}' to destination workbasket {}", taskId, destinationWorkbasketId);
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -299,7 +299,7 @@ public class TaskServiceImpl implements TaskService {
             task.setModified(Timestamp.valueOf(LocalDateTime.now()));
             taskMapper.update(task);
             result = getTaskById(taskId);
-            LOGGER.info("Method setTaskRead() set read property of Task '{}' to {} ", result, isRead);
+            LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", result, isRead);
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
