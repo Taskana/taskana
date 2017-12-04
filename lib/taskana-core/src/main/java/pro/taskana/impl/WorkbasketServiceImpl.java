@@ -124,17 +124,17 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 workbasket.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET));
             }
             workbasketMapper.insert(workbasket);
-            LOGGER.info("Method createWorkbasket() created Workbasket '{}'", workbasket);
+            LOGGER.debug("Method createWorkbasket() created Workbasket '{}'", workbasket);
             if (workbasket.getDistributionTargets() != null) {
                 for (Workbasket distributionTarget : workbasket.getDistributionTargets()) {
                     if (workbasketMapper.findById(distributionTarget.getId()) == null) {
                         distributionTarget.setCreated(now);
                         distributionTarget.setModified(now);
                         workbasketMapper.insert(distributionTarget);
-                        LOGGER.info("Method createWorkbasket() created distributionTarget '{}'", distributionTarget);
+                        LOGGER.debug("Method createWorkbasket() created distributionTarget '{}'", distributionTarget);
                     }
                     distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
-                    LOGGER.info("Method createWorkbasket() created distributiontarget for source '{}' and target {}", workbasket.getId(), distributionTarget.getId());
+                    LOGGER.debug("Method createWorkbasket() created distributiontarget for source '{}' and target {}", workbasket.getId(), distributionTarget.getId());
                 }
             }
             result = workbasketMapper.findById(workbasket.getId());
@@ -153,24 +153,24 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngineImpl.openConnection();
             workbasket.setModified(new Timestamp(System.currentTimeMillis()));
             workbasketMapper.update(workbasket);
-            LOGGER.info("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
+            LOGGER.debug("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
             List<String> oldDistributionTargets = distributionTargetMapper.findBySourceId(workbasket.getId());
             List<Workbasket> distributionTargets = workbasket.getDistributionTargets();
             for (Workbasket distributionTarget : distributionTargets) {
                 if (!oldDistributionTargets.contains(distributionTarget.getId())) {
                     if (workbasketMapper.findById(distributionTarget.getId()) == null) {
                         workbasketMapper.insert(distributionTarget);
-                        LOGGER.info(" Method updateWorkbasket() created distributionTarget '{}'", distributionTarget);
+                        LOGGER.debug(" Method updateWorkbasket() created distributionTarget '{}'", distributionTarget);
                     }
                     distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
-                    LOGGER.info("Method updateWorkbasket() created distributionTarget for '{}' and '{}'", workbasket.getId(), distributionTarget.getId());
+                    LOGGER.debug("Method updateWorkbasket() created distributionTarget for '{}' and '{}'", workbasket.getId(), distributionTarget.getId());
                 } else {
                     oldDistributionTargets.remove(distributionTarget.getId());
                 }
             }
             distributionTargetMapper.deleteMultiple(workbasket.getId(), oldDistributionTargets);
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Method updateWorkbasket() deleted distributionTargets for '{}' and old distribution targets {}",
+                LOGGER.debug("Method updateWorkbasket() deleted distributionTargets for '{}' and old distribution targets {}",
                                             workbasket.getId(), LoggerUtils.listToString(oldDistributionTargets));
             }
             result = workbasketMapper.findById(workbasket.getId());
@@ -188,7 +188,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngineImpl.openConnection();
             workbasketAccessItem.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
             workbasketAccessMapper.insert(workbasketAccessItem);
-            LOGGER.info("Method createWorkbasketAuthorization() created workbaskteAccessItem {}", workbasketAccessItem);
+            LOGGER.debug("Method createWorkbasketAuthorization() created workbaskteAccessItem {}", workbasketAccessItem);
             return workbasketAccessItem;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -216,7 +216,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         try {
             taskanaEngineImpl.openConnection();
             workbasketAccessMapper.delete(id);
-            LOGGER.info("Method deleteWorkbasketAuthorization() deleted workbasketAccessItem wit Id {}", id);
+            LOGGER.debug("Method deleteWorkbasketAuthorization() deleted workbasketAccessItem wit Id {}", id);
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from deleteWorkbasketAuthorization(id).");
@@ -280,7 +280,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         try {
             taskanaEngineImpl.openConnection();
             workbasketAccessMapper.update(workbasketAccessItem);
-            LOGGER.info("Method updateWorkbasketAuthorization() updated workbasketAccessItem {}", workbasketAccessItem);
+            LOGGER.debug("Method updateWorkbasketAuthorization() updated workbasketAccessItem {}", workbasketAccessItem);
             return workbasketAccessItem;
         } finally {
             taskanaEngineImpl.returnConnection();

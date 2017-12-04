@@ -35,8 +35,8 @@ public class SummaryServiceImpl implements SummaryService {
             taskanaEngineImpl.openConnection();
             taskSummaries = summaryMapper.findTasksummariesByWorkbasketId(workbasketId);
         } catch (Exception ex) {
-            LOGGER.warn("Getting TASKSUMMARY failed internally.", ex);
-        } finally {
+            LOGGER.error("Getting TASKSUMMARY failed internally.", ex);
+        }  finally {
             if (taskSummaries == null) {
                 taskSummaries = new ArrayList<>();
             }
