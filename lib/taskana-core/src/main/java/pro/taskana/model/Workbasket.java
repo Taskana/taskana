@@ -72,4 +72,27 @@ public class Workbasket {
     public void setDistributionTargets(List<Workbasket> distributionTargets) {
         this.distributionTargets = distributionTargets;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Workbasket [id=");
+        builder.append(id);
+        builder.append(", created=");
+        builder.append(created);
+        builder.append(", modified=");
+        builder.append(modified);
+        builder.append(", name=");
+        builder.append(name);
+        builder.append(", description=");
+        builder.append(description);
+        builder.append(", owner=");
+        builder.append(owner);
+        builder.append(", distributionTargets=");
+        builder.append(distributionTargets);
+        builder.append("]");
+        return builder.toString();
+    }
 }
+
+

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.SummaryService;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.TaskSummary;
 import pro.taskana.model.mappings.SummaryMapper;
 
@@ -28,17 +29,23 @@ public class SummaryServiceImpl implements SummaryService {
 
     @Override
     public List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId) {
+        LOGGER.debug("entry to getTaskSummariesByWorkbasketId(workbasketId = {}", workbasketId);
         List<TaskSummary> taskSummaries = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
             taskSummaries = summaryMapper.findTasksummariesByWorkbasketId(workbasketId);
         } catch (Exception ex) {
-            LOGGER.error("Getting TASKSUMMARY failed internal.", ex);
-        } finally {
+            LOGGER.error("Getting TASKSUMMARY failed internally.", ex);
+        }  finally {
             if (taskSummaries == null) {
                 taskSummaries = new ArrayList<>();
             }
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = taskSummaries.size();
+                LOGGER.debug("exit from getTaskSummariesByWorkbasketId(workbasketId). Returning {} resulting Objects: {} ",
+                                                        numberOfResultObjects, LoggerUtils.listToString(taskSummaries));
+            }
         }
         return taskSummaries;
     }

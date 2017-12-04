@@ -1,8 +1,17 @@
 package pro.taskana.impl;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
@@ -11,17 +20,16 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.model.*;
+import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.model.Classification;
+import pro.taskana.model.DueWorkbasketCounter;
+import pro.taskana.model.ObjectReference;
+import pro.taskana.model.Task;
+import pro.taskana.model.TaskState;
+import pro.taskana.model.TaskStateCounter;
+import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
-
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This is the implementation of TaskService.
@@ -51,6 +59,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task claim(String id, String userName) throws TaskNotFoundException {
+        LOGGER.debug("entry to claim(id = {}, userName = {})", id, userName);
         Task task = null;
         try {
             taskanaEngineImpl.openConnection();
@@ -62,18 +71,21 @@ public class TaskServiceImpl implements TaskService {
                 task.setClaimed(now);
                 task.setState(TaskState.CLAIMED);
                 taskMapper.update(task);
-                LOGGER.debug("User '{}' claimed task '{}'.", userName, id);
+                LOGGER.debug("Method claim() claimed task '{}' for user '{}'.", id, userName);
             } else {
+                LOGGER.warn("Method claim() didn't find task with id {}. Throwing TaskNotFoundException", id);
                 throw new TaskNotFoundException(id);
             }
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from claim()");
         }
         return task;
     }
 
     @Override
     public Task complete(String id) throws TaskNotFoundException {
+        LOGGER.debug("entry to complete(id = {})", id);
         Task task = null;
         try {
             taskanaEngineImpl.openConnection();
@@ -84,18 +96,21 @@ public class TaskServiceImpl implements TaskService {
                 task.setModified(now);
                 task.setState(TaskState.COMPLETED);
                 taskMapper.update(task);
-                LOGGER.debug("Task '{}' completed.", id);
+                LOGGER.debug("Method complete() completed Task '{}'.", id);
             } else {
+                LOGGER.warn("Method complete() didn't find task with id {}. Throwing TaskNotFoundException", id);
                 throw new TaskNotFoundException(id);
             }
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from complete()");
         }
         return task;
     }
 
     @Override
     public Task create(Task task) throws NotAuthorizedException, WorkbasketNotFoundException {
+        LOGGER.debug("entry to create(task = {})", task);
         try {
             taskanaEngineImpl.openConnection();
             taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
@@ -104,15 +119,22 @@ public class TaskServiceImpl implements TaskService {
 
             this.taskMapper.insert(task);
 
-            LOGGER.debug("Task '{}' created.", task.getId());
+            LOGGER.debug("Method create() created Task '{}'.", task.getId());
             return task;
         } finally {
             taskanaEngineImpl.returnConnection();
-        }
+            LOGGER.debug("exit from create(task = {})");
+     }
     }
 
     @Override
-    public Task createManualTask(String workbasketId, String classificationId, String domain, Timestamp planned, String name, String description, ObjectReference primaryObjectReference, Map<String, Object> customAttributes) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+    public Task createManualTask(String workbasketId, String classificationId, String domain, Timestamp planned, String name,
+            String description, ObjectReference primaryObjectReference, Map<String, Object> customAttributes) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to createManualTask(workbasketId = {}, classificationId = {}, domain = {}, planned = {}, name = {},"
+                    + " description = {}, primaryObjectReference = {}, customAttributes = {})", workbasketId, classificationId, domain, planned, name,
+                    description, primaryObjectReference, LoggerUtils.mapToString(customAttributes));
+        }
         try {
             taskanaEngineImpl.openConnection();
             taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.APPEND);
@@ -139,54 +161,77 @@ public class TaskServiceImpl implements TaskService {
 
             this.taskMapper.insert(task);
 
-            LOGGER.debug("Task '{}' created.", task.getId());
+            LOGGER.debug("Method create() created Task '{}'.", task.getId());
             return task;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from create()");
         }
     }
 
     @Override
     public Task getTaskById(String id) throws TaskNotFoundException {
+        LOGGER.debug("entry to getTaskById(id = {})", id);
+        Task result = null;
         try {
             taskanaEngineImpl.openConnection();
-            Task task = taskMapper.findById(id);
-            if (task != null) {
-                return task;
+            result = taskMapper.findById(id);
+            if (result != null) {
+                return result;
             } else {
+                LOGGER.warn("Method getTaskById() didn't find task with id {}. Throwing TaskNotFoundException", id);
                 throw new TaskNotFoundException(id);
             }
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getTaskById(). Returning result {} ", result);
         }
     }
 
     @Override
     public List<TaskStateCounter> getTaskCountForState(List<TaskState> states) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getTaskCountForState(states = {})", LoggerUtils.listToString(states));
+        }
+        List<TaskStateCounter> result = null;
         try {
             taskanaEngineImpl.openConnection();
-            return taskMapper.getTaskCountForState(states);
+            result = taskMapper.getTaskCountForState(states);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getTaskCountForState(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
     @Override
     public long getTaskCountForWorkbasketByDaysInPastAndState(String workbasketId, long daysInPast, List<TaskState> states) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getTaskCountForWorkbasketByDaysInPastAndState(workbasketId {}, daysInPast={}, states = {})",
+                                                                    workbasketId, daysInPast, LoggerUtils.listToString(states));
+        }
+        long result = -1;
         try {
             taskanaEngineImpl.openConnection();
             LocalDate time = LocalDate.now();
             time = time.minusDays(daysInPast);
             Date fromDate = Date.valueOf(time);
-            return taskMapper.getTaskCountForWorkbasketByDaysInPastAndState(workbasketId, fromDate, states);
+            result = taskMapper.getTaskCountForWorkbasketByDaysInPastAndState(workbasketId, fromDate, states);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-        }
+            LOGGER.debug("exit from getTaskCountForWorkbasketByDaysInPastAndState(). Returning result {} ", result);
+       }
     }
 
     @Override
     public Task transfer(String taskId, String destinationWorkbasketId)
             throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
+        LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketId = {})", taskId, destinationWorkbasketId);
+        Task result = null;
         try {
             taskanaEngineImpl.openConnection();
             Task task = getTaskById(taskId);
@@ -210,37 +255,55 @@ public class TaskServiceImpl implements TaskService {
             task.setModified(Timestamp.valueOf(LocalDateTime.now()));
             taskMapper.update(task);
 
-            return getTaskById(taskId);
+            result = getTaskById(taskId);
+            LOGGER.debug("Method transfer() transferred Task '{}' to destination workbasket {}", taskId, destinationWorkbasketId);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from transfer(). Returning result {} ", result);
         }
     }
 
     @Override
     public List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast,
             List<TaskState> states) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast = {}, states = {})", daysInPast, LoggerUtils.listToString(states));
+        }
+        List<DueWorkbasketCounter> result = null;
         try {
             taskanaEngineImpl.openConnection();
             LocalDate time = LocalDate.now();
             time = time.minusDays(daysInPast);
             Date fromDate = Date.valueOf(time);
-            return taskMapper.getTaskCountByWorkbasketIdAndDaysInPastAndState(fromDate, states);
+            result = taskMapper.getTaskCountByWorkbasketIdAndDaysInPastAndState(fromDate, states);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast,states). Returning {} resulting Objects: {} ",
+                                                                numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
     @Override
     public Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException {
+        LOGGER.debug("entry to setTaskRead(taskId = {}, isRead = {})", taskId, isRead);
+        Task result = null;
         try {
             taskanaEngineImpl.openConnection();
             Task task = getTaskById(taskId);
             task.setRead(true);
             task.setModified(Timestamp.valueOf(LocalDateTime.now()));
             taskMapper.update(task);
-            return getTaskById(taskId);
+            result = getTaskById(taskId);
+            LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", result, isRead);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from setTaskRead(taskId, isRead). Returning result {} ", result);
         }
     }
 
@@ -251,15 +314,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws WorkbasketNotFoundException, NotAuthorizedException, Exception {
-        List<Task> resultList = null;
+        LOGGER.debug("entry to getTasksByWorkbasketIdAndState(workbasketId = {}, taskState = {})", workbasketId, taskState);
+        List<Task> result = null;
         try {
             taskanaEngineImpl.openConnection();
             taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
-            resultList = taskMapper.findTasksByWorkbasketIdAndState(workbasketId, taskState);
+            result = taskMapper.findTasksByWorkbasketIdAndState(workbasketId, taskState);
         } finally {
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from getTasksByWorkbasketIdAndState(workbasketId, taskState). Returning {} resulting Objects: {} ",
+                                                                numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
-        return (resultList == null) ? new ArrayList<>() : resultList;
+        return (result == null) ? new ArrayList<>() : result;
     }
 
     private void standardSettings(Task task) {
