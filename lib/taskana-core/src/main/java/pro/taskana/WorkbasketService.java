@@ -100,11 +100,18 @@ public interface WorkbasketService {
     List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketId);
 
     /**
-     * This method provides workbaskets via an permission.
+     * This method returns the workbaskets for which the current user has all permissions
+     * specified in the permissions list.
+     *
      * @param permission
-     *            as String like in this enum: {@link WorkbasketAuthorization}
+     *            a List of WorkbasketAuthorization enums
      * @return all filtered workbaskets
      */
     List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permission);
 
+    /**
+     * This method provides a query builder for quering the database.
+     * @return a {@link WorkbasketQuery}
+     */
+    WorkbasketQuery createWorkbasketQuery();
 }
