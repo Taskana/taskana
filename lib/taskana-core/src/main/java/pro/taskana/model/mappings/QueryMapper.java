@@ -1,5 +1,8 @@
 package pro.taskana.model.mappings;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -9,10 +12,10 @@ import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.model.ClassificationImpl;
+import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
-
-import java.util.List;
+import pro.taskana.model.Workbasket;
 
 /**
  * This class provides a mapper for all queries.
@@ -152,4 +155,51 @@ public interface QueryMapper {
         @Result(property = "type", column = "TYPE"),
         @Result(property = "value", column = "VALUE") })
     List<ObjectReference> queryObjectReference(ObjectReferenceQueryImpl objectReference);
+
+    @Select("<script>SELECT w.ID, w.CREATED, w.MODIFIED, w.NAME, w.DESCRIPTION, w.OWNER from WORKBASKET w "
+            + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.ID = a.WORKBASKET_ID</if> "
+            + "<where>"
+            + "<if test='owner != null'>AND w.OWNER IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='name != null'>AND w.NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='created != null'>AND w.CREATED IN(<foreach item='item' collection='created' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='modified != null'>AND w.MODIFIED IN(<foreach item='item' collection='modified' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='description != null'>AND w.DESCRIPTION like #{description}</if> "
+            + "<if test='accessId != null'>AND a.ACCESS_ID IN(<foreach item='item' collection='accessId' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='authorization != null'>AND "
+                + "<if test=\"authorization.name().equals('OPEN')\">PERM_OPEN</if> "
+                + "<if test=\"authorization.name().equals('READ')\">PERM_READ</if>"
+                + "<if test=\"authorization.name().equals('APPEND')\">PERM_APPEND</if>"
+                + "<if test=\"authorization.name().equals('TRANSFER')\">PERM_TRANSFER</if>"
+                + "<if test=\"authorization.name().equals('DISTRIBUTE')\">PERM_DISTRIBUTE</if>"
+                + "<if test=\"authorization.name().equals('CUSTOM_1')\">PERM_CUSTOM_1</if>"
+                + "<if test=\"authorization.name().equals('CUSTOM_2')\">PERM_CUSTOM_2</if>"
+                + "<if test=\"authorization.name().equals('CUSTOM_3')\">PERM_CUSTOM_3</if>"
+                + "<if test=\"authorization.name().equals('CUSTOM_4')\">PERM_CUSTOM_4</if>"
+                + "<if test=\"authorization.name().equals('CUSTOM_5')\">PERM_CUSTOM_5</if>"
+                + "<if test=\"authorization.name().equals('CUSTOM_6')\">PERM_CUSTOM_6</if>"
+                + "<if test=\"authorization.name().equals('CUSTOM_7')\">PERM_CUSTOM_7</if>"
+                + "<if test=\"authorization.name().equals('CUSTOM_8')\">PERM_CUSTOM_8</if> = 1 "
+            + "</if>"
+            + "</where>"
+            + "</script>")
+    @Results({
+        @Result(property = "id", column = "ID"),
+        @Result(property = "name", column = "NAME"),
+        @Result(property = "created", column = "CREATED"),
+        @Result(property = "modified", column = "MODIFIED"),
+        @Result(property = "description", column = "DESCRIPTION"),
+        @Result(property = "owner", column = "OWNER"),
+        @Result(property = "distributionTargets", column = "id", javaType = List.class, many = @Many(select = "findDistributionTargets"))})
+    List<Workbasket> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
+
+    @Select("<script>SELECT TARGET_ID from DISTRIBUTION_TARGETS "
+            + "<where>"
+            + "SOURCE_ID = #{sourceId}"
+            + "</where>"
+            + "</script>")
+    @Results(value = {
+        @Result(property = "distributionTarget", column = "TARGET_ID")})
+    List<String> findDistributionTargets(String sourceId);
+
+
 }

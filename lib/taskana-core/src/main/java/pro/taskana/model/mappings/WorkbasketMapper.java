@@ -50,7 +50,15 @@ public interface WorkbasketMapper {
             + "<if test=\"authorization.name() == 'READ'\">PERM_READ</if>"
             + "<if test=\"authorization.name() == 'APPEND'\">PERM_APPEND</if>"
             + "<if test=\"authorization.name() == 'TRANSFER'\">PERM_TRANSFER</if>"
-            + "<if test=\"authorization.name() == 'DISTRIBUTE'\">PERM_DISTRIBUTE</if> = 1 </foreach> "
+            + "<if test=\"authorization.name() == 'DISTRIBUTE'\">PERM_DISTRIBUTE</if>"
+            + "<if test=\"authorization.name() == 'CUSTOM_1'\">PERM_CUSTOM_1</if>"
+            + "<if test=\"authorization.name() == 'CUSTOM_2'\">PERM_CUSTOM_2</if>"
+            + "<if test=\"authorization.name() == 'CUSTOM_3'\">PERM_CUSTOM_3</if>"
+            + "<if test=\"authorization.name() == 'CUSTOM_4'\">PERM_CUSTOM_4</if>"
+            + "<if test=\"authorization.name() == 'CUSTOM_5'\">PERM_CUSTOM_5</if>"
+            + "<if test=\"authorization.name() == 'CUSTOM_6'\">PERM_CUSTOM_6</if>"
+            + "<if test=\"authorization.name() == 'CUSTOM_7'\">PERM_CUSTOM_7</if>"
+            + "<if test=\"authorization.name() == 'CUSTOM_8'\">PERM_CUSTOM_8</if> = 1 </foreach> "
             + "ORDER BY id</script>")
     @Results(value = {
             @Result(property = "id", column = "ID"),

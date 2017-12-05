@@ -109,7 +109,15 @@ public interface WorkbasketAccessMapper {
             + "<if test=\"authorization == 'READ'\">PERM_READ</if>"
             + "<if test=\"authorization == 'APPEND'\">PERM_APPEND</if>"
             + "<if test=\"authorization == 'TRANSFER'\">PERM_TRANSFER</if>"
-            + "<if test=\"authorization == 'DISTRIBUTE'\">PERM_DISTRIBUTE</if> = 1</script>")
+            + "<if test=\"authorization == 'DISTRIBUTE'\">PERM_DISTRIBUTE</if>"
+            + "<if test=\"authorization == 'CUSTOM_1'\">PERM_CUSTOM_1</if>"
+            + "<if test=\"authorization == 'CUSTOM_2'\">PERM_CUSTOM_2</if>"
+            + "<if test=\"authorization == 'CUSTOM_3'\">PERM_CUSTOM_3</if>"
+            + "<if test=\"authorization == 'CUSTOM_4'\">PERM_CUSTOM_4</if>"
+            + "<if test=\"authorization == 'CUSTOM_5'\">PERM_CUSTOM_5</if>"
+            + "<if test=\"authorization == 'CUSTOM_6'\">PERM_CUSTOM_6</if>"
+            + "<if test=\"authorization == 'CUSTOM_7'\">PERM_CUSTOM_7</if>"
+            + "<if test=\"authorization == 'CUSTOM_8'\">PERM_CUSTOM_8</if> = 1</script>")
     @Results(value = {
             @Result(property = "id", column = "ID"),
             @Result(property = "workbasketId", column = "WORKBASKET_ID"),
