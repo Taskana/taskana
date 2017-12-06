@@ -1,32 +1,26 @@
 package pro.taskana.impl.integration;
 
+import org.h2.store.fs.FileUtils;
+import org.junit.*;
+import pro.taskana.ClassificationService;
+import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.configuration.DBCleaner;
+import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.model.Classification;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-
-import org.h2.store.fs.FileUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import pro.taskana.ClassificationService;
-import pro.taskana.TaskanaEngine;
-import pro.taskana.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.configuration.DBCleaner;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.Classification;
 
 /**
  * Integration Test for ClassificationServiceImpl with connection management mode EXPLICIT.
@@ -62,7 +56,7 @@ public class ClassificationServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testInsertClassification() throws SQLException {
+    public void testInsertClassification() throws SQLException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 

@@ -1,14 +1,14 @@
 package pro.taskana;
 
-import java.util.List;
-
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.DueWorkbasketCounter;
-import pro.taskana.model.Task;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
+import pro.taskana.model.*;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Task Service manages all operations on tasks.
@@ -21,17 +21,19 @@ public interface TaskService {
      *            task id
      * @param userName
      *            user who claims the task
+     * @return modified claimed Task
      * @throws TaskNotFoundException
      */
-    void claim(String id, String userName) throws TaskNotFoundException;
+    Task claim(String id, String userName) throws TaskNotFoundException;
 
     /**
      * Set task to completed.
      * @param taskId
      *            the task id
+     * @return changed Task after update.
      * @throws TaskNotFoundException
      */
-    void complete(String taskId) throws TaskNotFoundException;
+    Task complete(String taskId) throws TaskNotFoundException;
 
     /**
      * Create a task by a task object.
@@ -39,8 +41,21 @@ public interface TaskService {
      * @return the created task
      * @throws NotAuthorizedException
      */
-    Task create(Task task) throws NotAuthorizedException;
+    Task create(Task task) throws NotAuthorizedException, WorkbasketNotFoundException;
 
+    /**
+     * Create a task manually by filling the fields.
+     * @param workbasketId not null
+     * @param classificationId not null
+     * @param domain
+     * @param planned
+     * @param name
+     * @param description
+     * @param primaryObjectReference
+     * @param customAttributes
+     * @return
+     */
+    Task createManualTask(String workbasketId, String classificationId, String domain, Timestamp planned, String name, String description, ObjectReference primaryObjectReference, Map<String, Object> customAttributes) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException;
     /**
      * Get the details of a task.
      * @param taskId
@@ -95,4 +110,16 @@ public interface TaskService {
      */
     TaskQuery createTaskQuery();
 
+    /**
+     * Getting a list of all Tasks which got matching workbasketIds and states.
+     *
+     * @param workbasketId where the tasks need to be in.
+     * @param taskState which is required for the request,
+     * @return a filled/empty list of tasks with attributes which are matching given params.
+     *
+     * @throws WorkbasketNotFoundException if the workbasketId can´t be resolved to a existing workbasket.
+     * @throws NotAuthorizedException if the current user got no rights for reading on this workbasket.
+     * @throws Exception if no result can be found by @{link TaskMapper}.
+     */
+    List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws  WorkbasketNotFoundException, NotAuthorizedException, Exception;
 }

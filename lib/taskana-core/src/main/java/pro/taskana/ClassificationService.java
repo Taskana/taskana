@@ -1,5 +1,6 @@
 package pro.taskana;
 
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.Classification;
 
@@ -31,7 +32,7 @@ public interface ClassificationService {
      * @param domain
      * @return If exist: domain-specific classification, else default classification
      */
-    Classification getClassification(String id, String domain);
+    Classification getClassification(String id, String domain) throws ClassificationNotFoundException;
 
     /**
      * Insert a new Classification.

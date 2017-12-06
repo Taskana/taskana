@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.Task;
 
 @Component
@@ -17,7 +18,7 @@ public class ExampleBootstrap {
 	private TaskService taskService;
 
 	@PostConstruct
-	public void test() throws TaskNotFoundException, NotAuthorizedException {
+	public void test() throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
 		System.out.println("---------------------------> Start App");
 		Task task = new Task();
 		task.setName("Spring example task");

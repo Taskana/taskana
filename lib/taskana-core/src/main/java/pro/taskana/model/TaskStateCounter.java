@@ -23,4 +23,15 @@ public class TaskStateCounter {
     public void setState(TaskState state) {
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("TaskStateCounter [state=");
+        builder.append(state);
+        builder.append(", counter=");
+        builder.append(counter);
+        builder.append("]");
+        return builder.toString();
+    }
 }
