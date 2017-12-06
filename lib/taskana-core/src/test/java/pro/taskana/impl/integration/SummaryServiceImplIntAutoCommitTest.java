@@ -127,7 +127,7 @@ public class SummaryServiceImplIntAutoCommitTest {
         dummyTask.setName("Dummy-Task");
         dummyTask.setClassification(dummyClassification);
         dummyTask.setWorkbasketId(dummyWorkbasket.getId());
-        dummyTask = taskServiceImpl.create(dummyTask);
+        dummyTask = taskServiceImpl.createTask(dummyTask);
     }
 
     @AfterClass
