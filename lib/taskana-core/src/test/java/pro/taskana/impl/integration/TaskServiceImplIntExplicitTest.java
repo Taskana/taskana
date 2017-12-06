@@ -2,7 +2,7 @@ package pro.taskana.impl.integration;
 
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
-import java.security.PrivilegedAction;
+import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
@@ -48,7 +48,8 @@ import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.Workbasket;
-import pro.taskana.security.SamplePrincipal;
+import pro.taskana.security.GroupPrincipal;
+import pro.taskana.security.UserPrincipal;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode EXPLICIT.
@@ -82,13 +83,13 @@ public class TaskServiceImplIntExplicitTest {
         cleaner.clearDb(dataSource, false);
 
         subject = new Subject();
-        SamplePrincipal samplePrincipal = new SamplePrincipal("Elena");
-        List<String> groups = new ArrayList<String>();
-        groups.add("group1");
-        groups.add("group2");
-        groups.add("group3");
-        samplePrincipal.setGroups(groups);
-        subject.getPrincipals().add(samplePrincipal);
+        List<Principal> principalList = new ArrayList<>();
+        principalList.add(new UserPrincipal("Elena"));
+        principalList.add(new GroupPrincipal("group1"));
+        principalList.add(new GroupPrincipal("group2"));
+        principalList.add(new GroupPrincipal("group3"));
+        subject.getPrincipals().addAll(principalList);
+
         try {
             Connection connection = dataSource.getConnection();
             ScriptRunner runner = new ScriptRunner(connection);
@@ -101,21 +102,21 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testStart() {
-        Subject.doAs(subject, new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                try {
-                    do_testStart();
-                } catch (TaskNotFoundException | FileNotFoundException | NotAuthorizedException | SQLException | WorkbasketNotFoundException e) {
-                    e.printStackTrace();
+    public void testTaskService() throws Throwable {
+        try {
+            Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws TaskNotFoundException, WorkbasketNotFoundException, FileNotFoundException, NotAuthorizedException, SQLException {
+                    do_testTaskService();
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
-    public void do_testStart() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
+    public void do_testTaskService() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Task task = new Task();
@@ -132,7 +133,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test(expected = TaskNotFoundException.class)
-    public void testStartTransactionFail() throws Throwable {
+    public void testStartTransactionFail() throws TaskNotFoundException {
         try {
             Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
                 public Object run() throws TaskNotFoundException, FileNotFoundException, NotAuthorizedException, SQLException, WorkbasketNotFoundException {
@@ -141,8 +142,10 @@ public class TaskServiceImplIntExplicitTest {
                 }
             });
         } catch (PrivilegedActionException e) {
-            if (e.getCause() != null) {
-                throw e.getCause();
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                Assert.assertTrue(cause instanceof TaskNotFoundException);
+                throw (TaskNotFoundException) cause;
             }
         }
     }
@@ -168,18 +171,18 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testCreateTaskInTaskanaWithDefaultDb() {
-        Subject.doAs(subject, new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                try {
+    public void testCreateTaskInTaskanaWithDefaultDb() throws Throwable {
+        try {
+            Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws TaskNotFoundException, WorkbasketNotFoundException, FileNotFoundException, NotAuthorizedException, SQLException {
                     do_testCreateTaskInTaskanaWithDefaultDb();
-                } catch (TaskNotFoundException | FileNotFoundException | NotAuthorizedException | SQLException | WorkbasketNotFoundException e) {
-                    e.printStackTrace();
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
     public void do_testCreateTaskInTaskanaWithDefaultDb()
@@ -193,7 +196,6 @@ public class TaskServiceImplIntExplicitTest {
 
         Task task = new Task();
         task.setName("Unit Test Task");
-        //String id1 = IdGenerator.generateWithPrefix("TWB");
         task.setWorkbasketId("1");
         task = taskServiceImpl.create(task);
 
@@ -204,18 +206,18 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testCreateManualTask() {
-        Subject.doAs(subject, new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                try {
+    public void testCreateManualTask() throws Throwable {
+        try {
+            Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException, SQLException {
                     do_testCreateManualTask();
-                } catch (NotAuthorizedException | SQLException | WorkbasketNotFoundException | ClassificationNotFoundException e) {
-                    e.printStackTrace();
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
     public void do_testCreateManualTask() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
@@ -224,6 +226,7 @@ public class TaskServiceImplIntExplicitTest {
 
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket1");
+        workbasket.setId("1");
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
 
         Classification classification = new Classification();
@@ -257,7 +260,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
-    public void createManualTaskShouldThrowWorkbasketNotFoundException() throws Throwable {
+    public void createManualTaskShouldThrowWorkbasketNotFoundException() throws WorkbasketNotFoundException {
         try {
             Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
                 public Object run() throws NotAuthorizedException, SQLException, WorkbasketNotFoundException, ClassificationNotFoundException {
@@ -266,8 +269,10 @@ public class TaskServiceImplIntExplicitTest {
                 }
             });
         } catch (PrivilegedActionException e) {
-            if (e.getCause() != null) {
-                throw e.getCause();
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                Assert.assertTrue(cause instanceof WorkbasketNotFoundException);
+                throw (WorkbasketNotFoundException) cause;
             }
         }
     }
@@ -284,7 +289,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test(expected = ClassificationNotFoundException.class)
-    public void createManualTaskShouldThrowClassificationNotFoundException() throws Throwable {
+    public void createManualTaskShouldThrowClassificationNotFoundException() throws ClassificationNotFoundException  {
         try {
             Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
                 public Object run() throws NotAuthorizedException, SQLException, WorkbasketNotFoundException, ClassificationNotFoundException {
@@ -293,8 +298,10 @@ public class TaskServiceImplIntExplicitTest {
                 }
             });
         } catch (PrivilegedActionException e) {
-            if (e.getCause() != null) {
-                throw e.getCause();
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                Assert.assertTrue(cause instanceof ClassificationNotFoundException);
+                throw (ClassificationNotFoundException) cause;
             }
         }
     }
@@ -330,18 +337,18 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() {
-        Subject.doAs(subject, new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                try {
+    public void should_ReturnList_when_BuilderIsUsed() throws Throwable {
+        try {
+            Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws WorkbasketNotFoundException, NotAuthorizedException, SQLException {
                     do_should_ReturnList_when_BuilderIsUsed();
-                } catch (NotAuthorizedException | SQLException | WorkbasketNotFoundException e) {
-                    e.printStackTrace();
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
     public void do_should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException {
@@ -351,7 +358,6 @@ public class TaskServiceImplIntExplicitTest {
 
         Task task = new Task();
         task.setName("Unit Test Task");
-        //String id1 = IdGenerator.generateWithPrefix("TWB");
         task.setWorkbasketId("1");
         task = taskServiceImpl.create(task);
 

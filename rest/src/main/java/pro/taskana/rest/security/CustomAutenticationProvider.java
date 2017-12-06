@@ -1,13 +1,11 @@
 package pro.taskana.rest.security;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.jaas.JaasAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import pro.taskana.security.TaskanaPrincipal;
+import pro.taskana.security.GroupPrincipal;
+import pro.taskana.security.UserPrincipal;
 
 public class CustomAutenticationProvider implements AuthenticationProvider {
 	private AuthenticationProvider delegate;
@@ -22,33 +20,16 @@ public class CustomAutenticationProvider implements AuthenticationProvider {
 				.authenticate(authentication);
 
 		if (jaasAuthenticationToken.isAuthenticated()) {
-            final String name = jaasAuthenticationToken.getPrincipal().toString();
-            final List<String> groupNames = getGroupNames(name);
-            TaskanaPrincipal tp = new TaskanaPrincipal() {
-
-                @Override
-                public String getName() {
-                    return name;
-                }
-
-                @Override
-                public List<String> getGroupNames() {
-                    return groupNames;
-                }
-            };
-            jaasAuthenticationToken.getLoginContext().getSubject().getPrincipals().add(tp);
+		    String userName = jaasAuthenticationToken.getPrincipal().toString();       
+            jaasAuthenticationToken.getLoginContext().getSubject().getPrincipals().add(new UserPrincipal(userName));
+            jaasAuthenticationToken.getLoginContext().getSubject().getPrincipals().add(new GroupPrincipal("group1"));
+            jaasAuthenticationToken.getLoginContext().getSubject().getPrincipals().add(new GroupPrincipal("group2"));
+            jaasAuthenticationToken.getLoginContext().getSubject().getPrincipals().add(new GroupPrincipal("group3"));
 			return jaasAuthenticationToken;
 		} else {
 			return null;
 		}
 	}
-
-    private List<String> getGroupNames(String name) {
-        List<String> groupNames = new ArrayList<String>();
-        groupNames.add("group1");
-        groupNames.add("group2");
-        return groupNames;
-    }
 
     @Override
 	public boolean supports(Class<?> authentication) {
