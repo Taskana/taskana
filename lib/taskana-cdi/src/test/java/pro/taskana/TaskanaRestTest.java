@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.Task;
 
 @Path("/test")
@@ -23,14 +24,14 @@ public class TaskanaRestTest {
 	private TaskanaEjb taskanaEjb;
 
 	@GET
-	public Response startTask() throws NotAuthorizedException {
+	public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException {
 		Task result = taskanaEjb.getTaskService().create(new Task());
 		logger.info(result.getId() + ":" + result.getOwner());
 		return Response.status(200).entity(result.getId()).build();
 	}
 	
 	@POST
-	public Response rollbackTask() throws NotAuthorizedException {
+	public Response rollbackTask() throws NotAuthorizedException, WorkbasketNotFoundException {
 		taskanaEjb.triggerRollback();
 		return Response.status(204).build();
 	}

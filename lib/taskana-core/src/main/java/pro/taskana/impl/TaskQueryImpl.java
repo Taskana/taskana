@@ -1,14 +1,18 @@
 package pro.taskana.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -19,6 +23,7 @@ import pro.taskana.model.WorkbasketAuthorization;
 public class TaskQueryImpl implements TaskQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryTasks";
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
 
     private TaskanaEngineImpl taskanaEngineImpl;
 
@@ -111,35 +116,53 @@ public class TaskQueryImpl implements TaskQuery {
 
     @Override
     public List<Task> list() throws NotAuthorizedException {
+        LOGGER.debug("entry to list(), this = {}", this);
+        List<Task> result = null;
         try {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
-            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
     @Override
     public List<Task> list(int offset, int limit) throws NotAuthorizedException {
+        LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
+        List<Task> result = null;
         try {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            return taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+            }
         }
     }
 
     @Override
     public Task single() throws NotAuthorizedException {
+        LOGGER.debug("entry to single(), this = {}", this);
+        Task result = null;
         try {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
-            return taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            result = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from single(). Returning result {} ", result);
         }
     }
 
@@ -245,5 +268,36 @@ public class TaskQueryImpl implements TaskQuery {
 
     public void setCustomFields(String[] customFields) {
         this.customFields = customFields;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("TaskQueryImpl [taskanaEngineImpl=");
+        builder.append(taskanaEngineImpl);
+        builder.append(", name=");
+        builder.append(Arrays.toString(name));
+        builder.append(", description=");
+        builder.append(description);
+        builder.append(", priority=");
+        builder.append(Arrays.toString(priority));
+        builder.append(", states=");
+        builder.append(Arrays.toString(states));
+        builder.append(", classificationQuery=");
+        builder.append(classificationQuery);
+        builder.append(", workbasketId=");
+        builder.append(Arrays.toString(workbasketId));
+        builder.append(", owner=");
+        builder.append(Arrays.toString(owner));
+        builder.append(", objectReferenceQuery=");
+        builder.append(objectReferenceQuery);
+        builder.append(", isRead=");
+        builder.append(isRead);
+        builder.append(", isTransferred=");
+        builder.append(isTransferred);
+        builder.append(", customFields=");
+        builder.append(Arrays.toString(customFields));
+        builder.append("]");
+        return builder.toString();
     }
 }
