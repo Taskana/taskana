@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.Subject;
 import java.lang.reflect.Method;
 import java.security.AccessController;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -90,11 +91,11 @@ public final class CurrentUserContext {
         Subject subject = Subject.getSubject(AccessController.getContext());
         LOGGER.debug("Subject of caller: {}", subject);
         if (subject != null) {
-            Set<Object> publicCredentials = subject.getPublicCredentials();
-            LOGGER.debug("Public credentials of caller: {}", publicCredentials);
-            for (Object pC : publicCredentials) {
-                LOGGER.debug("Returning the first public credential: {}", pC.toString());
-                return pC.toString();
+            Set<Principal> principals = subject.getPrincipals();
+            LOGGER.debug("Public principals of caller: {}", principals);
+            for (Principal pC : principals) {
+                LOGGER.debug("Returning the first public principal: {}", pC.getName());
+                return pC.getName();
             }
         }
         LOGGER.debug("No userid found in subject!");
@@ -102,6 +103,20 @@ public final class CurrentUserContext {
     }
 
     public static List<String> getGroupIds() {
+        Subject subject = Subject.getSubject(AccessController.getContext());
+        LOGGER.debug("Subject of caller: {}", subject);
+        if (subject != null) {
+            Set<Principal> principals = subject.getPrincipals();
+            LOGGER.debug("Public principals of caller: {}", principals);
+            for (Principal pC : principals) {
+                if (pC instanceof TaskanaPrincipal) {
+                    TaskanaPrincipal sP = (TaskanaPrincipal) pC;
+                    LOGGER.debug("Returning the groupIds: {}", sP.getGroupNames());
+                    return sP.getGroupNames();
+                }
+            }
+        }
+        LOGGER.debug("No groupids found in subject!");
         return null;
     }
 
