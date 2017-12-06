@@ -1,17 +1,7 @@
 package pro.taskana.impl;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
@@ -21,15 +11,17 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.Classification;
-import pro.taskana.model.DueWorkbasketCounter;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
-import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.*;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the implementation of TaskService.
@@ -109,64 +101,29 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task create(Task task) throws NotAuthorizedException, WorkbasketNotFoundException {
-        LOGGER.debug("entry to create(task = {})", task);
+    public Task createTask(Task task) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+        LOGGER.debug("entry to createTask(task = {})", task);
         try {
             taskanaEngineImpl.openConnection();
             taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
+            Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket(task.getWorkbasketId());
+
+            Classification classification = task.getClassification();
+            if (classification == null) {
+                throw new ClassificationNotFoundException(null);
+            }
+            taskanaEngine.getClassificationService().getClassification(classification.getId(), "");
 
             standardSettings(task);
 
             this.taskMapper.insert(task);
 
-            LOGGER.debug("Method create() created Task '{}'.", task.getId());
+            LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
             return task;
         } finally {
             taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from create(task = {})");
+            LOGGER.debug("exit from createTask(task = {})");
      }
-    }
-
-    @Override
-    public Task createManualTask(String workbasketId, String classificationId, String domain, Timestamp planned, String name,
-            String description, ObjectReference primaryObjectReference, Map<String, Object> customAttributes) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("entry to createManualTask(workbasketId = {}, classificationId = {}, domain = {}, planned = {}, name = {},"
-                    + " description = {}, primaryObjectReference = {}, customAttributes = {})", workbasketId, classificationId, domain, planned, name,
-                    description, primaryObjectReference, LoggerUtils.mapToString(customAttributes));
-        }
-        try {
-            taskanaEngineImpl.openConnection();
-            taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.APPEND);
-
-            taskanaEngine.getWorkbasketService().getWorkbasket(workbasketId);
-            Classification classification = taskanaEngine.getClassificationService().getClassification(classificationId, domain);
-
-            if (!TYPE_MANUAL.equals(classification.getCategory())) {
-                throw new NotAuthorizedException("You're not allowed to add a task manually to a '" + classification.getCategory() + "'- Classification!");
-            }
-
-            Task task = new Task();
-
-            task.setWorkbasketId(workbasketId);
-            task.setClassification(classification);
-            task.setPlanned(planned);
-            task.setPrimaryObjRef(primaryObjectReference);
-            task.setCustomAttributes(customAttributes);
-            task.setName(name);
-            task.setDescription(description);
-
-            this.standardSettings(task);
-            this.setCustomAttributes(task);
-
-            this.taskMapper.insert(task);
-
-            LOGGER.debug("Method create() created Task '{}'.", task.getId());
-            return task;
-        } finally {
-            taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from create()");
-        }
     }
 
     @Override
@@ -381,33 +338,77 @@ public class TaskServiceImpl implements TaskService {
             }
             task.setPrimaryObjRef(objectReference);
         }
+
+        //guarantees redundancy of customers and customAttributes
+        this.checkCustomAttributes(task);
     }
 
-    private void setCustomAttributes(Task task) {
+    private void checkCustomAttributes(Task task) {
+        List<String> customList = new ArrayList<>();
+        if (task.getCustom1() != null) {
+            customList.add(task.getCustom1());
+        }
+        if (task.getCustom2() != null) {
+            customList.add(task.getCustom2());
+        }
+        if (task.getCustom3() != null) {
+            customList.add(task.getCustom3());
+        }
+        if (task.getCustom4() != null) {
+            customList.add(task.getCustom4());
+        }
+        if (task.getCustom5() != null) {
+            customList.add(task.getCustom5());
+        }
+        if (task.getCustom6() != null) {
+            customList.add(task.getCustom6());
+        }
+        if (task.getCustom7() != null) {
+            customList.add(task.getCustom7());
+        }
+        if (task.getCustom8() != null) {
+            customList.add(task.getCustom8());
+        }
+        if (task.getCustom9() != null) {
+            customList.add(task.getCustom9());
+        }
+        if (task.getCustom10() != null) {
+            customList.add(task.getCustom10());
+        }
+
         if (task.getCustomAttributes() != null) {
             for (String custom : task.getCustomAttributes().keySet()) {
-                if (task.getCustom1() == null) {
-                    task.setCustom1(custom);
-                } else if (task.getCustom2() == null) {
-                    task.setCustom2(custom);
-                } else if (task.getCustom3() == null) {
-                    task.setCustom3(custom);
-                } else if (task.getCustom4() == null) {
-                    task.setCustom4(custom);
-                } else if (task.getCustom5() == null) {
-                    task.setCustom5(custom);
-                } else if (task.getCustom6() == null) {
-                    task.setCustom6(custom);
-                } else if (task.getCustom7() == null) {
-                    task.setCustom7(custom);
-                } else if (task.getCustom8() == null) {
-                    task.setCustom8(custom);
-                } else if (task.getCustom9() == null) {
-                    task.setCustom9(custom);
-                } else if (task.getCustom10() == null) {
-                    task.setCustom10(custom);
-                } else {
-                    break;
+                if (!customList.isEmpty() && customList.contains(custom)) {
+                    if (task.getCustom1() == null) {
+                        task.setCustom1(custom);
+                    } else if (task.getCustom2() == null) {
+                        task.setCustom2(custom);
+                    } else if (task.getCustom3() == null) {
+                        task.setCustom3(custom);
+                    } else if (task.getCustom4() == null) {
+                        task.setCustom4(custom);
+                    } else if (task.getCustom5() == null) {
+                        task.setCustom5(custom);
+                    } else if (task.getCustom6() == null) {
+                        task.setCustom6(custom);
+                    } else if (task.getCustom7() == null) {
+                        task.setCustom7(custom);
+                    } else if (task.getCustom8() == null) {
+                        task.setCustom8(custom);
+                    } else if (task.getCustom9() == null) {
+                        task.setCustom9(custom);
+                    } else if (task.getCustom10() == null) {
+                        task.setCustom10(custom);
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        if (!customList.isEmpty()) {
+            for (String custom : customList) {
+                if (!task.getCustomAttributes().containsKey(custom)) {
+                    task.getCustomAttributes().put(custom, null);
                 }
             }
         }
