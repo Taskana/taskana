@@ -1,24 +1,13 @@
 package pro.taskana.impl.integration;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-
 import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.*;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -28,9 +17,16 @@ import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.model.Classification;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
+import pro.taskana.model.Workbasket;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode AUTOCOMMIT.
@@ -66,12 +62,19 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test
     public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException,
-                WorkbasketNotFoundException, NotAuthorizedException {
+            WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+        Workbasket wb = new Workbasket();
+        wb.setName("workbasket");
+        taskanaEngine.getWorkbasketService().createWorkbasket(wb);
+        Classification classification = new Classification();
+        taskanaEngine.getClassificationService().addClassification(classification);
+
         Task task = new Task();
         task.setName("Unit Test Task");
-        String id1 = IdGenerator.generateWithPrefix("TWB");
-        task.setWorkbasketId(id1);
-        task = taskServiceImpl.create(task);
+        task.setWorkbasketId(wb.getId());
+        task.setClassification(classification);
+
+        task = taskServiceImpl.createTask(task);
         //skanaEngineImpl.getSqlSession().commit();  // needed so that the change is visible in the other session
 
         TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -82,43 +85,61 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
+            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+        Workbasket wb = new Workbasket();
+        wb.setName("sdf");
+        taskanaEngine.getWorkbasketService().createWorkbasket(wb);
+        Classification classification = new Classification();
+        taskanaEngine.getClassificationService().addClassification(classification);
+
         Task task = new Task();
         task.setName("Unit Test Task");
-        String id1 = IdGenerator.generateWithPrefix("TWB");
-        task.setWorkbasketId("id1");
-        task = taskServiceImpl.create(task);
-        taskServiceImpl.getTaskById(id1);
+        task.setWorkbasketId(wb.getId());
+        task.setClassification(classification);
+        taskServiceImpl.createTask(task);
+        taskServiceImpl.getTaskById(task.getId());
 
         TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
-        taskServiceImpl2.getTaskById(id1);
+        taskServiceImpl2.getTaskById(wb.getId());
     }
 
     @Test
     public void testCreateTaskInTaskanaWithDefaultDb()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException {
+            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl = (TaskServiceImpl) te.getTaskService();
 
+        Workbasket wb = new Workbasket();
+        wb.setName("workbasket");
+        taskanaEngine.getWorkbasketService().createWorkbasket(wb);
+        Classification classification = new Classification();
+        taskanaEngine.getClassificationService().addClassification(classification);
+
         Task task = new Task();
         task.setName("Unit Test Task");
-        String id1 = IdGenerator.generateWithPrefix("TWB");
-        task.setWorkbasketId(id1);
-        task = taskServiceImpl.create(task);
+        task.setWorkbasketId(wb.getId());
+        task.setClassification(classification);
+        task = taskServiceImpl.createTask(task);
 
         Assert.assertNotNull(task);
         Assert.assertNotNull(task.getId());
     }
 
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException {
+    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+        Workbasket wb = new Workbasket();
+        wb.setName("workbasket");
+        taskanaEngine.getWorkbasketService().createWorkbasket(wb);
+        Classification classification = new Classification();
+        taskanaEngine.getClassificationService().addClassification(classification);
+
         Task task = new Task();
         task.setName("Unit Test Task");
-        String id1 = IdGenerator.generateWithPrefix("TWB");
-        task.setWorkbasketId(id1);
-        task = taskServiceImpl.create(task);
+        task.setWorkbasketId(wb.getId());
+        task.setClassification(classification);
+        taskServiceImpl.createTask(task);
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         ClassificationQuery classificationQuery = new ClassificationQueryImpl(taskanaEngineImpl)

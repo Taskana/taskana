@@ -1,9 +1,8 @@
 package pro.taskana;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -13,10 +12,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.Properties;
 
 @ApplicationScoped
 public class TaskanaProducers {
@@ -59,6 +58,18 @@ public class TaskanaProducers {
 	@Produces
 	public TaskService generateTaskService() {
 		return taskanaEngine.getTaskService();
+	}
+
+	@ApplicationScoped
+	@Produces
+	public ClassificationService generateClassificationService() {
+		return taskanaEngine.getClassificationService();
+	}
+
+	@ApplicationScoped
+	@Produces
+	public WorkbasketService generateWorkbasketService() {
+		return taskanaEngine.getWorkbasketService();
 	}
 
 }
