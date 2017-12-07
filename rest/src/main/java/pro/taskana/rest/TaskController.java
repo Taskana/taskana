@@ -106,7 +106,7 @@ public class TaskController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         try {
-            Task createdTask = taskService.create(task);
+            Task createdTask = taskService.createTask(task);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         } catch (Exception e) {
             logger.error("Something went wrong: ", e);
