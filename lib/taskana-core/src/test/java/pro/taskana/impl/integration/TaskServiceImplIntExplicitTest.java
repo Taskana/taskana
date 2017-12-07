@@ -151,6 +151,7 @@ public class TaskServiceImplIntExplicitTest {
 
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket");
+        workbasket.setId("1"); // set id manually for authorization tests
         Classification classification = new Classification();
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
         taskanaEngine.getClassificationService().addClassification(classification);
@@ -295,7 +296,7 @@ public class TaskServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
 
         Task test = this.generateDummyTask();
-        test.setWorkbasketId("1");
+        test.setWorkbasketId("2");
         taskServiceImpl.createTask(test);
     }
 
@@ -348,6 +349,7 @@ public class TaskServiceImplIntExplicitTest {
 
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket");
+        workbasket.setId("1"); // set id manually for authorization tests
         Classification classification = new Classification();
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
         taskanaEngine.getClassificationService().addClassification(classification);
@@ -357,11 +359,6 @@ public class TaskServiceImplIntExplicitTest {
         task.setWorkbasketId(workbasket.getId());
         task.setClassification(classification);
         task = taskServiceImpl.createTask(task);
-
-        Task task2 = new Task();
-        task2.setName("Unit Test Task");
-        task2.setWorkbasketId("2");
-        task2 = taskServiceImpl.createTask(task2);
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         ClassificationQuery classificationQuery = new ClassificationQueryImpl(taskanaEngineImpl)
@@ -384,6 +381,7 @@ public class TaskServiceImplIntExplicitTest {
     private Task generateDummyTask() {
         Workbasket workbasket = new Workbasket();
         workbasket.setName("wb");
+        workbasket.setId("1"); // set id manually for authorization tests
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
 
         Classification classification = new Classification();
