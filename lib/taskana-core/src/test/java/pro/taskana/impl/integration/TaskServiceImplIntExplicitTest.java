@@ -23,9 +23,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode EXPLICIT.
@@ -132,7 +130,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testCreateTaskWithCustomsAndPlanned() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+    public void testCreateTaskWithPlannedAndName() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -161,27 +159,19 @@ public class TaskServiceImplIntExplicitTest {
         Assert.assertNotEquals(test.getPlanned(), test.getCreated());
         Assert.assertNotNull(test.getDue());
 
-        Map<String, Object> customs = new HashMap<String, Object>();
-        customs.put("Daimler", "Tons of money. And cars. And gold.");
-        customs.put("Audi", 2);
-
-
         Task test2 = new Task();
         test2.setWorkbasketId(test.getWorkbasketId());
         test2.setClassification(classification);
         test2.setPrimaryObjRef(objectReference);
-        test2.setName("Name2");
         test2.setDescription("desc");
-        test2.setCustomAttributes(customs);
-        test2.setCustom1("Daimler");
-        test2.setCustom5("BMW");
         taskServiceImpl.createTask(test2);
 
         Assert.assertEquals(test2.getPlanned(), test2.getCreated());
+        Assert.assertTrue(test2.getName().equals(classification.getName()));
 
-        Assert.assertEquals(2 + 1, test2.getCustomAttributes().size());
         Assert.assertEquals(test.getClassification().getId(), test2.getClassification().getId());
-        Assert.assertTrue(test.getDue().after(test2.getPlanned()));
+        Assert.assertTrue(test.getDue().after(test2.getDue()));
+        Assert.assertFalse(test.getName().equals(test2.getName()));
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
