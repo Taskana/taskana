@@ -1,5 +1,7 @@
 package pro.taskana.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskanaEngine;
@@ -15,9 +17,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is the implementation of ClassificationService.
@@ -170,6 +169,9 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public Classification getClassification(String id, String domain) throws ClassificationNotFoundException {
+        if (id == null) {
+            throw new ClassificationNotFoundException(null);
+        }
         LOGGER.debug("entry to getClassification(id = {}, domain = {})", id, domain);
         Classification result = null;
         try {
