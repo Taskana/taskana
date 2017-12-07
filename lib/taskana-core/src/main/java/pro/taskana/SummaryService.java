@@ -2,6 +2,7 @@ package pro.taskana;
 
 import java.util.List;
 
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.TaskSummary;
 
 /**
@@ -9,5 +10,5 @@ import pro.taskana.model.TaskSummary;
  */
 public interface SummaryService {
 
-    List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId);
+    List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId) throws WorkbasketNotFoundException;
 }
