@@ -261,7 +261,8 @@ public class TaskServiceImplTest {
             cut.createTask(task);
         } catch (Exception e) {
             verify(taskanaEngineImpl, times(1)).openConnection();
-            verify(taskanaEngineMock, times(1)).getWorkbasketService();
+            verify(taskanaEngineMock, times(2)).getWorkbasketService();
+            verify(workbasketServiceMock, times(1)).getWorkbasket(any());
             verify(workbasketServiceMock, times(1)).checkAuthorization(any(), any());
             verify(taskanaEngineImpl, times(1)).returnConnection();
             verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
@@ -274,7 +275,7 @@ public class TaskServiceImplTest {
     @Test(expected = WorkbasketNotFoundException.class)
     public void testCreateThrowsWorkbasketNotFoundException() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
         try {
-            Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceMock).checkAuthorization(any(), any());
+            Mockito.doThrow(WorkbasketNotFoundException.class).when(workbasketServiceMock).getWorkbasket(any());
             Task task = new Task();
             task.setWorkbasketId("1");
 
@@ -282,7 +283,7 @@ public class TaskServiceImplTest {
         } catch (Exception e) {
             verify(taskanaEngineImpl, times(1)).openConnection();
             verify(taskanaEngineMock, times(1)).getWorkbasketService();
-            verify(workbasketServiceMock, times(1)).checkAuthorization(any(), any());
+            verify(workbasketServiceMock, times(1)).getWorkbasket(any());
             verify(taskanaEngineImpl, times(1)).returnConnection();
             verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
                     taskMapperMock, objectReferenceMapperMock, workbasketServiceMock,
