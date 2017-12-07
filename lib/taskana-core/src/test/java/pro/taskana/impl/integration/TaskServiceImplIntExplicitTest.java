@@ -1,29 +1,47 @@
 package pro.taskana.impl.integration;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.*;
-import pro.taskana.ClassificationQuery;
-import pro.taskana.ObjectReferenceQuery;
-import pro.taskana.TaskanaEngine;
-import pro.taskana.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.*;
-import pro.taskana.impl.configuration.DBCleaner;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.*;
-
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+
+import org.h2.store.fs.FileUtils;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import pro.taskana.Classification;
+import pro.taskana.ClassificationQuery;
+import pro.taskana.ObjectReferenceQuery;
+import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.ClassificationQueryImpl;
+import pro.taskana.impl.ClassificationServiceImpl;
+import pro.taskana.impl.ObjectReferenceQueryImpl;
+import pro.taskana.impl.TaskServiceImpl;
+import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.WorkbasketServiceImpl;
+import pro.taskana.impl.configuration.DBCleaner;
+import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.model.ClassificationImpl;
+import pro.taskana.model.ObjectReference;
+import pro.taskana.model.Task;
+import pro.taskana.model.TaskState;
+import pro.taskana.model.Workbasket;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode EXPLICIT.
@@ -57,7 +75,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+    public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -74,16 +92,16 @@ public class TaskServiceImplIntExplicitTest {
 
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 //        taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
 
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket");
-        Classification classification = new Classification();
+        Classification classification = (Classification) new ClassificationImpl();
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
-        taskanaEngine.getClassificationService().addClassification(classification);
+        taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
         task.setName("Unit Test Task");
@@ -101,7 +119,7 @@ public class TaskServiceImplIntExplicitTest {
 
     @Test
     public void testCreateTaskInTaskanaWithDefaultDb()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         DataSource ds = TaskanaEngineConfiguration.createDefaultDataSource();
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -113,9 +131,9 @@ public class TaskServiceImplIntExplicitTest {
 
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket");
-        Classification classification = new Classification();
+        Classification classification = (Classification) new ClassificationImpl();
         workbasketServiceImpl.createWorkbasket(workbasket);
-        classificationServiceImpl.addClassification(classification);
+        classificationServiceImpl.createClassification(classification);
 
         Task task = new Task();
         task.setName("Unit Test Task");
@@ -130,15 +148,15 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testCreateTaskWithPlannedAndName() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+    public void testCreateTaskWithPlannedAndName() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
-        Classification classification = new Classification();
+        Classification classification = (Classification) new ClassificationImpl();
         classification.setCategory("MANUAL");
         classification.setName("classification name");
         classification.setServiceLevel("P1D");
-        taskanaEngine.getClassificationService().addClassification(classification);
+        taskanaEngine.getClassificationService().createClassification(classification);
 
         ObjectReference objectReference = new ObjectReference();
         objectReference.setCompany("Novatec");
@@ -175,7 +193,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
-    public void createTaskShouldThrowWorkbasketNotFoundException() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException {
+    public void createTaskShouldThrowWorkbasketNotFoundException() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -185,26 +203,26 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test(expected = ClassificationNotFoundException.class)
-    public void createManualTaskShouldThrowClassificationNotFoundException() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException {
+    public void createManualTaskShouldThrowClassificationNotFoundException() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
         Task test = this.generateDummyTask();
-        test.setClassification(new Classification());
+        test.setClassification(new ClassificationImpl());
         taskServiceImpl.createTask(test);
     }
 
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
 
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket");
-        Classification classification = new Classification();
+        Classification classification = (Classification) new ClassificationImpl();
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
-        taskanaEngine.getClassificationService().addClassification(classification);
+        taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
         task.setName("Unit Test Task");
@@ -230,13 +248,13 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    private Task generateDummyTask() {
+    private Task generateDummyTask() throws ClassificationAlreadyExistException {
         Workbasket workbasket = new Workbasket();
         workbasket.setName("wb");
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
 
-        Classification classification = new Classification();
-        taskanaEngine.getClassificationService().addClassification(classification);
+        Classification classification = (Classification) new ClassificationImpl();
+        taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
         task.setWorkbasketId(workbasket.getId());

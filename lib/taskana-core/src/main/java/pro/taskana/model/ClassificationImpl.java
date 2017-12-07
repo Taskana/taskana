@@ -2,10 +2,12 @@ package pro.taskana.model;
 
 import java.sql.Date;
 
+import pro.taskana.Classification;
+
 /**
  * Classification entity.
  */
-public class Classification {
+public class ClassificationImpl implements Classification {
 
     private String id;
     private String parentClassificationId;
@@ -29,6 +31,7 @@ public class Classification {
     private Date validFrom;
     private Date validUntil;
 
+    @Override
     public String getId() {
         return id;
     }
@@ -37,46 +40,56 @@ public class Classification {
         this.id = id;
     }
 
+    @Override
     public String getParentClassificationId() {
         return parentClassificationId;
     }
 
+    @Override
     public void setParentClassificationId(String parentClassificationId) {
         this.parentClassificationId = parentClassificationId;
     }
 
+    @Override
     public String getType() {
         return type;
     }
 
+    @Override
     public void setType(String type) {
         this.type = type;
     }
 
+    @Override
     public String getCategory() {
         return category;
     }
 
+    @Override
     public void setCategory(String category) {
         this.category = category;
     }
 
+    @Override
     public String getDomain() {
         return this.domain;
     }
 
+    @Override
     public void setDomain(String domain) {
         this.domain = domain;
     }
 
-    public Boolean getValidInDomain() {
+    @Override
+    public Boolean getIsValidInDomain() {
         return isValidInDomain;
     }
 
-    public void setValidInDomain(Boolean validInDomain) {
-        isValidInDomain = validInDomain;
+    public void setIsValidInDomain(Boolean isValidInDomain) {
+        this.isValidInDomain = isValidInDomain;
     }
 
+    @Override
     public Date getCreated() {
         return created;
     }
@@ -85,102 +98,127 @@ public class Classification {
         this.created = created;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public int getPriority() {
         return priority;
     }
 
+    @Override
     public void setPriority(int priority) {
         this.priority = priority;
     }
 
+    @Override
     public String getServiceLevel() {
         return serviceLevel;
     }
 
+    @Override
     public void setServiceLevel(String serviceLevel) {
         this.serviceLevel = serviceLevel;
     }
 
+    @Override
     public String getCustom1() {
         return custom1;
     }
 
+    @Override
     public void setCustom1(String custom1) {
         this.custom1 = custom1;
     }
 
+    @Override
     public String getCustom2() {
         return custom2;
     }
 
+    @Override
     public void setCustom2(String custom2) {
         this.custom2 = custom2;
     }
 
+    @Override
     public String getCustom3() {
         return custom3;
     }
 
+    @Override
     public void setCustom3(String custom3) {
         this.custom3 = custom3;
     }
 
+    @Override
     public String getCustom4() {
         return custom4;
     }
 
+    @Override
     public void setCustom4(String custom4) {
         this.custom4 = custom4;
     }
 
+    @Override
     public String getCustom5() {
         return custom5;
     }
 
+    @Override
     public void setCustom5(String custom5) {
         this.custom5 = custom5;
     }
 
+    @Override
     public String getCustom6() {
         return custom6;
     }
 
+    @Override
     public void setCustom6(String custom6) {
         this.custom6 = custom6;
     }
 
+    @Override
     public String getCustom7() {
         return custom7;
     }
 
+    @Override
     public void setCustom7(String custom7) {
         this.custom7 = custom7;
     }
 
+    @Override
     public String getCustom8() {
         return custom8;
     }
 
+    @Override
     public void setCustom8(String custom8) {
         this.custom8 = custom8;
     }
 
+    @Override
     public Date getValidFrom() {
         return validFrom;
     }
@@ -189,6 +227,7 @@ public class Classification {
         this.validFrom = validFrom;
     }
 
+    @Override
     public Date getValidUntil() {
         return validUntil;
     }
@@ -245,6 +284,4 @@ public class Classification {
         builder.append("]");
         return builder.toString();
     }
-
-
 }
