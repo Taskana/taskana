@@ -13,6 +13,7 @@ import pro.taskana.model.Classification;
 import pro.taskana.model.mappings.ClassificationMapper;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +86,22 @@ public class ClassificationServiceImplTest {
 
         Assert.assertEquals(classification.getValidUntil(), Date.valueOf(LocalDate.now().minusDays(1)));
         Assert.assertEquals(classification2.getValidUntil(), classification3.getValidUntil());
+    }
+
+    @Test
+    public void testGetClassification() throws ClassificationNotFoundException, SQLException {
+        doNothing().when(classificationMapper).insert(any());
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doNothing().when(taskanaEngineImpl).returnConnection();
+
+        Classification classification = new Classification();
+        classification.setDomain("domain");
+        classificationService.addClassification(classification);
+
+        doReturn(classification).when(classificationMapper).findByIdAndDomain(any(), any(), any());
+
+        Classification test = classificationService.getClassification(classification.getId(), "domain");
+        Assert.assertEquals("domain", test.getDomain());
     }
 
     @Test
