@@ -105,8 +105,8 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("entry to createTask(task = {})", task);
         try {
             taskanaEngineImpl.openConnection();
-            taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
             Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket(task.getWorkbasketId());
+            taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
 
             Classification classification = task.getClassification();
             if (classification == null) {
@@ -337,80 +337,6 @@ public class TaskServiceImpl implements TaskService {
                 this.objectReferenceMapper.insert(objectReference);
             }
             task.setPrimaryObjRef(objectReference);
-        }
-
-        //guarantees redundancy of customers and customAttributes
-        this.checkCustomAttributes(task);
-    }
-
-    private void checkCustomAttributes(Task task) {
-        List<String> customList = new ArrayList<>();
-        if (task.getCustom1() != null) {
-            customList.add(task.getCustom1());
-        }
-        if (task.getCustom2() != null) {
-            customList.add(task.getCustom2());
-        }
-        if (task.getCustom3() != null) {
-            customList.add(task.getCustom3());
-        }
-        if (task.getCustom4() != null) {
-            customList.add(task.getCustom4());
-        }
-        if (task.getCustom5() != null) {
-            customList.add(task.getCustom5());
-        }
-        if (task.getCustom6() != null) {
-            customList.add(task.getCustom6());
-        }
-        if (task.getCustom7() != null) {
-            customList.add(task.getCustom7());
-        }
-        if (task.getCustom8() != null) {
-            customList.add(task.getCustom8());
-        }
-        if (task.getCustom9() != null) {
-            customList.add(task.getCustom9());
-        }
-        if (task.getCustom10() != null) {
-            customList.add(task.getCustom10());
-        }
-
-        if (task.getCustomAttributes() != null) {
-            for (String custom : task.getCustomAttributes().keySet()) {
-                if (!customList.isEmpty() && customList.contains(custom)) {
-                    if (task.getCustom1() == null) {
-                        task.setCustom1(custom);
-                    } else if (task.getCustom2() == null) {
-                        task.setCustom2(custom);
-                    } else if (task.getCustom3() == null) {
-                        task.setCustom3(custom);
-                    } else if (task.getCustom4() == null) {
-                        task.setCustom4(custom);
-                    } else if (task.getCustom5() == null) {
-                        task.setCustom5(custom);
-                    } else if (task.getCustom6() == null) {
-                        task.setCustom6(custom);
-                    } else if (task.getCustom7() == null) {
-                        task.setCustom7(custom);
-                    } else if (task.getCustom8() == null) {
-                        task.setCustom8(custom);
-                    } else if (task.getCustom9() == null) {
-                        task.setCustom9(custom);
-                    } else if (task.getCustom10() == null) {
-                        task.setCustom10(custom);
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-        if (!customList.isEmpty()) {
-            for (String custom : customList) {
-                if (!task.getCustomAttributes().containsKey(custom)) {
-                    task.getCustomAttributes().put(custom, null);
-                }
-            }
         }
     }
 }
