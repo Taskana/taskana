@@ -1,17 +1,17 @@
 package pro.taskana.impl;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.model.Classification;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Implementation of ClassificationQuery interface.

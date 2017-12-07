@@ -1,25 +1,24 @@
 package pro.taskana.impl;
 
+import pro.taskana.ClassificationQuery;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.model.Classification;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import pro.taskana.Classification;
-import pro.taskana.ClassificationQuery;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.ClassificationImpl;
 
 /**
  * Created by BV on 26.10.2017.
  */
 public class TestClassificationQuery implements ClassificationQuery {
 
-    private List<ClassificationImpl> classifications;
+    private List<Classification> classifications;
     private String[] parentId;
     private Date[] validUntil;
     private String description;
 
-    public TestClassificationQuery(List<ClassificationImpl> classifications) {
+    public TestClassificationQuery(List<Classification> classifications) {
         this.classifications = classifications;
 
     }
@@ -96,7 +95,7 @@ public class TestClassificationQuery implements ClassificationQuery {
     public List<Classification> list() throws NotAuthorizedException {
         List<Classification> returnedClassifications = new ArrayList<>();
         returnedClassifications.addAll(classifications);
-        for (ClassificationImpl classification : classifications) {
+        for (Classification classification : classifications) {
             if (this.validUntil != null) {
                 boolean validDate = false;
                 for (Date valid : validUntil) {
@@ -139,7 +138,7 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationImpl single() throws NotAuthorizedException {
+    public Classification single() throws NotAuthorizedException {
         return null;
     }
 }

@@ -14,9 +14,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import pro.taskana.Classification;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.ClassificationImpl;
+import pro.taskana.model.Classification;
 
 /**
  * Test for ClassificationQueryImpl.
@@ -61,7 +60,7 @@ public class ClassificationQueryImplTest {
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationImpl());
+        when(sqlSession.selectOne(any(), any())).thenReturn(new Classification());
 
         Classification result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)
                 .parentClassification("superId").single();

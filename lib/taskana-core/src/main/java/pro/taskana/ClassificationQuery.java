@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import pro.taskana.model.Classification;
+
 import java.util.Date;
 
 /**

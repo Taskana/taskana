@@ -1,34 +1,25 @@
 package pro.taskana.impl.integration;
 
-import java.io.FileNotFoundException;
-import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-
 import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import pro.taskana.Classification;
+import org.junit.*;
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.ClassificationImpl;
+import pro.taskana.model.Classification;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+import java.io.FileNotFoundException;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Integration Test for ClassificationServiceImpl with connection management mode AUTOCOMMIT.
@@ -63,31 +54,31 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testInsertClassification() throws ClassificationAlreadyExistException, ClassificationNotFoundException {
-        ClassificationImpl classification = new ClassificationImpl();
-        classificationService.createClassification(classification);
+    public void testInsertClassification() throws ClassificationNotFoundException {
+        Classification classification = new Classification();
+        classificationService.addClassification(classification);
 
         Assert.assertNotNull(classificationService.getClassification(classification.getId(), ""));
     }
 
     @Test
-    public void testFindAllClassifications() throws NotAuthorizedException, ClassificationAlreadyExistException {
-        ClassificationImpl classification0 = new ClassificationImpl();
-        classificationService.createClassification(classification0);
-        ClassificationImpl classification1 = new ClassificationImpl();
-        classificationService.createClassification(classification1);
-        ClassificationImpl classification2 = new ClassificationImpl();
+    public void testFindAllClassifications() throws NotAuthorizedException {
+        Classification classification0 = new Classification();
+        classificationService.addClassification(classification0);
+        Classification classification1 = new Classification();
+        classificationService.addClassification(classification1);
+        Classification classification2 = new Classification();
         classification2.setParentClassificationId(classification0.getId());
-        classificationService.createClassification(classification2);
+        classificationService.addClassification(classification2);
 
         Assert.assertEquals(2 + 1, classificationService.getClassificationTree().size());
     }
 
     @Test
-    public void testModifiedClassification() throws ClassificationAlreadyExistException, ClassificationNotFoundException {
+    public void testModifiedClassification() {
 
-        ClassificationImpl classification = new ClassificationImpl();
-        classificationService.createClassification(classification);
+        Classification classification = new Classification();
+        classificationService.addClassification(classification);
         classification.setDescription("TEST SOMETHING");
         classificationService.updateClassification(classification);
 
@@ -95,18 +86,18 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testInsertAndClassificationMapper() throws NotAuthorizedException, ClassificationAlreadyExistException {
-        ClassificationImpl classification = new ClassificationImpl();
-        classificationService.createClassification(classification);
+    public void testInsertAndClassificationMapper() throws NotAuthorizedException {
+        Classification classification = new Classification();
+        classificationService.addClassification(classification);
         Date today = Date.valueOf(LocalDate.now());
         List<Classification> list = classificationService.createClassificationQuery().validInDomain(Boolean.TRUE).created(today).validFrom(today).validUntil(Date.valueOf("9999-12-31")).list();
         Assert.assertEquals(1, list.size());
     }
 
     @Test
-    public void testUpdateAndClassificationMapper() throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
-        ClassificationImpl classification = new ClassificationImpl();
-        classificationService.createClassification(classification);
+    public void testUpdateAndClassificationMapper() throws NotAuthorizedException {
+        Classification classification = new Classification();
+        classificationService.addClassification(classification);
         System.out.println(classification.getId());
         classification.setDescription("description");
         classificationService.updateClassification(classification);
@@ -124,26 +115,24 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
         System.out.println(classification.getParentClassificationId());
 
-        List<Classification> temp = classificationService.getClassificationTree();
-        List<ClassificationImpl> allClassifications = new ArrayList<>();
-        temp.stream().forEach(c -> allClassifications.add((ClassificationImpl) c));
+        List<Classification> allClassifications = classificationService.getClassificationTree();
         Assert.assertEquals(2, allClassifications.size());
     }
 
     @Test
-    public void testFindWithClassificationMapperDomainAndCategory() throws NotAuthorizedException, ClassificationAlreadyExistException {
-        ClassificationImpl classification1 = new ClassificationImpl();
+    public void testFindWithClassificationMapperDomainAndCategory() throws NotAuthorizedException {
+        Classification classification1 = new Classification();
         classification1.setDomain("domain1");
         classification1.setCategory("category1");
-        classificationService.createClassification(classification1);
-        ClassificationImpl classification2 = new ClassificationImpl();
+        classificationService.addClassification(classification1);
+        Classification classification2 = new Classification();
         classification2.setDomain("domain2");
         classification2.setCategory("category1");
-        classificationService.createClassification(classification2);
-        ClassificationImpl classification3 = new ClassificationImpl();
+        classificationService.addClassification(classification2);
+        Classification classification3 = new Classification();
         classification3.setDomain("domain1");
         classification3.setCategory("category2");
-        classificationService.createClassification(classification3);
+        classificationService.addClassification(classification3);
 
         List<Classification> list = classificationService.createClassificationQuery().category("category1").domain("domain1").list();
         Assert.assertEquals(1, list.size());
@@ -152,26 +141,26 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindWithClassificationMapperCustomAndCategory() throws NotAuthorizedException, ClassificationAlreadyExistException {
-        ClassificationImpl classification1 = new ClassificationImpl();
+    public void testFindWithClassificationMapperCustomAndCategory() throws NotAuthorizedException {
+        Classification classification1 = new Classification();
         classification1.setDescription("DESC1");
         classification1.setCategory("category1");
-        classificationService.createClassification(classification1);
-        ClassificationImpl classification2 = new ClassificationImpl();
+        classificationService.addClassification(classification1);
+        Classification classification2 = new Classification();
         classification2.setDescription("DESC1");
         classification2.setCustom1("custom1");
         classification2.setCategory("category1");
-        classificationService.createClassification(classification2);
-        ClassificationImpl classification3 = new ClassificationImpl();
+        classificationService.addClassification(classification2);
+        Classification classification3 = new Classification();
         classification3.setCustom1("custom2");
         classification3.setCustom2("custom1");
         classification3.setCategory("category2");
-        classificationService.createClassification(classification3);
-        ClassificationImpl classification4 = new ClassificationImpl();
+        classificationService.addClassification(classification3);
+        Classification classification4 = new Classification();
         classification4.setDescription("description2");
         classification4.setCustom8("custom2");
         classification4.setCategory("category1");
-        classificationService.createClassification(classification4);
+        classificationService.addClassification(classification4);
 
         List<Classification> list = classificationService.createClassificationQuery().descriptionLike("DESC1").customFields("custom1").list();
         Assert.assertEquals(1, list.size());
@@ -182,26 +171,26 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindWithClassificationMapperPriorityTypeAndParent() throws NotAuthorizedException, ClassificationAlreadyExistException {
-        ClassificationImpl classification = new ClassificationImpl();
+    public void testFindWithClassificationMapperPriorityTypeAndParent() throws NotAuthorizedException {
+        Classification classification = new Classification();
         classification.setPriority(Integer.decode("5"));
         classification.setType("type1");
-        classificationService.createClassification(classification);
-        ClassificationImpl classification1 = new ClassificationImpl();
+        classificationService.addClassification(classification);
+        Classification classification1 = new Classification();
         classification1.setPriority(Integer.decode("3"));
         classification1.setType("type1");
         classification1.setParentClassificationId(classification.getId());
-        classificationService.createClassification(classification1);
-        ClassificationImpl classification2 = new ClassificationImpl();
+        classificationService.addClassification(classification1);
+        Classification classification2 = new Classification();
         classification2.setPriority(Integer.decode("5"));
         classification2.setType("type2");
         classification2.setParentClassificationId(classification.getId());
-        classificationService.createClassification(classification2);
-        ClassificationImpl classification3 = new ClassificationImpl();
+        classificationService.addClassification(classification2);
+        Classification classification3 = new Classification();
         classification3.setPriority(Integer.decode("5"));
         classification3.setType("type1");
         classification3.setParentClassificationId(classification1.getId());
-        classificationService.createClassification(classification3);
+        classificationService.addClassification(classification3);
 
         List<Classification> list = classificationService.createClassificationQuery().parentClassification(classification.getId()).list();
         Assert.assertEquals(2, list.size());
@@ -212,30 +201,30 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindWithClassificationMapperServiceLevelNameAndDescription() throws NotAuthorizedException, ClassificationAlreadyExistException {
+    public void testFindWithClassificationMapperServiceLevelNameAndDescription() throws NotAuthorizedException {
         int all = 0;
-        ClassificationImpl classification = new ClassificationImpl();
+        Classification classification = new Classification();
         classification.setServiceLevel("P1D");
         classification.setName("name1");
         classification.setDescription("desc");
-        classificationService.createClassification(classification);
+        classificationService.addClassification(classification);
         all++;
-        ClassificationImpl classification1 = new ClassificationImpl();
+        Classification classification1 = new Classification();
         classification1.setServiceLevel("P1DT1H");
         classification1.setName("name1");
         classification1.setDescription("desc");
-        classificationService.createClassification(classification1);
+        classificationService.addClassification(classification1);
         all++;
-        ClassificationImpl classification2 = new ClassificationImpl();
+        Classification classification2 = new Classification();
         classification2.setServiceLevel("P1D");
         classification2.setName("name");
         classification2.setDescription("desc");
-        classificationService.createClassification(classification2);
+        classificationService.addClassification(classification2);
         all++;
-        ClassificationImpl classification3 = new ClassificationImpl();
+        Classification classification3 = new Classification();
         classification3.setName("name1");
         classification3.setDescription("description");
-        classificationService.createClassification(classification3);
+        classificationService.addClassification(classification3);
         all++;
 
         List<Classification> list = classificationService.createClassificationQuery().name("name").list();
@@ -249,11 +238,11 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testDefaultSettingsWithClassificationMapper() throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
-        ClassificationImpl classification = new ClassificationImpl();
-        ClassificationImpl classification1 = new ClassificationImpl();
-        classificationService.createClassification(classification);
-        classificationService.createClassification(classification1);
+    public void testDefaultSettingsWithClassificationMapper() throws NotAuthorizedException {
+        Classification classification = new Classification();
+        Classification classification1 = new Classification();
+        classificationService.addClassification(classification);
+        classificationService.addClassification(classification1);
         classification1.setParentClassificationId(classification.getId());
         classificationService.updateClassification(classification1);
 

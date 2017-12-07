@@ -1,10 +1,10 @@
 package pro.taskana;
 
-import java.util.List;
-
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.model.Classification;
+
+import java.util.List;
 
 /**
  * This class manages the classifications.
@@ -35,33 +35,22 @@ public interface ClassificationService {
     Classification getClassification(String id, String domain) throws ClassificationNotFoundException;
 
     /**
-     * Persist a new classification. If the classification does
-     * already exist in a domain, it will just be updated.
+     * Insert a new Classification.
      * @param classification
      *            the classification to insert
-     * @throws ClassificationAlreadyExistException
-     *            when the classification does already exists with same ID+domain.
      */
-    void createClassification(Classification classification) throws ClassificationAlreadyExistException;
+    void addClassification(Classification classification);
 
     /**
      * Update a Classification.
      * @param classification
      *            the Classification to update
-     * @throws ClassificationNotFoundException when the classification does not exist already.
      */
-    void updateClassification(Classification classification) throws ClassificationNotFoundException;
+    void updateClassification(Classification classification);
 
     /**
      * This method provides a query builder for quering the database.
      * @return a {@link ClassificationQuery}
      */
     ClassificationQuery createClassificationQuery();
-
-    /**
-     * Creating a new {@link Classification} with unchangeable default values.
-     * It will be only generated and is not persisted until CREATE-call.
-     * @return classification to specify
-     */
-    Classification newClassification();
 }

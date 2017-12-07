@@ -1,25 +1,22 @@
 package pro.taskana.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pro.taskana.ClassificationQuery;
+import pro.taskana.ClassificationService;
+import pro.taskana.TaskanaEngine;
+import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.model.Classification;
+import pro.taskana.model.mappings.ClassificationMapper;
+
 import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pro.taskana.Classification;
-import pro.taskana.ClassificationQuery;
-import pro.taskana.ClassificationService;
-import pro.taskana.TaskanaEngine;
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.ClassificationImpl;
-import pro.taskana.model.mappings.ClassificationMapper;
 
 /**
  * This is the implementation of ClassificationService.
@@ -48,8 +45,8 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngineImpl.openConnection();
             List<Classification> rootClassifications;
             rootClassifications = this.createClassificationQuery().parentClassification("").validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL).list();
-            rootClassifications = this.populateChildClassifications(rootClassifications);
-            return rootClassifications;
+            result = this.populateChildClassifications(rootClassifications);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -75,30 +72,17 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public void createClassification(Classification classification) throws ClassificationAlreadyExistException {
-        LOGGER.debug("entry to createClassification(classification = {})", classification);
-        try {
+    public void addClassification(Classification classification) {
+        LOGGER.debug("entry to addClassification(classification = {})", classification);
+       try {
             taskanaEngineImpl.openConnection();
-            ClassificationImpl classificationImpl = (ClassificationImpl) classification;
-            this.setDefaultValues(classificationImpl);
-            Classification oldClassification;
-            try {
-                oldClassification = this.getClassification(classificationImpl.getId(), classificationImpl.getDomain());
-            } catch (ClassificationNotFoundException e) {
-                oldClassification = null;
-            }
-            if (oldClassification == null) {
-                classificationImpl.setCreated(classificationImpl.getValidFrom());
-                classificationMapper.insert(classificationImpl);
-                LOGGER.debug("Method createClassification created classification {}.", classification);
-                if (classificationImpl.getDomain() != "") {
-                    classificationImpl.setDomain("");
-                    classificationMapper.insert(classificationImpl);
-                    LOGGER.debug("Method createClassification created classification {}.", classification);
-                }
-            } else {
-                throw new ClassificationAlreadyExistException(classificationImpl.getId());
-            }
+            classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+            classification.setCreated(Date.valueOf(LocalDate.now()));
+
+            this.setDefaultValues(classification);
+
+            classificationMapper.insert(classification);
+            LOGGER.debug("Method addClassification added classification {}.", classification);
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from addClassification()");
@@ -110,58 +94,47 @@ public class ClassificationServiceImpl implements ClassificationService {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
         try {
             taskanaEngineImpl.openConnection();
-            ClassificationImpl classificationImpl = (ClassificationImpl) classification;
-            this.setDefaultValues(classificationImpl);
+            this.setDefaultValues(classification);
 
-            ClassificationImpl oldClassification = null;
+            Classification oldClassification = null;
             try {
-                oldClassification = (ClassificationImpl) this.getClassification(classificationImpl.getId(), classificationImpl.getDomain());
-                LOGGER.debug("Method updateClassification() inserted classification {}.", classificationImpl);
-                if (oldClassification == null) {
-                    throw new ClassificationNotFoundException("Classification not found. ID: " + classificationImpl.getId());
-                }
+                oldClassification = this.getClassification(classification.getId(), classification.getDomain());
+                LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
+
                 // ! If you update an classification twice the same day,
                 // the older version is valid from today until yesterday.
-                if (!oldClassification.getDomain().equals(classificationImpl.getDomain())) {
-                    classificationImpl.setCreated(Date.valueOf(LocalDate.now()));
-                    classificationMapper.insert(classificationImpl);
+                if (!oldClassification.getDomain().equals(classification.getDomain())) {
+                    classification.setCreated(Date.valueOf(LocalDate.now()));
+                    classificationMapper.insert(classification);
                     LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
                 } else {
                     oldClassification.setValidUntil(Date.valueOf(LocalDate.now().minusDays(1)));
                     classificationMapper.update(oldClassification);
-                    classificationMapper.insert(classificationImpl);
-                    LOGGER.debug("Method updateClassification() updated old classification {} and inserted new {}.", oldClassification, classificationImpl);
+                    classificationMapper.insert(classification);
+                    LOGGER.debug("Method updateClassification() updated old classification {} and inserted new {}.", oldClassification, classification);
                 }
             } catch (ClassificationNotFoundException e) {
-                classificationImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
-                classificationImpl.setCreated(Date.valueOf(LocalDate.now()));
-                classificationMapper.insert(classificationImpl);
-                LOGGER.debug("Method updateClassification() inserted classification {}.", classificationImpl);
-            }
+                classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+                classification.setCreated(Date.valueOf(LocalDate.now()));
+                classificationMapper.insert(classification);
+                LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
+       }
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from updateClassification().");
         }
     }
 
-    private void setDefaultValues(ClassificationImpl classification) {
+    private void setDefaultValues(Classification classification) {
         classification.setValidFrom(Date.valueOf(LocalDate.now()));
         classification.setValidUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-
-        if (classification.getIsValidInDomain() == null) {
-            classification.setIsValidInDomain(true);
-        }
-
+        classification.setValidInDomain(true);
         if (classification.getServiceLevel() != null) {
             try {
                 Duration.parse(classification.getServiceLevel());
             } catch (Exception e) {
                 throw new IllegalArgumentException("Invalid duration. Please use the format defined by ISO 8601");
             }
-        }
-
-        if (classification.getId() == null) {
-            classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
         }
 
         if (classification.getParentClassificationId() == classification.getId()) {
@@ -171,10 +144,10 @@ public class ClassificationServiceImpl implements ClassificationService {
         if (classification.getParentClassificationId() == null) {
             classification.setParentClassificationId("");
         }
-
         if (classification.getDomain() == null) {
             classification.setDomain("");
         }
+
     }
 
     @Override
@@ -183,10 +156,8 @@ public class ClassificationServiceImpl implements ClassificationService {
         List<Classification> result = null;
         try {
             taskanaEngineImpl.openConnection();
-            List<ClassificationImpl> classifications = classificationMapper.getAllClassificationsWithId(id, domain);
-            List<Classification> results = new ArrayList<>();
-            classifications.stream().forEach(c -> results.add((Classification) c));
-            return results;
+            result = classificationMapper.getAllClassificationsWithId(id, domain);
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -223,14 +194,5 @@ public class ClassificationServiceImpl implements ClassificationService {
     @Override
     public ClassificationQuery createClassificationQuery() {
         return new ClassificationQueryImpl(taskanaEngine);
-    }
-
-    @Override
-    public Classification newClassification() {
-        Date date = Date.valueOf(LocalDate.now());
-        ClassificationImpl classification = new ClassificationImpl();
-        this.setDefaultValues(classification);
-        classification.setCreated(date);
-        return classification;
     }
 }

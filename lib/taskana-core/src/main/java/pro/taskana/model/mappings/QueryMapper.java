@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskQueryImpl;
-import pro.taskana.model.ClassificationImpl;
+import pro.taskana.model.Classification;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
 
@@ -74,7 +74,7 @@ public interface QueryMapper {
             @Result(property = "description", column = "DESCRIPTION"),
             @Result(property = "priority", column = "PRIORITY"),
             @Result(property = "state", column = "STATE"),
-            @Result(property = "classification", column = "CLASSIFICATION_ID", javaType = ClassificationImpl.class, one = @One(select = CLASSIFICATION_FINDBYID)),
+            @Result(property = "classification", column = "CLASSIFICATION_ID", javaType = Classification.class, one = @One(select = CLASSIFICATION_FINDBYID)),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
             @Result(property = "owner", column = "OWNER"),
             @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
@@ -115,7 +115,7 @@ public interface QueryMapper {
             @Result(property = "category", column = "CATEGORY"),
             @Result(property = "type", column = "TYPE"),
             @Result(property = "domain", column = "DOMAIN"),
-            @Result(property = "isValidInDomain", column = "VALID_IN_DOMAIN"),
+            @Result(property = "validInDomain", column = "VALID_IN_DOMAIN"),
             @Result(property = "created", column = "CREATED"),
             @Result(property = "name", column = "NAME"),
             @Result(property = "description", column = "DESCRIPTION"),
@@ -131,7 +131,7 @@ public interface QueryMapper {
             @Result(property = "custom8", column = "CUSTOM_8"),
             @Result(property = "validFrom", column = "VALID_FROM"),
             @Result(property = "validUntil", column = "VALID_UNTIL") })
-    List<ClassificationImpl> queryClassification(ClassificationQueryImpl classificationQuery);
+    List<Classification> queryClassification(ClassificationQueryImpl classificationQuery);
 
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "

@@ -1,17 +1,7 @@
 package pro.taskana.impl;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import pro.taskana.Classification;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
@@ -21,15 +11,17 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.DueWorkbasketCounter;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
-import pro.taskana.model.Workbasket;
-import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.*;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the implementation of TaskService.
@@ -115,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket(task.getWorkbasketId());
             taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
-            task.setWorkbasketId(wb.getId());
+
             Classification classification = task.getClassification();
             if (classification == null) {
                 throw new ClassificationNotFoundException(null);

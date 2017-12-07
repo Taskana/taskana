@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Map;
 
-import pro.taskana.Classification;
-
 /**
  * Task entity.
  */
