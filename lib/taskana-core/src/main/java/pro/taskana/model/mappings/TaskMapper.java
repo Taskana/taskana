@@ -2,6 +2,8 @@ package pro.taskana.model.mappings;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
+
+import pro.taskana.Classification;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.model.*;
 
@@ -32,7 +34,7 @@ public interface TaskMapper {
             @Result(property = "description", column = "DESCRIPTION"),
             @Result(property = "priority", column = "PRIORITY"),
             @Result(property = "state", column = "STATE"),
-            @Result(property = "classification", column = "CLASSIFICATION_ID", javaType = Classification.class, one = @One(select = CLASSIFICATION_FINDBYID)),
+            @Result(property = "classification", column = "CLASSIFICATION_ID", javaType = ClassificationImpl.class, one = @One(select = CLASSIFICATION_FINDBYID)),
             @Result(property = "workbasketId", column = "WORKBASKETID"),
             @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
             @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
