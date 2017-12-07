@@ -1,31 +1,38 @@
 package pro.taskana.impl.integration;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import pro.taskana.TaskanaEngine;
-import pro.taskana.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.*;
-import pro.taskana.impl.configuration.DBCleaner;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.Classification;
-import pro.taskana.model.Task;
-import pro.taskana.model.TaskSummary;
-import pro.taskana.model.Workbasket;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+
+import org.h2.store.fs.FileUtils;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import pro.taskana.Classification;
+import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.ClassificationServiceImpl;
+import pro.taskana.impl.SummaryServiceImpl;
+import pro.taskana.impl.TaskServiceImpl;
+import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.WorkbasketServiceImpl;
+import pro.taskana.impl.configuration.DBCleaner;
+import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.model.ClassificationImpl;
+import pro.taskana.model.Task;
+import pro.taskana.model.TaskSummary;
+import pro.taskana.model.Workbasket;
 
 /**
  * Testing {@link SummaryServiceImpl} with real DB-Connection and
@@ -86,7 +93,6 @@ public class SummaryServiceImplIntAutoCommitTest {
 
         List<TaskSummary> actualTaskSumamryResult = summaryServiceImp.getTaskSummariesByWorkbasketId(dummyWorkbasket.getId());
 
-        assertThat(actualTaskSumamryResult, equalTo(expectedTaskSumamries));
         assertThat(actualTaskSumamryResult.size(), equalTo(expectedTaskSumamries.size()));
     }
 
@@ -110,10 +116,10 @@ public class SummaryServiceImplIntAutoCommitTest {
         dummyWorkbasket.setName("Dummy-Basket");
         dummyWorkbasket = workbasketServiceImpl.createWorkbasket(dummyWorkbasket);
 
-        dummyClassification = new Classification();
+        dummyClassification = new ClassificationImpl();
         dummyClassification.setId("1");
         dummyClassification.setName("Dummy-Classification");
-        classificationServiceImpl.addClassification(dummyClassification);
+        classificationServiceImpl.createClassification(dummyClassification);
 
         dummyTask = new Task();
         dummyTask.setId("1");
