@@ -1,36 +1,31 @@
 package pro.taskana.impl.integration;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.impl.ClassificationServiceImpl;
-import pro.taskana.impl.SummaryServiceImpl;
-import pro.taskana.impl.TaskServiceImpl;
-import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.WorkbasketServiceImpl;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.*;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.model.Classification;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskSummary;
 import pro.taskana.model.Workbasket;
+
+import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 /**
  * Testing {@link SummaryServiceImpl} with real DB-Connection and
@@ -95,21 +90,19 @@ public class SummaryServiceImplIntAutoCommitTest {
         assertThat(actualTaskSumamryResult.size(), equalTo(expectedTaskSumamries.size()));
     }
 
-    @Test
-    public void shouldReturnEmptyTaskSummaryListByNullParameter() {
-        List<TaskSummary> expectedTaskSumamries = new ArrayList<>();
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void shouldThrowWorkbasketNotFoundExceptionByNullParameter() throws WorkbasketNotFoundException {
         List<TaskSummary> actualTaskSumamryResult = summaryServiceImp.getTaskSummariesByWorkbasketId(null);
-        assertThat(actualTaskSumamryResult, equalTo(expectedTaskSumamries));
-        assertThat(actualTaskSumamryResult.size(), equalTo(expectedTaskSumamries.size()));
     }
 
-    @Test
-    public void shouldReturnEmptyTaskSummaryListByNoResultFound() {
-        List<TaskSummary> expectedTaskSumamries = new ArrayList<>();
-        List<TaskSummary> actualTaskSumamryResult = summaryServiceImp.getTaskSummariesByWorkbasketId("123");
-        assertThat(actualTaskSumamryResult, equalTo(expectedTaskSumamries));
-        assertThat(actualTaskSumamryResult.size(), equalTo(expectedTaskSumamries.size()));
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void shouldThrowWorkbasketNotFoundExceptionByInvalidWorkbasketParameter() throws WorkbasketNotFoundException {
+        Workbasket wb = new Workbasket();
+        wb.setName("wb");
+        workbasketServiceImpl.createWorkbasket(wb);
+        List<TaskSummary> actualTaskSumamryResult = summaryServiceImp.getTaskSummariesByWorkbasketId("1");
     }
+
 
     private void generateDummyData() throws Exception {
         dummyWorkbasket = new Workbasket();
