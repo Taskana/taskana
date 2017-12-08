@@ -1,18 +1,24 @@
 package pro.taskana;
 
+import javax.ejb.EJB;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Classification;
+import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.Task;
 import pro.taskana.model.Workbasket;
-
-import javax.ejb.EJB;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
 
 @Path("/test")
 public class TaskanaRestTest {
@@ -23,12 +29,12 @@ public class TaskanaRestTest {
 	private TaskanaEjb taskanaEjb;
 
 	@GET
-	public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+	public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
 		Workbasket workbasket = new Workbasket();
 		workbasket.setName("wb");
 		taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
-		Classification classification = new Classification();
-		taskanaEjb.getClassificationService().addClassification(classification);
+		Classification classification = (Classification) new ClassificationImpl();
+		taskanaEjb.getClassificationService().createClassification(classification);
 
 		Task task = new Task();
 		task.setClassification(classification);
