@@ -100,6 +100,10 @@ public class TaskServiceImplTest {
     public void testCreateSimpleTask() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Mockito.doNothing().when(taskMapperMock).insert(any());
         Task expectedTask = createUnitTestTask("1", "DUMMYTASK", "1");
+        Workbasket wb = new Workbasket();
+        wb.setId("1");
+        wb.setName("workbasket");
+        doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
 
         Task actualTask = cut.createTask(expectedTask);
 
@@ -130,6 +134,10 @@ public class TaskServiceImplTest {
         ObjectReference expectedObjectReference = new ObjectReference();
         expectedObjectReference.setId("1");
         expectedObjectReference.setType("DUMMY");
+        Workbasket wb = new Workbasket();
+        wb.setId("1");
+        wb.setName("workbasket");
+        doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
 
         Task expectedTask = createUnitTestTask("1", "DUMMYTASK", "1");
         expectedTask.setPrimaryObjRef(new ObjectReference());
@@ -169,7 +177,10 @@ public class TaskServiceImplTest {
         ObjectReference expectedObjectReference = new ObjectReference();
         expectedObjectReference.setId("1");
         expectedObjectReference.setType("DUMMY");
-
+        Workbasket wb = new Workbasket();
+        wb.setId("1");
+        wb.setName("workbasket");
+        doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
         Task expectedTask = createUnitTestTask("1", "DUMMYTASK", "1");
         expectedTask.setPrimaryObjRef(expectedObjectReference);
 
@@ -214,7 +225,10 @@ public class TaskServiceImplTest {
         Classification classification = (Classification) new ClassificationImpl();
         classification.setName("Name");
         classification.setCategory("MANUAL");
-
+        Workbasket wb = new Workbasket();
+        wb.setId("workbasketId");
+        wb.setName("workbasket");
+        doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
         Mockito.doReturn(classification).when(classificationServiceMock).getClassification(any(), any());
         Mockito.doNothing().when(taskMapperMock).insert(any());
         Mockito.doNothing().when(objectReferenceMapperMock).insert(any());
