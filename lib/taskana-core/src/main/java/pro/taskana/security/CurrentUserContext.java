@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.Subject;
 import java.lang.reflect.Method;
 import java.security.AccessController;
+import java.security.Principal;
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -88,31 +90,44 @@ public final class CurrentUserContext {
 
     private static String getUseridFromJAASSubject() {
         Subject subject = Subject.getSubject(AccessController.getContext());
-        LOGGER.debug("Subject of caller: {}", subject);
+        LOGGER.trace("Subject of caller: {}", subject);
         if (subject != null) {
-            Set<Object> publicCredentials = subject.getPublicCredentials();
-            LOGGER.debug("Public credentials of caller: {}", publicCredentials);
-            for (Object pC : publicCredentials) {
-                LOGGER.debug("Returning the first public credential: {}", pC.toString());
-                return pC.toString();
+            Set<Principal> principals = subject.getPrincipals();
+            LOGGER.trace("Public principals of caller: {}", principals);
+            for (Principal pC : principals) {
+                if (!(pC instanceof Group)) {
+                    LOGGER.trace("Returning the first principal that is no group: {}", pC.getName());
+                    return pC.getName();
+                }
             }
         }
-        LOGGER.debug("No userid found in subject!");
+        LOGGER.trace("No userid found in subject!");
         return null;
     }
 
     public static List<String> getGroupIds() {
-        return null;
+        Subject subject = Subject.getSubject(AccessController.getContext());
+        LOGGER.trace("Subject of caller: {}", subject);
+        List<String> groupIds = new ArrayList<>();
+        if (subject != null) {
+            Set<Group> groups = subject.getPrincipals(Group.class);
+            LOGGER.trace("Public groups of caller: {}", groups);
+            for (Principal group : groups) {
+                LOGGER.trace("Returning the groupId: {}", group.getName());
+                groupIds.add(group.getName());
+            }
+            return groupIds;
+        }
+        LOGGER.trace("No groupids found in subject!");
+        return groupIds;
     }
 
     public static List<String> getAccessIds() {
         List<String> accessIds = new ArrayList<>();
+        List<String> groupIds = getGroupIds();
         accessIds.add(getUserid());
-        if (getGroupIds() != null) {
-            accessIds.addAll(getGroupIds());
-        }
-        if (accessIds.isEmpty()) {
-            return null;
+        if (!groupIds.isEmpty()) {
+            accessIds.addAll(groupIds);
         }
         return accessIds;
     }

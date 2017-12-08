@@ -4,6 +4,9 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.jaas.JaasAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
+import pro.taskana.security.GroupPrincipal;
+import pro.taskana.security.UserPrincipal;
+
 public class CustomAutenticationProvider implements AuthenticationProvider {
 	private AuthenticationProvider delegate;
 
@@ -17,14 +20,18 @@ public class CustomAutenticationProvider implements AuthenticationProvider {
 				.authenticate(authentication);
 
 		if (jaasAuthenticationToken.isAuthenticated()) {
-			jaasAuthenticationToken.getLoginContext().getSubject().getPublicCredentials().add(jaasAuthenticationToken.getPrincipal());
+		    String userName = jaasAuthenticationToken.getPrincipal().toString();       
+            jaasAuthenticationToken.getLoginContext().getSubject().getPrincipals().add(new UserPrincipal(userName));
+            jaasAuthenticationToken.getLoginContext().getSubject().getPrincipals().add(new GroupPrincipal("group1"));
+            jaasAuthenticationToken.getLoginContext().getSubject().getPrincipals().add(new GroupPrincipal("group2"));
+            jaasAuthenticationToken.getLoginContext().getSubject().getPrincipals().add(new GroupPrincipal("group3"));
 			return jaasAuthenticationToken;
 		} else {
 			return null;
 		}
 	}
 
-	@Override
+    @Override
 	public boolean supports(Class<?> authentication) {
 		return delegate.supports(authentication);
 	}
