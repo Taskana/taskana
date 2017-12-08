@@ -14,6 +14,7 @@ public interface ClassificationService {
     /**
      * Get all available Classifications as a tree.
      * @return The List of all Classifications
+     * @throws NotAuthorizedException TODO
      */
     List<Classification> getClassificationTree() throws NotAuthorizedException;
 
@@ -21,16 +22,18 @@ public interface ClassificationService {
      * Get all Classifications with the given id.
      * Returns also older and domain-specific versions of the classification.
      *
-     * @param id
+     * @param id TODO
+     * @param domain TODO
      * @return List with all versions of the Classification
      */
     List<Classification> getAllClassificationsWithId(String id, String domain);
 
     /**
      * Get the Classification for id and domain.
-     * @param id
-     * @param domain
+     * @param id TODO
+     * @param domain TODO
      * @return If exist: domain-specific classification, else default classification
+     * @throws ClassificationNotFoundException TODO
      */
     Classification getClassification(String id, String domain) throws ClassificationNotFoundException;
 

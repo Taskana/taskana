@@ -64,7 +64,7 @@ public class TaskanaEngineConfiguration {
     /**
      * This method creates the TaskanaEngine without an sqlSessionFactory.
      * @return the TaskanaEngine
-     * @throws SQLException
+     * @throws SQLException TODO
      */
     public TaskanaEngine buildTaskanaEngine() throws SQLException {
         return new TaskanaEngineImpl(this);
@@ -72,7 +72,10 @@ public class TaskanaEngineConfiguration {
 
     /**
      * This method creates a PooledDataSource, if the needed properties are provided.
-     * @param dbConfiguration
+     * @param driver TODO
+     * @param jdbcUrl TODO
+     * @param username TODO
+     * @param password TODO
      * @return DataSource
      */
     public static DataSource createDatasource(String driver, String jdbcUrl, String username, String password) {

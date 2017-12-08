@@ -107,7 +107,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      * Control over commit and rollback is the responsibility of the client.
      * In order to close the connection, the client can call TaskanaEngine.closeConnection() or
      * TaskanaEngine.setConnection(null). Both calls have the same effect.
-     * @param connection
+     * @param connection TODO
      */
     @Override
     public void setConnection(java.sql.Connection connection) {
@@ -244,7 +244,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      * On the first call to openConnection, we call sessionManager.startManagedSession() to open a database connection.
      * On each call to returnConnection() we pop one instance of sessionManager from the stack.
      * When the stack becomes empty, we close the database connection by calling sessionManager.close()
-     * @param
      * @return Stack of SqlSessionManager
      */
     protected static Stack<SqlSessionManager> getSessionStack() {
