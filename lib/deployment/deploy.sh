@@ -34,6 +34,14 @@ function deploy {
   $debug mvn deploy -f "$1" -P "$2" --settings "$3" -DskipTests=true -B -U
 }
 
+# changing version in pom and all its children
+# Arguments:
+# $1: directory of pom
+# $2: new version
+function change_version {
+  mvn org.codehaus.mojo:versions-maven-plugin:2.5:set -f "$1" -DnewVersion="$2"   -DartifactId=*  -DgroupId=*
+}
+
 function push_new_poms() {
   #setup username
   git config --global user.email "travis@travis-ci.org"
@@ -45,7 +53,7 @@ function push_new_poms() {
   git commit -m "Updated poms to version ${TRAVIS_TAG##v}-SNAPSHOT"
 
   #push poms (authentication via GH_TOKEN)
-  git remote add origin-pages "https://$GH_TOKEN@github.com/Taskana/taskana.git" >/dev/null 2>&1
+  git remote add origin-pages "https://$GH_TOKEN@github.com/$reqRepo.git" >/dev/null 2>&1
   git push --quiet --set-upstream origin-pages "$branch"
 }
 
@@ -70,27 +78,39 @@ function main {
     exit 0
   fi
 
-  decodeAndImportKeys `dirname "$0"`
+  #this should never happen
+  if [[ "$TRAVIS" == 'true' && -n $TRAVIS_PULL_REQUEST ]]; then
+    echo "Skipping release to sonatype because this is a PR build"
+    exit 0
+  fi
+
   if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     #check if tagged commit is a head commit of any branch
     local commit=`git ls-remote origin | grep "$TRAVIS_TAG" | cut -c1-40`
     local branch=`git ls-remote origin | grep -v refs/tags | grep "$commit" | sed "s/$commit.*refs\/heads\///"`
     if [[ -z $branch ]]; then
-      echo "tag $TRAVIS_TAG is not a head commit. Can not release" >&2
+      echo "the commit of tag '$TRAVIS_TAG' is not a head commit. Can not release" >&2
       exit 1;
     fi
-    mvn org.codehaus.mojo:versions-maven-plugin:2.5:set -f "$1" -DnewVersion="${TRAVIS_TAG##v}"   -DartifactId=*  -DgroupId=*
+    local parent_dir="$1"
     local profile="release"
+    change_version "$parent_dir" "${TRAVIS_TAG##v}"
   else
+    if [[ "$TRAVIS_BRANCH" != 'master' ]]; then
+      echo "Skipping release to sonatype because this branch is not permitted"
+      exit 0
+    fi
     local profile="snapshot"
   fi 
   shift
+
+  decodeAndImportKeys `dirname "$0"`
   for dir in "$@"; do
     deploy "$PWD/$dir" "$profile" "`dirname "$0"`/mvnsettings.xml"
   done
 
-  if [[ -n $branch ]]; then
-    mvn org.codehaus.mojo:versions-maven-plugin:2.5:set -f "$1" -DnewVersion="${TRAVIS_TAG##v}-SNAPSHOT"   -DartifactId=*  -DgroupId=*
+  if [[ -n $branch && -n $parent_dir ]]; then
+    change_version "$parent_dir" "${TRAVIS_TAG##v}-SNAPSHOT"
     if [[ -z $GH_TOKEN ]]; then
       echo 'GH_TOKEN not set' >&2
       exit 1
