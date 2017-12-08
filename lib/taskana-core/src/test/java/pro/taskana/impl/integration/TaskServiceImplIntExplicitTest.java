@@ -37,11 +37,7 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.*;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.Classification;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.Workbasket;
+import pro.taskana.model.*;
 import pro.taskana.security.GroupPrincipal;
 import pro.taskana.security.UserPrincipal;
 
@@ -343,7 +339,6 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     public void do_should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
-
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
