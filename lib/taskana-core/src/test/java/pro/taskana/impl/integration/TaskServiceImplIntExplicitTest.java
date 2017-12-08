@@ -92,12 +92,12 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testTaskService() throws Throwable {
+    public void testCreateTask() throws Throwable {
         try {
             Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
                 @Override
                 public Object run() throws TaskNotFoundException, WorkbasketNotFoundException, FileNotFoundException, NotAuthorizedException, SQLException, ClassificationNotFoundException {
-                    do_testTaskService();
+                    do_testCreateTask();
                     return null;
                 }
             });
@@ -106,7 +106,7 @@ public class TaskServiceImplIntExplicitTest {
         }
     }
 
-    public void do_testTaskService() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+    public void do_testCreateTask() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -193,7 +193,7 @@ public class TaskServiceImplIntExplicitTest {
         ClassificationServiceImpl classificationServiceImpl = (ClassificationServiceImpl) te.getClassificationService();
 
         Workbasket workbasket = new Workbasket();
-        workbasket.setName("workbasket");
+        workbasket.setName("workbasket99");
         Classification classification = new Classification();
         workbasketServiceImpl.createWorkbasket(workbasket);
         classificationServiceImpl.addClassification(classification);
