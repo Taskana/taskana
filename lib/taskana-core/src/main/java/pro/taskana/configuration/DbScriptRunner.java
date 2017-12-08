@@ -37,7 +37,7 @@ public class DbScriptRunner {
 
     /**
      * Run all db scripts.
-     * @throws SQLException
+     * @throws SQLException TODO
      */
     public void run() throws SQLException {
         Connection connection = dataSource.getConnection();

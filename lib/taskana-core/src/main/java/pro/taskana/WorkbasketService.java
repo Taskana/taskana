@@ -15,14 +15,15 @@ public interface WorkbasketService {
 
     /**
      * Get Workbasket for a given id.
-     * @param workbasketId
+     * @param workbasketId TODO
      * @return the requested Workbasket
+     * @throws WorkbasketNotFoundException TODO
      */
     Workbasket getWorkbasket(String workbasketId) throws WorkbasketNotFoundException;
 
     /**
      * Get all available Workbaskets.
-     * @return List<Workbasket> the list of all workbaskets
+     * @return a list containing all workbaskets
      */
     List<Workbasket> getWorkbaskets();
 
@@ -30,7 +31,7 @@ public interface WorkbasketService {
      * Create a new Workbasket.
      * @param workbasket
      *            The workbasket to create
-     * @throws NotAuthorizedException
+     * @return TODO
      */
     Workbasket createWorkbasket(Workbasket workbasket);
 
@@ -38,7 +39,8 @@ public interface WorkbasketService {
      * Update a Workbasket.
      * @param workbasket
      *            The workbasket to update
-     * @throws NotAuthorizedException
+     * @return TODO
+     * @throws NotAuthorizedException TODO
      */
     Workbasket updateWorkbasket(Workbasket workbasket) throws NotAuthorizedException;
 
@@ -46,7 +48,7 @@ public interface WorkbasketService {
      * Create a new Workbasket Authorization with a Workbasket and a AccessId.
      * @param workbasketAccessItem
      *            the new workbasketAccessItem
-     * @return
+     * @return TODO
      */
     WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem);
 
@@ -78,9 +80,7 @@ public interface WorkbasketService {
      *            the workbasket we want to access
      * @param authorization
      *            the needed Authorization
-     * @throws WorkbasketNotFoundException
-     *             if the workbasket do not exist
-     * @throws NotAuthorizedException
+     * @throws NotAuthorizedException TODO
      */
     void checkAuthorization(String workbasketId, WorkbasketAuthorization authorization) throws NotAuthorizedException;
 
@@ -94,8 +94,8 @@ public interface WorkbasketService {
 
     /**
      * Get all authorizations for a Workbasket.
-     * @param workbasketId
-     * @return List<WorkbasketAccessItem>
+     * @param workbasketId TODO
+     * @return List of WorkbasketAccessItems
      */
     List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketId);
 

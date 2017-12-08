@@ -3,19 +3,7 @@ jdk:
 - oraclejdk8
 env:
   global:
-  - NODE_VERSION: 6
-before_install:
-- nvm install $NODE_VERSION
-before-script:
--
-script:
-- (npm install -g @angular/cli)
- && (cd lib && mvn clean install)
- && (cd rest && mvn clean install)
- && (cd workplace && npm install && ng build --environment=prod)
- && (cd admin && npm install && ng build --environment=prod)
- && (cd monitor && npm install && ng build --environment=prod)
-
+    - NODE_VERSION: 6
 cache:
   timeout: 604800 #1 week
   directories:
@@ -23,6 +11,10 @@ cache:
   - "workplace/node_modules"
   - "admin/node_modules"
   - "monitor/node_modules"
+install:
+- mvn clean install -f lib/ -DskipTests=true -Dmaven.javadoc.skip=true -B
+script:
+- lib/deployment/deploy.sh --dry-run lib/ lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/
 deploy:
   provider: cloudfoundry
   username: tobias.schaefer@novatec-gmbh.de
@@ -33,4 +25,3 @@ deploy:
   space: Taskana
   on:
     repo: Taskana/taskana
-

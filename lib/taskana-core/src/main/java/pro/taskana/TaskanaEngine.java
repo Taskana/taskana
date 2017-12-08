@@ -34,7 +34,7 @@ public interface TaskanaEngine {
     /**
      * sets the connection management mode for taskana.
      *
-     * @param mode. See ConnectionManagementMode
+     * @param mode See ConnectionManagementMode
      */
     void setConnectionManagementMode(ConnectionManagementMode mode);
 

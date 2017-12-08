@@ -24,7 +24,7 @@ public interface TaskService {
      * @param userName
      *            user who claims the task
      * @return modified claimed Task
-     * @throws TaskNotFoundException
+     * @throws TaskNotFoundException TODO
      */
     Task claim(String id, String userName) throws TaskNotFoundException;
 
@@ -33,15 +33,16 @@ public interface TaskService {
      * @param taskId
      *            the task id
      * @return changed Task after update.
-     * @throws TaskNotFoundException
+     * @throws TaskNotFoundException TODO
      */
     Task complete(String taskId) throws TaskNotFoundException;
 
     /**
      * Create a task by a task object.
-     * @param task
+     * @param task TODO
      * @return the created task
-     * @throws NotAuthorizedException
+     * @throws NotAuthorizedException TODO
+     * @throws WorkbasketNotFoundException TODO
      */
     Task createTask(Task task) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException;
 
@@ -50,6 +51,7 @@ public interface TaskService {
      * @param taskId
      *            the id of the task
      * @return the Task
+     * @throws TaskNotFoundException TODO
      */
     Task getTaskById(String taskId) throws TaskNotFoundException;
 
@@ -64,10 +66,10 @@ public interface TaskService {
     /**
      * Count all Tasks in a given workbasket with daysInPast as Days from today in
      * the past and a specific state.
-     * @param workbasketId
-     * @param daysInPast
-     * @param states
-     * @return
+     * @param workbasketId TODO
+     * @param daysInPast TODO
+     * @param states TODO
+     * @return TODO
      */
     long getTaskCountForWorkbasketByDaysInPastAndState(String workbasketId, long daysInPast, List<TaskState> states);
 
@@ -76,9 +78,12 @@ public interface TaskService {
     /**
      * Transfer task to another workbasket. The transfer set the transferred flag
      * and resets the read flag.
-     * @param workbasketId
+     * @param taskId TODO
+     * @param workbasketId TODO
      * @return the updated task
-     * @throws NotAuthorizedException
+     * @throws TaskNotFoundException TODO
+     * @throws WorkbasketNotFoundException TODO
+     * @throws NotAuthorizedException TODO
      */
     Task transfer(String taskId, String workbasketId)
             throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException;
@@ -90,6 +95,7 @@ public interface TaskService {
      * @param isRead
      *            the new status of the read flag.
      * @return Task the updated Task
+     * @throws TaskNotFoundException TODO
      */
     Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
 
