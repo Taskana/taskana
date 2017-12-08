@@ -14,7 +14,7 @@ public interface Classification {
 
     /**
      * Set/Change the classification-ID. Only ID+Domain need to be unique.
-     * @param id
+     * @param id TODO
      */
     void setId(String id);
 
@@ -30,7 +30,7 @@ public interface Classification {
      * Set/Change a reference to the current parent classification via ID.
      * If this field would be set to NULL the classification will become
      * a parent-classification itself.
-     * @param parentClassificationId
+     * @param parentClassificationId TODO
      */
     void setParentClassificationId(String parentClassificationId);
 
@@ -41,7 +41,7 @@ public interface Classification {
 
     /**
      * Set/Change the category of this classification.
-     * @param category
+     * @param category TODO
      */
     void setCategory(String category);
 
@@ -53,7 +53,7 @@ public interface Classification {
 
     /**
      * Set/Change the current type of the classification.
-     * @param type
+     * @param type TODO
      */
     void setType(String type);
 
@@ -98,7 +98,7 @@ public interface Classification {
 
     /**
      * Set/Change the classification name.
-     * @param name
+     * @param name TODO
      */
     void setName(String name);
 
@@ -110,7 +110,7 @@ public interface Classification {
 
     /**
      * Set/Change the classification description.
-     * @param description
+     * @param description TODO
      */
     void setDescription(String description);
 
@@ -122,7 +122,7 @@ public interface Classification {
 
     /**
      * Set/Change the numeric priority of a classification.
-     * @param priority
+     * @param priority TODO
      */
     void setPriority(int priority);
 
@@ -134,7 +134,7 @@ public interface Classification {
 
     /**
      * Set/Change the security level.
-     * @param serviceLevel
+     * @param serviceLevel TODO
      */
     void setServiceLevel(String serviceLevel);
 
@@ -146,7 +146,7 @@ public interface Classification {
 
     /**
      * Set/Change the 1. custom-attribute.
-     * @param custom1
+     * @param custom1 TODO
      */
     void setCustom1(String custom1);
 
@@ -158,7 +158,7 @@ public interface Classification {
 
     /**
      * Set/Change the 2. custom-attribute.
-     * @param custom2
+     * @param custom2 TODO
      */
     void setCustom2(String custom2);
 
@@ -170,7 +170,7 @@ public interface Classification {
 
     /**
      * Set/Change the 3. custom-attribute.
-     * @param custom3
+     * @param custom3 TODO
      */
     void setCustom3(String custom3);
 
@@ -182,7 +182,7 @@ public interface Classification {
 
     /**
      * Set/Change the 4. custom-attribute.
-     * @param custom4
+     * @param custom4 TODO
      */
     void setCustom4(String custom4);
 
@@ -194,7 +194,7 @@ public interface Classification {
 
     /**
      * Set/Change the 5. custom-attribute.
-     * @param custom5
+     * @param custom5 TODO
      */
     void setCustom5(String custom5);
 
@@ -207,7 +207,7 @@ public interface Classification {
 
     /**
      * Set/Change the 6. custom-attribute.
-     * @param custom6
+     * @param custom6 TODO
      */
     void setCustom6(String custom6);
 
@@ -219,7 +219,7 @@ public interface Classification {
 
     /**
      * Set/Change the 7. custom-attribute.
-     * @param custom7
+     * @param custom7 TODO
      */
     void setCustom7(String custom7);
 
@@ -231,7 +231,7 @@ public interface Classification {
 
     /**
      * Set/Change the 8. custom-attribute.
-     * @param custom8
+     * @param custom8 TODO
      */
     void setCustom8(String custom8);
 
