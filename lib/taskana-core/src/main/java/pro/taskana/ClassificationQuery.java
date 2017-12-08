@@ -7,7 +7,6 @@ import java.util.Date;
  */
 public interface ClassificationQuery extends BaseQuery<Classification> {
 
-
     /**
      * Add your parentClassification to your query.
      * @param parentClassificationId
@@ -34,22 +33,22 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
 
     /**
      * Add your domain to your query.
-     * @param domain
-     * @return
+     * @param domain TODO
+     * @return TODO
      */
     ClassificationQuery domain(String... domain);
 
     /**
      * Add to your query if the Classification shall be valid in its domain.
-     * @param validInDomain
-     * @return
+     * @param validInDomain TODO
+     * @return TODO
      */
     ClassificationQuery validInDomain(Boolean validInDomain);
 
     /**
      * Add your created-Dates to your query.
-     * @param created
-     * @return
+     * @param created TODO
+     * @return TODO
      */
     ClassificationQuery created(Date... created);
 
@@ -88,22 +87,22 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
 
     /**
      * Add your customFields to your query.
-     * @param customFields
-     * @return
+     * @param customFields TODO
+     * @return TODO
      */
     ClassificationQuery customFields(String... customFields);
 
     /**
      * Define after which date the classifications should be valid.
-     * @param validFrom
-     * @return
+     * @param validFrom TODO
+     * @return TODO
      */
     ClassificationQuery validFrom(Date... validFrom);
 
     /**
      * Define until which date the classifications should be valid.
-     * @param validUntil
-     * @return
+     * @param validUntil TODO
+     * @return TODO
      */
     ClassificationQuery validUntil(Date... validUntil);
 }

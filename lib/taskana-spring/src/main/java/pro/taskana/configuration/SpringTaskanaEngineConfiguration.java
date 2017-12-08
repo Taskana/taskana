@@ -21,7 +21,6 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
 	 * sqlSessionFactory
 	 * 
 	 * @return the TaskanaEngine
-	 * @throws SQLException
 	 */
 	public TaskanaEngine buildTaskanaEngine() {
 		this.useContainerManagedTransactions = true;
