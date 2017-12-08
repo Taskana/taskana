@@ -109,13 +109,14 @@ public class TaskServiceImplIntAutocommitTest {
             throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
+        ((TaskanaEngineImpl) te).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         TaskServiceImpl taskServiceImpl = (TaskServiceImpl) te.getTaskService();
 
         Workbasket wb = new Workbasket();
         wb.setName("workbasket");
-        taskanaEngine.getWorkbasketService().createWorkbasket(wb);
+        te.getWorkbasketService().createWorkbasket(wb);
         Classification classification = new Classification();
-        taskanaEngine.getClassificationService().addClassification(classification);
+        te.getClassificationService().addClassification(classification);
 
         Task task = new Task();
         task.setName("Unit Test Task");
