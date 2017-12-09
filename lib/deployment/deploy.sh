@@ -39,22 +39,22 @@ function deploy {
 # $1: directory of pom
 # $2: new version
 function change_version {
-  mvn org.codehaus.mojo:versions-maven-plugin:2.5:set -f "$1" -DnewVersion="$2"   -DartifactId=*  -DgroupId=*
+  $debug mvn org.codehaus.mojo:versions-maven-plugin:2.5:set -f "$1" -DnewVersion="$2"   -DartifactId=*  -DgroupId=*
 }
 
 function push_new_poms() {
   #setup username
-  git config --global user.email "travis@travis-ci.org"
-  git config --global user.name "Travis CI"
+  $debug git config --global user.email "travis@travis-ci.org"
+  $debug git config --global user.name "Travis CI"
 
   #commit all poms
-  git checkout -b "$branch"
-  git add "./*pom.xml"
-  git commit -m "Updated poms to version ${TRAVIS_TAG##v}-SNAPSHOT"
+  $debug git checkout -b "$branch"
+  $debug git add "./*pom.xml"
+  $debug git commit -m "Updated poms to version ${TRAVIS_TAG##v}-SNAPSHOT"
 
   #push poms (authentication via GH_TOKEN)
-  git remote add origin-pages "https://$GH_TOKEN@github.com/$reqRepo.git" >/dev/null 2>&1
-  git push --quiet --set-upstream origin-pages "$branch"
+  $debug git remote add origin-pages "https://$GH_TOKEN@github.com/$reqRepo.git" >/dev/null 2>&1
+  $debug git push --quiet --set-upstream origin-pages "$branch"
 }
 
 function main {
@@ -78,7 +78,6 @@ function main {
     exit 0
   fi
 
-  #this should never happen
   if [[ "$TRAVIS" == 'true' && -n $TRAVIS_PULL_REQUEST ]]; then
     echo "Skipping release to sonatype because this is a PR build"
     exit 0
@@ -88,7 +87,7 @@ function main {
     #check if tagged commit is a head commit of any branch
     local commit=`git ls-remote origin | grep "$TRAVIS_TAG" | cut -c1-40`
     local branch=`git ls-remote origin | grep -v refs/tags | grep "$commit" | sed "s/$commit.*refs\/heads\///"`
-    if [[ -z $branch ]]; then
+    if [[ -z "$branch" ]]; then
       echo "the commit of tag '$TRAVIS_TAG' is not a head commit. Can not release" >&2
       exit 1;
     fi
@@ -109,9 +108,9 @@ function main {
     deploy "$PWD/$dir" "$profile" "`dirname "$0"`/mvnsettings.xml"
   done
 
-  if [[ -n $branch && -n $parent_dir ]]; then
+  if [[ -n "$branch" && -n "$parent_dir" ]]; then
     change_version "$parent_dir" "${TRAVIS_TAG##v}-SNAPSHOT"
-    if [[ -z $GH_TOKEN ]]; then
+    if [[ -z "$GH_TOKEN" ]]; then
       echo 'GH_TOKEN not set' >&2
       exit 1
     fi
