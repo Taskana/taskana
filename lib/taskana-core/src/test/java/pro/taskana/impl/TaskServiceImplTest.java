@@ -44,6 +44,7 @@ import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
+import pro.taskana.model.TaskSummary;
 import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
@@ -670,6 +671,76 @@ public class TaskServiceImplTest {
                     taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
             throw e;
         }
+    }
+
+    @Test
+    public void testGetTaskSummariesByWorkbasketIdWithInternalException() throws WorkbasketNotFoundException {
+        // given - set behaviour and expected result
+        String workbasketId = "1";
+        List<TaskSummary> expectedResultList = new ArrayList<>();
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doThrow(new IllegalArgumentException("Invalid ID: " + workbasketId)).when(taskMapperMock).findTaskSummariesByWorkbasketId(workbasketId);
+        doNothing().when(taskanaEngineImpl).returnConnection();
+        doReturn(workbasketServiceMock).when(taskanaEngineImpl).getWorkbasketService();
+        doReturn(new Workbasket()).when(workbasketServiceMock).getWorkbasket(any());
+
+        // when - make the call
+        List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketId(workbasketId);
+
+        // then - verify external communications and assert result
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMapperMock, times(1)).findTaskSummariesByWorkbasketId(workbasketId);
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineImpl, times(1)).getWorkbasketService();
+        verify(workbasketServiceMock, times(1)).getWorkbasket(any());
+
+        verifyNoMoreInteractions(taskMapperMock, taskanaEngineImpl, workbasketServiceMock);
+        assertThat(actualResultList, equalTo(expectedResultList));
+    }
+
+    @Test
+    public void testGetTaskSummariesByWorkbasketIdGettingResults() throws WorkbasketNotFoundException {
+        String workbasketId = "1";
+        List<TaskSummary> expectedResultList = Arrays.asList(new TaskSummary(), new TaskSummary());
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doNothing().when(taskanaEngineImpl).returnConnection();
+        doReturn(workbasketServiceMock).when(taskanaEngineImpl).getWorkbasketService();
+        doReturn(new Workbasket()).when(workbasketServiceMock).getWorkbasket(any());
+        doReturn(expectedResultList).when(taskMapperMock).findTaskSummariesByWorkbasketId(workbasketId);
+
+        List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketId(workbasketId);
+
+        verify(taskanaEngineImpl, times(1)).getWorkbasketService();
+        verify(workbasketServiceMock, times(1)).getWorkbasket(any());
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMapperMock, times(1)).findTaskSummariesByWorkbasketId(workbasketId);
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskMapperMock, taskanaEngineImpl,  workbasketServiceMock);
+        assertThat(actualResultList, equalTo(expectedResultList));
+        assertThat(actualResultList.size(), equalTo(expectedResultList.size()));
+    }
+
+    @Test
+    public void testGetTaskSummariesByWorkbasketIdGettingNull() throws WorkbasketNotFoundException {
+        String workbasketId = "1";
+        List<TaskSummary> expectedResultList = new ArrayList<>();
+        doNothing().when(taskanaEngineImpl).openConnection();
+        doNothing().when(taskanaEngineImpl).returnConnection();
+        doReturn(null).when(taskMapperMock).findTaskSummariesByWorkbasketId(workbasketId);
+        doReturn(workbasketServiceMock).when(taskanaEngineImpl).getWorkbasketService();
+        doReturn(new Workbasket()).when(workbasketServiceMock).getWorkbasket(any());
+
+        List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketId(workbasketId);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMapperMock, times(1)).findTaskSummariesByWorkbasketId(workbasketId);
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineImpl, times(1)).getWorkbasketService();
+        verify(workbasketServiceMock, times(1)).getWorkbasket(any());
+        verifyNoMoreInteractions(taskMapperMock, taskanaEngineImpl, workbasketServiceMock);
+
+        assertThat(actualResultList, equalTo(expectedResultList));
+        assertThat(actualResultList.size(), equalTo(expectedResultList.size()));
     }
 
     private Task createUnitTestTask(String id, String name, String workbasketId) throws ClassificationAlreadyExistException {
