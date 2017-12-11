@@ -331,7 +331,7 @@ public class TaskServiceImplTest {
         Thread.sleep(SLEEP_TIME); // to have different timestamps
         String expectedOwner = "John Does";
 
-        Task acturalTask = cut.claim(expectedTask.getId(), expectedOwner);
+        Task acturalTask = cut.claim(expectedTask.getId(), expectedOwner, true);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMapperMock, times(1)).findById(expectedTask.getId());
@@ -347,12 +347,12 @@ public class TaskServiceImplTest {
     }
 
     @Test(expected = TaskNotFoundException.class)
-    public void testClaimThrowinTaskNotFoundException() throws TaskNotFoundException {
+    public void testClaimThrowinTaskNotFoundException() throws Exception {
         try {
             Task expectedTask = null;
             Mockito.doReturn(expectedTask).when(taskMapperMock).findById(any());
 
-            cut.claim("1", "OWNER");
+            cut.claim("1", "OWNER", true);
         } catch (Exception e) {
             verify(taskanaEngineImpl, times(1)).openConnection();
             verify(taskMapperMock, times(1)).findById(any());

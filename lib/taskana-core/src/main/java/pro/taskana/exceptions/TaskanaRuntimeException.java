@@ -2,10 +2,9 @@ package pro.taskana.exceptions;
 
 /**
  * Common base class for Taskana's runtime exceptions.
- * @author bbr
  *
+ * @author bbr
  */
-@SuppressWarnings("serial")
 public class TaskanaRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = 1511142769801824L;
@@ -27,7 +26,7 @@ public class TaskanaRuntimeException extends RuntimeException {
     }
 
     public TaskanaRuntimeException(String message, Throwable cause, boolean enableSuppression,
-            boolean writableStackTrace) {
+        boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

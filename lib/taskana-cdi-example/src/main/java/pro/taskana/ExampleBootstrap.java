@@ -1,6 +1,8 @@
 package pro.taskana;
 
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidOwnerException;
+import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -19,11 +21,11 @@ public class ExampleBootstrap {
 	private TaskanaEjb taskanaEjb;
 
 	@PostConstruct
-	public void init(@Observes @Initialized(ApplicationScoped.class) Object init) throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+	public void init(@Observes @Initialized(ApplicationScoped.class) Object init) throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, InvalidStateException, InvalidOwnerException {
 		System.out.println("---------------------------> Start App");
 		Task task = taskanaEjb.getTaskService().createTask(new Task());
 		System.out.println("---------------------------> Task started: " + task.getId());
-		taskanaEjb.getTaskService().claim(task.getId(), "John Doe");
+		taskanaEjb.getTaskService().claim(task.getId());
 		System.out.println(
 		    "---------------------------> Task claimed: "
 		        + taskanaEjb.getTaskService().getTaskById(task.getId()).getOwner());
