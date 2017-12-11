@@ -1,22 +1,15 @@
 package pro.taskana.impl.integration;
 
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.security.Principal;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
-import org.apache.ibatis.jdbc.ScriptRunner;
 import org.h2.store.fs.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,12 +17,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.WorkbasketService;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -45,18 +42,19 @@ import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketServiceImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.Workbasket;
-import pro.taskana.security.GroupPrincipal;
-import pro.taskana.security.UserPrincipal;
+import pro.taskana.model.WorkbasketAccessItem;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode EXPLICIT.
  * @author EH
  */
+@RunWith(JAASRunner.class)
 public class TaskServiceImplIntExplicitTest {
 
     private DataSource dataSource;
@@ -64,8 +62,8 @@ public class TaskServiceImplIntExplicitTest {
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
-    private Subject subject;
     private ClassificationService classificationService;
+    private WorkbasketService workBasketService;
 
     @BeforeClass
     public static void resetDb() throws SQLException {
@@ -83,51 +81,20 @@ public class TaskServiceImplIntExplicitTest {
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
+        workBasketService = taskanaEngine.getWorkbasketService();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource, false);
-
-        subject = new Subject();
-        List<Principal> principalList = new ArrayList<>();
-        principalList.add(new UserPrincipal("Elena"));
-        principalList.add(new GroupPrincipal("group1"));
-        principalList.add(new GroupPrincipal("group2"));
-        principalList.add(new GroupPrincipal("group3"));
-        subject.getPrincipals().addAll(principalList);
-
-        try {
-            Connection connection = dataSource.getConnection();
-            ScriptRunner runner = new ScriptRunner(connection);
-            runner.runScript(
-                    new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket-access-list.sql")));
-
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }
     }
 
+    @WithAccessId(userName = "Elena")
     @Test(expected = TaskNotFoundException.class)
-    public void testStartTransactionFail() throws TaskNotFoundException {
-        try {
-            Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
-                public Object run() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-                    do_testStartTransactionFail();
-                    return null;
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                Assert.assertTrue(cause instanceof TaskNotFoundException);
-                throw (TaskNotFoundException) cause;
-            }
-        }
-    }
-
-    public void do_testStartTransactionFail()
+    public void testStartTransactionFail()
             throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 //        taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
+
+        generateSampleAccessItems();
 
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket");
@@ -150,24 +117,13 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
+    @WithAccessId(userName = "Elena")
     @Test
-    public void testCreateTask() throws Throwable {
-        try {
-            Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws TaskNotFoundException, WorkbasketNotFoundException, FileNotFoundException, NotAuthorizedException, SQLException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-                    do_testCreateTask();
-                    return null;
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw e.getCause();
-        }
-    }
-
-    public void do_testCreateTask() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
+    public void testCreateTask() throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
+
+        generateSampleAccessItems();
 
         Task task = this.generateDummyTask();
         task = taskServiceImpl.createTask(task);
@@ -211,24 +167,13 @@ public class TaskServiceImplIntExplicitTest {
         te.setConnection(null);
     }
 
+    @WithAccessId(userName = "Elena")
     @Test
-    public void testCreateTaskWithPlannedAndName() throws Throwable {
-        try {
-            Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException, SQLException, ClassificationAlreadyExistException {
-                    do_testCreateTaskWithPlannedAndName();
-                    return null;
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw e.getCause();
-        }
-    }
-
-    public void do_testCreateTaskWithPlannedAndName() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
+    public void testCreateTaskWithPlannedAndName() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
+
+        generateSampleAccessItems();
 
         Classification classification = classificationService.newClassification();
         classification.setCategory("MANUAL");
@@ -270,61 +215,39 @@ public class TaskServiceImplIntExplicitTest {
         Assert.assertFalse(test.getName().equals(test2.getName()));
     }
 
+    @WithAccessId(userName = "Elena")
     @Test(expected = WorkbasketNotFoundException.class)
     public void createTaskShouldThrowWorkbasketNotFoundException() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
+
+        generateSampleAccessItems();
 
         Task test = this.generateDummyTask();
         test.setWorkbasketId("2");
         taskServiceImpl.createTask(test);
     }
 
+    @WithAccessId(userName = "Elena")
     @Test(expected = ClassificationNotFoundException.class)
-    public void createManualTaskShouldThrowClassificationNotFoundException() throws ClassificationNotFoundException  {
-        try {
-            Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
-                public Object run() throws NotAuthorizedException, SQLException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-                    do_createManualTaskShouldThrowClassificationNotFoundException();
-                    return null;
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                Assert.assertTrue(cause instanceof ClassificationNotFoundException);
-                throw (ClassificationNotFoundException) cause;
-            }
-        }
-    }
-
-    public void do_createManualTaskShouldThrowClassificationNotFoundException() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException, ClassificationAlreadyExistException {
+    public void createManualTaskShouldThrowClassificationNotFoundException() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
+
+        generateSampleAccessItems();
 
         Task test = this.generateDummyTask();
         test.setClassification(new ClassificationImpl());
         taskServiceImpl.createTask(test);
     }
 
+    @WithAccessId(userName = "Elena", groupNames = {"DummyGroup"})
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() throws Throwable {
-        try {
-            Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws WorkbasketNotFoundException, NotAuthorizedException, SQLException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-                    do_should_ReturnList_when_BuilderIsUsed();
-                    return null;
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw e.getCause();
-        }
-    }
-
-    public void do_should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
+    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
+
+        generateSampleAccessItems();
 
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket");
@@ -370,6 +293,23 @@ public class TaskServiceImplIntExplicitTest {
         task.setWorkbasketId(workbasket.getId());
         task.setClassification(classification);
         return task;
+    }
+
+    private void generateSampleAccessItems() {
+        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
+        accessItem.setId(IdGenerator.generateWithPrefix("WAI"));
+        accessItem.setWorkbasketId("1");
+        accessItem.setAccessId("Elena");
+        accessItem.setPermAppend(true);
+        accessItem.setPermOpen(true);
+        workBasketService.createWorkbasketAuthorization(accessItem);
+
+        WorkbasketAccessItem accessItem2 = new WorkbasketAccessItem();
+        accessItem2.setId(IdGenerator.generateWithPrefix("WAI"));
+        accessItem2.setWorkbasketId("2");
+        accessItem2.setAccessId("DummyGroup");
+        accessItem2.setPermOpen(true);
+        workBasketService.createWorkbasketAuthorization(accessItem2);
     }
 
     @After
