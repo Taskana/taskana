@@ -1,7 +1,7 @@
 package pro.taskana.exceptions;
 
 /**
- * This Exception will be thrown, when a classification does already exits,
+ * Thrown, when a classification does already exits,
  * but wanted to create with same ID+domain.
  */
 public class ClassificationAlreadyExistException extends NotFoundException {
