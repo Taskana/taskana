@@ -49,6 +49,8 @@ function push_new_poms() {
 
   #commit all poms
   $debug git checkout -b "$branch"
+  #to compensate new updates
+  $debug git pull
   $debug git add "./*pom.xml"
   $debug git commit -m "Updated poms to version ${TRAVIS_TAG##v}-SNAPSHOT"
 
@@ -78,21 +80,30 @@ function main {
     exit 0
   fi
 
-  if [[ "$TRAVIS" == 'true' && -n $TRAVIS_PULL_REQUEST ]]; then
+  if [[ "$TRAVIS" == 'true' && -n "$TRAVIS_PULL_REQUEST" ]]; then
     echo "Skipping release to sonatype because this is a PR build"
     exit 0
   fi
 
   if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    #check if tagged commit is a head commit of any branch
-    local commit=`git ls-remote origin | grep "$TRAVIS_TAG" | cut -c1-40`
-    local branch=`git ls-remote origin | grep -v refs/tags | grep "$commit" | sed "s/$commit.*refs\/heads\///"`
-    if [[ -z "$branch" ]]; then
-      echo "the commit of tag '$TRAVIS_TAG' is not a head commit. Can not release" >&2
-      exit 1;
-    fi
     local parent_dir="$1"
     local profile="release"
+    #check if tagged commit is a head commit of any branch
+    local commit=`git ls-remote -q -t origin | grep "$TRAVIS_TAG" | cut -c1-40`
+    local branch=`git ls-remote -q -h origin | grep "$commit" | sed "s/$commit.*refs\/heads\///"`
+
+    if [[ -z "$branch" ]]; then
+      echo "the commit of tag '$TRAVIS_TAG' is not a head commit. Can not release" >&2
+      exit 1
+    fi
+
+    if [[ `echo "$branch" | wc -l` != '1' ]]; then
+      echo "can not match commit '$commit' to a unique branch." >&2
+      echo "Please make sure, that the tag '$TRAVIS_TAG' is the head of a unique branch" >&2
+      echo "Branches detected: $branch"
+      exit 1
+    fi
+    
     change_version "$parent_dir" "${TRAVIS_TAG##v}"
   else
     if [[ "$TRAVIS_BRANCH" != 'master' ]]; then
