@@ -4,13 +4,36 @@ set -e #fail fast
 reqRepo="Taskana/taskana"
 
 #H Usage:
-#H   deploy.sh [OPTION] <parent dir> <project dir> [project dir ...]
-#H Where OPTION is one of
-#H   --help: prints this help messge
-#H   --dry-run: echos all commands instead of excecution
+#H deploy.sh -h | pfcalc.sh --help
+#H
+#H prints this help and exits  
+#H 
+#H deploy.sh [--dry-run] <parent dir> <project dir> [project dir ...]
+#H
+#H   an easy deployment tool to deploy maven projects.
+#H
+#H   On a tagged commit
+#H     version will be set to the one in the tag
+#H     maven deploy with the profile 'release' will be excecuted
+#H   On a non-tagged commit on the master branch
+#H     maven deploy with the profile 'snapshot' will be excecuted
+#H 
+#H This script works with the following env variables:
+#H   - TRAVIS_REPO_SLUG
+#H       git repo slug
+#H   - TRAVIS_PULL_REQUEST
+#H       filled with anything, if this is a PR build
+#H   - TRAVIS_TAG 
+#H       filled with anything, if this is a tagged build
+#H   - TRAVIS_BRANCH
+#H       branch of this build (only used if TRAVIS_TAG is not set)
+#H   - GH_TOKEN
+#H       token to write back to the git repo after release deployment
+# Arguments:
+#   $1: exitcode
 function helpAndExit {
   cat "$0" | grep "^#H" | cut -c4-
-  exit 0
+  exit "$1"
 }
 
 # decripting gpg keys and importing them (needed to sign artifacts)
@@ -55,32 +78,49 @@ function push_new_poms() {
   $debug git commit -m "Updated poms to version ${TRAVIS_TAG##v}-SNAPSHOT"
 
   #push poms (authentication via GH_TOKEN)
-  $debug git remote add origin-pages "https://$GH_TOKEN@github.com/$reqRepo.git" >/dev/null 2>&1
-  $debug git push --quiet --set-upstream origin-pages "$branch"
+  $debug git remote add deployment "https://$GH_TOKEN@github.com/$reqRepo.git"
+  $debug git push --quiet --set-upstream deployment "$branch"
+}
+
+function print_variables() {
+  echo "####################################"
+  echo "dry-run detected."
+  echo "environment:"
+  echo "  tag: '$TRAVIS_TAG'"
+  echo "  branch: '$TRAVIS_BRANCH'"
+  echo "  repo: '$TRAVIS_REPO_SLUG'"
+  echo "  github token: '$GH_TOKEN'"
+  echo "  PR build: '$TRAVIS_PULL_REQUEST'"
+  echo "####################################"
 }
 
 function main {
-  if [[ "$1" = '--help' || $# -eq 0 ]]; then
-    helpAndExit
+  if [[ "$1" = '--help' || "$1" = '-h' || $# -eq 0 ]]; then
+    helpAndExit 0
   fi 
 
   local debug=
   if [[ "$1" = '--dry-run' ]]; then
     debug=echo
+    print_variables
     shift
   fi
 
-  if [[ -z "$debug" && ("$TRAVIS" != 'true' || -z "$encrypted_fbbd56f3fa0c_key" || -z "$encrypted_fbbd56f3fa0c_iv") ]]; then
+  if [[ "$#" -lt 2 ]]; then
+    helpAndExit 1
+  fi
+
+  if [[ -z "$debug" && (-z "$encrypted_fbbd56f3fa0c_key" || -z "$encrypted_fbbd56f3fa0c_iv") ]]; then
     echo "you are not travis or travis does not have the correct encryption key and iv" >&2
     exit 1
   fi
 
-  if [[ "$TRAVIS" == 'true' && "$TRAVIS_REPO_SLUG" != "$reqRepo" ]]; then
+  if [[ "$TRAVIS_REPO_SLUG" != "$reqRepo" ]]; then
     echo "Skipping release to sonatype because this repo's name does not match with: $reqRepo"
     exit 0
   fi
 
-  if [[ "$TRAVIS" == 'true' && -n "$TRAVIS_PULL_REQUEST" ]]; then
+  if [[ -n "$TRAVIS_PULL_REQUEST" ]]; then
     echo "Skipping release to sonatype because this is a PR build"
     exit 0
   fi
@@ -88,22 +128,28 @@ function main {
   if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     local parent_dir="$1"
     local profile="release"
-    #check if tagged commit is a head commit of any branch
-    local commit=`git ls-remote -q -t origin | grep "$TRAVIS_TAG" | cut -c1-40`
-    local branch=`git ls-remote -q -h origin | grep "$commit" | sed "s/$commit.*refs\/heads\///"`
 
-    if [[ -z "$branch" ]]; then
-      echo "the commit of tag '$TRAVIS_TAG' is not a head commit. Can not release" >&2
-      exit 1
+    if [[ -z "$debug" ]]; then
+      #check if tagged commit is a head commit of any branch
+      local commit=`git ls-remote -q -t origin | grep "$TRAVIS_TAG" | cut -c1-40`
+      local branch=`git ls-remote -q -h origin | grep "$commit" | sed "s/$commit.*refs\/heads\///"`
+
+      if [[ -z "$commit" || -z "$branch" ]]; then
+        echo "the commit '$commit' of tag '$TRAVIS_TAG' is not a head commit. Can not release" >&2
+        exit 1
+      fi
+
+      if [[ `echo "$branch" | wc -l` != '1' ]]; then
+        echo "can not match commit '$commit' to a unique branch." >&2
+        echo "Please make sure, that the tag '$TRAVIS_TAG' is the head of a unique branch" >&2
+        echo "Branches detected: $branch"
+        exit 1
+      fi
+    else
+        branch="BRANCH"
+        echo "!!! - Skipping automatic detection of tag branch. Instead using '$branch'"
     fi
 
-    if [[ `echo "$branch" | wc -l` != '1' ]]; then
-      echo "can not match commit '$commit' to a unique branch." >&2
-      echo "Please make sure, that the tag '$TRAVIS_TAG' is the head of a unique branch" >&2
-      echo "Branches detected: $branch"
-      exit 1
-    fi
-    
     change_version "$parent_dir" "${TRAVIS_TAG##v}"
   else
     if [[ "$TRAVIS_BRANCH" != 'master' ]]; then
