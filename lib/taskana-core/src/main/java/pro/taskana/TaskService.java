@@ -43,6 +43,7 @@ public interface TaskService {
      * @return the created task
      * @throws NotAuthorizedException TODO
      * @throws WorkbasketNotFoundException TODO
+     * @throws ClassificationNotFoundException TODO
      */
     Task createTask(Task task) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException;
 
