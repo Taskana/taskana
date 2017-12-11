@@ -15,7 +15,10 @@ import pro.taskana.Classification;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidOwnerException;
+import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -30,6 +33,7 @@ import pro.taskana.model.TaskSummary;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
+import pro.taskana.security.CurrentUserContext;
 
 /**
  * This is the implementation of TaskService.
@@ -44,6 +48,7 @@ public class TaskServiceImpl implements TaskService {
 
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
+    private WorkbasketService workbasketService;
     private TaskMapper taskMapper;
     private ObjectReferenceMapper objectReferenceMapper;
 
@@ -54,27 +59,48 @@ public class TaskServiceImpl implements TaskService {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.taskMapper = taskMapper;
         this.objectReferenceMapper = objectReferenceMapper;
+        this.workbasketService =  taskanaEngineImpl.getWorkbasketService();
     }
 
     @Override
-    public Task claim(String id, String userName) throws TaskNotFoundException {
+    public Task claim(String id)  throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        return claim(id, false);
+    }
+
+    @Override
+    public Task claim(String id, boolean forceClaim)  throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        String userName = CurrentUserContext.getUserid();
+        return claim(id, userName, forceClaim);
+    }
+
+    public Task claim(String id, String userName, boolean forceClaim) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         LOGGER.debug("entry to claim(id = {}, userName = {})", id, userName);
         Task task = null;
         try {
             taskanaEngineImpl.openConnection();
             task = taskMapper.findById(id);
-            if (task != null) {
-                Timestamp now = new Timestamp(System.currentTimeMillis());
-                task.setOwner(userName);
-                task.setModified(now);
-                task.setClaimed(now);
-                task.setState(TaskState.CLAIMED);
-                taskMapper.update(task);
-                LOGGER.debug("Method claim() claimed task '{}' for user '{}'.", id, userName);
-            } else {
+            if (task == null) {
                 LOGGER.warn("Method claim() didn't find task with id {}. Throwing TaskNotFoundException", id);
                 throw new TaskNotFoundException(id);
             }
+            TaskState state = task.getState();
+            if (state == TaskState.COMPLETED) {
+                LOGGER.warn("Method claim() found that task {} is already completed. Throwing InvalidStateException", id);
+                throw new InvalidStateException("Task is already completed");
+            }
+            if (state == TaskState.CLAIMED && !forceClaim) {
+                LOGGER.warn("Method claim() found that task {} is claimed by {} and forceClaim is false. Throwing InvalidOwnerException", id, task.getOwner());
+                throw new InvalidOwnerException("Task is already claimed by user " + task.getOwner());
+            }
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            task.setOwner(userName);
+            task.setModified(now);
+            task.setClaimed(now);
+            task.setRead(true);
+            task.setState(TaskState.CLAIMED);
+            taskMapper.update(task);
+            LOGGER.debug("Method claim() claimed task '{}' for user '{}'.", id, userName);
+
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from claim()");
@@ -369,4 +395,6 @@ public class TaskServiceImpl implements TaskService {
         }
         return taskSummaries;
     }
+
+
 }
