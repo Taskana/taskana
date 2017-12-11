@@ -21,15 +21,15 @@ public interface WorkbasketQuery extends BaseQuery<Workbasket> {
 
     /**
      * Add your created-Dates to your query.
-     * @param created
-     * @return
+     * @param created TODO
+     * @return TODO
      */
     WorkbasketQuery created(Date... created);
 
     /**
      * Add your modified-Dates to your query.
-     * @param modified
-     * @return
+     * @param created TODO
+     * @return TODO
      */
     WorkbasketQuery modified(Date... created);
 
@@ -57,7 +57,7 @@ public interface WorkbasketQuery extends BaseQuery<Workbasket> {
      * @param accessIds
      *            the accessIds as String
      * @return the query
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException TODO
      */
     WorkbasketQuery access(WorkbasketAuthorization permission, String... accessIds) throws InvalidArgumentException;
 
