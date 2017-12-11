@@ -8,6 +8,7 @@ import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
+import pro.taskana.model.TaskSummary;
 
 import java.util.List;
 
@@ -110,4 +111,12 @@ public interface TaskService {
      * @throws Exception if no result can be found by @{link TaskMapper}.
      */
     List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws  WorkbasketNotFoundException, NotAuthorizedException, Exception;
+
+    /**
+     * Getting a short summary of all tasks in a specific workbasket.
+     * @param workbasketId ID of workbasket where tasks are located.
+     * @return TaskSummaryList with all TaskSummaries of a workbasket
+     * @throws WorkbasketNotFoundException if a Workbasket can´t be located.
+     */
+    List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId) throws WorkbasketNotFoundException;
 }

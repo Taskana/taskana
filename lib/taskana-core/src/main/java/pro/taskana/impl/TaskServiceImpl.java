@@ -26,6 +26,7 @@ import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
+import pro.taskana.model.TaskSummary;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
@@ -343,5 +344,29 @@ public class TaskServiceImpl implements TaskService {
             }
             task.setPrimaryObjRef(objectReference);
         }
+    }
+
+    @Override
+    public List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId) throws WorkbasketNotFoundException {
+        LOGGER.debug("entry to getTaskSummariesByWorkbasketId(workbasketId = {}", workbasketId);
+        List<TaskSummary> taskSummaries = new ArrayList<>();
+        taskanaEngineImpl.getWorkbasketService().getWorkbasket(workbasketId);
+        try {
+            taskanaEngineImpl.openConnection();
+            taskSummaries = taskMapper.findTaskSummariesByWorkbasketId(workbasketId);
+        } catch (Exception ex) {
+            LOGGER.error("Getting TASKSUMMARY failed internally.", ex);
+        }  finally {
+            if (taskSummaries == null) {
+                taskSummaries = new ArrayList<>();
+            }
+            taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = taskSummaries.size();
+                LOGGER.debug("exit from getTaskSummariesByWorkbasketId(workbasketId). Returning {} resulting Objects: {} ",
+                                                        numberOfResultObjects, LoggerUtils.listToString(taskSummaries));
+            }
+        }
+        return taskSummaries;
     }
 }

@@ -133,4 +133,20 @@ public interface TaskMapper {
             @Result(property = "custom10", column = "CUSTOM_10")
     })
     List<Task> findTasksByWorkbasketIdAndState(@Param("workbasketId") String workbasketId, @Param("taskState") TaskState taskState);
+
+    @Select("SELECT TASK.ID AS taskId, TASK.NAME AS taskName, TASK.WORKBASKETID AS workId, TASK.CLASSIFICATION_ID AS classificationId, "
+            + "WORKBASKET.NAME AS workName, CLASSIFICATION.NAME AS classificationName "
+            + "FROM TASK "
+            + "LEFT JOIN WORKBASKET ON WORKBASKET.ID = TASK.WORKBASKETID "
+            + "LEFT JOIN CLASSIFICATION ON CLASSIFICATION.ID = TASK.CLASSIFICATION_ID "
+            + "WHERE TASK.WORKBASKETID = #{workbasketId}")
+    @Results({
+            @Result(property = "taskId", column = "taskId"),
+            @Result(property = "taskName", column = "taskName"),
+            @Result(property = "workbasketId", column = "workId"),
+            @Result(property = "workbasketName", column = "workName"),
+            @Result(property = "classificationId", column = "classificationId"),
+            @Result(property = "classificationName", column = "classificationName")
+    })
+    List<TaskSummary> findTaskSummariesByWorkbasketId(@Param("workbasketId") String workbasketId);
 }

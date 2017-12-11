@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -24,6 +25,7 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
+import pro.taskana.model.TaskSummary;
 import pro.taskana.rest.query.TaskFilter;
 
 @RestController
@@ -125,4 +127,17 @@ public class TaskController {
         }
     }
 
+    @RequestMapping(value = "/workbasket/{workbasketId}", method = RequestMethod.GET)
+    public ResponseEntity<List<TaskSummary>> getTasksummariesByWorkbasketId(@PathVariable(value="workbasketId") String workbasketId) {
+        List<TaskSummary> taskSummaries = null;
+        try {
+            taskSummaries = taskService.getTaskSummariesByWorkbasketId(workbasketId);
+            return ResponseEntity.status(HttpStatus.OK).body(taskSummaries);
+        } catch(Exception ex) {
+            if (taskSummaries == null) {
+                taskSummaries = Collections.emptyList();
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

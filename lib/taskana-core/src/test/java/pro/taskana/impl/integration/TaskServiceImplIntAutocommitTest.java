@@ -1,7 +1,11 @@
 package pro.taskana.impl.integration;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -20,6 +24,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -34,6 +39,7 @@ import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
+import pro.taskana.model.TaskSummary;
 import pro.taskana.model.Workbasket;
 
 /**
@@ -48,6 +54,7 @@ public class TaskServiceImplIntAutocommitTest {
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
     private ClassificationService classificationService;
+    private WorkbasketService workbasketService;
 
     @BeforeClass
     public static void resetDb() throws SQLException {
@@ -66,6 +73,7 @@ public class TaskServiceImplIntAutocommitTest {
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
         classificationService = taskanaEngine.getClassificationService();
+        workbasketService = taskanaEngine.getWorkbasketService();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource, false);
     }
@@ -162,6 +170,54 @@ public class TaskServiceImplIntAutocommitTest {
                 .objectReference(objectReferenceQuery).list();
 
         Assert.assertEquals(0, results.size());
+    }
+
+    @Test
+    public void shouldReturnTaskSummaryListWithValues() throws Exception {
+
+        Workbasket dummyWorkbasket = new Workbasket();
+        dummyWorkbasket.setId("1");
+        dummyWorkbasket.setName("Dummy-Basket");
+        dummyWorkbasket = workbasketService.createWorkbasket(dummyWorkbasket);
+
+        Classification dummyClassification = classificationService.newClassification();
+        dummyClassification.setId("1");
+        dummyClassification.setName("Dummy-Classification");
+        classificationService.createClassification(dummyClassification);
+
+        Task dummyTask = new Task();
+        dummyTask.setId("1");
+        dummyTask.setName("Dummy-Task");
+        dummyTask.setClassification(dummyClassification);
+        dummyTask.setWorkbasketId(dummyWorkbasket.getId());
+        dummyTask = taskServiceImpl.createTask(dummyTask);
+
+        List<TaskSummary> expectedTaskSumamries = new ArrayList<>();
+        TaskSummary taskSummary = new TaskSummary();
+        taskSummary.setTaskId(dummyTask.getId());
+        taskSummary.setTaskName(dummyTask.getName());
+        taskSummary.setWorkbasketId(dummyWorkbasket.getId());
+        taskSummary.setWorkbasketName(dummyWorkbasket.getName());
+        taskSummary.setClassificationId(dummyClassification.getId());
+        taskSummary.setClassificationName(dummyClassification.getName());
+        expectedTaskSumamries.add(taskSummary);
+
+        List<TaskSummary> actualTaskSumamryResult = taskServiceImpl.getTaskSummariesByWorkbasketId(dummyWorkbasket.getId());
+
+        assertThat(actualTaskSumamryResult.size(), equalTo(expectedTaskSumamries.size()));
+    }
+
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void shouldThrowWorkbasketNotFoundExceptionByNullParameter() throws WorkbasketNotFoundException {
+        taskServiceImpl.getTaskSummariesByWorkbasketId(null);
+    }
+
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void shouldThrowWorkbasketNotFoundExceptionByInvalidWorkbasketParameter() throws WorkbasketNotFoundException {
+        Workbasket wb = new Workbasket();
+        wb.setName("wb");
+        workbasketService.createWorkbasket(wb);
+        taskServiceImpl.getTaskSummariesByWorkbasketId("1");
     }
 
     @AfterClass
