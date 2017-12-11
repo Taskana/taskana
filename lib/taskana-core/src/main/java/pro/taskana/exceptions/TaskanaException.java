@@ -2,10 +2,9 @@ package pro.taskana.exceptions;
 
 /**
  * common base class for Taskana's checked exceptions.
- * @author bbr
  *
+ * @author bbr
  */
-@SuppressWarnings("serial")
 public class TaskanaException extends Exception {
 
     private static final long serialVersionUID = 123234345123412L;

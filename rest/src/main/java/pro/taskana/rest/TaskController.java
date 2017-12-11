@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskService;
+import pro.taskana.exceptions.InvalidOwnerException;
+import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -85,13 +87,19 @@ public class TaskController {
     public ResponseEntity<Task> claimTask(@PathVariable String taskId, @RequestBody String userName) {
         // TODO verify user
         try {
-            taskService.claim(taskId, userName);
+            taskService.claim(taskId);
             Task updatedTask = taskService.getTaskById(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
             logger.error("The given Task coundn´t be found/claimd or does not Exist.", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        } catch (InvalidStateException e) {
+            logger.error("The given Task could not be claimed. Reason: {}", e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (InvalidOwnerException e) {
+            logger.error("The given Task could not be claimed. Reason: {}", e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+         }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/complete")

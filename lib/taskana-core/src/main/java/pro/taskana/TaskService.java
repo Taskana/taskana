@@ -1,6 +1,8 @@
 package pro.taskana;
 
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidOwnerException;
+import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -18,15 +20,28 @@ import java.util.List;
 public interface TaskService {
 
     /**
-     * Claim an existing task.
+     * Claim an existing task for the current user.
      * @param id
      *            task id
-     * @param userName
-     *            user who claims the task
      * @return modified claimed Task
-     * @throws TaskNotFoundException TODO
+     * @throws TaskNotFoundException if the task with id was not found
+     * @throws InvalidStateException if the task state is not ready
+     * @throws InvalidOwnerException if the task is claimed by another user
      */
-    Task claim(String id, String userName) throws TaskNotFoundException;
+    Task claim(String id) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+
+    /**
+     * Claim an existing task for the current user.
+     * @param id
+     *            task id
+     * @param forceClaim
+     *            if true, claim is performed even if the task is already claimed by someone else
+     * @return modified claimed Task
+     * @throws TaskNotFoundException if the task with id was not found
+     * @throws InvalidStateException if the task state is not ready
+     * @throws InvalidOwnerException if the task is claimed by another user
+     */
+    Task claim(String id, boolean forceClaim) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
      * Set task to completed.
