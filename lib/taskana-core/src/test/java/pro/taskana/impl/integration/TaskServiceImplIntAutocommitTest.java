@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
+import pro.taskana.ClassificationService;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
@@ -31,7 +32,6 @@ import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.Workbasket;
@@ -47,6 +47,7 @@ public class TaskServiceImplIntAutocommitTest {
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
+    private ClassificationService classificationService;
 
     @BeforeClass
     public static void resetDb() throws SQLException {
@@ -64,6 +65,7 @@ public class TaskServiceImplIntAutocommitTest {
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
+        classificationService = taskanaEngine.getClassificationService();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource, false);
     }
@@ -74,7 +76,7 @@ public class TaskServiceImplIntAutocommitTest {
         Workbasket wb = new Workbasket();
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = (Classification) new ClassificationImpl();
+        Classification classification = classificationService.newClassification();
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
@@ -97,7 +99,7 @@ public class TaskServiceImplIntAutocommitTest {
         Workbasket wb = new Workbasket();
         wb.setName("sdf");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = (Classification) new ClassificationImpl();
+        Classification classification = classificationService.newClassification();
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
@@ -118,7 +120,7 @@ public class TaskServiceImplIntAutocommitTest {
         Workbasket wb = new Workbasket();
         wb.setName("workbasket");
         wb = taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = (Classification) new ClassificationImpl();
+        Classification classification = classificationService.newClassification();
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
@@ -136,7 +138,7 @@ public class TaskServiceImplIntAutocommitTest {
         Workbasket wb = new Workbasket();
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = (Classification) new ClassificationImpl();
+        Classification classification = classificationService.newClassification();
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();

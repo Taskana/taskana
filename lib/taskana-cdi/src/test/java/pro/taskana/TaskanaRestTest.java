@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,7 +17,6 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.Task;
 import pro.taskana.model.Workbasket;
 
@@ -27,13 +27,16 @@ public class TaskanaRestTest {
 
 	@EJB
 	private TaskanaEjb taskanaEjb;
+	
+	@Inject
+	private ClassificationService classificationService;
 
 	@GET
 	public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
 		Workbasket workbasket = new Workbasket();
 		workbasket.setName("wb");
 		taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
-		Classification classification = (Classification) new ClassificationImpl();
+		Classification classification = classificationService.newClassification();
 		taskanaEjb.getClassificationService().createClassification(classification);
 
 		Task task = new Task();

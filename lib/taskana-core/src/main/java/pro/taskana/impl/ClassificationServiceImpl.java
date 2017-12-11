@@ -30,12 +30,10 @@ public class ClassificationServiceImpl implements ClassificationService {
     public static final Date CURRENT_CLASSIFICATIONS_VALID_UNTIL = Date.valueOf("9999-12-31");
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
     private ClassificationMapper classificationMapper;
-    private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
 
     public ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper) {
         super();
-        this.taskanaEngine = taskanaEngine;
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.classificationMapper = classificationMapper;
     }
@@ -222,7 +220,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public ClassificationQuery createClassificationQuery() {
-        return new ClassificationQueryImpl(taskanaEngine);
+        return new ClassificationQueryImpl(taskanaEngineImpl);
     }
 
     @Override
