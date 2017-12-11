@@ -1,6 +1,9 @@
 package pro.taskana.rest;
 
-import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
+import java.sql.SQLException;
+
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -11,8 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
+
+import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
+
 import pro.taskana.ClassificationService;
-import pro.taskana.SummaryService;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketService;
@@ -20,9 +25,6 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.model.Workbasket;
 import pro.taskana.rest.serialization.WorkbasketMixIn;
 import pro.taskana.sampledata.SampleDataGenerator;
-
-import javax.annotation.PostConstruct;
-import java.sql.SQLException;
 
 @SpringBootApplication
 public class RestApplication {
@@ -48,11 +50,6 @@ public class RestApplication {
 		return getTaskanaEngine().getWorkbasketService();
 	}
 	
-	@Bean
-    public SummaryService getSummaryService() throws Exception {
-        return getTaskanaEngine().getSummaryService();
-    }
-
 	@Bean
 	@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 	public TaskanaEngine getTaskanaEngine() throws SQLException {
