@@ -98,7 +98,7 @@ public class SummaryServiceImplIntAutoCommitTest {
 
     @Test(expected = WorkbasketNotFoundException.class)
     public void shouldThrowWorkbasketNotFoundExceptionByNullParameter() throws WorkbasketNotFoundException {
-        List<TaskSummary> actualTaskSumamryResult = summaryServiceImp.getTaskSummariesByWorkbasketId(null);
+        summaryServiceImp.getTaskSummariesByWorkbasketId(null);
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
@@ -106,7 +106,7 @@ public class SummaryServiceImplIntAutoCommitTest {
         Workbasket wb = new Workbasket();
         wb.setName("wb");
         workbasketServiceImpl.createWorkbasket(wb);
-        List<TaskSummary> actualTaskSumamryResult = summaryServiceImp.getTaskSummariesByWorkbasketId("1");
+        summaryServiceImp.getTaskSummariesByWorkbasketId("1");
     }
 
 

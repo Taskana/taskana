@@ -26,7 +26,6 @@ import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
-import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
@@ -41,7 +40,6 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_OBJECTR_EFERENCE = "ORI";
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
-    private static final String TYPE_MANUAL = "MANUAL";
 
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -113,9 +111,8 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("entry to createTask(task = {})", task);
         try {
             taskanaEngineImpl.openConnection();
-            Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket(task.getWorkbasketId());
+            taskanaEngine.getWorkbasketService().getWorkbasket(task.getWorkbasketId());
             taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
-            task.setWorkbasketId(wb.getId());
             Classification classification = task.getClassification();
             if (classification == null) {
                 throw new ClassificationNotFoundException(null);
