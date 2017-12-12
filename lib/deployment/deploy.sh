@@ -57,6 +57,20 @@ function deploy {
   $debug mvn deploy -f "$1" -P "$2" --settings "$3" -DskipTests=true -B -U
 }
 
+# takes a version (without leading v) and increments its
+# last number by one. 
+# Arguments:
+#   $1: version (without leading v) which will be patched
+# Return:
+#   version with last number incremented
+function patch_version() {
+  if [[ ! "$1" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
+    echo "'$1' does not match tag pattern." >&2
+    exit 1;
+  fi
+  echo "${1%\.*}.`expr ${1##*\.*\.} + 1`"
+}
+
 # changing version in pom and all its children
 # Arguments:
 # $1: directory of pom
@@ -75,7 +89,7 @@ function push_new_poms() {
   #to compensate new updates
   $debug git pull
   $debug git add "./*pom.xml"
-  $debug git commit -m "Updated poms to version ${TRAVIS_TAG##v}-SNAPSHOT"
+  $debug git commit -m "Updated poms to version `patch_version ${TRAVIS_TAG##v}`-SNAPSHOT"
 
   #push poms (authentication via GH_TOKEN)
   $debug git remote add deployment "https://$GH_TOKEN@github.com/$reqRepo.git"
@@ -167,7 +181,7 @@ function main {
   done
 
   if [[ -n "$branch" && -n "$parent_dir" ]]; then
-    change_version "$parent_dir" "${TRAVIS_TAG##v}-SNAPSHOT"
+    change_version "$parent_dir" "`patch_version ${TRAVIS_TAG##v}`-SNAPSHOT"
     if [[ -z "$GH_TOKEN" ]]; then
       echo 'GH_TOKEN not set' >&2
       exit 1
