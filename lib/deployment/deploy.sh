@@ -110,10 +110,6 @@ function main {
     helpAndExit 1
   fi
 
-  if [[ -z "$debug" && (-z "$encrypted_57343c8b243e_key" || -z "$encrypted_57343c8b243e_iv") ]]; then
-    echo "you are not travis or travis does not have the correct encryption key and iv" >&2
-    exit 1
-  fi
 
   if [[ "$TRAVIS_REPO_SLUG" != "$reqRepo" ]]; then
     echo "Skipping release to sonatype because this repo's name does not match with: $reqRepo"
@@ -123,6 +119,11 @@ function main {
   if [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
     echo "Skipping release to sonatype because this is a PR build"
     exit 0
+  fi
+
+  if [[ -z "$debug" && (-z "$encrypted_57343c8b243e_key" || -z "$encrypted_57343c8b243e_iv") ]]; then
+    echo "you are not travis or travis does not have the correct encryption key and iv" >&2
+    exit 1
   fi
 
   if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
