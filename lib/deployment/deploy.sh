@@ -120,7 +120,7 @@ function main {
     exit 0
   fi
 
-  if [[ -n "$TRAVIS_PULL_REQUEST" ]]; then
+  if [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
     echo "Skipping release to sonatype because this is a PR build"
     exit 0
   fi
