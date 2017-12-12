@@ -53,15 +53,31 @@ public interface TaskService {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
-     * Set task to completed.
+     * Complete a claimed Task as owner/admin and update State and Timestamps.
      *
-     * @param taskId
-     *            the task id
-     * @return changed Task after update.
-     * @throws TaskNotFoundException
-     *             thrown if the task with taskId is not found.
+     * @param taskId - Id of the Task which should be completed.
+     *
+     * @return Task - updated task after completion.
+     *
+     * @throws InvalidStateException when Task wasn´t claimed before.
+     * @throws TaskNotFoundException if the given Task can´t be found in DB.
+     * @throws InvalidOwnerException if current user is not the task-owner or administrator.
      */
-    Task complete(String taskId) throws TaskNotFoundException;
+    Task completeTask(String taskId) throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
+
+    /**
+     * Complete a claimed Task and update State and Timestamps.
+     *
+     * @param taskId - Id of the Task which should be completed.
+     * @param isForced - Flag which can complete a Task in every case if Task does exist.
+     *
+     * @return Task - updated task after completion.
+     *
+     * @throws InvalidStateException when Task wasn´t claimed before.
+     * @throws TaskNotFoundException if the given Task can´t be found in DB.
+     * @throws InvalidOwnerException if current user is not the task-owner or administrator.
+     */
+    Task completeTask(String taskId, boolean isForced) throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
 
     /**
      * Create and persist a task.

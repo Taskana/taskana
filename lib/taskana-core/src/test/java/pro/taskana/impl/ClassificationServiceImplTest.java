@@ -40,8 +40,6 @@ public class ClassificationServiceImplTest {
 
     private final Date today = Date.valueOf(LocalDate.now());
 
-    private final String idPrefixClassification = "CLI";
-
     @Spy
     @InjectMocks
     private ClassificationServiceImpl cutSpy;
