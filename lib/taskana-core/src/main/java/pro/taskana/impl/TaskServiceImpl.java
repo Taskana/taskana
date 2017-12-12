@@ -111,26 +111,41 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task complete(String id) throws TaskNotFoundException {
-        LOGGER.debug("entry to complete(id = {})", id);
+    public Task completeTask(String taskId) throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
+        return completeTask(taskId, false);
+    }
+
+    @Override
+    public Task completeTask(String taskId, boolean isForced) throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
+        LOGGER.debug("entry to completeTask(id = {}, isForced {})", taskId, isForced);
         Task task = null;
         try {
             taskanaEngineImpl.openConnection();
-            task = taskMapper.findById(id);
-            if (task != null) {
-                Timestamp now = new Timestamp(System.currentTimeMillis());
-                task.setCompleted(now);
-                task.setModified(now);
-                task.setState(TaskState.COMPLETED);
-                taskMapper.update(task);
-                LOGGER.debug("Method complete() completed Task '{}'.", id);
+            task = this.getTaskById(taskId);
+            // check pre-conditions for non-forced invocation
+            if (!isForced) {
+                if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
+                    LOGGER.warn("Method completeTask() does expect a task which need to be CLAIMED before. TaskId={}", taskId);
+                    throw new InvalidStateException(taskId);
+                } else if (CurrentUserContext.getUserid() != task.getOwner()) {
+                    LOGGER.warn("Method completeTask() does expect to be invoced by the task-owner or a administrator. TaskId={}, TaskOwner={}, CurrentUser={}", taskId, task.getOwner(), CurrentUserContext.getUserid());
+                    throw new InvalidOwnerException("TaskOwner is" + task.getOwner() + ", but current User is " + CurrentUserContext.getUserid());
+                }
             } else {
-                LOGGER.warn("Method complete() didn't find task with id {}. Throwing TaskNotFoundException", id);
-                throw new TaskNotFoundException(id);
+                // CLAIM-forced, if task was not already claimed before.
+                if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
+                    task = this.claim(taskId, true);
+                }
             }
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            task.setCompleted(now);
+            task.setModified(now);
+            task.setState(TaskState.COMPLETED);
+            taskMapper.update(task);
+            LOGGER.debug("Method completeTask() completed Task '{}'.", taskId);
         } finally {
             taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from complete()");
+            LOGGER.debug("exit from completeTask()");
         }
         return task;
     }

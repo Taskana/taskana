@@ -105,11 +105,13 @@ public class TaskController {
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/complete")
     public ResponseEntity<Task> completeTask(@PathVariable String taskId) {
         try {
-            taskService.complete(taskId);
+            taskService.completeTask(taskId, true);
             Task updatedTask = taskService.getTaskById(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch(InvalidStateException | InvalidOwnerException e) {
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
     }
 
