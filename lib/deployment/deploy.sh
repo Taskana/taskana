@@ -38,12 +38,12 @@ function helpAndExit {
 
 # decripting gpg keys and importing them (needed to sign artifacts)
 # Global:
-#   $encrypted_1d44dcf98611_key: decription key 
-#   $encrypted_1d44dcf98611_iv: initialisation vector
+#   $encrypted_57343c8b243e_key: decription key 
+#   $encrypted_57343c8b243e_iv: initialisation vector
 # Arguments:
 #   $1: basedir
 function decodeAndImportKeys {
-  $debug openssl aes-256-cbc -K "$encrypted_1d44dcf98611_key" -iv "$encrypted_1d44dcf98611_iv" -in "$1/codesigning.asc.enc" -out "$1/codesigning.asc" -d
+  $debug openssl aes-256-cbc -K "$encrypted_57343c8b243e_key" -iv "$encrypted_57343c8b243e_iv" -in "$1/codesigning.asc.enc" -out "$1/codesigning.asc" -d
   $debug gpg --import "$1/codesigning.asc"
 }
 
@@ -110,7 +110,7 @@ function main {
     helpAndExit 1
   fi
 
-  if [[ -z "$debug" && (-z "$encrypted_1d44dcf98611_key" || -z "$encrypted_1d44dcf98611_iv") ]]; then
+  if [[ -z "$debug" && (-z "$encrypted_57343c8b243e_key" || -z "$encrypted_57343c8b243e_iv") ]]; then
     echo "you are not travis or travis does not have the correct encryption key and iv" >&2
     exit 1
   fi
