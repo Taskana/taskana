@@ -80,10 +80,6 @@ function change_version {
 }
 
 function push_new_poms() {
-  #setup username
-  $debug git config --global user.email "travis@travis-ci.org"
-  $debug git config --global user.name "Travis CI"
-
   #commit all poms
   $debug git checkout -b "$branch"
   #to compensate new updates
