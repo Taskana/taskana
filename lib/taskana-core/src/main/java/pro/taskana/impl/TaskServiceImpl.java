@@ -17,6 +17,8 @@ import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotOwnerException;
+import pro.taskana.exceptions.TaskNotClaimedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
@@ -30,6 +32,7 @@ import pro.taskana.model.TaskSummary;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
+import pro.taskana.security.CurrentUserContext;
 
 /**
  * This is the implementation of TaskService.
@@ -83,26 +86,36 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task complete(String id) throws TaskNotFoundException {
-        LOGGER.debug("entry to complete(id = {})", id);
+    public Task completeTask(String taskId, boolean isForced) throws TaskNotClaimedException, TaskNotFoundException, NotOwnerException {
+        LOGGER.debug("entry to completeTask(id = {}, isForced {})", taskId, isForced);
         Task task = null;
         try {
             taskanaEngineImpl.openConnection();
-            task = taskMapper.findById(id);
-            if (task != null) {
-                Timestamp now = new Timestamp(System.currentTimeMillis());
-                task.setCompleted(now);
-                task.setModified(now);
-                task.setState(TaskState.COMPLETED);
-                taskMapper.update(task);
-                LOGGER.debug("Method complete() completed Task '{}'.", id);
+            task = this.getTaskById(taskId);
+            // check pre-conditions for non-forced invocation
+            if (!isForced) {
+                if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
+                    LOGGER.warn("Method completeTask() does expect a task which need to be CLAIMED before. TaskId={}", taskId);
+                    throw new TaskNotClaimedException(taskId);
+                } else if (CurrentUserContext.getUserid() != task.getOwner()) {
+                    LOGGER.warn("Method completeTask() does expect to be invoced by the task-owner or a administrator. TaskId={}, TaskOwner={}, CurrentUser={}", taskId, task.getOwner(), CurrentUserContext.getUserid());
+                    throw new NotOwnerException("TaskOwner is" + task.getOwner() + ", but current User is " + CurrentUserContext.getUserid());
+                }
             } else {
-                LOGGER.warn("Method complete() didn't find task with id {}. Throwing TaskNotFoundException", id);
-                throw new TaskNotFoundException(id);
+                // CLAIM-forced, if task was not already claimed before.
+                if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
+                    task = this.claim(taskId, CurrentUserContext.getUserid());
+                }
             }
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            task.setCompleted(now);
+            task.setModified(now);
+            task.setState(TaskState.COMPLETED);
+            taskMapper.update(task);
+            LOGGER.debug("Method completeTask() completed Task '{}'.", taskId);
         } finally {
             taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from complete()");
+            LOGGER.debug("exit from completeTask()");
         }
         return task;
     }

@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotOwnerException;
+import pro.taskana.exceptions.TaskNotClaimedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.Task;
@@ -57,9 +59,9 @@ public class TaskanaRestTest {
 
 	@DELETE
 	@Path("{id}")
-	public void completeTask(@PathParam("id") String id) throws TaskNotFoundException {
+	public void completeTask(@PathParam("id") String id) throws TaskNotFoundException, NotOwnerException, TaskNotClaimedException {
 		logger.info(id);
-		taskanaEjb.getTaskService().complete(id);
+		taskanaEjb.getTaskService().completeTask(id, true);
 	}
 
 }

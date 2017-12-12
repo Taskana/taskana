@@ -27,6 +27,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.Classification;
@@ -36,6 +37,8 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotOwnerException;
+import pro.taskana.exceptions.TaskNotClaimedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.ClassificationImpl;
@@ -49,6 +52,7 @@ import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
+import pro.taskana.security.CurrentUserContext;
 
 /**
  * Unit Test for TaskServiceImpl.
@@ -59,6 +63,7 @@ public class TaskServiceImplTest {
 
     private static final int SLEEP_TIME = 100;
 
+    @Spy
     @InjectMocks
     private TaskServiceImpl cut;
 
@@ -115,7 +120,6 @@ public class TaskServiceImplTest {
         verify(workbasketServiceMock, times(1)).getWorkbasket(any());
         verify(taskMapperMock, times(1)).insert(expectedTask);
         verify(taskanaEngineImpl, times(1)).returnConnection();
-        verify(classificationServiceMock, times(1)).createClassification(any());
         verify(classificationServiceMock, times(1)).getClassification(any(), any());
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
                 taskMapperMock, objectReferenceMapperMock, workbasketServiceMock,
@@ -156,7 +160,6 @@ public class TaskServiceImplTest {
         verify(objectReferenceMapperMock, times(1)).findByObjectReference(any());
         verify(taskMapperMock, times(1)).insert(expectedTask);
         verify(taskanaEngineImpl, times(1)).returnConnection();
-        verify(classificationServiceMock, times(1)).createClassification(any());
         verify(classificationServiceMock, times(1)).getClassification(any(),
                 any());
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
@@ -197,7 +200,6 @@ public class TaskServiceImplTest {
         verify(taskanaEngineMock, times(1)).getClassificationService();
         verify(workbasketServiceMock, times(1)).checkAuthorization(any(), any());
         verify(workbasketServiceMock, times(1)).getWorkbasket(any());
-        verify(classificationServiceMock, times(1)).createClassification(any());
         verify(classificationServiceMock, times(1)).getClassification(any(), any());
         verify(objectReferenceMapperMock, times(1)).findByObjectReference(any());
         verify(objectReferenceMapperMock, times(1)).insert(any());
@@ -363,39 +365,148 @@ public class TaskServiceImplTest {
         }
     }
 
-    @Test
-    public void testCompleteTask() throws TaskNotFoundException, InterruptedException, ClassificationAlreadyExistException {
-        Task expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1");
-        Thread.sleep(SLEEP_TIME); // to have different timestamps
-        Mockito.doReturn(expectedTask).when(taskMapperMock).findById(expectedTask.getId());
+    public void testCompleteTaskNotForcedWorking() throws TaskNotFoundException, TaskNotClaimedException, NotOwnerException, InterruptedException {
+        final long sleepTime = 100L;
+        final boolean isForced = false;
+        Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+        // created and modify should be able to be different.
+        Thread.sleep(sleepTime);
+        task.setState(TaskState.CLAIMED);
+        task.setClaimed(new Timestamp(System.currentTimeMillis()));
+        task.setOwner(CurrentUserContext.getUserid());
+        doReturn(task).when(cut).getTaskById(task.getId());
+        doNothing().when(taskMapperMock).update(task);
 
-        Task actualTask = cut.complete(expectedTask.getId());
+        Task actualTask = cut.completeTask(task.getId(), isForced);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMapperMock, times(1)).findById(expectedTask.getId());
-        verify(taskMapperMock, times(1)).update(any());
+        verify(cut, times(1)).getTaskById(task.getId());
+        verify(taskMapperMock, times(1)).update(task);
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
                 taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
-        assertThat(actualTask.getCreated(), not(equalTo(expectedTask.getModified())));
+        assertThat(actualTask.getCreated(), not(equalTo(task.getModified())));
         assertThat(actualTask.getCompleted(), not(equalTo(null)));
+        assertThat(actualTask.getCompleted(), equalTo(actualTask.getModified()));
     }
 
-    @Test(expected = TaskNotFoundException.class)
-    public void testCompleteFailsWithNonExistingTaskId() throws TaskNotFoundException {
-        String invalidTaskId = "";
+    @Test(expected = TaskNotClaimedException.class)
+    public void testCompleteTaskNotForcedNotClaimedBefore() throws TaskNotFoundException, TaskNotClaimedException, NotOwnerException {
+        final boolean isForced = false;
+        Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+        task.setState(TaskState.READY);
+        task.setClaimed(null);
+        doReturn(task).when(cut).getTaskById(task.getId());
+
         try {
-            cut.complete(invalidTaskId);
-        } catch (Exception e) {
+            cut.completeTask(task.getId(), isForced);
+        } catch (TaskNotClaimedException e) {
             verify(taskanaEngineImpl, times(1)).openConnection();
-            verify(taskMapperMock, times(1)).findById(invalidTaskId);
+            verify(cut, times(1)).getTaskById(task.getId());
             verify(taskanaEngineImpl, times(1)).returnConnection();
             verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
                     taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
             throw e;
         }
+    }
+
+    @Test(expected = NotOwnerException.class)
+    public void testCompleteTaskNotForcedNotOwnerException() throws TaskNotFoundException, TaskNotClaimedException, NotOwnerException {
+        final boolean isForced = false;
+        Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+        task.setOwner("Dummy-Owner-ID: 10");
+        task.setState(TaskState.CLAIMED);
+        task.setClaimed(new Timestamp(System.currentTimeMillis()));
+        doReturn(task).when(cut).getTaskById(task.getId());
+
+        try {
+            cut.completeTask(task.getId(), isForced);
+        } catch (NotOwnerException e) {
+            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(cut, times(1)).getTaskById(task.getId());
+            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+                    taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+            throw e;
+        }
+    }
+
+    @Test(expected = TaskNotFoundException.class)
+    public void testCompleteTaskTaskNotFound() throws TaskNotFoundException, TaskNotClaimedException, NotOwnerException {
+        final boolean isForced = false;
+        String taskId = "1";
+        doThrow(TaskNotFoundException.class).when(cut).getTaskById(taskId);
+
+                 try {
+            cut.completeTask(taskId, isForced);
+        } catch (NotOwnerException e) {
+            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(cut, times(1)).getTaskById(taskId);
+             verify(taskanaEngineImpl, times(1)).returnConnection();
+             verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+                     taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+             throw e;
+        }
+    }
+
+    @Test
+    public void testCompleteForcedAndAlreadyClaimed() throws TaskNotFoundException, TaskNotClaimedException, NotOwnerException, InterruptedException {
+        final boolean isForced = true;
+        final long sleepTime = 100L;
+        Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+        // created and modify should be able to be different.
+        Thread.sleep(sleepTime);
+        task.setState(TaskState.CLAIMED);
+        task.setClaimed(new Timestamp(System.currentTimeMillis()));
+        doReturn(task).when(cut).getTaskById(task.getId());
+        doNothing().when(taskMapperMock).update(task);
+
+        Task actualTask = cut.completeTask(task.getId(), isForced);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(cut, times(1)).getTaskById(task.getId());
+        verify(taskMapperMock, times(1)).update(task);
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+
+        assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
+        assertThat(actualTask.getCreated(), not(equalTo(task.getModified())));
+        assertThat(actualTask.getCompleted(), not(equalTo(null)));
+        assertThat(actualTask.getCompleted(), equalTo(actualTask.getModified()));
+    }
+
+    @Test
+    public void testCompleteForcedNotClaimed() throws TaskNotFoundException, TaskNotClaimedException, NotOwnerException, InterruptedException {
+        final boolean isForced = true;
+        final long sleepTime = 100L;
+        Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
+        task.setState(TaskState.READY);
+        task.setClaimed(null);
+        doReturn(task).when(cut).getTaskById(task.getId());
+        Task claimedTask = createUnitTestTask("1", "Unit Test Task 1", "1");
+        // created and modify should be able to be different.
+        Thread.sleep(sleepTime);
+        claimedTask.setState(TaskState.CLAIMED);
+        claimedTask.setClaimed(new Timestamp(System.currentTimeMillis()));
+        doReturn(claimedTask).when(cut).claim(task.getId(), CurrentUserContext.getUserid());
+        doNothing().when(taskMapperMock).update(claimedTask);
+
+        Task actualTask = cut.completeTask(task.getId(), isForced);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(cut, times(1)).getTaskById(task.getId());
+        verify(cut, times(1)).claim(task.getId(), CurrentUserContext.getUserid());
+        verify(taskMapperMock, times(1)).update(claimedTask);
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+        assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
+        assertThat(actualTask.getCreated(), not(equalTo(claimedTask.getModified())));
+        assertThat(actualTask.getCompleted(), not(equalTo(null)));
+        assertThat(actualTask.getCompleted(), equalTo(actualTask.getModified()));
     }
 
     @Test
@@ -743,7 +854,7 @@ public class TaskServiceImplTest {
         assertThat(actualResultList.size(), equalTo(expectedResultList.size()));
     }
 
-    private Task createUnitTestTask(String id, String name, String workbasketId) throws ClassificationAlreadyExistException {
+    private Task createUnitTestTask(String id, String name, String workbasketId) {
         Task task = new Task();
         task.setId(id);
         task.setName(name);
@@ -752,7 +863,6 @@ public class TaskServiceImplTest {
         task.setCreated(now);
         task.setModified(now);
         Classification classification = (Classification) new ClassificationImpl();
-        classificationServiceMock.createClassification(classification);
         task.setClassification(classification);
         return task;
     }

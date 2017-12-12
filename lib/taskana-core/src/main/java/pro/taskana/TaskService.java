@@ -1,7 +1,11 @@
 package pro.taskana;
 
+import java.util.List;
+
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotOwnerException;
+import pro.taskana.exceptions.TaskNotClaimedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.DueWorkbasketCounter;
@@ -9,8 +13,6 @@ import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.TaskSummary;
-
-import java.util.List;
 
 /**
  * The Task Service manages all operations on tasks.
@@ -29,13 +31,18 @@ public interface TaskService {
     Task claim(String id, String userName) throws TaskNotFoundException;
 
     /**
-     * Set task to completed.
-     * @param taskId
-     *            the task id
-     * @return changed Task after update.
-     * @throws TaskNotFoundException TODO
+     * Complete a claimed Task and update State and Timestamps.
+     *
+     * @param taskId - Id of the Task which should be completed.
+     * @param isForced - Flag which can complete a Task in every case if Task does exist.
+     *
+     * @return Task - updated task after completion.
+     *
+     * @throws TaskNotClaimedException when Task wasn´t claimed before.
+     * @throws TaskNotFoundException if the given Task can´t be found in DB.
+     * @throws NotOwnerException if current user is not the task-owner or administrator.
      */
-    Task complete(String taskId) throws TaskNotFoundException;
+    Task completeTask(String taskId, boolean isForced) throws TaskNotClaimedException, TaskNotFoundException, NotOwnerException;
 
     /**
      * Create a task by a task object.
