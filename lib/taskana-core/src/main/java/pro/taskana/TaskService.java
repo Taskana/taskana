@@ -1,16 +1,15 @@
 package pro.taskana;
 
+import java.util.List;
+
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.DueWorkbasketCounter;
-import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.TaskSummary;
-
-import java.util.List;
 
 /**
  * The Task Service manages all operations on tasks.
@@ -79,12 +78,12 @@ public interface TaskService {
     /**
      * Transfer task to another workbasket. The transfer set the transferred flag
      * and resets the read flag.
-     * @param taskId TODO
-     * @param workbasketId TODO
+     * @param taskId of the task which should be transfered
+     * @param workbasketId where the task should be transfered into
      * @return the updated task
-     * @throws TaskNotFoundException TODO
-     * @throws WorkbasketNotFoundException TODO
-     * @throws NotAuthorizedException TODO
+     * @throws TaskNotFoundException if the taskId got no match from DB
+     * @throws WorkbasketNotFoundException if the workbasketId got no match from DB
+     * @throws NotAuthorizedException if the user haven´t the needed permissions
      */
     Task transfer(String taskId, String workbasketId)
             throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException;
@@ -96,12 +95,12 @@ public interface TaskService {
      * @param isRead
      *            the new status of the read flag.
      * @return Task the updated Task
-     * @throws TaskNotFoundException TODO
+     * @throws TaskNotFoundException when the taskId doesn´t match with a existing task
      */
     Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
 
     /**
-     * This method provides a query builder for quering the database.
+     * This method provides a query builder for querying the database.
      * @return a {@link TaskQuery}
      */
     TaskQuery createTaskQuery();
@@ -126,4 +125,10 @@ public interface TaskService {
      * @throws WorkbasketNotFoundException if a Workbasket can´t be located.
      */
     List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId) throws WorkbasketNotFoundException;
+
+    /**
+     * Returns a not persisted instance of {@link Task}.
+     * @return task - with default values
+     */
+    Task newTask();
 }

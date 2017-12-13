@@ -4,7 +4,7 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Task;
+import pro.taskana.model.TaskImpl;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -21,7 +21,7 @@ public class ExampleBootstrap {
 	@PostConstruct
 	public void init(@Observes @Initialized(ApplicationScoped.class) Object init) throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
 		System.out.println("---------------------------> Start App");
-		Task task = taskanaEjb.getTaskService().createTask(new Task());
+		Task task = taskanaEjb.getTaskService().createTask(new TaskImpl());
 		System.out.println("---------------------------> Task started: " + task.getId());
 		taskanaEjb.getTaskService().claim(task.getId(), "John Doe");
 		System.out.println(

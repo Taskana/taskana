@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ObjectReferenceQuery;
+import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAuthorization;
 

@@ -14,7 +14,7 @@ import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.model.ClassificationImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
+import pro.taskana.model.TaskImpl;
 import pro.taskana.model.Workbasket;
 
 /**
@@ -93,7 +93,7 @@ public interface QueryMapper {
             @Result(property = "custom8", column = "CUSTOM_8"),
             @Result(property = "custom9", column = "CUSTOM_9"),
             @Result(property = "custom10", column = "CUSTOM_10") })
-    List<Task> queryTasks(TaskQueryImpl taskQuery);
+    List<TaskImpl> queryTasks(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
             + "FROM CLASSIFICATION "

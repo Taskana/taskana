@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.Classification;
+import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
@@ -23,7 +24,7 @@ import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
+import pro.taskana.model.TaskImpl;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.TaskSummary;
@@ -59,7 +60,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task claim(String id, String userName) throws TaskNotFoundException {
         LOGGER.debug("entry to claim(id = {}, userName = {})", id, userName);
-        Task task = null;
+        TaskImpl task = null;
         try {
             taskanaEngineImpl.openConnection();
             task = taskMapper.findById(id);
@@ -85,7 +86,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task complete(String id) throws TaskNotFoundException {
         LOGGER.debug("entry to complete(id = {})", id);
-        Task task = null;
+        TaskImpl task = null;
         try {
             taskanaEngineImpl.openConnection();
             task = taskMapper.findById(id);
@@ -108,13 +109,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task createTask(Task task) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
-        LOGGER.debug("entry to createTask(task = {})", task);
+    public Task createTask(Task taskToCreate) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+        LOGGER.debug("entry to createTask(task = {})", taskToCreate);
         try {
             taskanaEngineImpl.openConnection();
-            taskanaEngine.getWorkbasketService().getWorkbasket(task.getWorkbasketId());
-            taskanaEngine.getWorkbasketService().checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
-            Classification classification = task.getClassification();
+            TaskImpl task = (TaskImpl) taskToCreate;
+            taskanaEngine.getWorkbasketService().getWorkbasket(taskToCreate.getWorkbasketId());
+            taskanaEngine.getWorkbasketService().checkAuthorization(taskToCreate.getWorkbasketId(), WorkbasketAuthorization.APPEND);
+            Classification classification = taskToCreate.getClassification();
             if (classification == null) {
                 throw new ClassificationNotFoundException(null);
             }
@@ -124,7 +126,7 @@ public class TaskServiceImpl implements TaskService {
 
             this.taskMapper.insert(task);
 
-            LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
+            LOGGER.debug("Method createTask() created Task '{}'.", taskToCreate.getId());
             return task;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -135,7 +137,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task getTaskById(String id) throws TaskNotFoundException {
         LOGGER.debug("entry to getTaskById(id = {})", id);
-        Task result = null;
+        TaskImpl result = null;
         try {
             taskanaEngineImpl.openConnection();
             result = taskMapper.findById(id);
@@ -197,7 +199,7 @@ public class TaskServiceImpl implements TaskService {
         Task result = null;
         try {
             taskanaEngineImpl.openConnection();
-            Task task = getTaskById(taskId);
+            TaskImpl task = (TaskImpl) getTaskById(taskId);
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
             taskanaEngine.getWorkbasketService().checkAuthorization(destinationWorkbasketId, WorkbasketAuthorization.APPEND);
@@ -257,7 +259,7 @@ public class TaskServiceImpl implements TaskService {
         Task result = null;
         try {
             taskanaEngineImpl.openConnection();
-            Task task = getTaskById(taskId);
+            TaskImpl task = (TaskImpl) getTaskById(taskId);
             task.setRead(true);
             task.setModified(Timestamp.valueOf(LocalDateTime.now()));
             taskMapper.update(task);
@@ -278,23 +280,24 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws WorkbasketNotFoundException, NotAuthorizedException, Exception {
         LOGGER.debug("entry to getTasksByWorkbasketIdAndState(workbasketId = {}, taskState = {})", workbasketId, taskState);
-        List<Task> result = null;
+        List<Task> results = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
             taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
-            result = taskMapper.findTasksByWorkbasketIdAndState(workbasketId, taskState);
+            List<TaskImpl> tasks = taskMapper.findTasksByWorkbasketIdAndState(workbasketId, taskState);
+            tasks.stream().forEach(t -> results.add((Task) t));
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
+                int numberOfResultObjects = results == null ? 0 : results.size();
                 LOGGER.debug("exit from getTasksByWorkbasketIdAndState(workbasketId, taskState). Returning {} resulting Objects: {} ",
-                                                                numberOfResultObjects, LoggerUtils.listToString(result));
+                                                                numberOfResultObjects, LoggerUtils.listToString(results));
             }
         }
-        return (result == null) ? new ArrayList<>() : result;
+        return results;
     }
 
-    private void standardSettings(Task task) {
+    private void standardSettings(TaskImpl task) {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
         task.setState(TaskState.READY);
@@ -368,5 +371,10 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         return taskSummaries;
+    }
+
+    @Override
+    public Task newTask() {
+        return new TaskImpl();
     }
 }

@@ -5,11 +5,12 @@ import java.util.Collections;
 import java.util.Map;
 
 import pro.taskana.Classification;
+import pro.taskana.Task;
 
 /**
  * Task entity.
  */
-public class Task {
+public class TaskImpl implements Task {
 
     private String id;
     private Timestamp created;
@@ -43,6 +44,7 @@ public class Task {
     private String custom9;
     private String custom10;
 
+    @Override
     public String getId() {
         return id;
     }
@@ -51,6 +53,7 @@ public class Task {
         this.id = id;
     }
 
+    @Override
     public Timestamp getCreated() {
         return created;
     }
@@ -59,6 +62,7 @@ public class Task {
         this.created = created;
     }
 
+    @Override
     public Timestamp getClaimed() {
         return claimed;
     }
@@ -67,6 +71,7 @@ public class Task {
         this.claimed = claimed;
     }
 
+    @Override
     public Timestamp getCompleted() {
         return completed;
     }
@@ -75,22 +80,27 @@ public class Task {
         this.completed = completed;
     }
 
+    @Override
     public Timestamp getModified() {
         return modified;
     }
+
 
     public void setModified(Timestamp modified) {
         this.modified = modified;
     }
 
+    @Override
     public Timestamp getPlanned() {
         return planned;
     }
 
+    @Override
     public void setPlanned(Timestamp planned) {
         this.planned = planned;
     }
 
+    @Override
     public Timestamp getDue() {
         return due;
     }
@@ -99,22 +109,27 @@ public class Task {
         this.due = due;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public int getPriority() {
         return priority;
     }
@@ -123,6 +138,7 @@ public class Task {
         this.priority = priority;
     }
 
+    @Override
     public TaskState getState() {
         return state;
     }
@@ -131,30 +147,37 @@ public class Task {
         this.state = state;
     }
 
+    @Override
     public Classification getClassification() {
         return classification;
     }
 
+    @Override
     public void setClassification(Classification classification) {
         this.classification = classification;
     }
 
+    @Override
     public String getWorkbasketId() {
         return workbasketId;
     }
 
+    @Override
     public void setWorkbasketId(String workbasketId) {
         this.workbasketId = workbasketId;
     }
 
+    @Override
     public String getBusinessProcessId() {
         return businessProcessId;
     }
+
 
     public void setBusinessProcessId(String businessProcessId) {
         this.businessProcessId = businessProcessId;
     }
 
+    @Override
     public String getParentBusinessProcessId() {
         return parentBusinessProcessId;
     }
@@ -163,22 +186,27 @@ public class Task {
         this.parentBusinessProcessId = parentBusinessProcessId;
     }
 
+    @Override
     public String getOwner() {
         return owner;
     }
 
+    @Override
     public void setOwner(String owner) {
         this.owner = owner;
     }
 
+    @Override
     public ObjectReference getPrimaryObjRef() {
         return primaryObjRef;
     }
 
+    @Override
     public void setPrimaryObjRef(ObjectReference primaryObjRef) {
         this.primaryObjRef = primaryObjRef;
     }
 
+    @Override
     public boolean isRead() {
         return isRead;
     }
@@ -187,6 +215,7 @@ public class Task {
         this.isRead = isRead;
     }
 
+    @Override
     public boolean isTransferred() {
         return isTransferred;
     }
@@ -195,6 +224,7 @@ public class Task {
         this.isTransferred = isTransferred;
     }
 
+    @Override
     public Map<String, Object> getCustomAttributes() {
         return customAttributes;
     }
@@ -203,82 +233,102 @@ public class Task {
         this.customAttributes = customAttributes;
     }
 
+    @Override
     public String getCustom1() {
         return custom1;
     }
 
+    @Override
     public void setCustom1(String custom1) {
         this.custom1 = custom1;
     }
 
+    @Override
     public String getCustom2() {
         return custom2;
     }
 
+    @Override
     public void setCustom2(String custom2) {
         this.custom2 = custom2;
     }
 
+    @Override
     public String getCustom3() {
         return custom3;
     }
 
+    @Override
     public void setCustom3(String custom3) {
         this.custom3 = custom3;
     }
 
+    @Override
     public String getCustom4() {
         return custom4;
     }
 
+    @Override
     public void setCustom4(String custom4) {
         this.custom4 = custom4;
     }
 
+    @Override
     public String getCustom5() {
         return custom5;
     }
 
+    @Override
     public void setCustom5(String custom5) {
         this.custom5 = custom5;
     }
 
+    @Override
     public String getCustom6() {
         return custom6;
     }
 
+    @Override
     public void setCustom6(String custom6) {
         this.custom6 = custom6;
     }
 
+    @Override
     public String getCustom7() {
         return custom7;
     }
 
+    @Override
     public void setCustom7(String custom7) {
         this.custom7 = custom7;
     }
 
+    @Override
     public String getCustom8() {
         return custom8;
     }
 
+    @Override
     public void setCustom8(String custom8) {
         this.custom8 = custom8;
     }
 
+    @Override
     public String getCustom9() {
         return custom9;
     }
 
+    @Override
     public void setCustom9(String custom9) {
         this.custom9 = custom9;
     }
 
+    @Override
     public String getCustom10() {
         return custom10;
     }
 
+    @Override
     public void setCustom10(String custom10) {
         this.custom10 = custom10;
     }
@@ -349,5 +399,5 @@ public class Task {
         builder.append("]");
         return builder.toString();
     }
-
 }
+
