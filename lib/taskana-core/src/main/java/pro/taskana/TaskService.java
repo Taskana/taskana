@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import java.util.List;
+
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
@@ -12,8 +14,6 @@ import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.TaskSummary;
 
-import java.util.List;
-
 /**
  * The Task Service manages all operations on tasks.
  */
@@ -21,102 +21,146 @@ public interface TaskService {
 
     /**
      * Claim an existing task for the current user.
-     * @param id
-     *            task id
-     * @return modified claimed Task
-     * @throws TaskNotFoundException if the task with id was not found
-     * @throws InvalidStateException if the task state is not ready
-     * @throws InvalidOwnerException if the task is claimed by another user
+     *
+     * @param taskId
+     *            the id of the task to be claimed
+     * @return claimed Task
+     * @throws TaskNotFoundException
+     *             if the task with taskId was not found
+     * @throws InvalidStateException
+     *             if the state of the task with taskId is not {@link TaskState#READY}
+     * @throws InvalidOwnerException
+     *             if the task with taskId is claimed by some else
      */
-    Task claim(String id) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+    Task claim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
-     * Claim an existing task for the current user.
-     * @param id
-     *            task id
+     * Claim an existing task for the current user. Enable forced claim.
+     *
+     * @param taskId
+     *            the id of the task to be claimed
      * @param forceClaim
      *            if true, claim is performed even if the task is already claimed by someone else
-     * @return modified claimed Task
-     * @throws TaskNotFoundException if the task with id was not found
-     * @throws InvalidStateException if the task state is not ready
-     * @throws InvalidOwnerException if the task is claimed by another user
+     * @return claimed Task
+     * @throws TaskNotFoundException
+     *             if the task with taskId was not found
+     * @throws InvalidStateException
+     *             if the state of the task with taskId is not {@link TaskState#READY}
+     * @throws InvalidOwnerException
+     *             if the task with taskId is claimed by someone else
      */
-    Task claim(String id, boolean forceClaim) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+    Task claim(String taskId, boolean forceClaim)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
      * Set task to completed.
+     *
      * @param taskId
      *            the task id
      * @return changed Task after update.
-     * @throws TaskNotFoundException TODO
+     * @throws TaskNotFoundException
+     *             thrown if the task with taskId is not found.
      */
     Task complete(String taskId) throws TaskNotFoundException;
 
     /**
-     * Create a task by a task object.
-     * @param task TODO
-     * @return the created task
-     * @throws NotAuthorizedException TODO
-     * @throws WorkbasketNotFoundException TODO
-     * @throws ClassificationNotFoundException TODO
+     * Create and persist a task.
+     *
+     * @param task
+     *            the transient task object to be persisted
+     * @return the created and persisted task
+     * @throws NotAuthorizedException
+     *             thrown if the current user is not authorized to create that task
+     * @throws WorkbasketNotFoundException
+     *             thrown if the work basket referenced by the task is not found
+     * @throws ClassificationNotFoundException
+     *             thrown if the {@link Classification} referenced by the task is not found
      */
-    Task createTask(Task task) throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException;
+    Task createTask(Task task)
+        throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException;
 
     /**
-     * Get the details of a task.
+     * Get the details of a task by Id.
+     *
      * @param taskId
      *            the id of the task
      * @return the Task
-     * @throws TaskNotFoundException TODO
+     * @throws TaskNotFoundException
+     *             thrown of the {@link Task} with taskId is not found
      */
     Task getTaskById(String taskId) throws TaskNotFoundException;
 
     /**
      * This method counts all tasks with a given state.
+     *
      * @param states
      *            the countable states
-     * @return a List of {@link TaskStateCounter}
+     * @return a List of {@link TaskStateCounter} objects that specifies how many tasks in the specified states exist in
+     *         the available work baskets
      */
     List<TaskStateCounter> getTaskCountForState(List<TaskState> states);
 
     /**
-     * Count all Tasks in a given workbasket with daysInPast as Days from today in
-     * the past and a specific state.
-     * @param workbasketId TODO
-     * @param daysInPast TODO
-     * @param states TODO
-     * @return TODO
+     * Count all Tasks in a given work basket where the due date is after "daysInPast" days from today in the past and
+     * the tasks are in specified states.
+     *
+     * @param workbasketId
+     *            the id of the work basket
+     * @param daysInPast
+     *            identifies the days in the past from today
+     * @param states
+     *            {@link List} of {@link TaskState} that identifies the states of the tasks to be searched for
+     * @return the number of {@link Task} objects in the given work basket that match the query parameters
      */
     long getTaskCountForWorkbasketByDaysInPastAndState(String workbasketId, long daysInPast, List<TaskState> states);
 
+    /**
+     * Count all Tasks for all work basket objects where the due date is after "daysInPast" days from today in the past
+     * and the tasks are in specified states.
+     *
+     * @param daysInPast
+     *            identifies the days in the past from today
+     * @param states
+     *            {@link List} of {@link TaskState} objects that identifies the states of the tasks searched
+     * @return a list of of {@link DueWorkbasketCounter} objects that specifies how many tasks in the requested states
+     *         with appropriate due date exist in the various work baskets
+     */
     List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast, List<TaskState> states);
 
     /**
-     * Transfer task to another workbasket. The transfer set the transferred flag
-     * and resets the read flag.
-     * @param taskId TODO
-     * @param workbasketId TODO
-     * @return the updated task
-     * @throws TaskNotFoundException TODO
-     * @throws WorkbasketNotFoundException TODO
-     * @throws NotAuthorizedException TODO
+     * Transfer a task to another work basket. The transfer sets the transferred flag and resets the read flag.
+     *
+     * @param taskId
+     *            The id of the {@link Task} to be transferred
+     * @param workbasketId
+     *            The id of the target work basket
+     * @return the transferred task
+     * @throws TaskNotFoundException
+     *             Thrown if the {@link Task} with taskId was not found.
+     * @throws WorkbasketNotFoundException
+     *             Thrown if the target work basket was not found.
+     * @throws NotAuthorizedException
+     *             Thrown if the current user is not authorized to transfer this {@link Task} to the target work basket
      */
     Task transfer(String taskId, String workbasketId)
-            throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException;
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
      * Marks a task as read.
+     *
      * @param taskId
      *            the id of the task to be updated
      * @param isRead
      *            the new status of the read flag.
-     * @return Task the updated Task
-     * @throws TaskNotFoundException TODO
+     * @return the updated Task
+     * @throws TaskNotFoundException
+     *             Thrown if the {@link Task} with taskId was not found
      */
     Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
 
     /**
      * This method provides a query builder for quering the database.
+     *
      * @return a {@link TaskQuery}
      */
     TaskQuery createTaskQuery();
@@ -124,21 +168,27 @@ public interface TaskService {
     /**
      * Getting a list of all Tasks which got matching workbasketIds and states.
      *
-     * @param workbasketId where the tasks need to be in.
-     * @param taskState which is required for the request,
+     * @param workbasketId
+     *            where the tasks need to be in.
+     * @param taskState
+     *            which is required for the request,
      * @return a filled/empty list of tasks with attributes which are matching given params.
-     *
-     * @throws WorkbasketNotFoundException if the workbasketId can´t be resolved to a existing workbasket.
-     * @throws NotAuthorizedException if the current user got no rights for reading on this workbasket.
-     * @throws Exception if no result can be found by @{link TaskMapper}.
+     * @throws WorkbasketNotFoundException
+     *             if the workbasketId can´t be resolved to a existing work basket.
+     * @throws NotAuthorizedException
+     *             if the current user got no rights for reading on this work basket.
      */
-    List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState) throws  WorkbasketNotFoundException, NotAuthorizedException, Exception;
+    List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState)
+        throws WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
-     * Getting a short summary of all tasks in a specific workbasket.
-     * @param workbasketId ID of workbasket where tasks are located.
-     * @return TaskSummaryList with all TaskSummaries of a workbasket
-     * @throws WorkbasketNotFoundException if a Workbasket can´t be located.
+     * Getting a short summary of all tasks in a specific work basket.
+     *
+     * @param workbasketId
+     *            ID of work basket where tasks are located.
+     * @return TaskSummaryList with all TaskSummaries of a work basket
+     * @throws WorkbasketNotFoundException
+     *             if a Work basket can´t be located.
      */
     List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId) throws WorkbasketNotFoundException;
 }
