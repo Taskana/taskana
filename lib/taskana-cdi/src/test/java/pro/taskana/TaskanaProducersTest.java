@@ -24,66 +24,65 @@ import org.wildfly.swarm.undertow.WARArchive;
 @RunWith(Arquillian.class)
 public class TaskanaProducersTest {
 
-	@Deployment(testable = false)
-	public static Archive<?> createDeployment() throws Exception {
-		WARArchive deployment = ShrinkWrap.create(WARArchive.class);
-		deployment.addPackage("pro.taskana");
-		deployment.addClass(TaskanaProducers.class);
-		deployment.addAllDependencies();
-		deployment.addDependency("org.mybatis:mybatis:3.4.2");
-		deployment.addDependency("org.mybatis:mybatis-cdi:1.0.0");
-		deployment.addDependency("pro.taskana:taskana-core:0.0.1-SNAPSHOT");
-		deployment.addAsResource("META-INF/beans.xml");
-		deployment.addAsResource("taskana.properties");
-		deployment.addAsResource("project-defaults.yml");
-		return deployment;
-	}
+    @Deployment(testable = false)
+    public static Archive<?> createDeployment() throws Exception {
+        WARArchive deployment = ShrinkWrap.create(WARArchive.class);
+        deployment.addPackage("pro.taskana");
+        deployment.addClass(TaskanaProducers.class);
+        deployment.addAllDependencies();
+        deployment.addDependency("org.mybatis:mybatis:3.4.2");
+        deployment.addDependency("org.mybatis:mybatis-cdi:1.0.0");
+        deployment.addDependency("pro.taskana:taskana-core:0.0.3-SNAPSHOT");
+        deployment.addAsResource("META-INF/beans.xml");
+        deployment.addAsResource("taskana.properties");
+        deployment.addAsResource("project-defaults.yml");
+        return deployment;
+    }
 
-	@CreateSwarm
-	public static Swarm newContainer() throws Exception {
-		Swarm swarm = new Swarm();
-		return swarm;
-	}
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        Swarm swarm = new Swarm();
+        return swarm;
+    }
 
-	@Before
-	public void init() throws SQLException, ClassNotFoundException {
-	}
+    @Before
+    public void init() throws SQLException, ClassNotFoundException {
+    }
 
-	@Test
-	public void testCommit() throws SQLException, ClassNotFoundException, NamingException {
-		
-		Client client = ClientBuilder.newClient();
-		client.target("http://127.0.0.1:8090/rest/test").request().get();
+    @Test
+    public void testCommit() throws SQLException, ClassNotFoundException, NamingException {
 
-		Class.forName("org.h2.Driver");
-		int resultCount = 0;
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/data/testdb;AUTO_SERVER=TRUE", "SA", "SA")) {
-			ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASK");
+        Client client = ClientBuilder.newClient();
+        client.target("http://127.0.0.1:8090/rest/test").request().get();
 
-			while (rs.next()) {
-				resultCount++;
-			}
-		}
+        Class.forName("org.h2.Driver");
+        int resultCount = 0;
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:~/data/testdb;AUTO_SERVER=TRUE", "SA", "SA")) {
+            ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASK");
 
-		Assert.assertEquals(1, resultCount);
-	}
-	
-	
-	@Test
-	public void testRollback() throws SQLException, ClassNotFoundException, NamingException {
-		Client client = ClientBuilder.newClient();
-		client.target("http://127.0.0.1:8090/rest/test").request().post(null);
+            while (rs.next()) {
+                resultCount++;
+            }
+        }
 
-		Class.forName("org.h2.Driver");
-		int resultCount = 0;
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/data/testdb;AUTO_SERVER=TRUE", "SA", "SA")) {
-			ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASK");
+        Assert.assertEquals(1, resultCount);
+    }
 
-			while (rs.next()) {
-				resultCount++;
-			}
-		}
+    @Test
+    public void testRollback() throws SQLException, ClassNotFoundException, NamingException {
+        Client client = ClientBuilder.newClient();
+        client.target("http://127.0.0.1:8090/rest/test").request().post(null);
 
-		Assert.assertEquals(0, resultCount);
-	}
+        Class.forName("org.h2.Driver");
+        int resultCount = 0;
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:~/data/testdb;AUTO_SERVER=TRUE", "SA", "SA")) {
+            ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASK");
+
+            while (rs.next()) {
+                resultCount++;
+            }
+        }
+
+        Assert.assertEquals(0, resultCount);
+    }
 }
