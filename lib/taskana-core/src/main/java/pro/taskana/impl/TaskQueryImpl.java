@@ -32,7 +32,7 @@ public class TaskQueryImpl implements TaskQuery {
     private int[] priority;
     private TaskState[] states;
     private ClassificationQuery classificationQuery;
-    private String[] workbasketId;
+    private String[] workbasketKey;
     private String[] owner;
     private ObjectReferenceQuery objectReferenceQuery;
     private Boolean isRead;
@@ -74,8 +74,8 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskQuery workbasketId(String... workbasketIds) {
-        this.workbasketId = workbasketIds;
+    public TaskQuery workbasketKeyIn(String... workbasketKeys) {
+        this.workbasketKey = workbasketKeys;
         return this;
     }
 
@@ -127,7 +127,8 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
             }
         }
     }
@@ -146,7 +147,8 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
             }
         }
     }
@@ -167,8 +169,8 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     private void checkAuthorization() throws NotAuthorizedException {
-        if (this.workbasketId != null && this.workbasketId.length > 0) {
-            for (String workbasket : this.workbasketId) {
+        if (this.workbasketKey != null && this.workbasketKey.length > 0) {
+            for (String workbasket : this.workbasketKey) {
                 taskanaEngineImpl.getWorkbasketService().checkAuthorization(workbasket, WorkbasketAuthorization.OPEN);
             }
         }
@@ -222,12 +224,12 @@ public class TaskQueryImpl implements TaskQuery {
         this.classificationQuery = classificationQuery;
     }
 
-    public String[] getWorkbasketId() {
-        return workbasketId;
+    public String[] getWorkbasketKey() {
+        return workbasketKey;
     }
 
-    public void setWorkbasketId(String[] workbasketId) {
-        this.workbasketId = workbasketId;
+    public void setWorkbasketKey(String[] workbasketKey) {
+        this.workbasketKey = workbasketKey;
     }
 
     public String[] getOwner() {
@@ -285,8 +287,8 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(states));
         builder.append(", classificationQuery=");
         builder.append(classificationQuery);
-        builder.append(", workbasketId=");
-        builder.append(Arrays.toString(workbasketId));
+        builder.append(", workbasketKey=");
+        builder.append(Arrays.toString(workbasketKey));
         builder.append(", owner=");
         builder.append(Arrays.toString(owner));
         builder.append(", objectReferenceQuery=");

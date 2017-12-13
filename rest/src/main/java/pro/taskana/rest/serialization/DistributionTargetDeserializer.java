@@ -17,41 +17,45 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 
 /**
  * This class deserializes the string list to real workbaskets
  */
 public class DistributionTargetDeserializer extends StdDeserializer<List<Workbasket>> {
-	
-	private static final long serialVersionUID = 4226950057149602129L;
 
-	private static final Logger logger = LoggerFactory.getLogger(DistributionTargetDeserializer.class);
+    private static final long serialVersionUID = 4226950057149602129L;
 
-	@Autowired
-	private WorkbasketService workbasketService;
+    private static final Logger logger = LoggerFactory.getLogger(DistributionTargetDeserializer.class);
 
-	public DistributionTargetDeserializer() {
-		this(null);
-		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-	}
+    @Autowired
+    private WorkbasketService workbasketService;
 
-	public DistributionTargetDeserializer(Class<?> vc) {
-		super(vc);
-	}
+    public DistributionTargetDeserializer() {
+        this(null);
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
-	@Override
-	public List<Workbasket> deserialize(JsonParser jsonparser, DeserializationContext context)
-			throws IOException, JsonProcessingException {
-		List<Workbasket> distributionTargets = new ArrayList<Workbasket>();
-		while (jsonparser.nextToken() != JsonToken.END_ARRAY) {
-			String id = jsonparser.getText();
-			try {
-				distributionTargets.add(workbasketService.getWorkbasket(id));
-			} catch (WorkbasketNotFoundException e) {
-				logger.error("The workbasket with the id '" + id + "' is not found in database.");
-			}
-		}
-		return distributionTargets;
-	}
+    public DistributionTargetDeserializer(Class<?> vc) {
+        super(vc);
+    }
+
+    @Override
+    public List<Workbasket> deserialize(JsonParser jsonparser, DeserializationContext context)
+        throws IOException, JsonProcessingException {
+        List<Workbasket> distributionTargets = new ArrayList<Workbasket>();
+        while (jsonparser.nextToken() != JsonToken.END_ARRAY) {
+            String id = jsonparser.getText();
+            try {
+                distributionTargets.add(workbasketService.getWorkbasket(id));
+            } catch (WorkbasketNotFoundException e) {
+                logger.error("The workbasket with the id '" + id + "' is not found in database.");
+            } catch (InvalidWorkbasketException e) {
+                logger.error("The workbasket with the id '" + id + "' misses some required properties. Exception = {}.",
+                    e);
+            }
+        }
+        return distributionTargets;
+    }
 }

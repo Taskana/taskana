@@ -16,9 +16,9 @@ export class RestConnectorService {
       .map(res => res.json());
   }
 
-  findTaskWithWorkbaskets(basketName: string): Observable<Task[]> {
-    return this.http.get(environment.taskanaRestUrl + '/v1/tasks?workbasketid='
-      + basketName + '&state=READY&state=CLAIMED', this.createAuthorizationHeader())
+  findTaskWithWorkbaskets(basketKey: string): Observable<Task[]> {
+    return this.http.get(environment.taskanaRestUrl + '/v1/tasks?workbasketkey='
+      + basketKey + '&state=READY&state=CLAIMED', this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
@@ -37,9 +37,9 @@ export class RestConnectorService {
       .map(res => res.json());
   }
 
-  transferTask(taskId: string, workbasketId: string) {
+  transferTask(taskId: string, workbasketKey: string) {
     return this.http.post(environment.taskanaRestUrl + '/v1/tasks/' + taskId
-      + '/transfer/' + workbasketId, '', this.createAuthorizationHeader())
+      + '/transfer/' + workbasketKey, '', this.createAuthorizationHeader())
       .map(res => res.json());
   }
 

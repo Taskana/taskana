@@ -15,20 +15,29 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketType;
 
 /**
  * WorkbasketQuery for generating dynamic SQL.
- * @author bbr
  *
+ * @author bbr
  */
 public class WorkbasketQueryImpl implements WorkbasketQuery {
+
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryWorkbasket";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
+
     private String[] accessId;
     private WorkbasketAuthorization authorization;
     private String[] name;
-    private Date[] created;
-    private Date[] modified;
+    private String[] key;
+    private String[] domain;
+    private WorkbasketType[] type;
+    private Date createdAfter;
+    private Date createdBefore;
+    private Date modifiedAfter;
+    private Date modifiedBefore;
     private String description;
     private String[] owner;
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -38,20 +47,50 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery name(String... names) {
+    public WorkbasketQuery keyIn(String... key) {
+        this.key = key;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery domainIn(String... domain) {
+        this.domain = domain;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery typeIn(WorkbasketType... type) {
+        this.type = type;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery nameIn(String... names) {
         this.name = names;
         return this;
     }
 
     @Override
-    public WorkbasketQuery created(Date... created) {
-        this.created = created;
+    public WorkbasketQuery createdAfter(Date createdAfter) {
+        this.createdAfter = createdAfter;
         return this;
     }
 
     @Override
-    public WorkbasketQuery modified(Date... modified) {
-        this.modified = modified;
+    public WorkbasketQuery createdBefore(Date createdBefore) {
+        this.createdBefore = createdBefore;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery modifiedAfter(Date modifiedAfter) {
+        this.modifiedAfter = modifiedAfter;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery modifiedBefore(Date modifiedBefore) {
+        this.modifiedBefore = modifiedBefore;
         return this;
     }
 
@@ -62,13 +101,14 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery owner(String... owners) {
+    public WorkbasketQuery ownerIn(String... owners) {
         this.owner = owners;
         return this;
     }
 
     @Override
-    public WorkbasketQuery access(WorkbasketAuthorization permission, String... accessIds) throws InvalidArgumentException {
+    public WorkbasketQuery access(WorkbasketAuthorization permission, String... accessIds)
+        throws InvalidArgumentException {
         if (permission == null) {
             throw new InvalidArgumentException("permission must not be null");
         }
@@ -92,7 +132,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
             }
         }
     }
@@ -110,7 +151,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
             }
         }
     }
@@ -153,20 +195,60 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         this.name = name;
     }
 
-    public Date[] getCreated() {
-        return created;
+    public String[] getKey() {
+        return key;
     }
 
-    public void setCreated(Date[] created) {
-        this.created = created;
+    public void setKey(String[] key) {
+        this.key = key;
     }
 
-    public Date[] getModified() {
-        return modified;
+    public String[] getDomain() {
+        return domain;
     }
 
-    public void setModified(Date[] modified) {
-        this.modified = modified;
+    public void setDomain(String[] domain) {
+        this.domain = domain;
+    }
+
+    public WorkbasketType[] getType() {
+        return type;
+    }
+
+    public void setType(WorkbasketType[] type) {
+        this.type = type;
+    }
+
+    public Date getCreatedAfter() {
+        return createdAfter;
+    }
+
+    public void setCreatedAfter(Date createdAfter) {
+        this.createdAfter = createdAfter;
+    }
+
+    public Date getCreatedBefore() {
+        return createdBefore;
+    }
+
+    public void setCreatedBefore(Date createdBefore) {
+        this.createdBefore = createdBefore;
+    }
+
+    public Date getModifiedAfter() {
+        return modifiedAfter;
+    }
+
+    public void setModifiedAfter(Date modifiedAfter) {
+        this.modifiedAfter = modifiedAfter;
+    }
+
+    public Date getModifiedBefore() {
+        return modifiedBefore;
+    }
+
+    public void setModifiedBefore(Date modifiedBefore) {
+        this.modifiedBefore = modifiedBefore;
     }
 
     public String getDescription() {
@@ -194,16 +276,24 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(authorization);
         builder.append(", name=");
         builder.append(Arrays.toString(name));
-        builder.append(", created=");
-        builder.append(Arrays.toString(created));
-        builder.append(", modified=");
-        builder.append(Arrays.toString(modified));
+        builder.append(", key=");
+        builder.append(Arrays.toString(key));
+        builder.append(", domain=");
+        builder.append(Arrays.toString(domain));
+        builder.append(", type=");
+        builder.append(Arrays.toString(type));
+        builder.append(", createdAfter=");
+        builder.append(createdAfter);
+        builder.append(", createdBefore=");
+        builder.append(createdBefore);
+        builder.append(", modifiedAfter=");
+        builder.append(modifiedAfter);
+        builder.append(", modifiedBefore=");
+        builder.append(modifiedBefore);
         builder.append(", description=");
         builder.append(description);
         builder.append(", owner=");
         builder.append(Arrays.toString(owner));
-        builder.append(", taskanaEngineImpl=");
-        builder.append(taskanaEngineImpl);
         builder.append("]");
         return builder.toString();
     }

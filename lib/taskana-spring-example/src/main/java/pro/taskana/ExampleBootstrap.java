@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -23,11 +24,12 @@ public class ExampleBootstrap {
 
     @PostConstruct
     public void test() throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, InvalidStateException, InvalidOwnerException, TaskAlreadyExistException {
+        ClassificationNotFoundException, InvalidStateException, InvalidOwnerException, InvalidWorkbasketException,
+        TaskAlreadyExistException {
         System.out.println("---------------------------> Start App");
         Task task = taskService.newTask();
         task.setName("Spring example task");
-        task.setWorkbasketId("1");
+        task.setWorkbasketKey("1");
         task = taskService.createTask(task);
         System.out.println("---------------------------> Task started: " + task.getId());
         taskService.claim(task.getId());

@@ -17,7 +17,7 @@ export class TaskComponent implements OnInit {
   link: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://duckduckgo.com/?q=');
   autoCompleteData: string[] = new Array;
   workbasket: string = null;
-  workbasketId: string;
+  workbasketKey: string;
   workbaskets: Workbasket[];
 
   private sub: any;
@@ -35,7 +35,7 @@ export class TaskComponent implements OnInit {
                          this.restConnectorService.getAllWorkBaskets().subscribe( w => {
                             this.workbaskets = w;
                             this.workbaskets.forEach(workbasket => {
-                            if (workbasket.id !== this.task.workbasket) {
+                            if (workbasket.key !== this.task.workbasket) {
                               this.autoCompleteData.push(workbasket.name);
                             }
                           });
@@ -47,10 +47,10 @@ export class TaskComponent implements OnInit {
     if (this.workbasket) {
       this.workbaskets.forEach(workbasket => {
         if (workbasket.name === this.workbasket) {
-          this.workbasketId = workbasket.id;
+          this.workbasketKey = workbasket.key;
         }
       });
-      this.restConnectorService.transferTask(this.task.id, this.workbasketId).subscribe(
+      this.restConnectorService.transferTask(this.task.id, this.workbasketKey).subscribe(
                        task => {this.task = task});
       this.router.navigate(['tasks/']);
     }
