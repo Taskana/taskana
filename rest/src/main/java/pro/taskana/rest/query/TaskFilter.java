@@ -34,7 +34,7 @@ public class TaskFilter {
     private static final String IS_TRANSFERRED = "isTransferred";
     private static final String IS_READ = "isRead";
 
-    private static final String CLASSIFICATION_PARENT_ID = CLASSIFICATION + DOT + "parentClassificationId";
+    private static final String CLASSIFICATION_PARENT_KEY = CLASSIFICATION + DOT + "parentClassificationKey";
     private static final String CLASSIFICATION_CATEGORY = CLASSIFICATION + DOT + "category";
     private static final String CLASSIFICATION_TYPE = CLASSIFICATION + DOT + "type";
     private static final String CLASSIFICATION_NAME = CLASSIFICATION + DOT + "name";
@@ -86,9 +86,9 @@ public class TaskFilter {
         // classification
         if (params.keySet().stream().filter(s -> s.startsWith(CLASSIFICATION)).toArray().length > 0) {
             ClassificationQuery classificationQuery = classificationService.createClassificationQuery();
-            if (params.containsKey(CLASSIFICATION_PARENT_ID)) {
-                String[] parentClassifications = extractCommaSeperatedFields(params.get(CLASSIFICATION_PARENT_ID));
-                classificationQuery.parentClassification(parentClassifications);
+            if (params.containsKey(CLASSIFICATION_PARENT_KEY)) {
+                String[] parentClassifications = extractCommaSeperatedFields(params.get(CLASSIFICATION_PARENT_KEY));
+                classificationQuery.parentClassificationKey(parentClassifications);
             }
             if (params.containsKey(CLASSIFICATION_CATEGORY)) {
                 String[] categories = extractCommaSeperatedFields(params.get(CLASSIFICATION_CATEGORY));

@@ -16,7 +16,7 @@ public class TestClassificationQuery implements ClassificationQuery {
 
     private List<ClassificationImpl> classifications;
 
-    private String[] parentId;
+    private String[] parentClassificationKey;
 
     private Date[] validUntil;
 
@@ -24,12 +24,16 @@ public class TestClassificationQuery implements ClassificationQuery {
 
     public TestClassificationQuery(List<ClassificationImpl> classifications) {
         this.classifications = classifications;
-
     }
 
     @Override
-    public ClassificationQuery parentClassification(String... parentClassificationId) {
-        parentId = parentClassificationId;
+    public ClassificationQuery key(String... key) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery parentClassificationKey(String... parentClassificationKey) {
+        this.parentClassificationKey = parentClassificationKey;
         return this;
     }
 
@@ -80,6 +84,11 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
+    public ClassificationQuery applicationEntryPoint(String... applicationEntryPoint) {
+        return null;
+    }
+
+    @Override
     public ClassificationQuery customFields(String... customFields) {
         return this;
     }
@@ -112,10 +121,10 @@ public class TestClassificationQuery implements ClassificationQuery {
                 }
             }
 
-            if (this.parentId != null) {
+            if (this.parentClassificationKey != null) {
                 Boolean classificationWithParent = false;
                 if (classification.getParentClassificationKey() != null) {
-                    for (String parent : this.parentId) {
+                    for (String parent : this.parentClassificationKey) {
                         if (parent.equals(classification.getParentClassificationKey())) {
                             classificationWithParent = true;
                         }

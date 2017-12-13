@@ -8,12 +8,20 @@ import java.util.Date;
 public interface ClassificationQuery extends BaseQuery<Classification> {
 
     /**
-     * Add your parentClassification to your query.
-     * @param parentClassificationId
+     * Add your key to your query.
+     * @param key
+     *           as String
+     * @return the query
+     */
+    ClassificationQuery key(String... key);
+
+    /**
+     * Add your parentClassificationKey to your query.
+     * @param parentClassificationKey
      *            as String
      * @return the query
      */
-    ClassificationQuery parentClassification(String... parentClassificationId);
+    ClassificationQuery parentClassificationKey(String... parentClassificationKey);
 
     /**
      * Add your category to your query.
@@ -84,6 +92,13 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
      * @return the query
      */
     ClassificationQuery serviceLevel(String... serviceLevel);
+
+    /**
+     * Add your applicationEntryPoint to your query.
+     * @param applicationEntryPoint TODO
+     * @return the query
+     */
+    ClassificationQuery applicationEntryPoint(String... applicationEntryPoint);
 
     /**
      * Add your customFields to your query.

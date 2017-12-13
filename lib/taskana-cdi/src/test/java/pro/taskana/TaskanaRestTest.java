@@ -37,6 +37,7 @@ public class TaskanaRestTest {
 		workbasket.setName("wb");
 		taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
 		Classification classification = classificationService.newClassification();
+		classification.setKey("TEST");
 		taskanaEjb.getClassificationService().createClassification(classification);
 
 		Task task = new Task();

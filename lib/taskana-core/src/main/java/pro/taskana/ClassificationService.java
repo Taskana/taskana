@@ -19,23 +19,23 @@ public interface ClassificationService {
     List<Classification> getClassificationTree() throws NotAuthorizedException;
 
     /**
-     * Get all Classifications with the given id.
+     * Get all Classifications with the given key.
      * Returns also older and domain-specific versions of the classification.
      *
-     * @param id TODO
+     * @param key TODO
      * @param domain TODO
      * @return List with all versions of the Classification
      */
-    List<Classification> getAllClassificationsWithId(String id, String domain);
+    List<Classification> getAllClassificationsWithKey(String key, String domain);
 
     /**
-     * Get the Classification for id and domain.
-     * @param id TODO
+     * Get the Classification for key and domain. If there's no specification for the given domain, it returns the root domain.
+     * @param key TODO
      * @param domain TODO
-     * @return If exist: domain-specific classification, else default classification
+     * @return If exist: domain-specific classification, else root classification
      * @throws ClassificationNotFoundException TODO
      */
-    Classification getClassification(String id, String domain) throws ClassificationNotFoundException;
+    Classification getClassification(String key, String domain) throws ClassificationNotFoundException;
 
     /**
      * Persist a new classification. If the classification does
