@@ -45,7 +45,7 @@ import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.TaskSummary;
-import pro.taskana.model.Workbasket;
+import pro.taskana.model.WorkbasketImpl;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
@@ -101,7 +101,7 @@ public class TaskServiceImplTest {
     public void testCreateSimpleTask() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Mockito.doNothing().when(taskMapperMock).insert(any());
         Task expectedTask = createUnitTestTask("1", "DUMMYTASK", "1");
-        Workbasket wb = new Workbasket();
+        WorkbasketImpl wb = new WorkbasketImpl();
         wb.setId("1");
         wb.setName("workbasket");
         doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
@@ -135,7 +135,7 @@ public class TaskServiceImplTest {
         ObjectReference expectedObjectReference = new ObjectReference();
         expectedObjectReference.setId("1");
         expectedObjectReference.setType("DUMMY");
-        Workbasket wb = new Workbasket();
+        WorkbasketImpl wb = new WorkbasketImpl();
         wb.setId("1");
         wb.setName("workbasket");
         doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
@@ -178,7 +178,7 @@ public class TaskServiceImplTest {
         ObjectReference expectedObjectReference = new ObjectReference();
         expectedObjectReference.setId("1");
         expectedObjectReference.setType("DUMMY");
-        Workbasket wb = new Workbasket();
+        WorkbasketImpl wb = new WorkbasketImpl();
         wb.setId("1");
         wb.setName("workbasket");
         doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
@@ -226,7 +226,7 @@ public class TaskServiceImplTest {
         Classification classification = (Classification) new ClassificationImpl();
         classification.setName("Name");
         classification.setCategory("MANUAL");
-        Workbasket wb = new Workbasket();
+        WorkbasketImpl wb = new WorkbasketImpl();
         wb.setId("workbasketId");
         wb.setName("workbasket");
         doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
@@ -402,7 +402,7 @@ public class TaskServiceImplTest {
     public void testTransferTaskToDestinationWorkbasketWithoutSecurity()
             throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
-        Workbasket destinationWorkbasket = createWorkbasket("2");
+        WorkbasketImpl destinationWorkbasket = createWorkbasket("2");
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
         final int workServiceMockCalls = 3;
         task.setRead(true);
@@ -437,7 +437,7 @@ public class TaskServiceImplTest {
     public void testTransferTaskToDestinationWorkbasketUsingSecurityTrue()
             throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
-        Workbasket destinationWorkbasket = createWorkbasket("2");
+        WorkbasketImpl destinationWorkbasket = createWorkbasket("2");
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
         task.setRead(true);
         doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
@@ -682,7 +682,7 @@ public class TaskServiceImplTest {
         doThrow(new IllegalArgumentException("Invalid ID: " + workbasketId)).when(taskMapperMock).findTaskSummariesByWorkbasketId(workbasketId);
         doNothing().when(taskanaEngineImpl).returnConnection();
         doReturn(workbasketServiceMock).when(taskanaEngineImpl).getWorkbasketService();
-        doReturn(new Workbasket()).when(workbasketServiceMock).getWorkbasket(any());
+        doReturn(new WorkbasketImpl()).when(workbasketServiceMock).getWorkbasket(any());
 
         // when - make the call
         List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketId(workbasketId);
@@ -705,7 +705,7 @@ public class TaskServiceImplTest {
         doNothing().when(taskanaEngineImpl).openConnection();
         doNothing().when(taskanaEngineImpl).returnConnection();
         doReturn(workbasketServiceMock).when(taskanaEngineImpl).getWorkbasketService();
-        doReturn(new Workbasket()).when(workbasketServiceMock).getWorkbasket(any());
+        doReturn(new WorkbasketImpl()).when(workbasketServiceMock).getWorkbasket(any());
         doReturn(expectedResultList).when(taskMapperMock).findTaskSummariesByWorkbasketId(workbasketId);
 
         List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketId(workbasketId);
@@ -728,7 +728,7 @@ public class TaskServiceImplTest {
         doNothing().when(taskanaEngineImpl).returnConnection();
         doReturn(null).when(taskMapperMock).findTaskSummariesByWorkbasketId(workbasketId);
         doReturn(workbasketServiceMock).when(taskanaEngineImpl).getWorkbasketService();
-        doReturn(new Workbasket()).when(workbasketServiceMock).getWorkbasket(any());
+        doReturn(new WorkbasketImpl()).when(workbasketServiceMock).getWorkbasket(any());
 
         List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketId(workbasketId);
 
@@ -757,8 +757,8 @@ public class TaskServiceImplTest {
         return task;
     }
 
-    private Workbasket createWorkbasket(String id) {
-        Workbasket workbasket = new Workbasket();
+    private WorkbasketImpl createWorkbasket(String id) {
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setId(id);
         workbasket.setName("Workbasket " + id);
         return workbasket;

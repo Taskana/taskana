@@ -24,6 +24,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -40,7 +41,7 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
-import pro.taskana.model.Workbasket;
+import pro.taskana.model.WorkbasketImpl;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode AUTOCOMMIT.
@@ -81,7 +82,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException,
             WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-        Workbasket wb = new Workbasket();
+        WorkbasketImpl wb = new WorkbasketImpl();
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
@@ -104,7 +105,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
             throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-        Workbasket wb = new Workbasket();
+        WorkbasketImpl wb = new WorkbasketImpl();
         wb.setName("sdf");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
@@ -125,7 +126,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void testCreateTaskInTaskanaWithDefaultDb()
             throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-        Workbasket wb = new Workbasket();
+        Workbasket wb = new WorkbasketImpl();
         wb.setName("workbasket");
         wb = taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
@@ -143,7 +144,7 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-        Workbasket wb = new Workbasket();
+        WorkbasketImpl wb = new WorkbasketImpl();
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
@@ -175,8 +176,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void shouldReturnTaskSummaryListWithValues() throws Exception {
 
-        Workbasket dummyWorkbasket = new Workbasket();
-        dummyWorkbasket.setId("1");
+        Workbasket dummyWorkbasket = workbasketService.newWorkbasket();
         dummyWorkbasket.setName("Dummy-Basket");
         dummyWorkbasket = workbasketService.createWorkbasket(dummyWorkbasket);
 
@@ -214,7 +214,7 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test(expected = WorkbasketNotFoundException.class)
     public void shouldThrowWorkbasketNotFoundExceptionByInvalidWorkbasketParameter() throws WorkbasketNotFoundException {
-        Workbasket wb = new Workbasket();
+        WorkbasketImpl wb = new WorkbasketImpl();
         wb.setName("wb");
         workbasketService.createWorkbasket(wb);
         taskServiceImpl.getTaskSummariesByWorkbasketId("1");

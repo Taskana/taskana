@@ -1,6 +1,14 @@
 package pro.taskana.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,21 +18,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import pro.taskana.Workbasket;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketImpl;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.model.mappings.WorkbasketMapper;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 /**
  * Unit Test for workbasketServiceImpl.
@@ -59,7 +62,7 @@ public class WorkbasketServiceImplTest {
     }
     @Test
     public void should_ReturnWorkbasket_when_WorkbasketIdExists() throws WorkbasketNotFoundException {
-        when(workbasketMapper.findById(any())).thenReturn(new Workbasket());
+        when(workbasketMapper.findById(any())).thenReturn(new WorkbasketImpl());
 
         Workbasket workbasket = workbasketServiceImpl.getWorkbasket("fail");
 
@@ -75,7 +78,7 @@ public class WorkbasketServiceImplTest {
 
     @Test
     public void should_ReturnListOfWorkbaskets_when_PermissionAndUserExists() {
-        when(workbasketMapper.findByPermission(any(), any())).thenReturn(new ArrayList<Workbasket>());
+        when(workbasketMapper.findByPermission(any(), any())).thenReturn(new ArrayList<WorkbasketImpl>());
 
         List<WorkbasketAuthorization> authorizations = new ArrayList<>();
         authorizations.add(WorkbasketAuthorization.OPEN);
@@ -88,7 +91,7 @@ public class WorkbasketServiceImplTest {
 
     @Test
     public void should_ReturnAllWorkbaskets_when_AllWorkbaskets() {
-        when(workbasketMapper.findAll()).thenReturn(new ArrayList<Workbasket>());
+        when(workbasketMapper.findAll()).thenReturn(new ArrayList<WorkbasketImpl>());
 
         List<Workbasket> workbaskets = workbasketServiceImpl.getWorkbaskets();
 
@@ -100,7 +103,7 @@ public class WorkbasketServiceImplTest {
     public void should_InitializeAndStoreWorkbasket_when_WorkbasketIsCreated() throws NotAuthorizedException {
         doNothing().when(workbasketMapper).insert(any());
 
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setId("1");
         workbasketServiceImpl.createWorkbasket(workbasket);
 
@@ -117,11 +120,11 @@ public class WorkbasketServiceImplTest {
         doNothing().when(workbasketMapper).insert(any());
         doNothing().when(distributionTargetMapper).insert(any(), any());
 
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setId("1");
-        Workbasket workbasket1 = new Workbasket();
+        WorkbasketImpl workbasket1 = new WorkbasketImpl();
         workbasket1.setId("2");
-        Workbasket workbasket2 = new Workbasket();
+        WorkbasketImpl workbasket2 = new WorkbasketImpl();
         workbasket2.setId("3");
         workbasket.setDistributionTargets(new ArrayList<Workbasket>() {
             {
@@ -144,7 +147,7 @@ public class WorkbasketServiceImplTest {
             throws NotAuthorizedException {
         doNothing().when(workbasketMapper).insert(any());
 
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setId("0");
         workbasket.setDescription("TestDescription");
         workbasket.setName("Cool New WorkintheBasket");
@@ -164,9 +167,9 @@ public class WorkbasketServiceImplTest {
             throws NotAuthorizedException {
         doNothing().when(workbasketMapper).insert(any());
 
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setId("0");
-        Workbasket workbasket1 = new Workbasket();
+        WorkbasketImpl workbasket1 = new WorkbasketImpl();
         workbasket1.setId("1");
         workbasket.setDistributionTargets(new ArrayList<Workbasket>() {
             {
@@ -188,17 +191,17 @@ public class WorkbasketServiceImplTest {
     public void should_UpdateModifiedTimestamp_when_ExistingWorkbasketDistributionTargetIsChanged() throws Exception {
         doNothing().when(workbasketMapper).insert(any());
 
-        Workbasket workbasket0 = new Workbasket();
+        WorkbasketImpl workbasket0 = new WorkbasketImpl();
         workbasket0.setId("0");
-        Workbasket workbasket1 = new Workbasket();
+        WorkbasketImpl workbasket1 = new WorkbasketImpl();
         workbasket1.setId("1");
-        Workbasket workbasket2 = new Workbasket();
+        WorkbasketImpl workbasket2 = new WorkbasketImpl();
         workbasket2.setId("2");
         workbasket2.getDistributionTargets().add(workbasket0);
         workbasket2.getDistributionTargets().add(workbasket1);
         workbasketServiceImpl.createWorkbasket(workbasket2);
 
-        Workbasket workbasket3 = new Workbasket();
+        WorkbasketImpl workbasket3 = new WorkbasketImpl();
         workbasket3.setId("3");
         workbasket2.getDistributionTargets().clear();
         workbasket2.getDistributionTargets().add(workbasket3);

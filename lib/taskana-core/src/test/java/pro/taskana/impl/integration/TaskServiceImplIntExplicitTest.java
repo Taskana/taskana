@@ -47,7 +47,7 @@ import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.Workbasket;
+import pro.taskana.model.WorkbasketImpl;
 import pro.taskana.model.WorkbasketAccessItem;
 
 /**
@@ -96,7 +96,7 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setName("workbasket");
         workbasket.setId("1"); // set id manually for authorization tests
         Classification classification = classificationService.newClassification();
@@ -148,7 +148,7 @@ public class TaskServiceImplIntExplicitTest {
         WorkbasketServiceImpl workbasketServiceImpl = (WorkbasketServiceImpl) te.getWorkbasketService();
         ClassificationServiceImpl classificationServiceImpl = (ClassificationServiceImpl) te.getClassificationService();
 
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setName("workbasket");
         Classification classification = classificationService.newClassification();
         workbasket.setName("workbasket99");
@@ -249,7 +249,7 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setName("workbasket");
         Classification classification = classificationService.newClassification();
         workbasket.setId("1"); // set id manually for authorization tests
@@ -281,7 +281,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     private Task generateDummyTask() throws ClassificationAlreadyExistException {
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setName("wb");
         workbasket.setId("1"); // set id manually for authorization tests
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
