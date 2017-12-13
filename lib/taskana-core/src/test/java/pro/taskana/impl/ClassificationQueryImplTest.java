@@ -44,7 +44,7 @@ public class ClassificationQueryImplTest {
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
         List<Classification> result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)
-                .parentClassification("superId").list();
+                .parentClassificationKey("superId").list();
         Assert.assertNotNull(result);
     }
 
@@ -54,7 +54,7 @@ public class ClassificationQueryImplTest {
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<Classification> result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)
-                .parentClassification("superId").list(1, 1);
+                .parentClassificationKey("superId").list(1, 1);
         Assert.assertNotNull(result);
     }
 
@@ -64,7 +64,7 @@ public class ClassificationQueryImplTest {
         when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationImpl());
 
         Classification result = classificationQueryImpl.name("test", "asd", "blubber").type("cool", "bla").priority(1, 2)
-                .parentClassification("superId").single();
+                .parentClassificationKey("superId").single();
         Assert.assertNotNull(result);
     }
 }

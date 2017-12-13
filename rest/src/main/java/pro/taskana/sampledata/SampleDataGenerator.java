@@ -21,7 +21,7 @@ public class SampleDataGenerator {
 	private static final String WORKBASKET = SQL + TEST_DATA + "/workbasket.sql";
 	private static final String DISTRIBUTION_TARGETS = SQL + TEST_DATA + "/distribution-targets.sql";
 	private static final String WORKBASKET_ACCESS_LIST = SQL + TEST_DATA + "/workbasket-access-list.sql";
-	private static final String CATEGORY = SQL + TEST_DATA + "/classification.sql";
+	private static final String CLASSIFICATION = SQL + TEST_DATA + "/classification.sql";
 	private static final String OBJECT_REFERENCE = SQL + TEST_DATA + "/object-reference.sql";
 
 	public SampleDataGenerator(DataSource dataSource) throws SQLException {
@@ -50,7 +50,7 @@ public class SampleDataGenerator {
 		runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(TASK)));
 		runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(WORKBASKET)));
 		runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DISTRIBUTION_TARGETS)));
-		runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(CATEGORY)));
+		runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(CLASSIFICATION)));
 		runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(WORKBASKET_ACCESS_LIST)));
 		runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(OBJECT_REFERENCE)));
 

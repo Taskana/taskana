@@ -93,6 +93,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
+        classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
@@ -117,6 +118,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setName("sdf");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
+        classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
@@ -139,6 +141,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setName("workbasket");
         wb = taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
+        classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
@@ -158,6 +161,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
+        classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
@@ -168,7 +172,7 @@ public class TaskServiceImplIntAutocommitTest {
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         ClassificationQuery classificationQuery = new ClassificationQueryImpl(taskanaEngineImpl)
-            .parentClassification("pId1", "pId2")
+            .parentClassificationKey("pId1", "pId2")
             .category("cat1", "cat2")
             .type("oneType")
             .name("1Name", "name2")
@@ -224,7 +228,7 @@ public class TaskServiceImplIntAutocommitTest {
         taskSummary.setTaskName(dummyTask.getName());
         taskSummary.setWorkbasketId(dummyWorkbasket.getId());
         taskSummary.setWorkbasketName(dummyWorkbasket.getName());
-        taskSummary.setClassificationId(dummyClassification.getId());
+        taskSummary.setClassificationKey(dummyClassification.getKey());
         taskSummary.setClassificationName(dummyClassification.getName());
         expectedTaskSumamries.add(taskSummary);
 

@@ -147,7 +147,7 @@ public class TaskServiceImpl implements TaskService {
             if (classification == null) {
                 throw new ClassificationNotFoundException(null);
             }
-            taskanaEngine.getClassificationService().getClassification(classification.getId(), "");
+            taskanaEngine.getClassificationService().getClassification(classification.getKey(), "");
 
             standardSettings(task);
 
