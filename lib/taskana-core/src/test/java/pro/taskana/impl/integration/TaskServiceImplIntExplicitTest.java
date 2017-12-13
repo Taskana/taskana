@@ -26,6 +26,7 @@ import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -38,6 +39,7 @@ import pro.taskana.impl.ClassificationServiceImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketServiceImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
@@ -45,7 +47,6 @@ import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -95,7 +96,7 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket();
         workbasket.setName("workbasket");
         workbasket.setId("1"); // set id manually for authorization tests
         Classification classification = classificationService.newClassification();
@@ -149,7 +150,7 @@ public class TaskServiceImplIntExplicitTest {
         WorkbasketServiceImpl workbasketServiceImpl = (WorkbasketServiceImpl) te.getWorkbasketService();
         ClassificationServiceImpl classificationServiceImpl = (ClassificationServiceImpl) te.getClassificationService();
 
-        Workbasket workbasket = new Workbasket();
+        Workbasket workbasket = workBasketService.newWorkbasket();
         workbasket.setName("workbasket");
         Classification classification = classificationService.newClassification();
         classification.setKey("TEST");
@@ -252,7 +253,7 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket();
         workbasket.setName("workbasket");
         Classification classification = classificationService.newClassification();
         classification.setKey("TEST");
@@ -285,7 +286,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     private Task generateDummyTask() throws ClassificationAlreadyExistException {
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket();
         workbasket.setName("wb");
         workbasket.setId("1"); // set id manually for authorization tests
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);

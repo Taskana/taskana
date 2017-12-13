@@ -21,9 +21,9 @@ import pro.taskana.ClassificationService;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.model.Workbasket;
 import pro.taskana.rest.serialization.WorkbasketMixIn;
 import pro.taskana.sampledata.SampleDataGenerator;
 
