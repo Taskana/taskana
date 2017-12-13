@@ -32,15 +32,21 @@ import pro.taskana.model.ClassificationImpl;
 
 /**
  * Integration Test for ClassificationServiceImpl with connection management mode AUTOCOMMIT.
+ *
  * @author EH
  */
 public class ClassificationServiceImplIntAutoCommitTest {
+
     static int counter = 0;
 
     private DataSource dataSource;
+
     private ClassificationService classificationService;
+
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
+
     private TaskanaEngine taskanaEngine;
+
     private TaskanaEngineImpl taskanaEngineImpl;
 
     @BeforeClass
@@ -77,14 +83,15 @@ public class ClassificationServiceImplIntAutoCommitTest {
         ClassificationImpl classification1 = new ClassificationImpl();
         classificationService.createClassification(classification1);
         ClassificationImpl classification2 = new ClassificationImpl();
-        classification2.setParentClassificationId(classification0.getId());
+        classification2.setParentClassificationKey(classification0.getId());
         classificationService.createClassification(classification2);
 
         Assert.assertEquals(2 + 1, classificationService.getClassificationTree().size());
     }
 
     @Test
-    public void testModifiedClassification() throws ClassificationAlreadyExistException, ClassificationNotFoundException {
+    public void testModifiedClassification()
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException {
 
         ClassificationImpl classification = new ClassificationImpl();
         classificationService.createClassification(classification);
@@ -99,19 +106,27 @@ public class ClassificationServiceImplIntAutoCommitTest {
         ClassificationImpl classification = new ClassificationImpl();
         classificationService.createClassification(classification);
         Date today = Date.valueOf(LocalDate.now());
-        List<Classification> list = classificationService.createClassificationQuery().validInDomain(Boolean.TRUE).created(today).validFrom(today).validUntil(Date.valueOf("9999-12-31")).list();
+        List<Classification> list = classificationService.createClassificationQuery()
+            .validInDomain(Boolean.TRUE)
+            .created(today)
+            .validFrom(today)
+            .validUntil(Date.valueOf("9999-12-31"))
+            .list();
         Assert.assertEquals(1, list.size());
     }
 
     @Test
-    public void testUpdateAndClassificationMapper() throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
+    public void testUpdateAndClassificationMapper()
+        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         ClassificationImpl classification = new ClassificationImpl();
         classificationService.createClassification(classification);
         System.out.println(classification.getId());
         classification.setDescription("description");
         classificationService.updateClassification(classification);
 
-        List<Classification> list = classificationService.createClassificationQuery().validUntil(Date.valueOf("9999-12-31")).list();
+        List<Classification> list = classificationService.createClassificationQuery()
+            .validUntil(Date.valueOf("9999-12-31"))
+            .list();
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery().validInDomain(true).list();
         Assert.assertEquals(2, list.size());
@@ -122,7 +137,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         list = classificationService.createClassificationQuery().validUntil(Date.valueOf("9999-12-31")).list();
         Assert.assertEquals(2, list.size());
 
-        System.out.println(classification.getParentClassificationId());
+        System.out.println(classification.getParentClassificationKey());
 
         List<Classification> temp = classificationService.getClassificationTree();
         List<ClassificationImpl> allClassifications = new ArrayList<>();
@@ -131,7 +146,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindWithClassificationMapperDomainAndCategory() throws NotAuthorizedException, ClassificationAlreadyExistException {
+    public void testFindWithClassificationMapperDomainAndCategory()
+        throws NotAuthorizedException, ClassificationAlreadyExistException {
         ClassificationImpl classification1 = new ClassificationImpl();
         classification1.setDomain("domain1");
         classification1.setCategory("category1");
@@ -145,14 +161,18 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classification3.setCategory("category2");
         classificationService.createClassification(classification3);
 
-        List<Classification> list = classificationService.createClassificationQuery().category("category1").domain("domain1").list();
+        List<Classification> list = classificationService.createClassificationQuery()
+            .category("category1")
+            .domain("domain1")
+            .list();
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery().domain("domain1", "domain3").list();
         Assert.assertEquals(2, list.size());
     }
 
     @Test
-    public void testFindWithClassificationMapperCustomAndCategory() throws NotAuthorizedException, ClassificationAlreadyExistException {
+    public void testFindWithClassificationMapperCustomAndCategory()
+        throws NotAuthorizedException, ClassificationAlreadyExistException {
         ClassificationImpl classification1 = new ClassificationImpl();
         classification1.setDescription("DESC1");
         classification1.setCategory("category1");
@@ -173,7 +193,10 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classification4.setCategory("category1");
         classificationService.createClassification(classification4);
 
-        List<Classification> list = classificationService.createClassificationQuery().descriptionLike("DESC1").customFields("custom1").list();
+        List<Classification> list = classificationService.createClassificationQuery()
+            .descriptionLike("DESC1")
+            .customFields("custom1")
+            .list();
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery().customFields("custom2").list();
         Assert.assertEquals(2, list.size());
@@ -182,7 +205,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindWithClassificationMapperPriorityTypeAndParent() throws NotAuthorizedException, ClassificationAlreadyExistException {
+    public void testFindWithClassificationMapperPriorityTypeAndParent()
+        throws NotAuthorizedException, ClassificationAlreadyExistException {
         ClassificationImpl classification = new ClassificationImpl();
         classification.setPriority(Integer.decode("5"));
         classification.setType("type1");
@@ -190,29 +214,36 @@ public class ClassificationServiceImplIntAutoCommitTest {
         ClassificationImpl classification1 = new ClassificationImpl();
         classification1.setPriority(Integer.decode("3"));
         classification1.setType("type1");
-        classification1.setParentClassificationId(classification.getId());
+        classification1.setParentClassificationKey(classification.getId());
         classificationService.createClassification(classification1);
         ClassificationImpl classification2 = new ClassificationImpl();
         classification2.setPriority(Integer.decode("5"));
         classification2.setType("type2");
-        classification2.setParentClassificationId(classification.getId());
+        classification2.setParentClassificationKey(classification.getId());
         classificationService.createClassification(classification2);
         ClassificationImpl classification3 = new ClassificationImpl();
         classification3.setPriority(Integer.decode("5"));
         classification3.setType("type1");
-        classification3.setParentClassificationId(classification1.getId());
+        classification3.setParentClassificationKey(classification1.getId());
         classificationService.createClassification(classification3);
 
-        List<Classification> list = classificationService.createClassificationQuery().parentClassification(classification.getId()).list();
+        List<Classification> list = classificationService.createClassificationQuery()
+            .parentClassification(classification.getId())
+            .list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().type("type1").priority(Integer.decode("5")).list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().priority(Integer.decode("5")).type("type1").parentClassification(classification1.getId()).list();
+        list = classificationService.createClassificationQuery()
+            .priority(Integer.decode("5"))
+            .type("type1")
+            .parentClassification(classification1.getId())
+            .list();
         Assert.assertEquals(1, list.size());
     }
 
     @Test
-    public void testFindWithClassificationMapperServiceLevelNameAndDescription() throws NotAuthorizedException, ClassificationAlreadyExistException {
+    public void testFindWithClassificationMapperServiceLevelNameAndDescription()
+        throws NotAuthorizedException, ClassificationAlreadyExistException {
         int all = 0;
         ClassificationImpl classification = new ClassificationImpl();
         classification.setServiceLevel("P1D");
@@ -249,16 +280,16 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testDefaultSettingsWithClassificationMapper() throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
+    public void testDefaultSettingsWithClassificationMapper()
+        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         ClassificationImpl classification = new ClassificationImpl();
         ClassificationImpl classification1 = new ClassificationImpl();
         classificationService.createClassification(classification);
         classificationService.createClassification(classification1);
-        classification1.setParentClassificationId(classification.getId());
+        classification1.setParentClassificationKey(classification.getId());
         classificationService.updateClassification(classification1);
 
-        List<Classification>
-        list = classificationService.createClassificationQuery().parentClassification("").list();
+        List<Classification> list = classificationService.createClassificationQuery().parentClassification("").list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().validUntil(Date.valueOf("9999-12-31")).list();
         Assert.assertEquals(2, list.size());
@@ -273,7 +304,10 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
         list = classificationService.createClassificationQuery().domain("domain1").validInDomain(false).list();
         Assert.assertEquals(0, list.size());
-        list = classificationService.createClassificationQuery().validFrom(Date.valueOf((LocalDate.now()))).validUntil(Date.valueOf(LocalDate.now().minusDays(1))).list();
+        list = classificationService.createClassificationQuery()
+            .validFrom(Date.valueOf((LocalDate.now())))
+            .validUntil(Date.valueOf(LocalDate.now().minusDays(1)))
+            .list();
         Assert.assertEquals(1, list.size());
     }
 
