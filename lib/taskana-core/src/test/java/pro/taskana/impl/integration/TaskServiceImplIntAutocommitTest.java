@@ -25,6 +25,7 @@ import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -37,11 +38,11 @@ import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
-import pro.taskana.model.Workbasket;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode AUTOCOMMIT.
@@ -90,7 +91,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException,
         WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
         ClassificationAlreadyExistException {
-        Workbasket wb = new Workbasket();
+        Workbasket wb = workbasketService.newWorkbasket();
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
@@ -115,7 +116,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void testStartTransactionFail()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-        Workbasket wb = new Workbasket();
+        Workbasket wb = workbasketService.newWorkbasket();
         wb.setName("sdf");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
@@ -138,7 +139,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void testCreateTaskInTaskanaWithDefaultDb()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-        Workbasket wb = new Workbasket();
+        Workbasket wb = workbasketService.newWorkbasket();
         wb.setName("workbasket");
         wb = taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
@@ -158,7 +159,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-        Workbasket wb = new Workbasket();
+        Workbasket wb = workbasketService.newWorkbasket();
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
@@ -206,8 +207,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void shouldReturnTaskSummaryListWithValues() throws Exception {
 
-        Workbasket dummyWorkbasket = new Workbasket();
-        dummyWorkbasket.setId("1");
+        Workbasket dummyWorkbasket = workbasketService.newWorkbasket();
         dummyWorkbasket.setName("Dummy-Basket");
         dummyWorkbasket = workbasketService.createWorkbasket(dummyWorkbasket);
 
@@ -247,10 +247,11 @@ public class TaskServiceImplIntAutocommitTest {
     @Test(expected = WorkbasketNotFoundException.class)
     public void shouldThrowWorkbasketNotFoundExceptionByInvalidWorkbasketParameter()
         throws WorkbasketNotFoundException {
-        Workbasket wb = new Workbasket();
+        WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket();
         wb.setName("wb");
-        workbasketService.createWorkbasket(wb);
-        taskServiceImpl.getTaskSummariesByWorkbasketId("1");
+        wb = (WorkbasketImpl) workbasketService.createWorkbasket(wb);
+        wb.setId(wb.getId() + " - 1");
+        taskServiceImpl.getTaskSummariesByWorkbasketId(wb.getId());
     }
 
     @AfterClass

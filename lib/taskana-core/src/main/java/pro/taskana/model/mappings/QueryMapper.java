@@ -12,10 +12,10 @@ import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskQueryImpl;
+import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.model.ClassificationImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Workbasket;
 
 /**
  * This class provides a mapper for all queries.
@@ -194,7 +194,7 @@ public interface QueryMapper {
         @Result(property = "description", column = "DESCRIPTION"),
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "distributionTargets", column = "id", javaType = List.class, many = @Many(select = "findDistributionTargets"))})
-    List<Workbasket> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
+    List<WorkbasketImpl> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
 
     @Select("<script>SELECT TARGET_ID from DISTRIBUTION_TARGETS "
             + "<where>"

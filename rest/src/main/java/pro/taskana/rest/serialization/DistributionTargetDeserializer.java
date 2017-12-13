@@ -8,15 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Workbasket;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+
+import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketService;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 
 /**
  * This class deserializes the string list to real workbaskets

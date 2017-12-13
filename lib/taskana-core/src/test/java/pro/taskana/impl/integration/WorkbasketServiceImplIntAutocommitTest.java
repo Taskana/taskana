@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -32,10 +33,10 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.security.GroupPrincipal;
@@ -84,7 +85,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
     @Test
     public void testInsertWorkbasket() throws NotAuthorizedException {
         int before = workBasketService.getWorkbaskets().size();
-        Workbasket workbasket = new Workbasket();
+        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket.setId(id1);
         workbasket.setName("Megabasket");
@@ -95,17 +96,17 @@ public class WorkbasketServiceImplIntAutocommitTest {
     @Test
     public void testSelectAllWorkbaskets() throws NotAuthorizedException {
         int before = workBasketService.getWorkbaskets().size();
-        Workbasket workbasket0 = new Workbasket();
+        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
         workbasket0.setName("Superbasket");
         workBasketService.createWorkbasket(workbasket0);
-        Workbasket workbasket1 = new Workbasket();
+        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
         workbasket1.setName("Megabasket");
         workBasketService.createWorkbasket(workbasket1);
-        Workbasket workbasket2 = new Workbasket();
+        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
         workbasket2.setName("Hyperbasket");
@@ -115,17 +116,17 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     @Test
     public void testSelectWorkbasket() throws WorkbasketNotFoundException, NotAuthorizedException {
-        Workbasket workbasket0 = new Workbasket();
+        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
         workbasket0.setName("Superbasket");
         workBasketService.createWorkbasket(workbasket0);
-        Workbasket workbasket1 = new Workbasket();
+        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
         workbasket1.setName("Megabasket");
         workBasketService.createWorkbasket(workbasket1);
-        Workbasket workbasket2 = new Workbasket();
+        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
         workbasket2.setName("Hyperbasket");
@@ -141,15 +142,15 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     @Test
     public void testSelectWorkbasketWithDistribution() throws WorkbasketNotFoundException, NotAuthorizedException {
-        Workbasket workbasket0 = new Workbasket();
+        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
         workbasket0.setName("Superbasket");
-        Workbasket workbasket1 = new Workbasket();
+        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
         workbasket1.setName("Megabasket");
-        Workbasket workbasket2 = new Workbasket();
+        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
         workbasket2.setName("Hyperbasket");
@@ -164,15 +165,15 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     @Test
     public void testUpdateWorkbasket() throws Exception {
-        Workbasket workbasket0 = new Workbasket();
+        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
         workbasket0.setName("Superbasket");
-        Workbasket workbasket1 = new Workbasket();
+        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
         workbasket1.setName("Megabasket");
-        Workbasket workbasket2 = new Workbasket();
+        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
         workbasket2.setName("Hyperbasket");
@@ -180,7 +181,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         workbasket2.getDistributionTargets().add(workbasket1);
         workBasketService.createWorkbasket(workbasket2);
 
-        Workbasket workbasket3 = new Workbasket();
+        WorkbasketImpl workbasket3 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id3 = IdGenerator.generateWithPrefix("TWB");
         workbasket3.setId(id3);
         workbasket3.setName("hm ... irgend ein basket");
@@ -315,28 +316,28 @@ public class WorkbasketServiceImplIntAutocommitTest {
     public void generateSampleDataForQuery() {
         Date now = new Date();
 
-        Workbasket basket2 = new Workbasket();
+        WorkbasketImpl basket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
         basket2.setCreated(new Timestamp(now.getTime() - DIFF2));
         basket2.setId("2");
         basket2.setName("Basket2");
         basket2.setOwner("Eberhardt");
         workBasketService.createWorkbasket(basket2);
 
-        Workbasket basket3 = new Workbasket();
+        WorkbasketImpl basket3 = (WorkbasketImpl) workBasketService.newWorkbasket();
         basket3.setCreated(new Timestamp(now.getTime() - DIFF1));
         basket3.setId("3");
         basket3.setName("Basket3");
         basket3.setOwner("Konstantin");
         workBasketService.createWorkbasket(basket3);
 
-        Workbasket basket4 = new Workbasket();
+        WorkbasketImpl basket4 = (WorkbasketImpl) workBasketService.newWorkbasket();
         basket4.setCreated(new Timestamp(now.getTime() - DIFF1));
         basket4.setId("4");
         basket4.setName("Basket4");
         basket4.setOwner("Holger");
         workBasketService.createWorkbasket(basket4);
 
-        Workbasket basket1 = new Workbasket();
+        WorkbasketImpl basket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
         basket1.setCreated(new Timestamp(now.getTime() - DIFF1));
         basket1.setId("1");
         basket1.setName("Basket1");

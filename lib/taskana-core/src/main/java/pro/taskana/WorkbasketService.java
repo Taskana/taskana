@@ -1,12 +1,11 @@
 package pro.taskana;
 
+import java.util.List;
+
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
-
-import java.util.List;
 
 /**
  * This service manages the Workbaskets.
@@ -114,4 +113,10 @@ public interface WorkbasketService {
      * @return a {@link WorkbasketQuery}
      */
     WorkbasketQuery createWorkbasketQuery();
+
+    /**
+     * Returns a new workbasket which is not persisted.
+     * @return newWorkbasket
+     */
+    Workbasket newWorkbasket();
 }
