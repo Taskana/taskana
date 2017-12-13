@@ -5,7 +5,6 @@ package pro.taskana.exceptions;
  * @author bbr
  *
  */
-@SuppressWarnings("serial")
 public class TaskanaRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = 1511142769801824L;

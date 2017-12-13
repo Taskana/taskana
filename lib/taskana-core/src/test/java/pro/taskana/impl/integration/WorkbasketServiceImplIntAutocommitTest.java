@@ -248,7 +248,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         WorkbasketQuery query2 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.OPEN, "Bernd", "Konstantin");
         List<Workbasket> result2 = query2.list();
-        Assert.assertEquals(1, result1.size());
+        Assert.assertEquals(1, result2.size());
 
         WorkbasketQuery query3 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.CUSTOM_5, "Bernd", "Konstantin");
         List<Workbasket> result3 = query3.list();
@@ -256,7 +256,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         WorkbasketQuery query4 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.CUSTOM_1, "Bernd");
         List<Workbasket> result4 = query4.list();
-        Assert.assertEquals(0, result3.size());
+        Assert.assertEquals(0, result4.size());
     }
 
 

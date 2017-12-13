@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotOwnerException;
+import pro.taskana.exceptions.TaskNotClaimedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.Task;
@@ -97,11 +99,13 @@ public class TaskController {
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/complete")
     public ResponseEntity<Task> completeTask(@PathVariable String taskId) {
         try {
-            taskService.complete(taskId);
+            taskService.completeTask(taskId, true);
             Task updatedTask = taskService.getTaskById(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch(TaskNotClaimedException | NotOwnerException e) {
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
     }
 

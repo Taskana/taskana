@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotOwnerException;
+import pro.taskana.exceptions.TaskNotClaimedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.Task;
@@ -19,7 +21,7 @@ public class ExampleBootstrap {
 	private TaskService taskService;
 
 	@PostConstruct
-	public void test() throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+	public void test() throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, TaskNotClaimedException, NotOwnerException {
 		System.out.println("---------------------------> Start App");
 		Task task = new Task();
 		task.setName("Spring example task");
@@ -29,8 +31,8 @@ public class ExampleBootstrap {
 		taskService.claim(task.getId(), "John Doe");
 		System.out.println(
 		    "---------------------------> Task claimed: " + taskService.getTaskById(task.getId()).getOwner());
-		// taskService.complete(task.getId());
-		// System.out.println("---------------------------> Task completed");
+		 taskService.completeTask(task.getId(), true);
+		 System.out.println("---------------------------> Task completed");
 	}
 
 }
