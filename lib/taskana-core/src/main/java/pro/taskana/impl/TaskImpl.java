@@ -26,7 +26,7 @@ public class TaskImpl implements Task {
     private int priority;
     private TaskState state;
     private Classification classification;
-    private String workbasketId;
+    private String workbasketKey;
     private String businessProcessId;
     private String parentBusinessProcessId;
     private String owner;
@@ -46,7 +46,8 @@ public class TaskImpl implements Task {
     private String custom9;
     private String custom10;
 
-    TaskImpl() { }
+    TaskImpl() {
+    }
 
     @Override
     public String getId() {
@@ -88,7 +89,6 @@ public class TaskImpl implements Task {
     public Timestamp getModified() {
         return modified;
     }
-
 
     public void setModified(Timestamp modified) {
         this.modified = modified;
@@ -162,20 +162,19 @@ public class TaskImpl implements Task {
     }
 
     @Override
-    public String getWorkbasketId() {
-        return workbasketId;
+    public String getWorkbasketKey() {
+        return workbasketKey;
     }
 
     @Override
-    public void setWorkbasketId(String workbasketId) {
-        this.workbasketId = workbasketId;
+    public void setWorkbasketKey(String workbasketKey) {
+        this.workbasketKey = workbasketKey;
     }
 
     @Override
     public String getBusinessProcessId() {
         return businessProcessId;
     }
-
 
     public void setBusinessProcessId(String businessProcessId) {
         this.businessProcessId = businessProcessId;
@@ -364,8 +363,8 @@ public class TaskImpl implements Task {
         builder.append(state);
         builder.append(", classification=");
         builder.append(classification);
-        builder.append(", workbasketId=");
-        builder.append(workbasketId);
+        builder.append(", workbasketKey=");
+        builder.append(workbasketKey);
         builder.append(", businessProcessId=");
         builder.append(businessProcessId);
         builder.append(", parentBusinessProcessId=");

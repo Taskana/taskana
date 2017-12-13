@@ -8,7 +8,7 @@ public class TaskSummary {
 
     private String taskId;
     private String taskName;
-    private String workbasketId;
+    private String workbasketKey;
     private String workbasketName;
     private String classificationKey;
     private String classificationName;
@@ -25,11 +25,13 @@ public class TaskSummary {
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
-    public String getWorkbasketId() {
-        return workbasketId;
+
+    public String getWorkbasketKey() {
+        return workbasketKey;
     }
-    public void setWorkbasketId(String workbasketId) {
-        this.workbasketId = workbasketId;
+
+    public void setWorkbasketKey(String workbasketKey) {
+        this.workbasketKey = workbasketKey;
     }
     public String getWorkbasketName() {
         return workbasketName;
@@ -58,7 +60,7 @@ public class TaskSummary {
         result = prime * result + ((classificationName == null) ? 0 : classificationName.hashCode());
         result = prime * result + ((taskId == null) ? 0 : taskId.hashCode());
         result = prime * result + ((taskName == null) ? 0 : taskName.hashCode());
-        result = prime * result + ((workbasketId == null) ? 0 : workbasketId.hashCode());
+        result = prime * result + ((workbasketKey == null) ? 0 : workbasketKey.hashCode());
         result = prime * result + ((workbasketName == null) ? 0 : workbasketName.hashCode());
         return result;
     }
@@ -103,11 +105,11 @@ public class TaskSummary {
         } else if (!taskName.equals(other.taskName)) {
             return false;
         }
-        if (workbasketId == null) {
-            if (other.workbasketId != null) {
+        if (workbasketKey == null) {
+            if (other.workbasketKey != null) {
                 return false;
             }
-        } else if (!workbasketId.equals(other.workbasketId)) {
+        } else if (!workbasketKey.equals(other.workbasketKey)) {
             return false;
         }
         if (workbasketName == null) {
@@ -122,8 +124,20 @@ public class TaskSummary {
 
     @Override
     public String toString() {
-        return "TaskSummary [taskId=" + taskId + ", taskName=" + taskName + ", workbasketId=" + workbasketId
-                + ", workbasketName=" + workbasketName + ", classificationKey=" + classificationKey
-                + ", classificationName=" + classificationName + "]";
+        StringBuilder builder = new StringBuilder();
+        builder.append("TaskSummary [taskId=");
+        builder.append(taskId);
+        builder.append(", taskName=");
+        builder.append(taskName);
+        builder.append(", workbasketKey=");
+        builder.append(workbasketKey);
+        builder.append(", workbasketName=");
+        builder.append(workbasketName);
+        builder.append(", classificationKey=");
+        builder.append(classificationKey);
+        builder.append(", classificationName=");
+        builder.append(classificationName);
+        builder.append("]");
+        return builder.toString();
     }
 }

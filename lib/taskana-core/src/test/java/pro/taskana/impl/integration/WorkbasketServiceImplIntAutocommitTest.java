@@ -1,5 +1,7 @@
 package pro.taskana.impl.integration;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
@@ -14,6 +16,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
+import org.apache.ibatis.session.SqlSession;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -29,39 +32,55 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.TaskanaEngineProxyForTest;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketType;
+import pro.taskana.model.mappings.WorkbasketMapper;
 import pro.taskana.security.GroupPrincipal;
 import pro.taskana.security.UserPrincipal;
 
-
 /**
  * Integration Test for workbasketServiceImpl with connection management mode AUTOCOMMIT.
+ *
  * @author EH
  */
 public class WorkbasketServiceImplIntAutocommitTest {
 
     private static final int SLEEP_TIME = 100;
+
     private static final int THREE = 3;
 
-    private static final int DIFF1 = 200000;
-    private static final int DIFF2 = 400000;
+    private static final long ONE_DAY = 24 * 3600 * 1000;
+
+    private static final long TEN_DAYS = 10 * ONE_DAY;
+
+    private static final long FIFTEEN_DAYS = 15 * ONE_DAY;
+
+    private static final long TWENTY_DAYS = 2 * TEN_DAYS;
 
     static int counter = 0;
 
     private DataSource dataSource;
+
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
+
     private TaskanaEngine taskanaEngine;
+
     private TaskanaEngineImpl taskanaEngineImpl;
+
     private WorkbasketService workBasketService;
+
+    private Date workBasketsCreated;
 
     @BeforeClass
     public static void resetDb() throws SQLException {
@@ -83,77 +102,113 @@ public class WorkbasketServiceImplIntAutocommitTest {
     }
 
     @Test
-    public void testInsertWorkbasket() throws NotAuthorizedException {
+    public void testInsertWorkbasket()
+        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketNotFoundException {
         int before = workBasketService.getWorkbaskets().size();
         WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket.setId(id1);
+        workbasket.setKey("key");
         workbasket.setName("Megabasket");
+        workbasket.setType(WorkbasketType.GROUP);
+        workbasket.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket);
         Assert.assertEquals(before + 1, workBasketService.getWorkbaskets().size());
     }
 
     @Test
-    public void testSelectAllWorkbaskets() throws NotAuthorizedException {
+    public void testSelectAllWorkbaskets()
+        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketNotFoundException {
         int before = workBasketService.getWorkbaskets().size();
         WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
+        workbasket0.setKey("key0");
         workbasket0.setName("Superbasket");
+        workbasket0.setType(WorkbasketType.PERSONAL);
+        workbasket0.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket0);
         WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
+        workbasket1.setKey("key1");
         workbasket1.setName("Megabasket");
+        workbasket1.setType(WorkbasketType.GROUP);
+        workbasket1.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket1);
         WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
+        workbasket2.setKey("key2");
         workbasket2.setName("Hyperbasket");
+        workbasket2.setType(WorkbasketType.GROUP);
+        workbasket2.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket2);
         Assert.assertEquals(before + THREE, workBasketService.getWorkbaskets().size());
     }
 
     @Test
-    public void testSelectWorkbasket() throws WorkbasketNotFoundException, NotAuthorizedException {
+    public void testSelectWorkbasket()
+        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
         WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
+        workbasket0.setKey("key0");
         workbasket0.setName("Superbasket");
+        workbasket0.setType(WorkbasketType.GROUP);
+        workbasket0.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket0);
         WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
+        workbasket1.setKey("key1");
         workbasket1.setName("Megabasket");
+        workbasket1.setType(WorkbasketType.GROUP);
+        workbasket1.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket1);
         WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
+        workbasket2.setKey("key2");
         workbasket2.setName("Hyperbasket");
+        workbasket2.setType(WorkbasketType.GROUP);
+        workbasket2.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket2);
         Workbasket foundWorkbasket = workBasketService.getWorkbasket(id2);
         Assert.assertEquals(id2, foundWorkbasket.getId());
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
-    public void testGetWorkbasketFail() throws WorkbasketNotFoundException {
+    public void testGetWorkbasketFail() throws WorkbasketNotFoundException, InvalidWorkbasketException {
         workBasketService.getWorkbasket("fail");
     }
 
     @Test
-    public void testSelectWorkbasketWithDistribution() throws WorkbasketNotFoundException, NotAuthorizedException {
+    public void testSelectWorkbasketWithDistribution()
+        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
         WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
+        workbasket0.setKey("key0");
         workbasket0.setName("Superbasket");
         WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
+        workbasket0.setType(WorkbasketType.GROUP);
+        workbasket0.setDomain("novatec");
+        workBasketService.createWorkbasket(workbasket0);
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
+        workbasket1.setKey("key1");
         workbasket1.setName("Megabasket");
         WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
+        workbasket1.setType(WorkbasketType.GROUP);
+        workbasket1.setDomain("novatec");
+        workBasketService.createWorkbasket(workbasket1);
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
+        workbasket2.setKey("key2");
         workbasket2.setName("Hyperbasket");
+        workbasket2.setType(WorkbasketType.GROUP);
+        workbasket2.setDomain("novatec");
         workbasket2.setDistributionTargets(new ArrayList<>());
         workbasket2.getDistributionTargets().add(workbasket0);
         workbasket2.getDistributionTargets().add(workbasket1);
@@ -168,15 +223,26 @@ public class WorkbasketServiceImplIntAutocommitTest {
         WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
+        workbasket0.setKey("key0");
         workbasket0.setName("Superbasket");
         WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
+        workbasket0.setType(WorkbasketType.GROUP);
+        workbasket0.setDomain("novatec");
+        workBasketService.createWorkbasket(workbasket0);
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
+        workbasket1.setKey("key1");
         workbasket1.setName("Megabasket");
         WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
+        workbasket1.setType(WorkbasketType.GROUP);
+        workbasket1.setDomain("novatec");
+        workBasketService.createWorkbasket(workbasket1);
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
+        workbasket2.setKey("key2");
         workbasket2.setName("Hyperbasket");
+        workbasket2.setType(WorkbasketType.GROUP);
+        workbasket2.setDomain("novatec");
         workbasket2.getDistributionTargets().add(workbasket0);
         workbasket2.getDistributionTargets().add(workbasket1);
         workBasketService.createWorkbasket(workbasket2);
@@ -184,7 +250,11 @@ public class WorkbasketServiceImplIntAutocommitTest {
         WorkbasketImpl workbasket3 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id3 = IdGenerator.generateWithPrefix("TWB");
         workbasket3.setId(id3);
+        workbasket3.setKey("key3");
         workbasket3.setName("hm ... irgend ein basket");
+        workbasket3.setType(WorkbasketType.GROUP);
+        workbasket3.setDomain("novatec");
+        workBasketService.createWorkbasket(workbasket3);
         workbasket2.getDistributionTargets().clear();
         workbasket2.getDistributionTargets().add(workbasket3);
         Thread.sleep(SLEEP_TIME);
@@ -196,18 +266,17 @@ public class WorkbasketServiceImplIntAutocommitTest {
         Assert.assertEquals(1, distributionTargets.size());
         Assert.assertEquals(id3, distributionTargets.get(0).getId());
         Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),
-                workBasketService.getWorkbasket(id2).getModified());
+            workBasketService.getWorkbasket(id2).getModified());
         Assert.assertEquals(workBasketService.getWorkbasket(id1).getCreated(),
-                workBasketService.getWorkbasket(id1).getModified());
+            workBasketService.getWorkbasket(id1).getModified());
         Assert.assertEquals(workBasketService.getWorkbasket(id3).getCreated(),
-                workBasketService.getWorkbasket(id3).getModified());
+            workBasketService.getWorkbasket(id3).getModified());
     }
 
     @Test
     public void testInsertWorkbasketAccessUser() throws NotAuthorizedException {
         WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        String id1 = IdGenerator.generateWithPrefix("TWB");
-        accessItem.setWorkbasketId(id1);
+        accessItem.setWorkbasketKey("k1");
         accessItem.setAccessId("Arthur Dent");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
@@ -219,8 +288,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
     @Test
     public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException {
         WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        String id1 = IdGenerator.generateWithPrefix("TWB");
-        accessItem.setWorkbasketId(id1);
+        accessItem.setWorkbasketKey("k2");
         accessItem.setAccessId("Arthur Dent");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
@@ -232,37 +300,88 @@ public class WorkbasketServiceImplIntAutocommitTest {
         workBasketService.updateWorkbasketAuthorization(accessItem);
 
         Assert.assertEquals("Zaphod Beeblebrox",
-                workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
+            workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
     }
 
     @Test
-    public void testWorkbasketQuery() throws NotAuthorizedException, InvalidArgumentException {
+    public void testWorkbasketQuery()
+        throws NotAuthorizedException, InvalidArgumentException, InvalidWorkbasketException,
+        WorkbasketNotFoundException {
 
         generateSampleDataForQuery();
 
-        WorkbasketQuery query1 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.OPEN, "Bernd").name("Basket1");
+        Date tomorrow = new Date(workBasketsCreated.getTime() + ONE_DAY);
+        Date yesterday = new Date(workBasketsCreated.getTime() - ONE_DAY);
+        Date tenDaysAgo = new Date(workBasketsCreated.getTime() - TEN_DAYS);
+        Date fifteenDaysAgo = new Date(workBasketsCreated.getTime() - FIFTEEN_DAYS);
+        Date twentyDaysAgo = new Date(workBasketsCreated.getTime() - TWENTY_DAYS);
+        Date thirtyDaysAgo = new Date(workBasketsCreated.getTime() - THREE * TEN_DAYS);
+
+        WorkbasketQuery query1 = workBasketService.createWorkbasketQuery()
+            .access(WorkbasketAuthorization.OPEN, "Bernd")
+            .nameIn("Basket1");
         List<Workbasket> result1 = query1.list();
 
-        int numDistTargets = 1 + 1 + 1;
         Assert.assertEquals(1, result1.size());
-        Assert.assertEquals(numDistTargets, result1.get(0).getDistributionTargets().size());
+        Assert.assertEquals(THREE, result1.get(0).getDistributionTargets().size());
 
-        WorkbasketQuery query2 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.OPEN, "Bernd", "Konstantin");
+        WorkbasketQuery query2 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.OPEN, "Bernd",
+            "Konstantin");
         List<Workbasket> result2 = query2.list();
         Assert.assertEquals(1, result2.size());
 
-        WorkbasketQuery query3 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.CUSTOM_5, "Bernd", "Konstantin");
+        WorkbasketQuery query3 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.CUSTOM_5,
+            "Bernd", "Konstantin");
         List<Workbasket> result3 = query3.list();
         Assert.assertEquals(0, result3.size());
 
-        WorkbasketQuery query4 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.CUSTOM_1, "Bernd");
+        WorkbasketQuery query4 = workBasketService.createWorkbasketQuery().access(WorkbasketAuthorization.CUSTOM_1,
+            "Bernd");
         List<Workbasket> result4 = query4.list();
         Assert.assertEquals(0, result4.size());
+
+        WorkbasketQuery query0 = workBasketService.createWorkbasketQuery()
+            .createdBefore(tomorrow)
+            .createdAfter(yesterday)
+            .nameIn("Basket1", "Basket2", "Basket3");
+        List<Workbasket> result0 = query0.list();
+        assertTrue(result0.size() == THREE);
+        for (Workbasket workbasket : result0) {
+            String name = workbasket.getName();
+            assertTrue("Basket1".equals(name) || "Basket2".equals(name) || "Basket3".equals(name));
+        }
+
+        WorkbasketQuery query5 = workBasketService.createWorkbasketQuery()
+            .modifiedAfter(thirtyDaysAgo)
+            .modifiedBefore(tenDaysAgo);
+        List<Workbasket> result5 = query5.list();
+        assertTrue(result5.size() == 2);
+        for (Workbasket workbasket : result5) {
+            String name = workbasket.getName();
+            assertTrue("Basket2".equals(name) || "Basket3".equals(name));
+        }
+
+        WorkbasketQuery query6 = workBasketService.createWorkbasketQuery()
+            .modifiedAfter(twentyDaysAgo)
+            .domainIn("novatec", "consulting");
+        List<Workbasket> result6 = query6.list();
+        assertTrue(result6.size() == 1);
+        assertTrue("Basket2".equals(result6.get(0).getName()));
+
+        WorkbasketQuery query7 = workBasketService.createWorkbasketQuery()
+            .typeIn(WorkbasketType.GROUP, WorkbasketType.CLEARANCE);
+        List<Workbasket> result7 = query7.list();
+        assertTrue(result7.size() == 2);
+        for (Workbasket workbasket : result7) {
+            String name = workbasket.getName();
+            assertTrue("Basket2".equals(name) || "Basket3".equals(name));
+        }
+
     }
 
-
     @Test
-    public void testGetWorkbasketsForCurrentUserAndPermission() throws NotAuthorizedException {
+    public void testGetWorkbasketsForCurrentUserAndPermission()
+        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketNotFoundException {
         generateSampleDataForQuery();
 
         String userName = "eberhardt";
@@ -276,17 +395,17 @@ public class WorkbasketServiceImplIntAutocommitTest {
         Assert.assertTrue(2 == getWorkbasketsForPrincipalesAndPermissions(userName, groupNames, authorizations));
 
         authorizations.add(WorkbasketAuthorization.CUSTOM_4);
-        Assert.assertTrue(0  == getWorkbasketsForPrincipalesAndPermissions(userName, groupNames, authorizations));
+        Assert.assertTrue(0 == getWorkbasketsForPrincipalesAndPermissions(userName, groupNames, authorizations));
 
         userName = "Holger";
         authorizations = new ArrayList<WorkbasketAuthorization>();
         authorizations.add(WorkbasketAuthorization.APPEND);
-        Assert.assertTrue(1  == getWorkbasketsForPrincipalesAndPermissions(userName, groupNames, authorizations));
+        Assert.assertTrue(1 == getWorkbasketsForPrincipalesAndPermissions(userName, groupNames, authorizations));
 
     }
 
     private int getWorkbasketsForPrincipalesAndPermissions(String userName, String[] groupNames,
-            List<WorkbasketAuthorization> authorizations) throws NotAuthorizedException {
+        List<WorkbasketAuthorization> authorizations) throws NotAuthorizedException {
         Subject subject = new Subject();
         List<Principal> principalList = new ArrayList<>();
         principalList.add(new UserPrincipal(userName));
@@ -298,7 +417,10 @@ public class WorkbasketServiceImplIntAutocommitTest {
         int result = -1;
         try {
             result = Subject.doAs(subject, new PrivilegedExceptionAction<Integer>() {
-                public Integer run() throws TaskNotFoundException, FileNotFoundException, NotAuthorizedException, SQLException, WorkbasketNotFoundException, ClassificationNotFoundException {
+
+                @Override
+                public Integer run() throws TaskNotFoundException, FileNotFoundException, NotAuthorizedException,
+                    SQLException, WorkbasketNotFoundException, ClassificationNotFoundException {
                     List<Workbasket> wbsResult = workBasketService.getWorkbaskets(authorizations);
                     return wbsResult.size();
                 }
@@ -313,45 +435,55 @@ public class WorkbasketServiceImplIntAutocommitTest {
         return result;
     }
 
-    public void generateSampleDataForQuery() {
-        Date now = new Date();
+    public void generateSampleDataForQuery() throws InvalidWorkbasketException, WorkbasketNotFoundException {
+        workBasketsCreated = new Date();
 
         WorkbasketImpl basket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
-        basket2.setCreated(new Timestamp(now.getTime() - DIFF2));
         basket2.setId("2");
+        basket2.setKey("k2");
         basket2.setName("Basket2");
         basket2.setOwner("Eberhardt");
-        workBasketService.createWorkbasket(basket2);
+        basket2.setType(WorkbasketType.GROUP);
+        basket2.setDomain("novatec");
+        basket2 = (WorkbasketImpl) workBasketService.createWorkbasket(basket2);
 
         WorkbasketImpl basket3 = (WorkbasketImpl) workBasketService.newWorkbasket();
-        basket3.setCreated(new Timestamp(now.getTime() - DIFF1));
         basket3.setId("3");
+        basket3.setKey("k3");
         basket3.setName("Basket3");
         basket3.setOwner("Konstantin");
-        workBasketService.createWorkbasket(basket3);
+        basket3.setType(WorkbasketType.CLEARANCE);
+        basket3.setDomain("consulting");
+        basket3 = (WorkbasketImpl) workBasketService.createWorkbasket(basket3);
 
         WorkbasketImpl basket4 = (WorkbasketImpl) workBasketService.newWorkbasket();
-        basket4.setCreated(new Timestamp(now.getTime() - DIFF1));
         basket4.setId("4");
+        basket4.setKey("k4");
         basket4.setName("Basket4");
         basket4.setOwner("Holger");
-        workBasketService.createWorkbasket(basket4);
+        basket4.setType(WorkbasketType.TOPIC);
+        basket4.setDomain("develop");
+        basket4 = (WorkbasketImpl) workBasketService.createWorkbasket(basket4);
 
         WorkbasketImpl basket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
-        basket1.setCreated(new Timestamp(now.getTime() - DIFF1));
         basket1.setId("1");
+        basket1.setKey("k1");
         basket1.setName("Basket1");
         basket1.setOwner("Holger");
+        basket1.setType(WorkbasketType.PERSONAL);
+        basket1.setDomain("");
         List<Workbasket> distTargets = new ArrayList<Workbasket>();
         distTargets.add(basket2);
         distTargets.add(basket3);
         distTargets.add(basket4);
         basket1.setDistributionTargets(distTargets);
-        workBasketService.createWorkbasket(basket1);
+        basket1 = (WorkbasketImpl) workBasketService.createWorkbasket(basket1);
+
+        updateModifiedTimestamps(basket2, basket3, basket4, basket1);
 
         WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
         accessItem.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem.setWorkbasketId("1");
+        accessItem.setWorkbasketKey("k1");
         accessItem.setAccessId("Bernd");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
@@ -359,7 +491,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         WorkbasketAccessItem accessItem2 = new WorkbasketAccessItem();
         accessItem2.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem2.setWorkbasketId("2");
+        accessItem2.setWorkbasketKey("k2");
         accessItem2.setAccessId("Eberhardt");
         accessItem2.setPermTransfer(true);
         accessItem2.setPermCustom1(true);
@@ -367,7 +499,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         WorkbasketAccessItem accessItem3 = new WorkbasketAccessItem();
         accessItem3.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem3.setWorkbasketId("3");
+        accessItem3.setWorkbasketKey("k3");
         accessItem3.setAccessId("group2");
         accessItem3.setPermCustom4(true);
         accessItem3.setPermCustom1(true);
@@ -375,13 +507,38 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         WorkbasketAccessItem accessItem4 = new WorkbasketAccessItem();
         accessItem4.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem4.setWorkbasketId("1");
+        accessItem4.setWorkbasketKey("k4");
         accessItem4.setAccessId("group3");
         accessItem4.setPermOpen(true);
         accessItem4.setPermRead(true);
         accessItem4.setPermAppend(true);
         workBasketService.createWorkbasketAuthorization(accessItem4);
 
+    }
+
+    private void updateModifiedTimestamps(Workbasket basket2, Workbasket basket3, Workbasket basket4,
+        Workbasket basket1) {
+        // created and modified timestamps are set by WorkbasketServiceImpl to 'now' when the workbasket is created
+        // in order to create timestamps distict from the current time, we must use the mapper directly to bypass
+        // WorkbasketServiceImpl
+        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngineImpl);
+        SqlSession session = engineProxy.getSqlSession();
+        WorkbasketMapper mapper = session.getMapper(WorkbasketMapper.class);
+
+        WorkbasketImpl wb1 = (WorkbasketImpl) basket1;
+        WorkbasketImpl wb2 = (WorkbasketImpl) basket2;
+        WorkbasketImpl wb3 = (WorkbasketImpl) basket3;
+        WorkbasketImpl wb4 = (WorkbasketImpl) basket4;
+        engineProxy.openConnection();
+        wb1.setModified(new Timestamp(workBasketsCreated.getTime() - TEN_DAYS));
+        mapper.update(wb1);
+        wb2.setModified(new Timestamp(workBasketsCreated.getTime() - FIFTEEN_DAYS));
+        mapper.update(wb2);
+        wb3.setModified(new Timestamp(workBasketsCreated.getTime() - TWENTY_DAYS));
+        mapper.update(wb3);
+        wb4.setModified(new Timestamp(workBasketsCreated.getTime() - (2 * FIFTEEN_DAYS)));
+        mapper.update(wb4);
+        engineProxy.returnConnection();
     }
 
     @AfterClass

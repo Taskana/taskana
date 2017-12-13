@@ -9,6 +9,7 @@ import javax.enterprise.event.Observes;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -23,7 +24,8 @@ public class ExampleBootstrap {
     @PostConstruct
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init)
         throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, InvalidStateException, InvalidOwnerException, TaskAlreadyExistException {
+        ClassificationNotFoundException, InvalidStateException, InvalidOwnerException, InvalidWorkbasketException,
+        TaskAlreadyExistException {
         System.out.println("---------------------------> Start App");
         Task task = taskanaEjb.getTaskService().newTask();
         task = taskanaEjb.getTaskService().createTask(task);
@@ -35,4 +37,5 @@ public class ExampleBootstrap {
         taskanaEjb.getTaskService().completeTask(task.getId());
         System.out.println("---------------------------> Task completed");
     }
+
 }

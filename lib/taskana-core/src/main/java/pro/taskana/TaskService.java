@@ -5,6 +5,7 @@ import java.util.List;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -97,10 +98,12 @@ public interface TaskService {
      *             thrown if the work basket referenced by the task is not found
      * @throws ClassificationNotFoundException
      *             thrown if the {@link Classification} referenced by the task is not found
+     * @throws InvalidWorkbasketException
+     *             thrown if the referenced Workbasket has missing required properties
      */
     Task createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        TaskAlreadyExistException;
+        TaskAlreadyExistException, InvalidWorkbasketException;
 
     /**
      * Get the details of a task by Id.
@@ -118,8 +121,8 @@ public interface TaskService {
      *
      * @param taskId
      *            The id of the {@link Task} to be transferred
-     * @param workbasketId
-     *            The id of the target work basket
+     * @param workbasketKey
+     *            The key of the target work basket
      * @return the transferred task
      * @throws TaskNotFoundException
      *             Thrown if the {@link Task} with taskId was not found.
@@ -127,9 +130,11 @@ public interface TaskService {
      *             Thrown if the target work basket was not found.
      * @throws NotAuthorizedException
      *             Thrown if the current user is not authorized to transfer this {@link Task} to the target work basket
+     * @throws InvalidWorkbasketException
+     *             Thrown if either the source or the target workbasket has a missing required property
      */
-    Task transfer(String taskId, String workbasketId)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException;
+    Task transfer(String taskId, String workbasketKey)
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException;
 
     /**
      * Marks a task as read.
@@ -154,8 +159,8 @@ public interface TaskService {
     /**
      * Getting a list of all Tasks which got matching workbasketIds and states.
      *
-     * @param workbasketId
-     *            where the tasks need to be in.
+     * @param workbasketKey
+     *            the key of the workbasket where the tasks need to be in.
      * @param taskState
      *            which is required for the request,
      * @return a filled/empty list of tasks with attributes which are matching given params.
@@ -164,19 +169,22 @@ public interface TaskService {
      * @throws NotAuthorizedException
      *             if the current user got no rights for reading on this work basket.
      */
-    List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState)
+    List<Task> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
         throws WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
      * Getting a short summary of all tasks in a specific work basket.
      *
-     * @param workbasketId
-     *            ID of work basket where tasks are located.
+     * @param workbasketKey
+     *            Key of work basket where tasks are located.
      * @return TaskSummaryList with all TaskSummaries of a work basket
      * @throws WorkbasketNotFoundException
      *             if a Work basket can´t be located.
+     * @throws InvalidWorkbasketException
+     *             thrown if the Workbasket specified with workbasketId has a missing required property
      */
-    List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId) throws WorkbasketNotFoundException;
+    List<TaskSummary> getTaskSummariesByWorkbasketKey(String workbasketKey)
+        throws WorkbasketNotFoundException, InvalidWorkbasketException;
 
     /**
      * Returns a not persisted instance of {@link Task}.

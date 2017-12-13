@@ -6,7 +6,7 @@ package pro.taskana.model;
 public class WorkbasketAccessItem {
 
     private String id;
-    private String workbasketId;
+    private String workbasketKey;
     private String accessId;
     private boolean permRead;
     private boolean permOpen;
@@ -31,12 +31,12 @@ public class WorkbasketAccessItem {
         this.id = id;
     }
 
-    public String getWorkbasketId() {
-        return workbasketId;
+    public String getWorkbasketKey() {
+        return workbasketKey;
     }
 
-    public void setWorkbasketId(String workbasketId) {
-        this.workbasketId = workbasketId;
+    public void setWorkbasketKey(String workbasketKey) {
+        this.workbasketKey = workbasketKey;
     }
 
     public String getAccessId() {
@@ -156,8 +156,8 @@ public class WorkbasketAccessItem {
         StringBuilder builder = new StringBuilder();
         builder.append("WorkbasketAccessItem [id=");
         builder.append(id);
-        builder.append(", workbasketId=");
-        builder.append(workbasketId);
+        builder.append(", workbasketKey=");
+        builder.append(workbasketKey);
         builder.append(", accessId=");
         builder.append(accessId);
         builder.append(", permRead=");

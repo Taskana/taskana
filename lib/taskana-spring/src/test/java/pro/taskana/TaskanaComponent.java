@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -21,11 +22,12 @@ public class TaskanaComponent {
     }
 
     public void triggerRollback() throws NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, TaskAlreadyExistException {
+        ClassificationNotFoundException, InvalidWorkbasketException, TaskAlreadyExistException {
         Task task = taskService.newTask();
         task.setName("Unit Test Task");
-        task.setWorkbasketId("1");
+        task.setWorkbasketKey("1");
         task = taskService.createTask(task);
         throw new RuntimeException();
     }
+
 }

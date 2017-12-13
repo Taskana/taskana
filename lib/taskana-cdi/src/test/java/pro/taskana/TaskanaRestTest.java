@@ -16,10 +16,12 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.model.WorkbasketType;
 
 @Path("/test")
 public class TaskanaRestTest {
@@ -34,10 +36,13 @@ public class TaskanaRestTest {
 
     @GET
     public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, ClassificationAlreadyExistException, TaskAlreadyExistException {
+        ClassificationNotFoundException, ClassificationAlreadyExistException, InvalidWorkbasketException,
+        TaskAlreadyExistException {
         Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket();
-        ;
         workbasket.setName("wb");
+        workbasket.setKey("key");
+        workbasket.setDomain("cdiDomain");
+        workbasket.setType(WorkbasketType.PERSONAL);
         taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
         Classification classification = classificationService.newClassification();
         classification.setKey("TEST");
@@ -45,17 +50,17 @@ public class TaskanaRestTest {
 
         Task task = taskanaEjb.getTaskService().newTask();
         task.setClassification(classification);
-        task.setWorkbasketId(workbasket.getId());
+        task.setWorkbasketKey(workbasket.getKey());
+        Task result = taskanaEjb.getTaskService().createTask(task);
 
-        Task resultTask = taskanaEjb.getTaskService().createTask(task);
-
-        logger.info(resultTask.getId() + ":" + resultTask.getOwner());
-        return Response.status(200).entity(resultTask.getId()).build();
+        logger.info(result.getId() + ":" + result.getOwner());
+        return Response.status(200).entity(result.getId()).build();
     }
 
     @POST
-    public Response rollbackTask() throws NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, TaskAlreadyExistException {
+    public Response rollbackTask()
+        throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
+        InvalidWorkbasketException, TaskAlreadyExistException {
         taskanaEjb.triggerRollback();
         return Response.status(204).build();
     }

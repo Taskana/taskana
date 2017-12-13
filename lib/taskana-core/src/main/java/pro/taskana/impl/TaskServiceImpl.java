@@ -14,10 +14,12 @@ import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -38,21 +40,14 @@ import pro.taskana.security.CurrentUserContext;
 public class TaskServiceImpl implements TaskService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
-
     private static final String ID_PREFIX_OBJECT_REFERENCE = "ORI";
-
     private static final String ID_PREFIX_TASK = "TKI";
-
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
 
     private TaskanaEngine taskanaEngine;
-
     private TaskanaEngineImpl taskanaEngineImpl;
-
     private WorkbasketService workbasketService;
-
     private TaskMapper taskMapper;
-
     private ObjectReferenceMapper objectReferenceMapper;
 
     public TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
@@ -155,7 +150,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        TaskAlreadyExistException {
+        TaskAlreadyExistException, InvalidWorkbasketException {
         LOGGER.debug("entry to createTask(task = {})", taskToCreate);
         try {
             taskanaEngineImpl.openConnection();
@@ -163,15 +158,15 @@ public class TaskServiceImpl implements TaskService {
             if (task.getId() != "" && task.getId() != null) {
                 throw new TaskAlreadyExistException(taskToCreate.getId());
             } else {
-                LOGGER.debug("Task {} can´t be be found, so it can be created.", taskToCreate.getId());
-                workbasketService.getWorkbasket(task.getWorkbasketId());
-                workbasketService.checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
+                LOGGER.debug("Task {} cannot be be found, so it can be created.", taskToCreate.getId());
+                Workbasket workbasket = workbasketService.getWorkbasketByKey(task.getWorkbasketKey());
+                workbasketService.checkAuthorization(task.getWorkbasketKey(), WorkbasketAuthorization.APPEND);
                 Classification classification = task.getClassification();
                 if (classification == null) {
                     throw new ClassificationNotFoundException(null);
                 }
                 taskanaEngine.getClassificationService().getClassification(classification.getKey(),
-                    classification.getDomain());
+                    workbasket.getDomain());
 
                 standardSettings(task);
                 this.taskMapper.insert(task);
@@ -204,22 +199,22 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task transfer(String taskId, String destinationWorkbasketId)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
-        LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketId = {})", taskId, destinationWorkbasketId);
+    public Task transfer(String taskId, String destinationWorkbasketKey)
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketKey = {})", taskId, destinationWorkbasketKey);
         Task result = null;
         try {
             taskanaEngineImpl.openConnection();
             TaskImpl task = (TaskImpl) getTaskById(taskId);
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
-            workbasketService.checkAuthorization(destinationWorkbasketId, WorkbasketAuthorization.APPEND);
-            workbasketService.checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.TRANSFER);
+            workbasketService.checkAuthorization(destinationWorkbasketKey, WorkbasketAuthorization.APPEND);
+            workbasketService.checkAuthorization(task.getWorkbasketKey(), WorkbasketAuthorization.TRANSFER);
 
             // if security is disabled, the implicit existance check on the
             // destination workbasket has been skipped and needs to be performed
             if (!taskanaEngine.getConfiguration().isSecurityEnabled()) {
-                workbasketService.getWorkbasket(destinationWorkbasketId);
+                workbasketService.getWorkbasketByKey(destinationWorkbasketKey);
             }
 
             // reset read flag and set transferred flag
@@ -227,13 +222,13 @@ public class TaskServiceImpl implements TaskService {
             task.setTransferred(true);
 
             // transfer task from source to destination workbasket
-            task.setWorkbasketId(destinationWorkbasketId);
+            task.setWorkbasketKey(destinationWorkbasketKey);
             task.setModified(Timestamp.valueOf(LocalDateTime.now()));
             taskMapper.update(task);
 
             result = getTaskById(taskId);
             LOGGER.debug("Method transfer() transferred Task '{}' to destination workbasket {}", taskId,
-                destinationWorkbasketId);
+                destinationWorkbasketKey);
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -266,15 +261,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTasksByWorkbasketIdAndState(String workbasketId, TaskState taskState)
+    public List<Task> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
         throws WorkbasketNotFoundException, NotAuthorizedException {
-        LOGGER.debug("entry to getTasksByWorkbasketIdAndState(workbasketId = {}, taskState = {})", workbasketId,
+        LOGGER.debug("entry to getTasksByWorkbasketKeyAndState(workbasketId = {}, taskState = {})", workbasketKey,
             taskState);
         List<Task> results = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
-            workbasketService.checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
-            List<TaskImpl> tasks = taskMapper.findTasksByWorkbasketIdAndState(workbasketId, taskState);
+            workbasketService.checkAuthorization(workbasketKey, WorkbasketAuthorization.READ);
+            List<TaskImpl> tasks = taskMapper.findTasksByWorkbasketIdAndState(workbasketKey, taskState);
             tasks.stream().forEach(t -> results.add(t));
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -341,13 +336,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId) throws WorkbasketNotFoundException {
-        LOGGER.debug("entry to getTaskSummariesByWorkbasketId(workbasketId = {}", workbasketId);
+    public List<TaskSummary> getTaskSummariesByWorkbasketKey(String workbasketKey)
+        throws WorkbasketNotFoundException, InvalidWorkbasketException {
+        LOGGER.debug("entry to getTaskSummariesByWorkbasketId(workbasketId = {}", workbasketKey);
         List<TaskSummary> taskSummaries = new ArrayList<>();
-        workbasketService.getWorkbasket(workbasketId);
+        workbasketService.getWorkbasketByKey(workbasketKey);
         try {
             taskanaEngineImpl.openConnection();
-            taskSummaries = taskMapper.findTaskSummariesByWorkbasketId(workbasketId);
+            taskSummaries = taskMapper.findTaskSummariesByWorkbasketKey(workbasketKey);
         } catch (Exception ex) {
             LOGGER.error("Getting TASKSUMMARY failed internally.", ex);
         } finally {

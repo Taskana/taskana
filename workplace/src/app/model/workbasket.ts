@@ -1,5 +1,5 @@
 export class Workbasket {
-    id: string;
+    key: string;
     created: string;
     modified: string;
     name: string;
