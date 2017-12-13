@@ -10,7 +10,7 @@ public class TaskSummary {
     private String taskName;
     private String workbasketId;
     private String workbasketName;
-    private String classificationId;
+    private String classificationKey;
     private String classificationName;
 
     public String getTaskId() {
@@ -37,11 +37,11 @@ public class TaskSummary {
     public void setWorkbasketName(String workbasketName) {
         this.workbasketName = workbasketName;
     }
-    public String getClassificationId() {
-        return classificationId;
+    public String getClassificationKey() {
+        return classificationKey;
     }
-    public void setClassificationId(String classificationId) {
-        this.classificationId = classificationId;
+    public void setClassificationKey(String classificationKey) {
+        this.classificationKey = classificationKey;
     }
     public String getClassificationName() {
         return classificationName;
@@ -54,7 +54,7 @@ public class TaskSummary {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((classificationId == null) ? 0 : classificationId.hashCode());
+        result = prime * result + ((classificationKey == null) ? 0 : classificationKey.hashCode());
         result = prime * result + ((classificationName == null) ? 0 : classificationName.hashCode());
         result = prime * result + ((taskId == null) ? 0 : taskId.hashCode());
         result = prime * result + ((taskName == null) ? 0 : taskName.hashCode());
@@ -75,11 +75,11 @@ public class TaskSummary {
             return false;
         }
         TaskSummary other = (TaskSummary) obj;
-        if (classificationId == null) {
-            if (other.classificationId != null) {
+        if (classificationKey == null) {
+            if (other.classificationKey != null) {
                 return false;
             }
-        } else if (!classificationId.equals(other.classificationId)) {
+        } else if (!classificationKey.equals(other.classificationKey)) {
             return false;
         }
         if (classificationName == null) {
@@ -123,7 +123,7 @@ public class TaskSummary {
     @Override
     public String toString() {
         return "TaskSummary [taskId=" + taskId + ", taskName=" + taskName + ", workbasketId=" + workbasketId
-                + ", workbasketName=" + workbasketName + ", classificationId=" + classificationId
+                + ", workbasketName=" + workbasketName + ", classificationKey=" + classificationKey
                 + ", classificationName=" + classificationName + "]";
     }
 }

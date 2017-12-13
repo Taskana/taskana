@@ -23,13 +23,13 @@ import pro.taskana.model.Workbasket;
 public interface QueryMapper {
 
     String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.model.mappings.ObjectReferenceMapper.findById";
-    String CLASSIFICATION_FINDBYIDANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByIdAndDomain";
+    String CLASSIFICATION_FINDBYIDANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByKeyAndDomain";
     String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findById";
 
-    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.PRIORITY, t.STATE, t.CLASSIFICATION_ID, t.WORKBASKETID, t.OWNER, t.PRIMARY_OBJ_REF_ID, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
+    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.WORKBASKETID, t.OWNER, t.PRIMARY_OBJ_REF_ID, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
             + "FROM TASK t "
             // Joins if Classification or Object Reference Query is needed
-            + "<if test='classificationQuery != null'>LEFT OUTER JOIN CLASSIFICATION c on t.CLASSIFICATION_ID = c.ID</if> "
+            + "<if test='classificationQuery != null'>LEFT OUTER JOIN CLASSIFICATION c on t.CLASSIFICATION_KEY = c.KEY</if> "
             + "<if test='objectReferenceQuery != null'>LEFT OUTER JOIN OBJECT_REFERENCE o on t.PRIMARY_OBJ_REF_ID = o.ID</if> "
             + "<where>"
             + "<if test='name != null'>AND t.NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
@@ -43,7 +43,8 @@ public interface QueryMapper {
             + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
             // Classification Query
             + "<if test='classificationQuery != null'>"
-            + "<if test='classificationQuery.parentClassificationId != null'>AND c.PARENT_CLASSIFICATION_ID IN(<foreach item='item' collection='classificationQuery.parentClassificationId' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='classificationQuery.key != null'>AND c.KEY IN(<foreach item='item' collection='classificationQuery.key' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='classificationQuery.parentClassificationKey != null'>AND c.PARENT_CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationQuery.parentClassificationKey' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.category != null'>AND c.CATEGORY IN(<foreach item='item' collection='classificationQuery.category' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.type != null'>AND c.TYPE IN(<foreach item='item' collection='classificationQuery.type' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.domain != null'>AND c.DOMAIN IN(<foreach item='item' collection='classificationQuery.domain' separator=',' >#{item}</foreach>)</if> "
@@ -53,6 +54,7 @@ public interface QueryMapper {
             + "<if test='classificationQuery.description != null'>AND c.DESCRIPTION like #{classificationQuery.description}</if> "
             + "<if test='classificationQuery.priority != null'>AND c.PRIORITY IN(<foreach item='item' collection='classificationQuery.priority' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.serviceLevel != null'>AND c.SERVICE_LEVEL IN(<foreach item='item' collection='classificationQuery.serviceLevel' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='classificationQuery.applicationEntryPoint != null'>AND c.APPLICATION_ENTRY_POINT IN(<foreach item='item' collection='classificationQuery.applicationEntryPoint' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.customFields != null'>AND (c.CUSTOM_1 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_2 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_3 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_4 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_5 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_6 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_7 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>) OR c.CUSTOM_8 IN(<foreach item='item' collection='classificationQuery.customFields' separator=',' >#{item}</foreach>))</if> "
             + "<if test='classificationQuery.validFrom != null'>AND c.VALID_FROM IN(<foreach item='item' collection='classificationQuery.validFrom' separator=',' >#{item}</foreach>)</if> "
             + "<if test='classificationQuery.validUntil != null'>AND c.VALID_UNTIL IN(<foreach item='item' collection='classificationQuery.validUntil' separator=',' >#{item}</foreach>)</if> "
@@ -95,10 +97,11 @@ public interface QueryMapper {
             @Result(property = "custom10", column = "CUSTOM_10") })
     List<Task> queryTasks(TaskQueryImpl taskQuery);
 
-    @Select("<script>SELECT ID, PARENT_CLASSIFICATION_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
+    @Select("<script>SELECT ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
             + "FROM CLASSIFICATION "
             + "<where>"
-            + "<if test='parentClassificationId != null'>AND PARENT_CLASSIFICATION_ID IN(<foreach item='item' collection='parentClassificationId' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='parentClassificationKey != null'>AND PARENT_CLASSIFICATION_KEY IN(<foreach item='item' collection='parentClassificationKey' separator=',' >#{item}</foreach>)</if> "
             + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
             + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
             + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
@@ -108,6 +111,7 @@ public interface QueryMapper {
             + "<if test='description != null'>AND DESCRIPTION like #{description}</if> "
             + "<if test='priority != null'>AND PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
             + "<if test='serviceLevel != null'>AND SERVICE_LEVEL IN(<foreach item='item' collection='serviceLevel' separator=',' >#{item}</foreach>)</if> "
+            + "<if test='applicationEntryPoint != null'>AND APPLICATION_ENTRY_POINT IN(<foreach item='item' collection='applicationEntryPoint' separator=',' >#{item}</foreach>)</if> "
             + "<if test='customFields != null'>AND (CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
             + "<if test='validFrom != null'>AND VALID_FROM IN(<foreach item='item' collection='validFrom' separator=',' >#{item}</foreach>)</if> "
             + "<if test='validUntil != null'>AND VALID_UNTIL IN(<foreach item='item' collection='validUntil' separator=',' >#{item}</foreach>)</if> "

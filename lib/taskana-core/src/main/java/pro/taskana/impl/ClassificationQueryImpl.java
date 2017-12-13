@@ -22,7 +22,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryClassification";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
-    private String[] parentClassificationId;
+    private String[] key;
+    private String[] parentClassificationKey;
     private String[] category;
     private String[] type;
     private String[] domain;
@@ -36,13 +37,23 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private Date[] validFrom;
     private Date[] validUntil;
 
+
+    private String[] applicationEntryPoint;
+
+
     public ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     }
 
     @Override
-    public ClassificationQuery parentClassification(String... parentClassificationId) {
-        this.parentClassificationId = parentClassificationId;
+    public ClassificationQuery key(String... key) {
+        this.key = key;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery parentClassificationKey(String... parentClassificationKey) {
+        this.parentClassificationKey = parentClassificationKey;
         return this;
     }
 
@@ -97,6 +108,12 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public ClassificationQuery serviceLevel(String... serviceLevel) {
         this.serviceLevel = serviceLevel;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery applicationEntryPoint(String... applicationEntryPoint) {
+        this.applicationEntryPoint = applicationEntryPoint;
         return this;
     }
 
@@ -167,12 +184,20 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         }
     }
 
-    public String[] getParentClassificationId() {
-        return parentClassificationId;
+    public String[] getKey() {
+        return key;
     }
 
-    public void setParentClassificationId(String[] parentClassificationId) {
-        this.parentClassificationId = parentClassificationId;
+    public void setKey(String[] key) {
+        this.key = key;
+    }
+
+    public String[] getParentClassificationKey() {
+        return parentClassificationKey;
+    }
+
+    public void setParentClassificationKey(String[] parentClassificationKey) {
+        this.parentClassificationKey = parentClassificationKey;
     }
 
     public String[] getCategory() {
@@ -247,6 +272,14 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         this.created = created;
     }
 
+    public String[] getApplicationEntryPoint() {
+        return applicationEntryPoint;
+    }
+
+    public void setApplicationEntryPoint(String[] applicationEntryPoint) {
+        this.applicationEntryPoint = applicationEntryPoint;
+    }
+
     public String[] getCustomFields() {
         return customFields;
     }
@@ -276,8 +309,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         StringBuilder builder = new StringBuilder();
         builder.append("ClassificationQueryImpl [taskanaEngineImpl=");
         builder.append(taskanaEngineImpl);
-        builder.append(", parentClassificationId=");
-        builder.append(Arrays.toString(parentClassificationId));
+        builder.append(", parentClassificationKey=");
+        builder.append(Arrays.toString(parentClassificationKey));
         builder.append(", category=");
         builder.append(Arrays.toString(category));
         builder.append(", type=");

@@ -284,6 +284,8 @@ public class ClassificationImpl implements Classification {
         StringBuilder builder = new StringBuilder();
         builder.append("Classification [id=");
         builder.append(id);
+        builder.append(", key=");
+        builder.append(key);
         builder.append(", parentClassificationId=");
         builder.append(parentClassificationKey);
         builder.append(", category=");
@@ -304,6 +306,8 @@ public class ClassificationImpl implements Classification {
         builder.append(priority);
         builder.append(", serviceLevel=");
         builder.append(serviceLevel);
+        builder.append(", applicationEntryPoint=");
+        builder.append(applicationEntryPoint);
         builder.append(", custom1=");
         builder.append(custom1);
         builder.append(", custom2=");

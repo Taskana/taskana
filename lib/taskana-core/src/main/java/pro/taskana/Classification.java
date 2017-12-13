@@ -37,8 +37,8 @@ public interface Classification {
      * Set/Change a reference to the current parent classification via ID. If this field would be set to NULL the
      * classification will become a parent-classification itself.
      *
-     * @param parentClassificationId
-     *            TODO
+     * @param parentClassificationKey
+     *            The key of the parent classification.
      */
     void setParentClassificationKey(String parentClassificationKey);
 
@@ -176,6 +176,9 @@ public interface Classification {
 
     /**
      * Set the logical name of the associated application entry point.
+     *
+     * @param applicationEntryPoint
+     *             TODO
      */
     void setApplicationEntryPoint(String applicationEntryPoint);
 

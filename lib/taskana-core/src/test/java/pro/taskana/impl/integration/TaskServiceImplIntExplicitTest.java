@@ -100,6 +100,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setName("workbasket");
         workbasket.setId("1"); // set id manually for authorization tests
         Classification classification = classificationService.newClassification();
+        classification.setKey("TEST");
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
         taskanaEngine.getClassificationService().createClassification(classification);
 
@@ -151,6 +152,7 @@ public class TaskServiceImplIntExplicitTest {
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket");
         Classification classification = classificationService.newClassification();
+        classification.setKey("TEST");
         workbasket.setName("workbasket99");
         workbasketServiceImpl.createWorkbasket(workbasket);
         classificationServiceImpl.createClassification(classification);
@@ -176,6 +178,7 @@ public class TaskServiceImplIntExplicitTest {
         generateSampleAccessItems();
 
         Classification classification = classificationService.newClassification();
+        classification.setKey("TEST1");
         classification.setCategory("MANUAL");
         classification.setName("classification name");
         classification.setServiceLevel("P1D");
@@ -252,6 +255,7 @@ public class TaskServiceImplIntExplicitTest {
         Workbasket workbasket = new Workbasket();
         workbasket.setName("workbasket");
         Classification classification = classificationService.newClassification();
+        classification.setKey("TEST");
         workbasket.setId("1"); // set id manually for authorization tests
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
         taskanaEngine.getClassificationService().createClassification(classification);
@@ -264,7 +268,7 @@ public class TaskServiceImplIntExplicitTest {
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         ClassificationQuery classificationQuery = new ClassificationQueryImpl(taskanaEngineImpl)
-                .parentClassification("pId1", "pId2").category("cat1", "cat2").type("oneType").name("1Name", "name2")
+                .parentClassificationKey("pId1", "pId2").category("cat1", "cat2").type("oneType").name("1Name", "name2")
                 .descriptionLike("my desc").priority(1, 2, 1).serviceLevel("me", "and", "you");
 
         ObjectReferenceQuery objectReferenceQuery = new ObjectReferenceQueryImpl(taskanaEngineImpl)
@@ -287,6 +291,7 @@ public class TaskServiceImplIntExplicitTest {
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
 
         Classification classification = classificationService.newClassification();
+        classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = new Task();
