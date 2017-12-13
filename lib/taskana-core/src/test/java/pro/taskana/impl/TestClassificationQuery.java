@@ -15,8 +15,11 @@ import pro.taskana.model.ClassificationImpl;
 public class TestClassificationQuery implements ClassificationQuery {
 
     private List<ClassificationImpl> classifications;
+
     private String[] parentId;
+
     private Date[] validUntil;
+
     private String description;
 
     public TestClassificationQuery(List<ClassificationImpl> classifications) {
@@ -111,9 +114,9 @@ public class TestClassificationQuery implements ClassificationQuery {
 
             if (this.parentId != null) {
                 Boolean classificationWithParent = false;
-                if (classification.getParentClassificationId() != null) {
+                if (classification.getParentClassificationKey() != null) {
                     for (String parent : this.parentId) {
-                        if (parent.equals(classification.getParentClassificationId())) {
+                        if (parent.equals(classification.getParentClassificationKey())) {
                             classificationWithParent = true;
                         }
                     }

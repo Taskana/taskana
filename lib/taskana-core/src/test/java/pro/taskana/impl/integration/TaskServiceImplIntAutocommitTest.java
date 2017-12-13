@@ -44,16 +44,23 @@ import pro.taskana.model.Workbasket;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode AUTOCOMMIT.
+ *
  * @author EH
  */
 public class TaskServiceImplIntAutocommitTest {
 
     private DataSource dataSource;
+
     private TaskServiceImpl taskServiceImpl;
+
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
+
     private TaskanaEngine taskanaEngine;
+
     private TaskanaEngineImpl taskanaEngineImpl;
+
     private ClassificationService classificationService;
+
     private WorkbasketService workbasketService;
 
     @BeforeClass
@@ -80,7 +87,8 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test
     public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException,
-            WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException, ClassificationAlreadyExistException {
+        WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
+        ClassificationAlreadyExistException {
         Workbasket wb = new Workbasket();
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
@@ -93,7 +101,7 @@ public class TaskServiceImplIntAutocommitTest {
         task.setClassification(classification);
 
         task = taskServiceImpl.createTask(task);
-        //skanaEngineImpl.getSqlSession().commit();  // needed so that the change is visible in the other session
+        // skanaEngineImpl.getSqlSession().commit(); // needed so that the change is visible in the other session
 
         TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
@@ -103,7 +111,8 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
+        throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
+        WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Workbasket wb = new Workbasket();
         wb.setName("sdf");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
@@ -124,7 +133,8 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test
     public void testCreateTaskInTaskanaWithDefaultDb()
-            throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
+        throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
+        WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Workbasket wb = new Workbasket();
         wb.setName("workbasket");
         wb = taskanaEngine.getWorkbasketService().createWorkbasket(wb);
@@ -142,7 +152,8 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
+    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
+        WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
         Workbasket wb = new Workbasket();
         wb.setName("workbasket");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
@@ -157,17 +168,32 @@ public class TaskServiceImplIntAutocommitTest {
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         ClassificationQuery classificationQuery = new ClassificationQueryImpl(taskanaEngineImpl)
-                .parentClassification("pId1", "pId2").category("cat1", "cat2").type("oneType").name("1Name", "name2")
-                .descriptionLike("my desc").priority(1, 2, 1).serviceLevel("me", "and", "you");
+            .parentClassification("pId1", "pId2")
+            .category("cat1", "cat2")
+            .type("oneType")
+            .name("1Name", "name2")
+            .descriptionLike("my desc")
+            .priority(1, 2, 1)
+            .serviceLevel("me", "and", "you");
 
         ObjectReferenceQuery objectReferenceQuery = new ObjectReferenceQueryImpl(taskanaEngineImpl)
-                .company("first comp", "sonstwo gmbh").system("sys").type("type1", "type2")
-                .systemInstance("sysInst1", "sysInst2").value("val1", "val2", "val3");
+            .company("first comp", "sonstwo gmbh")
+            .system("sys")
+            .type("type1", "type2")
+            .systemInstance("sysInst1", "sysInst2")
+            .value("val1", "val2", "val3");
 
-        List<Task> results = taskServiceImpl.createTaskQuery().name("bla", "test").descriptionLike("test")
-                .priority(1, 2, 2).state(TaskState.CLAIMED).workbasketId("asd", "asdasdasd")
-                .owner("test", "test2", "bla").customFields("test").classification(classificationQuery)
-                .objectReference(objectReferenceQuery).list();
+        List<Task> results = taskServiceImpl.createTaskQuery()
+            .name("bla", "test")
+            .descriptionLike("test")
+            .priority(1, 2, 2)
+            .state(TaskState.CLAIMED)
+            .workbasketId("asd", "asdasdasd")
+            .owner("test", "test2", "bla")
+            .customFields("test")
+            .classification(classificationQuery)
+            .objectReference(objectReferenceQuery)
+            .list();
 
         Assert.assertEquals(0, results.size());
     }
@@ -181,7 +207,7 @@ public class TaskServiceImplIntAutocommitTest {
         dummyWorkbasket = workbasketService.createWorkbasket(dummyWorkbasket);
 
         Classification dummyClassification = classificationService.newClassification();
-        dummyClassification.setId("1");
+        dummyClassification.setKey("1");
         dummyClassification.setName("Dummy-Classification");
         classificationService.createClassification(dummyClassification);
 
@@ -202,7 +228,8 @@ public class TaskServiceImplIntAutocommitTest {
         taskSummary.setClassificationName(dummyClassification.getName());
         expectedTaskSumamries.add(taskSummary);
 
-        List<TaskSummary> actualTaskSumamryResult = taskServiceImpl.getTaskSummariesByWorkbasketId(dummyWorkbasket.getId());
+        List<TaskSummary> actualTaskSumamryResult = taskServiceImpl
+            .getTaskSummariesByWorkbasketId(dummyWorkbasket.getId());
 
         assertThat(actualTaskSumamryResult.size(), equalTo(expectedTaskSumamries.size()));
     }
@@ -213,7 +240,8 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
-    public void shouldThrowWorkbasketNotFoundExceptionByInvalidWorkbasketParameter() throws WorkbasketNotFoundException {
+    public void shouldThrowWorkbasketNotFoundExceptionByInvalidWorkbasketParameter()
+        throws WorkbasketNotFoundException {
         Workbasket wb = new Workbasket();
         wb.setName("wb");
         workbasketService.createWorkbasket(wb);
