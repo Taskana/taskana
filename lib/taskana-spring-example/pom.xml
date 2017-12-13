@@ -59,4 +59,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	<name>${project.groupId}:${project.artifactId}</name>
+	<url>http://taskana.pro</url>
+	<description>The Taskana Spring sample application.</description>
 </project>

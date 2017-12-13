@@ -1,2 +1,2 @@
-TODO
-- Framework design checken
+The TASKANA Java library
+========================

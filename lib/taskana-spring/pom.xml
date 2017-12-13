@@ -6,8 +6,7 @@
 	<version>0.0.3-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
-	<description>TODO</description>
-	<url>http://taskana-workplace.mybluemix.net</url>
+	<url>http://taskana.pro</url>
 
 	<licenses>
 		<license>
@@ -193,4 +192,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<description>The helper module to integrate taskana into Spring projects.</description>
 </project>
