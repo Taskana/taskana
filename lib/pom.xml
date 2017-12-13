@@ -5,6 +5,8 @@
 	<artifactId>taskana-parent</artifactId>
 	<version>0.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	
+	<description>This pom is parent to all taskana core modules and serves the common build.</description>
 
 	<properties>
 		<java.version>1.8</java.version>

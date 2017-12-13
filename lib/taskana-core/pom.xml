@@ -6,8 +6,8 @@
 	<version>0.0.3-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
-	<description>TODO</description>
-	<url>http://taskana-workplace.mybluemix.net</url>
+	<description>The taskana library to include in your project.</description>
+	<url>http://taskana.pro</url>
 
 	<licenses>
 		<license>
