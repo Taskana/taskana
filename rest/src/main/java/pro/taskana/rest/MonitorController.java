@@ -18,7 +18,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
-import pro.taskana.model.Workbasket;
+import pro.taskana.Workbasket;
 import pro.taskana.rest.model.WorkbasketCounterDataDto;
 import pro.taskana.rest.model.WorkbasketCounterDto;
 

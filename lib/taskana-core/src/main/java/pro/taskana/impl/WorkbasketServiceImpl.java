@@ -1,27 +1,28 @@
 package pro.taskana.impl;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pro.taskana.TaskanaEngine;
+import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.model.mappings.WorkbasketMapper;
 import pro.taskana.security.CurrentUserContext;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * This is the implementation of WorkbasketService.
@@ -98,24 +99,26 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     @Override
     public List<Workbasket> getWorkbaskets() {
         LOGGER.debug("entry to getWorkbaskets()");
-        List<Workbasket> result = null;
+        List<Workbasket> workbaskets = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
-            result = workbasketMapper.findAll();
-            return result;
+            List<WorkbasketImpl> results = workbasketMapper.findAll();
+            results.stream().forEach(w -> workbaskets.add(w));
+            return workbaskets;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from getWorkbaskets(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                int numberOfResultObjects = workbaskets == null ? 0 : workbaskets.size();
+                LOGGER.debug("exit from getWorkbaskets(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(workbaskets));
             }
         }
     }
 
     @Override
-    public Workbasket createWorkbasket(Workbasket workbasket) {
-        LOGGER.debug("entry to createtWorkbasket(workbasket)", workbasket);
+    public Workbasket createWorkbasket(Workbasket newWorkbasket) {
+        LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
         Workbasket result = null;
+        WorkbasketImpl workbasket = (WorkbasketImpl) newWorkbasket;
         try {
             taskanaEngineImpl.openConnection();
             Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -129,9 +132,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             if (workbasket.getDistributionTargets() != null) {
                 for (Workbasket distributionTarget : workbasket.getDistributionTargets()) {
                     if (workbasketMapper.findById(distributionTarget.getId()) == null) {
-                        distributionTarget.setCreated(now);
-                        distributionTarget.setModified(now);
-                        workbasketMapper.insert(distributionTarget);
+                        WorkbasketImpl tempBasket = (WorkbasketImpl) distributionTarget;
+                        tempBasket.setCreated(now);
+                        tempBasket.setModified(now);
+                        workbasketMapper.insert(tempBasket);
+                        distributionTarget = tempBasket;
                         LOGGER.debug("Method createWorkbasket() created distributionTarget '{}'", distributionTarget);
                     }
                     distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
@@ -147,9 +152,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public Workbasket updateWorkbasket(Workbasket workbasket) throws NotAuthorizedException {
-        LOGGER.debug("entry to updateWorkbasket(workbasket)", workbasket);
+    public Workbasket updateWorkbasket(Workbasket workbasketToUpdate) throws NotAuthorizedException {
+        LOGGER.debug("entry to updateWorkbasket(workbasket)", workbasketToUpdate);
         Workbasket result = null;
+        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketToUpdate;
         try {
             taskanaEngineImpl.openConnection();
             workbasket.setModified(new Timestamp(System.currentTimeMillis()));
@@ -160,7 +166,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             for (Workbasket distributionTarget : distributionTargets) {
                 if (!oldDistributionTargets.contains(distributionTarget.getId())) {
                     if (workbasketMapper.findById(distributionTarget.getId()) == null) {
-                        workbasketMapper.insert(distributionTarget);
+                        WorkbasketImpl tempBasket = (WorkbasketImpl) distributionTarget;
+                        workbasketMapper.insert(tempBasket);
+                        distributionTarget = tempBasket;
                         LOGGER.debug(" Method updateWorkbasket() created distributionTarget '{}'", distributionTarget);
                     }
                     distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
@@ -309,5 +317,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     @Override
     public WorkbasketQuery createWorkbasketQuery() {
         return new WorkbasketQueryImpl(taskanaEngine);
+    }
+
+    @Override
+    public Workbasket newWorkbasket() {
+        return new WorkbasketImpl();
     }
 }

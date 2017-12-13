@@ -19,7 +19,8 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Workbasket;
+import pro.taskana.Workbasket;
+import pro.taskana.Task;
 
 @Path("/test")
 public class TaskanaRestTest {
@@ -34,7 +35,7 @@ public class TaskanaRestTest {
 
 	@GET
 	public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException {
-		Workbasket workbasket = new Workbasket();
+		Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket();;
 		workbasket.setName("wb");
 		taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
 		Classification classification = classificationService.newClassification();

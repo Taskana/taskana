@@ -3,7 +3,6 @@ package pro.taskana;
 import java.util.Date;
 
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAuthorization;
 
 /**
