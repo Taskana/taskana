@@ -27,9 +27,13 @@ import pro.taskana.model.mappings.ClassificationMapper;
 public class ClassificationServiceImpl implements ClassificationService {
 
     private static final String ID_PREFIX_CLASSIFICATION = "CLI";
+
     public static final Date CURRENT_CLASSIFICATIONS_VALID_UNTIL = Date.valueOf("9999-12-31");
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
+
     private ClassificationMapper classificationMapper;
+
     private TaskanaEngineImpl taskanaEngineImpl;
 
     public ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper) {
@@ -45,24 +49,32 @@ public class ClassificationServiceImpl implements ClassificationService {
         try {
             taskanaEngineImpl.openConnection();
             List<Classification> rootClassifications;
-            rootClassifications = this.createClassificationQuery().parentClassification("").validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL).list();
+            rootClassifications = this.createClassificationQuery()
+                .parentClassification("")
+                .validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL)
+                .list();
             rootClassifications = this.populateChildClassifications(rootClassifications);
             return rootClassifications;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from getClassificationTree(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from getClassificationTree(). Returning {} resulting Objects: {} ",
+                    numberOfResultObjects, LoggerUtils.listToString(result));
             }
         }
     }
 
-    private List<Classification> populateChildClassifications(List<Classification> classifications) throws NotAuthorizedException {
+    private List<Classification> populateChildClassifications(List<Classification> classifications)
+        throws NotAuthorizedException {
         try {
             taskanaEngineImpl.openConnection();
             List<Classification> children = new ArrayList<>();
             for (Classification classification : classifications) {
-                List<Classification> childClassifications = this.createClassificationQuery().parentClassification(classification.getId()).validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL).list();
+                List<Classification> childClassifications = this.createClassificationQuery()
+                    .parentClassification(classification.getId())
+                    .validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL)
+                    .list();
                 children.addAll(populateChildClassifications(childClassifications));
             }
             classifications.addAll(children);
@@ -113,10 +125,12 @@ public class ClassificationServiceImpl implements ClassificationService {
 
             ClassificationImpl oldClassification = null;
             try {
-                oldClassification = (ClassificationImpl) this.getClassification(classificationImpl.getId(), classificationImpl.getDomain());
+                oldClassification = (ClassificationImpl) this.getClassification(classificationImpl.getId(),
+                    classificationImpl.getDomain());
                 LOGGER.debug("Method updateClassification() inserted classification {}.", classificationImpl);
                 if (oldClassification == null) {
-                    throw new ClassificationNotFoundException("Classification not found. ID: " + classificationImpl.getId());
+                    throw new ClassificationNotFoundException(
+                        "Classification not found. ID: " + classificationImpl.getId());
                 }
                 // ! If you update an classification twice the same day,
                 // the older version is valid from today until yesterday.
@@ -128,7 +142,8 @@ public class ClassificationServiceImpl implements ClassificationService {
                     oldClassification.setValidUntil(Date.valueOf(LocalDate.now().minusDays(1)));
                     classificationMapper.update(oldClassification);
                     classificationMapper.insert(classificationImpl);
-                    LOGGER.debug("Method updateClassification() updated old classification {} and inserted new {}.", oldClassification, classificationImpl);
+                    LOGGER.debug("Method updateClassification() updated old classification {} and inserted new {}.",
+                        oldClassification, classificationImpl);
                 }
             } catch (ClassificationNotFoundException e) {
                 classificationImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
@@ -162,12 +177,8 @@ public class ClassificationServiceImpl implements ClassificationService {
             classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
         }
 
-        if (classification.getParentClassificationId() == classification.getId()) {
-            throw new IllegalArgumentException("A classification can't be a parent to itself");
-        }
-
-        if (classification.getParentClassificationId() == null) {
-            classification.setParentClassificationId("");
+        if (classification.getParentClassificationKey() == null) {
+            classification.setParentClassificationKey("");
         }
 
         if (classification.getDomain() == null) {
@@ -189,7 +200,8 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from getAllClassificationsWithId(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from getAllClassificationsWithId(). Returning {} resulting Objects: {} ",
+                    numberOfResultObjects, LoggerUtils.listToString(result));
             }
         }
     }

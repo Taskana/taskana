@@ -10,25 +10,49 @@ import pro.taskana.Classification;
 public class ClassificationImpl implements Classification {
 
     private String id;
-    private String parentClassificationId;
+
+    private String key;
+
+    private String parentClassificationKey;
+
     private String category;
+
     private String type;
+
     private String domain;
+
     private Boolean isValidInDomain;
+
     private Date created;
+
     private String name;
+
     private String description;
+
     private int priority;
+
     private String serviceLevel; // PddDThhHmmM
+
+    private String applicationEntryPoint;
+
     private String custom1;
+
     private String custom2;
+
     private String custom3;
+
     private String custom4;
+
     private String custom5;
+
     private String custom6;
+
     private String custom7;
+
     private String custom8;
+
     private Date validFrom;
+
     private Date validUntil;
 
     @Override
@@ -41,13 +65,22 @@ public class ClassificationImpl implements Classification {
     }
 
     @Override
-    public String getParentClassificationId() {
-        return parentClassificationId;
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     @Override
-    public void setParentClassificationId(String parentClassificationId) {
-        this.parentClassificationId = parentClassificationId;
+    public String getParentClassificationKey() {
+        return parentClassificationKey;
+    }
+
+    @Override
+    public void setParentClassificationKey(String parentClassificationKey) {
+        this.parentClassificationKey = parentClassificationKey;
     }
 
     @Override
@@ -136,6 +169,16 @@ public class ClassificationImpl implements Classification {
     @Override
     public void setServiceLevel(String serviceLevel) {
         this.serviceLevel = serviceLevel;
+    }
+
+    @Override
+    public String getApplicationEntryPoint() {
+        return applicationEntryPoint;
+    }
+
+    @Override
+    public void setApplicationEntryPoint(String applicationEntryPoint) {
+        this.applicationEntryPoint = applicationEntryPoint;
     }
 
     @Override
@@ -242,7 +285,7 @@ public class ClassificationImpl implements Classification {
         builder.append("Classification [id=");
         builder.append(id);
         builder.append(", parentClassificationId=");
-        builder.append(parentClassificationId);
+        builder.append(parentClassificationKey);
         builder.append(", category=");
         builder.append(category);
         builder.append(", type=");
