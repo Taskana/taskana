@@ -7,7 +7,7 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Task;
+import pro.taskana.model.TaskImpl;
 
 import javax.annotation.PostConstruct;
 
@@ -21,7 +21,7 @@ public class ExampleBootstrap {
 	@PostConstruct
 	public void test() throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
 		System.out.println("---------------------------> Start App");
-		Task task = new Task();
+		Task task = new TaskImpl();
 		task.setName("Spring example task");
 		task.setWorkbasketId("1");
 		task = taskService.createTask(task);

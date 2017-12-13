@@ -19,15 +19,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pro.taskana.security.JAASRunner;
-import pro.taskana.security.WithAccessId;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ObjectReferenceQuery;
+import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.WorkbasketService;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -45,10 +44,12 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
+import pro.taskana.model.TaskImpl;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAccessItem;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode EXPLICIT.
@@ -103,7 +104,7 @@ public class TaskServiceImplIntExplicitTest {
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = new Task();
+        Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");
         task.setWorkbasketId(workbasket.getId());
         task.setClassification(classification);
@@ -124,8 +125,17 @@ public class TaskServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
 
         generateSampleAccessItems();
-
-        Task task = this.generateDummyTask();
+        Workbasket workbasket = new Workbasket();
+        workbasket.setName("workbasket");
+        workbasket.setId("1"); // set id manually for authorization tests
+        taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
+        connection.commit();
+        Classification classification = classificationService.newClassification();
+        taskanaEngine.getClassificationService().createClassification(classification);
+        connection.commit();
+        Task task = taskServiceImpl.newTask();
+        task.setWorkbasketId(workbasket.getId());
+        task.setClassification(classification);
         task = taskServiceImpl.createTask(task);
         connection.commit();  // needed so that the change is visible in the other session
 
@@ -155,7 +165,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasketServiceImpl.createWorkbasket(workbasket);
         classificationServiceImpl.createClassification(classification);
 
-        Task task = new Task();
+        Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");
         task.setWorkbasketId(workbasket.getId());
         task.setClassification(classification);
@@ -190,29 +200,29 @@ public class TaskServiceImplIntExplicitTest {
 
         Timestamp tomorrow = Timestamp.valueOf(LocalDateTime.now().plusDays(1));
 
-        Task test = this.generateDummyTask();
+        TaskImpl test = this.generateDummyTask();
         test.setClassification(classification);
         test.setName("Name");
         test.setPrimaryObjRef(objectReference);
         test.setPlanned(tomorrow);
-        test = taskServiceImpl.createTask(test);
+        Task resultTask1 = taskServiceImpl.createTask(test);
 
-        Assert.assertNotEquals(test.getPlanned(), test.getCreated());
-        Assert.assertNotNull(test.getDue());
+        Assert.assertNotEquals(resultTask1.getPlanned(), resultTask1.getCreated());
+        Assert.assertNotNull(resultTask1.getDue());
 
-        Task test2 = new Task();
+        TaskImpl test2 = new TaskImpl();
         test2.setWorkbasketId(test.getWorkbasketId());
         test2.setClassification(classification);
         test2.setPrimaryObjRef(objectReference);
         test2.setDescription("desc");
-        taskServiceImpl.createTask(test2);
+        Task resultTask2 = taskServiceImpl.createTask(test2);
 
-        Assert.assertEquals(test2.getPlanned(), test2.getCreated());
-        Assert.assertTrue(test2.getName().equals(classification.getName()));
+        Assert.assertEquals(resultTask2.getPlanned(), resultTask2.getCreated());
+        Assert.assertTrue(resultTask2.getName().equals(classification.getName()));
 
-        Assert.assertEquals(test.getClassification().getId(), test2.getClassification().getId());
-        Assert.assertTrue(test.getDue().after(test2.getDue()));
-        Assert.assertFalse(test.getName().equals(test2.getName()));
+        Assert.assertEquals(resultTask1.getClassification().getId(), resultTask2.getClassification().getId());
+        Assert.assertTrue(resultTask1.getDue().after(resultTask2.getDue()));
+        Assert.assertFalse(resultTask1.getName().equals(resultTask2.getName()));
     }
 
     @WithAccessId(userName = "Elena")
@@ -223,7 +233,7 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Task test = this.generateDummyTask();
+        TaskImpl test = this.generateDummyTask();
         test.setWorkbasketId("2");
         taskServiceImpl.createTask(test);
     }
@@ -236,7 +246,7 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Task test = this.generateDummyTask();
+        TaskImpl test = this.generateDummyTask();
         test.setClassification(new ClassificationImpl());
         taskServiceImpl.createTask(test);
     }
@@ -256,7 +266,7 @@ public class TaskServiceImplIntExplicitTest {
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = new Task();
+        Task task = new TaskImpl();
         task.setName("Unit Test Task");
         task.setWorkbasketId(workbasket.getId());
         task.setClassification(classification);
@@ -280,7 +290,7 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    private Task generateDummyTask() throws ClassificationAlreadyExistException {
+    private TaskImpl generateDummyTask() throws ClassificationAlreadyExistException {
         Workbasket workbasket = new Workbasket();
         workbasket.setName("wb");
         workbasket.setId("1"); // set id manually for authorization tests
@@ -289,7 +299,7 @@ public class TaskServiceImplIntExplicitTest {
         Classification classification = classificationService.newClassification();
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = new Task();
+        TaskImpl task = new TaskImpl();
         task.setWorkbasketId(workbasket.getId());
         task.setClassification(classification);
         return task;

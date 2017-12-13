@@ -14,8 +14,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import pro.taskana.Task;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.Task;
+import pro.taskana.model.TaskImpl;
 import pro.taskana.model.TaskState;
 
 /**
@@ -61,7 +62,7 @@ public class TaskQueryImplTest {
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectOne(any(), any())).thenReturn(new Task());
+        when(sqlSession.selectOne(any(), any())).thenReturn(new TaskImpl());
 
         Task result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)
                 .state(TaskState.CLAIMED, TaskState.COMPLETED).single();

@@ -11,10 +11,10 @@ import org.springframework.util.MultiValueMap;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ObjectReferenceQuery;
+import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 
 @Component
