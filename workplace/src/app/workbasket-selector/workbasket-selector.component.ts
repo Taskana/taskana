@@ -15,7 +15,7 @@ export class SelectorComponent implements OnInit {
 
   autoCompleteData: string[] = new Array;
   result: string;
-  resultId: string;
+  resultKey: string;
   workbaskets: Workbasket[];
 
   constructor(private restConnectorService: RestConnectorService, private dataService: DataService) { }
@@ -27,8 +27,8 @@ export class SelectorComponent implements OnInit {
         this.autoCompleteData.push(workbasket.name);
       });
     });
-    if (this.dataService.workbasketId) {
-      this.getTasks(this.dataService.workbasketId);
+    if (this.dataService.workbasketKey) {
+      this.getTasks(this.dataService.workbasketKey);
       this.result = this.dataService.workbasketName;
     }
   }
@@ -37,17 +37,17 @@ export class SelectorComponent implements OnInit {
     if (this.workbaskets) {
       this.workbaskets.forEach(workbasket => {
         if (workbasket.name === this.result) {
-          this.resultId = workbasket.id;
+          this.resultKey = workbasket.key;
         }
       });
-      this.getTasks(this.resultId);
-      this.dataService.workbasketId = this.resultId;
+      this.getTasks(this.resultKey);
+      this.dataService.workbasketKey = this.resultKey;
       this.dataService.workbasketName = this.result;
     }
   }
 
-  getTasks(id: string) {
-    this.restConnectorService.findTaskWithWorkbaskets(id).subscribe(
+  getTasks(workbasketKey: string) {
+    this.restConnectorService.findTaskWithWorkbaskets(workbasketKey).subscribe(
                        tasks2 => {this.tasks.next(tasks2)});
   }
 }

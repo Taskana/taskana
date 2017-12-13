@@ -29,7 +29,7 @@ public class TaskFilter {
     private static final String DESCRIPTION = "description";
     private static final String NAME = "name";
     private static final String OWNER = "owner";
-    private static final String WORKBASKET_ID = "workbasketId";
+    private static final String WORKBASKET_KEY = "workbasketKey";
     private static final String CUSTOM = "custom";
     private static final String IS_TRANSFERRED = "isTransferred";
     private static final String IS_READ = "isRead";
@@ -116,9 +116,9 @@ public class TaskFilter {
             }
             taskQuery.classification(classificationQuery);
         }
-        if (params.containsKey(WORKBASKET_ID)) {
-            String[] workbaskets = extractCommaSeperatedFields(params.get(WORKBASKET_ID));
-            taskQuery.workbasketId(workbaskets);
+        if (params.containsKey(WORKBASKET_KEY)) {
+            String[] workbaskets = extractCommaSeperatedFields(params.get(WORKBASKET_KEY));
+            taskQuery.workbasketKeyIn(workbaskets);
         }
         if (params.containsKey(OWNER)) {
             String[] owners = extractCommaSeperatedFields(params.get(OWNER));
@@ -186,15 +186,15 @@ public class TaskFilter {
         params.get(STATE).stream().forEach(item -> {
             Arrays.asList(item.split(COMMA)).stream().forEach(state -> {
                 switch (state) {
-                case READY:
-                    states.add(TaskState.READY);
-                    break;
-                case COMPLETED:
-                    states.add(TaskState.COMPLETED);
-                    break;
-                case CLAIMED:
-                    states.add(TaskState.CLAIMED);
-                    break;
+                    case READY:
+                        states.add(TaskState.READY);
+                        break;
+                    case COMPLETED:
+                        states.add(TaskState.COMPLETED);
+                        break;
+                    case CLAIMED:
+                        states.add(TaskState.CLAIMED);
+                        break;
                 }
             });
         });

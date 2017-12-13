@@ -31,7 +31,7 @@ import pro.taskana.model.TaskSummary;
 import pro.taskana.rest.query.TaskFilter;
 
 @RestController
-@RequestMapping(path = "/v1/tasks", produces = { MediaType.APPLICATION_JSON_VALUE })
+@RequestMapping(path = "/v1/tasks", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class TaskController {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
@@ -44,7 +44,7 @@ public class TaskController {
 
     @RequestMapping
     public ResponseEntity<List<Task>> getTasks(@RequestParam MultiValueMap<String, String> params)
-            throws LoginException {
+        throws LoginException {
         try {
             if (params.keySet().size() == 0) {
                 // get all
@@ -68,11 +68,12 @@ public class TaskController {
         }
     }
 
-    @RequestMapping(value = "/workbasket/{workbasketId}/state/{taskState}")
+    @RequestMapping(value = "/workbasket/{workbasketKey}/state/{taskState}")
     public ResponseEntity<List<Task>> getTasksByWorkbasketIdAndState(
-            @PathVariable(value = "workbasketId") String workbasketId, @PathVariable(value = "taskState") TaskState taskState) {
+        @PathVariable(value = "workbasketKey") String workbasketKey,
+        @PathVariable(value = "taskState") TaskState taskState) {
         try {
-            List<Task> taskList = taskService.getTasksByWorkbasketIdAndState(workbasketId, taskState);
+            List<Task> taskList = taskService.getTasksByWorkbasketKeyAndState(workbasketKey, taskState);
             return ResponseEntity.status(HttpStatus.OK).body(taskList);
         } catch (WorkbasketNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -99,7 +100,7 @@ public class TaskController {
         } catch (InvalidOwnerException e) {
             logger.error("The given Task could not be claimed. Reason: {}", e);
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
-         }
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/complete")
@@ -110,7 +111,7 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch(InvalidStateException | InvalidOwnerException e) {
+        } catch (InvalidStateException | InvalidOwnerException e) {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
     }
@@ -137,13 +138,14 @@ public class TaskController {
         }
     }
 
-    @RequestMapping(value = "/workbasket/{workbasketId}", method = RequestMethod.GET)
-    public ResponseEntity<List<TaskSummary>> getTasksummariesByWorkbasketId(@PathVariable(value="workbasketId") String workbasketId) {
+    @RequestMapping(value = "/workbasket/{workbasketKey}", method = RequestMethod.GET)
+    public ResponseEntity<List<TaskSummary>> getTasksummariesByWorkbasketId(
+        @PathVariable(value = "workbasketKey") String workbasketKey) {
         List<TaskSummary> taskSummaries = null;
         try {
-            taskSummaries = taskService.getTaskSummariesByWorkbasketId(workbasketId);
+            taskSummaries = taskService.getTaskSummariesByWorkbasketKey(workbasketKey);
             return ResponseEntity.status(HttpStatus.OK).body(taskSummaries);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             if (taskSummaries == null) {
                 taskSummaries = Collections.emptyList();
             }

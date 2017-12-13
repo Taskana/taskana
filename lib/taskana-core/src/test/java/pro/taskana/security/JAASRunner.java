@@ -13,7 +13,6 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-
 /**
  * Runner for integration tests that enables JAAS subject.
  */
@@ -30,7 +29,7 @@ public class JAASRunner extends BlockJUnit4ClassRunner {
         List<Principal> principalList = new ArrayList<>();
 
         if (test != null) {
-            WithAccessId withAccessId  = method.getMethod().getAnnotation(WithAccessId.class);
+            WithAccessId withAccessId = method.getMethod().getAnnotation(WithAccessId.class);
             if (withAccessId != null) {
                 if (withAccessId.userName() != null) {
                     principalList.add(new UserPrincipal(withAccessId.userName()));
@@ -51,13 +50,18 @@ public class JAASRunner extends BlockJUnit4ClassRunner {
             public void evaluate() throws Throwable {
                 try {
                     Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
+
                         @Override
                         public Object run() throws Exception {
 
                             try {
                                 base.evaluate();
                             } catch (Throwable e) {
-                                throw (Exception) e;
+                                if (e instanceof Exception) {
+                                    throw (Exception) e;
+                                } else {
+                                    throw new Exception(e);
+                                }
                             }
                             return null;
                         }
