@@ -32,4 +32,7 @@
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	<description>The Taskana Spring sample application.</description>
+	<url>http://taskana.pro</url>
+	<name>${project.groupId}:${project.artifactId}</name>
 </project>
