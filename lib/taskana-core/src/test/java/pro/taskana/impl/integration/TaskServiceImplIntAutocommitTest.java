@@ -121,6 +121,7 @@ public class TaskServiceImplIntAutocommitTest {
         Classification classification = classificationService.newClassification();
         classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
+        classification = taskanaEngine.getClassificationService().getClassification(classification.getKey(), classification.getDomain());
 
         Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");

@@ -42,7 +42,6 @@ import pro.taskana.impl.WorkbasketServiceImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.Workbasket;
@@ -239,8 +238,10 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
+        Classification classification = classificationService.newClassification(); // not persisted, not found.
+
         Task test = this.generateDummyTask();
-        test.setClassification(new ClassificationImpl());
+        test.setClassification(classification);
         taskServiceImpl.createTask(test);
     }
 
@@ -284,7 +285,7 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    private Task generateDummyTask() throws ClassificationAlreadyExistException {
+    private Task generateDummyTask() throws ClassificationAlreadyExistException, ClassificationNotFoundException {
         Workbasket workbasket = new Workbasket();
         workbasket.setName("wb");
         workbasket.setId("1"); // set id manually for authorization tests

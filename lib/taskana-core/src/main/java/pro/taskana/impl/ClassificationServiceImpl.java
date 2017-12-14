@@ -19,7 +19,6 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.mappings.ClassificationMapper;
 
 /**
@@ -28,13 +27,9 @@ import pro.taskana.model.mappings.ClassificationMapper;
 public class ClassificationServiceImpl implements ClassificationService {
 
     private static final String ID_PREFIX_CLASSIFICATION = "CLI";
-
     public static final Date CURRENT_CLASSIFICATIONS_VALID_UNTIL = Date.valueOf("9999-12-31");
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
-
     private ClassificationMapper classificationMapper;
-
     private TaskanaEngineImpl taskanaEngineImpl;
 
     public ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper) {
@@ -86,37 +81,49 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public void createClassification(Classification classification) throws ClassificationAlreadyExistException {
+    public Classification createClassification(Classification classification) throws ClassificationAlreadyExistException, ClassificationNotFoundException {
         LOGGER.debug("entry to createClassification(classification = {})", classification);
-        Date date = Date.valueOf(LocalDate.now());
+        ClassificationImpl classificationImpl;
+        final String originalClassificationDomain;
+        final String originalClassificationId;
         try {
             taskanaEngineImpl.openConnection();
-            ClassificationImpl classificationImpl = (ClassificationImpl) classification;
-            classificationImpl.setCreated(date);
-            this.validateClassification(classificationImpl);
-            Classification oldClassification;
             try {
-                oldClassification = this.getClassification(classificationImpl.getKey(), classificationImpl.getDomain());
+                // Fail if classification does already exist.
+                this.getClassification(classification.getKey(), classification.getDomain());
+                throw new ClassificationAlreadyExistException(classification.getKey());
             } catch (ClassificationNotFoundException e) {
-                oldClassification = null;
-            }
-            if (oldClassification == null) {
+                // add classification into domain
+                classificationImpl = (ClassificationImpl) classification;
+                this.initDefaultClassificationValues(classificationImpl);
                 classificationImpl.setCreated(classificationImpl.getValidFrom());
                 classificationMapper.insert(classificationImpl);
+                originalClassificationDomain = classificationImpl.getDomain();
+                originalClassificationId = classificationImpl.getId();
                 LOGGER.debug("Method createClassification created classification {}.", classification);
+
+                // Check if already existing at main domain and add it there too.
+                // New instance because returned object should be main-subject.
                 if (classificationImpl.getDomain() != "") {
                     classificationImpl.setId(UUID.randomUUID().toString());
                     classificationImpl.setDomain("");
-                    classificationMapper.insert(classificationImpl);
-                    LOGGER.debug("Method createClassification created classification {}.", classification);
+                    try {
+                        this.getClassification(classificationImpl.getKey(), classificationImpl.getDomain());
+                        LOGGER.debug("Method createClassification: Classification does already exits in the root-domain. Classification {}.", classificationImpl);
+                    } catch (ClassificationNotFoundException e2) {
+                        classificationImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+                        classificationMapper.insert(classificationImpl);
+                        LOGGER.debug("Method createClassification: Classification created in root-domain, too. Classification {}.", classificationImpl);
+                    }
                 }
-            } else {
-                throw new ClassificationAlreadyExistException(classificationImpl.getKey());
             }
         } finally {
             taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from addClassification()");
+            LOGGER.debug("exit from createClassification()");
         }
+        classificationImpl.setId(originalClassificationId);
+        classificationImpl.setDomain(originalClassificationDomain);
+        return classificationImpl;
     }
 
     @Override
@@ -125,7 +132,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         try {
             taskanaEngineImpl.openConnection();
             ClassificationImpl classificationImpl = (ClassificationImpl) classification;
-            this.validateClassification(classificationImpl);
+            this.initDefaultClassificationValues(classificationImpl);
 
             ClassificationImpl oldClassification = null;
             try {
@@ -154,8 +161,8 @@ public class ClassificationServiceImpl implements ClassificationService {
      * Fill missing values and validate classification before saving the classification.
      * @param classification
      */
-    private void validateClassification(ClassificationImpl classification) throws IllegalStateException {
-        classification.setId(UUID.randomUUID().toString());
+    private void initDefaultClassificationValues(ClassificationImpl classification) throws IllegalStateException {
+        classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
 
         classification.setValidFrom(Date.valueOf(LocalDate.now()));
         classification.setValidUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL);
@@ -239,13 +246,9 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngineImpl.openConnection();
             result = classificationMapper.findByKeyAndDomain(key, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
             if (result == null) {
-                result = classificationMapper.findByKeyAndDomain(key, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-            }
-            if (result == null) {
                 throw new ClassificationNotFoundException(key);
             }
             return result;
-
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from getClassification(). Returning result {} ", result);

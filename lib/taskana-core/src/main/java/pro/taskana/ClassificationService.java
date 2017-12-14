@@ -38,14 +38,17 @@ public interface ClassificationService {
     Classification getClassification(String key, String domain) throws ClassificationNotFoundException;
 
     /**
-     * Persist a new classification. If the classification does
-     * already exist in a domain, it will just be updated.
+     * Persists a new classification after adding default values. <br >
+     * The classification will be added to root-domain, too - if not already existing.
+     *
      * @param classification
      *            the classification to insert
+     * @return classification which is persisted with unique ID.
      * @throws ClassificationAlreadyExistException
-     *            when the classification does already exists with same ID+domain.
+     *            when the classification does already exists at the given domain.
+     * @throws ClassificationNotFoundException if the classification can´t be found after persisting.
      */
-    void createClassification(Classification classification) throws ClassificationAlreadyExistException;
+    Classification createClassification(Classification classification) throws ClassificationAlreadyExistException, ClassificationNotFoundException;
 
     /**
      * Update a Classification.
