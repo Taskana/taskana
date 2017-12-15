@@ -8,10 +8,8 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.TaskSummary;
 
 /**
@@ -55,29 +53,35 @@ public interface TaskService {
     /**
      * Complete a claimed Task as owner/admin and update State and Timestamps.
      *
-     * @param taskId - Id of the Task which should be completed.
-     *
+     * @param taskId
+     *            - Id of the Task which should be completed.
      * @return Task - updated task after completion.
-     *
-     * @throws InvalidStateException when Task wasn´t claimed before.
-     * @throws TaskNotFoundException if the given Task can´t be found in DB.
-     * @throws InvalidOwnerException if current user is not the task-owner or administrator.
+     * @throws InvalidStateException
+     *             when Task wasn´t claimed before.
+     * @throws TaskNotFoundException
+     *             if the given Task can´t be found in DB.
+     * @throws InvalidOwnerException
+     *             if current user is not the task-owner or administrator.
      */
     Task completeTask(String taskId) throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
 
     /**
      * Complete a claimed Task and update State and Timestamps.
      *
-     * @param taskId - Id of the Task which should be completed.
-     * @param isForced - Flag which can complete a Task in every case if Task does exist.
-     *
+     * @param taskId
+     *            - Id of the Task which should be completed.
+     * @param isForced
+     *            - Flag which can complete a Task in every case if Task does exist.
      * @return Task - updated task after completion.
-     *
-     * @throws InvalidStateException when Task wasn´t claimed before.
-     * @throws TaskNotFoundException if the given Task can´t be found in DB.
-     * @throws InvalidOwnerException if current user is not the task-owner or administrator.
+     * @throws InvalidStateException
+     *             when Task wasn´t claimed before.
+     * @throws TaskNotFoundException
+     *             if the given Task can´t be found in DB.
+     * @throws InvalidOwnerException
+     *             if current user is not the task-owner or administrator.
      */
-    Task completeTask(String taskId, boolean isForced) throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
+    Task completeTask(String taskId, boolean isForced)
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
 
     /**
      * Create and persist a task.
@@ -105,43 +109,6 @@ public interface TaskService {
      *             thrown of the {@link Task} with taskId is not found
      */
     Task getTaskById(String taskId) throws TaskNotFoundException;
-
-    /**
-     * This method counts all tasks with a given state.
-     *
-     * @param states
-     *            the countable states
-     * @return a List of {@link TaskStateCounter} objects that specifies how many tasks in the specified states exist in
-     *         the available work baskets
-     */
-    List<TaskStateCounter> getTaskCountForState(List<TaskState> states);
-
-    /**
-     * Count all Tasks in a given work basket where the due date is after "daysInPast" days from today in the past and
-     * the tasks are in specified states.
-     *
-     * @param workbasketId
-     *            the id of the work basket
-     * @param daysInPast
-     *            identifies the days in the past from today
-     * @param states
-     *            {@link List} of {@link TaskState} that identifies the states of the tasks to be searched for
-     * @return the number of {@link Task} objects in the given work basket that match the query parameters
-     */
-    long getTaskCountForWorkbasketByDaysInPastAndState(String workbasketId, long daysInPast, List<TaskState> states);
-
-    /**
-     * Count all Tasks for all work basket objects where the due date is after "daysInPast" days from today in the past
-     * and the tasks are in specified states.
-     *
-     * @param daysInPast
-     *            identifies the days in the past from today
-     * @param states
-     *            {@link List} of {@link TaskState} objects that identifies the states of the tasks searched
-     * @return a list of of {@link DueWorkbasketCounter} objects that specifies how many tasks in the requested states
-     *         with appropriate due date exist in the various work baskets
-     */
-    List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast, List<TaskState> states);
 
     /**
      * Transfer a task to another work basket. The transfer sets the transferred flag and resets the read flag.
