@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.ClassificationService;
+import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketService;
@@ -27,6 +28,7 @@ import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.QueryMapper;
 import pro.taskana.model.mappings.TaskMapper;
+import pro.taskana.model.mappings.TaskMonitorMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.model.mappings.WorkbasketMapper;
 
@@ -36,14 +38,21 @@ import pro.taskana.model.mappings.WorkbasketMapper;
 public class TaskanaEngineImpl implements TaskanaEngine {
 
     private static final String DEFAULT = "default";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
 
     protected static ThreadLocal<Stack<SqlSessionManager>> sessionStack = new ThreadLocal<Stack<SqlSessionManager>>();
+
     protected TaskanaEngineConfiguration taskanaEngineConfiguration;
+
     protected TransactionFactory transactionFactory;
+
     protected SqlSessionManager sessionManager;
+
     protected SqlSessionFactory sessionFactory;
+
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
+
     protected java.sql.Connection connection = null;
 
     public TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
@@ -55,16 +64,26 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public TaskService getTaskService() {
         SqlSession session = this.sessionManager;
-        TaskServiceImpl taskServiceImpl = new TaskServiceImpl(this, session.getMapper(TaskMapper.class), session.getMapper(ObjectReferenceMapper.class));
+        TaskServiceImpl taskServiceImpl = new TaskServiceImpl(this, session.getMapper(TaskMapper.class),
+            session.getMapper(ObjectReferenceMapper.class));
         return taskServiceImpl;
+    }
+
+    @Override
+    public TaskMonitorService getTaskMonitorService() {
+        SqlSession session = this.sessionManager;
+        TaskMonitorServiceImpl taskMonitorServiceImpl = new TaskMonitorServiceImpl(this,
+            session.getMapper(TaskMonitorMapper.class));
+        return taskMonitorServiceImpl;
     }
 
     @Override
     public WorkbasketService getWorkbasketService() {
         SqlSession session = this.sessionManager;
-        WorkbasketServiceImpl workbasketServiceImpl = new WorkbasketServiceImpl(this, session.getMapper(WorkbasketMapper.class),
-                session.getMapper(DistributionTargetMapper.class),
-                session.getMapper(WorkbasketAccessMapper.class));
+        WorkbasketServiceImpl workbasketServiceImpl = new WorkbasketServiceImpl(this,
+            session.getMapper(WorkbasketMapper.class),
+            session.getMapper(DistributionTargetMapper.class),
+            session.getMapper(WorkbasketAccessMapper.class));
         return workbasketServiceImpl;
     }
 
@@ -82,16 +101,18 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     /**
      * sets the connection management mode.
      *
-     * @param mode  - the connection management mode
-     *   Valid values are
-     *   PARTICIPATE       - taskana participates in global transaction. This is the default mode
-     *   AUTOCOMMIT        - taskana commits each API call separately
-     *   EXPLICIT          - commit processing is managed explicitly by the client
+     * @param mode
+     *            - the connection management mode Valid values are:
+     *            <ul>
+     *            <li>PARTICIPATE - taskana participates in global transaction. This is the default mode.</li>
+     *            <li>AUTOCOMMIT - taskana commits each API call separately</li>
+     *            <li>EXPLICIT - commit processing is managed explicitly by the client</li>
+     *            </ul>
      */
     @Override
     public void setConnectionManagementMode(ConnectionManagementMode mode) {
         if (this.mode == ConnectionManagementMode.EXPLICIT && connection != null
-                && mode != ConnectionManagementMode.EXPLICIT) {
+            && mode != ConnectionManagementMode.EXPLICIT) {
             if (sessionManager.isManagedSessionStarted()) {
                 sessionManager.close();
             }
@@ -101,13 +122,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
-     * Set the database connection to be used by taskana.
-     * If this Api is called, taskana uses the connection passed by the client for database
-     * access in all subsequent API calls until the client resets this connection.
-     * Control over commit and rollback is the responsibility of the client.
-     * In order to close the connection, the client can call TaskanaEngine.closeConnection() or
-     * TaskanaEngine.setConnection(null). Both calls have the same effect.
-     * @param connection TODO
+     * Set the database connection to be used by taskana. If this Api is called, taskana uses the connection passed by
+     * the client for database access in all subsequent API calls until the client resets this connection. Control over
+     * commit and rollback is the responsibility of the client. In order to close the connection, the client can call
+     * TaskanaEngine.closeConnection() or TaskanaEngine.setConnection(null). Both calls have the same effect.
+     *
+     * @param connection
+     *            TODO
      */
     @Override
     public void setConnection(java.sql.Connection connection) {
@@ -125,9 +146,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
-     *  closes the connection to the database in mode EXPLICIT.
-     *  In mode EXPLICIT, closes the client's connection, sets it to null and switches to mode PARTICIPATE
-     *  Has the same effect as setConnection(null)
+     * closes the connection to the database in mode EXPLICIT. In mode EXPLICIT, closes the client's connection, sets it
+     * to null and switches to mode PARTICIPATE Has the same effect as setConnection(null)
      */
     @Override
     public void closeConnection() {
@@ -141,9 +161,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
-     *  Open the connection to the database.
-     *  to be called at the begin of each Api call that accesses the database
-     *
+     * Open the connection to the database. to be called at the begin of each Api call that accesses the database
      */
     void openConnection() {
         initSqlSession();
@@ -153,8 +171,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
-     *  Initializes the SqlSessionManager.
-     *
+     * Initializes the SqlSessionManager.
      */
     void initSqlSession() {
         if (mode == ConnectionManagementMode.EXPLICIT && this.connection == null) {
@@ -167,17 +184,15 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
-     *  Returns the database connection into the pool.
-     *  In the case of nested calls, simply pops the latest session from the session stack.
-     *  Closes the connection if the session stack is empty.
-     *  In mode AUTOCOMMIT commits before the connection is closed.
-     *  To be called at the end of each Api call that accesses the database
+     * Returns the database connection into the pool. In the case of nested calls, simply pops the latest session from
+     * the session stack. Closes the connection if the session stack is empty. In mode AUTOCOMMIT commits before the
+     * connection is closed. To be called at the end of each Api call that accesses the database
      */
     void returnConnection() {
         if (this.mode != ConnectionManagementMode.EXPLICIT) {
             popSessionFromStack();
             if (getSessionStack().isEmpty()
-                    && this.sessionManager != null && this.sessionManager.isManagedSessionStarted()) {
+                && this.sessionManager != null && this.sessionManager.isManagedSessionStarted()) {
                 if (this.mode == ConnectionManagementMode.AUTOCOMMIT) {
                     try {
                         this.sessionManager.commit();
@@ -193,23 +208,25 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     /**
      * retrieve the SqlSession used by taskana.
-     * @return  the myBatis SqlSession object used by taskana
+     *
+     * @return the myBatis SqlSession object used by taskana
      */
     SqlSession getSqlSession() {
         return this.sessionManager;
     }
 
     /**
-     * This method creates the sqlSessionManager of myBatis. It integrates all the
-     * SQL mappers
+     * This method creates the sqlSessionManager of myBatis. It integrates all the SQL mappers
+     *
      * @return a {@link SqlSessionFactory}
      */
     private SqlSessionManager createSqlSessionManager() {
         Environment environment = new Environment(DEFAULT, this.transactionFactory,
-                taskanaEngineConfiguration.getDatasource());
+            taskanaEngineConfiguration.getDatasource());
         Configuration configuration = new Configuration(environment);
         // add mappers
         configuration.addMapper(TaskMapper.class);
+        configuration.addMapper(TaskMonitorMapper.class);
         configuration.addMapper(WorkbasketMapper.class);
         configuration.addMapper(DistributionTargetMapper.class);
         configuration.addMapper(ClassificationMapper.class);
@@ -224,6 +241,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     /**
      * creates the MyBatis transaction factory.
+     *
      * @param useContainerManagedTransactions
      */
     private void createTransactionFactory(boolean useContainerManagedTransactions) {
@@ -235,15 +253,15 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
-     * With sessionStack, we maintain a Stack of SqlSessionManager objects on a per thread basis.
-     * SqlSessionManager is the MyBatis object that wraps database connections.
-     * The purpose of this stack is to keep track of nested calls.
-     * Each external API call is wrapped into  taskanaEngineImpl.openConnection();  ..... taskanaEngineImpl.returnConnection(); calls.
-     * In order to avoid duplicate opening / closing of connections, we use the sessionStack in the following way:
-     * Each time, an openConnection call is received, we push the current sessionManager onto the stack.
-     * On the first call to openConnection, we call sessionManager.startManagedSession() to open a database connection.
-     * On each call to returnConnection() we pop one instance of sessionManager from the stack.
-     * When the stack becomes empty, we close the database connection by calling sessionManager.close()
+     * With sessionStack, we maintain a Stack of SqlSessionManager objects on a per thread basis. SqlSessionManager is
+     * the MyBatis object that wraps database connections. The purpose of this stack is to keep track of nested calls.
+     * Each external API call is wrapped into taskanaEngineImpl.openConnection(); .....
+     * taskanaEngineImpl.returnConnection(); calls. In order to avoid duplicate opening / closing of connections, we use
+     * the sessionStack in the following way: Each time, an openConnection call is received, we push the current
+     * sessionManager onto the stack. On the first call to openConnection, we call sessionManager.startManagedSession()
+     * to open a database connection. On each call to returnConnection() we pop one instance of sessionManager from the
+     * stack. When the stack becomes empty, we close the database connection by calling sessionManager.close()
+     *
      * @return Stack of SqlSessionManager
      */
     protected static Stack<SqlSessionManager> getSessionStack() {

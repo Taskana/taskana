@@ -1,9 +1,7 @@
 package pro.taskana.impl;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +22,9 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.TaskSummary;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
@@ -116,7 +112,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task completeTask(String taskId, boolean isForced) throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
+    public Task completeTask(String taskId, boolean isForced)
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
         LOGGER.debug("entry to completeTask(id = {}, isForced {})", taskId, isForced);
         Task task = null;
         try {
@@ -125,11 +122,15 @@ public class TaskServiceImpl implements TaskService {
             // check pre-conditions for non-forced invocation
             if (!isForced) {
                 if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
-                    LOGGER.warn("Method completeTask() does expect a task which need to be CLAIMED before. TaskId={}", taskId);
+                    LOGGER.warn("Method completeTask() does expect a task which need to be CLAIMED before. TaskId={}",
+                        taskId);
                     throw new InvalidStateException(taskId);
                 } else if (CurrentUserContext.getUserid() != task.getOwner()) {
-                    LOGGER.warn("Method completeTask() does expect to be invoced by the task-owner or a administrator. TaskId={}, TaskOwner={}, CurrentUser={}", taskId, task.getOwner(), CurrentUserContext.getUserid());
-                    throw new InvalidOwnerException("TaskOwner is" + task.getOwner() + ", but current User is " + CurrentUserContext.getUserid());
+                    LOGGER.warn(
+                        "Method completeTask() does expect to be invoced by the task-owner or a administrator. TaskId={}, TaskOwner={}, CurrentUser={}",
+                        taskId, task.getOwner(), CurrentUserContext.getUserid());
+                    throw new InvalidOwnerException(
+                        "TaskOwner is" + task.getOwner() + ", but current User is " + CurrentUserContext.getUserid());
                 }
             } else {
                 // CLAIM-forced, if task was not already claimed before.
@@ -196,48 +197,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskStateCounter> getTaskCountForState(List<TaskState> states) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("entry to getTaskCountForState(states = {})", LoggerUtils.listToString(states));
-        }
-        List<TaskStateCounter> result = null;
-        try {
-            taskanaEngineImpl.openConnection();
-            result = taskMapper.getTaskCountForState(states);
-            return result;
-        } finally {
-            taskanaEngineImpl.returnConnection();
-            if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from getTaskCountForState(). Returning {} resulting Objects: {} ",
-                    numberOfResultObjects, LoggerUtils.listToString(result));
-            }
-        }
-    }
-
-    @Override
-    public long getTaskCountForWorkbasketByDaysInPastAndState(String workbasketId, long daysInPast,
-        List<TaskState> states) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(
-                "entry to getTaskCountForWorkbasketByDaysInPastAndState(workbasketId {}, daysInPast={}, states = {})",
-                workbasketId, daysInPast, LoggerUtils.listToString(states));
-        }
-        long result = -1;
-        try {
-            taskanaEngineImpl.openConnection();
-            LocalDate time = LocalDate.now();
-            time = time.minusDays(daysInPast);
-            Date fromDate = Date.valueOf(time);
-            result = taskMapper.getTaskCountForWorkbasketByDaysInPastAndState(workbasketId, fromDate, states);
-            return result;
-        } finally {
-            taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from getTaskCountForWorkbasketByDaysInPastAndState(). Returning result {} ", result);
-        }
-    }
-
-    @Override
     public Task transfer(String taskId, String destinationWorkbasketId)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketId = {})", taskId, destinationWorkbasketId);
@@ -272,32 +231,6 @@ public class TaskServiceImpl implements TaskService {
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from transfer(). Returning result {} ", result);
-        }
-    }
-
-    @Override
-    public List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast,
-        List<TaskState> states) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("entry to getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast = {}, states = {})",
-                daysInPast, LoggerUtils.listToString(states));
-        }
-        List<DueWorkbasketCounter> result = null;
-        try {
-            taskanaEngineImpl.openConnection();
-            LocalDate time = LocalDate.now();
-            time = time.minusDays(daysInPast);
-            Date fromDate = Date.valueOf(time);
-            result = taskMapper.getTaskCountByWorkbasketIdAndDaysInPastAndState(fromDate, states);
-            return result;
-        } finally {
-            taskanaEngineImpl.returnConnection();
-            if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug(
-                    "exit from getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast,states). Returning {} resulting Objects: {} ",
-                    numberOfResultObjects, LoggerUtils.listToString(result));
-            }
         }
     }
 
