@@ -13,7 +13,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,11 +43,9 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.ClassificationImpl;
-import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.TaskSummary;
 import pro.taskana.model.Workbasket;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -232,7 +229,7 @@ public class TaskServiceImplTest {
         expectedObjectReference.setId("1");
         expectedObjectReference.setType("DUMMY");
 
-        Classification classification = (Classification) new ClassificationImpl();
+        Classification classification = new ClassificationImpl();
         classification.setName("Name");
         classification.setCategory("MANUAL");
         Workbasket wb = new Workbasket();
@@ -378,7 +375,8 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    public void testCompleteTaskDefault() throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, InterruptedException {
+    public void testCompleteTaskDefault()
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, InterruptedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final long sleepTime = 100L;
         final boolean isForced = false;
@@ -394,11 +392,12 @@ public class TaskServiceImplTest {
         // Just Verify unforced call of complex-complete()
         verify(cutSpy, times(1)).completeTask(task.getId(), isForced);
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
-                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
     }
 
     @Test
-    public void testCompleteTaskNotForcedWorking() throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException {
+    public void testCompleteTaskNotForcedWorking()
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final long sleepTime = 100L;
         final boolean isForced = false;
@@ -427,7 +426,8 @@ public class TaskServiceImplTest {
     }
 
     @Test(expected = InvalidStateException.class)
-    public void testCompleteTaskNotForcedNotClaimedBefore() throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+    public void testCompleteTaskNotForcedNotClaimedBefore()
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         final boolean isForced = false;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
@@ -442,13 +442,14 @@ public class TaskServiceImplTest {
             verify(cutSpy, times(1)).getTaskById(task.getId());
             verify(taskanaEngineImpl, times(1)).returnConnection();
             verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
-                    taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
             throw e;
         }
     }
 
     @Test(expected = InvalidOwnerException.class)
-    public void testCompleteTaskNotForcedInvalidOwnerException() throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+    public void testCompleteTaskNotForcedInvalidOwnerException()
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         final boolean isForced = false;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
@@ -470,25 +471,27 @@ public class TaskServiceImplTest {
     }
 
     @Test(expected = TaskNotFoundException.class)
-    public void testCompleteTaskTaskNotFound() throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+    public void testCompleteTaskTaskNotFound()
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final boolean isForced = false;
         String taskId = "1";
         doThrow(TaskNotFoundException.class).when(cutSpy).getTaskById(taskId);
-                 try {
+        try {
             cutSpy.completeTask(taskId, isForced);
         } catch (InvalidOwnerException e) {
             verify(taskanaEngineImpl, times(1)).openConnection();
             verify(cutSpy, times(1)).getTaskById(taskId);
-             verify(taskanaEngineImpl, times(1)).returnConnection();
-             verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
-                     taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
-             throw e;
+            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+            throw e;
         }
     }
 
     @Test
-    public void testCompleteForcedAndAlreadyClaimed() throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException {
+    public void testCompleteForcedAndAlreadyClaimed()
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException {
         final boolean isForced = true;
         final long sleepTime = 100L;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
@@ -507,7 +510,7 @@ public class TaskServiceImplTest {
         verify(taskMapperMock, times(1)).update(task);
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
-                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
         assertThat(actualTask.getCreated(), not(equalTo(task.getModified())));
@@ -516,7 +519,8 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    public void testCompleteForcedNotClaimed() throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException {
+    public void testCompleteForcedNotClaimed()
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final boolean isForced = true;
         final long sleepTime = 100L;
@@ -540,7 +544,7 @@ public class TaskServiceImplTest {
         verify(taskMapperMock, times(1)).update(claimedTask);
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
-                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
         assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
         assertThat(actualTask.getCreated(), not(equalTo(claimedTask.getModified())));
         assertThat(actualTask.getCompleted(), not(equalTo(null)));
@@ -714,61 +718,6 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    public void testGetTaskCountForState() {
-        TaskServiceImpl cutSpy = Mockito.spy(cut);
-        List<TaskState> taskStates = Arrays.asList(TaskState.CLAIMED, TaskState.COMPLETED);
-        List<TaskStateCounter> expectedResult = new ArrayList<>();
-        doReturn(expectedResult).when(taskMapperMock).getTaskCountForState(taskStates);
-
-        List<TaskStateCounter> actualResult = cutSpy.getTaskCountForState(taskStates);
-
-        verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMapperMock, times(1)).getTaskCountForState(taskStates);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
-            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
-        assertThat(actualResult, equalTo(expectedResult));
-    }
-
-    @Test
-    public void testGetTaskCountForWorkbasketByDaysInPastAndState() {
-        List<TaskState> taskStates = Arrays.asList(TaskState.CLAIMED, TaskState.COMPLETED);
-        final long daysInPast = 10L;
-        final long expectedResult = 5L;
-        String workbasketId = "1";
-        doReturn(expectedResult).when(taskMapperMock).getTaskCountForWorkbasketByDaysInPastAndState(any(), any(),
-            any());
-
-        long actualResult = cut.getTaskCountForWorkbasketByDaysInPastAndState(workbasketId, daysInPast, taskStates);
-
-        verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMapperMock, times(1)).getTaskCountForWorkbasketByDaysInPastAndState(any(), any(), any());
-        verify(taskanaEngineImpl, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
-            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
-        assertThat(actualResult, equalTo(expectedResult));
-    }
-
-    @Test
-    public void testGetTaskCountByWorkbasketAndDaysInPastAndState() {
-        final long daysInPast = 10L;
-        List<TaskState> taskStates = Arrays.asList(TaskState.CLAIMED, TaskState.COMPLETED);
-        List<DueWorkbasketCounter> expectedResult = new ArrayList<>();
-        doReturn(expectedResult).when(taskMapperMock).getTaskCountByWorkbasketIdAndDaysInPastAndState(any(Date.class),
-            any());
-
-        List<DueWorkbasketCounter> actualResult = cut.getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast,
-            taskStates);
-
-        verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMapperMock, times(1)).getTaskCountByWorkbasketIdAndDaysInPastAndState(any(Date.class), any());
-        verify(taskanaEngineImpl, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
-            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock);
-        assertThat(actualResult, equalTo(expectedResult));
-    }
-
-    @Test
     public void testSetTaskReadWIthExistingTask() throws TaskNotFoundException, ClassificationAlreadyExistException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1");
@@ -910,7 +859,7 @@ public class TaskServiceImplTest {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         task.setCreated(now);
         task.setModified(now);
-        Classification classification = (Classification) new ClassificationImpl();
+        Classification classification = new ClassificationImpl();
         task.setClassification(classification);
         return task;
     }
