@@ -8,7 +8,6 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
 
@@ -86,7 +85,7 @@ public interface TaskService {
     /**
      * Create and persist a task.
      *
-     * @param task
+     * @param taskToCreate
      *            the transient task object to be persisted
      * @return the created and persisted task
      * @throws NotAuthorizedException
@@ -96,7 +95,7 @@ public interface TaskService {
      * @throws ClassificationNotFoundException
      *             thrown if the {@link Classification} referenced by the task is not found
      */
-    Task createTask(Task task)
+    Task createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException;
 
     /**
@@ -174,4 +173,10 @@ public interface TaskService {
      *             if a Work basket can´t be located.
      */
     List<TaskSummary> getTaskSummariesByWorkbasketId(String workbasketId) throws WorkbasketNotFoundException;
+
+    /**
+     * Returns a not persisted instance of {@link Task}.
+     * @return task - with default values
+     */
+    Task newTask();
 }

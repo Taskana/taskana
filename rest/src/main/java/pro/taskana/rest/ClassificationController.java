@@ -35,20 +35,20 @@ public class ClassificationController {
 		}
 	}
 	
-	@RequestMapping(value = "/{classificationId}", method = RequestMethod.GET)
-	public ResponseEntity<Classification> getClassification(@PathVariable String classificationId) {
+	@RequestMapping(value = "/{classificationKey}", method = RequestMethod.GET)
+	public ResponseEntity<Classification> getClassification(@PathVariable String classificationKey) {
 	    try {
-	        Classification classification = classificationService.getClassification(classificationId, "");
+	        Classification classification = classificationService.getClassification(classificationKey, "");
 	        return ResponseEntity.status(HttpStatus.OK).body(classification);
 	    } catch(Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
 
-	@RequestMapping(value = "/{classificationId}/{domain}", method = RequestMethod.GET)
-	public ResponseEntity<Classification> getClassification(@PathVariable String classificationId, @PathVariable String domain) {
+	@RequestMapping(value = "/{classificationKey}/{domain}", method = RequestMethod.GET)
+	public ResponseEntity<Classification> getClassification(@PathVariable String classificationKey, @PathVariable String domain) {
 	    try {
-            Classification classification = classificationService.getClassification(classificationId, domain);
+            Classification classification = classificationService.getClassification(classificationKey, domain);
             return ResponseEntity.status(HttpStatus.OK).body(classification);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -19,7 +19,6 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Task;
 import pro.taskana.model.Workbasket;
 
 @Path("/test")
@@ -42,14 +41,14 @@ public class TaskanaRestTest {
 		classification.setKey("TEST");
 		taskanaEjb.getClassificationService().createClassification(classification);
 
-		Task task = new Task();
+		Task task = taskanaEjb.getTaskService().newTask();
 		task.setClassification(classification);
 		task.setWorkbasketId(workbasket.getId());
 
-		Task result = taskanaEjb.getTaskService().createTask(task);
+		Task resultTask = taskanaEjb.getTaskService().createTask(task);
 
-		logger.info(result.getId() + ":" + result.getOwner());
-		return Response.status(200).entity(result.getId()).build();
+		logger.info(resultTask.getId() + ":" + resultTask.getOwner());
+		return Response.status(200).entity(resultTask.getId()).build();
 	}
 	
 	@POST

@@ -1,12 +1,11 @@
 package pro.taskana;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Task;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 @Stateless
 public class TaskanaEjb {
@@ -33,8 +32,9 @@ public class TaskanaEjb {
 	}
 
 	public void triggerRollback() throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
-		Task t = taskService.createTask(new Task());
-		System.out.println("---------------->" + t.getId());
+		Task task = taskService.newTask();
+		taskService.createTask(task);
+		System.out.println("---------------->" + task.getId());
 		throw new RuntimeException();
 	}
 

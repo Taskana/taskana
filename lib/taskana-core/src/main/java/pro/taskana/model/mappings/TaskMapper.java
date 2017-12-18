@@ -15,10 +15,10 @@ import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.Classification;
+import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
 
@@ -69,16 +69,16 @@ public interface TaskMapper {
         @Result(property = "custom9", column = "CUSTOM_9"),
         @Result(property = "custom10", column = "CUSTOM_10")
     })
-    Task findById(@Param("id") String id);
+    TaskImpl findById(@Param("id") String id);
 
     @Insert("INSERT INTO TASK(ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_KEY, WORKBASKETID, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10) "
         + "VALUES(#{id}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{description}, #{priority}, #{state}, #{classification.key}, #{workbasketId}, #{businessProcessId}, #{parentBusinessProcessId}, #{owner}, #{primaryObjRef.id}, #{isRead}, #{isTransferred}, #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, #{custom1}, #{custom2}, #{custom3}, #{custom4}, #{custom5}, #{custom6}, #{custom7}, #{custom8}, #{custom9}, #{custom10})")
     @Options(keyProperty = "id", keyColumn = "ID")
-    void insert(Task task);
+    void insert(TaskImpl task);
 
     @Update("UPDATE TASK SET CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, PRIORITY = #{priority}, STATE = #{state}, CLASSIFICATION_KEY = #{classification.key}, WORKBASKETID = #{workbasketId}, BUSINESS_PROCESS_ID = #{businessProcessId}, PARENT_BUSINESS_PROCESS_ID = #{parentBusinessProcessId}, OWNER = #{owner}, PRIMARY_OBJ_REF_ID = #{primaryObjRef.id}, IS_READ = #{isRead}, IS_TRANSFERRED = #{isTransferred}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, CUSTOM_1 = #{custom1}, CUSTOM_2 = #{custom2}, CUSTOM_3 = #{custom3}, CUSTOM_4 = #{custom4}, CUSTOM_5 = #{custom5}, CUSTOM_6 = #{custom6}, CUSTOM_7 = #{custom7}, CUSTOM_8 = #{custom8}, CUSTOM_9 = #{custom9}, CUSTOM_10 = #{custom10} "
         + "WHERE ID = #{id}")
-    void update(Task task);
+    void update(TaskImpl task);
 
     @Delete("DELETE FROM TASK WHERE ID = #{id}")
     void delete(String id);
@@ -120,7 +120,7 @@ public interface TaskMapper {
         @Result(property = "custom9", column = "CUSTOM_9"),
         @Result(property = "custom10", column = "CUSTOM_10")
     })
-    List<Task> findTasksByWorkbasketIdAndState(@Param("workbasketId") String workbasketId,
+    List<TaskImpl> findTasksByWorkbasketIdAndState(@Param("workbasketId") String workbasketId,
         @Param("taskState") TaskState taskState);
 
     @Select("SELECT TASK.ID AS taskId, TASK.NAME AS taskName, TASK.WORKBASKETID AS workId, TASK.CLASSIFICATION_KEY AS classificationKey, "

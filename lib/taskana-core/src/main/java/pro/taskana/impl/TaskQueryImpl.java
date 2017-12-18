@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ObjectReferenceQuery;
+import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAuthorization;
 
@@ -152,9 +152,9 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public Task single() throws NotAuthorizedException {
+    public TaskImpl single() throws NotAuthorizedException {
         LOGGER.debug("entry to single(), this = {}", this);
-        Task result = null;
+        TaskImpl result = null;
         try {
             taskanaEngineImpl.openConnection();
             checkAuthorization();

@@ -10,11 +10,11 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
+import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.model.ClassificationImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.model.ObjectReference;
-import pro.taskana.model.Task;
 import pro.taskana.model.Workbasket;
 
 /**
@@ -95,7 +95,7 @@ public interface QueryMapper {
             @Result(property = "custom8", column = "CUSTOM_8"),
             @Result(property = "custom9", column = "CUSTOM_9"),
             @Result(property = "custom10", column = "CUSTOM_10") })
-    List<Task> queryTasks(TaskQueryImpl taskQuery);
+    List<TaskImpl> queryTasks(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
             + "FROM CLASSIFICATION "
