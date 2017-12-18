@@ -16,8 +16,8 @@ import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.Classification;
 import pro.taskana.impl.TaskImpl;
+import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
-import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
@@ -28,8 +28,8 @@ import pro.taskana.model.TaskSummary;
 public interface TaskMapper {
 
     String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.model.mappings.ObjectReferenceMapper.findById";
-
-    String CLASSIFICATION_FINDBYKEYROOTDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByKeyRootDomain";
+    String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByKeyAndDomain";
+    String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findById";
 
     @Select("SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_KEY, WORKBASKETID, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10 "
         + "FROM TASK "
@@ -46,18 +46,15 @@ public interface TaskMapper {
         @Result(property = "description", column = "DESCRIPTION"),
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
-        @Result(property = "classification", column = "CLASSIFICATION_KEY", javaType = ClassificationImpl.class,
-            one = @One(select = CLASSIFICATION_FINDBYKEYROOTDOMAIN)),
+        @Result(property = "classification", column = "CLASSIFICATION_KEY", javaType = ClassificationImpl.class, one = @One(select = CLASSIFICATION_FINDBYID)),
         @Result(property = "workbasketId", column = "WORKBASKETID"),
         @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
         @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
         @Result(property = "owner", column = "OWNER"),
-        @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class,
-            one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
+        @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
         @Result(property = "isRead", column = "IS_READ"),
         @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.BLOB,
-            javaType = Map.class, typeHandler = MapTypeHandler.class),
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.BLOB, javaType = Map.class, typeHandler = MapTypeHandler.class),
         @Result(property = "custom1", column = "CUSTOM_1"),
         @Result(property = "custom2", column = "CUSTOM_2"),
         @Result(property = "custom3", column = "CUSTOM_3"),
@@ -99,16 +96,13 @@ public interface TaskMapper {
         @Result(property = "description", column = "DESCRIPTION"),
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
-        @Result(property = "classification", column = "CLASSIFICATION_KEY", javaType = Classification.class,
-            one = @One(select = CLASSIFICATION_FINDBYKEYROOTDOMAIN)),
+        @Result(property = "classification", column = "CLASSIFICATION_KEY", javaType = Classification.class, one = @One(select = CLASSIFICATION_FINDBYKEYANDDOMAIN)),
         @Result(property = "workbasketId", column = "WORKBASKETID"),
         @Result(property = "owner", column = "OWNER"),
-        @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class,
-            one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
+        @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class, one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
         @Result(property = "isRead", column = "IS_READ"),
         @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.BLOB,
-            javaType = Map.class, typeHandler = MapTypeHandler.class),
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.BLOB, javaType = Map.class, typeHandler = MapTypeHandler.class),
         @Result(property = "custom1", column = "CUSTOM_1"),
         @Result(property = "custom2", column = "CUSTOM_2"),
         @Result(property = "custom3", column = "CUSTOM_3"),

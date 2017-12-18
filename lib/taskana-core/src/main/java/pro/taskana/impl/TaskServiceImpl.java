@@ -37,21 +37,13 @@ import pro.taskana.security.CurrentUserContext;
 public class TaskServiceImpl implements TaskService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
-
     private static final String ID_PREFIX_OBJECT_REFERENCE = "ORI";
-
     private static final String ID_PREFIX_TASK = "TKI";
-
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
-
     private TaskanaEngine taskanaEngine;
-
     private TaskanaEngineImpl taskanaEngineImpl;
-
     private WorkbasketService workbasketService;
-
     private TaskMapper taskMapper;
-
     private ObjectReferenceMapper objectReferenceMapper;
 
     public TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,

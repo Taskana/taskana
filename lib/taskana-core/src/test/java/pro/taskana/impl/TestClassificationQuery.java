@@ -7,7 +7,6 @@ import java.util.List;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.ClassificationImpl;
 
 /**
  * Created by BV on 26.10.2017.
