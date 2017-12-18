@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,9 +23,12 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.model.DueWorkbasketCounter;
+import pro.taskana.model.Report;
+import pro.taskana.model.ReportLine;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
@@ -117,6 +121,26 @@ public class TaskMonitorServiceImplTest {
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
         assertThat(actualResult, equalTo(expectedResult));
+    }
+
+    @Test
+    public void testGetWorkbasketLevelReport() {
+        List<Workbasket> workbaskets = Arrays.asList(new WorkbasketImpl(), new WorkbasketImpl());
+        List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+
+        Report expectedResult = new Report();
+        List<ReportLine> expectedDetailLines = new ArrayList<>();
+        doReturn(expectedDetailLines).when(taskMonitorMapperMock).getDetailLinesByWorkbasketIdsAndStates(any(), any());
+
+        Report actualResult = cut.getWorkbasketLevelReport(workbaskets, states);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMonitorMapperMock, times(1)).getDetailLinesByWorkbasketIdsAndStates(any(), any());
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+            taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+        Assert.assertNotNull(actualResult);
+        assertThat(actualResult.getDetailLines(), equalTo(expectedResult.getDetailLines()));
     }
 
 }
