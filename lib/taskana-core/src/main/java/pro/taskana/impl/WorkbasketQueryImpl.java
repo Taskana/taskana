@@ -117,6 +117,13 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         }
         this.authorization = permission;
         this.accessId = accessIds;
+        for (int i = 0; i < accessIds.length; i++) {
+            String id = accessIds[i];
+            if (id != null) {
+                accessIds[i] = id.toLowerCase();
+            }
+        }
+
         return this;
     }
 
