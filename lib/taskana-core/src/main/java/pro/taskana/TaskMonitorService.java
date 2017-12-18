@@ -3,6 +3,7 @@ package pro.taskana;
 import java.util.List;
 
 import pro.taskana.model.DueWorkbasketCounter;
+import pro.taskana.model.Report;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 
@@ -47,5 +48,17 @@ public interface TaskMonitorService {
      *         with appropriate due date exist in the various work baskets
      */
     List<DueWorkbasketCounter> getTaskCountByWorkbasketAndDaysInPastAndState(long daysInPast, List<TaskState> states);
+
+    /**
+     * Returns a {@link Report} for a given list of {@link Workbasket} objects and for a given list of {@link TaskState}
+     * objects.
+     *
+     * @param workbaskets
+     *            a list of {@link Workbasket} objects
+     * @param states
+     *            a list of {@link TaskState} objects
+     * @return a {@link Report} object
+     */
+    Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states);
 
 }

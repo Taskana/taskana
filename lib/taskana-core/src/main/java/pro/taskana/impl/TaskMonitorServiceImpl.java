@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.Workbasket;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.DueWorkbasketCounter;
+import pro.taskana.model.Report;
+import pro.taskana.model.ReportLine;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.mappings.TaskMonitorMapper;
@@ -21,9 +24,7 @@ import pro.taskana.model.mappings.TaskMonitorMapper;
 public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskMonitorServiceImpl.class);
-
     private TaskanaEngineImpl taskanaEngineImpl;
-
     private TaskMonitorMapper taskMonitorMapper;
 
     public TaskMonitorServiceImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
@@ -96,6 +97,33 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 LOGGER.debug(
                     "exit from getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast,states). Returning {} resulting Objects: {} ",
                     numberOfResultObjects, LoggerUtils.listToString(result));
+            }
+        }
+    }
+
+    @Override
+    public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getWorkbasketLevelReport(workbaskets = {})", LoggerUtils.listToString(workbaskets));
+        }
+        try {
+            taskanaEngineImpl.openConnection();
+            Report report = new Report();
+            report.setDetailLines(taskMonitorMapper.getDetailLinesByWorkbasketIdsAndStates(workbaskets, states));
+            int sumLineTotalCount = 0;
+            for (ReportLine reportLine : report.getDetailLines()) {
+                sumLineTotalCount += reportLine.getTotalCount();
+            }
+            ReportLine sumLine = new ReportLine();
+            sumLine.setName("SumLine");
+            sumLine.setTotalCount(sumLineTotalCount);
+            report.setSumLine(sumLine);
+            return report;
+
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("exit from getTaskCountByWorkbaskets().");
             }
         }
     }

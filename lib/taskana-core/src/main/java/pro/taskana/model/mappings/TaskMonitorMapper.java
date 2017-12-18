@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
+import pro.taskana.Workbasket;
 import pro.taskana.model.DueWorkbasketCounter;
+import pro.taskana.model.ReportLine;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 
@@ -47,6 +49,18 @@ public interface TaskMonitorMapper {
         @Result(column = "WORKBASKETID", property = "workbasketId"),
         @Result(column = "counter", property = "taskCounter") })
     List<DueWorkbasketCounter> getTaskCountByWorkbasketIdAndDaysInPastAndState(@Param("fromDate") Date fromDate,
+        @Param("status") List<TaskState> states);
+
+    @Select("<script>"
+        + "SELECT WORKBASKET_KEY, COUNT(WORKBASKET_KEY) as counter "
+        + "FROM TASK "
+        + "WHERE WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
+        + "AND STATE IN (<foreach collection='status' item='state' separator=','>#{state}</foreach>) "
+        + "GROUP BY WORKBASKET_KEY"
+        + "</script>")
+    @Results({ @Result(column = "WORKBASKET_KEY", property = "name"),
+        @Result(column = "counter", property = "totalCount") })
+    List<ReportLine> getDetailLinesByWorkbasketIdsAndStates(@Param("workbaskets") List<Workbasket> workbaskets,
         @Param("status") List<TaskState> states);
 
 }
