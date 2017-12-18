@@ -1,7 +1,6 @@
 package pro.taskana;
 
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 
 /**

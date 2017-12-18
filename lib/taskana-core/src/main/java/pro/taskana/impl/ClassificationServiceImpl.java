@@ -105,6 +105,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                 classificationMapper.insert(classificationImpl);
                 LOGGER.debug("Method createClassification created classification {}.", classification);
                 if (classificationImpl.getDomain() != "") {
+                    classificationImpl.setId(UUID.randomUUID().toString());
                     classificationImpl.setDomain("");
                     classificationMapper.insert(classificationImpl);
                     LOGGER.debug("Method createClassification created classification {}.", classification);

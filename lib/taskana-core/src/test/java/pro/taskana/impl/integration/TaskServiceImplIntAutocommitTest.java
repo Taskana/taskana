@@ -22,6 +22,7 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ObjectReferenceQuery;
+import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.WorkbasketService;
@@ -33,11 +34,11 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
+import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.Task;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
 import pro.taskana.model.Workbasket;
@@ -96,7 +97,7 @@ public class TaskServiceImplIntAutocommitTest {
         classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = new Task();
+        Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");
         task.setWorkbasketId(wb.getId());
         task.setClassification(classification);
@@ -121,7 +122,7 @@ public class TaskServiceImplIntAutocommitTest {
         classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = new Task();
+        Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");
         task.setWorkbasketId(wb.getId());
         task.setClassification(classification);
@@ -144,7 +145,7 @@ public class TaskServiceImplIntAutocommitTest {
         classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = new Task();
+        Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");
         task.setWorkbasketId(wb.getId());
         task.setClassification(classification);
@@ -164,7 +165,7 @@ public class TaskServiceImplIntAutocommitTest {
         classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = new Task();
+        Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");
         task.setWorkbasketId(wb.getId());
         task.setClassification(classification);
@@ -215,12 +216,12 @@ public class TaskServiceImplIntAutocommitTest {
         dummyClassification.setName("Dummy-Classification");
         classificationService.createClassification(dummyClassification);
 
-        Task dummyTask = new Task();
+        TaskImpl dummyTask = (TaskImpl) taskServiceImpl.newTask();
         dummyTask.setId("1");
         dummyTask.setName("Dummy-Task");
         dummyTask.setClassification(dummyClassification);
         dummyTask.setWorkbasketId(dummyWorkbasket.getId());
-        dummyTask = taskServiceImpl.createTask(dummyTask);
+        dummyTask = (TaskImpl) taskServiceImpl.createTask(dummyTask);
 
         List<TaskSummary> expectedTaskSumamries = new ArrayList<>();
         TaskSummary taskSummary = new TaskSummary();
