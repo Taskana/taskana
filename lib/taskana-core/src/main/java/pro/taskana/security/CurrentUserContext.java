@@ -1,9 +1,5 @@
 package pro.taskana.security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.security.auth.Subject;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.Principal;
@@ -12,9 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.security.auth.Subject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Provides the context information about the current (calling) user. The
- * context is gathered from the JAAS subject.
+ * Provides the context information about the current (calling) user. The context is gathered from the JAAS subject.
+ *
  * @author Holger Hagen
  */
 public final class CurrentUserContext {
@@ -32,6 +33,7 @@ public final class CurrentUserContext {
 
     /**
      * Returns the userid of the current user.
+     *
      * @return String the userid. null if there is no JAAS subject.
      */
     public static String getUserid() {
@@ -43,10 +45,9 @@ public final class CurrentUserContext {
     }
 
     /**
-     * Returns the unique security name of the first public credentials found in the
-     * WSSubject as userid.
-     * @return the userid of the caller. If the userid could not be obtained, null
-     *         is returned.
+     * Returns the unique security name of the first public credentials found in the WSSubject as userid.
+     *
+     * @return the userid of the caller. If the userid could not be obtained, null is returned.
      */
     private static String getUseridFromWSSubject() {
         try {
@@ -59,9 +60,12 @@ public final class CurrentUserContext {
                 LOGGER.debug("Public credentials of caller: {}", publicCredentials);
                 for (Object pC : publicCredentials) {
                     Object o = pC.getClass().getMethod(GET_UNIQUE_SECURITY_NAME_METHOD, (Class<?>[]) null).invoke(pC,
-                            (Object[]) null);
+                        (Object[]) null);
                     LOGGER.debug("Returning the unique security name of first public credential: {}", o);
-                    return o.toString();
+                    String userIdFound = o.toString();
+                    String userIdUsed = userIdFound != null ? userIdFound.toLowerCase() : null;
+                    LOGGER.trace("Found User id {}. Returning User id {} ", userIdFound, userIdUsed);
+                    return userIdUsed;
                 }
             }
         } catch (Exception e) {
@@ -72,6 +76,7 @@ public final class CurrentUserContext {
 
     /**
      * Checks, whether Taskana is running on IBM WebSphere.
+     *
      * @return true, if it is running on IBM WebSphere
      */
     private static boolean runningOnWebSphere() {
@@ -96,8 +101,10 @@ public final class CurrentUserContext {
             LOGGER.trace("Public principals of caller: {}", principals);
             for (Principal pC : principals) {
                 if (!(pC instanceof Group)) {
-                    LOGGER.trace("Returning the first principal that is no group: {}", pC.getName());
-                    return pC.getName();
+                    String userIdFound = pC.getName();
+                    String userIdUsed = userIdFound != null ? userIdFound.toLowerCase() : null;
+                    LOGGER.trace("Found User id {}. Returning User id {} ", userIdFound, userIdUsed);
+                    return userIdUsed;
                 }
             }
         }
@@ -113,8 +120,10 @@ public final class CurrentUserContext {
             Set<Group> groups = subject.getPrincipals(Group.class);
             LOGGER.trace("Public groups of caller: {}", groups);
             for (Principal group : groups) {
-                LOGGER.trace("Returning the groupId: {}", group.getName());
-                groupIds.add(group.getName());
+                String groupNameFound = group.getName();
+                String groupNameReturned = groupNameFound != null ? groupNameFound.toLowerCase() : null;
+                LOGGER.trace("Found group id {}. Returning group Id: {}", groupNameFound, groupNameReturned);
+                groupIds.add(groupNameReturned);
             }
             return groupIds;
         }

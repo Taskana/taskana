@@ -39,11 +39,11 @@ public class WorkbasketAccessItem {
     }
 
     public String getAccessId() {
-        return accessId;
+        return accessId != null ? accessId.toLowerCase() : null;
     }
 
     public void setAccessId(String accessId) {
-        this.accessId = accessId;
+        this.accessId = accessId != null ? accessId.toLowerCase() : null;
     }
 
     public boolean isPermRead() {
