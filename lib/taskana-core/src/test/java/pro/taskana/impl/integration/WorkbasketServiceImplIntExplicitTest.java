@@ -271,6 +271,8 @@ public class WorkbasketServiceImplIntExplicitTest {
             workBasketService.getWorkbasket(id2).getModified());
         Assert.assertEquals(workBasketService.getWorkbasket(id1).getCreated(),
             workBasketService.getWorkbasket(id1).getModified());
+        Assert.assertEquals(workBasketService.getWorkbasket(id3).getCreated(),
+            workBasketService.getWorkbasket(id3).getModified());
         connection.commit();
     }
 
@@ -307,7 +309,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         accessItem.setAccessId("Zaphod Beeblebrox");
         workBasketService.updateWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals("Zaphod Beeblebrox",
+        Assert.assertEquals("zaphod beeblebrox",
             workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
         connection.commit();
     }

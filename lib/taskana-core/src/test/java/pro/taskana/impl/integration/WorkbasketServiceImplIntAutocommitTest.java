@@ -299,7 +299,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         accessItem.setAccessId("Zaphod Beeblebrox");
         workBasketService.updateWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals("Zaphod Beeblebrox",
+        Assert.assertEquals("zaphod beeblebrox",
             workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
     }
 

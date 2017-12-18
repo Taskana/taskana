@@ -335,7 +335,7 @@ public class WorkbasketServiceImplTest {
         accessItem.setAccessId("Zaphod Beeblebrox");
         workbasketServiceImpl.updateWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals("Zaphod Beeblebrox", accessItem.getAccessId());
+        Assert.assertEquals("zaphod beeblebrox", accessItem.getAccessId());
     }
 
     @Test(expected = NotAuthorizedException.class)
