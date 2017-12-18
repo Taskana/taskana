@@ -12,7 +12,6 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.Task;
 
 @Component
 @Transactional
@@ -24,7 +23,7 @@ public class ExampleBootstrap {
 	@PostConstruct
 	public void test() throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, InvalidStateException, InvalidOwnerException {
 		System.out.println("---------------------------> Start App");
-		Task task = new Task();
+		Task task = taskService.newTask();
 		task.setName("Spring example task");
 		task.setWorkbasketId("1");
 		task = taskService.createTask(task);

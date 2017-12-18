@@ -246,22 +246,6 @@ public class ClassificationServiceImplTest {
         cutSpy.createClassificationQuery();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
     }
-//
-//    @Test
-//    public void testNewClassification() {
-//        Classification actualResult = cutSpy.newClassification();
-//
-//        verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
-//        assertThat(actualResult.getId(), not(equalTo(null)));
-//        assertThat(actualResult.getKey(), not(equalTo(null)));
-//        assertThat(actualResult.getKey(), startsWith(idPrefixClassification));
-//        assertThat(actualResult.getCreated(), equalTo(today));
-//        assertThat(actualResult.getParentClassificationKey(), equalTo(""));
-//        assertThat(actualResult.getDomain(), equalTo(""));
-//        assertThat(actualResult.getValidFrom(), equalTo(today));
-//        assertThat(actualResult.getValidUntil(),
-//            equalTo(ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL));
-//    }
 
     private Classification createDummyCLassification() {
         ClassificationImpl classificationImpl = new ClassificationImpl();
