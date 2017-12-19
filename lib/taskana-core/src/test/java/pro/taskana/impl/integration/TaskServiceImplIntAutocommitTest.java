@@ -231,7 +231,7 @@ public class TaskServiceImplIntAutocommitTest {
         classificationService.createClassification(dummyClassification);
 
         TaskImpl dummyTask = (TaskImpl) taskServiceImpl.newTask();
-        dummyTask.setId("1");
+        dummyTask.setId(null);
         dummyTask.setName("Dummy-Task");
         dummyTask.setClassification(dummyClassification);
         dummyTask.setWorkbasketId(dummyWorkbasket.getId());
@@ -397,7 +397,7 @@ public class TaskServiceImplIntAutocommitTest {
         }
 
         // Check failing with missing TRANSFER
-        task.setId(UUID.randomUUID().toString());
+        task.setId("");
         task.setWorkbasketId(wbNoTransfer.getId());
         task = (TaskImpl) taskServiceImpl.createTask(task);
         try {
