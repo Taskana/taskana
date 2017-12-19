@@ -6,6 +6,7 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.TaskState;
@@ -83,11 +84,13 @@ public interface TaskService {
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
 
     /**
-     * Create and persist a task.
+     * Persists a not persisted Task which does not exist already.
      *
      * @param taskToCreate
      *            the transient task object to be persisted
      * @return the created and persisted task
+     * @throws TaskAlreadyExistException
+     *             when the Task does already exist.
      * @throws NotAuthorizedException
      *             thrown if the current user is not authorized to create that task
      * @throws WorkbasketNotFoundException
@@ -96,7 +99,8 @@ public interface TaskService {
      *             thrown if the {@link Classification} referenced by the task is not found
      */
     Task createTask(Task taskToCreate)
-        throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException;
+        throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
+        TaskAlreadyExistException;
 
     /**
      * Get the details of a task by Id.
@@ -176,6 +180,7 @@ public interface TaskService {
 
     /**
      * Returns a not persisted instance of {@link Task}.
+     *
      * @return task - with default values
      */
     Task newTask();

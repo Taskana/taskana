@@ -23,3 +23,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### DEV-TOOLS ###
+.checkstyle

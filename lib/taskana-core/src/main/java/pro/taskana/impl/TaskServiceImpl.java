@@ -19,6 +19,7 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
@@ -153,10 +154,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(Task taskToCreate)
-        throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
+        TaskAlreadyExistException {
         LOGGER.debug("entry to createTask(task = {})", taskToCreate);
         try {
             taskanaEngineImpl.openConnection();
+            try {
+                this.getTaskById(taskToCreate.getId());
+                throw new TaskAlreadyExistException(taskToCreate.getId());
+            } catch (TaskNotFoundException ex) {
+                LOGGER.debug("Task {} can´t be be found, so it can be created.", taskToCreate.getId());
+            }
             TaskImpl task = (TaskImpl) taskToCreate;
             workbasketService.getWorkbasket(task.getWorkbasketId());
             workbasketService.checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
@@ -164,7 +172,8 @@ public class TaskServiceImpl implements TaskService {
             if (classification == null) {
                 throw new ClassificationNotFoundException(null);
             }
-            taskanaEngine.getClassificationService().getClassification(classification.getKey(), classification.getDomain());
+            taskanaEngine.getClassificationService().getClassification(classification.getKey(),
+                classification.getDomain());
 
             standardSettings(task);
 
@@ -269,7 +278,7 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             workbasketService.checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
             List<TaskImpl> tasks = taskMapper.findTasksByWorkbasketIdAndState(workbasketId, taskState);
-            tasks.stream().forEach(t -> results.add((Task) t));
+            tasks.stream().forEach(t -> results.add(t));
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
