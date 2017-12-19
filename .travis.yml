@@ -23,7 +23,7 @@ install:
 script:
   - mvn verify -f lib/
     && mvn verify -f rest/
-    && lib/deployment/deploy.sh -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/" -mf manifest.yml -avc rest/
+    && lib/deployment/deploy.sh -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/" -mf manifest.yml -avc rest/ -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
 deploy:
   provider: cloudfoundry
   username: tobias.schaefer@novatec-gmbh.de

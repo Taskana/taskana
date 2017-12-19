@@ -196,7 +196,12 @@ function main {
         shift # past argument
         shift # past value
         ;;
-      *)    # unknown option
+      -swarm)
+        local SWARM="$2"
+        shift # past argument
+        shift # past value 
+        ;;
+      *) # unknown option
         echo "unknown parameter $1" >&2
         exit 1
         ;;
@@ -282,23 +287,29 @@ function main {
       exit 1
     fi
 
+    local newVersion=`increment_version ${TRAVIS_TAG##v}`
+
     if [[ -n "$PARENT_DIR" ]]; then
-      change_version "$PARENT_DIR" "`increment_version ${TRAVIS_TAG##v}`-SNAPSHOT"
+      change_version "$PARENT_DIR" "$newVersion-SNAPSHOT"
     else
       for dir in ${MODULES[@]}; do
-        change_version "$dir" "`increment_version ${TRAVIS_TAG##v}`-SNAPSHOT"
+        change_version "$dir" "$newVersion-SNAPSHOT"
       done
     fi
 
     for dir in ${ADDITIONAL_VC[@]}; do
-      change_version "$dir" "`increment_version ${TRAVIS_TAG##v}`-SNAPSHOT"
+      change_version "$dir" "$newVersion-SNAPSHOT"
     done
+
+    if [[ -n "$SWARM" ]]; then
+        $debug sed -i "s/pro.taskana:taskana-core.*-SNAPSHOT/pro.taskana:taskana-core:$newVersion-SNAPSHOT/" "$SWARM"
+    fi
 
     if [[ -n "$MANIFEST" ]]; then
         $debug sed -i "s|$MANIFEST_PREFIX.*\.jar|$MANIFEST_PREFIX-${TRAVIS_TAG##v}-SNAPSHOT.jar|" "$MANIFEST"
     fi
     
-    push_new_poms "$MANIFEST"
+    push_new_poms "$MANIFEST" "$SWARM"
   fi
 }
 
