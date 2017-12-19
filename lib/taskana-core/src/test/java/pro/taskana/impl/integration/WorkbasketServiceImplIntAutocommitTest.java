@@ -384,14 +384,11 @@ public class WorkbasketServiceImplIntAutocommitTest {
         throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketNotFoundException {
         generateSampleDataForQuery();
 
-        String userName = "eberhardt";
+        String userName = "Bernd";
         String[] groupNames = {"group2", "group3"};
         List<WorkbasketAuthorization> authorizations = new ArrayList<WorkbasketAuthorization>();
 
         authorizations.add(WorkbasketAuthorization.OPEN);
-        Assert.assertTrue(1 == getWorkbasketsForPrincipalesAndPermissions(userName, groupNames, authorizations));
-
-        userName = "Bernd";
         Assert.assertTrue(2 == getWorkbasketsForPrincipalesAndPermissions(userName, groupNames, authorizations));
 
         authorizations.add(WorkbasketAuthorization.CUSTOM_4);

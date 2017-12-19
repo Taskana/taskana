@@ -127,10 +127,10 @@ public class TaskController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/transfer/{workbasketId}")
-    public ResponseEntity<Task> transferTask(@PathVariable String taskId, @PathVariable String workbasketId) {
+    @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/transfer/{workbasketKey}")
+    public ResponseEntity<Task> transferTask(@PathVariable String taskId, @PathVariable String workbasketKey) {
         try {
-            Task updatedTask = taskService.transfer(taskId, workbasketId);
+            Task updatedTask = taskService.transfer(taskId, workbasketKey);
             return ResponseEntity.status(HttpStatus.CREATED).body(updatedTask);
         } catch (Exception e) {
             logger.error("Something went wrong: ", e);

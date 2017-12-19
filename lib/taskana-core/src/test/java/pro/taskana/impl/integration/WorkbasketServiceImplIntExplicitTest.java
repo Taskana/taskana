@@ -196,10 +196,10 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket1.setName("Megabasket");
         workbasket1.setDomain("D2");
         workbasket1.setType(WorkbasketType.GROUP);
-        workBasketService.createWorkbasket(workbasket1);
-        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
         workbasket1.setType(WorkbasketType.GROUP);
         workbasket1.setDomain("novatec");
+        workBasketService.createWorkbasket(workbasket1);
+        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
         workbasket2.setKey("key2");
@@ -228,8 +228,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket0.setName("Superbasket");
         workbasket0.setType(WorkbasketType.GROUP);
         workbasket0.setDomain("novatec");
-
         workBasketService.createWorkbasket(workbasket0);
+
         WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
         workbasket0.setType(WorkbasketType.GROUP);
         workbasket0.setDomain("novatec");
@@ -256,7 +256,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket3.setName("hm ... irgend ein basket");
         workbasket3.setType(WorkbasketType.GROUP);
         workbasket3.setDomain("novatec");
-        workbasket3 = workBasketService.createWorkbasket(workbasket3);
+        workBasketService.createWorkbasket(workbasket3);
         workbasket2.getDistributionTargets().clear();
         workbasket2.getDistributionTargets().add(workbasket3);
         Thread.sleep(SLEEP_TIME);

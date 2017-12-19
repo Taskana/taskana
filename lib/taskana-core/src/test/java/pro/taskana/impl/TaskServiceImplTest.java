@@ -126,6 +126,7 @@ public class TaskServiceImplTest {
         verify(workbasketServiceMock, times(1)).checkAuthorization(any(), any());
         verify(workbasketServiceMock, times(1)).getWorkbasketByKey(any());
         verify(taskanaEngineMock, times(1)).getClassificationService();
+
         verify(classificationServiceMock, times(1)).getClassification(any(), any());
         verify(taskMapperMock, times(1)).insert(expectedTask);
         verify(taskanaEngineImpl, times(1)).returnConnection();
