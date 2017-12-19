@@ -1,8 +1,7 @@
 package pro.taskana.model;
 
 /**
- * Entity which contains the most important
- * informations about a Task.
+ * Entity which contains the most important informations about a Task.
  */
 public class TaskSummary {
 
@@ -16,12 +15,15 @@ public class TaskSummary {
     public String getTaskId() {
         return taskId;
     }
+
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
+
     public String getTaskName() {
         return taskName;
     }
+
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
@@ -33,21 +35,27 @@ public class TaskSummary {
     public void setWorkbasketKey(String workbasketKey) {
         this.workbasketKey = workbasketKey;
     }
+
     public String getWorkbasketName() {
         return workbasketName;
     }
+
     public void setWorkbasketName(String workbasketName) {
         this.workbasketName = workbasketName;
     }
+
     public String getClassificationKey() {
         return classificationKey;
     }
+
     public void setClassificationKey(String classificationKey) {
         this.classificationKey = classificationKey;
     }
+
     public String getClassificationName() {
         return classificationName;
     }
+
     public void setClassificationName(String classificationName) {
         this.classificationName = classificationName;
     }
@@ -140,4 +148,5 @@ public class TaskSummary {
         builder.append("]");
         return builder.toString();
     }
+
 }

@@ -263,7 +263,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
         throws WorkbasketNotFoundException, NotAuthorizedException {
-        LOGGER.debug("entry to getTasksByWorkbasketKeyAndState(workbasketId = {}, taskState = {})", workbasketKey,
+        LOGGER.debug("entry to getTasksByWorkbasketKeyAndState(workbasketKey = {}, taskState = {})", workbasketKey,
             taskState);
         List<Task> results = new ArrayList<>();
         try {

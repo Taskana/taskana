@@ -138,7 +138,7 @@ public interface WorkbasketMapper {
         + "<if test=\"authorization.name() == 'CUSTOM_8'\">PERM_CUSTOM_8</if> = 1 </foreach> "
         + "ORDER BY id</script>")
     @Results(value = {
-       @Result(property = "id", column = "ID"),
+        @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "modified", column = "MODIFIED"),

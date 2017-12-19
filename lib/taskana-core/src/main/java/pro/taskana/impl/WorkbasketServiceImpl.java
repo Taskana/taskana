@@ -185,6 +185,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public Workbasket updateWorkbasket(Workbasket workbasketToUpdate)
         throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
         LOGGER.debug("entry to updateWorkbasket(workbasket)", workbasketToUpdate);
+
         Workbasket result = null;
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketToUpdate;
         try {

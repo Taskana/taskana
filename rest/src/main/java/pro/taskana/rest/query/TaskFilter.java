@@ -118,7 +118,6 @@ public class TaskFilter {
         }
         if (params.containsKey(WORKBASKET_KEY)) {
             String[] workbaskets = extractCommaSeperatedFields(params.get(WORKBASKET_KEY));
-            taskQuery.workbasketKeyIn(workbaskets);
         }
         if (params.containsKey(OWNER)) {
             String[] owners = extractCommaSeperatedFields(params.get(OWNER));
