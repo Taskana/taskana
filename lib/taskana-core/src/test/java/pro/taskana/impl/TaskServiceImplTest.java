@@ -109,7 +109,7 @@ public class TaskServiceImplTest {
         ClassificationNotFoundException, ClassificationAlreadyExistException, TaskAlreadyExistException,
         TaskNotFoundException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
-        TaskImpl expectedTask = createUnitTestTask("1", "DUMMYTASK", "1");
+        TaskImpl expectedTask = createUnitTestTask("", "DUMMYTASK", "1");
         WorkbasketImpl wb = new WorkbasketImpl();
         wb.setId("1");
         wb.setName("workbasket");
@@ -120,7 +120,6 @@ public class TaskServiceImplTest {
         Task actualTask = cutSpy.createTask(expectedTask);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(cutSpy, times(1)).getTaskById(any());
         verify(workbasketServiceMock, times(1)).checkAuthorization(any(), any());
         verify(workbasketServiceMock, times(1)).getWorkbasket(any());
         verify(taskanaEngineMock, times(1)).getClassificationService();
@@ -151,7 +150,7 @@ public class TaskServiceImplTest {
         WorkbasketImpl wb = new WorkbasketImpl();
         wb.setId("1");
         wb.setName("workbasket");
-        TaskImpl expectedTask = createUnitTestTask("1", "DUMMYTASK", wb.getId());
+        TaskImpl expectedTask = createUnitTestTask(null, "DUMMYTASK", wb.getId());
         expectedTask.setPrimaryObjRef(expectedObjectReference);
         Classification classification = expectedTask.getClassification();
         doThrow(TaskNotFoundException.class).when(cutSpy).getTaskById(expectedTask.getId());
@@ -163,7 +162,6 @@ public class TaskServiceImplTest {
         Task actualTask = cutSpy.createTask(expectedTask);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(cutSpy, times(1)).getTaskById(any());
         verify(workbasketServiceMock, times(1)).getWorkbasket(wb.getId());
         verify(workbasketServiceMock, times(1)).checkAuthorization(wb.getId(), WorkbasketAuthorization.APPEND);
         verify(taskanaEngineMock, times(1)).getClassificationService();
@@ -197,7 +195,7 @@ public class TaskServiceImplTest {
         wb.setId("1");
         wb.setName("workbasket");
         doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
-        TaskImpl expectedTask = createUnitTestTask("1", "DUMMYTASK", "1");
+        TaskImpl expectedTask = createUnitTestTask("", "DUMMYTASK", "1");
         expectedTask.setPrimaryObjRef(expectedObjectReference);
         Classification classification = expectedTask.getClassification();
         doThrow(TaskNotFoundException.class).when(cutSpy).getTaskById(expectedTask.getId());
@@ -211,7 +209,6 @@ public class TaskServiceImplTest {
         expectedTask.getPrimaryObjRef().setId(actualTask.getPrimaryObjRef().getId());   // get only new ID
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(cutSpy, times(1)).getTaskById(any());
         verify(workbasketServiceMock, times(1)).getWorkbasket(expectedTask.getWorkbasketId());
         verify(workbasketServiceMock, times(1)).checkAuthorization(expectedTask.getWorkbasketId(),
             WorkbasketAuthorization.APPEND);
@@ -274,9 +271,8 @@ public class TaskServiceImplTest {
         cutSpy.createTask(task2);
 
         verify(taskanaEngineImpl, times(2)).openConnection();
-        verify(cutSpy, times(2)).getTaskById(any());
-        verify(workbasketServiceMock, times(2)).checkAuthorization(any(), any());
         verify(workbasketServiceMock, times(2)).getWorkbasket(any());
+        verify(workbasketServiceMock, times(2)).checkAuthorization(any(), any());
         verify(taskanaEngineMock, times(2)).getClassificationService();
         verify(classificationServiceMock, times(2)).getClassification(any(), any());
         verify(objectReferenceMapperMock, times(2)).findByObjectReference(expectedObjectReference);
@@ -312,7 +308,6 @@ public class TaskServiceImplTest {
             cutSpy.createTask(task);
         } catch (TaskAlreadyExistException ex) {
             verify(taskanaEngineImpl, times(1)).openConnection();
-            verify(cutSpy, times(1)).getTaskById(task.getId());
             verify(taskanaEngineImpl, times(1)).returnConnection();
             verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
                 taskMapperMock, objectReferenceMapperMock, workbasketServiceMock,
@@ -326,7 +321,7 @@ public class TaskServiceImplTest {
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
         TaskAlreadyExistException, TaskNotFoundException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
-        TaskImpl task = createUnitTestTask("1", "dummyTask", "1");
+        TaskImpl task = createUnitTestTask("", "dummyTask", "1");
         doThrow(TaskNotFoundException.class).when(cutSpy).getTaskById(task.getId());
         doThrow(NotAuthorizedException.class).when(workbasketServiceMock).checkAuthorization(task.getWorkbasketId(),
             WorkbasketAuthorization.APPEND);
@@ -334,7 +329,6 @@ public class TaskServiceImplTest {
             cutSpy.createTask(task);
         } catch (NotAuthorizedException e) {
             verify(taskanaEngineImpl, times(1)).openConnection();
-            verify(cutSpy, times(1)).getTaskById(task.getId());
             verify(workbasketServiceMock, times(1)).getWorkbasket(task.getWorkbasketId());
             verify(workbasketServiceMock, times(1)).checkAuthorization(task.getWorkbasketId(),
                 WorkbasketAuthorization.APPEND);
@@ -351,14 +345,13 @@ public class TaskServiceImplTest {
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
         TaskAlreadyExistException, TaskNotFoundException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
-        TaskImpl task = createUnitTestTask("1", "dumma-task", "1");
+        TaskImpl task = createUnitTestTask("", "dumma-task", "1");
         doThrow(TaskNotFoundException.class).when(cutSpy).getTaskById(task.getId());
         doThrow(WorkbasketNotFoundException.class).when(workbasketServiceMock).getWorkbasket(any());
         try {
             cutSpy.createTask(task);
         } catch (WorkbasketNotFoundException e) {
             verify(taskanaEngineImpl, times(1)).openConnection();
-            verify(cutSpy, times(1)).getTaskById(task.getId());
             verify(workbasketServiceMock, times(1)).getWorkbasket(task.getWorkbasketId());
             verify(taskanaEngineImpl, times(1)).returnConnection();
             verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,

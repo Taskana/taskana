@@ -159,27 +159,24 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("entry to createTask(task = {})", taskToCreate);
         try {
             taskanaEngineImpl.openConnection();
-            try {
-                this.getTaskById(taskToCreate.getId());
-                throw new TaskAlreadyExistException(taskToCreate.getId());
-            } catch (TaskNotFoundException ex) {
-                LOGGER.debug("Task {} can´t be be found, so it can be created.", taskToCreate.getId());
-            }
             TaskImpl task = (TaskImpl) taskToCreate;
-            workbasketService.getWorkbasket(task.getWorkbasketId());
-            workbasketService.checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
-            Classification classification = task.getClassification();
-            if (classification == null) {
-                throw new ClassificationNotFoundException(null);
+            if (task.getId() != "" && task.getId() != null) {
+                throw new TaskAlreadyExistException(taskToCreate.getId());
+            } else {
+                LOGGER.debug("Task {} can´t be be found, so it can be created.", taskToCreate.getId());
+                workbasketService.getWorkbasket(task.getWorkbasketId());
+                workbasketService.checkAuthorization(task.getWorkbasketId(), WorkbasketAuthorization.APPEND);
+                Classification classification = task.getClassification();
+                if (classification == null) {
+                    throw new ClassificationNotFoundException(null);
+                }
+                taskanaEngine.getClassificationService().getClassification(classification.getKey(),
+                    classification.getDomain());
+
+                standardSettings(task);
+                this.taskMapper.insert(task);
+                LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
             }
-            taskanaEngine.getClassificationService().getClassification(classification.getKey(),
-                classification.getDomain());
-
-            standardSettings(task);
-
-            this.taskMapper.insert(task);
-
-            LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
             return task;
         } finally {
             taskanaEngineImpl.returnConnection();
