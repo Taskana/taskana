@@ -13,17 +13,17 @@ cache:
   - "monitor/node_modules"
 before_install:
   - nvm install $NODE_VERSION
-  - npm install -g @angular/cli
+  - npm install -g @angular/cli >/dev/null 2>&1
 install:
-  - (cd workplace && npm install && ng build --environment=prod)
-    && (cd admin && npm install && ng build --environment=prod)
-    && (cd monitor && npm install && ng build --environment=prod)
-    && mvn clean install -f lib/ -DskipTests=true -Dmaven.javadoc.skip=true -B
-    && mvn clean install -f rest/ -DskipTests=true -B
+  - (cd workplace && npm install --no-progress && ng build --environment=prod --no-progress)
+    && (cd admin && npm install --no-progress && ng build --environment=prod --no-progress)
+    && (cd monitor && npm install --no-progress && ng build --environment=prod --no-progress)
+    && mvn clean install -q -f lib/ -DskipTests=true -Dmaven.javadoc.skip=true -B
+    && mvn clean install -q -f rest/ -DskipTests=true -B
 script:
   - mvn verify -f lib/
     && mvn verify -f rest/
-    && lib/deployment/deploy.sh lib/ lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/
+    && lib/deployment/deploy.sh -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/" -mf manifest.yml -avc rest/
 deploy:
   provider: cloudfoundry
   username: tobias.schaefer@novatec-gmbh.de

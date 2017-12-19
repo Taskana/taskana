@@ -2,13 +2,13 @@
 set -e #fail fast
 
 reqRepo="Taskana/taskana"
-
+[[ -z "$MANIFEST_PREFIX" ]] && MANIFEST_PREFIX="/rest"
 #H Usage:
 #H deploy.sh -h | pfcalc.sh --help
 #H
 #H prints this help and exits  
 #H 
-#H deploy.sh [--dry-run] <parent dir> <project dir> [project dir ...]
+#H deploy.sh [PARAM...]
 #H
 #H   an easy deployment tool to deploy maven projects.
 #H
@@ -17,18 +17,46 @@ reqRepo="Taskana/taskana"
 #H     maven deploy with the profile 'release' will be excecuted
 #H   On a non-tagged commit on the master branch
 #H     maven deploy with the profile 'snapshot' will be excecuted
+#H
+#H
+#H PARAM can be one of the following:
+#H   -avc | --append-version-change
+#H     List of modules (path) whose version will be updated after deployment.
+#H   -d   | --dry-run
+#H     echos out all commands instead of excecuting them.
+#H   -m   | --modules
+#H     List of modules (path) which will be deployed.
+#H   -mf  | --manifest
+#H     if a manifest file exists the version of an artifact will be replaced.
+#H     You can Overwrite it by setting the env variable MANIFEST_PREFIX to the required prefix.
+#H   -p   | --parent
+#H     If a parent pom exists the version change will be done in the parent instead of every module.
 #H 
-#H This script works with the following env variables:
+#H
+#H IMPORTANT: 
+#H   - All Lists have to be passed as one parameter. 
+#H   - When a parameter is duplicated its last occurance will count
+#H
+#H Environment variables:
+#H   - encrypted_57343c8b243e_key
+#H       private key needed for decoding 'codesigning.asc.enc' file in script directory
+#H   - encrypted_57343c8b243e_iv
+#H       initialisation vektor to decode 'codesigning.asc.enc' file in scirpt directory
+#H   - GH_TOKEN
+#H       token to write back to the git repo after release deployment
+#H   - MANIFEST_PREFIX
+#H       if a manifest file is set the pattern matching can be modified.
+#H       The pattern will then replace '$MANIFEST_PREFIX.*\.jar' with '$MANIFEST_PREFIX-$VERSION-SNAPSHOT.jar'.
+#H       Default value is '/rest'
 #H   - TRAVIS_REPO_SLUG
 #H       git repo slug
 #H   - TRAVIS_PULL_REQUEST
-#H       filled with anything, if this is a PR build
+#H       'false' if this is not a PR build. Otherwise this is a PR build.
 #H   - TRAVIS_TAG 
-#H       filled with anything, if this is a tagged build
+#H       if this is a tagged build then TRAVIS_TAG contains the version number.
+#H       pattern: v[DIGIT].[DIGIT].[DIGIT]
 #H   - TRAVIS_BRANCH
 #H       branch of this build (only used if TRAVIS_TAG is not set)
-#H   - GH_TOKEN
-#H       token to write back to the git repo after release deployment
 # Arguments:
 #   $1: exitcode
 function helpAndExit {
@@ -63,7 +91,7 @@ function deploy {
 #   $1: version (without leading v) which will be patched
 # Return:
 #   version with last number incremented
-function patch_version() {
+function increment_version() {
   if [[ ! "$1" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
     echo "'$1' does not match tag pattern." >&2
     exit 1;
@@ -73,51 +101,117 @@ function patch_version() {
 
 # changing version in pom and all its children
 # Arguments:
-# $1: directory of pom
-# $2: new version
+#   $1: directory of pom
+#   $2: new version
 function change_version {
   $debug mvn org.codehaus.mojo:versions-maven-plugin:2.5:set -f "$1" -DnewVersion="$2"   -DartifactId=*  -DgroupId=*
 }
 
+# adds all pom(s) to a git commit and pushes back to the github
+# Global:
+#   $branch: branch where commit will land
+#   $GH_TOKEN: github token (to authenticate)
+# Arguments:
+#   Additional files which will be committed aswell
 function push_new_poms() {
   #commit all poms
   $debug git checkout -b "$branch"
   #to compensate new updates
   $debug git pull
   $debug git add "./*pom.xml"
-  $debug git commit -m "Updated poms to version `patch_version ${TRAVIS_TAG##v}`-SNAPSHOT"
+  for file in "$@"; do
+    [[ -n "$file" ]] && $debug git add "$file"
+  done
+  $debug git commit -m "Updated poms to version `increment_version ${TRAVIS_TAG##v}`-SNAPSHOT"
 
   #push poms (authentication via GH_TOKEN)
   $debug git remote add deployment "https://$GH_TOKEN@github.com/$reqRepo.git"
   $debug git push --quiet --set-upstream deployment "$branch"
 }
 
-function print_variables() {
+# prints all relevant environment methods
+# Global:
+# -> see help
+function print_environment() {
   echo "####################################"
   echo "dry-run detected."
   echo "environment:"
-  echo "  tag: '$TRAVIS_TAG'"
-  echo "  branch: '$TRAVIS_BRANCH'"
-  echo "  repo: '$TRAVIS_REPO_SLUG'"
-  echo "  github token: '$GH_TOKEN'"
-  echo "  PR build: '$TRAVIS_PULL_REQUEST'"
+  echo "  GH_TOKEN: '$GH_TOKEN'"
+  echo "  MANIFEST_PREFIX: '$MANIFEST_PREFIX'"
+  echo "  TRAVIS_BRANCH: '$TRAVIS_BRANCH'"
+  echo "  TRAVIS_TAG: '$TRAVIS_TAG'"
+  echo "  TRAVIS_PULL_REQUEST: '$TRAVIS_PULL_REQUEST'"
+  echo "  TRAVIS_REPO_SLUG: '$TRAVIS_REPO_SLUG'"
   echo "####################################"
 }
 
 function main {
-  if [[ "$1" = '--help' || "$1" = '-h' || $# -eq 0 ]]; then
+
+  if [[ $# -eq 0 ]]; then
     helpAndExit 0
   fi 
 
-  local debug=
-  if [[ "$1" = '--dry-run' ]]; then
-    debug=echo
-    print_variables
-    shift
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -avc|--additional-version-change)
+        if [[ -z "$2" || "$2" == -* ]]; then
+          echo "missing parameter for argument '-avc|--additional-version-change'" >&2
+          exit 1
+        fi
+        local ADDITIONAL_VC=($2)
+        shift # past argument
+        shift # past value
+        ;;
+      -d|--dry-run)
+        DRY_RUN=YES
+        shift # past argument
+        ;;
+      -h|--help)
+        helpAndExit 0
+        ;;
+      -m|--modules)
+        if [[ -z "$2" || "$2" == -* ]]; then
+          echo "missing parameter for argument '-m|--modules'" >&2
+          exit 1
+        fi
+        local MODULES=($2)
+        shift # past argument
+        shift # past value
+        ;;
+      -mf|--manifest)
+        if [[ -z "$2" || "$2" == -* ]]; then
+          echo "missing parameter for argument '-mf|--manifest'" >&2
+          exit 1
+        fi
+        local MANIFEST="$2"
+        shift # past argument
+        shift # past value
+        ;;
+      -p|--parent)
+        if [[ -z "$2" || "$2" == -* ]]; then
+          echo "missing parameter for argument '-p|--parent'" >&2
+          exit 1
+        fi
+        local PARENT_DIR="$2"
+        shift # past argument
+        shift # past value
+        ;;
+      *)    # unknown option
+        echo "unknown parameter $1" >&2
+        exit 1
+        ;;
+    esac
+  done
+
+  if [[ ${#MODULES[@]} -eq 0 ]]; then
+    echo "Can not perform deployment without any modules" >&2
+    helpAndExit 1
   fi
 
-  if [[ "$#" -lt 2 ]]; then
-    helpAndExit 1
+  local debug=
+  if [[ -n "$DRY_RUN" ]]; then
+    debug=echo
+    print_environment
   fi
 
 
@@ -137,7 +231,6 @@ function main {
   fi
 
   if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    local parent_dir="$1"
     local profile="release"
 
     if [[ -z "$debug" ]]; then
@@ -157,11 +250,18 @@ function main {
         exit 1
       fi
     else
+        #dummy value for dry run
         branch="BRANCH"
         echo "!!! - Skipping automatic detection of tag branch. Instead using '$branch'"
     fi
 
-    change_version "$parent_dir" "${TRAVIS_TAG##v}"
+    if [[ -n "$PARENT_DIR" ]]; then
+      change_version "$PARENT_DIR" "${TRAVIS_TAG##v}"
+    else
+      for dir in ${MODULES[@]}; do
+        change_version "$dir" "${TRAVIS_TAG##v}"
+      done
+    fi
   else
     if [[ "$TRAVIS_BRANCH" != 'master' ]]; then
       echo "Skipping release to sonatype because this branch is not permitted"
@@ -169,20 +269,36 @@ function main {
     fi
     local profile="snapshot"
   fi 
-  shift
+  
 
   decodeAndImportKeys `dirname "$0"`
-  for dir in "$@"; do
-    deploy "$PWD/$dir" "$profile" "`dirname "$0"`/mvnsettings.xml"
+  for dir in ${MODULES[@]}; do
+    deploy "$dir" "$profile" "`dirname "$0"`/mvnsettings.xml"
   done
 
-  if [[ -n "$branch" && -n "$parent_dir" ]]; then
-    change_version "$parent_dir" "`patch_version ${TRAVIS_TAG##v}`-SNAPSHOT"
+  if [[ -n "$branch" ]]; then
     if [[ -z "$GH_TOKEN" ]]; then
       echo 'GH_TOKEN not set' >&2
       exit 1
     fi
-    push_new_poms
+
+    if [[ -n "$PARENT_DIR" ]]; then
+      change_version "$PARENT_DIR" "`increment_version ${TRAVIS_TAG##v}`-SNAPSHOT"
+    else
+      for dir in ${MODULES[@]}; do
+        change_version "$dir" "`increment_version ${TRAVIS_TAG##v}`-SNAPSHOT"
+      done
+    fi
+
+    for dir in ${ADDITIONAL_VC[@]}; do
+      change_version "$dir" "`increment_version ${TRAVIS_TAG##v}`-SNAPSHOT"
+    done
+
+    if [[ -n "$MANIFEST" ]]; then
+        $debug sed -i "s|$MANIFEST_PREFIX.*\.jar|$MANIFEST_PREFIX-${TRAVIS_TAG##v}-SNAPSHOT.jar|" "$MANIFEST"
+    fi
+    
+    push_new_poms "$MANIFEST"
   fi
 }
 
