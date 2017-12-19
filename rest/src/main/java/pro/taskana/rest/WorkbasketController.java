@@ -103,10 +103,10 @@ public class WorkbasketController {
         }
     }
 
-    @RequestMapping(value = "/{workbasketid}/authorizations", method = RequestMethod.GET)
+    @RequestMapping(value = "/{workbasketkey}/authorizations", method = RequestMethod.GET)
     public List<WorkbasketAccessItem> getWorkbasketAuthorizations(
-        @PathVariable(value = "workbasketid") String workbasketId) {
-        return workbasketService.getWorkbasketAuthorizations(workbasketId);
+        @PathVariable(value = "workbasketkey") String workbasketKey) {
+        return workbasketService.getWorkbasketAuthorizations(workbasketKey);
     }
 
     @RequestMapping(value = "/authorizations", method = RequestMethod.POST)

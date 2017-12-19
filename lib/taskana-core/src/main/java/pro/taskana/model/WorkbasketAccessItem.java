@@ -22,7 +22,6 @@ public class WorkbasketAccessItem {
     private boolean permCustom7;
     private boolean permCustom8;
 
-
     public String getId() {
         return id;
     }

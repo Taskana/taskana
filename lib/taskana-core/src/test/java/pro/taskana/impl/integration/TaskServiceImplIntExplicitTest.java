@@ -252,6 +252,13 @@ public class TaskServiceImplIntExplicitTest {
         wb.setKey("k1");
         workbasketService.createWorkbasket(wb);
 
+        Task test = taskServiceImpl.newTask();
+        test.setWorkbasketKey("k1");
+        test.setPrimaryObjRef(objectReference);
+        test.setPlanned(tomorrow);
+        test.setClassification(classification);
+        test = taskServiceImpl.createTask(test);
+
         Task task = this.generateDummyTask();
         task.setClassification(classification);
         task.setName("Name");

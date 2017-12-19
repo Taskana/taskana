@@ -139,7 +139,7 @@ public class TaskServiceImplIntAutocommitTest {
         classification.setKey("TEST");
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = taskServiceImpl.newTask();
+        TaskImpl task = (TaskImpl) taskServiceImpl.newTask();
         task.setName("Unit Test Task");
         task.setWorkbasketKey(wb.getKey());
         task.setClassification(classification);
@@ -284,7 +284,10 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setName("wb");
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
+        workbasketService.createWorkbasket(wb);
+        taskServiceImpl.getTaskSummariesByWorkbasketKey("1");
         wb = (WorkbasketImpl) workbasketService.createWorkbasket(wb);
+        workbasketService.createWorkbasket(wb);
         taskServiceImpl.getTaskSummariesByWorkbasketKey("1");
     }
 

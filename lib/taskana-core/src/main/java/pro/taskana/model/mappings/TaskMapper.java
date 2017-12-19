@@ -1,5 +1,6 @@
 package pro.taskana.model.mappings;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import pro.taskana.Classification;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.model.ClassificationImpl;
+import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
@@ -70,6 +72,12 @@ public interface TaskMapper {
         @Result(property = "custom10", column = "CUSTOM_10")
     })
     TaskImpl findById(@Param("id") String id);
+
+    @Results({@Result(column = "DUE_DATE", property = "due"),
+        @Result(column = "WORKBASKET_KEY", property = "workbasketKey"),
+        @Result(column = "counter", property = "taskCounter")})
+    List<DueWorkbasketCounter> getTaskCountByWorkbasketIdAndDaysInPastAndState(@Param("fromDate") Date fromDate,
+        @Param("status") List<TaskState> states);
 
     @Insert("INSERT INTO TASK(ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_KEY, WORKBASKET_KEY, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, PRIMARY_OBJ_REF_ID, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10) "
         + "VALUES(#{id}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{description}, #{priority}, #{state}, #{classification.key}, #{workbasketKey}, #{businessProcessId}, #{parentBusinessProcessId}, #{owner}, #{primaryObjRef.id}, #{isRead}, #{isTransferred}, #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, #{custom1}, #{custom2}, #{custom3}, #{custom4}, #{custom5}, #{custom6}, #{custom7}, #{custom8}, #{custom9}, #{custom10})")
