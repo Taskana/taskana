@@ -39,6 +39,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskImpl;
@@ -48,7 +49,6 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
 import pro.taskana.model.WorkbasketAccessItem;
@@ -137,7 +137,9 @@ public class TaskServiceImplIntAutocommitTest {
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
         Classification classification = classificationService.newClassification();
         classification.setKey("TEST");
-        taskanaEngine.getClassificationService().createClassification(classification);
+        classification = taskanaEngine.getClassificationService().createClassification(classification);
+        classification = taskanaEngine.getClassificationService().getClassification(classification.getKey(),
+            classification.getDomain());
 
         TaskImpl task = (TaskImpl) taskServiceImpl.newTask();
         task.setName("Unit Test Task");

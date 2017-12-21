@@ -16,7 +16,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.Classification;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.ClassificationImpl;
 
 /**
  * Test for ClassificationQueryImpl.

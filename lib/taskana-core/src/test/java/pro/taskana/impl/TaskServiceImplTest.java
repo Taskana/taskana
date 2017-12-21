@@ -46,7 +46,6 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
@@ -125,8 +124,6 @@ public class TaskServiceImplTest {
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).checkAuthorization(any(), any());
         verify(workbasketServiceMock, times(1)).getWorkbasketByKey(any());
-        verify(taskanaEngineMock, times(1)).getClassificationService();
-
         verify(classificationServiceMock, times(1)).getClassification(any(), any());
         verify(taskMapperMock, times(1)).insert(expectedTask);
         verify(taskanaEngineImpl, times(1)).returnConnection();
@@ -171,9 +168,8 @@ public class TaskServiceImplTest {
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).getWorkbasketByKey(wb.getKey());
         verify(workbasketServiceMock, times(1)).checkAuthorization(wb.getKey(), WorkbasketAuthorization.APPEND);
-        verify(taskanaEngineMock, times(1)).getClassificationService();
         verify(classificationServiceMock, times(1)).getClassification(classification.getKey(),
-            wb.getDomain());
+            classification.getDomain());
         verify(objectReferenceMapperMock, times(1)).findByObjectReference(expectedObjectReference);
         verify(taskMapperMock, times(1)).insert(expectedTask);
         verify(taskanaEngineImpl, times(1)).returnConnection();
@@ -221,9 +217,8 @@ public class TaskServiceImplTest {
         verify(workbasketServiceMock, times(1)).getWorkbasketByKey(expectedTask.getWorkbasketKey());
         verify(workbasketServiceMock, times(1)).checkAuthorization(expectedTask.getWorkbasketKey(),
             WorkbasketAuthorization.APPEND);
-        verify(taskanaEngineMock, times(1)).getClassificationService();
         verify(classificationServiceMock, times(1)).getClassification(classification.getKey(),
-            wb.getDomain());
+            classification.getDomain());
         verify(objectReferenceMapperMock, times(1)).findByObjectReference(expectedObjectReference);
         verify(objectReferenceMapperMock, times(1)).insert(expectedObjectReference);
         verify(taskMapperMock, times(1)).insert(expectedTask);
@@ -284,7 +279,6 @@ public class TaskServiceImplTest {
         verify(taskanaEngineImpl, times(2)).openConnection();
         verify(workbasketServiceMock, times(2)).checkAuthorization(any(), any());
         verify(workbasketServiceMock, times(2)).getWorkbasketByKey(any());
-        verify(taskanaEngineMock, times(2)).getClassificationService();
         verify(classificationServiceMock, times(2)).getClassification(any(), any());
         verify(objectReferenceMapperMock, times(2)).findByObjectReference(expectedObjectReference);
         verify(taskMapperMock, times(1)).insert(task);
