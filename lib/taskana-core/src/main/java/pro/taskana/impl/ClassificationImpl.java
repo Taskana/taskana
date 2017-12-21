@@ -1,4 +1,4 @@
-package pro.taskana.model;
+package pro.taskana.impl;
 
 import java.sql.Date;
 
@@ -10,50 +10,30 @@ import pro.taskana.Classification;
 public class ClassificationImpl implements Classification {
 
     private String id;
-
     private String key;
-
     private String parentClassificationKey;
-
     private String category;
-
     private String type;
-
     private String domain;
-
     private Boolean isValidInDomain;
-
     private Date created;
-
     private String name;
-
     private String description;
-
     private int priority;
-
     private String serviceLevel; // PddDThhHmmM
-
     private String applicationEntryPoint;
-
     private String custom1;
-
     private String custom2;
-
     private String custom3;
-
     private String custom4;
-
     private String custom5;
-
     private String custom6;
-
     private String custom7;
-
     private String custom8;
-
     private Date validFrom;
-
     private Date validUntil;
+
+    ClassificationImpl() { }
 
     @Override
     public String getId() {

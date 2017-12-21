@@ -1,5 +1,11 @@
 package pro.taskana.impl.integration;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -26,10 +32,10 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.ClassificationImpl;
 
 /**
  * Integration Test for ClassificationServiceImpl with connection management mode EXPLICIT.
@@ -40,16 +46,12 @@ import pro.taskana.model.ClassificationImpl;
 public class ClassificationServiceImplIntExplicitTest {
 
     static int counter = 0;
-
     private DataSource dataSource;
-
     private ClassificationService classificationService;
-
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
-
     private TaskanaEngine taskanaEngine;
-
     private TaskanaEngineImpl taskanaEngineImpl;
+    private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
     @BeforeClass
     public static void resetDb() throws SQLException {
@@ -76,16 +78,85 @@ public class ClassificationServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
-        Classification classification = this.createNewClassificationWithUniqueKey();
-        classificationService.createClassification(classification);
+        final String domain = "test-domain";
+        final String key = "dummy-key";
+        ClassificationImpl expectedClassification;
+        Classification actualClassification;
+        Classification actualClassification2;
 
-        Assert.assertNotNull(classificationService.getClassification(classification.getKey(), ""));
+        // empty classification (root)
+        expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        expectedClassification = (ClassificationImpl) classificationService.createClassification(expectedClassification);
         connection.commit();
+        actualClassification = classificationService.getClassification(expectedClassification.getKey(), expectedClassification.getDomain());
+        assertThat(actualClassification, not(equalTo(null)));
+        assertThat(actualClassification.getCreated(), not(equalTo(null)));
+        assertThat(actualClassification.getId(), not(equalTo(null)));
+        assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
+
+        // specific to domain + root
+        expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        expectedClassification.setDomain(domain);
+        expectedClassification.setKey(key);
+        expectedClassification = (ClassificationImpl) classificationService.createClassification(expectedClassification);
+        connection.commit();
+        actualClassification = classificationService.getClassification(expectedClassification.getKey(), expectedClassification.getDomain());
+        actualClassification2 = classificationService.getClassification(expectedClassification.getKey(), "");
+        assertThat(actualClassification, not(equalTo(null)));
+        assertThat(actualClassification.getCreated(), not(equalTo(null)));
+        assertThat(actualClassification.getId(), not(equalTo(null)));
+        assertThat(actualClassification.getKey(), equalTo(key));
+        assertThat(actualClassification.getDomain(), equalTo(domain));
+        assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
+        assertThat(actualClassification2, not(equalTo(null)));
+        assertThat(actualClassification2.getCreated(), not(equalTo(null)));
+        assertThat(actualClassification2.getId(), not(equalTo(null)));
+        assertThat(actualClassification2.getId(), not(equalTo(actualClassification.getId())));
+        assertThat(actualClassification2.getKey(), equalTo(key));
+        assertThat(actualClassification2.getDomain(), equalTo(""));
+        assertThat(actualClassification2.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
+
+        // does exist already
+        try {
+            expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+            expectedClassification.setKey(key);
+            expectedClassification.setDomain(domain);
+            classificationService.createClassification(expectedClassification);
+            connection.commit();
+            fail("Should have thrown 'ClassificationAlreadyExistException' here.");
+        } catch (ClassificationAlreadyExistException e) { }
+
+        // new classification but root existing
+        expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        expectedClassification.setKey(key);
+        expectedClassification.setDomain(domain + "_2");
+        classificationService.createClassification(expectedClassification);
+        connection.commit();
+        actualClassification = classificationService.getClassification(key, domain + "_2");
+        assertThat(actualClassification, not(equalTo(null)));
+        assertThat(actualClassification.getCreated(), not(equalTo(null)));
+        assertThat(actualClassification.getId(), not(equalTo(null)));
+        assertThat(actualClassification.getKey(), equalTo(key));
+        assertThat(actualClassification.getDomain(), equalTo(domain + "_2"));
+        assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
+        List<Classification> rootResults = classificationService.getAllClassificationsWithKey(key, "");
+        assertThat(rootResults.size(), equalTo(1));
+
+        // invalid serviceLevel
+        try {
+            expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+            expectedClassification.setDomain(domain + "_3");
+            expectedClassification.setKey("");
+            expectedClassification.setServiceLevel("ASAP");
+            classificationService.createClassification(expectedClassification);
+            connection.commit();
+            fail("Should have thrown IllegalArgumentException, because ServiceLevel is invalid.");
+        } catch (IllegalArgumentException e) { }
     }
 
     @Test
     public void testFindAllClassifications()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException {
+        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification0 = this.createNewClassificationWithUniqueKey();
@@ -117,7 +188,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testInsertAndClassificationMapper()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException {
+        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey();
@@ -165,7 +236,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException {
+        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey();
@@ -193,7 +264,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperCustomAndCategory()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException {
+        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey();
@@ -230,7 +301,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException {
+        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey();
@@ -270,7 +341,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperServiceLevelNameAndDescription()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException {
+        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         int all = 0;
@@ -356,7 +427,7 @@ public class ClassificationServiceImplIntExplicitTest {
     }
 
     private Classification createNewClassificationWithUniqueKey() {
-        Classification classification = new ClassificationImpl();
+        Classification classification = classificationService.newClassification();
         classification.setKey("TEST" + counter);
         counter++;
         return classification;
