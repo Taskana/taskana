@@ -1,5 +1,7 @@
 package pro.taskana.model;
 
+import pro.taskana.configuration.TaskanaEngineConfiguration;
+
 /**
  * WorkbasketAccessItem entity.
  */
@@ -39,11 +41,19 @@ public class WorkbasketAccessItem {
     }
 
     public String getAccessId() {
-        return accessId != null ? accessId.toLowerCase() : null;
+        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+            return accessId != null ? accessId.toLowerCase() : null;
+        } else {
+            return accessId;
+        }
     }
 
     public void setAccessId(String accessId) {
-        this.accessId = accessId != null ? accessId.toLowerCase() : null;
+        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+            this.accessId = accessId != null ? accessId.toLowerCase() : null;
+        } else {
+            this.accessId = accessId;
+        }
     }
 
     public boolean isPermRead() {
