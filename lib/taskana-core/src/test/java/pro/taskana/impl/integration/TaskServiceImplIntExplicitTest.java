@@ -42,6 +42,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ClassificationServiceImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
@@ -53,7 +54,6 @@ import pro.taskana.impl.WorkbasketServiceImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.model.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAccessItem;
@@ -124,8 +124,8 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setDomain("novatec");
         Classification classification = classificationService.newClassification();
         classification.setKey("TEST");
-        taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
-        taskanaEngine.getClassificationService().createClassification(classification);
+        taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
+        taskanaEngineImpl.getClassificationService().createClassification(classification);
         connection.commit();
         Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");
@@ -308,21 +308,26 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Task test = this.generateDummyTask();
-        test.setClassification(new ClassificationImpl());
+        Workbasket wb = workbasketService.newWorkbasket();
+        wb.setName("dummy-WB");
+        wb.setKey("WB NR.1");
+        wb.setDomain("nova");
+        wb.setType(WorkbasketType.PERSONAL);
+        wb = workbasketService.createWorkbasket(wb);
+        this.createWorkbasketWithSecurity(wb, CurrentUserContext.getUserid(), true, true,
+            true, false);
+        Classification classification = classificationService.newClassification(); // not persisted, not found.
+        classification.setDomain(wb.getDomain());
+        classification.setName("not persisted - so not found.");
+        classification.setKey(UUID.randomUUID().toString());
 
-        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        accessItem.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem.setWorkbasketKey("wb");
-        accessItem.setAccessId("Elena");
-        accessItem.setPermAppend(true);
-        accessItem.setPermOpen(true);
-        workbasketService.createWorkbasketAuthorization(accessItem);
-
-        taskServiceImpl.createTask(test);
+        Task task = this.generateDummyTask();
+        task.setWorkbasketKey(wb.getKey());
+        task.setClassification(classification);
+        taskServiceImpl.createTask(task);
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"DummyGroup"})
+    @WithAccessId(userName = "Elena", groupNames = { "DummyGroup" })
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
@@ -556,8 +561,8 @@ public class TaskServiceImplIntExplicitTest {
         }
     }
 
-    private Task generateDummyTask()
-        throws ClassificationAlreadyExistException, InvalidWorkbasketException, WorkbasketNotFoundException {
+    private Task generateDummyTask() throws ClassificationAlreadyExistException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, InvalidWorkbasketException {
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket();
         workbasket.setKey("wb");
         workbasket.setName("wb");

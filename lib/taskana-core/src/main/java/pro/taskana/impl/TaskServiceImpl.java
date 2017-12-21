@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.Classification;
+import pro.taskana.ClassificationService;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
@@ -43,10 +44,10 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_OBJECT_REFERENCE = "ORI";
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
-
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workbasketService;
+    private ClassificationService classificationService;
     private TaskMapper taskMapper;
     private ObjectReferenceMapper objectReferenceMapper;
 
@@ -58,6 +59,7 @@ public class TaskServiceImpl implements TaskService {
         this.taskMapper = taskMapper;
         this.objectReferenceMapper = objectReferenceMapper;
         this.workbasketService = taskanaEngineImpl.getWorkbasketService();
+        this.classificationService = taskanaEngineImpl.getClassificationService();
     }
 
     @Override
@@ -165,8 +167,8 @@ public class TaskServiceImpl implements TaskService {
                 if (classification == null) {
                     throw new ClassificationNotFoundException(null);
                 }
-                taskanaEngine.getClassificationService().getClassification(classification.getKey(),
-                    workbasket.getDomain());
+                this.classificationService.getClassification(classification.getKey(),
+                    classification.getDomain());
 
                 standardSettings(task);
                 this.taskMapper.insert(task);
