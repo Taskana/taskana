@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pro.taskana</groupId>
 	<artifactId>taskana-spring</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>http://taskana.pro</url>
@@ -157,7 +157,7 @@
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-core</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
