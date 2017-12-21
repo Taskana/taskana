@@ -13,6 +13,8 @@ import javax.security.auth.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.configuration.TaskanaEngineConfiguration;
+
 /**
  * Provides the context information about the current (calling) user. The context is gathered from the JAAS subject.
  *
@@ -63,7 +65,10 @@ public final class CurrentUserContext {
                         (Object[]) null);
                     LOGGER.debug("Returning the unique security name of first public credential: {}", o);
                     String userIdFound = o.toString();
-                    String userIdUsed = userIdFound != null ? userIdFound.toLowerCase() : null;
+                    String userIdUsed = userIdFound;
+                    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds() && userIdFound != null) {
+                        userIdUsed = userIdFound.toLowerCase();
+                    }
                     LOGGER.trace("Found User id {}. Returning User id {} ", userIdFound, userIdUsed);
                     return userIdUsed;
                 }
@@ -102,7 +107,10 @@ public final class CurrentUserContext {
             for (Principal pC : principals) {
                 if (!(pC instanceof Group)) {
                     String userIdFound = pC.getName();
-                    String userIdUsed = userIdFound != null ? userIdFound.toLowerCase() : null;
+                    String userIdUsed = userIdFound;
+                    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds() && userIdFound != null) {
+                        userIdUsed = userIdFound.toLowerCase();
+                    }
                     LOGGER.trace("Found User id {}. Returning User id {} ", userIdFound, userIdUsed);
                     return userIdUsed;
                 }
@@ -121,7 +129,10 @@ public final class CurrentUserContext {
             LOGGER.trace("Public groups of caller: {}", groups);
             for (Principal group : groups) {
                 String groupNameFound = group.getName();
-                String groupNameReturned = groupNameFound != null ? groupNameFound.toLowerCase() : null;
+                String groupNameReturned = groupNameFound;
+                if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds() && groupNameFound != null) {
+                    groupNameReturned = groupNameFound.toLowerCase();
+                }
                 LOGGER.trace("Found group id {}. Returning group Id: {}", groupNameFound, groupNameReturned);
                 groupIds.add(groupNameReturned);
             }

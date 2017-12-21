@@ -7,12 +7,12 @@ import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pro.taskana.TaskanaEngine;
 import pro.taskana.impl.TaskanaEngineImpl;
 
 /**
- * This central class creates the TaskanaEngine and needs all the information
- * about DB and Security.
+ * This central class creates the TaskanaEngine and holds all the information about DB and Security.
  */
 public class TaskanaEngineConfiguration {
 
@@ -29,19 +29,19 @@ public class TaskanaEngineConfiguration {
     // global switch to enable JAAS based authentication and Taskana
     // authorizations
     protected boolean securityEnabled;
-    protected boolean useContainerManagedTransactions;
+    protected boolean useManagedTransactions;
 
     public TaskanaEngineConfiguration() {
     }
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useContainerManagedTransactions)
-            throws SQLException {
+        throws SQLException {
         this(dataSource, useContainerManagedTransactions, true);
     }
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useContainerManagedTransactions,
-            boolean securityEnabled) throws SQLException {
-        this.useContainerManagedTransactions = useContainerManagedTransactions;
+        boolean securityEnabled) throws SQLException {
+        this.useManagedTransactions = useContainerManagedTransactions;
 
         if (dataSource != null) {
             this.dataSource = dataSource;
@@ -57,25 +57,30 @@ public class TaskanaEngineConfiguration {
 
     public static DataSource createDefaultDataSource() {
         LOGGER.warn("No datasource is provided. A inmemory db is used: "
-                + "'org.h2.Driver', 'jdbc:h2:mem:taskana', 'sa', 'sa'");
+            + "'org.h2.Driver', 'jdbc:h2:mem:taskana', 'sa', 'sa'");
         return createDatasource(H2_DRIVER, JDBC_H2_MEM_TASKANA, USER_NAME, USER_PASSWORD);
     }
 
     /**
      * This method creates the TaskanaEngine without an sqlSessionFactory.
+     *
      * @return the TaskanaEngine
-     * @throws SQLException TODO
      */
-    public TaskanaEngine buildTaskanaEngine() throws SQLException {
+    public TaskanaEngine buildTaskanaEngine() {
         return new TaskanaEngineImpl(this);
     }
 
     /**
      * This method creates a PooledDataSource, if the needed properties are provided.
-     * @param driver TODO
-     * @param jdbcUrl TODO
-     * @param username TODO
-     * @param password TODO
+     *
+     * @param driver
+     *            the name of the jdbc driver
+     * @param jdbcUrl
+     *            the url to which the jdbc driver connects
+     * @param username
+     *            the user name for database access
+     * @param password
+     *            the password for database access
      * @return DataSource
      */
     public static DataSource createDatasource(String driver, String jdbcUrl, String username, String password) {
@@ -90,8 +95,17 @@ public class TaskanaEngineConfiguration {
         return this.dataSource;
     }
 
-    public boolean getUseContainerManagedTransactions() {
-        return this.useContainerManagedTransactions;
+    public boolean getUseManagedTransactions() {
+        return this.useManagedTransactions;
+    }
+
+    /**
+     * Helper method to determine whether all access ids (user Id and group ids) should be used in lower case.
+     *
+     * @return true if all access ids should be used in lower case, false otherwise
+     */
+    public static boolean shouldUseLowerCaseForAccessIds() {
+        return true;
     }
 
 }

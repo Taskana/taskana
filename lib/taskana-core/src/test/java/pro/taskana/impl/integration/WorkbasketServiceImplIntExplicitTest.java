@@ -251,7 +251,10 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket2.getDistributionTargets().add(workbasket0);
         workbasket2.getDistributionTargets().add(workbasket1);
         workBasketService.createWorkbasket(workbasket2);
-        Workbasket workbasket3 = workBasketService.newWorkbasket();
+
+        WorkbasketImpl workbasket3 = (WorkbasketImpl) workBasketService.newWorkbasket();
+        String id3 = IdGenerator.generateWithPrefix("TWB");
+        workbasket3.setId(id3);
         workbasket3.setKey("key3");
         workbasket3.setName("hm ... irgend ein basket");
         workbasket3.setType(WorkbasketType.GROUP);
