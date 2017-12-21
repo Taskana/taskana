@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketQuery;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.LoggerUtils;
@@ -117,13 +118,14 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         }
         this.authorization = permission;
         this.accessId = accessIds;
-        for (int i = 0; i < accessIds.length; i++) {
-            String id = accessIds[i];
-            if (id != null) {
-                accessIds[i] = id.toLowerCase();
+        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+            for (int i = 0; i < accessIds.length; i++) {
+                String id = accessIds[i];
+                if (id != null) {
+                    accessIds[i] = id.toLowerCase();
+                }
             }
         }
-
         return this;
     }
 

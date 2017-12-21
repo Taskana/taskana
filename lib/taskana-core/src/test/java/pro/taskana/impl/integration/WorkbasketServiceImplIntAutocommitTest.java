@@ -299,8 +299,13 @@ public class WorkbasketServiceImplIntAutocommitTest {
         accessItem.setAccessId("Zaphod Beeblebrox");
         workBasketService.updateWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals("zaphod beeblebrox",
-            workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
+        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+            Assert.assertEquals("zaphod beeblebrox",
+                workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
+        } else {
+            Assert.assertEquals("zaphod beeblebrox",
+                workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
+        }
     }
 
     @Test

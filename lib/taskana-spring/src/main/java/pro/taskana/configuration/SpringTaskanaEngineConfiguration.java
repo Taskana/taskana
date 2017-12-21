@@ -23,7 +23,7 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
 	 * @return the TaskanaEngine
 	 */
 	public TaskanaEngine buildTaskanaEngine() {
-		this.useContainerManagedTransactions = true;
+		this.useManagedTransactions = true;
 
 		dbScriptRunner = new DbScriptRunner(this.dataSource);
 		try {

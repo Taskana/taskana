@@ -335,7 +335,11 @@ public class WorkbasketServiceImplTest {
         accessItem.setAccessId("Zaphod Beeblebrox");
         workbasketServiceImpl.updateWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals("zaphod beeblebrox", accessItem.getAccessId());
+        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+            Assert.assertEquals("zaphod beeblebrox", accessItem.getAccessId());
+        } else {
+            Assert.assertEquals("Zaphod Beeblebrox", accessItem.getAccessId());
+        }
     }
 
     @Test(expected = NotAuthorizedException.class)
