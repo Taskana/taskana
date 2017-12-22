@@ -11,13 +11,13 @@ import javax.sql.DataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.taskana.configuration.DbScriptRunner;
+import pro.taskana.configuration.DbSchemaCreator;
 
 /**
  * This class cleans the complete database. Only to be used in Unittest
  */
 public class DBCleaner {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbScriptRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
     private static final String DB_CLEAR_SCRIPT = "/sql/clear-db.sql";
     private static final String DB_DROP_TABLES_SCRIPT = "/sql/drop-tables.sql";
 

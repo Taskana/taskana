@@ -25,7 +25,7 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
 	public TaskanaEngine buildTaskanaEngine() {
 		this.useManagedTransactions = true;
 
-		dbScriptRunner = new DbScriptRunner(this.dataSource);
+		dbScriptRunner = new DbSchemaCreator(this.dataSource);
 		try {
 			dbScriptRunner.run();
 		} catch (SQLException e) {
