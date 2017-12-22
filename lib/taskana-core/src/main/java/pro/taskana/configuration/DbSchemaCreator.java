@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This class create the schema for taskana.
  */
-public class DbScriptRunner {
+public class DbSchemaCreator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbScriptRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
 
     private static final String SQL = "/sql";
     private static final String DB_SCHEMA = SQL + "/taskana-schema.sql";
@@ -30,7 +30,7 @@ public class DbScriptRunner {
     private StringWriter errorWriter = new StringWriter();
     private PrintWriter errorLogWriter = new PrintWriter(errorWriter);
 
-    public DbScriptRunner(DataSource dataSource) {
+    public DbSchemaCreator(DataSource dataSource) {
         super();
         this.dataSource = dataSource;
     }

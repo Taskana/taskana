@@ -24,7 +24,7 @@ public class TaskanaEngineConfiguration {
     private static final String H2_DRIVER = "org.h2.Driver";
 
     protected DataSource dataSource;
-    protected DbScriptRunner dbScriptRunner;
+    protected DbSchemaCreator dbScriptRunner;
 
     // global switch to enable JAAS based authentication and Taskana
     // authorizations
@@ -49,7 +49,7 @@ public class TaskanaEngineConfiguration {
             // use default In Memory datasource
             this.dataSource = createDefaultDataSource();
         }
-        dbScriptRunner = new DbScriptRunner(this.dataSource);
+        dbScriptRunner = new DbSchemaCreator(this.dataSource);
         dbScriptRunner.run();
 
         this.securityEnabled = securityEnabled;
