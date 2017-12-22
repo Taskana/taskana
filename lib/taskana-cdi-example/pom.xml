@@ -23,13 +23,13 @@
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-core</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-cdi</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	<description>The Taskana Spring sample application.</description>
