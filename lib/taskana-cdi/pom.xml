@@ -152,7 +152,7 @@
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-core</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
