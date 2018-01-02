@@ -3,6 +3,8 @@ package pro.taskana;
 import java.util.List;
 
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
@@ -100,10 +102,12 @@ public interface TaskService {
      *             thrown if the {@link Classification} referenced by the task is not found
      * @throws InvalidWorkbasketException
      *             thrown if the referenced Workbasket has missing required properties
+     * @throws InvalidArgumentException
+     *             thrown if the primary ObjectReference is invalid
      */
     Task createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        TaskAlreadyExistException, InvalidWorkbasketException;
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException;
 
     /**
      * Get the details of a task by Id.
@@ -192,4 +196,19 @@ public interface TaskService {
      * @return task - with default values
      */
     Task newTask();
+
+    /**
+     * Update a task.
+     *
+     * @param task
+     *            the task to be updated in the database
+     * @return the updated task
+     * @throws InvalidArgumentException
+     *             if the task to be updated contains invalid properties like e.g. invalid object references
+     * @throws TaskNotFoundException
+     *             if the id of the task is not found in the database
+     * @throws ConcurrencyException
+     *             if the task has already been updated by another user
+     */
+    Task updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException;
 }

@@ -18,6 +18,8 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
@@ -152,7 +154,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         LOGGER.debug("entry to createTask(task = {})", taskToCreate);
         try {
             taskanaEngineImpl.openConnection();
@@ -171,6 +173,7 @@ public class TaskServiceImpl implements TaskService {
                     classification.getDomain());
 
                 standardSettings(task);
+                validatePrimaryObjectReference(task);
                 this.taskMapper.insert(task);
                 LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
             }
@@ -189,6 +192,7 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             result = taskMapper.findById(id);
             if (result != null) {
+                setPrimaryObjRef((TaskImpl) result);
                 return result;
             } else {
                 LOGGER.warn("Method getTaskById() didn't find task with id {}. Throwing TaskNotFoundException", id);
@@ -272,7 +276,10 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             workbasketService.checkAuthorization(workbasketKey, WorkbasketAuthorization.READ);
             List<TaskImpl> tasks = taskMapper.findTasksByWorkbasketIdAndState(workbasketKey, taskState);
-            tasks.stream().forEach(t -> results.add(t));
+            for (TaskImpl taskImpl : tasks) {
+                setPrimaryObjRef(taskImpl);
+                results.add(taskImpl);
+            }
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -283,6 +290,30 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         return (results == null) ? new ArrayList<>() : results;
+    }
+
+    @Override
+    public Task updateTask(Task task)
+        throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException {
+        String userId = CurrentUserContext.getUserid();
+        LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
+        TaskImpl newTaskImpl = (TaskImpl) task;
+        TaskImpl oldTaskImpl = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            oldTaskImpl = (TaskImpl) getTaskById(newTaskImpl.getId());
+            standardUpdateActions(oldTaskImpl, newTaskImpl);
+
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            newTaskImpl.setModified(now);
+            taskMapper.update(newTaskImpl);
+            LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
+
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from claim()");
+        }
+        return task;
     }
 
     private void standardSettings(TaskImpl task) {
@@ -325,16 +356,16 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
-        // insert ObjectReference if needed.
-        if (task.getPrimaryObjRef() != null) {
-            ObjectReference objectReference = this.objectReferenceMapper.findByObjectReference(task.getPrimaryObjRef());
-            if (objectReference == null) {
-                objectReference = task.getPrimaryObjRef();
-                objectReference.setId(IdGenerator.generateWithPrefix(ID_PREFIX_OBJECT_REFERENCE));
-                this.objectReferenceMapper.insert(objectReference);
-            }
-            task.setPrimaryObjRef(objectReference);
-        }
+        // insert ObjectReference if needed. Comment this out for the scope of tsk-123
+        // if (task.getPrimaryObjRef() != null) {
+        // ObjectReference objectReference = this.objectReferenceMapper.findByObjectReference(task.getPrimaryObjRef());
+        // if (objectReference == null) {
+        // objectReference = task.getPrimaryObjRef();
+        // objectReference.setId(IdGenerator.generateWithPrefix(ID_PREFIX_OBJECT_REFERENCE));
+        // this.objectReferenceMapper.insert(objectReference);
+        // }
+        // // task.setPrimaryObjRef(objectReference);
+        // }
     }
 
     @Override
@@ -367,4 +398,75 @@ public class TaskServiceImpl implements TaskService {
     public Task newTask() {
         return new TaskImpl();
     }
+
+    static void setPrimaryObjRef(TaskImpl task) {
+        ObjectReference objRef = new ObjectReference();
+        objRef.setCompany(task.getPorCompany());
+        objRef.setSystem(task.getPorSystem());
+        objRef.setSystemInstance(task.getPorSystemInstance());
+        objRef.setType(task.getPorType());
+        objRef.setValue(task.getPorValue());
+        task.setPrimaryObjRef(objRef);
+    }
+
+    private void validatePrimaryObjectReference(TaskImpl task) throws InvalidArgumentException {
+        // check that all values in the primary ObjectReference are set correctly
+        ObjectReference primObjRef = task.getPrimaryObjRef();
+        if (primObjRef == null) {
+            throw new InvalidArgumentException("primary ObjectReference of task must not be null");
+        } else if (primObjRef.getCompany() == null || primObjRef.getCompany().length() == 0) {
+            throw new InvalidArgumentException("Company of primary ObjectReference of task must not be empty");
+        } else if (primObjRef.getSystem() == null || primObjRef.getSystem().length() == 0) {
+            throw new InvalidArgumentException("System of primary ObjectReference of task must not be empty");
+        } else if (primObjRef.getSystemInstance() == null || primObjRef.getSystemInstance().length() == 0) {
+            throw new InvalidArgumentException("SystemInstance of primary ObjectReference of task must not be empty");
+        } else if (primObjRef.getType() == null || primObjRef.getType().length() == 0) {
+            throw new InvalidArgumentException("Type of primary ObjectReference of task must not be empty");
+        } else if (primObjRef.getValue() == null || primObjRef.getValue().length() == 0) {
+            throw new InvalidArgumentException("Value of primary ObjectReference of task must not be empty");
+        }
+    }
+
+    private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
+        throws InvalidArgumentException, ConcurrencyException {
+        validatePrimaryObjectReference(newTaskImpl);
+        if (oldTaskImpl.getModified() != null && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
+            || oldTaskImpl.getClaimed() != null && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
+            || oldTaskImpl.getState() != null && !oldTaskImpl.getState().equals(newTaskImpl.getState())) {
+            throw new ConcurrencyException("The task has already been updated by another user");
+        }
+
+        if (newTaskImpl.getPlanned() == null) {
+            newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
+        }
+
+        // if no business process id is provided, a unique id is created.
+        if (newTaskImpl.getBusinessProcessId() == null) {
+            newTaskImpl.setBusinessProcessId(oldTaskImpl.getBusinessProcessId());
+        }
+
+        // insert Classification specifications if Classification is given.
+        Classification classification = newTaskImpl.getClassification();
+        if (classification != null) {
+            if (classification.getServiceLevel() != null) {
+                Duration serviceLevel = Duration.parse(classification.getServiceLevel());
+                LocalDateTime due = newTaskImpl.getPlanned().toLocalDateTime().plus(serviceLevel);
+                newTaskImpl.setDue(Timestamp.valueOf(due));
+            }
+
+            if (newTaskImpl.getName() == null) {
+                newTaskImpl.setName(classification.getName());
+            }
+
+            if (newTaskImpl.getDescription() == null) {
+                newTaskImpl.setDescription(classification.getDescription());
+            }
+
+            if (newTaskImpl.getPriority() == 0) {
+                newTaskImpl.setPriority(classification.getPriority());
+            }
+        }
+
+    }
+
 }
