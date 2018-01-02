@@ -26,7 +26,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         // TaskService taskService = taskanaEngine.getTaskService();
         // List<TaskSummary> results = taskService.createTaskQuery()
-        // .objectReferenceValueEquals("223344")
+        // .primaryObjectReferenceValueEquals("223344")
         // .list();
         // Assert.assertEquals(5L, results.size());
     }
@@ -37,8 +37,8 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         // TaskService taskService = taskanaEngine.getTaskService();
         // List<TaskSummary> results = taskService.createTaskQuery()
-        // .objectReferenceTypeEquals("VNR")
-        // .objectReferenceValueEquals("223344")
+        // .primaryObjectReferenceTypeEquals("VNR")
+        // .primaryObjectReferenceValueEquals("223344")
         // .list();
         // Assert.assertEquals(3L, results.size());
     }
@@ -49,7 +49,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         // TaskService taskService = taskanaEngine.getTaskService();
         // List<TaskSummary> results = taskService.createTaskQuery()
-        // .objectReferenceValueLike("223")
+        // .primaryObjectReferenceValueLike("223")
         // .list();
         // Assert.assertEquals(15L, results.size());
     }

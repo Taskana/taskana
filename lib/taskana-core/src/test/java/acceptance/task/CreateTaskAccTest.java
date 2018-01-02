@@ -160,6 +160,55 @@ public class CreateTaskAccTest extends AbstractAccTest {
         taskService.createTask(newTask);
     }
 
+    @Ignore
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = { "group_1" })
+    @Test
+    public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setWorkbasketKey("USER_1_1");
+        Task createdTask = taskService.createTask(newTask);
+
+        // Exception
+
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
+
+        createdTask = taskService.createTask(newTask);
+
+        // Exception
+
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
+
+        createdTask = taskService.createTask(newTask);
+
+        // Exception
+
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
+
+        createdTask = taskService.createTask(newTask);
+
+        // Exception
+
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
+
+        createdTask = taskService.createTask(newTask);
+
+        // Exception
+
+        newTask.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+
+        createdTask = taskService.createTask(newTask);
+
+        // Exception
+
+    }
+
     @AfterClass
     public static void cleanUpClass() {
         FileUtils.deleteRecursive("~/data", true);
