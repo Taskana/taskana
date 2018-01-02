@@ -66,6 +66,86 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals(false, createdTask.isTransferred());
     }
 
+    @Ignore
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = { "group_1" })
+    @Test
+    public void testCreateExternalTaskWithAttachment()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setWorkbasketKey("USER_1_1");
+        // newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        // createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+        // "12345678901234567890123456789012345678901234567890"),
+        // "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask);
+        // assertNotNull(createdTask.getAttachments());
+        // assertEquals(1, createdTask.getAttachments().size());
+    }
+
+    @Ignore
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = { "group_1" })
+    @Test
+    public void testCreateExternalTaskWithMultipleAttachments()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setWorkbasketKey("USER_1_1");
+        // newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        // createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+        // "12345678901234567890123456789012345678901234567890"),
+        // "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        // newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        // createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+        // "12345678901234567890123456789012345678901234567890"),
+        // "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask);
+        // assertNotNull(createdTask.getAttachments());
+        // assertEquals(2, createdTask.getAttachments().size());
+        // further assertions
+    }
+
+    @Ignore
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = { "group_1" })
+    @Test
+    public void testThrowsExceptionIfAttachmentIsInvalid()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setWorkbasketKey("USER_1_1");
+        // newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        // null,
+        // "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        Task createdTask = taskService.createTask(newTask);
+
+        // Further exceptions
+        // null in object reference
+        //
+
+    }
+
     @WithAccessId(
         userName = "user_1_1",
         groupNames = { "group_1" })
