@@ -26,11 +26,10 @@ public interface QueryMapper {
     String CLASSIFICATION_FINDBYIDANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByKeyAndDomain";
     String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findById";
 
-    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.WORKBASKET_KEY, t.OWNER, t.PRIMARY_OBJ_REF_ID, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
+    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.WORKBASKET_KEY, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
         + "FROM TASK t "
-        // Joins if Classification or Object Reference Query is needed
+        // Joins if Classification Query is needed
         + "<if test='classificationQuery != null'>LEFT OUTER JOIN CLASSIFICATION c on t.CLASSIFICATION_KEY = c.KEY</if> "
-        + "<if test='objectReferenceQuery != null'>LEFT OUTER JOIN OBJECT_REFERENCE o on t.PRIMARY_OBJ_REF_ID = o.ID</if> "
         + "<where>"
         + "<if test='name != null'>AND t.NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
         + "<if test='description != null'>AND t.DESCRIPTION like #{description}</if> "
@@ -40,6 +39,16 @@ public interface QueryMapper {
         + "<if test='owner != null'>AND t.OWNER IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
         + "<if test='isRead != null'>AND t.IS_READ = #{isRead}</if> "
         + "<if test='isTransferred != null'>AND t.IS_TRANSFERRED = #{isTransferred}</if> "
+        + "<if test='porCompanyIn != null'>AND t.POR_COMPANY IN(<foreach item='item' collection='porCompanyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='porCompanyLike != null'>AND t.POR_COMPANY like #{porCompanyLike}</if> "
+        + "<if test='porSystemIn != null'>AND t.POR_SYSTEM IN(<foreach item='item' collection='porSystemIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='porSystemLike != null'>AND t.POR_SYSTEM like #{porSystemLike}</if> "
+        + "<if test='porSystemInstanceIn != null'>AND t.POR_INSTANCE IN(<foreach item='item' collection='porSystemInstanceIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='porSystemInstanceLike != null'>AND t.POR_INSTANCE like #{porSystemInstanceLike}</if> "
+        + "<if test='porTypeIn != null'>AND t.POR_TYPE IN(<foreach item='item' collection='porTypeIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='porTypeLike != null'>AND t.POR_TYPE like #{porTypeLike}</if> "
+        + "<if test='porValueIn != null'>AND t.POR_VALUE IN(<foreach item='item' collection='porValueIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='porValueLike != null'>AND t.POR_VALUE like #{porValueLike}</if> "
         + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         // Classification Query
         + "<if test='classificationQuery != null'>"
@@ -59,17 +68,9 @@ public interface QueryMapper {
         + "<if test='classificationQuery.validFrom != null'>AND c.VALID_FROM IN(<foreach item='item' collection='classificationQuery.validFrom' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationQuery.validUntil != null'>AND c.VALID_UNTIL IN(<foreach item='item' collection='classificationQuery.validUntil' separator=',' >#{item}</foreach>)</if> "
         + "</if>"
-        // Object Reference Query
-        + "<if test='objectReferenceQuery != null'>"
-        + "<if test='objectReferenceQuery.company != null'>AND o.COMPANY IN(<foreach item='item' collection='objectReferenceQuery.company' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='objectReferenceQuery.system != null'>AND o.SYSTEM IN(<foreach item='item' collection='objectReferenceQuery.system' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='objectReferenceQuery.systemInstance != null'>AND o.SYSTEM_INSTANCE IN(<foreach item='item' collection='objectReferenceQuery.systemInstance' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='objectReferenceQuery.type != null'>AND o.TYPE IN(<foreach item='item' collection='objectReferenceQuery.type' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='objectReferenceQuery.value != null'>AND o.VALUE IN(<foreach item='item' collection='objectReferenceQuery.value' separator=',' >#{item}</foreach>)</if> "
-        + "</if>"
         + "</where>"
         + "</script>")
-    @Results(value = { @Result(property = "id", column = "ID"),
+    @Results(value = {@Result(property = "id", column = "ID"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "claimed", column = "CLAIMED"),
         @Result(property = "completed", column = "COMPLETED"),
@@ -83,8 +84,11 @@ public interface QueryMapper {
             one = @One(select = CLASSIFICATION_FINDBYID)),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
         @Result(property = "owner", column = "OWNER"),
-        @Result(property = "primaryObjRef", column = "PRIMARY_OBJ_REF_ID", javaType = ObjectReference.class,
-            one = @One(select = OBJECTREFERENCEMAPPER_FINDBYID)),
+        @Result(property = "porCompany", column = "POR_COMPANY"),
+        @Result(property = "porSystem", column = "POR_SYSTEM"),
+        @Result(property = "porSystemInstance", column = "POR_INSTANCE"),
+        @Result(property = "porType", column = "POR_TYPE"),
+        @Result(property = "porValue", column = "POR_VALUE"),
         @Result(property = "isRead", column = "IS_READ"),
         @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
         @Result(property = "custom1", column = "CUSTOM_1"),
@@ -96,7 +100,7 @@ public interface QueryMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10") })
+        @Result(property = "custom10", column = "CUSTOM_10")})
     List<TaskImpl> queryTasks(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
@@ -119,7 +123,7 @@ public interface QueryMapper {
         + "<if test='validUntil != null'>AND VALID_UNTIL IN(<foreach item='item' collection='validUntil' separator=',' >#{item}</foreach>)</if> "
         + "</where>"
         + "</script>")
-    @Results({ @Result(property = "id", column = "ID"),
+    @Results({@Result(property = "id", column = "ID"),
         @Result(property = "parentClassificationId", column = "PARENT_CLASSIFICATION_ID"),
         @Result(property = "category", column = "CATEGORY"),
         @Result(property = "type", column = "TYPE"),
@@ -139,7 +143,7 @@ public interface QueryMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "validFrom", column = "VALID_FROM"),
-        @Result(property = "validUntil", column = "VALID_UNTIL") })
+        @Result(property = "validUntil", column = "VALID_UNTIL")})
     List<ClassificationImpl> queryClassification(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
@@ -158,7 +162,7 @@ public interface QueryMapper {
         @Result(property = "system", column = "SYSTEM"),
         @Result(property = "systemInstance", column = "SYSTEM_INSTANCE"),
         @Result(property = "type", column = "TYPE"),
-        @Result(property = "value", column = "VALUE") })
+        @Result(property = "value", column = "VALUE")})
     List<ObjectReference> queryObjectReference(ObjectReferenceQueryImpl objectReference);
 
     @Select("<script>SELECT w.ID, w.KEY, w.CREATED, w.MODIFIED, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.CUSTOM_1, w.CUSTOM_2, w.CUSTOM_3, w.CUSTOM_4, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
@@ -211,7 +215,7 @@ public interface QueryMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketImpl> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
 
     @Select("<script>SELECT TARGET_ID from DISTRIBUTION_TARGETS "
@@ -220,7 +224,7 @@ public interface QueryMapper {
         + "</where>"
         + "</script>")
     @Results(value = {
-        @Result(property = "distributionTarget", column = "TARGET_ID") })
+        @Result(property = "distributionTarget", column = "TARGET_ID")})
     List<String> findDistributionTargets(String sourceId);
 
 }

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
@@ -21,6 +22,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.model.ObjectReference;
 import pro.taskana.model.WorkbasketType;
 
 @Path("/test")
@@ -37,7 +39,7 @@ public class TaskanaRestTest {
     @GET
     public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException,
         ClassificationNotFoundException, ClassificationAlreadyExistException, InvalidWorkbasketException,
-        TaskAlreadyExistException {
+        TaskAlreadyExistException, InvalidArgumentException {
         Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket();
         workbasket.setName("wb");
         workbasket.setKey("key");
@@ -51,6 +53,14 @@ public class TaskanaRestTest {
         Task task = taskanaEjb.getTaskService().newTask();
         task.setClassification(classification);
         task.setWorkbasketKey(workbasket.getKey());
+        ObjectReference objRef = new ObjectReference();
+        objRef.setCompany("aCompany");
+        objRef.setSystem("aSystem");
+        objRef.setSystemInstance("anInstance");
+        objRef.setType("aType");
+        objRef.setValue("aValue");
+        task.setPrimaryObjRef(objRef);
+
         Task result = taskanaEjb.getTaskService().createTask(task);
 
         logger.info(result.getId() + ":" + result.getOwner());
@@ -60,7 +70,7 @@ public class TaskanaRestTest {
     @POST
     public Response rollbackTask()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidWorkbasketException, TaskAlreadyExistException {
+        InvalidWorkbasketException, TaskAlreadyExistException, InvalidArgumentException {
         taskanaEjb.triggerRollback();
         return Response.status(204).build();
     }

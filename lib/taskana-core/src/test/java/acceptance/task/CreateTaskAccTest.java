@@ -36,7 +36,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testCreateSimpleManualTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -148,7 +148,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testUseCustomNameIfSetForNewTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -169,7 +169,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
     @Ignore
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testUseClassificationMetadataFromCorrectDomainForNewTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -190,7 +190,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
     @Ignore
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testImprovedUseClassificationMetadataFromCorrectDomainForNewTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -210,7 +210,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test(expected = WorkbasketNotFoundException.class)
     public void testGetExceptionIfWorkbasketDoesNotExist()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -226,7 +226,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testGetExceptionIfAppendIsNotPermitted()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -240,10 +240,9 @@ public class CreateTaskAccTest extends AbstractAccTest {
         taskService.createTask(newTask);
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -253,37 +252,76 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task newTask = taskService.newTask();
         newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
         newTask.setWorkbasketKey("USER_1_1");
-        Task createdTask = taskService.createTask(newTask);
+        Task createdTask;
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("primary ObjectReference of task must not be null", ex.getMessage());
+        }
 
         // Exception
 
+        newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
-
-        createdTask = taskService.createTask(newTask);
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("Value of primary ObjectReference of task must not be empty", ex.getMessage());
+        }
 
         // Exception
 
+        newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
 
-        createdTask = taskService.createTask(newTask);
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("Type of primary ObjectReference of task must not be empty", ex.getMessage());
+        }
 
         // Exception
 
+        newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
 
-        createdTask = taskService.createTask(newTask);
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("SystemInstance of primary ObjectReference of task must not be empty", ex.getMessage());
+        }
 
         // Exception
 
+        newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
 
-        createdTask = taskService.createTask(newTask);
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("System of primary ObjectReference of task must not be empty", ex.getMessage());
+        }
 
         // Exception
 
+        newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
-        createdTask = taskService.createTask(newTask);
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("Company of primary ObjectReference of task must not be empty", ex.getMessage());
+        }
 
         // Exception
 

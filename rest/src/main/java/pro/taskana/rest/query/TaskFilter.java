@@ -10,7 +10,6 @@ import org.springframework.util.MultiValueMap;
 
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
-import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
@@ -125,29 +124,26 @@ public class TaskFilter {
         }
         // objectReference
         if (params.keySet().stream().filter(s -> s.startsWith(POR)).toArray().length > 0) {
-            ObjectReferenceQuery objectReferenceQuery = taskQuery.createObjectReferenceQuery();
             if (params.containsKey(POR_COMPANY)) {
                 String[] companies = extractCommaSeperatedFields(params.get(POR_COMPANY));
-                objectReferenceQuery.company(companies);
+                taskQuery.primaryObjectReferenceCompanyIn(companies);
             }
             if (params.containsKey(POR_SYSTEM)) {
                 String[] systems = extractCommaSeperatedFields(params.get(POR_SYSTEM));
-                objectReferenceQuery.system(systems);
+                taskQuery.primaryObjectReferenceSystemIn(systems);
             }
             if (params.containsKey(POR_SYSTEM_INSTANCE)) {
                 String[] systemInstances = extractCommaSeperatedFields(params.get(POR_SYSTEM_INSTANCE));
-                objectReferenceQuery.systemInstance(systemInstances);
+                taskQuery.primaryObjectReferenceSystemInstanceIn(systemInstances);
             }
             if (params.containsKey(POR_TYPE)) {
                 String[] types = extractCommaSeperatedFields(params.get(POR_TYPE));
-                objectReferenceQuery.type(types);
+                taskQuery.primaryObjectReferenceTypeIn(types);
             }
             if (params.containsKey(POR_VALUE)) {
                 String[] values = extractCommaSeperatedFields(params.get(POR_VALUE));
-                objectReferenceQuery.value(values);
+                taskQuery.primaryObjectReferenceValueIn(values);
             }
-
-            taskQuery.objectReference(objectReferenceQuery);
         }
         if (params.containsKey(IS_READ)) {
             taskQuery.read(Boolean.getBoolean(params.get(IS_READ).get(0)));

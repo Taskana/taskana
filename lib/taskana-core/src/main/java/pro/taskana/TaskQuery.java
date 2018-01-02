@@ -18,8 +18,8 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery name(String... name);
 
     /**
-     * Add your description to your query. It will be compared in SQL with an LIKE. If you use a wildcard like % tehn it
-     * will be transmitted to the database.
+     * Add your description for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern.
      *
      * @param description
      *            your description
@@ -75,13 +75,99 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery owner(String... owners);
 
     /**
-     * Add your objectReference to your query. The objectReference query can be obtained from the TaskService
+     * Add the companies of the primary object reference for exact matching to your query.
      *
-     * @param objectReferenceQuery
-     *            the objectReference query
+     * @param companies
+     *            the companies of your primary object reference
      * @return the query
      */
-    TaskQuery objectReference(ObjectReferenceQuery objectReferenceQuery);
+    TaskQuery primaryObjectReferenceCompanyIn(String... companies);
+
+    /**
+     * Add the company of the primary object reference for pattern matching to your query. It will be compared in SQL
+     * with the LIKE operator. You may use a wildcard like % to specify the pattern.
+     *
+     * @param company
+     *            the company of your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceCompanyLike(String company);
+
+    /**
+     * Add the systems of the primary object reference for exact matching to your query.
+     *
+     * @param systems
+     *            the systems of your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceSystemIn(String... systems);
+
+    /**
+     * Add the system of the primary object reference for pattern matching to your query. It will be compared in SQL
+     * with the LIKE operator. You may use a wildcard like % to specify the pattern.
+     *
+     * @param system
+     *            the system of your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceSystemLike(String system);
+
+    /**
+     * Add the system instances of the primary object reference for exact matching to your query.
+     *
+     * @param systemInstances
+     *            the system instances of your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceSystemInstanceIn(String... systemInstances);
+
+    /**
+     * Add the system instance of the primary object reference for pattern matching to your query. It will be compared
+     * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
+     *
+     * @param systemInstance
+     *            the system instance of your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceSystemInstanceLike(String systemInstance);
+
+    /**
+     * Add the types of the primary object reference for exact matching to your query.
+     *
+     * @param types
+     *            the types your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceTypeIn(String... types);
+
+    /**
+     * Add the type of the primary object reference for pattern matching to your query. It will be compared in SQL with
+     * the LIKE operator. You may use a wildcard like % to specify the pattern.
+     *
+     * @param type
+     *            the type of your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceTypeLike(String type);
+
+    /**
+     * Add the values of the primary object reference for exact matching to your query.
+     *
+     * @param values
+     *            the values of your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceValueIn(String... values);
+
+    /**
+     * Add the value of the primary object reference for pattern matching to your query. It will be compared in SQL with
+     * the LIKE operator. You may use a wildcard like % to specify the pattern.
+     *
+     * @param value
+     *            the value of your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceValueLike(String value);
 
     /**
      * Add the isRead flag to the query.
