@@ -1,6 +1,8 @@
 package acceptance;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -51,6 +53,14 @@ public abstract class AbstractAccTest {
         objectReference.setType(type);
         objectReference.setValue(value);
         return objectReference;
+    }
+
+    protected Map<String, Object> createSimpleCustomProperties(int propertiesCount) {
+        HashMap<String, Object> properties = new HashMap<>();
+        for (int i = 1; i <= propertiesCount; i++) {
+            properties.put("Property_" + i, "Property Value of Property_" + i);
+        }
+        return properties;
     }
 
 }
