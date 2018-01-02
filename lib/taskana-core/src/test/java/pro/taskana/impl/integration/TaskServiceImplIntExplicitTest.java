@@ -37,6 +37,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
@@ -45,6 +46,7 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ClassificationServiceImpl;
+import pro.taskana.impl.JunitHelper;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
@@ -110,7 +112,7 @@ public class TaskServiceImplIntExplicitTest {
     public void testStartTransactionFail()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -131,6 +133,7 @@ public class TaskServiceImplIntExplicitTest {
         task.setName("Unit Test Task");
         task.setWorkbasketKey(workbasket.getKey());
         task.setClassification(classification);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
         connection.commit();
         taskServiceImpl.getTaskById(workbasket.getId());
@@ -146,7 +149,7 @@ public class TaskServiceImplIntExplicitTest {
     public void testCreateTask()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -163,6 +166,7 @@ public class TaskServiceImplIntExplicitTest {
         accessItem.setPermOpen(true);
         workbasketService.createWorkbasketAuthorization(accessItem);
 
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
         connection.commit();  // needed so that the change is visible in the other session
 
@@ -177,7 +181,7 @@ public class TaskServiceImplIntExplicitTest {
     public void testCreateTaskInTaskanaWithDefaultDb()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         DataSource ds = TaskanaEngineConfiguration.createDefaultDataSource();
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -203,6 +207,7 @@ public class TaskServiceImplIntExplicitTest {
         task.setName("Unit Test Task");
         task.setWorkbasketKey(workbasket.getKey());
         task.setClassification(classification);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
 
         Assert.assertNotNull(task);
@@ -215,7 +220,7 @@ public class TaskServiceImplIntExplicitTest {
     @Test
     public void testCreateTaskWithPlannedAndName() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -287,7 +292,8 @@ public class TaskServiceImplIntExplicitTest {
     @Test(expected = WorkbasketNotFoundException.class)
     public void createTaskShouldThrowWorkbasketNotFoundException()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException,
-        ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException {
+        ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
+        InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -302,7 +308,8 @@ public class TaskServiceImplIntExplicitTest {
     @Test(expected = ClassificationNotFoundException.class)
     public void createManualTaskShouldThrowClassificationNotFoundException()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException,
-        ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException {
+        ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
+        InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -327,11 +334,11 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.createTask(task);
     }
 
-    @WithAccessId(userName = "Elena", groupNames = { "DummyGroup" })
+    @WithAccessId(userName = "Elena", groupNames = {"DummyGroup"})
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -352,6 +359,7 @@ public class TaskServiceImplIntExplicitTest {
         task.setName("Unit Test Task");
         task.setWorkbasketKey(workbasket.getKey());
         task.setClassification(classification);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -380,7 +388,11 @@ public class TaskServiceImplIntExplicitTest {
             .owner("test", "test2", "bla")
             .customFields("test")
             .classification(classificationQuery)
-            .objectReference(objectReferenceQuery)
+            .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
+            .primaryObjectReferenceSystemIn("sys")
+            .primaryObjectReferenceTypeIn("type1", "type2")
+            .primaryObjectReferenceSystemInstanceIn("sysInst1", "sysInst2")
+            .primaryObjectReferenceValueIn("val1", "val2", "val3")
             .list();
 
         Assert.assertEquals(0, results.size());
@@ -392,7 +404,7 @@ public class TaskServiceImplIntExplicitTest {
     public void shouldTransferTaskToOtherWorkbasket()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         ClassificationAlreadyExistException, TaskNotFoundException, InterruptedException, TaskAlreadyExistException,
-        SQLException, InvalidWorkbasketException {
+        SQLException, InvalidWorkbasketException, InvalidArgumentException {
         Workbasket sourceWB;
         Workbasket destinationWB;
         WorkbasketImpl wb;
@@ -446,6 +458,7 @@ public class TaskServiceImplIntExplicitTest {
         task.setModified(null);
         task.setClassification(classification);
         task.setOwner(user);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = (TaskImpl) taskServiceImpl.createTask(task);
         Thread.sleep(sleepTime);    // Sleep for modification-timestamp
         connection.commit();
@@ -474,7 +487,7 @@ public class TaskServiceImplIntExplicitTest {
     @Test
     public void shouldNotTransferByFailingSecurity() throws WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException, SQLException,
-        TaskNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         final String user = "User";
 
         // Set up Security for this Test
@@ -530,6 +543,7 @@ public class TaskServiceImplIntExplicitTest {
         task.setWorkbasketKey(wb.getKey());
         task.setOwner(user);
         task.setClassification(classification);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = (TaskImpl) taskServiceImpl.createTask(task);
 
         // Check failing with missing APPEND

@@ -1,13 +1,16 @@
 package acceptance.task;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.Task;
+import pro.taskana.TaskService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
@@ -20,38 +23,35 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         super();
     }
 
-    @Ignore
     @Test
     public void testQueryTasksByExcactValueOfObjectReference()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
-        // TaskService taskService = taskanaEngine.getTaskService();
-        // List<TaskSummary> results = taskService.createTaskQuery()
-        // .primaryObjectReferenceValueEquals("223344")
-        // .list();
-        // Assert.assertEquals(5L, results.size());
+        TaskService taskService = taskanaEngine.getTaskService();
+        List<Task> results = taskService.createTaskQuery()
+            .primaryObjectReferenceValueIn("Value1", "Value2")
+            .list();
+        Assert.assertEquals(10L, results.size());
     }
 
-    @Ignore
     @Test
     public void testQueryTasksByExcactValueAndTypeOfObjectReference()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
-        // TaskService taskService = taskanaEngine.getTaskService();
-        // List<TaskSummary> results = taskService.createTaskQuery()
-        // .primaryObjectReferenceTypeEquals("VNR")
-        // .primaryObjectReferenceValueEquals("223344")
-        // .list();
-        // Assert.assertEquals(3L, results.size());
+        TaskService taskService = taskanaEngine.getTaskService();
+        List<Task> results = taskService.createTaskQuery()
+            .primaryObjectReferenceTypeIn("Type3")
+            .primaryObjectReferenceValueIn("Value3")
+            .list();
+        Assert.assertEquals(4L, results.size());
     }
 
-    @Ignore
     @Test
     public void testQueryTasksByValueLikeOfObjectReference()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
-        // TaskService taskService = taskanaEngine.getTaskService();
-        // List<TaskSummary> results = taskService.createTaskQuery()
-        // .primaryObjectReferenceValueLike("223")
-        // .list();
-        // Assert.assertEquals(15L, results.size());
+        TaskService taskService = taskanaEngine.getTaskService();
+        List<Task> results = taskService.createTaskQuery()
+            .primaryObjectReferenceValueLike("Val%")
+            .list();
+        Assert.assertEquals(14L, results.size());
     }
 
     @AfterClass

@@ -34,6 +34,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
@@ -41,6 +42,7 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.ClassificationQueryImpl;
+import pro.taskana.impl.JunitHelper;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
@@ -49,6 +51,7 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
 import pro.taskana.model.WorkbasketAccessItem;
@@ -98,7 +101,8 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException,
         WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
-        ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException {
+        ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
+        InvalidArgumentException {
         Workbasket wb = workbasketService.newWorkbasket();
         wb.setKey("workbasket");
         wb.setName("workbasket");
@@ -114,7 +118,7 @@ public class TaskServiceImplIntAutocommitTest {
         task.setWorkbasketKey(wb.getKey());
 
         task.setClassification(classification);
-
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
         // skanaEngineImpl.getSqlSession().commit(); // needed so that the change is visible in the other session
 
@@ -128,7 +132,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void testStartTransactionFail()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         Workbasket wb = workbasketService.newWorkbasket();
         wb.setName("sdf");
         wb.setType(WorkbasketType.GROUP);
@@ -145,6 +149,7 @@ public class TaskServiceImplIntAutocommitTest {
         task.setName("Unit Test Task");
         task.setWorkbasketKey(wb.getKey());
         task.setClassification(classification);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         taskServiceImpl.createTask(task);
         taskServiceImpl.getTaskById(task.getId());
 
@@ -157,7 +162,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void testCreateTaskInTaskanaWithDefaultDb()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
         ((TaskanaEngineImpl) te).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
@@ -177,6 +182,7 @@ public class TaskServiceImplIntAutocommitTest {
         task.setName("Unit Test Task");
         task.setWorkbasketKey(wb.getKey());
         task.setClassification(classification);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
 
         Assert.assertNotNull(task);
@@ -186,7 +192,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         Workbasket wb = workbasketService.newWorkbasket();
         wb.setKey("key");
         wb.setName("workbasket");
@@ -201,6 +207,7 @@ public class TaskServiceImplIntAutocommitTest {
         task.setName("Unit Test Task");
         task.setWorkbasketKey(wb.getKey());
         task.setClassification(classification);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         taskServiceImpl.createTask(task);
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -229,7 +236,11 @@ public class TaskServiceImplIntAutocommitTest {
             .owner("test", "test2", "bla")
             .customFields("test")
             .classification(classificationQuery)
-            .objectReference(objectReferenceQuery)
+            .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
+            .primaryObjectReferenceSystemIn("sys")
+            .primaryObjectReferenceTypeIn("type1", "type2")
+            .primaryObjectReferenceSystemInstanceIn("sysInst1", "sysInst2")
+            .primaryObjectReferenceValueIn("val1", "val2", "val3")
             .list();
 
         Assert.assertEquals(0, results.size());
@@ -254,6 +265,7 @@ public class TaskServiceImplIntAutocommitTest {
         dummyTask.setName("Dummy-Task");
         dummyTask.setClassification(dummyClassification);
         dummyTask.setWorkbasketKey(dummyWorkbasket.getKey());
+        dummyTask.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         dummyTask = (TaskImpl) taskServiceImpl.createTask(dummyTask);
 
         List<TaskSummary> expectedTaskSumamries = new ArrayList<>();
@@ -297,7 +309,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void shouldTransferTaskToOtherWorkbasket()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         ClassificationAlreadyExistException, TaskNotFoundException, InterruptedException, TaskAlreadyExistException,
-        InvalidWorkbasketException {
+        InvalidWorkbasketException, InvalidArgumentException {
         Workbasket sourceWB;
         Workbasket destinationWB;
         WorkbasketImpl wb;
@@ -343,6 +355,7 @@ public class TaskServiceImplIntAutocommitTest {
         task.setTransferred(false);
         task.setModified(null);
         task.setClassification(classification);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = (TaskImpl) taskServiceImpl.createTask(task);
         Thread.sleep(sleepTime);    // Sleep for modification-timestamp
 
@@ -366,7 +379,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void shouldNotTransferByFailingSecurity() throws WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException, SQLException,
-        TaskNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        TaskNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         final String user = CurrentUserContext.getUserid();
 
         // Set up Security for this Test
@@ -422,6 +435,7 @@ public class TaskServiceImplIntAutocommitTest {
         task.setWorkbasketKey(wb.getKey());
         task.setOwner(user);
         task.setClassification(classification);
+        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = (TaskImpl) taskServiceImpl.createTask(task);
 
         // Check failing with missing APPEND
@@ -451,6 +465,43 @@ public class TaskServiceImplIntAutocommitTest {
             assertThat(task.isTransferred(), equalTo(false));
             assertThat(task.getWorkbasketKey(), not(equalTo(wbNoAppend.getKey())));
         }
+    }
+
+    @Test
+    public void testWithPrimaryObjectRef() throws FileNotFoundException, SQLException, TaskNotFoundException,
+        WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
+        ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
+        InvalidArgumentException {
+        Workbasket wb = workbasketService.newWorkbasket();
+        wb.setKey("workbasket");
+        wb.setName("workbasket");
+        wb.setType(WorkbasketType.GROUP);
+        wb.setDomain("novatec");
+        taskanaEngine.getWorkbasketService().createWorkbasket(wb);
+        Classification classification = classificationService.newClassification();
+        classification.setKey("TEST");
+        taskanaEngine.getClassificationService().createClassification(classification);
+
+        Task task = taskServiceImpl.newTask();
+        task.setName("Unit Test Task");
+        task.setWorkbasketKey(wb.getKey());
+
+        task.setClassification(classification);
+
+        ObjectReference objRef = new ObjectReference();
+        objRef.setCompany("novatec");
+        objRef.setSystem("linux");
+        objRef.setSystemInstance("inst1");
+        objRef.setType("fast");
+        objRef.setValue("4711");
+        task.setPrimaryObjRef(objRef);
+
+        task = taskServiceImpl.createTask(task);
+
+        Task task2 = taskServiceImpl.getTaskById(task.getId());
+        // skanaEngineImpl.getSqlSession().commit(); // needed so that the change is visible in the other session
+
+        Assert.assertNotNull(task2);
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
