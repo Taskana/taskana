@@ -41,11 +41,7 @@ public class WorkbasketAccessItem {
     }
 
     public String getAccessId() {
-        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-            return accessId != null ? accessId.toLowerCase() : null;
-        } else {
-            return accessId;
-        }
+        return accessId;
     }
 
     public void setAccessId(String accessId) {

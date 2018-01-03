@@ -242,10 +242,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     /**
      * creates the MyBatis transaction factory.
      *
-     * @param useContainerManagedTransactions
+     * @param useManagedTransactions
      */
-    private void createTransactionFactory(boolean useContainerManagedTransactions) {
-        if (useContainerManagedTransactions) {
+    private void createTransactionFactory(boolean useManagedTransactions) {
+        if (useManagedTransactions) {
             this.transactionFactory = new ManagedTransactionFactory();
         } else {
             this.transactionFactory = new JdbcTransactionFactory();
