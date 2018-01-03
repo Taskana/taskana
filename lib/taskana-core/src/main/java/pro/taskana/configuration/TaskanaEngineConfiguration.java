@@ -34,14 +34,14 @@ public class TaskanaEngineConfiguration {
     public TaskanaEngineConfiguration() {
     }
 
-    public TaskanaEngineConfiguration(DataSource dataSource, boolean useContainerManagedTransactions)
+    public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions)
         throws SQLException {
-        this(dataSource, useContainerManagedTransactions, true);
+        this(dataSource, useManagedTransactions, true);
     }
 
-    public TaskanaEngineConfiguration(DataSource dataSource, boolean useContainerManagedTransactions,
+    public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
         boolean securityEnabled) throws SQLException {
-        this.useManagedTransactions = useContainerManagedTransactions;
+        this.useManagedTransactions = useManagedTransactions;
 
         if (dataSource != null) {
             this.dataSource = dataSource;
