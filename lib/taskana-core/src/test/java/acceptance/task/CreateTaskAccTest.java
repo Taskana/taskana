@@ -66,10 +66,9 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals(false, createdTask.isTransferred());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testCreateExternalTaskWithAttachment()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -80,10 +79,10 @@ public class CreateTaskAccTest extends AbstractAccTest {
         newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
-        // newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
-        // createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
-        // "12345678901234567890123456789012345678901234567890"),
-        // "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
@@ -91,10 +90,9 @@ public class CreateTaskAccTest extends AbstractAccTest {
         // assertEquals(1, createdTask.getAttachments().size());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testCreateExternalTaskWithMultipleAttachments()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -105,14 +103,14 @@ public class CreateTaskAccTest extends AbstractAccTest {
         newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
-        // newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
-        // createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
-        // "12345678901234567890123456789012345678901234567890"),
-        // "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        // newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
-        // createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
-        // "12345678901234567890123456789012345678901234567890"),
-        // "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
@@ -121,29 +119,86 @@ public class CreateTaskAccTest extends AbstractAccTest {
         // further assertions
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfAttachmentIsInvalid()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
+        Task createdTask = null;
+        Task newTask = makeNewTask(taskService);
+        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+            null,
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("primary ObjectReference of Attachment must not be null", ex.getMessage());
+        }
+
+        newTask = makeNewTask(taskService);
+        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId", null),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("Value of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+        }
+
+        newTask = makeNewTask(taskService);
+        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", null,
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("Type of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+        }
+        newTask = makeNewTask(taskService);
+        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+            createObjectReference("COMPANY_A", "SYSTEM_B", null, "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("SystemInstance of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+        }
+        newTask = makeNewTask(taskService);
+        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+            createObjectReference("COMPANY_A", null, "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("System of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+        }
+        newTask = makeNewTask(taskService);
+        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+            createObjectReference(null, "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        try {
+            createdTask = taskService.createTask(newTask);
+        } catch (InvalidArgumentException ex) {
+            assertEquals("Company of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+        }
+
+    }
+
+    private Task makeNewTask(TaskService taskService) throws ClassificationNotFoundException {
+        Task newTask;
+        newTask = taskService.newTask();
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
-        // newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
-        // null,
-        // "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        Task createdTask = taskService.createTask(newTask);
-
-        // Further exceptions
-        // null in object reference
-        //
-
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
+        return newTask;
     }
 
     @WithAccessId(
@@ -256,7 +311,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("primary ObjectReference of task must not be null", ex.getMessage());
+            assertEquals("primary ObjectReference of Task must not be null", ex.getMessage());
         }
 
         // Exception
@@ -268,7 +323,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Value of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("Value of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
 
         // Exception
@@ -281,7 +336,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Type of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("Type of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
 
         // Exception
@@ -294,7 +349,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("SystemInstance of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("SystemInstance of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
 
         // Exception
@@ -307,7 +362,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("System of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("System of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
 
         // Exception
@@ -320,7 +375,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Company of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("Company of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
 
         // Exception

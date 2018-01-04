@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 import pro.taskana.model.ObjectReference;
@@ -356,4 +357,19 @@ public interface Task {
      *            the custom10 property of the task
      */
     void setCustom10(String custom10);
+
+    /**
+     * Add an attachment.
+     *
+     * @param attachment
+     *            the {@link Attachment attachment} to be added to the task
+     */
+    void addAttachment(Attachment attachment);
+
+    /**
+     * Return the attachments for this task.
+     *
+     * @return the {@link List list} of {@link Attachment attachments} for this task
+     */
+    List<Attachment> getAttachments();
 }

@@ -23,6 +23,7 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.AutocommitFailedException;
 import pro.taskana.exceptions.ConnectionNotSetException;
 import pro.taskana.impl.persistence.MapTypeHandler;
+import pro.taskana.model.mappings.AttachmentMapper;
 import pro.taskana.model.mappings.ClassificationMapper;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
@@ -65,7 +66,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     public TaskService getTaskService() {
         SqlSession session = this.sessionManager;
         TaskServiceImpl taskServiceImpl = new TaskServiceImpl(this, session.getMapper(TaskMapper.class),
-            session.getMapper(ObjectReferenceMapper.class));
+            session.getMapper(ObjectReferenceMapper.class), session.getMapper(AttachmentMapper.class));
         return taskServiceImpl;
     }
 
@@ -233,6 +234,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         configuration.addMapper(WorkbasketAccessMapper.class);
         configuration.addMapper(ObjectReferenceMapper.class);
         configuration.addMapper(QueryMapper.class);
+        configuration.addMapper(AttachmentMapper.class);
         configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
         SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(configuration);
         SqlSessionManager sessionManager = SqlSessionManager.newInstance(sessionFactory);
