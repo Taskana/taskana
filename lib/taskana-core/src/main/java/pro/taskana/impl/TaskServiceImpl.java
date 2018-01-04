@@ -9,6 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.Attachment;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.Task;
@@ -33,6 +34,7 @@ import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskSummary;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.mappings.AttachmentMapper;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
 import pro.taskana.model.mappings.TaskMapper;
 import pro.taskana.security.CurrentUserContext;
@@ -44,6 +46,7 @@ public class TaskServiceImpl implements TaskService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
     private static final String ID_PREFIX_OBJECT_REFERENCE = "ORI";
+    private static final String ID_PREFIX_ATTACHMENT = "ATT";
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
     private TaskanaEngine taskanaEngine;
@@ -52,9 +55,10 @@ public class TaskServiceImpl implements TaskService {
     private ClassificationService classificationService;
     private TaskMapper taskMapper;
     private ObjectReferenceMapper objectReferenceMapper;
+    private AttachmentMapper attachmentMapper;
 
     public TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
-        ObjectReferenceMapper objectReferenceMapper) {
+        ObjectReferenceMapper objectReferenceMapper, AttachmentMapper attachmentMapper) {
         super();
         this.taskanaEngine = taskanaEngine;
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -62,6 +66,7 @@ public class TaskServiceImpl implements TaskService {
         this.objectReferenceMapper = objectReferenceMapper;
         this.workbasketService = taskanaEngineImpl.getWorkbasketService();
         this.classificationService = taskanaEngineImpl.getClassificationService();
+        this.attachmentMapper = attachmentMapper;
     }
 
     @Override
@@ -172,8 +177,9 @@ public class TaskServiceImpl implements TaskService {
                 this.classificationService.getClassification(classification.getKey(),
                     classification.getDomain());
 
+                validatePrimaryObjectReference(task.getPrimaryObjRef(), "Task");
+                validateAttachments(task);
                 standardSettings(task);
-                validatePrimaryObjectReference(task);
                 this.taskMapper.insert(task);
                 LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
             }
@@ -354,6 +360,19 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
+        // insert Attachments if needed
+        List<Attachment> attachments = task.getAttachments();
+        if (attachments != null) {
+            for (Attachment attachment : attachments) {
+                AttachmentImpl attImpl = (AttachmentImpl) attachment;
+                attImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
+                attImpl.setTaskId(task.getId());
+                attImpl.setCreated(now);
+                attImpl.setModified(now);
+                attachmentMapper.insert(attImpl);
+            }
+        }
+
         // insert ObjectReference if needed. Comment this out for the scope of tsk-123
         // if (task.getPrimaryObjRef() != null) {
         // ObjectReference objectReference = this.objectReferenceMapper.findByObjectReference(task.getPrimaryObjRef());
@@ -397,6 +416,11 @@ public class TaskServiceImpl implements TaskService {
         return new TaskImpl();
     }
 
+    @Override
+    public Attachment newAttachment() {
+        return new AttachmentImpl();
+    }
+
     static void setPrimaryObjRef(TaskImpl task) {
         ObjectReference objRef = new ObjectReference();
         objRef.setCompany(task.getPorCompany());
@@ -407,27 +431,46 @@ public class TaskServiceImpl implements TaskService {
         task.setPrimaryObjRef(objRef);
     }
 
-    private void validatePrimaryObjectReference(TaskImpl task) throws InvalidArgumentException {
+    private void validatePrimaryObjectReference(ObjectReference primObjRef, String objName)
+        throws InvalidArgumentException {
         // check that all values in the primary ObjectReference are set correctly
-        ObjectReference primObjRef = task.getPrimaryObjRef();
         if (primObjRef == null) {
-            throw new InvalidArgumentException("primary ObjectReference of task must not be null");
+            throw new InvalidArgumentException("primary ObjectReference of " + objName + " must not be null");
         } else if (primObjRef.getCompany() == null || primObjRef.getCompany().length() == 0) {
-            throw new InvalidArgumentException("Company of primary ObjectReference of task must not be empty");
+            throw new InvalidArgumentException(
+                "Company of primary ObjectReference of " + objName + " must not be empty");
         } else if (primObjRef.getSystem() == null || primObjRef.getSystem().length() == 0) {
-            throw new InvalidArgumentException("System of primary ObjectReference of task must not be empty");
+            throw new InvalidArgumentException(
+                "System of primary ObjectReference of " + objName + " must not be empty");
         } else if (primObjRef.getSystemInstance() == null || primObjRef.getSystemInstance().length() == 0) {
-            throw new InvalidArgumentException("SystemInstance of primary ObjectReference of task must not be empty");
+            throw new InvalidArgumentException(
+                "SystemInstance of primary ObjectReference of " + objName + " must not be empty");
         } else if (primObjRef.getType() == null || primObjRef.getType().length() == 0) {
-            throw new InvalidArgumentException("Type of primary ObjectReference of task must not be empty");
+            throw new InvalidArgumentException("Type of primary ObjectReference of " + objName + " must not be empty");
         } else if (primObjRef.getValue() == null || primObjRef.getValue().length() == 0) {
-            throw new InvalidArgumentException("Value of primary ObjectReference of task must not be empty");
+            throw new InvalidArgumentException("Value of primary ObjectReference of " + objName + " must not be empty");
         }
+    }
+
+    private void validateAttachments(TaskImpl task) throws InvalidArgumentException {
+        List<Attachment> attachments = task.getAttachments();
+        if (attachments == null || attachments.size() == 0) {
+            return;
+        }
+
+        for (Attachment attachment : attachments) {
+            ObjectReference objRef = attachment.getObjectReference();
+            validatePrimaryObjectReference(objRef, "Attachment");
+            if (attachment.getClassification() == null) {
+                throw new InvalidArgumentException("Classification of attachment " + attachment + " must not be null");
+            }
+        }
+
     }
 
     private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
         throws InvalidArgumentException, ConcurrencyException {
-        validatePrimaryObjectReference(newTaskImpl);
+        validatePrimaryObjectReference(newTaskImpl.getPrimaryObjRef(), "Task");
         if (oldTaskImpl.getModified() != null && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
             || oldTaskImpl.getClaimed() != null && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
             || oldTaskImpl.getState() != null && !oldTaskImpl.getState().equals(newTaskImpl.getState())) {
