@@ -193,9 +193,16 @@ public interface TaskService {
     /**
      * Returns a not persisted instance of {@link Task}.
      *
-     * @return task - with default values
+     * @return an empty new Task
      */
     Task newTask();
+
+    /**
+     * Returns a not persisted instance of {@link Attachment}.
+     *
+     * @return an empty new Attachment
+     */
+    Attachment newAttachment();
 
     /**
      * Update a task.

@@ -1,9 +1,12 @@
 package pro.taskana.impl;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import pro.taskana.Attachment;
 import pro.taskana.Classification;
 import pro.taskana.Task;
 import pro.taskana.model.ObjectReference;
@@ -40,6 +43,7 @@ public class TaskImpl implements Task {
     private String porSystemInstance;   // auxiliary field needed to avoid 2nd query for primaryObjRef in TaskMapper
     private String porType;             // auxiliary field needed to avoid 2nd query for primaryObjRef in TaskMapper
     private String porValue;            // auxiliary field needed to avoid 2nd query for primaryObjRef in TaskMapper
+    private List<Attachment> attachments;
     private String custom1;
     private String custom2;
     private String custom3;
@@ -341,6 +345,23 @@ public class TaskImpl implements Task {
         this.custom10 = custom10;
     }
 
+    @Override
+    public void addAttachment(Attachment attachment) {
+        if (attachments == null) {
+            attachments = new ArrayList<Attachment>();
+        }
+        attachments.add(attachment);
+    }
+
+    @Override
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
     public String getPorCompany() {
         return porCompany;
     }
@@ -434,6 +455,8 @@ public class TaskImpl implements Task {
         builder.append(porType);
         builder.append(", porValue=");
         builder.append(porValue);
+        builder.append(", attachments=");
+        builder.append(attachments);
         builder.append(", custom1=");
         builder.append(custom1);
         builder.append(", custom2=");

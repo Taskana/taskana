@@ -74,39 +74,39 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         try {
             updatedTask = taskService.updateTask(task);
         } catch (InvalidArgumentException ex) {
-            assertEquals("primary ObjectReference of task must not be null", ex.getMessage());
+            assertEquals("primary ObjectReference of Task must not be null", ex.getMessage());
         }
 
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
         try {
             updatedTask = taskService.updateTask(task);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Value of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("Value of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
 
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
         try {
             updatedTask = taskService.updateTask(task);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Type of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("Type of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
         try {
             updatedTask = taskService.updateTask(task);
         } catch (InvalidArgumentException ex) {
-            assertEquals("SystemInstance of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("SystemInstance of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
         try {
             updatedTask = taskService.updateTask(task);
         } catch (InvalidArgumentException ex) {
-            assertEquals("System of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("System of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
         task.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         try {
             updatedTask = taskService.updateTask(task);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Company of primary ObjectReference of task must not be empty", ex.getMessage());
+            assertEquals("Company of primary ObjectReference of Task must not be empty", ex.getMessage());
         }
     }
 

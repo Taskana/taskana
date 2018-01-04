@@ -1,6 +1,7 @@
 package acceptance;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,10 +9,12 @@ import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
 
+import pro.taskana.Attachment;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
@@ -63,4 +66,25 @@ public abstract class AbstractAccTest {
         return properties;
     }
 
+    protected Attachment createAttachment(String classificationKey, ObjectReference objRef,
+        String channel, String receivedDate, Map<String, Object> customAttributes)
+        throws ClassificationNotFoundException {
+        Attachment attachment = taskanaEngine.getTaskService().newAttachment();
+        attachment.setClassification(
+            taskanaEngine.getClassificationService().getClassification(classificationKey, "DOMAIN_A"));
+        attachment.setObjectReference(objRef);
+        attachment.setChannel(channel);
+        Timestamp receivedTimestamp = null;
+        if (receivedDate != null && receivedDate.length() < 11) {
+            // contains only the date, not the time
+            java.sql.Date date = java.sql.Date.valueOf(receivedDate);
+            receivedTimestamp = new Timestamp(date.getTime());
+        } else {
+            receivedTimestamp = Timestamp.valueOf(receivedDate);
+        }
+        attachment.setReceived(receivedTimestamp);
+        attachment.setCustomAttributes(customAttributes);
+
+        return attachment;
+    }
 }
