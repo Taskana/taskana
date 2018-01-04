@@ -276,10 +276,10 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             workbasketService.checkAuthorization(workbasketKey, WorkbasketAuthorization.READ);
             List<TaskImpl> tasks = taskMapper.findTasksByWorkbasketIdAndState(workbasketKey, taskState);
-            for (TaskImpl taskImpl : tasks) {
-                setPrimaryObjRef(taskImpl);
-                results.add(taskImpl);
-            }
+            tasks.stream().forEach(t -> {
+                TaskServiceImpl.setPrimaryObjRef(t);
+                results.add(t);
+            });
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -304,8 +304,6 @@ public class TaskServiceImpl implements TaskService {
             oldTaskImpl = (TaskImpl) getTaskById(newTaskImpl.getId());
             standardUpdateActions(oldTaskImpl, newTaskImpl);
 
-            Timestamp now = new Timestamp(System.currentTimeMillis());
-            newTaskImpl.setModified(now);
             taskMapper.update(newTaskImpl);
             LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
 
@@ -440,7 +438,7 @@ public class TaskServiceImpl implements TaskService {
             newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
         }
 
-        // if no business process id is provided, a unique id is created.
+        // if no business process id is provided, use the id of the old task.
         if (newTaskImpl.getBusinessProcessId() == null) {
             newTaskImpl.setBusinessProcessId(oldTaskImpl.getBusinessProcessId());
         }
@@ -466,7 +464,8 @@ public class TaskServiceImpl implements TaskService {
                 newTaskImpl.setPriority(classification.getPriority());
             }
         }
-
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        newTaskImpl.setModified(now);
     }
 
 }

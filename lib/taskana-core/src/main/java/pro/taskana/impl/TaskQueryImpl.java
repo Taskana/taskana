@@ -186,10 +186,10 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
             List<TaskImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
-            for (TaskImpl taskImpl : tasks) {
-                TaskServiceImpl.setPrimaryObjRef(taskImpl);
-                result.add(taskImpl);
-            }
+            tasks.stream().forEach(t -> {
+                TaskServiceImpl.setPrimaryObjRef(t);
+                result.add(t);
+            });
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -210,10 +210,10 @@ public class TaskQueryImpl implements TaskQuery {
             checkAuthorization();
             RowBounds rowBounds = new RowBounds(offset, limit);
             List<TaskImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
-            for (TaskImpl taskImpl : tasks) {
-                TaskServiceImpl.setPrimaryObjRef(taskImpl);
-                result.add(taskImpl);
-            }
+            tasks.stream().forEach(t -> {
+                TaskServiceImpl.setPrimaryObjRef(t);
+                result.add(t);
+            });
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
