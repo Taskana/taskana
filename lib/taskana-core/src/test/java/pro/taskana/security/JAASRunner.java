@@ -57,17 +57,24 @@ public class JAASRunner extends BlockJUnit4ClassRunner {
                             try {
                                 base.evaluate();
                             } catch (Throwable e) {
-                                if (e instanceof Exception) {
-                                    throw (Exception) e;
-                                } else {
-                                    throw new Exception(e);
-                                }
+                                throw new Exception(e);
                             }
                             return null;
                         }
                     });
                 } catch (PrivilegedActionException e) {
-                    throw (Exception) e.getCause();
+                    Throwable cause = e.getCause();
+                    Throwable nestedCause = null;
+                    if (cause != null) {
+                        nestedCause = cause.getCause();
+                    }
+                    if (nestedCause != null) {
+                        throw nestedCause;
+                    } else if (cause != null) {
+                        throw cause;
+                    } else {
+                        throw e;
+                    }
                 }
             }
         };
