@@ -13,6 +13,7 @@ import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.SystemException;
 
 /**
  * Acceptance test for all "query tasks by object reference" scenarios.
@@ -25,7 +26,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
     @Test
     public void testQueryTasksByExcactValueOfObjectReference()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<Task> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueIn("Value1", "Value2")
@@ -35,7 +36,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
     @Test
     public void testQueryTasksByExcactValueAndTypeOfObjectReference()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<Task> results = taskService.createTaskQuery()
             .primaryObjectReferenceTypeIn("Type3")
@@ -46,7 +47,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
     @Test
     public void testQueryTasksByValueLikeOfObjectReference()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<Task> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueLike("Val%")

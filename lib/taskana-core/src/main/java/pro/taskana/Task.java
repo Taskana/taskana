@@ -121,12 +121,13 @@ public interface Task {
     Classification getClassification();
 
     /**
-     * Sets the {@link Classification} to specify this kind of task.
+     * Sets the Classification key that - together with the Domain from this task's work basket - selects the
+     * appropriate {@link Classification} for this task.
      *
-     * @param classification
-     *            the classification of the task
+     * @param classificationKey
+     *            the classification key for the task
      */
-    void setClassification(Classification classification);
+    void setClassificationKey(String classificationKey);
 
     /**
      * Returns the key of the Workbasket where the task is stored in.

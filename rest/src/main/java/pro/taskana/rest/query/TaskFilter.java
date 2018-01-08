@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
-import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
@@ -34,13 +33,7 @@ public class TaskFilter {
     private static final String IS_TRANSFERRED = "isTransferred";
     private static final String IS_READ = "isRead";
 
-    private static final String CLASSIFICATION_PARENT_KEY = CLASSIFICATION + DOT + "parentClassificationKey";
-    private static final String CLASSIFICATION_CATEGORY = CLASSIFICATION + DOT + "category";
-    private static final String CLASSIFICATION_TYPE = CLASSIFICATION + DOT + "type";
-    private static final String CLASSIFICATION_NAME = CLASSIFICATION + DOT + "name";
-    private static final String CLASSIFICATION_DESCRIPTION = CLASSIFICATION + DOT + "description";
-    private static final String CLASSIFICATION_PRIORITY = CLASSIFICATION + DOT + "priority";
-    private static final String CLASSIFICATION_SERVICE_LEVEL = CLASSIFICATION + DOT + "serviceLevel";
+    private static final String CLASSIFICATION_KEY = CLASSIFICATION + DOT + "key";
 
     private static final String POR_VALUE = POR + DOT + "value";
     private static final String POR_TYPE = POR + DOT + "type";
@@ -84,41 +77,13 @@ public class TaskFilter {
             TaskState[] states = extractStates(params);
             taskQuery.state(states);
         }
-        // classification
-        if (params.keySet().stream().filter(s -> s.startsWith(CLASSIFICATION)).toArray().length > 0) {
-            ClassificationQuery classificationQuery = classificationService.createClassificationQuery();
-            if (params.containsKey(CLASSIFICATION_PARENT_KEY)) {
-                String[] parentClassifications = extractCommaSeperatedFields(params.get(CLASSIFICATION_PARENT_KEY));
-                classificationQuery.parentClassificationKey(parentClassifications);
-            }
-            if (params.containsKey(CLASSIFICATION_CATEGORY)) {
-                String[] categories = extractCommaSeperatedFields(params.get(CLASSIFICATION_CATEGORY));
-                classificationQuery.category(categories);
-            }
-            if (params.containsKey(CLASSIFICATION_TYPE)) {
-                String[] types = extractCommaSeperatedFields(params.get(CLASSIFICATION_TYPE));
-                classificationQuery.type(types);
-            }
-            if (params.containsKey(CLASSIFICATION_NAME)) {
-                String[] names = extractCommaSeperatedFields(params.get(CLASSIFICATION_NAME));
-                classificationQuery.name(names);
-            }
-            if (params.containsKey(CLASSIFICATION_DESCRIPTION)) {
-                classificationQuery.descriptionLike(params.get(CLASSIFICATION_DESCRIPTION).get(0));
-            }
-            if (params.containsKey(CLASSIFICATION_PRIORITY)) {
-                String[] prioritesInString = extractCommaSeperatedFields(params.get(CLASSIFICATION_PRIORITY));
-                int[] priorites = extractPriorities(prioritesInString);
-                classificationQuery.priority(priorites);
-            }
-            if (params.containsKey(CLASSIFICATION_SERVICE_LEVEL)) {
-                String[] serviceLevels = extractCommaSeperatedFields(params.get(CLASSIFICATION_SERVICE_LEVEL));
-                classificationQuery.serviceLevel(serviceLevels);
-            }
-            taskQuery.classification(classificationQuery);
+        if (params.containsKey(CLASSIFICATION_KEY)) {
+            String[] classificationKeys = extractCommaSeperatedFields(params.get(CLASSIFICATION_KEY));
+            taskQuery.classificationKeyIn(classificationKeys);
         }
         if (params.containsKey(WORKBASKET_KEY)) {
             String[] workbaskets = extractCommaSeperatedFields(params.get(WORKBASKET_KEY));
+            taskQuery.workbasketKeyIn(workbaskets);
         }
         if (params.containsKey(OWNER)) {
             String[] owners = extractCommaSeperatedFields(params.get(OWNER));

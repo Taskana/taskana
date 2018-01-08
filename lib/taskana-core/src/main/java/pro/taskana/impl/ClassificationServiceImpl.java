@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
+import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -260,7 +261,8 @@ public class ClassificationServiceImpl implements ClassificationService {
     @Override
     public Classification getClassification(String key, String domain) throws ClassificationNotFoundException {
         if (key == null) {
-            throw new ClassificationNotFoundException(null);
+            throw new ClassificationNotFoundException(
+                "Classification for key " + key + " and domain " + domain + " was not found.");
         }
         LOGGER.debug("entry to getClassification(key = {}, domain = {})", key, domain);
         Classification result = null;
@@ -270,7 +272,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             if (result == null) {
                 result = classificationMapper.findByKeyAndDomain(key, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
                 if (result == null) {
-                    throw new ClassificationNotFoundException(key);
+                    throw new ClassificationNotFoundException("Classification for key " + key + " was not found");
                 }
             }
             return result;
@@ -304,4 +306,28 @@ public class ClassificationServiceImpl implements ClassificationService {
         }
         return isExisting;
     }
+
+    public Classification getClassificationByTask(Task task) throws ClassificationNotFoundException {
+        if (task.getId() == null) {
+            throw new ClassificationNotFoundException("Classification for task with id null was not found.");
+        }
+        LOGGER.debug("entry to getClassificationByTask(taskId = {})", task.getId());
+        TaskImpl taskImpl = (TaskImpl) task;
+        String classificationKey = taskImpl.getClassificationKey();
+        Classification result = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            result = classificationMapper.findByTask(classificationKey, task.getWorkbasketKey(),
+                CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            if (result == null) {
+                throw new ClassificationNotFoundException(
+                    "Classification for task with id " + task.getId() + " was not found.");
+            }
+            return result;
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getClassification(). Returning result {} ", result);
+        }
+    }
+
 }

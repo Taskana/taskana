@@ -48,10 +48,11 @@ public class TaskanaRestTest {
         taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
         Classification classification = classificationService.newClassification();
         classification.setKey("TEST");
+        classification.setDomain("cdiDomain");
         taskanaEjb.getClassificationService().createClassification(classification);
 
         Task task = taskanaEjb.getTaskService().newTask();
-        task.setClassification(classification);
+        task.setClassificationKey(classification.getKey());
         task.setWorkbasketKey(workbasket.getKey());
         ObjectReference objRef = new ObjectReference();
         objRef.setCompany("aCompany");
@@ -78,7 +79,7 @@ public class TaskanaRestTest {
     @DELETE
     @Path("{id}")
     public void completeTask(@PathParam("id") String id)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException {
         logger.info(id);
         taskanaEjb.getTaskService().completeTask(id, true);
     }

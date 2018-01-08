@@ -8,12 +8,14 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.ClassificationQuery;
+import pro.taskana.Classification;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -26,11 +28,12 @@ public class TaskQueryImpl implements TaskQuery {
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryTasks";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
+    private ClassificationServiceImpl classificationService;
     private String[] name;
     private String description;
     private int[] priority;
     private TaskState[] states;
-    private ClassificationQuery classificationQuery;
+    private String[] classificationKey;
     private String[] workbasketKey;
     private String[] domain;
     private String[] owner;
@@ -50,6 +53,7 @@ public class TaskQueryImpl implements TaskQuery {
 
     public TaskQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.classificationService = (ClassificationServiceImpl) taskanaEngineImpl.getClassificationService();
     }
 
     @Override
@@ -77,8 +81,8 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskQuery classification(ClassificationQuery classificationQuery) {
-        this.classificationQuery = classificationQuery;
+    public TaskQuery classificationKeyIn(String... classificationKey) {
+        this.classificationKey = classificationKey;
         return this;
     }
 
@@ -184,17 +188,24 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public List<Task> list() throws NotAuthorizedException {
+    public List<Task> list() throws NotAuthorizedException, SystemException {
         LOGGER.debug("entry to list(), this = {}", this);
         List<Task> result = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
             List<TaskImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
-            tasks.stream().forEach(t -> {
-                TaskServiceImpl.setPrimaryObjRef(t);
-                result.add(t);
-            });
+            for (TaskImpl taskImpl : tasks) {
+                TaskServiceImpl.setPrimaryObjRef(taskImpl);
+                try {
+                    Classification classification = this.classificationService.getClassificationByTask(taskImpl);
+                    taskImpl.setClassification(classification);
+                } catch (ClassificationNotFoundException e) {
+                    throw new SystemException(
+                        this.toString() + " failed to find a classification for task " + taskImpl);
+                }
+                result.add(taskImpl);
+            }
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -207,7 +218,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public List<Task> list(int offset, int limit) throws NotAuthorizedException {
+    public List<Task> list(int offset, int limit) throws NotAuthorizedException, SystemException {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<Task> result = new ArrayList<>();
         try {
@@ -215,10 +226,17 @@ public class TaskQueryImpl implements TaskQuery {
             checkAuthorization();
             RowBounds rowBounds = new RowBounds(offset, limit);
             List<TaskImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
-            tasks.stream().forEach(t -> {
-                TaskServiceImpl.setPrimaryObjRef(t);
-                result.add(t);
-            });
+            for (TaskImpl taskImpl : tasks) {
+                TaskServiceImpl.setPrimaryObjRef(taskImpl);
+                try {
+                    Classification classification = this.classificationService.getClassificationByTask(taskImpl);
+                    taskImpl.setClassification(classification);
+                } catch (ClassificationNotFoundException e) {
+                    throw new SystemException(
+                        this.toString() + " failed to find a classification for task " + taskImpl);
+                }
+                result.add(taskImpl);
+            }
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -231,18 +249,25 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskImpl single() throws NotAuthorizedException {
+    public TaskImpl single() throws NotAuthorizedException, SystemException {
         LOGGER.debug("entry to single(), this = {}", this);
-        TaskImpl result = null;
+        TaskImpl taskImpl = null;
         try {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
-            result = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
-            TaskServiceImpl.setPrimaryObjRef(result);
-            return result;
+            taskImpl = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            TaskServiceImpl.setPrimaryObjRef(taskImpl);
+            try {
+                Classification classification = this.classificationService.getClassificationByTask(taskImpl);
+                taskImpl.setClassification(classification);
+            } catch (ClassificationNotFoundException e) {
+                throw new SystemException(
+                    this.toString() + " failed to find a classification for task " + taskImpl);
+            }
+            return taskImpl;
         } finally {
             taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from single(). Returning result {} ", result);
+            LOGGER.debug("exit from single(). Returning result {} ", taskImpl);
         }
     }
 
@@ -294,12 +319,12 @@ public class TaskQueryImpl implements TaskQuery {
         this.states = states;
     }
 
-    public ClassificationQuery getClassificationQuery() {
-        return classificationQuery;
+    public String[] getClassificationKey() {
+        return classificationKey;
     }
 
-    public void setClassificationQuery(ClassificationQuery classificationQuery) {
-        this.classificationQuery = classificationQuery;
+    public void setClassificationKey(String[] classificationKey) {
+        this.classificationKey = classificationKey;
     }
 
     public String[] getWorkbasketKey() {
@@ -443,8 +468,8 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(priority));
         builder.append(", states=");
         builder.append(Arrays.toString(states));
-        builder.append(", classificationQuery=");
-        builder.append(classificationQuery);
+        builder.append(", classificationKey=");
+        builder.append(Arrays.toString(classificationKey));
         builder.append(", workbasketKey=");
         builder.append(Arrays.toString(workbasketKey));
         builder.append(", owner=");
