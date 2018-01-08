@@ -86,8 +86,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
-        // assertNotNull(createdTask.getAttachments());
-        // assertEquals(1, createdTask.getAttachments().size());
+        assertNotNull(createdTask.getAttachments());
+        assertEquals(1, createdTask.getAttachments().size());
     }
 
     @WithAccessId(
@@ -114,9 +114,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
-        // assertNotNull(createdTask.getAttachments());
-        // assertEquals(2, createdTask.getAttachments().size());
-        // further assertions
+        assertNotNull(createdTask.getAttachments());
+        assertEquals(2, createdTask.getAttachments().size());
     }
 
     @WithAccessId(
@@ -136,7 +135,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("primary ObjectReference of Attachment must not be null", ex.getMessage());
+            // nothing to do
         }
 
         newTask = makeNewTask(taskService);
@@ -146,7 +145,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Value of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+            // nothing to do
         }
 
         newTask = makeNewTask(taskService);
@@ -157,7 +156,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Type of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+            // nothing to do
         }
         newTask = makeNewTask(taskService);
         newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
@@ -167,7 +166,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("SystemInstance of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+            // nothing to do
         }
         newTask = makeNewTask(taskService);
         newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
@@ -177,7 +176,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("System of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+            // nothing to do
         }
         newTask = makeNewTask(taskService);
         newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
@@ -187,7 +186,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Company of primary ObjectReference of Attachment must not be empty", ex.getMessage());
+            // nothing to do
         }
 
     }
@@ -311,7 +310,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("primary ObjectReference of Task must not be null", ex.getMessage());
+            // nothing to do
         }
 
         // Exception
@@ -323,7 +322,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Value of primary ObjectReference of Task must not be empty", ex.getMessage());
+            // nothing to do
         }
 
         // Exception
@@ -336,7 +335,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Type of primary ObjectReference of Task must not be empty", ex.getMessage());
+            // nothing to do
         }
 
         // Exception
@@ -349,7 +348,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("SystemInstance of primary ObjectReference of Task must not be empty", ex.getMessage());
+            // nothing to do
         }
 
         // Exception
@@ -362,7 +361,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("System of primary ObjectReference of Task must not be empty", ex.getMessage());
+            // nothing to do
         }
 
         // Exception
@@ -375,7 +374,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         try {
             createdTask = taskService.createTask(newTask);
         } catch (InvalidArgumentException ex) {
-            assertEquals("Company of primary ObjectReference of Task must not be empty", ex.getMessage());
+            // nothing to do
         }
 
         // Exception

@@ -46,7 +46,7 @@ public class TaskServiceImpl implements TaskService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
     private static final String ID_PREFIX_OBJECT_REFERENCE = "ORI";
-    private static final String ID_PREFIX_ATTACHMENT = "ATT";
+    private static final String ID_PREFIX_ATTACHMENT = "TAI";
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
     private TaskanaEngine taskanaEngine;
@@ -177,7 +177,7 @@ public class TaskServiceImpl implements TaskService {
                 this.classificationService.getClassification(classification.getKey(),
                     classification.getDomain());
 
-                validatePrimaryObjectReference(task.getPrimaryObjRef(), "Task");
+                validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
                 validateAttachments(task);
                 standardSettings(task);
                 this.taskMapper.insert(task);
@@ -431,24 +431,24 @@ public class TaskServiceImpl implements TaskService {
         task.setPrimaryObjRef(objRef);
     }
 
-    private void validatePrimaryObjectReference(ObjectReference primObjRef, String objName)
+    private void validateObjectReference(ObjectReference objRef, String objRefType, String objName)
         throws InvalidArgumentException {
-        // check that all values in the primary ObjectReference are set correctly
-        if (primObjRef == null) {
-            throw new InvalidArgumentException("primary ObjectReference of " + objName + " must not be null");
-        } else if (primObjRef.getCompany() == null || primObjRef.getCompany().length() == 0) {
+        // check that all values in the ObjectReference are set correctly
+        if (objRef == null) {
+            throw new InvalidArgumentException(objRefType + " of " + objName + " must not be null");
+        } else if (objRef.getCompany() == null || objRef.getCompany().length() == 0) {
             throw new InvalidArgumentException(
-                "Company of primary ObjectReference of " + objName + " must not be empty");
-        } else if (primObjRef.getSystem() == null || primObjRef.getSystem().length() == 0) {
+                "Company of " + objRefType + " of " + objName + " must not be empty");
+        } else if (objRef.getSystem() == null || objRef.getSystem().length() == 0) {
             throw new InvalidArgumentException(
-                "System of primary ObjectReference of " + objName + " must not be empty");
-        } else if (primObjRef.getSystemInstance() == null || primObjRef.getSystemInstance().length() == 0) {
+                "System of " + objRefType + " of " + objName + " must not be empty");
+        } else if (objRef.getSystemInstance() == null || objRef.getSystemInstance().length() == 0) {
             throw new InvalidArgumentException(
-                "SystemInstance of primary ObjectReference of " + objName + " must not be empty");
-        } else if (primObjRef.getType() == null || primObjRef.getType().length() == 0) {
-            throw new InvalidArgumentException("Type of primary ObjectReference of " + objName + " must not be empty");
-        } else if (primObjRef.getValue() == null || primObjRef.getValue().length() == 0) {
-            throw new InvalidArgumentException("Value of primary ObjectReference of " + objName + " must not be empty");
+                "SystemInstance of " + objRefType + " of " + objName + " must not be empty");
+        } else if (objRef.getType() == null || objRef.getType().length() == 0) {
+            throw new InvalidArgumentException("Type of " + objRefType + " of " + objName + " must not be empty");
+        } else if (objRef.getValue() == null || objRef.getValue().length() == 0) {
+            throw new InvalidArgumentException("Value of" + objRefType + " of " + objName + " must not be empty");
         }
     }
 
@@ -460,7 +460,7 @@ public class TaskServiceImpl implements TaskService {
 
         for (Attachment attachment : attachments) {
             ObjectReference objRef = attachment.getObjectReference();
-            validatePrimaryObjectReference(objRef, "Attachment");
+            validateObjectReference(objRef, "ObjectReference", "Attachment");
             if (attachment.getClassification() == null) {
                 throw new InvalidArgumentException("Classification of attachment " + attachment + " must not be null");
             }
@@ -470,7 +470,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
         throws InvalidArgumentException, ConcurrencyException {
-        validatePrimaryObjectReference(newTaskImpl.getPrimaryObjRef(), "Task");
+        validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
         if (oldTaskImpl.getModified() != null && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
             || oldTaskImpl.getClaimed() != null && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
             || oldTaskImpl.getState() != null && !oldTaskImpl.getState().equals(newTaskImpl.getState())) {
