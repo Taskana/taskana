@@ -16,7 +16,6 @@ import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.Classification;
-import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.model.DueWorkbasketCounter;
@@ -48,9 +47,7 @@ public interface TaskMapper {
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
-        @Result(property = "classification", column = "CLASSIFICATION_KEY", javaType = ClassificationImpl.class,
-            one = @One(select = CLASSIFICATION_FINDBYID)),
-        @Result(property = "domain", column = "DOMAIN"),
+        @Result(property = "classificationKey", column = "CLASSIFICATION_KEY"),
         @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
         @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
         @Result(property = "owner", column = "OWNER"),
@@ -141,7 +138,7 @@ public interface TaskMapper {
         + "WORKBASKET.NAME AS workName, CLASSIFICATION.NAME AS classificationName "
         + "FROM TASK "
         + "LEFT JOIN WORKBASKET ON WORKBASKET.KEY = TASK.WORKBASKET_KEY "
-        + "LEFT JOIN CLASSIFICATION ON CLASSIFICATION.KEY = TASK.CLASSIFICATION_KEY "
+        + "LEFT JOIN CLASSIFICATION ON CLASSIFICATION.KEY = TASK.CLASSIFICATION_KEY AND CLASSIFICATION.DOMAIN = WORKBASKET.DOMAIN "
         + "WHERE TASK.WORKBASKET_KEY = #{workbasketKey}")
     @Results({
         @Result(property = "taskId", column = "taskId"),

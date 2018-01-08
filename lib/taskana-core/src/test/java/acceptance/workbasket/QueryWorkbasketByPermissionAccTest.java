@@ -14,6 +14,7 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -41,7 +42,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
     @Test
     public void testQueryAllTransferTargetsForUserAndGroup()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<Workbasket> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePersmission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
@@ -51,10 +52,10 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupFromSubject()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<Workbasket> results = workbasketService.createWorkbasketQuery()
             .callerHasPermission(WorkbasketAuthorization.APPEND)

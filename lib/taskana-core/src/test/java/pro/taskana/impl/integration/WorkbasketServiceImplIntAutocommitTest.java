@@ -257,7 +257,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         }
     }
 
-    @WithAccessId(userName = "Bernd", groupNames = { "group1", "group2", "group3", "group4" })
+    @WithAccessId(userName = "Bernd", groupNames = {"group1", "group2", "group3", "group4"})
     @Test
     public void testWorkbasketQuery()
         throws NotAuthorizedException, InvalidArgumentException, InvalidWorkbasketException,

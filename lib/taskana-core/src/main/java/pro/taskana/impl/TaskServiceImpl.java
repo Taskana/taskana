@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.Attachment;
 import pro.taskana.Classification;
-import pro.taskana.ClassificationService;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
@@ -52,7 +51,7 @@ public class TaskServiceImpl implements TaskService {
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workbasketService;
-    private ClassificationService classificationService;
+    private ClassificationServiceImpl classificationService;
     private TaskMapper taskMapper;
     private ObjectReferenceMapper objectReferenceMapper;
     private AttachmentMapper attachmentMapper;
@@ -65,18 +64,19 @@ public class TaskServiceImpl implements TaskService {
         this.taskMapper = taskMapper;
         this.objectReferenceMapper = objectReferenceMapper;
         this.workbasketService = taskanaEngineImpl.getWorkbasketService();
-        this.classificationService = taskanaEngineImpl.getClassificationService();
         this.attachmentMapper = attachmentMapper;
+        this.classificationService = (ClassificationServiceImpl) taskanaEngineImpl.getClassificationService();
     }
 
     @Override
-    public Task claim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+    public Task claim(String taskId)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException {
         return claim(taskId, false);
     }
 
     @Override
     public Task claim(String taskId, boolean forceClaim)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException {
         String userId = CurrentUserContext.getUserid();
         LOGGER.debug("entry to claim(id = {}, forceClaim = {}, userId = {})", taskId, forceClaim, userId);
         TaskImpl task = null;
@@ -112,13 +112,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task completeTask(String taskId) throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
+    public Task completeTask(String taskId)
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException {
         return completeTask(taskId, false);
     }
 
     @Override
     public Task completeTask(String taskId, boolean isForced)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException {
         LOGGER.debug("entry to completeTask(id = {}, isForced {})", taskId, isForced);
         TaskImpl task = null;
         try {
@@ -170,13 +171,13 @@ public class TaskServiceImpl implements TaskService {
                 LOGGER.debug("Task {} cannot be be found, so it can be created.", taskToCreate.getId());
                 Workbasket workbasket = workbasketService.getWorkbasketByKey(task.getWorkbasketKey());
                 workbasketService.checkAuthorization(task.getWorkbasketKey(), WorkbasketAuthorization.APPEND);
-                Classification classification = task.getClassification();
-                if (classification == null) {
-                    throw new ClassificationNotFoundException(null);
+                String classificationKey = task.getClassificationKey();
+                if (classificationKey == null || classificationKey.length() == 0) {
+                    throw new InvalidArgumentException("classificationKey of task must not be empty");
                 }
-                this.classificationService.getClassification(classification.getKey(),
-                    classification.getDomain());
-
+                Classification classification = this.classificationService.getClassification(classificationKey,
+                    workbasket.getDomain());
+                task.setClassification(classification);
                 validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
                 validateAttachments(task);
                 task.setDomain(workbasket.getDomain());
@@ -192,17 +193,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTask(String id) throws TaskNotFoundException {
+    public Task getTask(String id) throws TaskNotFoundException, ClassificationNotFoundException {
         LOGGER.debug("entry to getTaskById(id = {})", id);
-        Task result = null;
+        TaskImpl result = null;
         try {
             taskanaEngineImpl.openConnection();
             result = taskMapper.findById(id);
             if (result != null) {
-                setPrimaryObjRef((TaskImpl) result);
+                setPrimaryObjRef(result);
                 List<Attachment> attachments = setAttachmentObjRef(
                     attachmentMapper.findAttachmentsByTaskId(result.getId()));
-                ((TaskImpl) result).setAttachments(attachments);
+                result.setAttachments(attachments);
+                Classification classification = this.classificationService.getClassificationByTask(result);
+                result.setClassification(classification);
                 return result;
             } else {
                 LOGGER.warn("Method getTaskById() didn't find task with id {}. Throwing TaskNotFoundException", id);
@@ -216,7 +219,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task transfer(String taskId, String destinationWorkbasketKey)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        ClassificationNotFoundException {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketKey = {})", taskId, destinationWorkbasketKey);
         Task result = null;
         try {
@@ -254,7 +258,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException {
+    public Task setTaskRead(String taskId, boolean isRead)
+        throws TaskNotFoundException, ClassificationNotFoundException {
         LOGGER.debug("entry to setTaskRead(taskId = {}, isRead = {})", taskId, isRead);
         Task result = null;
         try {
@@ -305,7 +310,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task updateTask(Task task)
-        throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException {
+        throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException, WorkbasketNotFoundException,
+        ClassificationNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         String userId = CurrentUserContext.getUserid();
         LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
         TaskImpl newTaskImpl = (TaskImpl) task;
@@ -490,12 +496,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
-        throws InvalidArgumentException, ConcurrencyException {
+        throws InvalidArgumentException, ConcurrencyException, WorkbasketNotFoundException, InvalidWorkbasketException,
+        ClassificationNotFoundException, NotAuthorizedException {
         validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
         if (oldTaskImpl.getModified() != null && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
             || oldTaskImpl.getClaimed() != null && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
             || oldTaskImpl.getState() != null && !oldTaskImpl.getState().equals(newTaskImpl.getState())) {
             throw new ConcurrencyException("The task has already been updated by another user");
+        }
+
+        String newWorkbasketKey = newTaskImpl.getWorkbasketKey();
+        if (newWorkbasketKey != null && !newWorkbasketKey.equals(oldTaskImpl.getWorkbasketKey())) {
+            throw new InvalidArgumentException("A task's Workbasket cannot be changed via update of the task");
         }
 
         if (newTaskImpl.getPlanned() == null) {
@@ -508,26 +520,39 @@ public class TaskServiceImpl implements TaskService {
         }
 
         // insert Classification specifications if Classification is given.
-        Classification classification = newTaskImpl.getClassification();
-        if (classification != null) {
-            if (classification.getServiceLevel() != null) {
-                Duration serviceLevel = Duration.parse(classification.getServiceLevel());
-                LocalDateTime due = newTaskImpl.getPlanned().toLocalDateTime().plus(serviceLevel);
-                newTaskImpl.setDue(Timestamp.valueOf(due));
-            }
+        Classification oldClassification = oldTaskImpl.getClassification();
+        Classification newClassification = oldClassification;
+        String newClassificationKey = newTaskImpl.getClassificationKey();
 
-            if (newTaskImpl.getName() == null) {
-                newTaskImpl.setName(classification.getName());
-            }
-
-            if (newTaskImpl.getDescription() == null) {
-                newTaskImpl.setDescription(classification.getDescription());
-            }
-
-            if (newTaskImpl.getPriority() == 0) {
-                newTaskImpl.setPriority(classification.getPriority());
-            }
+        if (newClassificationKey != null && !newClassificationKey.equals(oldClassification.getKey())) {
+            Workbasket workbasket = workbasketService.getWorkbasketByKey(newTaskImpl.getWorkbasketKey());
+            // set new classification
+            newClassification = this.classificationService.getClassification(newClassificationKey,
+                workbasket.getDomain());
         }
+
+        newTaskImpl.setClassification(newClassification);
+
+        // if (newClassification != null) {
+        if (newClassification.getServiceLevel() != null) {
+            Duration serviceLevel = Duration.parse(newClassification.getServiceLevel());
+            LocalDateTime due = newTaskImpl.getPlanned().toLocalDateTime().plus(serviceLevel);
+            newTaskImpl.setDue(Timestamp.valueOf(due));
+        }
+
+        if (newTaskImpl.getName() == null) {
+            newTaskImpl.setName(newClassification.getName());
+        }
+
+        if (newTaskImpl.getDescription() == null) {
+            newTaskImpl.setDescription(newClassification.getDescription());
+        }
+
+        if (newTaskImpl.getPriority() == 0) {
+            newTaskImpl.setPriority(newClassification.getPriority());
+        }
+        // }
+
         Timestamp now = new Timestamp(System.currentTimeMillis());
         newTaskImpl.setModified(now);
     }
