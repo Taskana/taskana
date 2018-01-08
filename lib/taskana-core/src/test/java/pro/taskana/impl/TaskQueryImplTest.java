@@ -35,8 +35,12 @@ public class TaskQueryImplTest {
     @Mock
     private SqlSession sqlSession;
 
+    @Mock
+    ClassificationServiceImpl classificationService;
+
     @Before
     public void setup() {
+        when(taskanaEngine.getClassificationService()).thenReturn(classificationService);
         taskQueryImpl = new TaskQueryImpl(taskanaEngine);
     }
 

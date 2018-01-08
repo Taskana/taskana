@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +38,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testCreateSimpleManualTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -47,7 +46,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
         Task createdTask = taskService.createTask(newTask);
@@ -71,7 +70,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testCreateExternalTaskWithAttachment()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -79,7 +78,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
+        newTask.setClassificationKey("L12010");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
         newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
@@ -104,7 +103,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testCreateExternalTaskWithMultipleAttachments()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -112,7 +111,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
+        newTask.setClassificationKey("L12010");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
         newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
@@ -141,7 +140,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfAttachmentIsInvalid()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -213,17 +212,17 @@ public class CreateTaskAccTest extends AbstractAccTest {
     }
 
     private Task makeNewTask(TaskService taskService) throws ClassificationNotFoundException {
-        Task newTask;
-        newTask = taskService.newTask();
+        Task newTask = taskService.newTask();
+        newTask.setClassificationKey("L12010");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("L12010", "DOMAIN_A"));
+        newTask.setClassificationKey("L12010");
         return newTask;
     }
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testUseCustomNameIfSetForNewTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -231,7 +230,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
         newTask.setName("Test Name");
@@ -241,10 +240,9 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals("Test Name", createdTask.getName());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testUseClassificationMetadataFromCorrectDomainForNewTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -252,28 +250,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_B"));
-        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        newTask.setWorkbasketKey("USER_1_1");
-        newTask.setName("Test Name");
-        Task createdTask = taskService.createTask(newTask);
-
-        assertNotNull(createdTask);
-        assertEquals(2, createdTask.getPriority());  // priority is 22 in DOMAIN_B, task is created in DOMAIN_A
-    }
-
-    @Ignore
-    @WithAccessId(
-        userName = "user_1_1",
-        groupNames = { "group_1" })
-    @Test
-    public void testImprovedUseClassificationMetadataFromCorrectDomainForNewTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
-
-        TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask();
-        // newTask.setClassificationKey("T2100");
+        newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
         newTask.setName("Test Name");
@@ -285,7 +262,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test(expected = WorkbasketNotFoundException.class)
     public void testGetExceptionIfWorkbasketDoesNotExist()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -293,7 +270,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("UNKNOWN");
         taskService.createTask(newTask);
@@ -301,7 +278,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testGetExceptionIfAppendIsNotPermitted()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -309,7 +286,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("GPK_KSC");
         taskService.createTask(newTask);
@@ -317,7 +294,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -325,7 +302,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setWorkbasketKey("USER_1_1");
         Task createdTask;
         try {
@@ -337,7 +314,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         // Exception
 
         newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
         try {
@@ -349,7 +326,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         // Exception
 
         newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
 
@@ -362,7 +339,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         // Exception
 
         newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
 
@@ -375,7 +352,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         // Exception
 
         newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
 
@@ -388,7 +365,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         // Exception
 
         newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setWorkbasketKey("USER_1_1");
         newTask.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
@@ -404,7 +381,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testSetDomainFromWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -416,7 +393,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Workbasket workbasket = workbasketService.getWorkbasketByKey("USER_1_1");
 
         Task newTask = taskService.newTask();
-        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
         Task createdTask = taskService.createTask(newTask);

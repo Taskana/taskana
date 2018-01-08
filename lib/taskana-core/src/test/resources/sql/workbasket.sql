@@ -1,8 +1,9 @@
-INSERT INTO WORKBASKET VALUES ('1', 'key1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket1', 'domain1', 'GROUP',     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Peter', '', '', '', '', '', '', '', '' );
-INSERT INTO WORKBASKET VALUES ('2', 'key2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket2', 'domain2', 'CLEARANCE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Susanne', '', '', '', '', '', '', '', '');
-INSERT INTO WORKBASKET VALUES ('3', 'key3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket3', 'domain3', 'TOPIC',     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('1', 'key1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket1', 'DOMAIN_A', 'GROUP',     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Peter', '', '', '', '', '', '', '', '' );
+INSERT INTO WORKBASKET VALUES ('2', 'key2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket2', 'DOMAIN_A', 'CLEARANCE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Susanne', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('3', 'key3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket3', 'DOMAIN_A', 'TOPIC',     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('4', 'key4', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket4', 'DOMAIN_A', 'TOPIC',     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Max', '', '', '', '', '', '', '', '');
 
--- KSC workbaskets 
+-- KSC workbaskets
 INSERT INTO WORKBASKET VALUES ('WBI:100000000000000000000000000000000001', 'GPK_KSC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Gruppenpostkorb KSC', 'DOMAIN_A', 'GROUP', 'Gruppenpostkorb KSC', '', '', '', '', '', '', '', '', '');
 INSERT INTO WORKBASKET VALUES ('WBI:100000000000000000000000000000000002', 'GPK_KSC_1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Gruppenpostkorb KSC 1', 'DOMAIN_A', 'GROUP', 'Gruppenpostkorb KSC 1', '', '', '', '', '', '', '', '', '');
 INSERT INTO WORKBASKET VALUES ('WBI:100000000000000000000000000000000003', 'GPK_KSC_2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Gruppenpostkorb KSC 2', 'DOMAIN_A', 'GROUP', 'Gruppenpostkorb KSC 2', '', '', '', '', '', '', '', '', '');

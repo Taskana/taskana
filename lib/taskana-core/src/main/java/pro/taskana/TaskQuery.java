@@ -47,14 +47,13 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery state(TaskState... states);
 
     /**
-     * Add your classification to your query. The classification query can be
-     * obtained from the ClassificationService
+     * Add your classificationKey to your query.
      *
-     * @param classificationQuery
-     *            the classification query
+     * @param classificationKey
+     *            the classification key
      * @return the query
      */
-    TaskQuery classification(ClassificationQuery classificationQuery);
+    TaskQuery classificationKeyIn(String... classificationKey);
 
     /**
      * Add your workbasket key to the query.

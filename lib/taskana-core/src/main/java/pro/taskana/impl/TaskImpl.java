@@ -28,6 +28,7 @@ public class TaskImpl implements Task {
     private String description;
     private int priority;
     private TaskState state;
+    private String classificationKey;
     private Classification classification;
     private String workbasketKey;
     private String domain;
@@ -167,8 +168,8 @@ public class TaskImpl implements Task {
     }
 
     @Override
-    public void setClassification(Classification classification) {
-        this.classification = classification;
+    public void setClassificationKey(String classificationKey) {
+        this.classificationKey = classificationKey;
     }
 
     @Override
@@ -372,6 +373,14 @@ public class TaskImpl implements Task {
         this.attachments = attachments;
     }
 
+    public String getClassificationKey() {
+        return classificationKey;
+    }
+
+    public void setClassification(Classification classification) {
+        this.classification = classification;
+    }
+
     public String getPorCompany() {
         return porCompany;
     }
@@ -437,6 +446,8 @@ public class TaskImpl implements Task {
         builder.append(priority);
         builder.append(", state=");
         builder.append(state);
+        builder.append(", classificationKey=");
+        builder.append(classificationKey);
         builder.append(", classification=");
         builder.append(classification);
         builder.append(", workbasketKey=");

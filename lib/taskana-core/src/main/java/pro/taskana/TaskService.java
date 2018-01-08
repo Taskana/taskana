@@ -32,8 +32,11 @@ public interface TaskService {
      *             if the state of the task with taskId is not {@link TaskState#READY}
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by some else
+     * @throws ClassificationNotFoundException
+     *             if the task refers to a classification that cannot be found
      */
-    Task claim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+    Task claim(String taskId)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException;
 
     /**
      * Claim an existing task for the current user. Enable forced claim.
@@ -49,9 +52,11 @@ public interface TaskService {
      *             if the state of the task with taskId is not {@link TaskState#READY}
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by someone else
+     * @throws ClassificationNotFoundException
+     *             if the task refers to a classification that cannot be found
      */
     Task claim(String taskId, boolean forceClaim)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException;
 
     /**
      * Complete a claimed Task as owner/admin and update State and Timestamps.
@@ -65,8 +70,11 @@ public interface TaskService {
      *             if the given Task can´t be found in DB.
      * @throws InvalidOwnerException
      *             if current user is not the task-owner or administrator.
+     * @throws ClassificationNotFoundException
+     *             if the task refers to a classification that cannot be found
      */
-    Task completeTask(String taskId) throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
+    Task completeTask(String taskId)
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException;
 
     /**
      * Complete a claimed Task and update State and Timestamps.
@@ -82,9 +90,11 @@ public interface TaskService {
      *             if the given Task can´t be found in DB.
      * @throws InvalidOwnerException
      *             if current user is not the task-owner or administrator.
+     * @throws ClassificationNotFoundException
+     *             if the task refers to a classification that cannot be found
      */
     Task completeTask(String taskId, boolean isForced)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException;
 
     /**
      * Persists a not persisted Task which does not exist already.
@@ -117,8 +127,10 @@ public interface TaskService {
      * @return the Task
      * @throws TaskNotFoundException
      *             thrown of the {@link Task} with taskId is not found
+     * @throws ClassificationNotFoundException
+     *             if the classification associated to the task is not found
      */
-    Task getTask(String taskId) throws TaskNotFoundException;
+    Task getTask(String taskId) throws TaskNotFoundException, ClassificationNotFoundException;
 
     /**
      * Transfer a task to another work basket. The transfer sets the transferred flag and resets the read flag.
@@ -136,9 +148,12 @@ public interface TaskService {
      *             Thrown if the current user is not authorized to transfer this {@link Task} to the target work basket
      * @throws InvalidWorkbasketException
      *             Thrown if either the source or the target workbasket has a missing required property
+     * @throws ClassificationNotFoundException
+     *             if the task refers to a classification that cannot be found
      */
     Task transfer(String taskId, String workbasketKey)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException;
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        ClassificationNotFoundException;
 
     /**
      * Marks a task as read.
@@ -150,8 +165,10 @@ public interface TaskService {
      * @return the updated Task
      * @throws TaskNotFoundException
      *             Thrown if the {@link Task} with taskId was not found
+     * @throws ClassificationNotFoundException
+     *             if the task refers to a classification that cannot be found
      */
-    Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
+    Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException, ClassificationNotFoundException;
 
     /**
      * This method provides a query builder for quering the database.
@@ -218,6 +235,16 @@ public interface TaskService {
      *             if the id of the task is not found in the database
      * @throws ConcurrencyException
      *             if the task has already been updated by another user
+     * @throws InvalidWorkbasketException
+     *             if the updated task refers to a workbasket that has missing required properties
+     * @throws ClassificationNotFoundException
+     *             if the updated task refers to a classification that cannot be found
+     * @throws WorkbasketNotFoundException
+     *             if the updated task refers to a work basket that cannot be found
+     * @throws NotAuthorizedException
+     *             if the current user is not authorized to update the task
      */
-    Task updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException;
+    Task updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
+        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidWorkbasketException,
+        NotAuthorizedException;
 }

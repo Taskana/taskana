@@ -5,8 +5,8 @@ package pro.taskana.exceptions;
  */
 public class ClassificationNotFoundException extends NotFoundException {
 
-    public ClassificationNotFoundException(String id) {
-        super("Classification '" + id + "' not found");
+    public ClassificationNotFoundException(String msg) {
+        super(msg);
     }
 
     private static final long serialVersionUID = 1L;

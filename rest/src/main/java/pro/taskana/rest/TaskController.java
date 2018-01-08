@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -59,7 +60,8 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/{taskId}")
-    public ResponseEntity<Task> getTask(@PathVariable(value = "taskId") String taskId) {
+    public ResponseEntity<Task> getTask(@PathVariable(value = "taskId") String taskId)
+        throws ClassificationNotFoundException {
         try {
             Task task = taskService.getTask(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(task);
@@ -86,7 +88,8 @@ public class TaskController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/claim")
-    public ResponseEntity<Task> claimTask(@PathVariable String taskId, @RequestBody String userName) {
+    public ResponseEntity<Task> claimTask(@PathVariable String taskId, @RequestBody String userName)
+        throws ClassificationNotFoundException {
         // TODO verify user
         try {
             taskService.claim(taskId);
@@ -105,7 +108,7 @@ public class TaskController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/complete")
-    public ResponseEntity<Task> completeTask(@PathVariable String taskId) {
+    public ResponseEntity<Task> completeTask(@PathVariable String taskId) throws ClassificationNotFoundException {
         try {
             taskService.completeTask(taskId, true);
             Task updatedTask = taskService.getTask(taskId);
