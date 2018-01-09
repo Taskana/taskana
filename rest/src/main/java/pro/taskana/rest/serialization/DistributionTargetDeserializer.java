@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.InvalidWorkbasketException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 
 /**
@@ -51,8 +51,10 @@ public class DistributionTargetDeserializer extends StdDeserializer<List<Workbas
                 distributionTargets.add(workbasketService.getWorkbasket(id));
             } catch (WorkbasketNotFoundException e) {
                 logger.error("The workbasket with the id '" + id + "' is not found in database.");
-            } catch (InvalidWorkbasketException e) {
-                logger.error("The workbasket with the id '" + id + "' misses some required properties. Exception = {}.",
+            } catch (NotAuthorizedException e) {
+                logger.error(
+                    "The user misses some required permissions for the workbasket with ID '" + id
+                        + "'. Exception = {}.",
                     e);
             }
         }

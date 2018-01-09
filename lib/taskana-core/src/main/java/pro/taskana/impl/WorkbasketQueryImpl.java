@@ -13,10 +13,11 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.WorkbasketType;
+import pro.taskana.model.mappings.WorkbasketAccessMapper;
+import pro.taskana.security.CurrentUserContext;
 
 /**
  * WorkbasketQuery for generating dynamic SQL.
@@ -26,9 +27,7 @@ import pro.taskana.model.WorkbasketType;
 public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryWorkbasket";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
-
     private String[] accessId;
     private WorkbasketAuthorization authorization;
     private String[] name;
@@ -43,7 +42,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] owner;
     private TaskanaEngineImpl taskanaEngineImpl;
 
-    public WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
+    public WorkbasketQueryImpl(TaskanaEngine taskanaEngine, WorkbasketAccessMapper workbasketAccessMapper) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     }
 
@@ -108,75 +107,96 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery access(WorkbasketAuthorization permission, String... accessIds)
+    public WorkbasketQuery accessIdsHavePersmission(WorkbasketAuthorization permission, String... accessIds)
         throws InvalidArgumentException {
+        // Checking pre-conditions
         if (permission == null) {
-            throw new InvalidArgumentException("permission must not be null");
+            throw new InvalidArgumentException("Permission can´t be null.");
         }
         if (accessIds == null || accessIds.length == 0) {
-            throw new InvalidArgumentException("accessIds must not be empty");
+            throw new InvalidArgumentException("accessIds can´t be NULL or empty.");
         }
+
+        // set up permissions and ids
         this.authorization = permission;
         this.accessId = accessIds;
-        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-            for (int i = 0; i < accessIds.length; i++) {
-                String id = accessIds[i];
-                if (id != null) {
-                    accessIds[i] = id.toLowerCase();
-                }
-            }
-        }
+        lowercaseAccessIds();
+
         return this;
     }
 
     @Override
-    public List<Workbasket> list() throws NotAuthorizedException {
+    public WorkbasketQuery callerHasPermission(WorkbasketAuthorization permission) throws InvalidArgumentException {
+        String[] accessIds;
+        // Check pre-conditions
+        if (permission == null) {
+            throw new InvalidArgumentException("Permission can´t be null.");
+        }
+        if (CurrentUserContext.getAccessIds() != null && CurrentUserContext.getAccessIds().size() > 0) {
+            accessIds = new String[CurrentUserContext.getAccessIds().size()];
+            accessIds = CurrentUserContext.getAccessIds().toArray(accessIds);
+        } else {
+            throw new InvalidArgumentException("CurrentUserContext need to have at least one accessId.");
+        }
+
+        // set up permissions and ids
+        accessIds = new String[CurrentUserContext.getAccessIds().size()];
+        accessIds = CurrentUserContext.getAccessIds().toArray(accessIds);
+        this.authorization = permission;
+        this.accessId = accessIds;
+        lowercaseAccessIds();
+
+        return this;
+    }
+
+    @Override
+    public List<Workbasket> list() {
         LOGGER.debug("entry to list(), this = {}", this);
-        List<Workbasket> result = null;
+        List<Workbasket> workbaskets = null;
         try {
             taskanaEngineImpl.openConnection();
-            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
-            return result;
+            workbaskets = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            return workbaskets;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
+                int numberOfResultObjects = workbaskets == null ? 0 : workbaskets.size();
                 LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
-                    LoggerUtils.listToString(result));
+                    LoggerUtils.listToString(workbaskets));
             }
         }
     }
 
     @Override
-    public List<Workbasket> list(int offset, int limit) throws NotAuthorizedException {
+    public List<Workbasket> list(int offset, int limit) {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
-        List<Workbasket> result = null;
+        List<Workbasket> workbaskets = null;
         try {
             taskanaEngineImpl.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
-            return result;
+            workbaskets = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            return workbaskets;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
+                int numberOfResultObjects = workbaskets == null ? 0 : workbaskets.size();
                 LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
-                    LoggerUtils.listToString(result));
+                    LoggerUtils.listToString(workbaskets));
             }
         }
     }
 
     @Override
-    public Workbasket single() throws NotAuthorizedException {
+    public Workbasket single() {
         LOGGER.debug("entry to single(), this = {}", this);
-        WorkbasketImpl result = null;
+        WorkbasketImpl workbasket = null;
         try {
             taskanaEngineImpl.openConnection();
-            result = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
-            return result;
+            workbasket = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            return workbasket;
         } finally {
             taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from single(). Returning result {} ", result);
+            LOGGER.debug("exit from single(). Returning result {} ", workbasket);
         }
     }
 
@@ -307,4 +327,14 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return builder.toString();
     }
 
+    private void lowercaseAccessIds() {
+        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+            for (int i = 0; i < this.accessId.length; i++) {
+                String id = this.accessId[i];
+                if (id != null) {
+                    this.accessId[i] = id.toLowerCase();
+                }
+            }
+        }
+    }
 }

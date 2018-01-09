@@ -13,6 +13,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.TaskState;
 
@@ -58,11 +59,12 @@ public class TaskFilter {
     @Autowired
     private ClassificationService classificationService;
 
-    public List<Task> getAll() throws NotAuthorizedException {
+    public List<Task> getAll() throws NotAuthorizedException, InvalidArgumentException {
         return taskService.createTaskQuery().list();
     }
 
-    public List<Task> inspectPrams(MultiValueMap<String, String> params) throws NotAuthorizedException {
+    public List<Task> inspectPrams(MultiValueMap<String, String> params)
+        throws NotAuthorizedException, InvalidArgumentException {
         TaskQuery taskQuery = taskService.createTaskQuery();
 
         // apply filters

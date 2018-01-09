@@ -286,13 +286,13 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test(expected = WorkbasketNotFoundException.class)
     public void shouldThrowWorkbasketNotFoundExceptionByNullParameter()
-        throws WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         taskServiceImpl.getTaskSummariesByWorkbasketKey(null);
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
     public void shouldThrowWorkbasketNotFoundExceptionByInvalidWorkbasketParameter()
-        throws WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket();
         wb.setKey("key");
         wb.setName("wb");

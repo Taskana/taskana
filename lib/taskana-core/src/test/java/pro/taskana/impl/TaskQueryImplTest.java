@@ -15,23 +15,25 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.Task;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.TaskState;
 
 /**
  * Test for TaskQueryImpl.
+ *
  * @author EH
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TaskQueryImplTest {
 
-    TaskQueryImpl taskQueryImpl;
+    private TaskQueryImpl taskQueryImpl;
 
     @Mock
-    TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngineImpl taskanaEngine;
 
     @Mock
-    SqlSession sqlSession;
+    private SqlSession sqlSession;
 
     @Before
     public void setup() {
@@ -39,32 +41,42 @@ public class TaskQueryImplTest {
     }
 
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException {
+    public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException, InvalidArgumentException {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
-        List<Task> result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)
-                .state(TaskState.CLAIMED, TaskState.COMPLETED).list();
+        List<Task> result = taskQueryImpl.name("test", "asd", "blubber")
+            .customFields("cool", "bla")
+            .priority(1, 2)
+            .state(TaskState.CLAIMED, TaskState.COMPLETED)
+            .list();
         Assert.assertNotNull(result);
     }
 
     @Test
-    public void should_ReturnListWithOffset_when_BuilderIsUsed() throws NotAuthorizedException {
+    public void should_ReturnListWithOffset_when_BuilderIsUsed()
+        throws NotAuthorizedException, InvalidArgumentException {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
-        List<Task> result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)
-                .state(TaskState.CLAIMED, TaskState.COMPLETED).list(1, 1);
+        List<Task> result = taskQueryImpl.name("test", "asd", "blubber")
+            .customFields("cool", "bla")
+            .priority(1, 2)
+            .state(TaskState.CLAIMED, TaskState.COMPLETED)
+            .list(1, 1);
         Assert.assertNotNull(result);
     }
 
     @Test
-    public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException {
+    public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException, InvalidArgumentException {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new TaskImpl());
 
-        Task result = taskQueryImpl.name("test", "asd", "blubber").customFields("cool", "bla").priority(1, 2)
-                .state(TaskState.CLAIMED, TaskState.COMPLETED).single();
+        Task result = taskQueryImpl.name("test", "asd", "blubber")
+            .customFields("cool", "bla")
+            .priority(1, 2)
+            .state(TaskState.CLAIMED, TaskState.COMPLETED)
+            .single();
         Assert.assertNotNull(result);
     }
 }

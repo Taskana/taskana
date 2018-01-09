@@ -32,7 +32,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = { "teamlead_1" })
     @Test
     public void testGetWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -31,7 +32,7 @@ import pro.taskana.model.TaskSummary;
 import pro.taskana.rest.query.TaskFilter;
 
 @RestController
-@RequestMapping(path = "/v1/tasks", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/v1/tasks", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class TaskController {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
@@ -44,7 +45,7 @@ public class TaskController {
 
     @RequestMapping
     public ResponseEntity<List<Task>> getTasks(@RequestParam MultiValueMap<String, String> params)
-        throws LoginException {
+        throws LoginException, InvalidArgumentException {
         try {
             if (params.keySet().size() == 0) {
                 // get all

@@ -21,10 +21,11 @@ public interface WorkbasketService {
      * @return the requested Workbasket
      * @throws WorkbasketNotFoundException
      *             If the Workbasket with workbasketId is not found
-     * @throws InvalidWorkbasketException
-     *             If required properties are missing in the found Workbasket
+     * @throws NotAuthorizedException
+     *             If the current user or group does not have the permissions for interactions.
      */
-    Workbasket getWorkbasket(String workbasketId) throws WorkbasketNotFoundException, InvalidWorkbasketException;
+    Workbasket getWorkbasket(String workbasketId)
+        throws WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
      * Get Workbasket for a given key.
@@ -34,13 +35,14 @@ public interface WorkbasketService {
      * @return the requested Workbasket
      * @throws WorkbasketNotFoundException
      *             If the Workbasket with workbasketId is not found
-     * @throws InvalidWorkbasketException
-     *             If required properties are missing in the found Workbasket
+     * @throws NotAuthorizedException
+     *             If the current user or group does not have the permissions for interactions.
      */
-    Workbasket getWorkbasketByKey(String workbasketKey) throws WorkbasketNotFoundException, InvalidWorkbasketException;
+    Workbasket getWorkbasketByKey(String workbasketKey)
+        throws WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
-     * Get all available Workbaskets.
+     * Get all available Workbaskets without checking any permission.
      *
      * @return a list containing all Workbaskets
      */
@@ -55,9 +57,12 @@ public interface WorkbasketService {
      * @throws InvalidWorkbasketException
      *             If a required property of the Workbasket is not set.
      * @throws WorkbasketNotFoundException
-     *             If the to be created work basket references a distribution target that does not exist
+     *             If the to be created work basket references a distribution target that does not exist.
+     * @throws NotAuthorizedException
+     *             If the current user or group does not have the permissions for interactions.
      */
-    Workbasket createWorkbasket(Workbasket workbasket) throws InvalidWorkbasketException, WorkbasketNotFoundException;
+    Workbasket createWorkbasket(Workbasket workbasket)
+        throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
      * Update a Workbasket.
@@ -139,16 +144,6 @@ public interface WorkbasketService {
     List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketKey);
 
     /**
-     * This method returns the workbaskets for which the current user has all permissions specified in the permissions
-     * list.
-     *
-     * @param permission
-     *            a List of WorkbasketAuthorization enums
-     * @return all Workbaskets for which the current user has the specified authorizations
-     */
-    List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permission);
-
-    /**
      * This method provides a query builder for querying the database.
      *
      * @return a {@link WorkbasketQuery}
@@ -161,4 +156,14 @@ public interface WorkbasketService {
      * @return newWorkbasket
      */
     Workbasket newWorkbasket();
+
+    /**
+     * This method returns the workbaskets for which the current user has all permissions specified in the permissions
+     * list.
+     *
+     * @param permissions
+     *            a List of WorkbasketAuthorization enums
+     * @return all Workbaskets for which the current user has the specified authorizations
+     */
+    List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permissions);
 }

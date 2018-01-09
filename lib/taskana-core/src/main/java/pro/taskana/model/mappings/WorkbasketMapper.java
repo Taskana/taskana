@@ -22,7 +22,7 @@ import pro.taskana.model.WorkbasketAuthorization;
 public interface WorkbasketMapper {
 
     @Select("SELECT ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1 ,CUSTOM_2 ,CUSTOM_3 ,CUSTOM_4 ,ORG_LEVEL_1 ,ORG_LEVEL_2 ,ORG_LEVEL_3 ,ORG_LEVEL_4 FROM WORKBASKET WHERE ID = #{id}")
-    @Results(value = {@Result(property = "id", column = "ID"),
+    @Results(value = { @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "modified", column = "MODIFIED"),
@@ -42,11 +42,11 @@ public interface WorkbasketMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     WorkbasketImpl findById(@Param("id") String id);
 
     @Select("SELECT ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1 ,CUSTOM_2 ,CUSTOM_3 ,CUSTOM_4 ,ORG_LEVEL_1 ,ORG_LEVEL_2 ,ORG_LEVEL_3 ,ORG_LEVEL_4 FROM WORKBASKET WHERE KEY = #{key}")
-    @Results(value = {@Result(property = "id", column = "ID"),
+    @Results(value = { @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "modified", column = "MODIFIED"),
@@ -66,7 +66,7 @@ public interface WorkbasketMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     WorkbasketImpl findByKey(@Param("key") String key);
 
     @Select("SELECT * FROM WORKBASKET WHERE id IN (SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id})")
@@ -91,7 +91,7 @@ public interface WorkbasketMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     List<WorkbasketImpl> findByDistributionTargets(@Param("id") String id);
 
     @Select("SELECT * FROM WORKBASKET ORDER BY id")
@@ -116,7 +116,7 @@ public interface WorkbasketMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     List<WorkbasketImpl> findAll();
 
     @Select("<script>SELECT W.ID, W.KEY, W.CREATED, W.MODIFIED, W.NAME, W.DESCRIPTION, W.OWNER FROM WORKBASKET AS W "
@@ -158,7 +158,7 @@ public interface WorkbasketMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     List<WorkbasketImpl> findByPermission(@Param("authorizations") List<WorkbasketAuthorization> authorizations,
         @Param("accessId") String accessId);
 
