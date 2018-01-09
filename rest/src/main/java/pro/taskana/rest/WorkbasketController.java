@@ -26,19 +26,20 @@ import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
 
 @RestController
-@RequestMapping(path = "/v1/workbaskets", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/v1/workbaskets", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class WorkbasketController {
 
     @Autowired
     private WorkbasketService workbasketService;
 
     @GetMapping
-    public List<Workbasket> getWorkbaskets(@RequestParam MultiValueMap<String, String> params) {
+    public ResponseEntity<List<Workbasket>> getWorkbaskets(@RequestParam MultiValueMap<String, String> params) {
+        List<Workbasket> workbaskets = new ArrayList<>();
         if (params.containsKey("requiredPermission")) {
             List<WorkbasketAuthorization> authorizations = new ArrayList<>();
             params.get("requiredPermission").stream().forEach(item -> {
                 for (String authorization : Arrays.asList(item.split(","))) {
-                    switch (authorization) {
+                    switch (authorization.trim()) {
                         case "READ":
                             authorizations.add(WorkbasketAuthorization.READ);
                             break;
@@ -54,13 +55,38 @@ public class WorkbasketController {
                         case "DISTRIBUTE":
                             authorizations.add(WorkbasketAuthorization.DISTRIBUTE);
                             break;
+                        case "CUSTOM_1":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_1);
+                            break;
+                        case "CUSTOM_2":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_2);
+                            break;
+                        case "CUSTOM_3":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_3);
+                            break;
+                        case "CUSTOM_4":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_4);
+                            break;
+                        case "CUSTOM_5":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_5);
+                            break;
+                        case "CUSTOM_6":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_6);
+                            break;
+                        case "CUSTOM_7":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_7);
+                            break;
+                        case "CUSTOM_8":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_8);
+                            break;
                     }
                 }
             });
-            return workbasketService.getWorkbaskets(authorizations);
+            workbaskets = workbasketService.getWorkbaskets(authorizations);
         } else {
-            return workbasketService.getWorkbaskets();
+            workbaskets = workbasketService.getWorkbaskets();
         }
+        return new ResponseEntity<>(workbaskets, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{workbasketid}")
@@ -70,8 +96,8 @@ public class WorkbasketController {
             return new ResponseEntity<>(workbasket, HttpStatus.OK);
         } catch (WorkbasketNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (InvalidWorkbasketException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotAuthorizedException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -80,12 +106,14 @@ public class WorkbasketController {
         Workbasket createdWorkbasket;
         try {
             createdWorkbasket = workbasketService.createWorkbasket(workbasket);
+            return new ResponseEntity<>(createdWorkbasket, HttpStatus.CREATED);
         } catch (InvalidWorkbasketException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (WorkbasketNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NotAuthorizedException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(createdWorkbasket, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{workbasketkey}", method = RequestMethod.PUT)

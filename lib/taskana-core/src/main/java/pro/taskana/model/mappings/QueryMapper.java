@@ -71,7 +71,7 @@ public interface QueryMapper {
         + "</if>"
         + "</where>"
         + "</script>")
-    @Results(value = {@Result(property = "id", column = "ID"),
+    @Results(value = { @Result(property = "id", column = "ID"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "claimed", column = "CLAIMED"),
         @Result(property = "completed", column = "COMPLETED"),
@@ -102,7 +102,7 @@ public interface QueryMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     List<TaskImpl> queryTasks(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
@@ -125,7 +125,7 @@ public interface QueryMapper {
         + "<if test='validUntil != null'>AND VALID_UNTIL IN(<foreach item='item' collection='validUntil' separator=',' >#{item}</foreach>)</if> "
         + "</where>"
         + "</script>")
-    @Results({@Result(property = "id", column = "ID"),
+    @Results({ @Result(property = "id", column = "ID"),
         @Result(property = "parentClassificationId", column = "PARENT_CLASSIFICATION_ID"),
         @Result(property = "category", column = "CATEGORY"),
         @Result(property = "type", column = "TYPE"),
@@ -145,7 +145,7 @@ public interface QueryMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "validFrom", column = "VALID_FROM"),
-        @Result(property = "validUntil", column = "VALID_UNTIL")})
+        @Result(property = "validUntil", column = "VALID_UNTIL") })
     List<ClassificationImpl> queryClassification(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
@@ -164,7 +164,7 @@ public interface QueryMapper {
         @Result(property = "system", column = "SYSTEM"),
         @Result(property = "systemInstance", column = "SYSTEM_INSTANCE"),
         @Result(property = "type", column = "TYPE"),
-        @Result(property = "value", column = "VALUE")})
+        @Result(property = "value", column = "VALUE") })
     List<ObjectReference> queryObjectReference(ObjectReferenceQueryImpl objectReference);
 
     @Select("<script>SELECT w.ID, w.KEY, w.CREATED, w.MODIFIED, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.CUSTOM_1, w.CUSTOM_2, w.CUSTOM_3, w.CUSTOM_4, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
@@ -180,7 +180,7 @@ public interface QueryMapper {
         + "<if test='modifiedAfter != null'>AND w.MODIFIED &gt; #{modifiedAfter}</if> "
         + "<if test='modifiedBefore != null'>AND w.MODIFIED &lt; #{modifiedBefore}</if> "
         + "<if test='description != null'>AND w.DESCRIPTION like #{description}</if> "
-        + "<if test='accessId != null'>AND a.ACCESS_ID IN(<foreach item='item' collection='accessId' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='accessId != null'>AND a.ACCESS_ID IN(<foreach item='item' collection='accessId' separator=',' >#{item}</foreach>) AND PERM_READ = 1 </if> "
         + "<if test='authorization != null'>AND "
         + "<if test=\"authorization.name().equals('OPEN')\">PERM_OPEN</if> "
         + "<if test=\"authorization.name().equals('READ')\">PERM_READ</if>"
@@ -217,7 +217,7 @@ public interface QueryMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
     List<WorkbasketImpl> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
 
     @Select("<script>SELECT TARGET_ID from DISTRIBUTION_TARGETS "
@@ -226,7 +226,7 @@ public interface QueryMapper {
         + "</where>"
         + "</script>")
     @Results(value = {
-        @Result(property = "distributionTarget", column = "TARGET_ID")})
+        @Result(property = "distributionTarget", column = "TARGET_ID") })
     List<String> findDistributionTargets(String sourceId);
 
 }

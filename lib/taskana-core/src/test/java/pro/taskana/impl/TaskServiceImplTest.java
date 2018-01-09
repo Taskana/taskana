@@ -839,7 +839,7 @@ doNothing().when(taskMapperMock).update(any());
 
     @Test
     public void testGetTaskSummariesByWorkbasketIdWithInternalException()
-        throws WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         // given - set behaviour and expected result
         String workbasketKey = "1";
         List<TaskSummary> expectedResultList = new ArrayList<>();
@@ -864,7 +864,7 @@ doNothing().when(taskMapperMock).update(any());
 
     @Test
     public void testGetTaskSummariesByWorkbasketIdGettingResults()
-        throws WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         String workbasketKey = "1";
         List<TaskSummary> expectedResultList = Arrays.asList(new TaskSummary(), new TaskSummary());
         doNothing().when(taskanaEngineImpl).openConnection();
@@ -886,7 +886,7 @@ doNothing().when(taskMapperMock).update(any());
 
     @Test
     public void testGetTaskSummariesByWorkbasketIdGettingNull()
-        throws WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         String workbasketKey = "1";
         List<TaskSummary> expectedResultList = new ArrayList<>();
         doNothing().when(taskanaEngineImpl).openConnection();

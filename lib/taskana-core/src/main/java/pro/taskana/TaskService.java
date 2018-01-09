@@ -110,7 +110,7 @@ public interface TaskService {
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException;
 
     /**
-     * Get the details of a task by Id.
+     * Get the details of a task by Id without checking permissions.
      *
      * @param taskId
      *            the id of the task
@@ -186,9 +186,11 @@ public interface TaskService {
      *             if a Work basket can´t be located.
      * @throws InvalidWorkbasketException
      *             thrown if the Workbasket specified with workbasketId has a missing required property
+     * @throws NotAuthorizedException
+     *             if the current user got no rights for reading on this work basket.
      */
     List<TaskSummary> getTaskSummariesByWorkbasketKey(String workbasketKey)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException;
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException;
 
     /**
      * Returns a not persisted instance of {@link Task}.

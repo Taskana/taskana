@@ -26,6 +26,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import pro.taskana.Classification;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.mappings.ClassificationMapper;
 
@@ -59,7 +60,7 @@ public class ClassificationServiceImplTest {
     }
 
     @Test
-    public void testGetClassificationTree() throws NotAuthorizedException {
+    public void testGetClassificationTree() throws NotAuthorizedException, InvalidArgumentException {
         List<Classification> classifications = new ArrayList<>();
 
         doReturn(classificationQueryImplMock).when(cutSpy).createClassificationQuery();

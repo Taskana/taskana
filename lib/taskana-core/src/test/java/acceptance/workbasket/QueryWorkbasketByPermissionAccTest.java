@@ -6,7 +6,6 @@ import java.util.List;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +33,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<Workbasket> results = workbasketService.createWorkbasketQuery()
-            .access(WorkbasketAuthorization.APPEND, "user_1_1")
+            .accessIdsHavePersmission(WorkbasketAuthorization.APPEND, "user_1_1")
             .list();
         Assert.assertEquals(1L, results.size());
         Assert.assertEquals("USER_1_1", results.get(0).getKey());
@@ -45,12 +44,11 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<Workbasket> results = workbasketService.createWorkbasketQuery()
-            .access(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
+            .accessIdsHavePersmission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
             .list();
         Assert.assertEquals(8L, results.size());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_1",
         groupNames = { "group_1" })
@@ -59,23 +57,21 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<Workbasket> results = workbasketService.createWorkbasketQuery()
-            .access(WorkbasketAuthorization.APPEND)
+            .callerHasPermission(WorkbasketAuthorization.APPEND)
             .list();
-        Assert.assertEquals(7L, results.size());
+        Assert.assertEquals(8L, results.size());
     }
 
-    @Ignore
     @WithAccessId(
-        userName = "user_1_1",
-        groupNames = { "group_1" })
+        userName = "user_1_1")
     @Test
     public void testQueryAllAvailableWorkbasketForOpeningForUserAndGroupFromSubject()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
-        // WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        // List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-        // .access(WorkbasketAuthorization.OPEN)
-        // .list();
-        // Assert.assertEquals(7L, results.size());
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<Workbasket> results = workbasketService.createWorkbasketQuery()
+            .callerHasPermission(WorkbasketAuthorization.READ)
+            .list();
+        Assert.assertEquals(1L, results.size());
     }
 
     @AfterClass
