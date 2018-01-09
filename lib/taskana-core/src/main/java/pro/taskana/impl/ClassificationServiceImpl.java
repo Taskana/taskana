@@ -15,6 +15,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
@@ -38,7 +39,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public List<Classification> getClassificationTree() throws NotAuthorizedException {
+    public List<Classification> getClassificationTree() throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("entry to getClassificationTree()");
         List<Classification> result = null;
         try {
@@ -61,7 +62,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     private List<Classification> populateChildClassifications(List<Classification> classifications)
-        throws NotAuthorizedException {
+        throws NotAuthorizedException, InvalidArgumentException {
         try {
             taskanaEngineImpl.openConnection();
             List<Classification> children = new ArrayList<>();

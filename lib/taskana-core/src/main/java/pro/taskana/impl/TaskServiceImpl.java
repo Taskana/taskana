@@ -392,7 +392,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskSummary> getTaskSummariesByWorkbasketKey(String workbasketKey)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         LOGGER.debug("entry to getTaskSummariesByWorkbasketId(workbasketId = {}", workbasketKey);
         List<TaskSummary> taskSummaries = new ArrayList<>();
         workbasketService.getWorkbasketByKey(workbasketKey);

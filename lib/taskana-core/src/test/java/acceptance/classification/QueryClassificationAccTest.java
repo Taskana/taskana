@@ -15,6 +15,7 @@ import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
@@ -28,7 +29,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
 
     @Test
     public void testFindClassificationsByCategoryAndDomain()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<Classification> classificationList = classificationService.createClassificationQuery()
             .category("MANUAL")
@@ -42,7 +43,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     @Ignore
     @Test
     public void testGetOneClassificationForMultipleDomains()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<Classification> classifications = classificationService.createClassificationQuery()
             .type("L10000")

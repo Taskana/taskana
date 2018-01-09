@@ -25,9 +25,7 @@ public class TaskQueryImpl implements TaskQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryTasks";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
-
     private TaskanaEngineImpl taskanaEngineImpl;
-
     private String[] name;
     private String description;
     private int[] priority;
@@ -250,8 +248,8 @@ public class TaskQueryImpl implements TaskQuery {
 
     private void checkAuthorization() throws NotAuthorizedException {
         if (this.workbasketKey != null && this.workbasketKey.length > 0) {
-            for (String workbasket : this.workbasketKey) {
-                taskanaEngineImpl.getWorkbasketService().checkAuthorization(workbasket, WorkbasketAuthorization.OPEN);
+            for (String wbKey : this.workbasketKey) {
+                taskanaEngineImpl.getWorkbasketService().checkAuthorization(wbKey, WorkbasketAuthorization.OPEN);
             }
         }
     }

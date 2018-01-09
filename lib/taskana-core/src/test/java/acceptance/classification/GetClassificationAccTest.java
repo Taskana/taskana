@@ -12,6 +12,7 @@ import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
@@ -25,7 +26,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
 
     @Test
     public void testFindAllClassifications()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<Classification> classificationList = classificationService.getClassificationTree();
         Assert.assertNotNull(classificationList);

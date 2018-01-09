@@ -73,17 +73,11 @@ import pro.taskana.security.WithAccessId;
 public class TaskServiceImplIntExplicitTest {
 
     private DataSource dataSource;
-
     private TaskServiceImpl taskServiceImpl;
-
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
-
     private TaskanaEngine taskanaEngine;
-
     private TaskanaEngineImpl taskanaEngineImpl;
-
     private ClassificationService classificationService;
-
     private WorkbasketService workbasketService;
 
     @BeforeClass
@@ -163,6 +157,7 @@ public class TaskServiceImplIntExplicitTest {
         accessItem.setWorkbasketKey("wb");
         accessItem.setAccessId("Elena");
         accessItem.setPermAppend(true);
+        accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
         workbasketService.createWorkbasketAuthorization(accessItem);
 
@@ -245,6 +240,7 @@ public class TaskServiceImplIntExplicitTest {
         accessItem.setWorkbasketKey("wb");
         accessItem.setAccessId("Elena");
         accessItem.setPermAppend(true);
+        accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
         workbasketService.createWorkbasketAuthorization(accessItem);
 
@@ -334,7 +330,7 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.createTask(task);
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"DummyGroup"})
+    @WithAccessId(userName = "Elena", groupNames = { "DummyGroup" })
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
@@ -353,11 +349,11 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setKey("k1");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
-        workbasketService.createWorkbasket(workbasket);
+        workbasket = (WorkbasketImpl) workbasketService.createWorkbasket(workbasket);
 
         Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");
-        task.setWorkbasketKey(workbasket.getKey());
+        task.setWorkbasketKey("k1");
         task.setClassification(classification);
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
@@ -384,7 +380,7 @@ public class TaskServiceImplIntExplicitTest {
             .descriptionLike("test")
             .priority(1, 2, 2)
             .state(TaskState.CLAIMED)
-            .workbasketKeyIn("k1", "k2")
+            .workbasketKeyIn("k1")
             .owner("test", "test2", "bla")
             .customFields("test")
             .classification(classificationQuery)
@@ -427,7 +423,7 @@ public class TaskServiceImplIntExplicitTest {
         sourceWB = workbasketService.createWorkbasket(wb);
 
         createWorkbasketWithSecurity(wb, wb.getOwner(), false, false, false, false);
-        createWorkbasketWithSecurity(sourceWB, sourceWB.getOwner(), false, false, true, true);
+        createWorkbasketWithSecurity(sourceWB, sourceWB.getOwner(), true, true, true, true);
 
         // Destination Workbasket
         wb = (WorkbasketImpl) workbasketService.newWorkbasket();
@@ -438,7 +434,7 @@ public class TaskServiceImplIntExplicitTest {
         wb.setType(WorkbasketType.TOPIC);
         wb.setKey("wb2Key");
         destinationWB = workbasketService.createWorkbasket(wb);
-        createWorkbasketWithSecurity(destinationWB, destinationWB.getOwner(), false, false, true, true);
+        createWorkbasketWithSecurity(destinationWB, destinationWB.getOwner(), false, true, true, true);
 
         // Classification required for Task
         classification = (ClassificationImpl) classificationService.newClassification();
@@ -576,7 +572,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     private Task generateDummyTask() throws ClassificationAlreadyExistException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, InvalidWorkbasketException {
+        WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket();
         workbasket.setKey("wb");
         workbasket.setName("wb");
@@ -601,6 +597,7 @@ public class TaskServiceImplIntExplicitTest {
         accessItem.setWorkbasketKey("k1");
         accessItem.setAccessId("Elena");
         accessItem.setPermAppend(true);
+        accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
         workbasketService.createWorkbasketAuthorization(accessItem);
 
@@ -608,6 +605,7 @@ public class TaskServiceImplIntExplicitTest {
         accessItem2.setId(IdGenerator.generateWithPrefix("WAI"));
         accessItem2.setWorkbasketKey("k2");
         accessItem2.setAccessId("DummyGroup");
+        accessItem.setPermRead(true);
         accessItem2.setPermOpen(true);
         workbasketService.createWorkbasketAuthorization(accessItem2);
     }

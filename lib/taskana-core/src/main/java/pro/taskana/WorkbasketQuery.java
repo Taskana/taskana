@@ -103,16 +103,31 @@ public interface WorkbasketQuery extends BaseQuery<Workbasket> {
     WorkbasketQuery ownerIn(String... owners);
 
     /**
-     * Add the access requested.
+     * Setting up the permission which should be granted on the result workbaskets and the users which should be
+     * checked. READ permission will always be checked by default.<br>
+     * The AccessIds and the given permission will throw a Exception if they would be NULL.
      *
      * @param permission
-     *            the permissions requested
+     *            which should be used for results.
      * @param accessIds
-     *            the accessIds as String
-     * @return the query
+     *            Users which sould be checked for given permissions on workbaskets.
+     * @return the current query object.
      * @throws InvalidArgumentException
-     *             if any argument is not specified
+     *             when permission OR the accessIds are NULL.
      */
-    WorkbasketQuery access(WorkbasketAuthorization permission, String... accessIds) throws InvalidArgumentException;
+    WorkbasketQuery accessIdsHavePersmission(WorkbasketAuthorization permission, String... accessIds)
+        throws InvalidArgumentException;
 
+    /**
+     * Setting up the permissions for the accessIds of the CurrentUserContext. READ permissions need to be granted,too
+     * by default.<br>
+     * The UserContext-AccessIds and the given permission will throw a Exception if they would be NULL.
+     *
+     * @param permission
+     *            which should be used for results.
+     * @return the current query object.
+     * @throws InvalidArgumentException
+     *             when permission OR accessIds of the userContext are NULL.
+     */
+    WorkbasketQuery callerHasPermission(WorkbasketAuthorization permission) throws InvalidArgumentException;
 }

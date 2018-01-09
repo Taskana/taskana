@@ -33,7 +33,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketServiceImpl.class);
     private static final String ID_PREFIX_WORKBASKET = "WBI";
     private static final String ID_PREFIX_WORKBASKET_AUTHORIZATION = "WAI";
-
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketMapper workbasketMapper;
@@ -54,21 +53,19 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public Workbasket getWorkbasket(String workbasketId)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         LOGGER.debug("entry to getWorkbasket(workbasketId = {})", workbasketId);
         Workbasket result = null;
         try {
             taskanaEngineImpl.openConnection();
             result = workbasketMapper.findById(workbasketId);
             if (result == null) {
-                LOGGER.warn(
-                    "Method getWorkbasket() didn't find workbasket with id {}. Throwing WorkbasketNotFoundException",
+                LOGGER.error(
+                    "Method getWorkbasket() didn't find workbasket with ID {}. Throwing WorkbasketNotFoundException",
                     workbasketId);
                 throw new WorkbasketNotFoundException(workbasketId);
-            } else {
-                validateWorkbasket(result);
             }
-
+            this.checkAuthorization(result.getKey(), WorkbasketAuthorization.READ);
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -78,21 +75,19 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public Workbasket getWorkbasketByKey(String workbasketKey)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         LOGGER.debug("entry to getWorkbasketByKey(workbasketKey = {})", workbasketKey);
         Workbasket result = null;
         try {
             taskanaEngineImpl.openConnection();
             result = workbasketMapper.findByKey(workbasketKey);
             if (result == null) {
-                LOGGER.warn(
-                    "Method getWorkbasket() didn't find workbasket with key {}. Throwing WorkbasketNotFoundException",
+                LOGGER.error(
+                    "Method getWorkbasketByKey() didn't find workbasket with key {}. Throwing WorkbasketNotFoundException",
                     workbasketKey);
                 throw new WorkbasketNotFoundException(workbasketKey);
-            } else {
-                validateWorkbasket(result);
             }
-
+            this.checkAuthorization(workbasketKey, WorkbasketAuthorization.READ);
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -146,9 +141,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-
     public Workbasket createWorkbasket(Workbasket newWorkbasket)
-        throws InvalidWorkbasketException, WorkbasketNotFoundException {
+        throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException {
         LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
         Workbasket result = null;
         WorkbasketImpl workbasket = (WorkbasketImpl) newWorkbasket;
@@ -167,7 +161,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             if (workbasket.getDistributionTargets() != null) {
                 for (Workbasket distributionTarget : workbasket.getDistributionTargets()) {
                     // validate that all distribution targets exist
-                    getWorkbasket(distributionTarget.getId());
+                    this.getWorkbasket(distributionTarget.getId());
                     distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
                     LOGGER.debug("Method createWorkbasket() created distributiontarget for source '{}' and target {}",
                         workbasket.getId(), distributionTarget.getId());
@@ -353,7 +347,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public WorkbasketQuery createWorkbasketQuery() {
-        return new WorkbasketQueryImpl(taskanaEngine);
+        return new WorkbasketQueryImpl(taskanaEngine, workbasketAccessMapper);
     }
 
     private void validateWorkbasket(Workbasket workbasket) throws InvalidWorkbasketException {
