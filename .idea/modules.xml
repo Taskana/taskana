@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/lib/taskana-core/src/main/main.iml" filepath="$PROJECT_DIR$/lib/taskana-core/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/taskana-spring/src/main/main1.iml" filepath="$PROJECT_DIR$/lib/taskana-spring/src/main/main1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/taskana-cdi/src/main/main2.iml" filepath="$PROJECT_DIR$/lib/taskana-cdi/src/main/main2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/taskana-cdi-example/src/main/main3.iml" filepath="$PROJECT_DIR$/lib/taskana-cdi-example/src/main/main3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rest/src/main/main4.iml" filepath="$PROJECT_DIR$/rest/src/main/main4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/taskana-spring-example/src/main/main5.iml" filepath="$PROJECT_DIR$/lib/taskana-spring-example/src/main/main5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/taskana-cdi/src/test/test.iml" filepath="$PROJECT_DIR$/lib/taskana-cdi/src/test/test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/taskana-core/src/test/test1.iml" filepath="$PROJECT_DIR$/lib/taskana-core/src/test/test1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/taskana-spring/src/test/test2.iml" filepath="$PROJECT_DIR$/lib/taskana-spring/src/test/test2.iml" />
+    </modules>
+  </component>
+</project>
