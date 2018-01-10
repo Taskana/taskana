@@ -66,6 +66,15 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery workbasketKeyIn(String... workbasketKeys) throws NotAuthorizedException;
 
     /**
+     * Add your domain to the query.
+     *
+     * @param domain
+     *            the domain as String
+     * @return the query
+     */
+    TaskQuery domain(String... domain);
+
+    /**
      * Add the owners to your query.
      *
      * @param owners

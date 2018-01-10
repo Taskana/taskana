@@ -1,6 +1,7 @@
 package acceptance.task;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.sql.SQLException;
@@ -14,6 +15,8 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
@@ -398,6 +401,102 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         // Exception
 
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = { "group_1" })
+    @Test
+    public void testSetDomainFromWorkbasket()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+        Workbasket workbasket = workbasketService.getWorkbasketByKey("USER_1_1");
+        workbasket.setDomain("domainXY");
+        workbasketService.updateWorkbasket(workbasket);
+
+        Task newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setWorkbasketKey("USER_1_1");
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask);
+        assertEquals(workbasket.getDomain(), createdTask.getDomain());
+    }
+
+    @WithAccessId(
+            userName = "user_1_1",
+            groupNames = { "group_1" })
+    @Test
+    public void testDomainChangingWhenTransferTask()
+            throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+            WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+        Workbasket wb1 = workbasketService.getWorkbasketByKey("USER_1_1");
+        wb1.setDomain("domain1");
+        workbasketService.updateWorkbasket(wb1);
+        Workbasket wb2 = workbasketService.getWorkbasketByKey("USER_2_1");
+        wb2.setDomain("domain2");
+        workbasketService.updateWorkbasket(wb2);
+
+        Task newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setWorkbasketKey("USER_1_1");
+
+        Task createdTask = taskService.createTask(newTask);
+        String domain1 = createdTask.getDomain();
+
+        Task transferedTask = taskService.transfer(createdTask.getId(), "USER_2_1");
+        System.out.println(transferedTask.getDomain());
+
+        assertNotNull(transferedTask);
+        assertNotEquals(domain1, transferedTask.getDomain());
+    }
+
+    @WithAccessId(
+            userName = "user_1_1",
+            groupNames = { "group_1" })
+    @Test(expected = NotAuthorizedException.class)
+    public void testThrowsExceptionIfTransferWithNoTransferAuthorization()
+            throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+            WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        Task newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setWorkbasketKey("USER_1_1");
+        Task createdTask = taskService.createTask(newTask);
+
+        taskService.transfer(createdTask.getId(), "TEAMLEAD_2");
+    }
+
+    @WithAccessId(
+            userName = "user123",
+            groupNames = { "group_1" })
+    @Test(expected = NotAuthorizedException.class)
+    public void testThrowsExceptionIfTransferWithNoAppendAuthorization()
+            throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+            WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        Task newTask = taskService.newTask();
+        newTask.setClassification(taskanaEngine.getClassificationService().getClassification("T2100", "DOMAIN_A"));
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setWorkbasketKey("USER_1_1");
+        Task createdTask = taskService.createTask(newTask);
+
+        taskService.transfer(createdTask.getId(), "TEAMLEAD_2");
     }
 
     @AfterClass

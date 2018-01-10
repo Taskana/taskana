@@ -34,6 +34,7 @@ public class TaskQueryImpl implements TaskQuery {
     private TaskState[] states;
     private ClassificationQuery classificationQuery;
     private String[] workbasketKey;
+    private String[] domain;
     private String[] owner;
     private Boolean isRead;
     private Boolean isTransferred;
@@ -86,6 +87,12 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery workbasketKeyIn(String... workbasketKeys) {
         this.workbasketKey = workbasketKeys;
+        return this;
+    }
+
+    @Override
+    public TaskQuery domain(String... domain) {
+        this.domain = domain;
         return this;
     }
 
@@ -303,6 +310,14 @@ public class TaskQueryImpl implements TaskQuery {
 
     public void setWorkbasketKey(String[] workbasketKey) {
         this.workbasketKey = workbasketKey;
+    }
+
+    public String[] getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String[] domain) {
+        this.domain = domain;
     }
 
     public String[] getOwner() {
