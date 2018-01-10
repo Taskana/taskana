@@ -18,8 +18,9 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery name(String... name);
 
     /**
-     * Add your description for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern.
+     * Add your description for pattern matching to your query. It will be compared
+     * in SQL with the LIKE operator. You may use a wildcard like % to specify the
+     * pattern.
      *
      * @param description
      *            your description
@@ -46,7 +47,8 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery state(TaskState... states);
 
     /**
-     * Add your classification to your query. The classification query can be obtained from the ClassificationService
+     * Add your classification to your query. The classification query can be
+     * obtained from the ClassificationService
      *
      * @param classificationQuery
      *            the classification query
@@ -72,7 +74,7 @@ public interface TaskQuery extends BaseQuery<Task> {
      *            the domain as String
      * @return the query
      */
-    TaskQuery domain(String... domain);
+    TaskQuery domainIn(String... domain);
 
     /**
      * Add the owners to your query.
@@ -84,7 +86,8 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery owner(String... owners);
 
     /**
-     * Add the companies of the primary object reference for exact matching to your query.
+     * Add the companies of the primary object reference for exact matching to your
+     * query.
      *
      * @param companies
      *            the companies of your primary object reference
@@ -93,8 +96,9 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery primaryObjectReferenceCompanyIn(String... companies);
 
     /**
-     * Add the company of the primary object reference for pattern matching to your query. It will be compared in SQL
-     * with the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * Add the company of the primary object reference for pattern matching to your
+     * query. It will be compared in SQL with the LIKE operator. You may use a
+     * wildcard like % to specify the pattern.
      *
      * @param company
      *            the company of your primary object reference
@@ -103,7 +107,8 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery primaryObjectReferenceCompanyLike(String company);
 
     /**
-     * Add the systems of the primary object reference for exact matching to your query.
+     * Add the systems of the primary object reference for exact matching to your
+     * query.
      *
      * @param systems
      *            the systems of your primary object reference
@@ -112,8 +117,9 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery primaryObjectReferenceSystemIn(String... systems);
 
     /**
-     * Add the system of the primary object reference for pattern matching to your query. It will be compared in SQL
-     * with the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * Add the system of the primary object reference for pattern matching to your
+     * query. It will be compared in SQL with the LIKE operator. You may use a
+     * wildcard like % to specify the pattern.
      *
      * @param system
      *            the system of your primary object reference
@@ -122,7 +128,8 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery primaryObjectReferenceSystemLike(String system);
 
     /**
-     * Add the system instances of the primary object reference for exact matching to your query.
+     * Add the system instances of the primary object reference for exact matching
+     * to your query.
      *
      * @param systemInstances
      *            the system instances of your primary object reference
@@ -131,8 +138,9 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery primaryObjectReferenceSystemInstanceIn(String... systemInstances);
 
     /**
-     * Add the system instance of the primary object reference for pattern matching to your query. It will be compared
-     * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * Add the system instance of the primary object reference for pattern matching
+     * to your query. It will be compared in SQL with the LIKE operator. You may use
+     * a wildcard like % to specify the pattern.
      *
      * @param systemInstance
      *            the system instance of your primary object reference
@@ -141,7 +149,8 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery primaryObjectReferenceSystemInstanceLike(String systemInstance);
 
     /**
-     * Add the types of the primary object reference for exact matching to your query.
+     * Add the types of the primary object reference for exact matching to your
+     * query.
      *
      * @param types
      *            the types your primary object reference
@@ -150,8 +159,9 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery primaryObjectReferenceTypeIn(String... types);
 
     /**
-     * Add the type of the primary object reference for pattern matching to your query. It will be compared in SQL with
-     * the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * Add the type of the primary object reference for pattern matching to your
+     * query. It will be compared in SQL with the LIKE operator. You may use a
+     * wildcard like % to specify the pattern.
      *
      * @param type
      *            the type of your primary object reference
@@ -160,7 +170,8 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery primaryObjectReferenceTypeLike(String type);
 
     /**
-     * Add the values of the primary object reference for exact matching to your query.
+     * Add the values of the primary object reference for exact matching to your
+     * query.
      *
      * @param values
      *            the values of your primary object reference
@@ -169,8 +180,9 @@ public interface TaskQuery extends BaseQuery<Task> {
     TaskQuery primaryObjectReferenceValueIn(String... values);
 
     /**
-     * Add the value of the primary object reference for pattern matching to your query. It will be compared in SQL with
-     * the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * Add the value of the primary object reference for pattern matching to your
+     * query. It will be compared in SQL with the LIKE operator. You may use a
+     * wildcard like % to specify the pattern.
      *
      * @param value
      *            the value of your primary object reference
@@ -182,7 +194,8 @@ public interface TaskQuery extends BaseQuery<Task> {
      * Add the isRead flag to the query.
      *
      * @param isRead
-     *            as Boolean. If null, it won't be integrated into the statement. You have to set false.
+     *            as Boolean. If null, it won't be integrated into the statement.
+     *            You have to set false.
      * @return the query
      */
     TaskQuery read(Boolean isRead);
@@ -191,13 +204,15 @@ public interface TaskQuery extends BaseQuery<Task> {
      * Add the isTransferred flag to the query.
      *
      * @param isTransferred
-     *            as Boolean. If null, it won't be integrated into the statement. You have to set false.
+     *            as Boolean. If null, it won't be integrated into the statement.
+     *            You have to set false.
      * @return the query
      */
     TaskQuery transferred(Boolean isTransferred);
 
     /**
-     * Filter the custom fields with this query. The scan will be run over all 10 fields.
+     * Filter the custom fields with this query. The scan will be run over all 10
+     * fields.
      *
      * @param customFields
      *            the value in the fields

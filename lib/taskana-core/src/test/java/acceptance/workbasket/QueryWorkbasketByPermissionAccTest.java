@@ -47,7 +47,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<Workbasket> results = workbasketService.createWorkbasketQuery()
             .access(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
             .list();
-        Assert.assertEquals(7L, results.size());
+        Assert.assertEquals(8L, results.size());
     }
 
     @Ignore

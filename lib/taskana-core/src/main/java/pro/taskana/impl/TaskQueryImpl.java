@@ -91,7 +91,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskQuery domain(String... domain) {
+    public TaskQuery domainIn(String... domain) {
         this.domain = domain;
         return this;
     }
