@@ -6,7 +6,6 @@ import java.util.List;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import acceptance.AbstractAccTest;
@@ -39,7 +38,6 @@ public class GetClassificationAccTest extends AbstractAccTest {
         Assert.assertNotNull(classification);
     }
 
-    @Ignore
     @Test
     public void testGetOneClassificationForDomainAndGetClassificationFromRootDomain()
         throws SQLException, ClassificationNotFoundException {

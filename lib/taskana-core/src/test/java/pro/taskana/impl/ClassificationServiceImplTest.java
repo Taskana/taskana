@@ -143,7 +143,7 @@ public class ClassificationServiceImplTest {
 
         verify(taskanaEngineImplMock, times(2)).openConnection();
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, domain, validUntil);
-        verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, "", validUntil);
+        verify(classificationMapperMock, times(2)).findByKeyAndDomain(key, "", validUntil);
         verify(classificationMapperMock, times(2)).insert(any());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
@@ -259,6 +259,9 @@ public class ClassificationServiceImplTest {
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain(),
             ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
+            "",
+            ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
 
         try {
             cutSpy.getClassification(classification.getKey(), classification.getDomain());
@@ -266,6 +269,9 @@ public class ClassificationServiceImplTest {
             verify(taskanaEngineImplMock, times(1)).openConnection();
             verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
                 classification.getDomain(),
+                ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
+                "",
                 ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
             verify(taskanaEngineImplMock, times(1)).returnConnection();
             verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);

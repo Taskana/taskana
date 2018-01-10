@@ -267,7 +267,10 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngineImpl.openConnection();
             result = classificationMapper.findByKeyAndDomain(key, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
             if (result == null) {
-                throw new ClassificationNotFoundException(key);
+                result = classificationMapper.findByKeyAndDomain(key, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+                if (result == null) {
+                    throw new ClassificationNotFoundException(key);
+                }
             }
             return result;
         } finally {
