@@ -623,7 +623,7 @@ public class TaskServiceImplTest {
             WorkbasketAuthorization.TRANSFER);
         verify(taskanaEngineMock, times(1)).getConfiguration();
         verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
-        verify(workbasketServiceMock, times(1)).getWorkbasketByKey(destinationWorkbasket.getKey());
+        verify(workbasketServiceMock, times(2)).getWorkbasketByKey(destinationWorkbasket.getKey());
         verify(taskMapperMock, times(1)).update(any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
@@ -645,7 +645,8 @@ public class TaskServiceImplTest {
         doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
         doReturn(true).when(taskanaEngineConfigurationMock).isSecurityEnabled();
         doReturn(task).when(cutSpy).getTask(task.getId());
-        doNothing().when(taskMapperMock).update(any());
+        doReturn(destinationWorkbasket).when(workbasketServiceMock).getWorkbasketByKey(destinationWorkbasket.getKey());
+doNothing().when(taskMapperMock).update(any());
         doNothing().when(workbasketServiceMock).checkAuthorization(destinationWorkbasket.getKey(),
             WorkbasketAuthorization.APPEND);
         doNothing().when(workbasketServiceMock).checkAuthorization(task.getWorkbasketKey(),
@@ -658,6 +659,7 @@ public class TaskServiceImplTest {
             WorkbasketAuthorization.APPEND);
         verify(workbasketServiceMock, times(1)).checkAuthorization("k1",
             WorkbasketAuthorization.TRANSFER);
+        verify(workbasketServiceMock, times(1)).getWorkbasketByKey(destinationWorkbasket.getKey());
         verify(taskanaEngineMock, times(1)).getConfiguration();
         verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).update(any());
