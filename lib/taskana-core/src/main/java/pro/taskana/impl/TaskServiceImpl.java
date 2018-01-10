@@ -82,7 +82,7 @@ public class TaskServiceImpl implements TaskService {
         TaskImpl task = null;
         try {
             taskanaEngineImpl.openConnection();
-            task = (TaskImpl) getTaskById(taskId);
+            task = (TaskImpl) getTask(taskId);
             TaskState state = task.getState();
             if (state == TaskState.COMPLETED) {
                 LOGGER.warn("Method claim() found that task {} is already completed. Throwing InvalidStateException",
@@ -123,7 +123,7 @@ public class TaskServiceImpl implements TaskService {
         TaskImpl task = null;
         try {
             taskanaEngineImpl.openConnection();
-            task = (TaskImpl) this.getTaskById(taskId);
+            task = (TaskImpl) this.getTask(taskId);
             // check pre-conditions for non-forced invocation
             if (!isForced) {
                 if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
@@ -191,7 +191,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTaskById(String id) throws TaskNotFoundException {
+    public Task getTask(String id) throws TaskNotFoundException {
         LOGGER.debug("entry to getTaskById(id = {})", id);
         Task result = null;
         try {
@@ -199,6 +199,9 @@ public class TaskServiceImpl implements TaskService {
             result = taskMapper.findById(id);
             if (result != null) {
                 setPrimaryObjRef((TaskImpl) result);
+                List<Attachment> attachments = setAttachmentObjRef(
+                    attachmentMapper.findAttachmentsByTaskId(result.getId()));
+                ((TaskImpl) result).setAttachments(attachments);
                 return result;
             } else {
                 LOGGER.warn("Method getTaskById() didn't find task with id {}. Throwing TaskNotFoundException", id);
@@ -217,7 +220,7 @@ public class TaskServiceImpl implements TaskService {
         Task result = null;
         try {
             taskanaEngineImpl.openConnection();
-            TaskImpl task = (TaskImpl) getTaskById(taskId);
+            TaskImpl task = (TaskImpl) getTask(taskId);
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
             workbasketService.checkAuthorization(destinationWorkbasketKey, WorkbasketAuthorization.APPEND);
@@ -238,7 +241,7 @@ public class TaskServiceImpl implements TaskService {
             task.setModified(Timestamp.valueOf(LocalDateTime.now()));
             taskMapper.update(task);
 
-            result = getTaskById(taskId);
+            result = getTask(taskId);
             LOGGER.debug("Method transfer() transferred Task '{}' to destination workbasket {}", taskId,
                 destinationWorkbasketKey);
             return result;
@@ -254,11 +257,11 @@ public class TaskServiceImpl implements TaskService {
         Task result = null;
         try {
             taskanaEngineImpl.openConnection();
-            TaskImpl task = (TaskImpl) getTaskById(taskId);
+            TaskImpl task = (TaskImpl) getTask(taskId);
             task.setRead(true);
             task.setModified(Timestamp.valueOf(LocalDateTime.now()));
             taskMapper.update(task);
-            result = getTaskById(taskId);
+            result = getTask(taskId);
             LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", result, isRead);
             return result;
         } finally {
@@ -307,7 +310,7 @@ public class TaskServiceImpl implements TaskService {
         TaskImpl oldTaskImpl = null;
         try {
             taskanaEngineImpl.openConnection();
-            oldTaskImpl = (TaskImpl) getTaskById(newTaskImpl.getId());
+            oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
             standardUpdateActions(oldTaskImpl, newTaskImpl);
 
             taskMapper.update(newTaskImpl);
@@ -431,6 +434,23 @@ public class TaskServiceImpl implements TaskService {
         task.setPrimaryObjRef(objRef);
     }
 
+    private List<Attachment> setAttachmentObjRef(List<AttachmentImpl> attachments) {
+        List<Attachment> results = new ArrayList<>();
+        if (attachments != null && !attachments.isEmpty()) {
+            for (AttachmentImpl attachment : attachments) {
+                ObjectReference objRef = new ObjectReference();
+                objRef.setCompany(attachment.getPorCompany());
+                objRef.setSystem(attachment.getPorSystem());
+                objRef.setSystemInstance(attachment.getPorSystemInstance());
+                objRef.setType(attachment.getPorType());
+                objRef.setValue(attachment.getPorValue());
+                attachment.setObjectReference(objRef);
+                results.add(attachment);
+            }
+        }
+        return results;
+    }
+
     private void validateObjectReference(ObjectReference objRef, String objRefType, String objName)
         throws InvalidArgumentException {
         // check that all values in the ObjectReference are set correctly
@@ -465,7 +485,6 @@ public class TaskServiceImpl implements TaskService {
                 throw new InvalidArgumentException("Classification of attachment " + attachment + " must not be null");
             }
         }
-
     }
 
     private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)

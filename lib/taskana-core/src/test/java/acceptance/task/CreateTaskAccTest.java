@@ -19,6 +19,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
+import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.TaskState;
 import pro.taskana.security.JAASRunner;
@@ -72,7 +73,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
     @Test
     public void testCreateExternalTaskWithAttachment()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
@@ -87,15 +88,16 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         assertNotNull(createdTask.getId());
 
-        // rename getTaskById to getTask
-        // Task readTask = taskService.getTask(createdTask.getId());
+        Task readTask = taskService.getTask(createdTask.getId());
 
-        // assertNotNull(readTask);
-        // assertNotNull(readTask.getAttachments());
-        // assertEquals(1, readTask.getAttachments().size());
-        // assertNotNull(readTask.getAttachments().get(0).getCreated());
-        // assertNotNull(readTask.getAttachments().get(0).getModified());
-        // assertEquals(readTask.getAttachments().get(0).getCreated(), readTask.getAttachments().get(0).getModified());
+        assertNotNull(readTask);
+        assertNotNull(readTask.getAttachments());
+        assertEquals(1, readTask.getAttachments().size());
+        assertNotNull(readTask.getAttachments().get(0).getCreated());
+        assertNotNull(readTask.getAttachments().get(0).getModified());
+        assertEquals(readTask.getAttachments().get(0).getCreated(), readTask.getAttachments().get(0).getModified());
+        // assertNotNull(readTask.getAttachments().get(0).getClassification());
+        assertNotNull(readTask.getAttachments().get(0).getObjectReference());
     }
 
     @WithAccessId(
@@ -104,7 +106,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
     @Test
     public void testCreateExternalTaskWithMultipleAttachments()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
@@ -123,15 +125,16 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         assertNotNull(createdTask.getId());
 
-        // rename getTaskById to getTask
-        // Task readTask = taskService.getTask(createdTask.getId());
+        Task readTask = taskService.getTask(createdTask.getId());
 
-        // assertNotNull(readTask);
-        // assertNotNull(readTask.getAttachments());
-        // assertEquals(2, readTask.getAttachments().size());
-        // assertNotNull(readTask.getAttachments().get(1).getCreated());
-        // assertNotNull(readTask.getAttachments().get(1).getModified());
-        // assertEquals(readTask.getAttachments().get(0).getCreated(), readTask.getAttachments().get(1).getModified());
+        assertNotNull(readTask);
+        assertNotNull(readTask.getAttachments());
+        assertEquals(2, readTask.getAttachments().size());
+        assertNotNull(readTask.getAttachments().get(1).getCreated());
+        assertNotNull(readTask.getAttachments().get(1).getModified());
+        assertEquals(readTask.getAttachments().get(0).getCreated(), readTask.getAttachments().get(1).getModified());
+        // assertNotNull(readTask.getAttachments().get(0).getClassification());
+        assertNotNull(readTask.getAttachments().get(0).getObjectReference());
     }
 
     @WithAccessId(

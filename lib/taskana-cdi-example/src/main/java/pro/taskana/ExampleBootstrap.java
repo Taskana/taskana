@@ -42,7 +42,7 @@ public class ExampleBootstrap {
         taskanaEjb.getTaskService().claim(task.getId());
         System.out.println(
             "---------------------------> Task claimed: "
-                + taskanaEjb.getTaskService().getTaskById(task.getId()).getOwner());
+                + taskanaEjb.getTaskService().getTask(task.getId()).getOwner());
         taskanaEjb.getTaskService().completeTask(task.getId());
         System.out.println("---------------------------> Task completed");
     }

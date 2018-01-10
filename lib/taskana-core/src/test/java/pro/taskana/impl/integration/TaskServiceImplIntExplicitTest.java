@@ -136,11 +136,11 @@ public class TaskServiceImplIntExplicitTest {
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
         connection.commit();
-        taskServiceImpl.getTaskById(workbasket.getId());
+        taskServiceImpl.getTask(workbasket.getId());
 
         TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
-        taskServiceImpl2.getTaskById(workbasket.getId());
+        taskServiceImpl2.getTask(workbasket.getId());
         connection.commit();
     }
 
@@ -172,7 +172,7 @@ public class TaskServiceImplIntExplicitTest {
 
         TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
-        Task resultTask = taskServiceImpl2.getTaskById(task.getId());
+        Task resultTask = taskServiceImpl2.getTask(task.getId());
         Assert.assertNotNull(resultTask);
         connection.commit();
     }

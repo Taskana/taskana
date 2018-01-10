@@ -124,7 +124,7 @@ public class TaskServiceImplIntAutocommitTest {
 
         TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
-        Task resultTask = taskServiceImpl2.getTaskById(task.getId());
+        Task resultTask = taskServiceImpl2.getTask(task.getId());
         Assert.assertNotNull(resultTask);
     }
 
@@ -151,11 +151,11 @@ public class TaskServiceImplIntAutocommitTest {
         task.setClassification(classification);
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         taskServiceImpl.createTask(task);
-        taskServiceImpl.getTaskById(task.getId());
+        taskServiceImpl.getTask(task.getId());
 
         TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
-        taskServiceImpl2.getTaskById(wb.getId());
+        taskServiceImpl2.getTask(wb.getId());
     }
 
     @Test
@@ -498,7 +498,7 @@ public class TaskServiceImplIntAutocommitTest {
 
         task = taskServiceImpl.createTask(task);
 
-        Task task2 = taskServiceImpl.getTaskById(task.getId());
+        Task task2 = taskServiceImpl.getTask(task.getId());
         // skanaEngineImpl.getSqlSession().commit(); // needed so that the change is visible in the other session
 
         Assert.assertNotNull(task2);

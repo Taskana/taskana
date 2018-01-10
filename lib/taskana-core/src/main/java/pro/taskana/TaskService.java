@@ -118,7 +118,7 @@ public interface TaskService {
      * @throws TaskNotFoundException
      *             thrown of the {@link Task} with taskId is not found
      */
-    Task getTaskById(String taskId) throws TaskNotFoundException;
+    Task getTask(String taskId) throws TaskNotFoundException;
 
     /**
      * Transfer a task to another work basket. The transfer sets the transferred flag and resets the read flag.
