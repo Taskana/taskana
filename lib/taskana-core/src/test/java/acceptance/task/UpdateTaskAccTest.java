@@ -45,7 +45,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         ConcurrencyException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task task = taskService.getTaskById("TKI:000000000000000000000000000000000000");
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "7654321"));
         Task updatedTask = taskService.updateTask(task);
 
@@ -68,7 +68,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         ConcurrencyException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task task = taskService.getTaskById("TKI:000000000000000000000000000000000000");
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         task.setPrimaryObjRef(null);
         Task updatedTask = null;
         try {
@@ -120,8 +120,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         ConcurrencyException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task task = taskService.getTaskById("TKI:000000000000000000000000000000000000");
-        Task task2 = taskService.getTaskById("TKI:000000000000000000000000000000000000");
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+        Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
 
         task.setCustom1("willi");
         Task updatedTask = null;
