@@ -179,6 +179,7 @@ public class TaskServiceImpl implements TaskService {
 
                 validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
                 validateAttachments(task);
+                task.setDomain(workbasket.getDomain());
                 standardSettings(task);
                 this.taskMapper.insert(task);
                 LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
@@ -238,6 +239,7 @@ public class TaskServiceImpl implements TaskService {
 
             // transfer task from source to destination workbasket
             task.setWorkbasketKey(destinationWorkbasketKey);
+            task.setDomain(workbasketService.getWorkbasketByKey(destinationWorkbasketKey).getDomain());
             task.setModified(Timestamp.valueOf(LocalDateTime.now()));
             taskMapper.update(task);
 

@@ -30,6 +30,7 @@ public class TaskImpl implements Task {
     private TaskState state;
     private Classification classification;
     private String workbasketKey;
+    private String domain;
     private String businessProcessId;
     private String parentBusinessProcessId;
     private String owner;
@@ -178,6 +179,15 @@ public class TaskImpl implements Task {
     @Override
     public void setWorkbasketKey(String workbasketKey) {
         this.workbasketKey = workbasketKey;
+    }
+
+    @Override
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     @Override
@@ -431,6 +441,8 @@ public class TaskImpl implements Task {
         builder.append(classification);
         builder.append(", workbasketKey=");
         builder.append(workbasketKey);
+        builder.append(", domain=");
+        builder.append(domain);
         builder.append(", businessProcessId=");
         builder.append(businessProcessId);
         builder.append(", parentBusinessProcessId=");

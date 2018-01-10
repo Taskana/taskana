@@ -36,6 +36,7 @@ public interface QueryMapper {
         + "<if test='priority != null'>AND t.PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
         + "<if test='states != null'>AND t.STATE IN(<foreach item='item' collection='states' separator=',' >#{item}</foreach>)</if> "
         + "<if test='workbasketKey != null'>AND t.WORKBASKET_KEY IN(<foreach item='item' collection='workbasketKey' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='domain != null'>AND t.DOMAIN IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
         + "<if test='owner != null'>AND t.OWNER IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
         + "<if test='isRead != null'>AND t.IS_READ = #{isRead}</if> "
         + "<if test='isTransferred != null'>AND t.IS_TRANSFERRED = #{isTransferred}</if> "
@@ -83,6 +84,7 @@ public interface QueryMapper {
         @Result(property = "classification", column = "CLASSIFICATION_ID", javaType = ClassificationImpl.class,
             one = @One(select = CLASSIFICATION_FINDBYID)),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
+        @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "porCompany", column = "POR_COMPANY"),
         @Result(property = "porSystem", column = "POR_SYSTEM"),

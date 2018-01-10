@@ -144,6 +144,14 @@ public interface Task {
     void setWorkbasketKey(String workbasketKey);
 
     /**
+     * Returns the Domain, to which the Task belongs at this moment.
+     *
+     * @return domain
+     *          the current domain of the task
+     */
+    String getDomain();
+
+    /**
      * Returns the businessProcessId of a task.
      *
      * @return businessProcessId
