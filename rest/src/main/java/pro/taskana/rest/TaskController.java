@@ -60,7 +60,7 @@ public class TaskController {
     @RequestMapping(value = "/{taskId}")
     public ResponseEntity<Task> getTask(@PathVariable(value = "taskId") String taskId) {
         try {
-            Task task = taskService.getTaskById(taskId);
+            Task task = taskService.getTask(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (TaskNotFoundException e) {
             logger.error("The searched Task couldn´t be found or does not exist.", e);
@@ -89,7 +89,7 @@ public class TaskController {
         // TODO verify user
         try {
             taskService.claim(taskId);
-            Task updatedTask = taskService.getTaskById(taskId);
+            Task updatedTask = taskService.getTask(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
             logger.error("The given Task coundn´t be found/claimd or does not Exist.", e);
@@ -107,7 +107,7 @@ public class TaskController {
     public ResponseEntity<Task> completeTask(@PathVariable String taskId) {
         try {
             taskService.completeTask(taskId, true);
-            Task updatedTask = taskService.getTaskById(taskId);
+            Task updatedTask = taskService.getTask(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

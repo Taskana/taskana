@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.Map;
 
 import pro.taskana.Attachment;
@@ -20,12 +21,16 @@ public class AttachmentImpl implements Attachment {
     private Timestamp modified;
     private Classification classification;
     private ObjectReference objectReference;
+    private String porCompany;
+    private String porSystem;
+    private String porSystemInstance;
+    private String porType;
+    private String porValue;
     private String channel;
     private Timestamp received;
-    private Map<String, Object> customAttributes;
+    private Map<String, Object> customAttributes = Collections.emptyMap();;
 
     AttachmentImpl() {
-
     }
 
     @Override
@@ -114,6 +119,46 @@ public class AttachmentImpl implements Attachment {
         this.customAttributes = customAttributes;
     }
 
+    public String getPorCompany() {
+        return porCompany;
+    }
+
+    public void setPorCompany(String porCompany) {
+        this.porCompany = porCompany;
+    }
+
+    public String getPorSystem() {
+        return porSystem;
+    }
+
+    public void setPorSystem(String porSystem) {
+        this.porSystem = porSystem;
+    }
+
+    public String getPorSystemInstance() {
+        return porSystemInstance;
+    }
+
+    public void setPorSystemInstance(String porSystemInstance) {
+        this.porSystemInstance = porSystemInstance;
+    }
+
+    public String getPorType() {
+        return porType;
+    }
+
+    public void setPorType(String porType) {
+        this.porType = porType;
+    }
+
+    public String getPorValue() {
+        return porValue;
+    }
+
+    public void setPorValue(String porValue) {
+        this.porValue = porValue;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -127,6 +172,16 @@ public class AttachmentImpl implements Attachment {
         builder.append(modified);
         builder.append(", classification=");
         builder.append(classification);
+        builder.append(", porCompany=");
+        builder.append(porCompany);
+        builder.append(", porSystem=");
+        builder.append(porSystem);
+        builder.append(", porSystemInstance=");
+        builder.append(porSystemInstance);
+        builder.append(", porType=");
+        builder.append(porType);
+        builder.append(", porValue=");
+        builder.append(porValue);
         builder.append(", objectReference=");
         builder.append(objectReference);
         builder.append(", channel=");

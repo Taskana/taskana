@@ -71,13 +71,13 @@ public interface TaskMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
-
+        @Result(property = "custom10", column = "CUSTOM_10")
+    })
     TaskImpl findById(@Param("id") String id);
 
-    @Results({@Result(column = "DUE_DATE", property = "due"),
+    @Results({ @Result(column = "DUE_DATE", property = "due"),
         @Result(column = "WORKBASKET_KEY", property = "workbasketKey"),
-        @Result(column = "counter", property = "taskCounter")})
+        @Result(column = "counter", property = "taskCounter") })
     List<DueWorkbasketCounter> getTaskCountByWorkbasketIdAndDaysInPastAndState(@Param("fromDate") Date fromDate,
         @Param("status") List<TaskState> states);
 
@@ -131,8 +131,7 @@ public interface TaskMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
-
+        @Result(property = "custom10", column = "CUSTOM_10") })
     List<TaskImpl> findTasksByWorkbasketIdAndState(@Param("workbasketKey") String workbasketKey,
         @Param("taskState") TaskState taskState);
 
@@ -151,5 +150,4 @@ public interface TaskMapper {
         @Result(property = "classificationName", column = "classificationName")
     })
     List<TaskSummary> findTaskSummariesByWorkbasketKey(@Param("workbasketKey") String workbasketKey);
-
 }
