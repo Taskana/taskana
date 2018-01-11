@@ -16,6 +16,7 @@ import org.junit.Test;
 import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
@@ -39,9 +40,12 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         assertNotNull(classification);
         assertEquals("", classification.getDomain());
 
-        List<Classification> classifications = classificationService.getAllClassificationsWithKey("L140101",
+        List<ClassificationSummary> classifications = classificationService.getAllClassifications("L140101",
             "DOMAIN_A");
-        Date lastOneValidUntil = classifications.get(classifications.size() - 1).getValidUntil();
+        ClassificationSummary temp = classifications.get(classifications.size() - 1);
+        classification = classificationService.getClassification(temp.getKey(), temp.getDomain());
+
+        Date lastOneValidUntil = classification.getValidUntil();
         assertTrue(lastOneValidUntil.before(new Date(System.currentTimeMillis())));
     }
 

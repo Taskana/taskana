@@ -8,13 +8,14 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.impl.util.LoggerUtils;
 
 /**
  * Implementation of ClassificationQuery interface.
+ *
  * @author EH
  */
 public class ClassificationQueryImpl implements ClassificationQuery {
@@ -37,9 +38,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private Date[] validFrom;
     private Date[] validUntil;
 
-
     private String[] applicationEntryPoint;
-
 
     public ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -136,9 +135,9 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public List<Classification> list() {
+    public List<ClassificationSummary> list() {
         LOGGER.debug("entry to list(), this = {}", this);
-        List<Classification> result = null;
+        List<ClassificationSummary> result = null;
         try {
             taskanaEngineImpl.openConnection();
             result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
@@ -147,15 +146,16 @@ public class ClassificationQueryImpl implements ClassificationQuery {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
             }
         }
     }
 
     @Override
-    public List<Classification> list(int offset, int limit) {
+    public List<ClassificationSummary> list(int offset, int limit) {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
-        List<Classification> result = null;
+        List<ClassificationSummary> result = null;
         try {
             taskanaEngineImpl.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
@@ -165,15 +165,16 @@ public class ClassificationQueryImpl implements ClassificationQuery {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
             }
         }
     }
 
     @Override
-    public Classification single() {
+    public ClassificationSummary single() {
         LOGGER.debug("entry to single(), this = {}", this);
-        Classification result = null;
+        ClassificationSummary result = null;
         try {
             taskanaEngineImpl.openConnection();
             result = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
@@ -338,5 +339,4 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         builder.append("]");
         return builder.toString();
     }
-
 }

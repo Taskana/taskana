@@ -6,8 +6,8 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
-import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.ClassificationQueryImpl;
+import pro.taskana.impl.ClassificationSummaryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskQueryImpl;
@@ -109,27 +109,13 @@ public interface QueryMapper {
         + "</where>"
         + "</script>")
     @Results({ @Result(property = "id", column = "ID"),
-        @Result(property = "parentClassificationId", column = "PARENT_CLASSIFICATION_ID"),
+        @Result(property = "key", column = "KEY"),
         @Result(property = "category", column = "CATEGORY"),
         @Result(property = "type", column = "TYPE"),
         @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "isValidInDomain", column = "VALID_IN_DOMAIN"),
-        @Result(property = "created", column = "CREATED"),
         @Result(property = "name", column = "NAME"),
-        @Result(property = "description", column = "DESCRIPTION"),
-        @Result(property = "priority", column = "PRIORITY"),
-        @Result(property = "serviceLevel", column = "SERVICE_LEVEL"),
-        @Result(property = "custom1", column = "CUSTOM_1"),
-        @Result(property = "custom2", column = "CUSTOM_2"),
-        @Result(property = "custom3", column = "CUSTOM_3"),
-        @Result(property = "custom4", column = "CUSTOM_4"),
-        @Result(property = "custom5", column = "CUSTOM_5"),
-        @Result(property = "custom6", column = "CUSTOM_6"),
-        @Result(property = "custom7", column = "CUSTOM_7"),
-        @Result(property = "custom8", column = "CUSTOM_8"),
-        @Result(property = "validFrom", column = "VALID_FROM"),
         @Result(property = "validUntil", column = "VALID_UNTIL") })
-    List<ClassificationImpl> queryClassification(ClassificationQueryImpl classificationQuery);
+    List<ClassificationSummaryImpl> queryClassification(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
         + "FROM OBJECT_REFERENCE "
@@ -194,5 +180,4 @@ public interface QueryMapper {
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
     List<WorkbasketSummary> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
-
 }

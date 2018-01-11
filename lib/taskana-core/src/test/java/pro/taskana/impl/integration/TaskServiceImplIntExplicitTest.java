@@ -25,7 +25,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
@@ -115,7 +114,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setKey("k1");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
-        Classification classification = classificationService.newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
         taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
@@ -190,12 +189,11 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setName("workbasket99");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
-        workBasketServiceImpl.createWorkbasket(workbasket);
-        Classification classification = classificationService.newClassification();
+        workbasket = workBasketServiceImpl.createWorkbasket(workbasket);
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
-        workbasket.setName("workbasket99");
-        classificationServiceImpl.createClassification(classification);
+        classification = (ClassificationImpl) classificationServiceImpl.createClassification(classification);
 
         Task task = taskServiceImpl.newTask();
         task.setName("Unit Test Task");
@@ -220,7 +218,7 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Classification classification = classificationService.newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST1");
         classification.setDomain("novatec");
         classification.setCategory("MANUAL");
@@ -319,9 +317,9 @@ public class TaskServiceImplIntExplicitTest {
         wb = workbasketService.createWorkbasket(wb);
         this.createWorkbasketWithSecurity(wb, CurrentUserContext.getUserid(), true, true,
             true, false);
-        Classification classification = classificationService.newClassification(); // not persisted, not found.
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setDomain(wb.getDomain());
-        classification.setName("not persisted - so not found.");
+        classification.setName("not persisted - so not found object.");
         classification.setKey(UUID.randomUUID().toString());
 
         Task task = this.generateDummyTask();
@@ -342,7 +340,7 @@ public class TaskServiceImplIntExplicitTest {
 
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket();
         workbasket.setName("workbasket");
-        Classification classification = classificationService.newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
         classificationService.createClassification(classification);
@@ -567,7 +565,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setDomain("novatec");
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
 
-        Classification classification = classificationService.newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
         taskanaEngine.getClassificationService().createClassification(classification);

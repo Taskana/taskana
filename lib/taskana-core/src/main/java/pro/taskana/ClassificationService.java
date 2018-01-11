@@ -4,7 +4,6 @@ import java.util.List;
 
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
@@ -15,16 +14,14 @@ public interface ClassificationService {
     /**
      * Get all available Classifications as a tree.
      *
-     * @return The List of all Classifications
+     * @return The List of all ClassificationSummaries
      * @throws NotAuthorizedException
      *             if the permissions are not granted for this specific interaction.
-     * @throws InvalidArgumentException
-     *             if the given permissions/UserContext or Base-Object is NULL.
      */
-    List<Classification> getClassificationTree() throws NotAuthorizedException, InvalidArgumentException;
+    List<ClassificationSummary> getClassificationTree() throws NotAuthorizedException;
 
     /**
-     * Get all Classifications with the given key. Returns also older and domain-specific versions of the
+     * Get all ClassificationSummaries with the given key. Returns also older and domain-specific versions of the
      * classification.
      *
      * @param key
@@ -33,7 +30,7 @@ public interface ClassificationService {
      *            the domain of the searched-for classifications
      * @return List with all versions of the Classification
      */
-    List<Classification> getAllClassificationsWithKey(String key, String domain);
+    List<ClassificationSummary> getAllClassifications(String key, String domain);
 
     /**
      * Get the Classification for key and domain. If there's no Classification in the given domain, return the
