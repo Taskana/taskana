@@ -9,14 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngine;
-import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
+import pro.taskana.security.CurrentUserContext;
 
 /**
  * WorkbasketQuery for generating dynamic SQL.
@@ -113,26 +114,38 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         if (permission == null) {
             throw new InvalidArgumentException("permission must not be null");
         }
+
+        String[] tempAccessIds = null;
+
         if (accessIds == null || accessIds.length == 0) {
-            throw new InvalidArgumentException("accessIds must not be empty");
+            List<String> userCtxAccessIds = CurrentUserContext.getAccessIds();
+            tempAccessIds = new String[userCtxAccessIds.size()];
+            userCtxAccessIds.toArray(tempAccessIds);
+        } else {
+            tempAccessIds = accessIds;
         }
-        this.authorization = permission;
-        this.accessId = accessIds;
+
         if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-            for (int i = 0; i < accessIds.length; i++) {
-                String id = accessIds[i];
+            for (int i = 0; i < tempAccessIds.length; i++) {
+                String id = tempAccessIds[i];
                 if (id != null) {
-                    accessIds[i] = id.toLowerCase();
+                    tempAccessIds[i] = id.toLowerCase();
+                } else {
+                    tempAccessIds[i] = null;
                 }
             }
         }
+
+        this.authorization = permission;
+        this.accessId = tempAccessIds;
+
         return this;
     }
 
     @Override
-    public List<Workbasket> list() throws NotAuthorizedException {
+    public List<WorkbasketSummary> list() throws NotAuthorizedException {
         LOGGER.debug("entry to list(), this = {}", this);
-        List<Workbasket> result = null;
+        List<WorkbasketSummary> result = null;
         try {
             taskanaEngineImpl.openConnection();
             result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
@@ -148,9 +161,9 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public List<Workbasket> list(int offset, int limit) throws NotAuthorizedException {
+    public List<WorkbasketSummary> list(int offset, int limit) throws NotAuthorizedException {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
-        List<Workbasket> result = null;
+        List<WorkbasketSummary> result = null;
         try {
             taskanaEngineImpl.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
@@ -167,9 +180,9 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public Workbasket single() throws NotAuthorizedException {
+    public WorkbasketSummary single() throws NotAuthorizedException {
         LOGGER.debug("entry to single(), this = {}", this);
-        WorkbasketImpl result = null;
+        WorkbasketSummary result = null;
         try {
             taskanaEngineImpl.openConnection();
             result = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
@@ -184,96 +197,48 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return accessId;
     }
 
-    public void setAccessId(String[] accessId) {
-        this.accessId = accessId;
-    }
-
     public WorkbasketAuthorization getAuthorization() {
         return authorization;
-    }
-
-    public void setAuthorization(WorkbasketAuthorization authorization) {
-        this.authorization = authorization;
     }
 
     public String[] getName() {
         return name;
     }
 
-    public void setName(String[] name) {
-        this.name = name;
-    }
-
     public String[] getKey() {
         return key;
-    }
-
-    public void setKey(String[] key) {
-        this.key = key;
     }
 
     public String[] getDomain() {
         return domain;
     }
 
-    public void setDomain(String[] domain) {
-        this.domain = domain;
-    }
-
     public WorkbasketType[] getType() {
         return type;
-    }
-
-    public void setType(WorkbasketType[] type) {
-        this.type = type;
     }
 
     public Date getCreatedAfter() {
         return createdAfter;
     }
 
-    public void setCreatedAfter(Date createdAfter) {
-        this.createdAfter = createdAfter;
-    }
-
     public Date getCreatedBefore() {
         return createdBefore;
-    }
-
-    public void setCreatedBefore(Date createdBefore) {
-        this.createdBefore = createdBefore;
     }
 
     public Date getModifiedAfter() {
         return modifiedAfter;
     }
 
-    public void setModifiedAfter(Date modifiedAfter) {
-        this.modifiedAfter = modifiedAfter;
-    }
-
     public Date getModifiedBefore() {
         return modifiedBefore;
-    }
-
-    public void setModifiedBefore(Date modifiedBefore) {
-        this.modifiedBefore = modifiedBefore;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String[] getOwner() {
         return owner;
-    }
-
-    public void setOwner(String[] owner) {
-        this.owner = owner;
     }
 
     @Override

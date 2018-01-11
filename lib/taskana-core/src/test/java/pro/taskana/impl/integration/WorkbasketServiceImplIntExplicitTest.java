@@ -31,6 +31,7 @@ import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.WorkbasketAccessItem;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 
 /**
@@ -207,8 +208,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket2.setType(WorkbasketType.GROUP);
         workbasket2.setDomain("novatec");
         workbasket2.setDistributionTargets(new ArrayList<>());
-        workbasket2.getDistributionTargets().add(workbasket0);
-        workbasket2.getDistributionTargets().add(workbasket1);
+        workbasket2.getDistributionTargets().add(workbasket0.asSummary());
+        workbasket2.getDistributionTargets().add(workbasket1.asSummary());
         workBasketService.createWorkbasket(workbasket2);
         Workbasket foundWorkbasket = workBasketService.getWorkbasket(id2);
         Assert.assertEquals(id2, foundWorkbasket.getId());
@@ -248,8 +249,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket2.setDistributionTargets(new ArrayList<>());
         workbasket2.setType(WorkbasketType.GROUP);
         workbasket2.setDomain("novatec");
-        workbasket2.getDistributionTargets().add(workbasket0);
-        workbasket2.getDistributionTargets().add(workbasket1);
+        workbasket2.getDistributionTargets().add(workbasket0.asSummary());
+        workbasket2.getDistributionTargets().add(workbasket1.asSummary());
         workBasketService.createWorkbasket(workbasket2);
 
         WorkbasketImpl workbasket3 = (WorkbasketImpl) workBasketService.newWorkbasket();
@@ -261,13 +262,13 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket3.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket3);
         workbasket2.getDistributionTargets().clear();
-        workbasket2.getDistributionTargets().add(workbasket3);
+        workbasket2.getDistributionTargets().add(workbasket3.asSummary());
         Thread.sleep(SLEEP_TIME);
         workBasketService.updateWorkbasket(workbasket2);
 
         Workbasket foundBasket = workBasketService.getWorkbasket(workbasket2.getId());
 
-        List<Workbasket> distributionTargets = foundBasket.getDistributionTargets();
+        List<WorkbasketSummary> distributionTargets = foundBasket.getDistributionTargets();
         Assert.assertEquals(1, distributionTargets.size());
         Assert.assertEquals(workbasket3.getId(), distributionTargets.get(0).getId());
         Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),
