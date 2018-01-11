@@ -31,6 +31,7 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
@@ -147,6 +148,7 @@ public class WorkbasketServiceImplTest {
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
             throw ex;
         }
+
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
@@ -176,7 +178,6 @@ public class WorkbasketServiceImplTest {
         doReturn(wb).when(workbasketMapperMock).findByKey(wbKey);
 
         Workbasket actualWb = cutSpy.getWorkbasketByKey(wbKey);
-
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(cutSpy, times(1)).checkAuthorization(wbKey, authorization);
         verify(workbasketMapperMock, times(1)).findByKey(wbKey);
@@ -284,6 +285,7 @@ public class WorkbasketServiceImplTest {
             assertThat(wb.getCreated(), not(equalTo(null)));
             assertThat(wb.getModified(), not(equalTo(null)));
         }
+
     }
 
     @Test
@@ -391,11 +393,11 @@ public class WorkbasketServiceImplTest {
         return workbasket;
     }
 
-    private List<Workbasket> createTestDistributionTargets(int amount) {
-        List<Workbasket> distributionsTargets = new ArrayList<>();
+    private List<WorkbasketSummary> createTestDistributionTargets(int amount) {
+        List<WorkbasketSummary> distributionsTargets = new ArrayList<>();
         amount = (amount < 0) ? 0 : amount;
         for (int i = 0; i < amount; i++) {
-            distributionsTargets.add(createTestWorkbasket("WB-ID-" + i, "WB-KEY-" + i));
+            distributionsTargets.add(createTestWorkbasket("WB-ID-" + i, "WB-KEY-" + i).asSummary());
         }
         return distributionsTargets;
     }
