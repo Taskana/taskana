@@ -32,6 +32,7 @@ import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.WorkbasketAccessItem;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -185,8 +186,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         String id2 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
         workbasket2.setDistributionTargets(new ArrayList<>());
-        workbasket2.getDistributionTargets().add(workbasket0);
-        workbasket2.getDistributionTargets().add(workbasket1);
+        workbasket2.getDistributionTargets().add(workbasket0.asSummary());
+        workbasket2.getDistributionTargets().add(workbasket1.asSummary());
         workbasket2 = workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
 
@@ -215,8 +216,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         String id2 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
         workbasket2.setDistributionTargets(new ArrayList<>());
-        workbasket2.getDistributionTargets().add(workbasket0);
-        workbasket2.getDistributionTargets().add(workbasket1);
+        workbasket2.getDistributionTargets().add(workbasket0.asSummary());
+        workbasket2.getDistributionTargets().add(workbasket1.asSummary());
         workbasket2 = workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
 
@@ -224,19 +225,19 @@ public class WorkbasketServiceImplIntExplicitTest {
         Workbasket workbasket3 = createTestWorkbasket(id3, "key3", "novatec", "hm ... irgend ein basket",
             WorkbasketType.GROUP);
         workbasket3.setDistributionTargets(new ArrayList<>());
-        workbasket3.getDistributionTargets().add(workbasket0);
-        workbasket3.getDistributionTargets().add(workbasket1);
+        workbasket3.getDistributionTargets().add(workbasket0.asSummary());
+        workbasket3.getDistributionTargets().add(workbasket1.asSummary());
         workbasket3 = workBasketService.createWorkbasket(workbasket3);
         createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
 
         workbasket2.getDistributionTargets().clear();
-        workbasket2.getDistributionTargets().add(workbasket3);
+        workbasket2.getDistributionTargets().add(workbasket3.asSummary());
         Thread.sleep(SLEEP_TIME);
         workbasket2 = workBasketService.updateWorkbasket(workbasket2);
 
         Workbasket foundBasket = workBasketService.getWorkbasket(workbasket2.getId());
 
-        List<Workbasket> distributionTargets = foundBasket.getDistributionTargets();
+        List<WorkbasketSummary> distributionTargets = foundBasket.getDistributionTargets();
         Assert.assertEquals(1, distributionTargets.size());
         Assert.assertEquals(workbasket3.getId(), distributionTargets.get(0).getId());
         Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),

@@ -2,7 +2,6 @@ package pro.taskana.model.mappings;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
@@ -12,9 +11,9 @@ import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskQueryImpl;
-import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.model.ObjectReference;
+import pro.taskana.model.WorkbasketSummary;
 
 /**
  * This class provides a mapper for all queries.
@@ -149,7 +148,7 @@ public interface QueryMapper {
         @Result(property = "value", column = "VALUE") })
     List<ObjectReference> queryObjectReference(ObjectReferenceQueryImpl objectReference);
 
-    @Select("<script>SELECT w.ID, w.KEY, w.CREATED, w.MODIFIED, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.CUSTOM_1, w.CUSTOM_2, w.CUSTOM_3, w.CUSTOM_4, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
+    @Select("<script>SELECT w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
         + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.KEY = a.WORKBASKET_KEY</if> "
         + "<where>"
         + "<if test='owner != null'>AND w.OWNER IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
@@ -184,31 +183,14 @@ public interface QueryMapper {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "name", column = "NAME"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "type", column = "TYPE"),
         @Result(property = "description", column = "DESCRIPTION"),
         @Result(property = "owner", column = "OWNER"),
-        @Result(property = "distributionTargets", column = "id", javaType = List.class,
-            many = @Many(select = "findDistributionTargets")),
-        @Result(property = "custom1", column = "CUSTOM_1"),
-        @Result(property = "custom2", column = "CUSTOM_2"),
-        @Result(property = "custom3", column = "CUSTOM_3"),
-        @Result(property = "custom4", column = "CUSTOM_4"),
+        @Result(property = "domain", column = "DOMAIN"),
+        @Result(property = "type", column = "TYPE"),
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
-    List<WorkbasketImpl> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
-
-    @Select("<script>SELECT TARGET_ID from DISTRIBUTION_TARGETS "
-        + "<where>"
-        + "SOURCE_ID = #{sourceId}"
-        + "</where>"
-        + "</script>")
-    @Results(value = {
-        @Result(property = "distributionTarget", column = "TARGET_ID") })
-    List<String> findDistributionTargets(String sourceId);
+    List<WorkbasketSummary> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
 
 }

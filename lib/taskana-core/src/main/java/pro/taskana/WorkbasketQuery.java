@@ -4,12 +4,13 @@ import java.util.Date;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 
 /**
  * WorkitemQuery for generating dynamic sql.
  */
-public interface WorkbasketQuery extends BaseQuery<Workbasket> {
+public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
 
     /**
      * Add your keys to your query.

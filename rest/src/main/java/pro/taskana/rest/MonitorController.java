@@ -18,12 +18,12 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
-import pro.taskana.Workbasket;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.rest.model.WorkbasketCounterDataDto;
 import pro.taskana.rest.model.WorkbasketCounterDto;
 
 @RestController
-@RequestMapping(path = "/v1/monitor", produces = { MediaType.APPLICATION_JSON_VALUE })
+@RequestMapping(path = "/v1/monitor", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class MonitorController {
 
     @Autowired
@@ -62,7 +62,7 @@ public class MonitorController {
 
             List<WorkbasketCounterDataDto> data = new ArrayList<>();
 
-            for (Workbasket workbasket : workbasketService.getWorkbaskets()) {
+            for (WorkbasketSummary workbasket : workbasketService.getWorkbaskets()) {
                 WorkbasketCounterDataDto counterDto = new WorkbasketCounterDataDto();
                 counterDto.setLabel(workbasket.getName());
                 List<Integer> zeroData = new ArrayList<>();
