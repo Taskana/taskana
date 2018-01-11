@@ -188,7 +188,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public List<Task> list() throws NotAuthorizedException, SystemException {
+    public List<Task> list() throws NotAuthorizedException {
         LOGGER.debug("entry to list(), this = {}", this);
         List<Task> result = new ArrayList<>();
         try {
@@ -218,7 +218,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public List<Task> list(int offset, int limit) throws NotAuthorizedException, SystemException {
+    public List<Task> list(int offset, int limit) throws NotAuthorizedException {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<Task> result = new ArrayList<>();
         try {
@@ -249,7 +249,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskImpl single() throws NotAuthorizedException, SystemException {
+    public TaskImpl single() throws NotAuthorizedException {
         LOGGER.debug("entry to single(), this = {}", this);
         TaskImpl taskImpl = null;
         try {
@@ -291,168 +291,83 @@ public class TaskQueryImpl implements TaskQuery {
         return name;
     }
 
-    public void setName(String[] name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
     }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public int[] getPriority() {
         return priority;
-    }
-
-    public void setPriority(int[] priority) {
-        this.priority = priority;
     }
 
     public TaskState[] getStates() {
         return states;
     }
 
-    public void setStates(TaskState[] states) {
-        this.states = states;
-    }
-
     public String[] getClassificationKey() {
         return classificationKey;
-    }
-
-    public void setClassificationKey(String[] classificationKey) {
-        this.classificationKey = classificationKey;
     }
 
     public String[] getWorkbasketKey() {
         return workbasketKey;
     }
 
-    public void setWorkbasketKey(String[] workbasketKey) {
-        this.workbasketKey = workbasketKey;
-    }
-
     public String[] getDomain() {
         return domain;
-    }
-
-    public void setDomain(String[] domain) {
-        this.domain = domain;
     }
 
     public String[] getOwner() {
         return owner;
     }
 
-    public void setOwner(String[] owner) {
-        this.owner = owner;
-    }
-
     public String[] getCustomFields() {
         return customFields;
-    }
-
-    public void setCustomFields(String[] customFields) {
-        this.customFields = customFields;
     }
 
     public Boolean getIsRead() {
         return isRead;
     }
 
-    public void setIsRead(Boolean isRead) {
-        this.isRead = isRead;
-    }
-
     public Boolean getIsTransferred() {
         return isTransferred;
-    }
-
-    public void setIsTransferred(Boolean isTransferred) {
-        this.isTransferred = isTransferred;
     }
 
     public String[] getPorCompanyIn() {
         return porCompanyIn;
     }
 
-    public void setPorCompanyIn(String[] porCompanyIn) {
-        this.porCompanyIn = porCompanyIn;
-    }
-
     public String getPorCompanyLike() {
         return porCompanyLike;
-    }
-
-    public void setPorCompanyLike(String porCompanyLike) {
-        this.porCompanyLike = porCompanyLike;
     }
 
     public String[] getPorSystemIn() {
         return porSystemIn;
     }
 
-    public void setPorSystemIn(String[] porSystemIn) {
-        this.porSystemIn = porSystemIn;
-    }
-
     public String getPorSystemLike() {
         return porSystemLike;
-    }
-
-    public void setPorSystemLike(String porSystemLike) {
-        this.porSystemLike = porSystemLike;
     }
 
     public String[] getPorSystemInstanceIn() {
         return porSystemInstanceIn;
     }
 
-    public void setPorSystemInstanceIn(String[] porSystemInstanceIn) {
-        this.porSystemInstanceIn = porSystemInstanceIn;
-    }
-
     public String getPorSystemInstanceLike() {
         return porSystemInstanceLike;
-    }
-
-    public void setPorSystemInstanceLike(String porSystemInstanceLike) {
-        this.porSystemInstanceLike = porSystemInstanceLike;
     }
 
     public String[] getPorTypeIn() {
         return porTypeIn;
     }
 
-    public void setPorTypeIn(String[] porTypeIn) {
-        this.porTypeIn = porTypeIn;
-    }
-
     public String getPorTypeLike() {
         return porTypeLike;
-    }
-
-    public void setPorTypeLike(String porTypeLike) {
-        this.porTypeLike = porTypeLike;
     }
 
     public String[] getPorValueIn() {
         return porValueIn;
     }
 
-    public void setPorValueIn(String[] porValueIn) {
-        this.porValueIn = porValueIn;
-    }
-
     public String getPorValueLike() {
         return porValueLike;
-    }
-
-    public void setPorValueLike(String porValueLike) {
-        this.porValueLike = porValueLike;
     }
 
     @Override
