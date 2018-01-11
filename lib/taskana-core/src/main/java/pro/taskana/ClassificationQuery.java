@@ -5,18 +5,20 @@ import java.util.Date;
 /**
  * ClassificationQuery for generating dynamic sql.
  */
-public interface ClassificationQuery extends BaseQuery<Classification> {
+public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
 
     /**
      * Add your key to your query.
+     *
      * @param key
-     *           as String
+     *            as String
      * @return the query
      */
     ClassificationQuery key(String... key);
 
     /**
      * Add your parentClassificationKey to your query.
+     *
      * @param parentClassificationKey
      *            as String
      * @return the query
@@ -25,6 +27,7 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
 
     /**
      * Add your category to your query.
+     *
      * @param category
      *            as String
      * @return the query
@@ -33,6 +36,7 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
 
     /**
      * Add your type to your query.
+     *
      * @param type
      *            as String
      * @return the query
@@ -40,28 +44,35 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
     ClassificationQuery type(String... type);
 
     /**
-     * Add your domain to your query.
-     * @param domain TODO
-     * @return TODO
+     * Add your domains to your query which are used as filter.
+     *
+     * @param domain
+     *            or domains for filtering.
+     * @return the query
      */
     ClassificationQuery domain(String... domain);
 
     /**
      * Add to your query if the Classification shall be valid in its domain.
-     * @param validInDomain TODO
-     * @return TODO
+     *
+     * @param validInDomain
+     *            a simple flag showing if domain is valid
+     * @return the query
      */
     ClassificationQuery validInDomain(Boolean validInDomain);
 
     /**
      * Add your created-Dates to your query.
-     * @param created TODO
-     * @return TODO
+     *
+     * @param created
+     *            date of classification creation.
+     * @return the query
      */
     ClassificationQuery created(Date... created);
 
     /**
      * Add your name to your query.
+     *
      * @param name
      *            as String
      * @return the query
@@ -69,8 +80,9 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
     ClassificationQuery name(String... name);
 
     /**
-     * Add your description to your query. It will be compared in SQL with an LIKE.
-     * If you use a wildcard like % tehn it will be transmitted to the database.
+     * Add your description to your query. It will be compared in SQL with an LIKE. If you use a wildcard like % tehn it
+     * will be transmitted to the database.
+     *
      * @param description
      *            your description
      * @return the query
@@ -79,6 +91,7 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
 
     /**
      * Add your priority to your query.
+     *
      * @param priorities
      *            as integers
      * @return the query
@@ -87,6 +100,7 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
 
     /**
      * Add your serviceLevel to your query.
+     *
      * @param serviceLevel
      *            as String
      * @return the query
@@ -95,29 +109,37 @@ public interface ClassificationQuery extends BaseQuery<Classification> {
 
     /**
      * Add your applicationEntryPoint to your query.
-     * @param applicationEntryPoint TODO
+     *
+     * @param applicationEntryPoint
+     *            name of the applications entrypoint
      * @return the query
      */
     ClassificationQuery applicationEntryPoint(String... applicationEntryPoint);
 
     /**
      * Add your customFields to your query.
-     * @param customFields TODO
-     * @return TODO
+     *
+     * @param customFields
+     *            filtering the content of all custom attributes
+     * @return the query
      */
     ClassificationQuery customFields(String... customFields);
 
     /**
      * Define after which date the classifications should be valid.
-     * @param validFrom TODO
-     * @return TODO
+     *
+     * @param validFrom
+     *            date when the classification was valid from
+     * @return the query
      */
     ClassificationQuery validFrom(Date... validFrom);
 
     /**
      * Define until which date the classifications should be valid.
-     * @param validUntil TODO
-     * @return TODO
+     *
+     * @param validUntil
+     *            date until the classification will be or was valid
+     * @return the query
      */
     ClassificationQuery validUntil(Date... validUntil);
 }

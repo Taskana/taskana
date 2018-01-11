@@ -33,7 +33,8 @@ public class ClassificationImpl implements Classification {
     private Date validFrom;
     private Date validUntil;
 
-    ClassificationImpl() { }
+    ClassificationImpl() {
+    }
 
     @Override
     public String getId() {
@@ -49,6 +50,7 @@ public class ClassificationImpl implements Classification {
         return key;
     }
 
+    @Override
     public void setKey(String key) {
         this.key = key;
     }
@@ -68,7 +70,6 @@ public class ClassificationImpl implements Classification {
         return type;
     }
 
-    @Override
     public void setType(String type) {
         this.type = type;
     }
@@ -88,7 +89,6 @@ public class ClassificationImpl implements Classification {
         return this.domain;
     }
 
-    @Override
     public void setDomain(String domain) {
         this.domain = domain;
     }
@@ -98,6 +98,7 @@ public class ClassificationImpl implements Classification {
         return isValidInDomain;
     }
 
+    @Override
     public void setIsValidInDomain(Boolean isValidInDomain) {
         this.isValidInDomain = isValidInDomain;
     }

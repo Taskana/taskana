@@ -651,7 +651,7 @@ public class TaskServiceImplTest {
         doReturn(true).when(taskanaEngineConfigurationMock).isSecurityEnabled();
         doReturn(task).when(cutSpy).getTask(task.getId());
         doReturn(destinationWorkbasket).when(workbasketServiceMock).getWorkbasketByKey(destinationWorkbasket.getKey());
-doNothing().when(taskMapperMock).update(any());
+        doNothing().when(taskMapperMock).update(any());
         doNothing().when(workbasketServiceMock).checkAuthorization(destinationWorkbasket.getKey(),
             WorkbasketAuthorization.APPEND);
         doNothing().when(workbasketServiceMock).checkAuthorization(task.getWorkbasketKey(),
@@ -921,7 +921,7 @@ doNothing().when(taskMapperMock).update(any());
         Timestamp now = new Timestamp(System.currentTimeMillis());
         task.setCreated(now);
         task.setModified(now);
-        Classification classification = new ClassificationImpl();
+        ClassificationImpl classification = new ClassificationImpl();
         classification.setName("dummy-classification");
         classification.setDomain("dummy-domain");
         classification.setKey("dummy-classification-key");

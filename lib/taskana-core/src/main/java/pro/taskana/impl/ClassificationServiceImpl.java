@@ -12,11 +12,11 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
@@ -40,42 +40,43 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public List<Classification> getClassificationTree() throws NotAuthorizedException, InvalidArgumentException {
+    public List<ClassificationSummary> getClassificationTree() throws NotAuthorizedException {
         LOGGER.debug("entry to getClassificationTree()");
-        List<Classification> result = null;
+        List<ClassificationSummary> rootClassificationSumamries = null;
         try {
             taskanaEngineImpl.openConnection();
-            List<Classification> rootClassifications;
-            rootClassifications = this.createClassificationQuery()
+            rootClassificationSumamries = this.createClassificationQuery()
                 .parentClassificationKey("")
                 .validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL)
                 .list();
-            rootClassifications = this.populateChildClassifications(rootClassifications);
-            return rootClassifications;
+            rootClassificationSumamries = this.populateChildClassifications(rootClassificationSumamries);
+            return rootClassificationSumamries;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
+                int numberOfResultObjects = rootClassificationSumamries == null ? 0
+                    : rootClassificationSumamries.size();
                 LOGGER.debug("exit from getClassificationTree(). Returning {} resulting Objects: {} ",
-                    numberOfResultObjects, LoggerUtils.listToString(result));
+                    numberOfResultObjects, LoggerUtils.listToString(rootClassificationSumamries));
             }
         }
     }
 
-    private List<Classification> populateChildClassifications(List<Classification> classifications)
-        throws NotAuthorizedException, InvalidArgumentException {
+    private List<ClassificationSummary> populateChildClassifications(
+        List<ClassificationSummary> classificationSumamries)
+        throws NotAuthorizedException {
         try {
             taskanaEngineImpl.openConnection();
-            List<Classification> children = new ArrayList<>();
-            for (Classification classification : classifications) {
-                List<Classification> childClassifications = this.createClassificationQuery()
+            List<ClassificationSummary> children = new ArrayList<>();
+            for (ClassificationSummary classification : classificationSumamries) {
+                List<ClassificationSummary> childClassifications = this.createClassificationQuery()
                     .parentClassificationKey(classification.getKey())
                     .validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL)
                     .list();
                 children.addAll(populateChildClassifications(childClassifications));
             }
-            classifications.addAll(children);
-            return classifications;
+            classificationSumamries.addAll(children);
+            return classificationSumamries;
         } finally {
             taskanaEngineImpl.returnConnection();
         }
@@ -143,9 +144,10 @@ public class ClassificationServiceImpl implements ClassificationService {
     @Override
     public void updateClassification(Classification classification) {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
+        ClassificationImpl classificationImpl = null;
         try {
             taskanaEngineImpl.openConnection();
-            ClassificationImpl classificationImpl = (ClassificationImpl) classification;
+            classificationImpl = (ClassificationImpl) classification;
             this.initDefaultClassificationValues(classificationImpl);
 
             ClassificationImpl oldClassification = null;
@@ -229,31 +231,32 @@ public class ClassificationServiceImpl implements ClassificationService {
      * @param oldClassification
      * @param newClassification
      */
-    private void updateExistingClassification(ClassificationImpl oldClassification,
+    private Classification updateExistingClassification(ClassificationImpl oldClassification,
         ClassificationImpl newClassification) {
         oldClassification.setValidUntil(Date.valueOf(LocalDate.now().minusDays(1)));
         classificationMapper.update(oldClassification);
         classificationMapper.insert(newClassification);
         LOGGER.debug("Method updateClassification() updated old classification {} and inserted new {}.",
             oldClassification, newClassification);
+        return newClassification;
     }
 
     @Override
-    public List<Classification> getAllClassificationsWithKey(String key, String domain) {
+    public List<ClassificationSummary> getAllClassifications(String key, String domain) {
         LOGGER.debug("entry to getAllClassificationsWithKey(key = {}, domain = {})", key, domain);
-        List<Classification> result = null;
+        List<ClassificationSummary> results = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
-            List<ClassificationImpl> classifications = classificationMapper.getAllClassificationsWithKey(key, domain);
-            List<Classification> results = new ArrayList<>();
-            classifications.stream().forEach(c -> results.add(c));
+            List<ClassificationSummaryImpl> classificationSummaries = classificationMapper
+                .getAllClassificationsWithKey(key, domain);
+            classificationSummaries.stream().forEach(c -> results.add(c));
             return results;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
+                int numberOfResultObjects = results == null ? 0 : results.size();
                 LOGGER.debug("exit from getAllClassificationsWithKey(). Returning {} resulting Objects: {} ",
-                    numberOfResultObjects, LoggerUtils.listToString(result));
+                    numberOfResultObjects, LoggerUtils.listToString(results));
             }
         }
     }

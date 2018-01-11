@@ -22,7 +22,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
@@ -106,7 +105,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = classificationService.newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
         taskanaEngine.getClassificationService().createClassification(classification);
@@ -137,11 +136,13 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setDomain("novatec");
         wb.setKey("wb1k1");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = classificationService.newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
-        classification = taskanaEngine.getClassificationService().createClassification(classification);
-        classification = taskanaEngine.getClassificationService().getClassification(classification.getKey(),
+        classification = (ClassificationImpl) taskanaEngine.getClassificationService()
+            .createClassification(classification);
+        classification = (ClassificationImpl) taskanaEngine.getClassificationService().getClassification(
+            classification.getKey(),
             classification.getDomain());
 
         TaskImpl task = (TaskImpl) taskServiceImpl.newTask();
@@ -173,7 +174,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
         te.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = te.getClassificationService().newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
         te.getClassificationService().createClassification(classification);
@@ -199,7 +200,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = classificationService.newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
         taskanaEngine.getClassificationService().createClassification(classification);
@@ -241,7 +242,7 @@ public class TaskServiceImplIntAutocommitTest {
         dummyWorkbasket.setDomain("novatec");
         dummyWorkbasket = workbasketService.createWorkbasket(dummyWorkbasket);
 
-        Classification dummyClassification = classificationService.newClassification();
+        ClassificationImpl dummyClassification = (ClassificationImpl) classificationService.newClassification();
         dummyClassification.setKey("1");
         dummyClassification.setDomain("novatec");
         dummyClassification.setName("Dummy-Classification");
@@ -466,7 +467,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = classificationService.newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
         taskanaEngine.getClassificationService().createClassification(classification);

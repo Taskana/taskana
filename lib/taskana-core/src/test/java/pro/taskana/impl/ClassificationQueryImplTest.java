@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import pro.taskana.Classification;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
@@ -44,7 +44,7 @@ public class ClassificationQueryImplTest {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
-        List<Classification> result = classificationQueryImpl.name("test", "asd", "blubber")
+        List<ClassificationSummary> result = classificationQueryImpl.name("test", "asd", "blubber")
             .type("cool", "bla")
             .priority(1, 2)
             .parentClassificationKey("superId")
@@ -58,7 +58,7 @@ public class ClassificationQueryImplTest {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
-        List<Classification> result = classificationQueryImpl.name("test", "asd", "blubber")
+        List<ClassificationSummary> result = classificationQueryImpl.name("test", "asd", "blubber")
             .type("cool", "bla")
             .priority(1, 2)
             .parentClassificationKey("superId")
@@ -69,9 +69,9 @@ public class ClassificationQueryImplTest {
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException, InvalidArgumentException {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationImpl());
+        when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationSummaryImpl());
 
-        Classification result = classificationQueryImpl.name("test", "asd", "blubber")
+        ClassificationSummary result = classificationQueryImpl.name("test", "asd", "blubber")
             .type("cool", "bla")
             .priority(1, 2)
             .parentClassificationKey("superId")
