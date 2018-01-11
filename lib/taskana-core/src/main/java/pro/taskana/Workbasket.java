@@ -3,6 +3,7 @@ package pro.taskana;
 import java.sql.Timestamp;
 import java.util.List;
 
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 
 /**
@@ -126,7 +127,7 @@ public interface Workbasket {
      *
      * @return distributionTargets
      */
-    List<Workbasket> getDistributionTargets();
+    List<WorkbasketSummary> getDistributionTargets();
 
     /**
      * Sets the list of distribution targets for this workbasket.
@@ -134,5 +135,132 @@ public interface Workbasket {
      * @param distributionTargets
      *            the distribution targets of the workbasket
      */
-    void setDistributionTargets(List<Workbasket> distributionTargets);
+    void setDistributionTargets(List<WorkbasketSummary> distributionTargets);
+
+    /**
+     * Return the value for the custom1 attribute.
+     *
+     * @return custom1
+     */
+    String getCustom1();
+
+    /**
+     * Sets the value for custom1 Attribute.
+     *
+     * @param custom1
+     *            the custom1 property of the workbasket
+     */
+    void setCustom1(String custom1);
+
+    /**
+     * Return the value for the custom2 attribute.
+     *
+     * @return custom2
+     */
+    String getCustom2();
+
+    /**
+     * Sets the value for custom2 attribute.
+     *
+     * @param custom2
+     *            the custom2 property of the workbasket
+     */
+    void setCustom2(String custom2);
+
+    /**
+     * Return the value for the custom3 attribute.
+     *
+     * @return custom3
+     */
+    String getCustom3();
+
+    /**
+     * Sets the value for custom3 attribute.
+     *
+     * @param custom3
+     *            the custom3 property of the workbasket
+     */
+    void setCustom3(String custom3);
+
+    /**
+     * Return the value for the custom4 attribute.
+     *
+     * @return custom4
+     */
+    String getCustom4();
+
+    /**
+     * Sets the value for custom4 attribute.
+     *
+     * @param custom4
+     *            the custom4 property of the workbasket
+     */
+    void setCustom4(String custom4);
+
+    /**
+     * Return the value for the orgLevel1 attribute.
+     *
+     * @return orgLevel1
+     */
+    String getOrgLevel1();
+
+    /**
+     * Sets the value for orgLevel1 attribute.
+     *
+     * @param orgLevel1
+     *            the orgLevel1 property of the workbasket
+     */
+    void setOrgLevel1(String orgLevel1);
+
+    /**
+     * Return the value for the orgLevel2 attribute.
+     *
+     * @return orgLevel2
+     */
+    String getOrgLevel2();
+
+    /**
+     * Sets the value for orgLevel2 attribute.
+     *
+     * @param orgLevel2
+     *            the orgLevel2 property of the workbasket
+     */
+    void setOrgLevel2(String orgLevel2);
+
+    /**
+     * Return the value for the orgLevel3 attribute.
+     *
+     * @return orgLevel3
+     */
+    String getOrgLevel3();
+
+    /**
+     * Sets the value for orgLevel3 attribute.
+     *
+     * @param orgLevel3
+     *            the orgLevel3 property of the workbasket
+     */
+    void setOrgLevel3(String orgLevel3);
+
+    /**
+     * Return the value for the orgLevel4 attribute.
+     *
+     * @return orgLevel4
+     */
+    String getOrgLevel4();
+
+    /**
+     * Sets the value for orgLevel4 attribute.
+     *
+     * @param orgLevel4
+     *            the orgLevel4 property of the workbasket
+     */
+    void setOrgLevel4(String orgLevel4);
+
+    /**
+     * Return a summary of the current workbasket.
+     *
+     * @return the WorkbasketSummary object for the current work basket
+     */
+    WorkbasketSummary asSummary();
 }

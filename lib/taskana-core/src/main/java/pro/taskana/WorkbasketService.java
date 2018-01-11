@@ -7,6 +7,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketSummary;
 
 /**
  * This service manages Workbaskets.
@@ -44,9 +45,9 @@ public interface WorkbasketService {
     /**
      * Get all available Workbaskets without checking any permission.
      *
-     * @return a list containing all Workbaskets
+     * @return a list containing all Workbasket Summaries
      */
-    List<Workbasket> getWorkbaskets();
+    List<WorkbasketSummary> getWorkbaskets();
 
     /**
      * Create a new Workbasket.
@@ -144,6 +145,16 @@ public interface WorkbasketService {
     List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketKey);
 
     /**
+     * This method returns the workbaskets for which the current user has all permissions specified in the permissions
+     * list.
+     *
+     * @param permission
+     *            a List of WorkbasketAuthorization enums
+     * @return the summaries of all Workbaskets for which the current user has the specified authorizations
+     */
+    List<WorkbasketSummary> getWorkbaskets(List<WorkbasketAuthorization> permission);
+
+    /**
      * This method provides a query builder for querying the database.
      *
      * @return a {@link WorkbasketQuery}
@@ -157,13 +168,4 @@ public interface WorkbasketService {
      */
     Workbasket newWorkbasket();
 
-    /**
-     * This method returns the workbaskets for which the current user has all permissions specified in the permissions
-     * list.
-     *
-     * @param permissions
-     *            a List of WorkbasketAuthorization enums
-     * @return all Workbaskets for which the current user has the specified authorizations
-     */
-    List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permissions);
 }

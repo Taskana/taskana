@@ -20,6 +20,7 @@ import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.model.mappings.WorkbasketMapper;
@@ -96,19 +97,19 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public List<Workbasket> getWorkbaskets(List<WorkbasketAuthorization> permissions) {
+    public List<WorkbasketSummary> getWorkbaskets(List<WorkbasketAuthorization> permissions) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getWorkbaskets(permissions = {})", LoggerUtils.listToString(permissions));
         }
-        List<Workbasket> result = null;
+        List<WorkbasketSummary> result = null;
         try {
             taskanaEngineImpl.openConnection();
             // use a set to avoid duplicates
-            Set<Workbasket> workbaskets = new HashSet<>();
+            Set<WorkbasketSummary> workbaskets = new HashSet<>();
             for (String accessId : CurrentUserContext.getAccessIds()) {
                 workbaskets.addAll(workbasketMapper.findByPermission(permissions, accessId));
             }
-            result = new ArrayList<Workbasket>();
+            result = new ArrayList<WorkbasketSummary>();
             result.addAll(workbaskets);
             return result;
         } finally {
@@ -122,13 +123,12 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public List<Workbasket> getWorkbaskets() {
+    public List<WorkbasketSummary> getWorkbaskets() {
         LOGGER.debug("entry to getWorkbaskets()");
-        List<Workbasket> workbaskets = new ArrayList<>();
+        List<WorkbasketSummary> workbaskets = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
-            List<WorkbasketImpl> results = workbasketMapper.findAll();
-            results.stream().forEach(w -> workbaskets.add(w));
+            workbaskets = workbasketMapper.findAll();
             return workbaskets;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -159,7 +159,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             workbasketMapper.insert(workbasket);
             LOGGER.debug("Method createWorkbasket() created Workbasket '{}'", workbasket);
             if (workbasket.getDistributionTargets() != null) {
-                for (Workbasket distributionTarget : workbasket.getDistributionTargets()) {
+                for (WorkbasketSummary distributionTarget : workbasket.getDistributionTargets()) {
                     // validate that all distribution targets exist
                     this.getWorkbasket(distributionTarget.getId());
                     distributionTargetMapper.insert(workbasket.getId(), distributionTarget.getId());
@@ -188,8 +188,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             workbasketMapper.update(workbasket);
             LOGGER.debug("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
             List<String> oldDistributionTargets = distributionTargetMapper.findBySourceId(workbasket.getId());
-            List<Workbasket> newDistributionTargets = workbasket.getDistributionTargets();
-            for (Workbasket distributionTarget : newDistributionTargets) {
+            List<WorkbasketSummary> newDistributionTargets = workbasket.getDistributionTargets();
+            for (WorkbasketSummary distributionTarget : newDistributionTargets) {
                 if (!oldDistributionTargets.contains(distributionTarget.getId())) {
                     // check that old distribution target exists
                     getWorkbasket(distributionTarget.getId());

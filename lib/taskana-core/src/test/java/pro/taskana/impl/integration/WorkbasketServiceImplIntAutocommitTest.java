@@ -39,6 +39,7 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.model.mappings.WorkbasketMapper;
 import pro.taskana.security.CurrentUserContext;
@@ -167,14 +168,15 @@ public class WorkbasketServiceImplIntAutocommitTest {
         id = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket = createTestWorkbasket(id, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
         workbasket.setDistributionTargets(new ArrayList<>());
-        workbasket.getDistributionTargets().add(wbDist1);
-        workbasket.getDistributionTargets().add(wbDist2);
+        workbasket.getDistributionTargets().add(wbDist1.asSummary());
+        workbasket.getDistributionTargets().add(wbDist2.asSummary());
         workbasket = workBasketService.createWorkbasket(workbasket);
         createWorkbasketWithSecurity(workbasket, "Elena", true, true, false, false);
 
         Workbasket foundWorkbasket = workBasketService.getWorkbasket(workbasket.getId());
         Assert.assertEquals(id, foundWorkbasket.getId());
         Assert.assertEquals(2, foundWorkbasket.getDistributionTargets().size());
+
     }
 
     @WithAccessId(userName = "Elena")
@@ -193,8 +195,8 @@ public class WorkbasketServiceImplIntAutocommitTest {
         String id2 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
         workbasket2.setDistributionTargets(new ArrayList<>());
-        workbasket2.getDistributionTargets().add(workbasket0);
-        workbasket2.getDistributionTargets().add(workbasket1);
+        workbasket2.getDistributionTargets().add(workbasket0.asSummary());
+        workbasket2.getDistributionTargets().add(workbasket1.asSummary());
         workbasket2 = workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
 
@@ -205,13 +207,13 @@ public class WorkbasketServiceImplIntAutocommitTest {
         createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
 
         workbasket2.getDistributionTargets().clear();
-        workbasket2.getDistributionTargets().add(workbasket3);
+        workbasket2.getDistributionTargets().add(workbasket3.asSummary());
         Thread.sleep(SLEEP_TIME);
         workbasket2 = workBasketService.updateWorkbasket(workbasket2);
 
         Workbasket foundBasket = workBasketService.getWorkbasket(workbasket2.getId());
 
-        List<Workbasket> distributionTargets = foundBasket.getDistributionTargets();
+        List<WorkbasketSummary> distributionTargets = foundBasket.getDistributionTargets();
         Assert.assertEquals(1, distributionTargets.size());
         Assert.assertEquals(id3, distributionTargets.get(0).getId());
         Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),
@@ -275,36 +277,38 @@ public class WorkbasketServiceImplIntAutocommitTest {
         WorkbasketQuery query1 = workBasketService.createWorkbasketQuery()
             .accessIdsHavePersmission(WorkbasketAuthorization.OPEN, "Bernd")
             .nameIn("Basket4");
-        List<Workbasket> result1 = query1.list();
+        List<WorkbasketSummary> result1 = query1.list();
 
         Assert.assertEquals(1, result1.size());
-        Assert.assertEquals(THREE, result1.get(0).getDistributionTargets().size());
+        String workbasketId = result1.get(0).getId();
+        Workbasket workBasket = workBasketService.getWorkbasket(workbasketId);
+        Assert.assertEquals(THREE, workBasket.getDistributionTargets().size());
 
         WorkbasketQuery query2 = workBasketService.createWorkbasketQuery().accessIdsHavePersmission(
             WorkbasketAuthorization.OPEN, "Bernd",
             "Konstantin");
-        List<Workbasket> result2 = query2.list();
+        List<WorkbasketSummary> result2 = query2.list();
         Assert.assertEquals(2, result2.size());
 
         WorkbasketQuery query3 = workBasketService.createWorkbasketQuery().accessIdsHavePersmission(
             WorkbasketAuthorization.CUSTOM_5,
             "Bernd", "Konstantin");
-        List<Workbasket> result3 = query3.list();
+        List<WorkbasketSummary> result3 = query3.list();
         Assert.assertEquals(0, result3.size());
 
         WorkbasketQuery query4 = workBasketService.createWorkbasketQuery().accessIdsHavePersmission(
             WorkbasketAuthorization.CUSTOM_1,
             "Bernd");
-        List<Workbasket> result4 = query4.list();
+        List<WorkbasketSummary> result4 = query4.list();
         Assert.assertEquals(1, result4.size());
 
         WorkbasketQuery query0 = workBasketService.createWorkbasketQuery()
             .createdBefore(tomorrow)
             .createdAfter(yesterday)
             .nameIn("Basket1", "Basket2", "Basket3");
-        List<Workbasket> result0 = query0.list();
+        List<WorkbasketSummary> result0 = query0.list();
         assertTrue(result0.size() == THREE);
-        for (Workbasket workbasket : result0) {
+        for (WorkbasketSummary workbasket : result0) {
             String name = workbasket.getName();
             assertTrue("Basket1".equals(name) || "Basket2".equals(name) || "Basket3".equals(name));
         }
@@ -312,9 +316,9 @@ public class WorkbasketServiceImplIntAutocommitTest {
         WorkbasketQuery query5 = workBasketService.createWorkbasketQuery()
             .modifiedAfter(thirtyDaysAgo)
             .modifiedBefore(tenDaysAgo);
-        List<Workbasket> result5 = query5.list();
+        List<WorkbasketSummary> result5 = query5.list();
         assertTrue(result5.size() == 2);
-        for (Workbasket workbasket : result5) {
+        for (WorkbasketSummary workbasket : result5) {
             String name = workbasket.getName();
             assertTrue("Basket1".equals(name) || "Basket2".equals(name));
         }
@@ -322,15 +326,15 @@ public class WorkbasketServiceImplIntAutocommitTest {
         WorkbasketQuery query6 = workBasketService.createWorkbasketQuery()
             .modifiedAfter(twentyDaysAgo)
             .domainIn("novatec", "consulting");
-        List<Workbasket> result6 = query6.list();
+        List<WorkbasketSummary> result6 = query6.list();
         assertTrue(result6.size() == 1);
         assertTrue("Basket1".equals(result6.get(0).getName()));
 
         WorkbasketQuery query7 = workBasketService.createWorkbasketQuery()
             .typeIn(WorkbasketType.GROUP, WorkbasketType.CLEARANCE);
-        List<Workbasket> result7 = query7.list();
+        List<WorkbasketSummary> result7 = query7.list();
         assertTrue(result7.size() == 2);
-        for (Workbasket workbasket : result7) {
+        for (WorkbasketSummary workbasket : result7) {
             String name = workbasket.getName();
             assertTrue("Basket1".equals(name) || "Basket2".equals(name));
         }
@@ -402,10 +406,10 @@ public class WorkbasketServiceImplIntAutocommitTest {
         basket4.setOwner("Holger");
         basket4.setType(WorkbasketType.PERSONAL);
         basket4.setDomain("");
-        List<Workbasket> distTargets = new ArrayList<Workbasket>();
-        distTargets.add(basket1);
-        distTargets.add(basket2);
-        distTargets.add(basket3);
+        List<WorkbasketSummary> distTargets = new ArrayList<WorkbasketSummary>();
+        distTargets.add(basket1.asSummary());
+        distTargets.add(basket2.asSummary());
+        distTargets.add(basket3.asSummary());
         basket4.setDistributionTargets(distTargets);
         basket4 = (WorkbasketImpl) workBasketService.createWorkbasket(basket4);
         WorkbasketAccessItem accessItem4 = new WorkbasketAccessItem();
