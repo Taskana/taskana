@@ -17,7 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
@@ -35,6 +34,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.JunitHelper;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
@@ -111,7 +111,7 @@ public class TaskMonitorServiceImplIntAutocommitTest {
         workbasket2.setType(WorkbasketType.GROUP);
         workBasketService.createWorkbasket(workbasket2);
 
-        Classification classification = classificationService.newClassification();
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
         classification.setKey("TEST");
         classification.setDomain("novatec");
         classificationService.createClassification(classification);

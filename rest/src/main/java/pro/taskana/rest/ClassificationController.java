@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package pro.taskana.rest;
 
@@ -17,61 +17,63 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
+import pro.taskana.ClassificationSummary;
 
 @RestController
 @RequestMapping(path = "/v1/classifications", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class ClassificationController {
 
-	@Autowired
-	private ClassificationService classificationService;
+    @Autowired
+    private ClassificationService classificationService;
 
-	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<Classification>> getClassifications() {
-		try {
-			List<Classification> classificationTree = classificationService.getClassificationTree();
-			return ResponseEntity.status(HttpStatus.OK).body(classificationTree);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		}
-	}
-	
-	@RequestMapping(value = "/{classificationKey}", method = RequestMethod.GET)
-	public ResponseEntity<Classification> getClassification(@PathVariable String classificationKey) {
-	    try {
-	        Classification classification = classificationService.getClassification(classificationKey, "");
-	        return ResponseEntity.status(HttpStatus.OK).body(classification);
-	    } catch(Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	    }
-	}
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<ClassificationSummary>> getClassifications() {
+        try {
+            List<ClassificationSummary> classificationTree = classificationService.getClassificationTree();
+            return ResponseEntity.status(HttpStatus.OK).body(classificationTree);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
 
-	@RequestMapping(value = "/{classificationKey}/{domain}", method = RequestMethod.GET)
-	public ResponseEntity<Classification> getClassification(@PathVariable String classificationKey, @PathVariable String domain) {
-	    try {
-            Classification classification = classificationService.getClassification(classificationKey, domain);
+    @RequestMapping(value = "/{classificationKey}", method = RequestMethod.GET)
+    public ResponseEntity<Classification> getClassification(@PathVariable String classificationKey) {
+        try {
+            Classification classification = classificationService.getClassification(classificationKey, "");
             return ResponseEntity.status(HttpStatus.OK).body(classification);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-	}
+    }
 
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Classification> createClassification(@RequestBody Classification classification) {
-		try {
-			classificationService.createClassification(classification);
-			return ResponseEntity.status(HttpStatus.CREATED).body(classification);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-	}
+    @RequestMapping(value = "/{classificationKey}/{domain}", method = RequestMethod.GET)
+    public ResponseEntity<Classification> getClassification(@PathVariable String classificationKey,
+        @PathVariable String domain) {
+        try {
+            Classification classification = classificationService.getClassification(classificationKey, domain);
+            return ResponseEntity.status(HttpStatus.OK).body(classification);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-	@RequestMapping(method = RequestMethod.PUT)
-	public ResponseEntity<Classification> updateClassification(@RequestBody Classification classification) {
-		try {
-			classificationService.updateClassification(classification);
-			return ResponseEntity.status(HttpStatus.CREATED).body(classification);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-	}
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Classification> createClassification(@RequestBody Classification classification) {
+        try {
+            classificationService.createClassification(classification);
+            return ResponseEntity.status(HttpStatus.CREATED).body(classification);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<Classification> updateClassification(@RequestBody Classification classification) {
+        try {
+            classificationService.updateClassification(classification);
+            return ResponseEntity.status(HttpStatus.CREATED).body(classification);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

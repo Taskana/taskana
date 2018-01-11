@@ -63,27 +63,11 @@ public interface Classification {
     String getType();
 
     /**
-     * Set/Change the current type of the classification.
-     *
-     * @param type
-     *            TODO
-     */
-    void setType(String type);
-
-    /**
      * Get the current domain-name of this classification.
      *
      * @return domain name
      */
     String getDomain();
-
-    /**
-     * Set/Change the domain of this classification.
-     *
-     * @param domain
-     *            name
-     */
-    void setDomain(String domain);
 
     /**
      * Get a flag if the classification if currently valid in the used domain.
@@ -178,7 +162,7 @@ public interface Classification {
      * Set the logical name of the associated application entry point.
      *
      * @param applicationEntryPoint
-     *             TODO
+     *            TODO
      */
     void setApplicationEntryPoint(String applicationEntryPoint);
 

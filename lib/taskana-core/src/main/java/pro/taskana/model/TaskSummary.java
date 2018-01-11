@@ -148,5 +148,4 @@ public class TaskSummary {
         builder.append("]");
         return builder.toString();
     }
-
 }
