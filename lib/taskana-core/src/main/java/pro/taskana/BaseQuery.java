@@ -18,7 +18,7 @@ public interface BaseQuery<T> {
      *
      * @return List containing elements of type T
      * @throws NotAuthorizedException
-     *             if the permissions are not granted for this specific interaction with query.
+     *             if the user is not authorized to perform this query
      */
     List<T> list() throws NotAuthorizedException;
 
@@ -28,10 +28,10 @@ public interface BaseQuery<T> {
      * @param offset
      *            index of the first element which should be returned.
      * @param limit
-     *            amount of elements which should be returned beginning on offset.
+     *            number of elements which should be returned beginning with offset.
      * @return List containing elements of type T
      * @throws NotAuthorizedException
-     *             if the permissions are not granted for this specific interaction with query.
+     *             if the user is not authorized to perform this query
      */
     List<T> list(int offset, int limit) throws NotAuthorizedException;
 
@@ -40,7 +40,7 @@ public interface BaseQuery<T> {
      *
      * @return T a single object of given Type.
      * @throws NotAuthorizedException
-     *             if the permissions for interactions are not granted.
+     *             if the user is not authorized to perform this query
      */
     T single() throws NotAuthorizedException;
 
