@@ -24,6 +24,7 @@ import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -70,13 +71,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task claim(String taskId)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         return claim(taskId, false);
     }
 
     @Override
     public Task claim(String taskId, boolean forceClaim)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         String userId = CurrentUserContext.getUserid();
         LOGGER.debug("entry to claim(id = {}, forceClaim = {}, userId = {})", taskId, forceClaim, userId);
         TaskImpl task = null;
@@ -113,18 +114,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task completeTask(String taskId)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException {
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
         return completeTask(taskId, false);
     }
 
     @Override
     public Task completeTask(String taskId, boolean isForced)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException {
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
         LOGGER.debug("entry to completeTask(id = {}, isForced {})", taskId, isForced);
         TaskImpl task = null;
         try {
             taskanaEngineImpl.openConnection();
             task = (TaskImpl) this.getTask(taskId);
+
             // check pre-conditions for non-forced invocation
             if (!isForced) {
                 if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
@@ -193,7 +195,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTask(String id) throws TaskNotFoundException, ClassificationNotFoundException {
+    public Task getTask(String id) throws TaskNotFoundException {
         LOGGER.debug("entry to getTaskById(id = {})", id);
         TaskImpl result = null;
         try {
@@ -204,7 +206,18 @@ public class TaskServiceImpl implements TaskService {
                 List<Attachment> attachments = setAttachmentObjRef(
                     attachmentMapper.findAttachmentsByTaskId(result.getId()));
                 result.setAttachments(attachments);
-                Classification classification = this.classificationService.getClassificationByTask(result);
+                Classification classification;
+                try {
+                    classification = this.classificationService.getClassificationByTask(result);
+                } catch (ClassificationNotFoundException e) {
+                    LOGGER.debug(
+                        "getTask(taskId = {}) caught a ClassificationNotFoundException when attemptin to get "
+                            + "the classification for the task. Throwing a SystemException ",
+                        id);
+                    throw new SystemException(
+                        "TaskService.getTask could not find the classification associated to " + id);
+                }
+
                 result.setClassification(classification);
                 return result;
             } else {
@@ -219,8 +232,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task transfer(String taskId, String destinationWorkbasketKey)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        ClassificationNotFoundException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketKey = {})", taskId, destinationWorkbasketKey);
         Task result = null;
         try {
@@ -259,7 +271,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task setTaskRead(String taskId, boolean isRead)
-        throws TaskNotFoundException, ClassificationNotFoundException {
+        throws TaskNotFoundException {
         LOGGER.debug("entry to setTaskRead(taskId = {}, isRead = {})", taskId, isRead);
         Task result = null;
         try {

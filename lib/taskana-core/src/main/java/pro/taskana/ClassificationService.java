@@ -36,8 +36,8 @@ public interface ClassificationService {
     List<Classification> getAllClassificationsWithKey(String key, String domain);
 
     /**
-     * Get the Classification for key and domain. If there's no specification for the given domain, it returns the root
-     * domain.
+     * Get the Classification for key and domain. If there's no Classification in the given domain, return the
+     * Classification from the root domain.
      *
      * @param key
      *            the key of the searched-for classifications
@@ -45,7 +45,7 @@ public interface ClassificationService {
      *            the domain of the searched-for classifications
      * @return If exist: domain-specific classification, else root classification
      * @throws ClassificationNotFoundException
-     *             if no classification is found that matches key and domain.
+     *             if no classification is found that matches the key either in domain or in the root domain.
      */
     Classification getClassification(String key, String domain) throws ClassificationNotFoundException;
 
