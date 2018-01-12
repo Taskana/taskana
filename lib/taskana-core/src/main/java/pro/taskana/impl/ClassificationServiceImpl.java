@@ -18,6 +18,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.mappings.ClassificationMapper;
@@ -40,7 +41,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public List<ClassificationSummary> getClassificationTree() throws NotAuthorizedException {
+    public List<ClassificationSummary> getClassificationTree() {
         LOGGER.debug("entry to getClassificationTree()");
         List<ClassificationSummary> rootClassificationSumamries = null;
         try {
@@ -51,6 +52,10 @@ public class ClassificationServiceImpl implements ClassificationService {
                 .list();
             rootClassificationSumamries = this.populateChildClassifications(rootClassificationSumamries);
             return rootClassificationSumamries;
+        } catch (NotAuthorizedException ex) {
+            LOGGER.debug("getClassificationTree() caught NotAuthorizedException. Throwing SystemException");
+            throw new SystemException(
+                "ClassificationService.getClassificationTree caught unexpected NotAuthorizedException");
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -142,7 +147,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public void updateClassification(Classification classification) {
+    public Classification updateClassification(Classification classification) {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
         ClassificationImpl classificationImpl = null;
         try {
@@ -167,6 +172,16 @@ public class ClassificationServiceImpl implements ClassificationService {
                 classificationImpl.setCreated(Date.valueOf(LocalDate.now()));
                 classificationMapper.insert(classificationImpl);
                 LOGGER.debug("Method updateClassification() inserted classification {}.", classificationImpl);
+            }
+            try {
+                Classification updatedClassification = this.getClassification(classificationImpl.getKey(),
+                    classificationImpl.getDomain());
+                return updatedClassification;
+            } catch (ClassificationNotFoundException e) {
+                LOGGER.debug(
+                    "Throwing SystemException because updateClassification didn't find new classification {} after update",
+                    classification);
+                throw new SystemException("updateClassification didn't find new classification after update");
             }
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -291,8 +306,11 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public Classification newClassification() {
+    public Classification newClassification(String domain, String key, String type) {
         ClassificationImpl classification = new ClassificationImpl();
+        classification.setKey(key);
+        classification.setDomain(domain);
+        classification.setType(type);
         return classification;
     }
 

@@ -82,7 +82,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         Classification actualClassification2;
 
         // empty classification (root)
-        expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
+        expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey("", "type1");
         expectedClassification = (ClassificationImpl) classificationService
             .createClassification(expectedClassification);
         actualClassification = classificationService.getClassification(expectedClassification.getKey(),
@@ -93,8 +93,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
 
         // specific to domain + root
-        expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
-        expectedClassification.setDomain(domain);
+        expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey(domain, "type1");
         expectedClassification.setKey(key);
         expectedClassification = (ClassificationImpl) classificationService
             .createClassification(expectedClassification);
@@ -117,18 +116,17 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
         // does exist already
         try {
-            expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
+            expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey(domain, "type1");
             expectedClassification.setKey(key);
-            expectedClassification.setDomain(domain);
             classificationService.createClassification(expectedClassification);
             fail("Should have thrown 'ClassificationAlreadyExistException' here.");
         } catch (ClassificationAlreadyExistException e) {
         }
 
         // new classification but root existing
-        expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
+        expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey(domain + "_2",
+            "type1");
         expectedClassification.setKey(key);
-        expectedClassification.setDomain(domain + "_2");
         classificationService.createClassification(expectedClassification);
         actualClassification = classificationService.getClassification(key, domain + "_2");
         assertThat(actualClassification, not(equalTo(null)));
@@ -142,8 +140,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
         // invalid serviceLevel
         try {
-            expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
-            expectedClassification.setDomain(domain + "_3");
+            expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey(domain + "_3",
+                "type1");
             expectedClassification.setKey("");
             expectedClassification.setServiceLevel("ASAP");
             classificationService.createClassification(expectedClassification);
@@ -156,11 +154,11 @@ public class ClassificationServiceImplIntAutoCommitTest {
     public void testFindAllClassifications()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         InvalidArgumentException {
-        Classification classification0 = this.createDummyClassificationWithUniqueKey();
+        Classification classification0 = this.createDummyClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification0);
-        Classification classification1 = this.createDummyClassificationWithUniqueKey();
+        Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification1);
-        Classification classification2 = this.createDummyClassificationWithUniqueKey();
+        Classification classification2 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification2.setParentClassificationKey(classification0.getKey());
         classificationService.createClassification(classification2);
 
@@ -171,7 +169,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     public void testModifiedClassification()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException {
 
-        Classification classification = this.createDummyClassificationWithUniqueKey();
+        Classification classification = this.createDummyClassificationWithUniqueKey("domain1", "type1");
         classificationService.createClassification(classification);
         classification.setDescription("TEST SOMETHING");
         classificationService.updateClassification(classification);
@@ -183,7 +181,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     public void testInsertAndClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         InvalidArgumentException {
-        Classification classification = this.createDummyClassificationWithUniqueKey();
+        Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         Classification actualClassification = classificationService.createClassification(classification);
         Date today = Date.valueOf(LocalDate.now());
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
@@ -199,7 +197,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testUpdateAndClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
-        ClassificationImpl classification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
+        Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification);
         System.out.println(classification.getId());
         classification.setDescription("description");
@@ -212,33 +210,30 @@ public class ClassificationServiceImplIntAutoCommitTest {
         list = classificationService.createClassificationQuery().validInDomain(true).list();
         Assert.assertEquals(2, list.size());
 
-        classification.setDomain("domain");
         classificationService.updateClassification(classification);
         System.out.println(classification.getId());
         list = classificationService.createClassificationQuery().validUntil(Date.valueOf("9999-12-31")).list();
-        Assert.assertEquals(2, list.size());
+        Assert.assertEquals(1, list.size());
 
         System.out.println(classification.getParentClassificationKey());
 
         List<ClassificationSummary> temp = classificationService.getClassificationTree();
         List<ClassificationSummary> allClassifications = new ArrayList<>();
         temp.stream().forEach(c -> allClassifications.add(c));
-        Assert.assertEquals(2, allClassifications.size());
+        Assert.assertEquals(1, allClassifications.size());
     }
 
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
-        ClassificationImpl classification1 = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
-        classification1.setDomain("domain1");
+        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
+        InvalidArgumentException {
+        Classification classification1 = this.createDummyClassificationWithUniqueKey("domain1", "type1");
         classification1.setCategory("category1");
         classificationService.createClassification(classification1);
-        ClassificationImpl classification2 = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
-        classification2.setDomain("domain2");
+        Classification classification2 = this.createDummyClassificationWithUniqueKey("domain2", "type1");
         classification2.setCategory("category1");
         classificationService.createClassification(classification2);
-        ClassificationImpl classification3 = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
-        classification3.setDomain("domain1");
+        Classification classification3 = this.createDummyClassificationWithUniqueKey("domain1", "type1");
         classification3.setCategory("category2");
         classificationService.createClassification(classification3);
 
@@ -255,21 +250,21 @@ public class ClassificationServiceImplIntAutoCommitTest {
     public void testFindWithClassificationMapperCustomAndCategory()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         InvalidArgumentException {
-        Classification classification1 = this.createDummyClassificationWithUniqueKey();
+        Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1.setDescription("DESC1");
         classification1.setCategory("category1");
         classificationService.createClassification(classification1);
-        Classification classification2 = this.createDummyClassificationWithUniqueKey();
+        Classification classification2 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification2.setDescription("DESC1");
         classification2.setCustom1("custom1");
         classification2.setCategory("category1");
         classificationService.createClassification(classification2);
-        Classification classification3 = this.createDummyClassificationWithUniqueKey();
+        Classification classification3 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification3.setCustom1("custom2");
         classification3.setCustom2("custom1");
         classification3.setCategory("category2");
         classificationService.createClassification(classification3);
-        Classification classification4 = this.createDummyClassificationWithUniqueKey();
+        Classification classification4 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification4.setDescription("description2");
         classification4.setCustom8("custom2");
         classification4.setCategory("category1");
@@ -288,24 +283,22 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
-        ClassificationImpl classification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
+        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
+        NumberFormatException, InvalidArgumentException {
+        Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setPriority(Integer.decode("5"));
-        classification.setType("type1");
         classificationService.createClassification(classification);
-        ClassificationImpl classification1 = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
+        Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1.setPriority(Integer.decode("3"));
-        classification1.setType("type1");
         classification1.setParentClassificationKey(classification.getKey());
         classificationService.createClassification(classification1);
-        ClassificationImpl classification2 = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
+        Classification classification2 = this.createDummyClassificationWithUniqueKey("", "type2");
         classification2.setPriority(Integer.decode("5"));
-        classification2.setType("type2");
         classification2.setParentClassificationKey(classification.getKey());
         classificationService.createClassification(classification2);
-        ClassificationImpl classification3 = (ClassificationImpl) this.createDummyClassificationWithUniqueKey();
+
+        Classification classification3 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification3.setPriority(Integer.decode("5"));
-        classification3.setType("type1");
         classification3.setParentClassificationKey(classification1.getKey());
         classificationService.createClassification(classification3);
 
@@ -328,25 +321,25 @@ public class ClassificationServiceImplIntAutoCommitTest {
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         InvalidArgumentException {
         int all = 0;
-        Classification classification = this.createDummyClassificationWithUniqueKey();
+        Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setServiceLevel("P1D");
         classification.setName("name1");
         classification.setDescription("desc");
         classificationService.createClassification(classification);
         all++;
-        Classification classification1 = this.createDummyClassificationWithUniqueKey();
+        Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1.setServiceLevel("P1DT1H");
         classification1.setName("name1");
         classification1.setDescription("desc");
         classificationService.createClassification(classification1);
         all++;
-        Classification classification2 = this.createDummyClassificationWithUniqueKey();
+        Classification classification2 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification2.setServiceLevel("P1D");
         classification2.setName("name");
         classification2.setDescription("desc");
         classificationService.createClassification(classification2);
         all++;
-        Classification classification3 = this.createDummyClassificationWithUniqueKey();
+        Classification classification3 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification3.setName("name1");
         classification3.setDescription("description");
         classificationService.createClassification(classification3);
@@ -366,8 +359,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
     public void testDefaultSettingsWithClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         InvalidArgumentException {
-        Classification classification = this.createDummyClassificationWithUniqueKey();
-        Classification classification1 = this.createDummyClassificationWithUniqueKey();
+        Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
+        Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification);
         classificationService.createClassification(classification1);
         classification1.setParentClassificationKey(classification.getKey());
@@ -402,9 +395,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
         FileUtils.deleteRecursive("~/data", true);
     }
 
-    private Classification createDummyClassificationWithUniqueKey() {
-        Classification classification = classificationService.newClassification();
-        classification.setKey("TEST" + counter);
+    private Classification createDummyClassificationWithUniqueKey(String domain, String type) {
+        Classification classification = classificationService.newClassification(domain, "TEST" + counter, type);
         counter++;
         return classification;
     }

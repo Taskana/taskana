@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import java.sql.Date;
+import java.time.Duration;
 
 import pro.taskana.Classification;
 
@@ -50,7 +51,6 @@ public class ClassificationImpl implements Classification {
         return key;
     }
 
-    @Override
     public void setKey(String key) {
         this.key = key;
     }
@@ -149,6 +149,11 @@ public class ClassificationImpl implements Classification {
 
     @Override
     public void setServiceLevel(String serviceLevel) {
+        try {
+            Duration.parse(serviceLevel);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid duration. Please use the format defined by ISO 8601");
+        }
         this.serviceLevel = serviceLevel;
     }
 
