@@ -25,6 +25,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
@@ -85,12 +86,12 @@ public class WorkbasketServiceImplTest {
 
     @Test
     public void should_ReturnListOfWorkbaskets_when_PermissionAndUserExists() {
-        when(workbasketMapper.findByPermission(any(), any())).thenReturn(new ArrayList<WorkbasketImpl>());
+        when(workbasketMapper.findByPermission(any(), any())).thenReturn(new ArrayList<WorkbasketSummary>());
 
         List<WorkbasketAuthorization> authorizations = new ArrayList<>();
         authorizations.add(WorkbasketAuthorization.OPEN);
         authorizations.add(WorkbasketAuthorization.APPEND);
-        List<Workbasket> workbaskets = workbasketServiceImpl.getWorkbaskets(authorizations);
+        List<WorkbasketSummary> workbaskets = workbasketServiceImpl.getWorkbaskets(authorizations);
 
         verify(workbasketMapper).findByPermission(any(), any());
         Assert.assertNotNull(workbaskets);
@@ -98,9 +99,9 @@ public class WorkbasketServiceImplTest {
 
     @Test
     public void should_ReturnAllWorkbaskets_when_AllWorkbaskets() {
-        when(workbasketMapper.findAll()).thenReturn(new ArrayList<WorkbasketImpl>());
+        when(workbasketMapper.findAll()).thenReturn(new ArrayList<WorkbasketSummary>());
 
-        List<Workbasket> workbaskets = workbasketServiceImpl.getWorkbaskets();
+        List<WorkbasketSummary> workbaskets = workbasketServiceImpl.getWorkbaskets();
 
         verify(workbasketMapper).findAll();
         Assert.assertNotNull(workbaskets);
@@ -153,11 +154,11 @@ public class WorkbasketServiceImplTest {
         workbasketServiceImpl.createWorkbasket(workbasket2);
         when(workbasketMapper.findById("3")).thenReturn(workbasket2);
 
-        workbasket.setDistributionTargets(new ArrayList<Workbasket>() {
+        workbasket.setDistributionTargets(new ArrayList<WorkbasketSummary>() {
 
             {
-                add(workbasket1);
-                add(workbasket2);
+                add(workbasket1.asSummary());
+                add(workbasket2.asSummary());
             }
         });
 
@@ -213,10 +214,10 @@ public class WorkbasketServiceImplTest {
         workbasketServiceImpl.createWorkbasket(workbasket1);
         when(workbasketMapper.findById("1")).thenReturn(workbasket1);
 
-        workbasket.setDistributionTargets(new ArrayList<Workbasket>() {
+        workbasket.setDistributionTargets(new ArrayList<WorkbasketSummary>() {
 
             {
-                add(workbasket1);
+                add(workbasket1.asSummary());
             }
         });
         workbasket.setKey("myKey0");
@@ -264,8 +265,8 @@ public class WorkbasketServiceImplTest {
         workbasket2.setType(WorkbasketType.PERSONAL);
         workbasket2.setDomain("generali");
 
-        workbasket2.getDistributionTargets().add(workbasket0);
-        workbasket2.getDistributionTargets().add(workbasket1);
+        workbasket2.getDistributionTargets().add(workbasket0.asSummary());
+        workbasket2.getDistributionTargets().add(workbasket1.asSummary());
         workbasketServiceImpl.createWorkbasket(workbasket2);
 
         WorkbasketImpl workbasket3 = new WorkbasketImpl();
@@ -278,7 +279,7 @@ public class WorkbasketServiceImplTest {
         when(workbasketMapper.findById("3")).thenReturn(workbasket3);
 
         workbasket2.getDistributionTargets().clear();
-        workbasket2.getDistributionTargets().add(workbasket3);
+        workbasket2.getDistributionTargets().add(workbasket3.asSummary());
         Thread.sleep(SLEEP_TIME);
 
         doNothing().when(workbasketMapper).update(any());
@@ -290,7 +291,7 @@ public class WorkbasketServiceImplTest {
         when(workbasketMapper.findById("1")).thenReturn(workbasket1);
         when(workbasketMapper.findById("3")).thenReturn(workbasket1);
 
-        List<Workbasket> distributionTargets = foundBasket.getDistributionTargets();
+        List<WorkbasketSummary> distributionTargets = foundBasket.getDistributionTargets();
         Assert.assertEquals(1, distributionTargets.size());
         Assert.assertEquals("3", distributionTargets.get(0).getId());
 

@@ -24,6 +24,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketSummary;
 
 @RestController
 @RequestMapping(path = "/v1/workbaskets", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -33,7 +34,7 @@ public class WorkbasketController {
     private WorkbasketService workbasketService;
 
     @GetMapping
-    public List<Workbasket> getWorkbaskets(@RequestParam MultiValueMap<String, String> params) {
+    public List<WorkbasketSummary> getWorkbaskets(@RequestParam MultiValueMap<String, String> params) {
         if (params.containsKey("requiredPermission")) {
             List<WorkbasketAuthorization> authorizations = new ArrayList<>();
             params.get("requiredPermission").stream().forEach(item -> {

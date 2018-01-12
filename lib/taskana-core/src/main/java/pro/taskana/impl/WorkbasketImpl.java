@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pro.taskana.Workbasket;
+import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 
 /**
@@ -21,7 +22,7 @@ public class WorkbasketImpl implements Workbasket {
     private String owner;
     private String domain;
     private WorkbasketType type;
-    private List<Workbasket> distributionTargets = new ArrayList<>();
+    private List<WorkbasketSummary> distributionTargets = new ArrayList<>();
     private String custom1;
     private String custom2;
     private String custom3;
@@ -122,77 +123,110 @@ public class WorkbasketImpl implements Workbasket {
     }
 
     @Override
-    public List<Workbasket> getDistributionTargets() {
+    public List<WorkbasketSummary> getDistributionTargets() {
         return distributionTargets;
     }
 
     @Override
-    public void setDistributionTargets(List<Workbasket> distributionTargets) {
+    public void setDistributionTargets(List<WorkbasketSummary> distributionTargets) {
         this.distributionTargets = distributionTargets;
     }
 
+    @Override
     public String getCustom1() {
         return custom1;
     }
 
+    @Override
     public void setCustom1(String custom1) {
         this.custom1 = custom1;
     }
 
+    @Override
     public String getCustom2() {
         return custom2;
     }
 
+    @Override
     public void setCustom2(String custom2) {
         this.custom2 = custom2;
     }
 
+    @Override
     public String getCustom3() {
         return custom3;
     }
 
+    @Override
     public void setCustom3(String custom3) {
         this.custom3 = custom3;
     }
 
+    @Override
     public String getCustom4() {
         return custom4;
     }
 
+    @Override
     public void setCustom4(String custom4) {
         this.custom4 = custom4;
     }
 
+    @Override
     public String getOrgLevel1() {
         return orgLevel1;
     }
 
+    @Override
     public void setOrgLevel1(String orgLevel1) {
         this.orgLevel1 = orgLevel1;
     }
 
+    @Override
     public String getOrgLevel2() {
         return orgLevel2;
     }
 
+    @Override
     public void setOrgLevel2(String orgLevel2) {
         this.orgLevel2 = orgLevel2;
     }
 
+    @Override
     public String getOrgLevel3() {
         return orgLevel3;
     }
 
+    @Override
     public void setOrgLevel3(String orgLevel3) {
         this.orgLevel3 = orgLevel3;
     }
 
+    @Override
     public String getOrgLevel4() {
         return orgLevel4;
     }
 
+    @Override
     public void setOrgLevel4(String orgLevel4) {
         this.orgLevel4 = orgLevel4;
+    }
+
+    @Override
+    public WorkbasketSummary asSummary() {
+        WorkbasketSummary result = new WorkbasketSummary();
+        result.setId(this.getId());
+        result.setKey(this.getKey());
+        result.setName(this.getName());
+        result.setDescription(this.getDescription());
+        result.setOwner(this.getOwner());
+        result.setDomain(this.getDomain());
+        result.setType(this.getType());
+        result.setOrgLevel1(this.getOrgLevel1());
+        result.setOrgLevel2(this.getOrgLevel2());
+        result.setOrgLevel3(this.getOrgLevel3());
+        result.setOrgLevel4(this.getOrgLevel4());
+        return result;
     }
 
     @Override
@@ -237,4 +271,5 @@ public class WorkbasketImpl implements Workbasket {
         builder.append("]");
         return builder.toString();
     }
+
 }
