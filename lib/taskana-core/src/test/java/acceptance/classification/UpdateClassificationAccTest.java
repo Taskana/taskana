@@ -6,7 +6,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.h2.store.fs.FileUtils;
@@ -33,6 +35,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
         ClassificationService classificationService = taskanaEngine.getClassificationService();
+        Classification oldClassification = classificationService.getClassification("T2100", "DOMAIN_A");
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         classification.setApplicationEntryPoint(newEntryPoint);
         classification.setCategory("PROCESS");
@@ -49,6 +52,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setName(newName);
         classification.setParentClassificationKey("T2000");
         classification.setPriority(1000);
+
         classification.setServiceLevel("P2DT3H4M");
         classificationService.updateClassification(classification);
 
@@ -62,8 +66,17 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> classifications = classificationService.getAllClassifications("T2100",
             "DOMAIN_A");
         assertEquals(2, classifications.size());
+        for (ClassificationSummary classif : classifications) {
+            if (classif.getId().equals(oldClassification.getId())) {
+                assertEquals("MANUAL", classif.getCategory());
+                // assert that the old one has the correct valid until information
+                Date yesterday = Date.valueOf(LocalDate.now().minusDays(1));
+                assertEquals(yesterday, classif.getValidUntil());
+            } else {
+                assertEquals("PROCESS", classif.getCategory());
+            }
+        }
 
-        // assert that the old one has the correct valid until information
         assertThat(classifications.get(0).getValidUntil(), not(equalTo(classifications.get(1).getValidUntil())));
     }
 

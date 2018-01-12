@@ -47,9 +47,7 @@ public class TaskanaRestTest {
         workbasket.setDomain("cdiDomain");
         workbasket.setType(WorkbasketType.PERSONAL);
         taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
-        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification();
-        classification.setKey("TEST");
-        classification.setDomain("cdiDomain");
+        Classification classification = classificationService.newClassification("cdiDomain", "TEST", "t1");
         taskanaEjb.getClassificationService().createClassification(classification);
 
         Task task = taskanaEjb.getTaskService().newTask();

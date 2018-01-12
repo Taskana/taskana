@@ -240,7 +240,7 @@ public class TaskServiceImplTest {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
 
         ObjectReference expectedObjectReference = JunitHelper.createDefaultObjRef();
-        Classification classification = new ClassificationImpl();
+        ClassificationImpl classification = new ClassificationImpl();
         classification.setName("Name");
         classification.setCategory("MANUAL");
         classification.setKey("classificationKey");

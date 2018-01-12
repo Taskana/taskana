@@ -4,7 +4,6 @@ import java.util.List;
 
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
  * This class manages the classifications.
@@ -12,13 +11,12 @@ import pro.taskana.exceptions.NotAuthorizedException;
 public interface ClassificationService {
 
     /**
-     * Get all available Classifications as a tree.
+     * Get all available Classification summaries as a tree.
      *
-     * @return The List of all ClassificationSummaries
-     * @throws NotAuthorizedException
-     *             if the permissions are not granted for this specific interaction.
+
+     * @return The List of all Classification summaries
      */
-    List<ClassificationSummary> getClassificationTree() throws NotAuthorizedException;
+    List<ClassificationSummary> getClassificationTree();
 
     /**
      * Get all ClassificationSummaries with the given key. Returns also older and domain-specific versions of the
@@ -64,10 +62,11 @@ public interface ClassificationService {
      *
      * @param classification
      *            the Classification to update
+     * @return the updated Classification.
      * @throws ClassificationNotFoundException
      *             when the classification does not exist already.
      */
-    void updateClassification(Classification classification) throws ClassificationNotFoundException;
+    Classification updateClassification(Classification classification) throws ClassificationNotFoundException;
 
     /**
      * This method provides a query builder for quering the database.
@@ -80,7 +79,13 @@ public interface ClassificationService {
      * Creating a new {@link Classification} with unchangeable default values. It will be only generated and is not
      * persisted until CREATE-call.
      *
+     * @param domain
+     *            the domain of the new classification
+     * @param key
+     *            the key of the classification
+     * @param type
+     *            the type of the new classification
      * @return classification to specify
      */
-    Classification newClassification();
+    Classification newClassification(String domain, String key, String type);
 }
