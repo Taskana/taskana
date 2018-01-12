@@ -161,7 +161,7 @@ public class ClassificationServiceImplTest {
     public void testCreateClassificationIntoRootDomain()
         throws ClassificationAlreadyExistException {
         ClassificationImpl classification = (ClassificationImpl) createDummyClassification();
-        classification.setDomain("");
+        ((ClassificationImpl) classification).setDomain("");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain(), ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
 
@@ -183,13 +183,13 @@ public class ClassificationServiceImplTest {
     public void testUpdateClassificationAtNewDomain() throws ClassificationNotFoundException {
         Classification classification = createDummyClassification();
         ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
-        oldClassification.setDomain("");
+        ((ClassificationImpl) oldClassification).setDomain("");
         doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
 
         cutSpy.updateClassification(classification);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
-        verify(cutSpy, times(1)).getClassification(classification.getKey(), classification.getDomain());
+        verify(cutSpy, times(2)).getClassification(classification.getKey(), classification.getDomain());
         verify(classificationMapperMock, times(1)).insert((ClassificationImpl) classification);
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
@@ -210,7 +210,7 @@ public class ClassificationServiceImplTest {
         cutSpy.updateClassification(classification);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
-        verify(cutSpy, times(1)).getClassification(classification.getKey(), classification.getDomain());
+        verify(cutSpy, times(2)).getClassification(classification.getKey(), classification.getDomain());
         verify(classificationMapperMock, times(1)).update(any());
         verify(classificationMapperMock, times(1)).insert(any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();

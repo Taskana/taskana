@@ -18,14 +18,7 @@ public interface Classification {
     String getKey();
 
     /**
-     * Set/Change the classification key.
-     *
-     * @param key
-     *            The key of the classification.
-     */
-    void setKey(String key);
 
-    /**
      * Used to get the ID of the parent classification. There will be no value if the current classification is a
      * parent-classification.
      *
@@ -51,7 +44,7 @@ public interface Classification {
      * Set/Change the category of this classification.
      *
      * @param category
-     *            TODO
+     *            The category of the classification.
      */
     void setCategory(String category);
 
@@ -102,7 +95,7 @@ public interface Classification {
      * Set/Change the classification name.
      *
      * @param name
-     *            TODO
+     *            the name of the Classification
      */
     void setName(String name);
 
@@ -117,7 +110,7 @@ public interface Classification {
      * Set/Change the classification description.
      *
      * @param description
-     *            TODO
+     *            the description of the Classification
      */
     void setDescription(String description);
 
@@ -132,7 +125,7 @@ public interface Classification {
      * Set/Change the numeric priority of a classification.
      *
      * @param priority
-     *            TODO
+     *            the Priority of the Classification
      */
     void setPriority(int priority);
 
@@ -144,10 +137,11 @@ public interface Classification {
     String getServiceLevel();
 
     /**
-     * Set/Change the security level.
+     * Set/Change the service level.
      *
      * @param serviceLevel
-     *            TODO
+     *            the service level. Must be a String in ISO-8601 duration format. See the parse() method of
+     *            {@code Duration} for details.
      */
     void setServiceLevel(String serviceLevel);
 
@@ -162,7 +156,7 @@ public interface Classification {
      * Set the logical name of the associated application entry point.
      *
      * @param applicationEntryPoint
-     *            TODO
+     *            The application entry point
      */
     void setApplicationEntryPoint(String applicationEntryPoint);
 
@@ -177,7 +171,7 @@ public interface Classification {
      * Set/Change the 1. custom-attribute.
      *
      * @param custom1
-     *            TODO
+     *            the first custom attribute
      */
     void setCustom1(String custom1);
 
@@ -192,7 +186,7 @@ public interface Classification {
      * Set/Change the 2. custom-attribute.
      *
      * @param custom2
-     *            TODO
+     *            the second custom attribute
      */
     void setCustom2(String custom2);
 
@@ -207,7 +201,7 @@ public interface Classification {
      * Set/Change the 3. custom-attribute.
      *
      * @param custom3
-     *            TODO
+     *            the third custom attribute
      */
     void setCustom3(String custom3);
 
@@ -222,7 +216,7 @@ public interface Classification {
      * Set/Change the 4. custom-attribute.
      *
      * @param custom4
-     *            TODO
+     *            the fourth custom attribute
      */
     void setCustom4(String custom4);
 
@@ -237,7 +231,7 @@ public interface Classification {
      * Set/Change the 5. custom-attribute.
      *
      * @param custom5
-     *            TODO
+     *            the fifth custom attribute
      */
     void setCustom5(String custom5);
 
@@ -252,7 +246,7 @@ public interface Classification {
      * Set/Change the 6. custom-attribute.
      *
      * @param custom6
-     *            TODO
+     *            the sixth custom attribute
      */
     void setCustom6(String custom6);
 
@@ -267,7 +261,7 @@ public interface Classification {
      * Set/Change the 7. custom-attribute.
      *
      * @param custom7
-     *            TODO
+     *            the seventh custom attribute
      */
     void setCustom7(String custom7);
 
@@ -282,7 +276,7 @@ public interface Classification {
      * Set/Change the 8. custom-attribute.
      *
      * @param custom8
-     *            TODO
+     *            the eight custom attribute
      */
     void setCustom8(String custom8);
 

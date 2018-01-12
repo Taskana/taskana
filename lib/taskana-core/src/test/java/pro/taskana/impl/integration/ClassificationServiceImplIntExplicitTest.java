@@ -87,7 +87,7 @@ public class ClassificationServiceImplIntExplicitTest {
         Classification actualClassification2;
 
         // empty classification (root)
-        expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey("", "t1");
         expectedClassification = (ClassificationImpl) classificationService
             .createClassification(expectedClassification);
         connection.commit();
@@ -99,8 +99,7 @@ public class ClassificationServiceImplIntExplicitTest {
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
 
         // specific to domain + root
-        expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
-        expectedClassification.setDomain(domain);
+        expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey(domain, "t1");
         expectedClassification.setKey(key);
         expectedClassification = (ClassificationImpl) classificationService
             .createClassification(expectedClassification);
@@ -124,9 +123,8 @@ public class ClassificationServiceImplIntExplicitTest {
 
         // does exist already
         try {
-            expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+            expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey(domain, "t1");
             expectedClassification.setKey(key);
-            expectedClassification.setDomain(domain);
             classificationService.createClassification(expectedClassification);
             connection.commit();
             fail("Should have thrown 'ClassificationAlreadyExistException' here.");
@@ -134,7 +132,7 @@ public class ClassificationServiceImplIntExplicitTest {
         }
 
         // new classification but root existing
-        expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey("", "t1");
         expectedClassification.setKey(key);
         expectedClassification.setDomain(domain + "_2");
         classificationService.createClassification(expectedClassification);
@@ -151,7 +149,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
         // invalid serviceLevel
         try {
-            expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+            expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey("", "t1");
             expectedClassification.setDomain(domain + "_3");
             expectedClassification.setKey("");
             expectedClassification.setServiceLevel("ASAP");
@@ -168,11 +166,11 @@ public class ClassificationServiceImplIntExplicitTest {
         ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification0 = this.createNewClassificationWithUniqueKey();
+        Classification classification0 = this.createNewClassificationWithUniqueKey("", "t1");
         classificationService.createClassification(classification0);
-        Classification classification1 = this.createNewClassificationWithUniqueKey();
+        Classification classification1 = this.createNewClassificationWithUniqueKey("", "t1");
         classificationService.createClassification(classification1);
-        Classification classification2 = this.createNewClassificationWithUniqueKey();
+        Classification classification2 = this.createNewClassificationWithUniqueKey("", "t1");
         classification2.setParentClassificationKey(classification0.getKey());
         classificationService.createClassification(classification2);
 
@@ -186,7 +184,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey();
+        Classification classification = this.createNewClassificationWithUniqueKey("novatec", "t1");
         connection.commit();
         classificationService.createClassification(classification);
         classification.setDescription("TEST SOMETHING");
@@ -201,7 +199,7 @@ public class ClassificationServiceImplIntExplicitTest {
         ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey();
+        Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
         classificationService.createClassification(classification);
         Date today = Date.valueOf(LocalDate.now());
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
@@ -218,7 +216,7 @@ public class ClassificationServiceImplIntExplicitTest {
         ClassificationAlreadyExistException, ClassificationNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        ClassificationImpl classification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
         classificationService.createClassification(classification);
         System.out.println(classification.getKey());
         classification.setDescription("description");
@@ -231,16 +229,15 @@ public class ClassificationServiceImplIntExplicitTest {
         list = classificationService.createClassificationQuery().validInDomain(true).list();
         Assert.assertEquals(2, list.size());
 
-        classification.setDomain("domain");
         classificationService.updateClassification(classification);
         System.out.println(classification.getKey());
         list = classificationService.createClassificationQuery().validUntil(Date.valueOf("9999-12-31")).list();
-        Assert.assertEquals(2, list.size());
+        Assert.assertEquals(1, list.size());
 
         System.out.println(classification.getParentClassificationKey());
 
         List<ClassificationSummary> allClassifications = classificationService.getClassificationTree();
-        Assert.assertEquals(2, allClassifications.size());
+        Assert.assertEquals(1, allClassifications.size());
         connection.commit();
     }
 
@@ -250,16 +247,14 @@ public class ClassificationServiceImplIntExplicitTest {
         ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        ClassificationImpl classification1 = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
-        classification1.setDomain("domain1");
+        Classification classification1 = this.createNewClassificationWithUniqueKey("domain1", "t1");
         classification1.setCategory("category1");
         classificationService.createClassification(classification1);
-        ClassificationImpl classification2 = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
-        classification2.setDomain("domain2");
+        Classification classification2 = this.createNewClassificationWithUniqueKey("domain2", "t1");
         classification2.setCategory("category1");
         classificationService.createClassification(classification2);
-        ClassificationImpl classification3 = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
-        classification3.setDomain("domain1");
+
+        Classification classification3 = this.createNewClassificationWithUniqueKey("domain1", "t1");
         classification3.setCategory("category2");
         classificationService.createClassification(classification3);
 
@@ -279,21 +274,21 @@ public class ClassificationServiceImplIntExplicitTest {
         ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification1 = this.createNewClassificationWithUniqueKey();
+        Classification classification1 = this.createNewClassificationWithUniqueKey("", "t1");
         classification1.setDescription("DESC1");
         classification1.setCategory("category1");
         classificationService.createClassification(classification1);
-        Classification classification2 = this.createNewClassificationWithUniqueKey();
+        Classification classification2 = this.createNewClassificationWithUniqueKey("", "t1");
         classification2.setDescription("DESC1");
         classification2.setCustom1("custom1");
         classification2.setCategory("category1");
         classificationService.createClassification(classification2);
-        Classification classification3 = this.createNewClassificationWithUniqueKey();
+        Classification classification3 = this.createNewClassificationWithUniqueKey("", "t1");
         classification3.setCustom1("custom2");
         classification3.setCustom2("custom1");
         classification3.setCategory("category2");
         classificationService.createClassification(classification3);
-        Classification classification4 = this.createNewClassificationWithUniqueKey();
+        Classification classification4 = this.createNewClassificationWithUniqueKey("", "t1");
         classification4.setDescription("description2");
         classification4.setCustom8("custom2");
         classification4.setCategory("category1");
@@ -317,23 +312,19 @@ public class ClassificationServiceImplIntExplicitTest {
         ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        ClassificationImpl classification = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        Classification classification = this.createNewClassificationWithUniqueKey("", "type1");
         classification.setPriority(Integer.decode("5"));
-        classification.setType("type1");
         classificationService.createClassification(classification);
-        ClassificationImpl classification1 = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        Classification classification1 = this.createNewClassificationWithUniqueKey("", "type1");
         classification1.setPriority(Integer.decode("3"));
-        classification1.setType("type1");
         classification1.setParentClassificationKey(classification.getKey());
         classificationService.createClassification(classification1);
-        ClassificationImpl classification2 = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        Classification classification2 = this.createNewClassificationWithUniqueKey("", "type2");
         classification2.setPriority(Integer.decode("5"));
-        classification2.setType("type2");
         classification2.setParentClassificationKey(classification.getKey());
         classificationService.createClassification(classification2);
-        ClassificationImpl classification3 = (ClassificationImpl) this.createNewClassificationWithUniqueKey();
+        Classification classification3 = this.createNewClassificationWithUniqueKey("", "type1");
         classification3.setPriority(Integer.decode("5"));
-        classification3.setType("type1");
         classification3.setParentClassificationKey(classification1.getKey());
         classificationService.createClassification(classification3);
 
@@ -359,25 +350,25 @@ public class ClassificationServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         int all = 0;
-        Classification classification = this.createNewClassificationWithUniqueKey();
+        Classification classification = this.createNewClassificationWithUniqueKey("", "type1");
         classification.setServiceLevel("P1D");
         classification.setName("name1");
         classification.setDescription("desc");
         classificationService.createClassification(classification);
         all++;
-        Classification classification1 = this.createNewClassificationWithUniqueKey();
+        Classification classification1 = this.createNewClassificationWithUniqueKey("", "type1");
         classification1.setServiceLevel("P1DT1H");
         classification1.setName("name1");
         classification1.setDescription("desc");
         classificationService.createClassification(classification1);
         all++;
-        Classification classification2 = this.createNewClassificationWithUniqueKey();
+        Classification classification2 = this.createNewClassificationWithUniqueKey("", "type1");
         classification2.setServiceLevel("P1D");
         classification2.setName("name");
         classification2.setDescription("desc");
         classificationService.createClassification(classification2);
         all++;
-        Classification classification3 = this.createNewClassificationWithUniqueKey();
+        Classification classification3 = this.createNewClassificationWithUniqueKey("", "type1");
         classification3.setName("name1");
         classification3.setDescription("description");
         classificationService.createClassification(classification3);
@@ -399,8 +390,8 @@ public class ClassificationServiceImplIntExplicitTest {
         ClassificationAlreadyExistException, ClassificationNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey();
-        Classification classification1 = this.createNewClassificationWithUniqueKey();
+        Classification classification = this.createNewClassificationWithUniqueKey("", "type1");
+        Classification classification1 = this.createNewClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification);
         classificationService.createClassification(classification1);
         classification1.setParentClassificationKey(classification.getKey());
@@ -442,9 +433,8 @@ public class ClassificationServiceImplIntExplicitTest {
         FileUtils.deleteRecursive("~/data", true);
     }
 
-    private Classification createNewClassificationWithUniqueKey() {
-        Classification classification = classificationService.newClassification();
-        classification.setKey("TEST" + counter);
+    private Classification createNewClassificationWithUniqueKey(String domain, String type) {
+        Classification classification = classificationService.newClassification(domain, "TEST" + counter, type);
         counter++;
         return classification;
     }
