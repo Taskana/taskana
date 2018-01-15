@@ -147,8 +147,7 @@ public interface Task {
     /**
      * Returns the Domain, to which the Task belongs at this moment.
      *
-     * @return domain
-     *          the current domain of the task
+     * @return domain the current domain of the task
      */
     String getDomain();
 
@@ -381,4 +380,18 @@ public interface Task {
      * @return the {@link List list} of {@link Attachment attachments} for this task
      */
     List<Attachment> getAttachments();
+
+    /**
+     * Returns the custom note for this Task.
+     *
+     * @return note
+     */
+    String getNote();
+
+    /**
+     * Sets/Changing the custom note for this Task.
+     *
+     * @param note
+     */
+    void setNote(String note);
 }
