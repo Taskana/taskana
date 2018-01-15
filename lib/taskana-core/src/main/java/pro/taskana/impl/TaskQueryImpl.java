@@ -31,6 +31,7 @@ public class TaskQueryImpl implements TaskQuery {
     private ClassificationServiceImpl classificationService;
     private String[] name;
     private String description;
+    private String note;
     private int[] priority;
     private TaskState[] states;
     private String[] classificationKey;
@@ -65,6 +66,12 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery descriptionLike(String description) {
         this.description = description;
+        return this;
+    }
+
+    @Override
+    public TaskQuery noteLike(String note) {
+        this.note = note;
         return this;
     }
 
@@ -294,6 +301,7 @@ public class TaskQueryImpl implements TaskQuery {
     public String getDescription() {
         return description;
     }
+
     public int[] getPriority() {
         return priority;
     }

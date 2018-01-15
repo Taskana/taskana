@@ -26,6 +26,7 @@ public class TaskImpl implements Task {
     private Timestamp due;
     private String name;
     private String description;
+    private String note;
     private int priority;
     private TaskState state;
     private String classificationKey;
@@ -142,6 +143,16 @@ public class TaskImpl implements Task {
     @Override
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String getNote() {
+        return note;
+    }
+
+    @Override
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override
@@ -442,6 +453,8 @@ public class TaskImpl implements Task {
         builder.append(name);
         builder.append(", description=");
         builder.append(description);
+        builder.append(", note=");
+        builder.append(note);
         builder.append(", priority=");
         builder.append(priority);
         builder.append(", state=");
