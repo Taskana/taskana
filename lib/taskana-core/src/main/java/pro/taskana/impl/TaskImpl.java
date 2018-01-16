@@ -41,11 +41,6 @@ public class TaskImpl implements Task {
     private boolean isTransferred;
     // All objects have to be serializable
     private Map<String, Object> customAttributes = Collections.emptyMap();
-    private String porCompany;          // auxiliary field needed to avoid 2nd query for primaryObjRef in TaskMapper
-    private String porSystem;           // auxiliary field needed to avoid 2nd query for primaryObjRef in TaskMapper
-    private String porSystemInstance;   // auxiliary field needed to avoid 2nd query for primaryObjRef in TaskMapper
-    private String porType;             // auxiliary field needed to avoid 2nd query for primaryObjRef in TaskMapper
-    private String porValue;            // auxiliary field needed to avoid 2nd query for primaryObjRef in TaskMapper
     private List<Attachment> attachments;
     private String custom1;
     private String custom2;
@@ -392,46 +387,6 @@ public class TaskImpl implements Task {
         this.classification = classification;
     }
 
-    public String getPorCompany() {
-        return porCompany;
-    }
-
-    public void setPorCompany(String porCompany) {
-        this.porCompany = porCompany;
-    }
-
-    public String getPorSystem() {
-        return porSystem;
-    }
-
-    public void setPorSystem(String porSystem) {
-        this.porSystem = porSystem;
-    }
-
-    public String getPorSystemInstance() {
-        return porSystemInstance;
-    }
-
-    public void setPorSystemInstance(String porSystemInstance) {
-        this.porSystemInstance = porSystemInstance;
-    }
-
-    public String getPorType() {
-        return porType;
-    }
-
-    public void setPorType(String porType) {
-        this.porType = porType;
-    }
-
-    public String getPorValue() {
-        return porValue;
-    }
-
-    public void setPorValue(String porValue) {
-        this.porValue = porValue;
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -481,16 +436,6 @@ public class TaskImpl implements Task {
         builder.append(isTransferred);
         builder.append(", customAttributes=");
         builder.append(customAttributes);
-        builder.append(", porCompany=");
-        builder.append(porCompany);
-        builder.append(", porSystem=");
-        builder.append(porSystem);
-        builder.append(", porSystemInstance=");
-        builder.append(porSystemInstance);
-        builder.append(", porType=");
-        builder.append(porType);
-        builder.append(", porValue=");
-        builder.append(porValue);
         builder.append(", attachments=");
         builder.append(attachments);
         builder.append(", custom1=");
