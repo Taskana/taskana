@@ -202,10 +202,7 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             result = taskMapper.findById(id);
             if (result != null) {
-                setPrimaryObjRef(result);
-                List<Attachment> attachments = setAttachmentObjRef(
-                    attachmentMapper.findAttachmentsByTaskId(result.getId()));
-                result.setAttachments(attachments);
+                setAttachments(result);
                 Classification classification;
                 try {
                     classification = this.classificationService.getClassificationByTask(result);
@@ -305,7 +302,6 @@ public class TaskServiceImpl implements TaskService {
             workbasketService.checkAuthorization(workbasketKey, WorkbasketAuthorization.READ);
             List<TaskImpl> tasks = taskMapper.findTasksByWorkbasketIdAndState(workbasketKey, taskState);
             tasks.stream().forEach(t -> {
-                TaskServiceImpl.setPrimaryObjRef(t);
                 results.add(t);
             });
         } finally {
@@ -444,31 +440,15 @@ public class TaskServiceImpl implements TaskService {
         return new AttachmentImpl();
     }
 
-    static void setPrimaryObjRef(TaskImpl task) {
-        ObjectReference objRef = new ObjectReference();
-        objRef.setCompany(task.getPorCompany());
-        objRef.setSystem(task.getPorSystem());
-        objRef.setSystemInstance(task.getPorSystemInstance());
-        objRef.setType(task.getPorType());
-        objRef.setValue(task.getPorValue());
-        task.setPrimaryObjRef(objRef);
-    }
-
-    private List<Attachment> setAttachmentObjRef(List<AttachmentImpl> attachments) {
-        List<Attachment> results = new ArrayList<>();
-        if (attachments != null && !attachments.isEmpty()) {
-            for (AttachmentImpl attachment : attachments) {
-                ObjectReference objRef = new ObjectReference();
-                objRef.setCompany(attachment.getPorCompany());
-                objRef.setSystem(attachment.getPorSystem());
-                objRef.setSystemInstance(attachment.getPorSystemInstance());
-                objRef.setType(attachment.getPorType());
-                objRef.setValue(attachment.getPorValue());
-                attachment.setObjectReference(objRef);
-                results.add(attachment);
+    private void setAttachments(TaskImpl result) {
+        List<AttachmentImpl> attachmentImpls = attachmentMapper.findAttachmentsByTaskId(result.getId());
+        List<Attachment> attachments = new ArrayList<>();
+        if (attachmentImpls != null && !attachmentImpls.isEmpty()) {
+            for (AttachmentImpl attImpl : attachmentImpls) {
+                attachments.add(attImpl);
             }
         }
-        return results;
+        result.setAttachments(attachments);
     }
 
     private void validateObjectReference(ObjectReference objRef, String objRefType, String objName)

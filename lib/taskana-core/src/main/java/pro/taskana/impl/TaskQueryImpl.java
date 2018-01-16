@@ -203,7 +203,6 @@ public class TaskQueryImpl implements TaskQuery {
             checkAuthorization();
             List<TaskImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
             for (TaskImpl taskImpl : tasks) {
-                TaskServiceImpl.setPrimaryObjRef(taskImpl);
                 try {
                     Classification classification = this.classificationService.getClassificationByTask(taskImpl);
                     taskImpl.setClassification(classification);
@@ -234,7 +233,6 @@ public class TaskQueryImpl implements TaskQuery {
             RowBounds rowBounds = new RowBounds(offset, limit);
             List<TaskImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             for (TaskImpl taskImpl : tasks) {
-                TaskServiceImpl.setPrimaryObjRef(taskImpl);
                 try {
                     Classification classification = this.classificationService.getClassificationByTask(taskImpl);
                     taskImpl.setClassification(classification);
@@ -263,7 +261,6 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
             taskImpl = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
-            TaskServiceImpl.setPrimaryObjRef(taskImpl);
             try {
                 Classification classification = this.classificationService.getClassificationByTask(taskImpl);
                 taskImpl.setClassification(classification);
