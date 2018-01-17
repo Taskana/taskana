@@ -13,7 +13,6 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
-import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -326,29 +325,6 @@ public class ClassificationServiceImpl implements ClassificationService {
                 ex);
         }
         return isExisting;
-    }
-
-    public Classification getClassificationByTask(Task task) throws ClassificationNotFoundException {
-        if (task.getId() == null) {
-            throw new ClassificationNotFoundException("Classification for task with id null was not found.");
-        }
-        LOGGER.debug("entry to getClassificationByTask(taskId = {})", task.getId());
-        TaskImpl taskImpl = (TaskImpl) task;
-        String classificationKey = taskImpl.getClassificationKey();
-        Classification result = null;
-        try {
-            taskanaEngineImpl.openConnection();
-            result = classificationMapper.findByTask(classificationKey, task.getWorkbasketKey(),
-                CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-            if (result == null) {
-                throw new ClassificationNotFoundException(
-                    "Classification for task with id " + task.getId() + " was not found.");
-            }
-            return result;
-        } finally {
-            taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from getClassification(). Returning result {} ", result);
-        }
     }
 
 }

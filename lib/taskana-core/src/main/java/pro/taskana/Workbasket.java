@@ -3,7 +3,6 @@ package pro.taskana;
 import java.sql.Timestamp;
 import java.util.List;
 
-import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 
 /**

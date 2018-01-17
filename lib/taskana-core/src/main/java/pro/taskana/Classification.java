@@ -18,7 +18,6 @@ public interface Classification {
     String getKey();
 
     /**
-
      * Used to get the ID of the parent classification. There will be no value if the current classification is a
      * parent-classification.
      *
@@ -293,4 +292,12 @@ public interface Classification {
      * @return validUntil
      */
     Date getValidUntil();
+
+    /**
+     * Return a summary of the current Classification.
+     *
+     * @return the ClassificationSummary object for the current classification
+     */
+    ClassificationSummary asSummary();
+
 }

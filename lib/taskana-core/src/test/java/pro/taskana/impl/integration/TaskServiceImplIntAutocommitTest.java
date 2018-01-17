@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.Task;
+import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.Workbasket;
@@ -43,6 +44,7 @@ import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.JunitHelper;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
+import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
@@ -50,7 +52,6 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskSummary;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.security.CurrentUserContext;
@@ -208,14 +209,14 @@ public class TaskServiceImplIntAutocommitTest {
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
 
-        List<Task> results = taskServiceImpl.createTaskQuery()
-            .name("bla", "test")
+        List<TaskSummary> results = taskServiceImpl.createTaskQuery()
+            .nameIn("bla", "test")
             .descriptionLike("test")
-            .priority(1, 2, 2)
-            .state(TaskState.CLAIMED)
+            .priorityIn(1, 2, 2)
+            .stateIn(TaskState.CLAIMED)
             .workbasketKeyIn("asd", "asdasdasd")
-            .owner("test", "test2", "bla")
-            .customFields("test")
+            .ownerIn("test", "test2", "bla")
+            .customFieldsIn("test")
             .classificationKeyIn("pId1", "pId2")
             .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
             .primaryObjectReferenceSystemIn("sys")
@@ -248,14 +249,10 @@ public class TaskServiceImplIntAutocommitTest {
         dummyTask.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         dummyTask = (TaskImpl) taskServiceImpl.createTask(dummyTask);
 
-        List<TaskSummary> expectedTaskSumamries = new ArrayList<>();
-        TaskSummary taskSummary = new TaskSummary();
+        List<TaskSummaryImpl> expectedTaskSumamries = new ArrayList<>();
+        TaskSummaryImpl taskSummary = new TaskSummaryImpl();
         taskSummary.setTaskId(dummyTask.getId());
-        taskSummary.setTaskName(dummyTask.getName());
-        taskSummary.setWorkbasketKey(dummyWorkbasket.getKey());
-        taskSummary.setWorkbasketName(dummyWorkbasket.getName());
-        taskSummary.setClassificationKey(dummyClassification.getKey());
-        taskSummary.setClassificationName(dummyClassification.getName());
+        taskSummary.setName(dummyTask.getName());
         expectedTaskSumamries.add(taskSummary);
 
         List<TaskSummary> actualTaskSumamryResult = taskServiceImpl

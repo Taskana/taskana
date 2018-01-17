@@ -102,7 +102,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof ClassificationSummaryImpl)) {
             return false;
         }
         ClassificationSummaryImpl other = (ClassificationSummaryImpl) obj;
@@ -161,7 +161,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ClassificationSummary [id=");
+        builder.append("ClassificationSummaryImpl [id=");
         builder.append(id);
         builder.append(", key=");
         builder.append(key);
@@ -178,4 +178,5 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         builder.append("]");
         return builder.toString();
     }
+
 }

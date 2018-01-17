@@ -9,8 +9,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import acceptance.AbstractAccTest;
-import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
@@ -28,7 +28,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     public void testQueryTasksByExcactValueOfObjectReference()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
-        List<Task> results = taskService.createTaskQuery()
+        List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueIn("Value1", "Value2")
             .list();
         Assert.assertEquals(10L, results.size());
@@ -38,7 +38,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     public void testQueryTasksByExcactValueAndTypeOfObjectReference()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
-        List<Task> results = taskService.createTaskQuery()
+        List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceTypeIn("Type3")
             .primaryObjectReferenceValueIn("Value3")
             .list();
@@ -49,7 +49,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     public void testQueryTasksByValueLikeOfObjectReference()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
-        List<Task> results = taskService.createTaskQuery()
+        List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueLike("Val%")
             .list();
         Assert.assertEquals(14L, results.size());

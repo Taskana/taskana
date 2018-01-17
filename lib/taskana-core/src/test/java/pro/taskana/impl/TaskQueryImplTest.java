@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import pro.taskana.Task;
+import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.TaskState;
@@ -40,9 +41,13 @@ public class TaskQueryImplTest {
     @Mock
     ClassificationServiceImpl classificationService;
 
+    @Mock
+    TaskServiceImpl taskServiceMock;
+
     @Before
     public void setup() {
         when(taskanaEngine.getClassificationService()).thenReturn(classificationService);
+        when(taskanaEngine.getTaskService()).thenReturn(taskServiceMock);
         taskQueryImpl = new TaskQueryImpl(taskanaEngine);
     }
 
@@ -50,11 +55,14 @@ public class TaskQueryImplTest {
     public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException, InvalidArgumentException {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
+        List<TaskSummary> intermediate = new ArrayList<>();
+        intermediate.add(new TaskSummaryImpl());
+        doReturn(intermediate).when(taskServiceMock).augmentTaskSummariesByContainedSummaries(any());
 
-        List<Task> result = taskQueryImpl.name("test", "asd", "blubber")
-            .customFields("cool", "bla")
-            .priority(1, 2)
-            .state(TaskState.CLAIMED, TaskState.COMPLETED)
+        List<TaskSummary> result = taskQueryImpl.nameIn("test", "asd", "blubber")
+            .customFieldsIn("cool", "bla")
+            .priorityIn(1, 2)
+            .stateIn(TaskState.CLAIMED, TaskState.COMPLETED)
             .list();
         Assert.assertNotNull(result);
     }
@@ -64,11 +72,14 @@ public class TaskQueryImplTest {
         throws NotAuthorizedException, InvalidArgumentException {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
+        List<TaskSummary> intermediate = new ArrayList<>();
+        intermediate.add(new TaskSummaryImpl());
+        doReturn(intermediate).when(taskServiceMock).augmentTaskSummariesByContainedSummaries(any());
 
-        List<Task> result = taskQueryImpl.name("test", "asd", "blubber")
-            .customFields("cool", "bla")
-            .priority(1, 2)
-            .state(TaskState.CLAIMED, TaskState.COMPLETED)
+        List<TaskSummary> result = taskQueryImpl.nameIn("test", "asd", "blubber")
+            .customFieldsIn("cool", "bla")
+            .priorityIn(1, 2)
+            .stateIn(TaskState.CLAIMED, TaskState.COMPLETED)
             .list(1, 1);
         Assert.assertNotNull(result);
     }
@@ -76,12 +87,16 @@ public class TaskQueryImplTest {
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException, InvalidArgumentException {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectOne(any(), any())).thenReturn(new TaskImpl());
+        when(sqlSession.selectOne(any(), any())).thenReturn(new TaskSummaryImpl());
+        List<TaskSummary> intermediate = new ArrayList<>();
+        intermediate.add(new TaskSummaryImpl());
+        doReturn(intermediate).when(taskServiceMock).augmentTaskSummariesByContainedSummaries(any());
+        // when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
 
-        Task result = taskQueryImpl.name("test", "asd", "blubber")
-            .customFields("cool", "bla")
-            .priority(1, 2)
-            .state(TaskState.CLAIMED, TaskState.COMPLETED)
+        TaskSummary result = taskQueryImpl.nameIn("test", "asd", "blubber")
+            .customFieldsIn("cool", "bla")
+            .priorityIn(1, 2)
+            .stateIn(TaskState.CLAIMED, TaskState.COMPLETED)
             .single();
         Assert.assertNotNull(result);
     }

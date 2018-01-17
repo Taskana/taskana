@@ -13,6 +13,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -20,7 +21,6 @@ import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.model.mappings.WorkbasketMapper;
@@ -128,7 +128,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         List<WorkbasketSummary> workbaskets = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
-            workbaskets = workbasketMapper.findAll();
+            List<WorkbasketSummaryImpl> workbasketImpls = workbasketMapper.findAll();
+            for (WorkbasketSummaryImpl workbasketSummaryImpl : workbasketImpls) {
+                workbaskets.add(workbasketSummaryImpl);
+            }
             return workbaskets;
         } finally {
             taskanaEngineImpl.returnConnection();
