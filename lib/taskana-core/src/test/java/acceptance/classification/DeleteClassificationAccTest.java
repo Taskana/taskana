@@ -5,17 +5,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
-import pro.taskana.ClassificationSummary;
+import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
@@ -24,54 +22,85 @@ import pro.taskana.exceptions.NotAuthorizedException;
  */
 public class DeleteClassificationAccTest extends AbstractAccTest {
 
+    private ClassificationService classificationService;
+
     public DeleteClassificationAccTest() {
         super();
+        classificationService = taskanaEngine.getClassificationService();
     }
 
-    @Ignore
     @Test
     public void testDeleteClassificationInDomain()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-        // classificationService.deleteClassification("L140101", "DOMAIN_A");
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        classificationService.deleteClassification("L140101", "DOMAIN_A");
 
         Classification classification = classificationService.getClassification("L140101", "DOMAIN_A");
         assertNotNull(classification);
         assertEquals("", classification.getDomain());
 
-        List<ClassificationSummary> classifications = classificationService.getAllClassifications("L140101",
-            "DOMAIN_A");
-        ClassificationSummary temp = classifications.get(classifications.size() - 1);
-        classification = classificationService.getClassification(temp.getKey(), temp.getDomain());
+        classification = classificationService.getClassification("L140101", "DOMAIN_A");
+        assertTrue(classification.getDomain() == "");
+        assertTrue("DOMAIN_A" != classification.getDomain());
     }
 
-    @Ignore
+    @Test (expected = ClassificationInUseException.class)
+    public void testThrowExeptionIfDeleteClassificationWithExistingTasks()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        classificationService.deleteClassification("L1050", "DOMAIN_A");
+    }
+
+    @Test (expected = ClassificationInUseException.class)
+    public void testThrowExeptionIfDeleteMasterClassificationWithExistingTasks()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        classificationService.deleteClassification("L1050", "");
+    }
+
     @Test
-    public void testDeleteClassificationFromRootDomain()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-        // classificationService.deleteClassification("L1050", "DOMAIN_A");
-        // classificationService.deleteClassification("L1050", "");
+    public void testDeleteMasterClassification()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        classificationService.deleteClassification("L12010", "");
 
-        Classification classification = classificationService.getClassification("L140101", "DOMAIN_A");
-        assertTrue(classification == null);
+        boolean classificationNotFound = false;
+        try {
+            classificationService.getClassification("L12010", "DOMAIN_A");
+        } catch (ClassificationNotFoundException e) {
+            classificationNotFound = true;
+        }
+        assertTrue(classificationNotFound);
     }
 
-    // @Ignore
-    // @Test(expected = ClassificationInUseException.class)
-    // public void testGetExceptionIfDeletedClassificationFromRootDomainIsStillUsedInDomain()
-    // throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
-    // ClassificationService classificationService = taskanaEngine.getClassificationService();
-    // classificationService.deleteClassification("L10000", "");
-    // }
-    //
-    // @Ignore
-    // @Test(expected = ClassificationInUseException.class)
-    // public void testGetExceptionIfDeletedClassificationIsStillUsedInTask()
-    // throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
-    // ClassificationService classificationService = taskanaEngine.getClassificationService();
-    // classificationService.deleteClassification("L10000", "DOMAIN_A");
-    // }
+    @Test
+    public void testThrowExceptionWhenChildClassificationIsInUseAndRollback()
+        throws ClassificationInUseException, NotAuthorizedException, ClassificationNotFoundException {
+        boolean classificationInUse = false;
+        try {
+            classificationService.deleteClassification("L11010", "DOMAIN_A");
+        } catch (ClassificationInUseException e) {
+            classificationInUse = true;
+        }
+        assertTrue(classificationInUse);
+        classificationService.getClassification("L11010", "DOMAIN_A");
+
+        classificationInUse = false;
+        try {
+        classificationService.deleteClassification("L11010", "");
+        } catch (ClassificationInUseException e) {
+            classificationInUse = true;
+        }
+        assertTrue(classificationInUse);
+        classificationService.getClassification("L11010", "");
+        classificationService.getClassification("L11010", "DOMAIN_A");
+    }
+
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testThrowClassificationNotFoundIfClassificationNotExists() throws ClassificationNotFoundException, ClassificationInUseException {
+        classificationService.deleteClassification("not existing classification key", "");
+    }
+
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testThrowClassificationNotFoundIfClassificationNotExistsInDomain() throws ClassificationNotFoundException, ClassificationInUseException {
+        classificationService.deleteClassification("L10000", "DOMAIN_B");
+    }
 
     @AfterClass
     public static void cleanUpClass() {

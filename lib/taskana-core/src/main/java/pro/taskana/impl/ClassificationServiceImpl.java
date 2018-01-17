@@ -14,6 +14,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
@@ -290,5 +291,39 @@ public class ClassificationServiceImpl implements ClassificationService {
                 ex);
         }
         return isExisting;
+    }
+
+    @Override
+    public void deleteClassification(String classificationKey, String domain) throws ClassificationInUseException, ClassificationNotFoundException {
+        try {
+            taskanaEngineImpl.openConnection();
+            if (this.classificationMapper.findByKeyAndDomain(classificationKey, domain) == null) {
+                throw new ClassificationNotFoundException("The classification " + classificationKey + "wasn't found in the domain " + domain);
+            }
+
+            if (domain.equals("")) {
+                //master mode - delete all associated classifications in every domain.
+                List<String> domains = this.classificationMapper.getDomainsForClassification(classificationKey);
+                domains.remove("");
+                for (String classificationDomain : domains) {
+                    deleteClassification(classificationKey, classificationDomain);
+                }
+            }
+
+            TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
+            int countTasks = taskService.countTasksByClassificationAndDomain(classificationKey, domain);
+            if (countTasks > 0) {
+                throw new ClassificationInUseException("There are " + countTasks + " Tasks which belong to this classification or a child classification. Please complete them and try again.");
+            }
+
+            List<String> childKeys = this.classificationMapper.getChildrenOfClassification(classificationKey, domain);
+            for (String key : childKeys) {
+                this.deleteClassification(key, domain);
+            }
+
+            this.classificationMapper.deleteClassificationInDomain(classificationKey, domain);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
     }
 }

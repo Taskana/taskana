@@ -3,6 +3,7 @@ package pro.taskana;
 import java.util.List;
 
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 
 /**
@@ -43,6 +44,21 @@ public interface ClassificationService {
      *             if no classification is found that matches the key either in domain or in the root domain.
      */
     Classification getClassification(String key, String domain) throws ClassificationNotFoundException;
+
+    /**
+     * Delete a classification with all child classifications.
+     *
+     * @param classificationKey
+     *              the key of the classification you want to delete.
+     * @param domain
+     *              the domains for which you want to delete the classification.
+     *              if "", the function tries to delete the "master domain" classification and any other classification with this key.
+     * @throws ClassificationInUseException
+     *              if there are Task existing, which refer to this classification.
+     * @throws ClassificationNotFoundException
+     *              if for an domain no classification specification is found.
+     */
+    void deleteClassification(String classificationKey, String domain) throws ClassificationInUseException, ClassificationNotFoundException;
 
     /**
      * Persists a new classification after adding default values. <br >
