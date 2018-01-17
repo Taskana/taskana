@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import pro.taskana.ClassificationService;
-import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
+import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.model.TaskState;
@@ -52,18 +52,18 @@ public class TaskFilter {
     @Autowired
     private ClassificationService classificationService;
 
-    public List<Task> getAll() throws NotAuthorizedException, InvalidArgumentException {
+    public List<TaskSummary> getAll() throws NotAuthorizedException {
         return taskService.createTaskQuery().list();
     }
 
-    public List<Task> inspectPrams(MultiValueMap<String, String> params)
+    public List<TaskSummary> inspectPrams(MultiValueMap<String, String> params)
         throws NotAuthorizedException, InvalidArgumentException {
         TaskQuery taskQuery = taskService.createTaskQuery();
 
         // apply filters
         if (params.containsKey(NAME)) {
             String[] names = extractCommaSeperatedFields(params.get(NAME));
-            taskQuery.name(names);
+            taskQuery.nameIn(names);
         }
         if (params.containsKey(DESCRIPTION)) {
             taskQuery.descriptionLike(params.get(DESCRIPTION).get(0));
@@ -71,11 +71,11 @@ public class TaskFilter {
         if (params.containsKey(PRIORITY)) {
             String[] prioritesInString = extractCommaSeperatedFields(params.get(PRIORITY));
             int[] priorites = extractPriorities(prioritesInString);
-            taskQuery.priority(priorites);
+            taskQuery.priorityIn(priorites);
         }
         if (params.containsKey(STATE)) {
             TaskState[] states = extractStates(params);
-            taskQuery.state(states);
+            taskQuery.stateIn(states);
         }
         if (params.containsKey(CLASSIFICATION_KEY)) {
             String[] classificationKeys = extractCommaSeperatedFields(params.get(CLASSIFICATION_KEY));
@@ -87,7 +87,7 @@ public class TaskFilter {
         }
         if (params.containsKey(OWNER)) {
             String[] owners = extractCommaSeperatedFields(params.get(OWNER));
-            taskQuery.owner(owners);
+            taskQuery.ownerIn(owners);
         }
         // objectReference
         if (params.keySet().stream().filter(s -> s.startsWith(POR)).toArray().length > 0) {
@@ -113,14 +113,14 @@ public class TaskFilter {
             }
         }
         if (params.containsKey(IS_READ)) {
-            taskQuery.read(Boolean.getBoolean(params.get(IS_READ).get(0)));
+            taskQuery.readEquals(Boolean.getBoolean(params.get(IS_READ).get(0)));
         }
         if (params.containsKey(IS_TRANSFERRED)) {
-            taskQuery.transferred(Boolean.getBoolean(params.get(IS_TRANSFERRED).get(0)));
+            taskQuery.transferredEquals(Boolean.getBoolean(params.get(IS_TRANSFERRED).get(0)));
         }
         if (params.containsKey(CUSTOM)) {
             String[] custom = extractCommaSeperatedFields(params.get(CUSTOM));
-            taskQuery.customFields(custom);
+            taskQuery.customFieldsIn(custom);
         }
         return taskQuery.list();
     }

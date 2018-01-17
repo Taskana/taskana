@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.Task;
+import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.Workbasket;
@@ -272,7 +273,8 @@ public class TaskServiceImplIntExplicitTest {
         Assert.assertEquals(resultTask2.getPlanned(), resultTask2.getCreated());
         Assert.assertTrue(resultTask2.getName().equals(classification.getName()));
 
-        Assert.assertEquals(resultTask.getClassification().getId(), resultTask2.getClassification().getId());
+        Assert.assertEquals(resultTask.getClassificationSummary().getId(),
+            resultTask2.getClassificationSummary().getId());
         Assert.assertTrue(resultTask.getDue().after(resultTask2.getDue()));
         Assert.assertFalse(resultTask.getName().equals(resultTask2.getName()));
     }
@@ -352,14 +354,14 @@ public class TaskServiceImplIntExplicitTest {
 
         TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
 
-        List<Task> results = taskServiceImpl.createTaskQuery()
-            .name("bla", "test")
+        List<TaskSummary> results = taskServiceImpl.createTaskQuery()
+            .nameIn("bla", "test")
             .descriptionLike("test")
-            .priority(1, 2, 2)
-            .state(TaskState.CLAIMED)
+            .priorityIn(1, 2, 2)
+            .stateIn(TaskState.CLAIMED)
             .workbasketKeyIn("k1")
-            .owner("test", "test2", "bla")
-            .customFields("test")
+            .ownerIn("test", "test2", "bla")
+            .customFieldsIn("test")
             .classificationKeyIn("pId1", "pId2")
             .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
             .primaryObjectReferenceSystemIn("sys")
@@ -606,4 +608,5 @@ public class TaskServiceImplIntExplicitTest {
     public static void cleanUpClass() {
         FileUtils.deleteRecursive("~/data", true);
     }
+
 }

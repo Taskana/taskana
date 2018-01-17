@@ -26,12 +26,12 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.model.mappings.DistributionTargetMapper;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;

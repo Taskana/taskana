@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pro.taskana.Workbasket;
-import pro.taskana.model.WorkbasketSummary;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 
 /**
@@ -214,7 +214,7 @@ public class WorkbasketImpl implements Workbasket {
 
     @Override
     public WorkbasketSummary asSummary() {
-        WorkbasketSummary result = new WorkbasketSummary();
+        WorkbasketSummaryImpl result = new WorkbasketSummaryImpl();
         result.setId(this.getId());
         result.setKey(this.getKey());
         result.setName(this.getName());

@@ -52,7 +52,7 @@ export class WorkbasketserviceService {
 
   private createAuthorizationHeader() {
     let headers: Headers = new Headers();
-    headers.append("Authorization", "Basic TWF4OnRlc3Q=");
+    headers.append("Authorization", "Basic dXNlcl8xXzE6dXNlcl8xXzE=");
     headers.append("content-type", "application/json");
 
     return new RequestOptions({ headers: headers });

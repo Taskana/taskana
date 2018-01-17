@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import pro.taskana.Attachment;
+import pro.taskana.AttachmentSummary;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.model.ObjectReference;
 
@@ -24,7 +25,7 @@ public class AttachmentImpl implements Attachment {
     private ObjectReference objectReference;
     private String channel;
     private Timestamp received;
-    private Map<String, Object> customAttributes = Collections.emptyMap();;
+    private Map<String, Object> customAttributes = Collections.emptyMap();
 
     AttachmentImpl() {
     }
@@ -43,7 +44,6 @@ public class AttachmentImpl implements Attachment {
         return taskId;
     }
 
-    @Override
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
@@ -67,21 +67,22 @@ public class AttachmentImpl implements Attachment {
     }
 
     @Override
-    public String getClassificationKey() {
-        return classificationKey;
-    }
-
-    @Override
-    public void setClassificationKey(String classificationKey) {
-        this.classificationKey = classificationKey;
-    }
-
-    @Override
     public ClassificationSummary getClassificationSummary() {
         return classificationSummary;
     }
 
+    @Override
     public void setClassificationSummary(ClassificationSummary classificationSummary) {
+        this.classificationSummary = classificationSummary;
+    }
+
+    // auxiliary method to enable MyBatis access to classificationSummary
+    public ClassificationSummaryImpl getClassificationSummaryImpl() {
+        return (ClassificationSummaryImpl) classificationSummary;
+    }
+
+    // auxiliary method to enable MyBatis access to classificationSummary
+    public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
         this.classificationSummary = classificationSummary;
     }
 
@@ -126,9 +127,21 @@ public class AttachmentImpl implements Attachment {
     }
 
     @Override
+    public AttachmentSummary asSummary() {
+        AttachmentSummaryImpl summary = new AttachmentSummaryImpl();
+        summary.setClassificationSummary(this.classificationSummary);
+        summary.setCreated(this.created);
+        summary.setId(this.id);
+        summary.setModified(this.modified);
+        summary.setReceived(this.received);
+        summary.setTaskId(this.taskId);
+        return summary;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Attachment [id=");
+        builder.append("AttachmentImpl [id=");
         builder.append(id);
         builder.append(", taskId=");
         builder.append(taskId);
@@ -138,6 +151,8 @@ public class AttachmentImpl implements Attachment {
         builder.append(modified);
         builder.append(", classificationKey=");
         builder.append(classificationKey);
+        builder.append(", classificationSummary=");
+        builder.append(classificationSummary);
         builder.append(", objectReference=");
         builder.append(objectReference);
         builder.append(", channel=");
@@ -149,4 +164,5 @@ public class AttachmentImpl implements Attachment {
         builder.append("]");
         return builder.toString();
     }
+
 }

@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.WorkbasketSummary;
 
 @RestController
 @RequestMapping(path = "/v1/workbaskets", produces = { MediaType.APPLICATION_JSON_VALUE })

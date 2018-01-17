@@ -23,7 +23,7 @@ export class RestConnectorService {
 
   private createAuthorizationHeader() {
     let headers: Headers = new Headers();
-    headers.append("Authorization", "Basic TWF4OnRlc3Q=");
+    headers.append("Authorization", "Basic dXNlcl8xXzE6dXNlcl8xXzE=");
 
     return new RequestOptions({ headers: headers });
   }

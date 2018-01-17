@@ -13,7 +13,6 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskSummary;
 
 /**
  * The Task Service manages all operations on tasks.
@@ -163,7 +162,7 @@ public interface TaskService {
     TaskQuery createTaskQuery();
 
     /**
-     * Getting a list of all Tasks which got matching workbasketIds and states.
+     * Getting a list of all Task summaries which got matching workbasketIds and states.
      *
      * @param workbasketKey
      *            the key of the workbasket where the tasks need to be in.
@@ -177,7 +176,7 @@ public interface TaskService {
      * @throws ClassificationNotFoundException
      *             if a single Classification can not be found for a task which is returned
      */
-    List<Task> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
+    List<TaskSummary> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
         throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException;
 
     /**

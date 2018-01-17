@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import pro.taskana.Attachment;
-import pro.taskana.Classification;
+import pro.taskana.AttachmentSummary;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
+import pro.taskana.TaskSummary;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
 
@@ -30,7 +33,8 @@ public class TaskImpl implements Task {
     private int priority;
     private TaskState state;
     private String classificationKey;
-    private Classification classification;
+    private ClassificationSummary classificationSummary;
+    private WorkbasketSummary workbasketSummary;
     private String workbasketKey;
     private String domain;
     private String businessProcessId;
@@ -169,8 +173,8 @@ public class TaskImpl implements Task {
     }
 
     @Override
-    public Classification getClassification() {
-        return classification;
+    public ClassificationSummary getClassificationSummary() {
+        return classificationSummary;
     }
 
     @Override
@@ -186,6 +190,16 @@ public class TaskImpl implements Task {
     @Override
     public void setWorkbasketKey(String workbasketKey) {
         this.workbasketKey = workbasketKey;
+    }
+
+    @Override
+    public WorkbasketSummary getWorkbasketSummary() {
+        return workbasketSummary;
+    }
+
+    @Override
+    public void setWorkbasketSummary(WorkbasketSummary workbasket) {
+        this.workbasketSummary = workbasket;
     }
 
     @Override
@@ -375,6 +389,48 @@ public class TaskImpl implements Task {
         return attachments;
     }
 
+    @Override
+    public TaskSummary asSummary() {
+        TaskSummaryImpl taskSummary = new TaskSummaryImpl();
+        List<AttachmentSummary> attSummaries = new ArrayList<>();
+        for (Attachment att : attachments) {
+            attSummaries.add(att.asSummary());
+        }
+        taskSummary.setAttachmentSummaries(attSummaries);
+        taskSummary.setBusinessProcessId(this.businessProcessId);
+        taskSummary.setClaimed(claimed);
+        taskSummary.setClassificationSummary(classificationSummary);
+        taskSummary.setCompleted(completed);
+        taskSummary.setCreated(created);
+        taskSummary.setCustom1(custom1);
+        taskSummary.setCustom2(custom2);
+        taskSummary.setCustom3(custom3);
+        taskSummary.setCustom4(custom4);
+        taskSummary.setCustom5(custom5);
+        taskSummary.setCustom6(custom6);
+        taskSummary.setCustom7(custom7);
+        taskSummary.setCustom8(custom8);
+        taskSummary.setCustom9(custom9);
+        taskSummary.setCustom10(custom10);
+        taskSummary.setDomain(domain);
+        taskSummary.setDue(due);
+        taskSummary.setTaskId(id);
+        taskSummary.setModified(modified);
+        taskSummary.setName(name);
+        taskSummary.setNote(note);
+        taskSummary.setOwner(owner);
+        taskSummary.setParentBusinessProcessId(parentBusinessProcessId);
+        taskSummary.setPlanned(planned);
+        taskSummary.setPrimaryObjRef(primaryObjRef);
+        taskSummary.setPriority(priority);
+        taskSummary.setRead(isRead);
+        taskSummary.setState(state);
+        taskSummary.setTransferred(isTransferred);
+        taskSummary.setWorkbasketSummary(workbasketSummary);
+        return taskSummary;
+
+    }
+
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
     }
@@ -383,8 +439,8 @@ public class TaskImpl implements Task {
         return classificationKey;
     }
 
-    public void setClassification(Classification classification) {
-        this.classification = classification;
+    public void setClassificationSummary(ClassificationSummary classificationSummary) {
+        this.classificationSummary = classificationSummary;
     }
 
     @Override
@@ -416,8 +472,10 @@ public class TaskImpl implements Task {
         builder.append(state);
         builder.append(", classificationKey=");
         builder.append(classificationKey);
-        builder.append(", classification=");
-        builder.append(classification);
+        builder.append(", classificationSummary=");
+        builder.append(classificationSummary);
+        builder.append(", workbasketSummary=");
+        builder.append(workbasketSummary);
         builder.append(", workbasketKey=");
         builder.append(workbasketKey);
         builder.append(", domain=");
