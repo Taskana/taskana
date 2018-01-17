@@ -835,9 +835,9 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private void initAttachment(AttachmentImpl attachment, Task newTask) {
-        if (attachment.getId() == null) {
-            attachment.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
+    public int countTasksByClassificationAndDomain(String classificationKey, String domain) {
+        return taskMapper.countTasksByClassificationAndDomain(classificationKey, domain);
+    }
         }
         if (attachment.getCreated() == null) {
             attachment.setCreated(Instant.now());
