@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketQuery;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.security.CurrentUserContext;

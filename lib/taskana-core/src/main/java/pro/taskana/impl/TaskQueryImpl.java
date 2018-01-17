@@ -2,20 +2,18 @@ package pro.taskana.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.Classification;
 import pro.taskana.ObjectReferenceQuery;
-import pro.taskana.Task;
 import pro.taskana.TaskQuery;
+import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -29,6 +27,7 @@ public class TaskQueryImpl implements TaskQuery {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
     private ClassificationServiceImpl classificationService;
+    private TaskServiceImpl taskService;
     private String[] name;
     private String description;
     private String note;
@@ -55,10 +54,11 @@ public class TaskQueryImpl implements TaskQuery {
     public TaskQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.classificationService = (ClassificationServiceImpl) taskanaEngineImpl.getClassificationService();
+        this.taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
     }
 
     @Override
-    public TaskQuery name(String... names) {
+    public TaskQuery nameIn(String... names) {
         this.name = names;
         return this;
     }
@@ -76,13 +76,13 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskQuery priority(int... priorities) {
+    public TaskQuery priorityIn(int... priorities) {
         this.priority = priorities;
         return this;
     }
 
     @Override
-    public TaskQuery state(TaskState... states) {
+    public TaskQuery stateIn(TaskState... states) {
         this.states = states;
         return this;
     }
@@ -106,7 +106,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskQuery owner(String... owners) {
+    public TaskQuery ownerIn(String... owners) {
         this.owner = owners;
         return this;
     }
@@ -172,19 +172,19 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskQuery read(Boolean isRead) {
+    public TaskQuery readEquals(Boolean isRead) {
         this.isRead = isRead;
         return this;
     }
 
     @Override
-    public TaskQuery transferred(Boolean isTransferred) {
+    public TaskQuery transferredEquals(Boolean isTransferred) {
         this.isTransferred = isTransferred;
         return this;
     }
 
     @Override
-    public TaskQuery customFields(String... customFields) {
+    public TaskQuery customFieldsIn(String... customFields) {
         this.customFields = customFields;
         return this;
     }
@@ -195,23 +195,14 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public List<Task> list() throws NotAuthorizedException {
+    public List<TaskSummary> list() throws NotAuthorizedException {
         LOGGER.debug("entry to list(), this = {}", this);
-        List<Task> result = new ArrayList<>();
+        List<TaskSummary> result = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
-            List<TaskImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
-            for (TaskImpl taskImpl : tasks) {
-                try {
-                    Classification classification = this.classificationService.getClassificationByTask(taskImpl);
-                    taskImpl.setClassification(classification);
-                } catch (ClassificationNotFoundException e) {
-                    throw new SystemException(
-                        this.toString() + " failed to find a classification for task " + taskImpl);
-                }
-                result.add(taskImpl);
-            }
+            List<TaskSummaryImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -224,24 +215,15 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public List<Task> list(int offset, int limit) throws NotAuthorizedException {
+    public List<TaskSummary> list(int offset, int limit) throws NotAuthorizedException {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
-        List<Task> result = new ArrayList<>();
+        List<TaskSummary> result = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            List<TaskImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
-            for (TaskImpl taskImpl : tasks) {
-                try {
-                    Classification classification = this.classificationService.getClassificationByTask(taskImpl);
-                    taskImpl.setClassification(classification);
-                } catch (ClassificationNotFoundException e) {
-                    throw new SystemException(
-                        this.toString() + " failed to find a classification for task " + taskImpl);
-                }
-                result.add(taskImpl);
-            }
+            List<TaskSummaryImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -254,24 +236,25 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskImpl single() throws NotAuthorizedException {
+    public TaskSummary single() throws NotAuthorizedException {
         LOGGER.debug("entry to single(), this = {}", this);
-        TaskImpl taskImpl = null;
+        TaskSummary result = null;
         try {
             taskanaEngineImpl.openConnection();
             checkAuthorization();
-            taskImpl = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
-            try {
-                Classification classification = this.classificationService.getClassificationByTask(taskImpl);
-                taskImpl.setClassification(classification);
-            } catch (ClassificationNotFoundException e) {
-                throw new SystemException(
-                    this.toString() + " failed to find a classification for task " + taskImpl);
+            TaskSummaryImpl taskSummaryImpl = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            if (taskSummaryImpl == null) {
+                return null;
             }
-            return taskImpl;
+            List<TaskSummaryImpl> tasks = new ArrayList<>();
+            tasks.add(taskSummaryImpl);
+            List<TaskSummary> augmentedList = taskService.augmentTaskSummariesByContainedSummaries(tasks);
+            result = augmentedList.get(0);
+
+            return result;
         } finally {
             taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from single(). Returning result {} ", taskImpl);
+            LOGGER.debug("exit from single(). Returning result {} ", result);
         }
     }
 

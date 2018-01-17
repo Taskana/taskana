@@ -6,9 +6,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Util methods for logging.
- * @author bbr
+ * Utility methods for logging.
  *
+ * @author bbr
  */
 public final class LoggerUtils {
 
@@ -17,8 +17,11 @@ public final class LoggerUtils {
 
     /**
      * make a String for logging from a list of objects.
-     * @param list TODO
-     * @param <T> TODO
+     *
+     * @param list
+     *            the input list to be stringified
+     * @param <T>
+     *            the type of the objects in the input list
      * @return A String representation of the list.
      */
     public static <T> String listToString(List<T> list) {
@@ -29,7 +32,7 @@ public final class LoggerUtils {
             builder.append("[");
             for (T t : list) {
                 builder.append(t.toString());
-                builder.append(";");
+                builder.append(";\n");
             }
             builder.append("]");
             return builder.toString();
@@ -39,9 +42,12 @@ public final class LoggerUtils {
     /**
      * make a String for logging from a map.
      *
-     * @param map   the map to be stringified
-     * @param <K> TODO
-     * @param <V> TODO
+     * @param map
+     *            the map to be stringified
+     * @param <K>
+     *            the type of the keys in the map
+     * @param <V>
+     *            the type of the values in the map
      * @return A String representation of the map.
      */
     public static <K, V> String mapToString(Map<K, V> map) {
@@ -61,7 +67,7 @@ public final class LoggerUtils {
             }
             builder.append("]");
             return builder.toString();
-       }
+        }
 
     }
 }

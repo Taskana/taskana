@@ -114,11 +114,11 @@ public interface Task {
     TaskState getState();
 
     /**
-     * Returns the {@link Classification} of the task.
+     * Returns the {@link ClassificationSummary} of the task.
      *
-     * @return classification for specification
+     * @return classification summary for the task
      */
-    Classification getClassification();
+    ClassificationSummary getClassificationSummary();
 
     /**
      * Sets the Classification key that - together with the Domain from this task's work basket - selects the
@@ -143,6 +143,21 @@ public interface Task {
      *            the key of the workbasket
      */
     void setWorkbasketKey(String workbasketKey);
+
+    /**
+     * Returns the the Summary of the workbasket where the task is stored in.
+     *
+     * @return workbasketSummary
+     */
+    WorkbasketSummary getWorkbasketSummary();
+
+    /**
+     * Sets the Summary of the Workbasket where the task should be stored in.
+     *
+     * @param workbasket
+     *            the WorkbasketSummary
+     */
+    void setWorkbasketSummary(WorkbasketSummary workbasket);
 
     /**
      * Returns the Domain, to which the Task belongs at this moment.
@@ -384,7 +399,7 @@ public interface Task {
     /**
      * Returns the custom note for this Task.
      *
-     * @return note
+     * @return the custom note for this TAsk
      */
     String getNote();
 
@@ -392,6 +407,15 @@ public interface Task {
      * Sets/Changing the custom note for this Task.
      *
      * @param note
+     *            the custom note for this Task.
      */
     void setNote(String note);
+
+    /**
+     * Return a summary of the current Task.
+     *
+     * @return the TaskSummary object for the current task
+     */
+    TaskSummary asSummary();
+
 }

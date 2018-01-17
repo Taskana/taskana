@@ -25,14 +25,6 @@ public interface Attachment {
     String getTaskId();
 
     /**
-     * Sets the taskId of the attachment where it should be appended to.
-     *
-     * @param taskId
-     *            id of the reference task
-     */
-    void setTaskId(String taskId);
-
-    /**
      * Returns the time when the attachment was created.
      *
      * @return the created time as {@link Timestamp}
@@ -47,26 +39,19 @@ public interface Attachment {
     Timestamp getModified();
 
     /**
-     * Returns the classificationKey for the mapping.
-     *
-     * @return classificationKey key for the correct mapping.
-     */
-    String getClassificationKey();
-
-    /**
-     * Sets the classificationKey for the mapping.
-     *
-     * @param classificationKey
-     *            key for the correct mapping.
-     */
-    void setClassificationKey(String classificationKey);
-
-    /**
-     * Returns the classificationsummary of the attachment.
+     * Returns the classification summary of the attachment.
      *
      * @return the {@link ClassificationSummary} of this attachment
      */
     ClassificationSummary getClassificationSummary();
+
+    /**
+     * Set the classification summary for this attachment.
+     *
+     * @param classificationSummary
+     *            the {@link ClassificationSummary} for this attachment
+     */
+    void setClassificationSummary(ClassificationSummary classificationSummary);
 
     /**
      * Returns the {@link ObjectReference primaryObjectReference} of the attachment.
@@ -127,4 +112,11 @@ public interface Attachment {
      *            a {@link Map} that contains the custom attributes of the attachment as key, value pairs
      */
     void setCustomAttributes(Map<String, Object> customAttributes);
+    /**
+     * Return a summary of the current Attachment.
+     *
+     * @return the AttachmentSummary object for the current attachment
+     */
+    AttachmentSummary asSummary();
+
 }

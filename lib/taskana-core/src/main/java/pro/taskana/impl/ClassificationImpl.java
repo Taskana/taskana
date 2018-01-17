@@ -1,9 +1,11 @@
 package pro.taskana.impl;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.Duration;
 
 import pro.taskana.Classification;
+import pro.taskana.ClassificationSummary;
 
 /**
  * Classification entity.
@@ -263,6 +265,21 @@ public class ClassificationImpl implements Classification {
 
     public void setValidUntil(Date validUntil) {
         this.validUntil = validUntil;
+    }
+
+    @Override
+    public ClassificationSummary asSummary() {
+        ClassificationSummaryImpl summary = new ClassificationSummaryImpl();
+        summary.setCategory(this.category);
+        summary.setDomain(this.domain);
+        summary.setId(this.id);
+        summary.setKey(this.key);
+        summary.setName(this.name);
+        summary.setType(this.type);
+        if (this.validUntil != null) {
+            summary.setValidUntil(new Timestamp(this.validUntil.getTime()));
+        }
+        return summary;
     }
 
     @Override

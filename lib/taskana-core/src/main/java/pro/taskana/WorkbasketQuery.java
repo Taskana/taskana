@@ -4,7 +4,6 @@ import java.util.Date;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.model.WorkbasketType;
 
 /**

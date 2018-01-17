@@ -11,11 +11,11 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

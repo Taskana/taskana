@@ -6,7 +6,7 @@ import pro.taskana.model.TaskState;
 /**
  * TaskQuery for generating dynamic sql.
  */
-public interface TaskQuery extends BaseQuery<Task> {
+public interface TaskQuery extends BaseQuery<TaskSummary> {
 
     /**
      * Add your names to your query.
@@ -15,7 +15,7 @@ public interface TaskQuery extends BaseQuery<Task> {
      *            the names as Strings
      * @return the query
      */
-    TaskQuery name(String... name);
+    TaskQuery nameIn(String... name);
 
     /**
      * Add your description for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
@@ -44,7 +44,7 @@ public interface TaskQuery extends BaseQuery<Task> {
      *            as a integer
      * @return the query
      */
-    TaskQuery priority(int... priorities);
+    TaskQuery priorityIn(int... priorities);
 
     /**
      * Add your state to your query.
@@ -53,7 +53,7 @@ public interface TaskQuery extends BaseQuery<Task> {
      *            the states as {@link TaskState}
      * @return the query
      */
-    TaskQuery state(TaskState... states);
+    TaskQuery stateIn(TaskState... states);
 
     /**
      * Add your classificationKey to your query.
@@ -91,7 +91,7 @@ public interface TaskQuery extends BaseQuery<Task> {
      *            the owners as String
      * @return the query
      */
-    TaskQuery owner(String... owners);
+    TaskQuery ownerIn(String... owners);
 
     /**
      * Add the companies of the primary object reference for exact matching to your query.
@@ -195,7 +195,7 @@ public interface TaskQuery extends BaseQuery<Task> {
      *            as Boolean. If null, it won't be integrated into the statement. You have to set false.
      * @return the query
      */
-    TaskQuery read(Boolean isRead);
+    TaskQuery readEquals(Boolean isRead);
 
     /**
      * Add the isTransferred flag to the query.
@@ -204,7 +204,7 @@ public interface TaskQuery extends BaseQuery<Task> {
      *            as Boolean. If null, it won't be integrated into the statement. You have to set false.
      * @return the query
      */
-    TaskQuery transferred(Boolean isTransferred);
+    TaskQuery transferredEquals(Boolean isTransferred);
 
     /**
      * Filter the custom fields with this query. The scan will be run over all 10 fields.
@@ -213,7 +213,7 @@ public interface TaskQuery extends BaseQuery<Task> {
      *            the value in the fields
      * @return the query
      */
-    TaskQuery customFields(String... customFields);
+    TaskQuery customFieldsIn(String... customFields);
 
     /**
      * This method provides a query builder for quering the database.

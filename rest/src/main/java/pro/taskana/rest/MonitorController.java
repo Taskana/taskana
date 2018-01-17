@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
-import pro.taskana.model.WorkbasketSummary;
 import pro.taskana.rest.model.WorkbasketCounterDataDto;
 import pro.taskana.rest.model.WorkbasketCounterDto;
 

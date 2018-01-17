@@ -21,19 +21,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.Task;
 import pro.taskana.TaskService;
-import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskSummary;
 import pro.taskana.rest.query.TaskFilter;
 
 @RestController
-@RequestMapping(path = "/v1/tasks", produces = { MediaType.APPLICATION_JSON_VALUE })
+@RequestMapping(path = "/v1/tasks", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class TaskController {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
@@ -45,7 +45,7 @@ public class TaskController {
     private TaskFilter taskLogic;
 
     @RequestMapping
-    public ResponseEntity<List<Task>> getTasks(@RequestParam MultiValueMap<String, String> params)
+    public ResponseEntity<List<TaskSummary>> getTasks(@RequestParam MultiValueMap<String, String> params)
         throws LoginException, InvalidArgumentException {
         try {
             if (params.keySet().size() == 0) {
@@ -72,11 +72,11 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/workbasket/{workbasketKey}/state/{taskState}")
-    public ResponseEntity<List<Task>> getTasksByWorkbasketIdAndState(
+    public ResponseEntity<List<TaskSummary>> getTasksByWorkbasketIdAndState(
         @PathVariable(value = "workbasketKey") String workbasketKey,
         @PathVariable(value = "taskState") TaskState taskState) {
         try {
-            List<Task> taskList = taskService.getTasksByWorkbasketKeyAndState(workbasketKey, taskState);
+            List<TaskSummary> taskList = taskService.getTasksByWorkbasketKeyAndState(workbasketKey, taskState);
             return ResponseEntity.status(HttpStatus.OK).body(taskList);
         } catch (WorkbasketNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

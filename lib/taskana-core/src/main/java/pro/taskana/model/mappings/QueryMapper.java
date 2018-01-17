@@ -9,11 +9,11 @@ import org.apache.ibatis.annotations.Select;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ClassificationSummaryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
-import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskQueryImpl;
+import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
+import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.model.ObjectReference;
-import pro.taskana.model.WorkbasketSummary;
 
 /**
  * This class provides a mapper for all queries.
@@ -23,6 +23,7 @@ public interface QueryMapper {
     String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.model.mappings.ObjectReferenceMapper.findById";
     String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByKeyAndDomain";
     String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findById";
+    String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.model.mappings.WorkbasketMapper.findSummaryByKey";
 
     @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
         + "FROM TASK t "
@@ -51,7 +52,7 @@ public interface QueryMapper {
         + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         + "</where>"
         + "</script>")
-    @Results(value = {@Result(property = "id", column = "ID"),
+    @Results(value = {@Result(property = "taskId", column = "ID"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "claimed", column = "CLAIMED"),
         @Result(property = "completed", column = "COMPLETED"),
@@ -59,13 +60,13 @@ public interface QueryMapper {
         @Result(property = "planned", column = "PLANNED"),
         @Result(property = "due", column = "DUE"),
         @Result(property = "name", column = "NAME"),
-        @Result(property = "description", column = "DESCRIPTION"),
+        // @Result(property = "description", column = "DESCRIPTION"),
         @Result(property = "note", column = "NOTE"),
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
-        @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
         @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "classificationKey", column = "CLASSIFICATION_KEY"),
+        @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY"),
+        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
         @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
         @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
         @Result(property = "owner", column = "OWNER"),
@@ -86,7 +87,7 @@ public interface QueryMapper {
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
         @Result(property = "custom10", column = "CUSTOM_10")})
-    List<TaskImpl> queryTasks(TaskQueryImpl taskQuery);
+    List<TaskSummaryImpl> queryTasks(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
         + "FROM CLASSIFICATION "
@@ -114,7 +115,7 @@ public interface QueryMapper {
         @Result(property = "type", column = "TYPE"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "name", column = "NAME"),
-       @Result(property = "validUntil", column = "VALID_UNTIL")})
+        @Result(property = "validUntil", column = "VALID_UNTIL")})
     List<ClassificationSummaryImpl> queryClassification(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
@@ -179,5 +180,5 @@ public interface QueryMapper {
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
-    List<WorkbasketSummary> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
+    List<WorkbasketSummaryImpl> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
 }
