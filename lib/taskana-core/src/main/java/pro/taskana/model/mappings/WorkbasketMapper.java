@@ -41,7 +41,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
     WorkbasketImpl findById(@Param("id") String id);
 
     @Select("SELECT ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1 ,CUSTOM_2 ,CUSTOM_3 ,CUSTOM_4 ,ORG_LEVEL_1 ,ORG_LEVEL_2 ,ORG_LEVEL_3 ,ORG_LEVEL_4 FROM WORKBASKET WHERE KEY = #{key}")
@@ -64,7 +64,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
     WorkbasketImpl findByKey(@Param("key") String key);
 
     @Select("SELECT * FROM WORKBASKET WHERE id IN (SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id})")
@@ -80,8 +80,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
-
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
     List<WorkbasketSummary> findByDistributionTargets(@Param("id") String id);
 
     @Select("SELECT * FROM WORKBASKET ORDER BY id")
@@ -96,7 +95,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
     List<WorkbasketSummary> findAll();
 
     @Select("<script>SELECT W.ID, W.KEY, W.NAME, W.DESCRIPTION, W.OWNER, W.DOMAIN, W.TYPE, W.ORG_LEVEL_1, W.ORG_LEVEL_2,  W.ORG_LEVEL_3, W.ORG_LEVEL_4 FROM WORKBASKET AS W "
@@ -130,7 +129,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
     List<WorkbasketSummary> findByPermission(@Param("authorizations") List<WorkbasketAuthorization> authorizations,
         @Param("accessId") String accessId);
 
@@ -143,5 +142,4 @@ public interface WorkbasketMapper {
 
     @Delete("DELETE FROM WORKBASKET where id = #{id}")
     void delete(@Param("id") String id);
-
 }
