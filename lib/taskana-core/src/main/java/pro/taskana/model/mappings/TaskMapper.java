@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
@@ -15,7 +14,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
 
-import pro.taskana.Classification;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.model.DueWorkbasketCounter;
@@ -26,10 +24,6 @@ import pro.taskana.model.TaskSummary;
  * This class is the mybatis mapping of task.
  */
 public interface TaskMapper {
-
-    String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.model.mappings.ObjectReferenceMapper.findById";
-    String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByKeyAndDomain";
-    String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findById";
 
     @Select("SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_KEY, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10 "
         + "FROM TASK "
@@ -75,9 +69,9 @@ public interface TaskMapper {
     })
     TaskImpl findById(@Param("id") String id);
 
-    @Results({@Result(column = "DUE_DATE", property = "due"),
+    @Results({ @Result(column = "DUE_DATE", property = "due"),
         @Result(column = "WORKBASKET_KEY", property = "workbasketKey"),
-        @Result(column = "counter", property = "taskCounter")})
+        @Result(column = "counter", property = "taskCounter") })
     List<DueWorkbasketCounter> getTaskCountByWorkbasketIdAndDaysInPastAndState(@Param("fromDate") Date fromDate,
         @Param("status") List<TaskState> states);
 
@@ -111,8 +105,6 @@ public interface TaskMapper {
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
-        @Result(property = "classification", column = "CLASSIFICATION_KEY", javaType = Classification.class,
-            one = @One(select = CLASSIFICATION_FINDBYKEYANDDOMAIN)),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "primaryObjRef.company", column = "POR_COMPANY"),
@@ -133,7 +125,7 @@ public interface TaskMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     List<TaskImpl> findTasksByWorkbasketIdAndState(@Param("workbasketKey") String workbasketKey,
         @Param("taskState") TaskState taskState);
 

@@ -174,9 +174,11 @@ public interface TaskService {
      *             if the workbasketId can´t be resolved to a existing work basket.
      * @throws NotAuthorizedException
      *             if the current user got no rights for reading on this work basket.
+     * @throws ClassificationNotFoundException
+     *             if a single Classification can not be found for a task which is returned
      */
     List<Task> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
-        throws WorkbasketNotFoundException, NotAuthorizedException;
+        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException;
 
     /**
      * Getting a short summary of all tasks in a specific work basket.

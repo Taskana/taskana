@@ -5,12 +5,14 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.Attachment;
 import pro.taskana.Classification;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
@@ -45,7 +47,6 @@ import pro.taskana.security.CurrentUserContext;
 public class TaskServiceImpl implements TaskService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
-    private static final String ID_PREFIX_OBJECT_REFERENCE = "ORI";
     private static final String ID_PREFIX_ATTACHMENT = "TAI";
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
@@ -54,7 +55,6 @@ public class TaskServiceImpl implements TaskService {
     private WorkbasketService workbasketService;
     private ClassificationServiceImpl classificationService;
     private TaskMapper taskMapper;
-    private ObjectReferenceMapper objectReferenceMapper;
     private AttachmentMapper attachmentMapper;
 
     public TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
@@ -63,7 +63,6 @@ public class TaskServiceImpl implements TaskService {
         this.taskanaEngine = taskanaEngine;
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.taskMapper = taskMapper;
-        this.objectReferenceMapper = objectReferenceMapper;
         this.workbasketService = taskanaEngineImpl.getWorkbasketService();
         this.attachmentMapper = attachmentMapper;
         this.classificationService = (ClassificationServiceImpl) taskanaEngineImpl.getClassificationService();
@@ -195,17 +194,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTask(String id) throws TaskNotFoundException {
+    public Task getTask(String id) throws TaskNotFoundException, SystemException {
         LOGGER.debug("entry to getTaskById(id = {})", id);
-        TaskImpl result = null;
+        TaskImpl resultTask = null;
         try {
             taskanaEngineImpl.openConnection();
-            result = taskMapper.findById(id);
-            if (result != null) {
-                setAttachments(result);
-                Classification classification;
+            resultTask = taskMapper.findById(id);
+            if (resultTask != null) {
+                organizeAttachments(resultTask);
+
+                // TODO - DELETE getting task-Classification and enable it in
+                // organizeTaskAttachmentClassificationSummaries();
                 try {
-                    classification = this.classificationService.getClassificationByTask(result);
+                    Classification classification = this.classificationService.getClassificationByTask(resultTask);
+                    resultTask.setClassification(classification);
                 } catch (ClassificationNotFoundException e) {
                     LOGGER.debug(
                         "getTask(taskId = {}) caught a ClassificationNotFoundException when attemptin to get "
@@ -214,16 +216,15 @@ public class TaskServiceImpl implements TaskService {
                     throw new SystemException(
                         "TaskService.getTask could not find the classification associated to " + id);
                 }
-
-                result.setClassification(classification);
-                return result;
+                organizeTaskAttachmentClassificationSummaries(resultTask);
+                return resultTask;
             } else {
                 LOGGER.warn("Method getTaskById() didn't find task with id {}. Throwing TaskNotFoundException", id);
                 throw new TaskNotFoundException(id);
             }
         } finally {
             taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from getTaskById(). Returning result {} ", result);
+            LOGGER.debug("exit from getTaskById(). Returning result {} ", resultTask);
         }
     }
 
@@ -293,7 +294,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
-        throws WorkbasketNotFoundException, NotAuthorizedException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
         LOGGER.debug("entry to getTasksByWorkbasketKeyAndState(workbasketKey = {}, taskState = {})", workbasketKey,
             taskState);
         List<Task> results = new ArrayList<>();
@@ -301,9 +302,12 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             workbasketService.checkAuthorization(workbasketKey, WorkbasketAuthorization.READ);
             List<TaskImpl> tasks = taskMapper.findTasksByWorkbasketIdAndState(workbasketKey, taskState);
-            tasks.stream().forEach(t -> {
-                results.add(t);
-            });
+            for (TaskImpl taskImpl : tasks) {
+                Classification classification = classificationService.getClassification(taskImpl.getClassificationKey(),
+                    taskImpl.getDomain());
+                taskImpl.setClassification(classification);
+                results.add(taskImpl);
+            }
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -440,15 +444,62 @@ public class TaskServiceImpl implements TaskService {
         return new AttachmentImpl();
     }
 
-    private void setAttachments(TaskImpl result) {
-        List<AttachmentImpl> attachmentImpls = attachmentMapper.findAttachmentsByTaskId(result.getId());
-        List<Attachment> attachments = new ArrayList<>();
-        if (attachmentImpls != null && !attachmentImpls.isEmpty()) {
-            for (AttachmentImpl attImpl : attachmentImpls) {
-                attachments.add(attImpl);
+    private void organizeTaskAttachmentClassificationSummaries(TaskImpl taskImpl) {
+        List<Attachment> attachments = taskImpl.getAttachments();
+        List<ClassificationSummary> classificationSummaries;
+        List<String> classificationKeyList = new ArrayList<>();
+        String[] classificationKeys;
+        String domain = taskImpl.getDomain();
+
+        if (attachments != null && !attachments.isEmpty()) {
+            for (Attachment attachment : attachments) {
+                if (!classificationKeyList.contains(attachment.getClassificationKey())) {
+                    classificationKeyList.add(attachment.getClassificationKey());
+                }
             }
+        } else {
+            attachments = new ArrayList<>();
         }
-        result.setAttachments(attachments);
+        classificationKeyList.add(taskImpl.getClassificationKey());
+        classificationKeys = classificationKeyList.toArray(new String[0]);
+
+        try {
+            classificationSummaries = classificationService.createClassificationQuery()
+                .domain(domain)
+                .key(classificationKeys)
+                .list();
+            for (Attachment attachment : attachments) {
+                Optional<ClassificationSummary> summary = classificationSummaries.stream()
+                    .filter(cs -> cs.getKey().equals(attachment.getClassificationKey()))
+                    .findFirst();
+                if (summary.isPresent()) {
+                    ((AttachmentImpl) attachment).setClassificationSummary(summary.get());
+                }
+            }
+
+            // TODO - Change Task.Classification to ClassificationSummary and enable this snippet.
+            // Optional<ClassificationSummary> summary = classificationSummaries.stream()
+            // .filter(cs -> cs.getKey().equals(taskImpl.getClassificationKey()))
+            // .findFirst();
+            // if (summary.isPresent()) {
+            // taskImpl.setClassification(summary.get());
+            // }
+        } catch (NotAuthorizedException e) {
+            LOGGER.warn(
+                "Throwing NotAuthorizedException when getting Classifications of the Task-Attachments. TaskId={}",
+                taskImpl.getId());
+        }
+    }
+
+    private void organizeAttachments(TaskImpl taskImpl) {
+        List<Attachment> attachments = new ArrayList<>();
+        List<AttachmentImpl> attachmentImpls;
+
+        attachmentImpls = attachmentMapper.findAttachmentsByTaskId(taskImpl.getId());
+        if (attachmentImpls != null && !attachmentImpls.isEmpty()) {
+            attachments.addAll(attachmentImpls);
+        }
+        taskImpl.setAttachments(attachments);
     }
 
     private void validateObjectReference(ObjectReference objRef, String objRefType, String objName)
@@ -481,7 +532,7 @@ public class TaskServiceImpl implements TaskService {
         for (Attachment attachment : attachments) {
             ObjectReference objRef = attachment.getObjectReference();
             validateObjectReference(objRef, "ObjectReference", "Attachment");
-            if (attachment.getClassification() == null) {
+            if (attachment.getClassificationSummary() == null) {
                 throw new InvalidArgumentException("Classification of attachment " + attachment + " must not be null");
             }
         }
@@ -548,5 +599,4 @@ public class TaskServiceImpl implements TaskService {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         newTaskImpl.setModified(now);
     }
-
 }
