@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import pro.taskana.Attachment;
-import pro.taskana.Classification;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.model.ObjectReference;
 
 /**
@@ -19,7 +19,8 @@ public class AttachmentImpl implements Attachment {
     private String taskId;
     private Timestamp created;
     private Timestamp modified;
-    private Classification classification;
+    private String classificationKey;
+    private ClassificationSummary classificationSummary;
     private ObjectReference objectReference;
     private String channel;
     private Timestamp received;
@@ -42,6 +43,7 @@ public class AttachmentImpl implements Attachment {
         return taskId;
     }
 
+    @Override
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
@@ -65,13 +67,22 @@ public class AttachmentImpl implements Attachment {
     }
 
     @Override
-    public Classification getClassification() {
-        return classification;
+    public String getClassificationKey() {
+        return classificationKey;
     }
 
     @Override
-    public void setClassification(Classification classification) {
-        this.classification = classification;
+    public void setClassificationKey(String classificationKey) {
+        this.classificationKey = classificationKey;
+    }
+
+    @Override
+    public ClassificationSummary getClassificationSummary() {
+        return classificationSummary;
+    }
+
+    public void setClassificationSummary(ClassificationSummary classificationSummary) {
+        this.classificationSummary = classificationSummary;
     }
 
     @Override
@@ -125,8 +136,8 @@ public class AttachmentImpl implements Attachment {
         builder.append(created);
         builder.append(", modified=");
         builder.append(modified);
-        builder.append(", classification=");
-        builder.append(classification);
+        builder.append(", classificationKey=");
+        builder.append(classificationKey);
         builder.append(", objectReference=");
         builder.append(objectReference);
         builder.append(", channel=");
@@ -138,5 +149,4 @@ public class AttachmentImpl implements Attachment {
         builder.append("]");
         return builder.toString();
     }
-
 }
