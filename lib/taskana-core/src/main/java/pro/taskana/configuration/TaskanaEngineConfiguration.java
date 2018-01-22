@@ -22,7 +22,6 @@ public class TaskanaEngineConfiguration {
     private static final String USER_PASSWORD = "sa";
     private static final String JDBC_H2_MEM_TASKANA = "jdbc:h2:mem:taskana";
     private static final String H2_DRIVER = "org.h2.Driver";
-
     protected DataSource dataSource;
     protected DbSchemaCreator dbScriptRunner;
 
@@ -107,5 +106,4 @@ public class TaskanaEngineConfiguration {
     public static boolean shouldUseLowerCaseForAccessIds() {
         return true;
     }
-
 }

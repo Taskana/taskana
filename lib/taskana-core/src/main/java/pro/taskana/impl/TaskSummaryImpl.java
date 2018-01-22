@@ -1,6 +1,6 @@
 package pro.taskana.impl;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +17,12 @@ import pro.taskana.model.TaskState;
 public class TaskSummaryImpl implements TaskSummary {
 
     private String taskId;
-    private Timestamp created;
-    private Timestamp claimed;
-    private Timestamp completed;
-    private Timestamp modified;
-    private Timestamp planned;
-    private Timestamp due;
+    private Instant created;
+    private Instant claimed;
+    private Instant completed;
+    private Instant modified;
+    private Instant planned;
+    private Instant due;
     private String name;
     private String note;
     private int priority;
@@ -67,11 +67,11 @@ public class TaskSummaryImpl implements TaskSummary {
      * @see pro.taskana.impl.TaskSummary#getCreated()
      */
     @Override
-    public Timestamp getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
@@ -80,11 +80,11 @@ public class TaskSummaryImpl implements TaskSummary {
      * @see pro.taskana.impl.TaskSummary#getClaimed()
      */
     @Override
-    public Timestamp getClaimed() {
+    public Instant getClaimed() {
         return claimed;
     }
 
-    public void setClaimed(Timestamp claimed) {
+    public void setClaimed(Instant claimed) {
         this.claimed = claimed;
     }
 
@@ -93,11 +93,11 @@ public class TaskSummaryImpl implements TaskSummary {
      * @see pro.taskana.impl.TaskSummary#getCompleted()
      */
     @Override
-    public Timestamp getCompleted() {
+    public Instant getCompleted() {
         return completed;
     }
 
-    public void setCompleted(Timestamp completed) {
+    public void setCompleted(Instant completed) {
         this.completed = completed;
     }
 
@@ -106,11 +106,11 @@ public class TaskSummaryImpl implements TaskSummary {
      * @see pro.taskana.impl.TaskSummary#getModified()
      */
     @Override
-    public Timestamp getModified() {
+    public Instant getModified() {
         return modified;
     }
 
-    public void setModified(Timestamp modified) {
+    public void setModified(Instant modified) {
         this.modified = modified;
     }
 
@@ -119,11 +119,11 @@ public class TaskSummaryImpl implements TaskSummary {
      * @see pro.taskana.impl.TaskSummary#getPlanned()
      */
     @Override
-    public Timestamp getPlanned() {
+    public Instant getPlanned() {
         return planned;
     }
 
-    public void setPlanned(Timestamp planned) {
+    public void setPlanned(Instant planned) {
         this.planned = planned;
     }
 
@@ -132,11 +132,11 @@ public class TaskSummaryImpl implements TaskSummary {
      * @see pro.taskana.impl.TaskSummary#getDue()
      */
     @Override
-    public Timestamp getDue() {
+    public Instant getDue() {
         return due;
     }
 
-    public void setDue(Timestamp due) {
+    public void setDue(Instant due) {
         this.due = due;
     }
 
@@ -796,5 +796,4 @@ public class TaskSummaryImpl implements TaskSummary {
         builder.append("]");
         return builder.toString();
     }
-
 }

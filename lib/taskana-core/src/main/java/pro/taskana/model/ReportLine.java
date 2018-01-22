@@ -40,5 +40,4 @@ public class ReportLine {
     public void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
     }
-
 }

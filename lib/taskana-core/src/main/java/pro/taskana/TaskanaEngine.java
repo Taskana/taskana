@@ -80,5 +80,4 @@ public interface TaskanaEngine {
         AUTOCOMMIT,
         EXPLICIT
     }
-
 }

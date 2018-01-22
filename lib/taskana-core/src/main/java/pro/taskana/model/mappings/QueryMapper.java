@@ -52,7 +52,7 @@ public interface QueryMapper {
         + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         + "</where>"
         + "</script>")
-    @Results(value = {@Result(property = "taskId", column = "ID"),
+    @Results(value = { @Result(property = "taskId", column = "ID"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "claimed", column = "CLAIMED"),
         @Result(property = "completed", column = "COMPLETED"),
@@ -86,10 +86,10 @@ public interface QueryMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     List<TaskSummaryImpl> queryTasks(TaskQueryImpl taskQuery);
 
-    @Select("<script>SELECT ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, VALID_FROM, VALID_UNTIL "
+    @Select("<script>SELECT ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
         + "FROM CLASSIFICATION "
         + "<where>"
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
@@ -98,24 +98,21 @@ public interface QueryMapper {
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
         + "<if test='validInDomain != null'>AND VALID_IN_DOMAIN = #{validInDomain}</if> "
-        + "<if test='created != null'>AND CREATED IN(<foreach item='item' collection='created' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='created != null'>AND CREATED IN(<foreach item='item' collection='created' separator=',' >SUBSTRING(#{item}, 1, 10)</foreach>)</if> "
         + "<if test='name != null'>AND NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
         + "<if test='description != null'>AND DESCRIPTION like #{description}</if> "
         + "<if test='priority != null'>AND PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
         + "<if test='serviceLevel != null'>AND SERVICE_LEVEL IN(<foreach item='item' collection='serviceLevel' separator=',' >#{item}</foreach>)</if> "
         + "<if test='applicationEntryPoint != null'>AND APPLICATION_ENTRY_POINT IN(<foreach item='item' collection='applicationEntryPoint' separator=',' >#{item}</foreach>)</if> "
         + "<if test='customFields != null'>AND (CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
-        + "<if test='validFrom != null'>AND VALID_FROM IN(<foreach item='item' collection='validFrom' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='validUntil != null'>AND VALID_UNTIL IN(<foreach item='item' collection='validUntil' separator=',' >#{item}</foreach>)</if> "
         + "</where>"
         + "</script>")
-    @Results({@Result(property = "id", column = "ID"),
+    @Results({ @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "category", column = "CATEGORY"),
         @Result(property = "type", column = "TYPE"),
         @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "name", column = "NAME"),
-        @Result(property = "validUntil", column = "VALID_UNTIL")})
+        @Result(property = "name", column = "NAME") })
     List<ClassificationSummaryImpl> queryClassification(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
@@ -134,7 +131,7 @@ public interface QueryMapper {
         @Result(property = "system", column = "SYSTEM"),
         @Result(property = "systemInstance", column = "SYSTEM_INSTANCE"),
         @Result(property = "type", column = "TYPE"),
-        @Result(property = "value", column = "VALUE")})
+        @Result(property = "value", column = "VALUE") })
     List<ObjectReference> queryObjectReference(ObjectReferenceQueryImpl objectReference);
 
     @Select("<script>SELECT w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
@@ -179,6 +176,6 @@ public interface QueryMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
     List<WorkbasketSummaryImpl> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
 }

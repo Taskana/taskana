@@ -10,5 +10,4 @@ public class SystemException extends TaskanaRuntimeException {
     }
 
     private static final long serialVersionUID = 1L;
-
 }

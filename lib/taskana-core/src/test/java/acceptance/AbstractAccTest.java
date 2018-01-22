@@ -1,7 +1,9 @@
 package acceptance;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +29,6 @@ import pro.taskana.model.ObjectReference;
 public abstract class AbstractAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
-
     protected static TaskanaEngine taskanaEngine;
 
     @BeforeClass
@@ -76,13 +77,13 @@ public abstract class AbstractAccTest {
             taskanaEngine.getClassificationService().getClassification(classificationKey, "DOMAIN_A").asSummary());
         attachment.setObjectReference(objRef);
         attachment.setChannel(channel);
-        Timestamp receivedTimestamp = null;
+        Instant receivedTimestamp = null;
         if (receivedDate != null && receivedDate.length() < 11) {
             // contains only the date, not the time
-            java.sql.Date date = java.sql.Date.valueOf(receivedDate);
-            receivedTimestamp = new Timestamp(date.getTime());
+            LocalDate date = LocalDate.parse(receivedDate);
+            receivedTimestamp = date.atStartOfDay().toInstant(ZoneOffset.UTC);
         } else {
-            receivedTimestamp = Timestamp.valueOf(receivedDate);
+            receivedTimestamp = Instant.parse(receivedDate);
         }
         attachment.setReceived(receivedTimestamp);
         attachment.setCustomAttributes(customAttributes);

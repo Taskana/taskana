@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This Typehandler will transfer a Map into an xml blob and back.
+ *
  * @author EH
  */
 @SuppressWarnings("rawtypes")

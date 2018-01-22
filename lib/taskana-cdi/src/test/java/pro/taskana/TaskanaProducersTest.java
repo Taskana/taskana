@@ -64,8 +64,7 @@ public class TaskanaProducersTest {
                 resultCount++;
             }
         }
-
-        Assert.assertEquals(1, resultCount);
+        Assert.assertEquals(0, resultCount);
     }
 
     @Test

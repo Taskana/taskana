@@ -13,8 +13,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -291,7 +291,7 @@ public class TaskServiceImplTest {
         task2.setWorkbasketKey(wb.getKey());
         task2.setClassificationKey("classificationKey");
         task2.setPrimaryObjRef(expectedObjectReference);
-        task2.setPlanned(Timestamp.valueOf(LocalDateTime.now().minusHours(1)));
+        task2.setPlanned(Instant.now().minus(Duration.ofHours(1L)));
         task2.setName("Task2");
         task2.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
 
@@ -464,7 +464,7 @@ public class TaskServiceImplTest {
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
         Thread.sleep(sleepTime);
         task.setState(TaskState.CLAIMED);
-        task.setClaimed(new Timestamp(System.currentTimeMillis()));
+        task.setClaimed(Instant.now());
         task.setOwner(CurrentUserContext.getUserid());
         doReturn(task).when(taskMapperMock).findById(task.getId());
         doReturn(null).when(attachmentMapperMock).findAttachmentsByTaskId(task.getId());
@@ -509,7 +509,7 @@ public class TaskServiceImplTest {
         // created and modify should be able to be different.
         Thread.sleep(sleepTime);
         task.setState(TaskState.CLAIMED);
-        task.setClaimed(new Timestamp(System.currentTimeMillis()));
+        task.setClaimed(Instant.now());
         task.setOwner(CurrentUserContext.getUserid());
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(taskMapperMock).update(task);
@@ -563,7 +563,7 @@ public class TaskServiceImplTest {
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
         task.setOwner("Dummy-Owner-ID: 10");
         task.setState(TaskState.CLAIMED);
-        task.setClaimed(new Timestamp(System.currentTimeMillis()));
+        task.setClaimed(Instant.now());
         doReturn(task).when(cutSpy).getTask(task.getId());
 
         try {
@@ -611,7 +611,7 @@ public class TaskServiceImplTest {
         // created and modify should be able to be different.
         Thread.sleep(sleepTime);
         task.setState(TaskState.CLAIMED);
-        task.setClaimed(new Timestamp(System.currentTimeMillis()));
+        task.setClaimed(Instant.now());
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(taskMapperMock).update(task);
 
@@ -647,7 +647,7 @@ public class TaskServiceImplTest {
         // created and modify should be able to be different.
         Thread.sleep(sleepTime);
         claimedTask.setState(TaskState.CLAIMED);
-        claimedTask.setClaimed(new Timestamp(System.currentTimeMillis()));
+        claimedTask.setClaimed(Instant.now());
         doReturn(claimedTask).when(cutSpy).claim(task.getId(), isForced);
         doNothing().when(taskMapperMock).update(claimedTask);
 
@@ -1017,7 +1017,7 @@ public class TaskServiceImplTest {
         task.setWorkbasketKey(workbasketKey);
         task.setDomain("");
         task.setAttachments(new ArrayList<>());
-        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Instant now = Instant.now();
         task.setCreated(now);
         task.setModified(now);
         task.setClassificationSummary(classification.asSummary());

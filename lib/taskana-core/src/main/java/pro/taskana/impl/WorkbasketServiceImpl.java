@@ -1,6 +1,6 @@
 package pro.taskana.impl;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -151,7 +151,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         WorkbasketImpl workbasket = (WorkbasketImpl) newWorkbasket;
         try {
             taskanaEngineImpl.openConnection();
-            Timestamp now = new Timestamp(System.currentTimeMillis());
+            Instant now = Instant.now();
             workbasket.setCreated(now);
             workbasket.setModified(now);
             if (workbasket.getId() == null || workbasket.getId().isEmpty()) {
@@ -187,7 +187,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketToUpdate;
         try {
             taskanaEngineImpl.openConnection();
-            workbasket.setModified(new Timestamp(System.currentTimeMillis()));
+            workbasket.setModified(Instant.now());
             workbasketMapper.update(workbasket);
             LOGGER.debug("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
             List<String> oldDistributionTargets = distributionTargetMapper.findBySourceId(workbasket.getId());

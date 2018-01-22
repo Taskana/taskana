@@ -4,9 +4,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -56,17 +56,16 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     private static final int SLEEP_TIME = 100;
     private static final int THREE = 3;
-    private static final long ONE_DAY = 24 * 3600 * 1000;
-    private static final long TEN_DAYS = 10 * ONE_DAY;
-    private static final long FIFTEEN_DAYS = 15 * ONE_DAY;
-    private static final long TWENTY_DAYS = 2 * TEN_DAYS;
+    private static final Duration ONE_DAY = Duration.ofDays(1L);
+    private static final Duration TEN_DAYS = Duration.ofDays(10L);
+    private static final Duration FIFTEEN_DAYS = Duration.ofDays(15L);
+    private static final Duration TWENTY_DAYS = Duration.ofDays(20L);
     static int counter = 0;
     private DataSource dataSource;
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workBasketService;
-    private Date workBasketsCreated;
 
     @BeforeClass
     public static void resetDb() throws SQLException {
@@ -259,7 +258,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         }
     }
 
-    @WithAccessId(userName = "Bernd", groupNames = {"group1", "group2", "group3", "group4"})
+    @WithAccessId(userName = "Bernd", groupNames = { "group1", "group2", "group3", "group4" })
     @Test
     public void testWorkbasketQuery()
         throws NotAuthorizedException, InvalidArgumentException, InvalidWorkbasketException,
@@ -267,12 +266,12 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         generateSampleDataForQuery();
 
-        Date tomorrow = new Date(workBasketsCreated.getTime() + ONE_DAY);
-        Date yesterday = new Date(workBasketsCreated.getTime() - ONE_DAY);
-        Date tenDaysAgo = new Date(workBasketsCreated.getTime() - TEN_DAYS);
-        Date fifteenDaysAgo = new Date(workBasketsCreated.getTime() - FIFTEEN_DAYS);
-        Date twentyDaysAgo = new Date(workBasketsCreated.getTime() - TWENTY_DAYS);
-        Date thirtyDaysAgo = new Date(workBasketsCreated.getTime() - THREE * TEN_DAYS);
+        Instant now = Instant.now();
+        Instant tomorrow = now.plus(ONE_DAY);
+        Instant yesterday = now.minus(ONE_DAY);
+        Instant tenDaysAgo = now.minus(TEN_DAYS);
+        Instant twentyDaysAgo = now.minus(TWENTY_DAYS);
+        Instant thirtyDaysAgo = now.minus(TWENTY_DAYS).minus(TEN_DAYS);
 
         WorkbasketQuery query1 = workBasketService.createWorkbasketQuery()
             .accessIdsHavePersmission(WorkbasketAuthorization.OPEN, "Bernd")
@@ -317,10 +316,10 @@ public class WorkbasketServiceImplIntAutocommitTest {
             .modifiedAfter(thirtyDaysAgo)
             .modifiedBefore(tenDaysAgo);
         List<WorkbasketSummary> result5 = query5.list();
-        assertTrue(result5.size() == 2);
+        assertTrue(result5.size() == THREE);
         for (WorkbasketSummary workbasket : result5) {
             String name = workbasket.getName();
-            assertTrue("Basket1".equals(name) || "Basket2".equals(name));
+            assertTrue("Basket1".equals(name) || "Basket2".equals(name) || "Basket4".equals(name));
         }
 
         WorkbasketQuery query6 = workBasketService.createWorkbasketQuery()
@@ -343,8 +342,6 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     private void generateSampleDataForQuery()
         throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException {
-        workBasketsCreated = new Date();
-
         WorkbasketImpl basket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
         basket1.setId("1");
         basket1.setKey("k1");
@@ -436,14 +433,16 @@ public class WorkbasketServiceImplIntAutocommitTest {
         WorkbasketImpl wb2 = (WorkbasketImpl) basket2;
         WorkbasketImpl wb3 = (WorkbasketImpl) basket3;
         WorkbasketImpl wb4 = (WorkbasketImpl) basket4;
+        Instant now = Instant.now();
+
         engineProxy.openConnection();
-        wb1.setModified(new Timestamp(workBasketsCreated.getTime() - TEN_DAYS));
+        wb1.setModified(now.minus(TEN_DAYS));
         mapper.update(wb1);
-        wb2.setModified(new Timestamp(workBasketsCreated.getTime() - FIFTEEN_DAYS));
+        wb2.setModified(now.minus(FIFTEEN_DAYS));
         mapper.update(wb2);
-        wb3.setModified(new Timestamp(workBasketsCreated.getTime() - TWENTY_DAYS));
+        wb3.setModified(now.minus(TWENTY_DAYS));
         mapper.update(wb3);
-        wb4.setModified(new Timestamp(workBasketsCreated.getTime() - (2 * FIFTEEN_DAYS)));
+        wb4.setModified(now.minus(TWENTY_DAYS).minus(TEN_DAYS));
         mapper.update(wb4);
         engineProxy.returnConnection();
     }

@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import pro.taskana.ClassificationQuery;
@@ -15,7 +15,6 @@ public class TestClassificationQuery implements ClassificationQuery {
 
     private List<ClassificationSummaryImpl> classifications;
     private String[] parentClassificationKey;
-    private Date[] validUntil;
     private String description;
 
     public TestClassificationQuery(List<ClassificationSummaryImpl> classifications) {
@@ -54,7 +53,7 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery created(Date... created) {
+    public ClassificationQuery created(Instant... created) {
         return this;
     }
 
@@ -65,7 +64,6 @@ public class TestClassificationQuery implements ClassificationQuery {
 
     @Override
     public ClassificationQuery descriptionLike(String description) {
-        this.description = description;
         return this;
     }
 
@@ -90,35 +88,10 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery validFrom(Date... validFrom) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery validUntil(Date... validUntil) {
-        this.validUntil = validUntil;
-        return this;
-    }
-
-    @Override
     public List<ClassificationSummary> list() throws NotAuthorizedException {
         List<ClassificationSummary> returnedClassifications = new ArrayList<>();
         returnedClassifications.addAll(classifications);
-        for (ClassificationSummaryImpl classification : classifications) {
-            if (this.validUntil != null) {
-                boolean validDate = false;
-                for (Date valid : validUntil) {
-                    if (!classification.getValidUntil().before(valid)) {
-                        validDate = true;
-                    }
-                }
-                if (!validDate) {
-                    returnedClassifications.remove(classification);
-                }
-            }
-        }
         return returnedClassifications;
-
     }
 
     @Override

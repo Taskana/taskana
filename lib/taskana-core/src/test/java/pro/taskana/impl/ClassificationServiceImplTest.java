@@ -2,6 +2,7 @@ package pro.taskana.impl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -9,7 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.sql.Date;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +40,7 @@ import pro.taskana.model.mappings.ClassificationMapper;
 @RunWith(MockitoJUnitRunner.class)
 public class ClassificationServiceImplTest {
 
-    private final Date today = Date.valueOf(LocalDate.now());
+    private final String todaysDate = LocalDate.now().toString().substring(0, 10);
 
     @Spy
     @InjectMocks
@@ -66,8 +67,6 @@ public class ClassificationServiceImplTest {
 
         doReturn(classificationQueryImplMock).when(cutSpy).createClassificationQuery();
         doReturn(classificationQueryImplMock).when(classificationQueryImplMock).parentClassificationKey("");
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock)
-            .validUntil(ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
         doReturn(classifications).when(classificationQueryImplMock).list();
 
         List<ClassificationSummary> actaulResults = cutSpy.getClassificationTree();
@@ -75,8 +74,6 @@ public class ClassificationServiceImplTest {
         verify(taskanaEngineImplMock, times(2)).openConnection();
         verify(cutSpy, times(1)).createClassificationQuery();
         verify(classificationQueryImplMock, times(1)).parentClassificationKey("");
-        verify(classificationQueryImplMock, times(1))
-            .validUntil(ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
         verify(classificationQueryImplMock, times(1)).list();
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         assertThat(actaulResults, equalTo(classifications));
@@ -87,14 +84,14 @@ public class ClassificationServiceImplTest {
         throws ClassificationAlreadyExistException, ClassificationNotFoundException {
         Classification classification = createDummyClassification();
         doReturn(classification).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
-            classification.getDomain(), ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            classification.getDomain());
 
         try {
             cutSpy.createClassification(classification);
         } catch (ClassificationAlreadyExistException e) {
             verify(taskanaEngineImplMock, times(1)).openConnection();
             verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
-                classification.getDomain(), ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+                classification.getDomain());
             verify(taskanaEngineImplMock, times(1)).returnConnection();
             verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
             throw e;
@@ -103,119 +100,86 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationInOwnDomainButExistingInRoot()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, InterruptedException {
+        Instant beforeTimestamp = Instant.now();
+        Thread.sleep(10L);
         Classification classification = createDummyClassification();
         String domain = classification.getDomain();
         String key = classification.getKey();
-        Date validUntil = ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL;
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
-            classification.getDomain(), ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-        doReturn(classification).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
-            "", ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            classification.getDomain());
+        doReturn(classification).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(), "");
 
-        cutSpy.createClassification(classification);
+        classification = cutSpy.createClassification(classification);
 
         verify(taskanaEngineImplMock, times(2)).openConnection();
-        verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, domain, validUntil);
-        verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, "", validUntil);
+        verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, domain);
+        verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, "");
         verify(classificationMapperMock, times(1)).insert(any());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
-        assertThat(classification.getCreated(), equalTo(today));
+        assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
+        assertTrue(classification.getCreated().isBefore(Instant.now()));
+        assertTrue(classification.getCreated().isAfter(beforeTimestamp));
         assertThat(classification.getDomain(), equalTo(domain));
         assertThat(classification.getKey(), equalTo(key));
-        assertThat(classification.getValidFrom(), equalTo(today));
-        assertThat(classification.getValidUntil(),
-            equalTo(ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL));
     }
 
     @Test
-    public void testCreateClassificationInOwnDomainAndInRoot()
+    public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
         throws ClassificationAlreadyExistException {
         Classification classification = createDummyClassification();
         String domain = classification.getDomain();
         String key = classification.getKey();
-        Date validUntil = ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL;
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
-            classification.getDomain(), ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
-            "", ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            classification.getDomain());
+        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(), "");
 
-        cutSpy.createClassification(classification);
+        classification = cutSpy.createClassification(classification);
 
         verify(taskanaEngineImplMock, times(2)).openConnection();
-        verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, domain, validUntil);
-        verify(classificationMapperMock, times(2)).findByKeyAndDomain(key, "", validUntil);
+        verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, domain);
+        verify(classificationMapperMock, times(2)).findByKeyAndDomain(key, "");
         verify(classificationMapperMock, times(2)).insert(any());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
-        assertThat(classification.getCreated(), equalTo(today));
+        assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
         assertThat(classification.getDomain(), equalTo(domain));
         assertThat(classification.getKey(), equalTo(key));
-        assertThat(classification.getValidFrom(), equalTo(today));
-        assertThat(classification.getValidUntil(),
-            equalTo(ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL));
     }
 
     @Test
     public void testCreateClassificationIntoRootDomain()
         throws ClassificationAlreadyExistException {
         ClassificationImpl classification = (ClassificationImpl) createDummyClassification();
-        ((ClassificationImpl) classification).setDomain("");
+        classification.setDomain("");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
-            classification.getDomain(), ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            classification.getDomain());
 
-        cutSpy.createClassification(classification);
+        classification = (ClassificationImpl) cutSpy.createClassification(classification);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
-            classification.getDomain(), ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            classification.getDomain());
         verify(classificationMapperMock, times(1)).insert(classification);
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
-        assertThat(classification.getCreated(), equalTo(today));
-        assertThat(classification.getValidFrom(), equalTo(today));
-        assertThat(classification.getValidUntil(),
-            equalTo(ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL));
+        assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
     }
 
     @Test
-    public void testUpdateClassificationAtNewDomain() throws ClassificationNotFoundException {
+    public void testUpdateExistingClassification() throws ClassificationNotFoundException {
         Classification classification = createDummyClassification();
         ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
-        ((ClassificationImpl) oldClassification).setDomain("");
         doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
 
-        cutSpy.updateClassification(classification);
-
-        verify(taskanaEngineImplMock, times(1)).openConnection();
-        verify(cutSpy, times(2)).getClassification(classification.getKey(), classification.getDomain());
-        verify(classificationMapperMock, times(1)).insert((ClassificationImpl) classification);
-        verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
-        assertThat(classification.getCreated(), equalTo(today));
-        assertThat(classification.getValidFrom(), equalTo(today));
-        assertThat(classification.getValidUntil(),
-            equalTo(ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL));
-    }
-
-    @Test
-    public void testUpdateClassificationAtSameDomain() throws ClassificationNotFoundException {
-        Classification classification = createDummyClassification();
-        ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
-        oldClassification.setValidUntil(Date.valueOf(LocalDate.now()));
-        Date yesterday = Date.valueOf(LocalDate.now().minusDays(1));
-        doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
-
-        cutSpy.updateClassification(classification);
+        classification = cutSpy.updateClassification(classification);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(cutSpy, times(2)).getClassification(classification.getKey(), classification.getDomain());
         verify(classificationMapperMock, times(1)).update(any());
-        verify(classificationMapperMock, times(1)).insert(any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
-        assertThat(oldClassification.getValidUntil(), equalTo(yesterday));
     }
 
     @Test
@@ -241,15 +205,14 @@ public class ClassificationServiceImplTest {
     public void testGetClassificationFromDomain() throws ClassificationNotFoundException {
         Classification expectedClassification = createDummyClassification();
         doReturn(expectedClassification).when(classificationMapperMock)
-            .findByKeyAndDomain(expectedClassification.getKey(), expectedClassification.getDomain(),
-                ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            .findByKeyAndDomain(expectedClassification.getKey(), expectedClassification.getDomain());
 
         Classification actualClassification = cutSpy.getClassification(expectedClassification.getKey(),
             expectedClassification.getDomain());
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(expectedClassification.getKey(),
-            expectedClassification.getDomain(), ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            expectedClassification.getDomain());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
         assertThat(actualClassification, equalTo(expectedClassification));
@@ -259,22 +222,16 @@ public class ClassificationServiceImplTest {
     public void testGetClassificationThrowingNotFoundException() throws ClassificationNotFoundException {
         Classification classification = createDummyClassification();
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
-            classification.getDomain(),
-            ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
-            "",
-            ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            classification.getDomain());
+        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(), "");
 
         try {
             cutSpy.getClassification(classification.getKey(), classification.getDomain());
         } catch (ClassificationNotFoundException e) {
             verify(taskanaEngineImplMock, times(1)).openConnection();
             verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
-                classification.getDomain(),
-                ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
-            verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
-                "",
-                ClassificationServiceImpl.CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+                classification.getDomain());
+            verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(), "");
             verify(taskanaEngineImplMock, times(1)).returnConnection();
             verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
             throw e;
@@ -307,9 +264,5 @@ public class ClassificationServiceImplTest {
         classificationImpl.setKey("ABC111");
         classificationImpl.setParentClassificationKey("");
         return classificationImpl;
-    }
-
-    private ClassificationImpl createDummyCLassificationImpl() {
-        return (ClassificationImpl) createDummyClassification();
     }
 }

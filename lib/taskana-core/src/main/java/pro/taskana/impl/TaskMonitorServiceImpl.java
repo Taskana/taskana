@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -64,9 +64,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         long result = -1;
         try {
             taskanaEngineImpl.openConnection();
-            LocalDate time = LocalDate.now();
-            time = time.minusDays(daysInPast);
-            Date fromDate = Date.valueOf(time);
+            Instant fromDate = Instant.now().minus(Duration.ofDays(daysInPast));
             result = taskMonitorMapper.getTaskCountForWorkbasketByDaysInPastAndState(workbasketId, fromDate, states);
             return result;
         } finally {
@@ -85,9 +83,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         List<DueWorkbasketCounter> result = null;
         try {
             taskanaEngineImpl.openConnection();
-            LocalDate time = LocalDate.now();
-            time = time.minusDays(daysInPast);
-            Date fromDate = Date.valueOf(time);
+            Instant fromDate = Instant.now().minus(Duration.ofDays(daysInPast));
             result = taskMonitorMapper.getTaskCountByWorkbasketIdAndDaysInPastAndState(fromDate, states);
             return result;
         } finally {
@@ -127,5 +123,4 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
             }
         }
     }
-
 }
