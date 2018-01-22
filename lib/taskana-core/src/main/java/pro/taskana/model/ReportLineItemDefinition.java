@@ -24,5 +24,4 @@ public class ReportLineItemDefinition {
     public void setUpperLimit(int upperLimit) {
         this.upperLimit = upperLimit;
     }
-
 }

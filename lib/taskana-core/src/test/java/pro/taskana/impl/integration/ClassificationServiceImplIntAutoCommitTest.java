@@ -7,10 +7,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -168,13 +166,15 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testModifiedClassification()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException {
-
+        String description = "TEST SOMETHING";
         Classification classification = this.createDummyClassificationWithUniqueKey("domain1", "type1");
-        classificationService.createClassification(classification);
+        classification.setDescription("");
+        classification = classificationService.createClassification(classification);
         classification.setDescription("TEST SOMETHING");
         classificationService.updateClassification(classification);
 
-        Assert.assertEquals(classification.getValidFrom(), Date.valueOf(LocalDate.now()));
+        classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
+        Assert.assertThat(description, equalTo(classification.getDescription()));
     }
 
     @Test
@@ -182,44 +182,36 @@ public class ClassificationServiceImplIntAutoCommitTest {
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         InvalidArgumentException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
-        Classification actualClassification = classificationService.createClassification(classification);
-        Date today = Date.valueOf(LocalDate.now());
+        classification = classificationService.createClassification(classification);
+        Instant today = Instant.now();
+
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .validInDomain(Boolean.TRUE)
             .created(today)
-            .validFrom(today)
-            .validUntil(Date.valueOf("9999-12-31"))
             .list();
+
         Assert.assertEquals(1, list.size());
-        assertThat(actualClassification, equalTo(classification));
     }
 
     @Test
     public void testUpdateAndClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
-        classificationService.createClassification(classification);
-        System.out.println(classification.getId());
+        classification = classificationService.createClassification(classification);
         classification.setDescription("description");
-        classificationService.updateClassification(classification);
+        classification = classificationService.updateClassification(classification);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .validUntil(Date.valueOf("9999-12-31"))
+            .validInDomain(true)
             .list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().validInDomain(true).list();
-        Assert.assertEquals(2, list.size());
 
-        classificationService.updateClassification(classification);
-        System.out.println(classification.getId());
-        list = classificationService.createClassificationQuery().validUntil(Date.valueOf("9999-12-31")).list();
+        classification = classificationService.updateClassification(classification);
+        list = classificationService.createClassificationQuery()
+            .list();
         Assert.assertEquals(1, list.size());
 
-        System.out.println(classification.getParentClassificationKey());
-
-        List<ClassificationSummary> temp = classificationService.getClassificationTree();
-        List<ClassificationSummary> allClassifications = new ArrayList<>();
-        temp.stream().forEach(c -> allClassifications.add(c));
+        List<ClassificationSummary> allClassifications = classificationService.getClassificationTree();
         Assert.assertEquals(1, allClassifications.size());
     }
 
@@ -360,34 +352,38 @@ public class ClassificationServiceImplIntAutoCommitTest {
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         InvalidArgumentException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
+        classification = classificationService.createClassification(classification);
+
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
-        classificationService.createClassification(classification);
-        classificationService.createClassification(classification1);
+        classification1 = classificationService.createClassification(classification1);
+
         classification1.setParentClassificationKey(classification.getKey());
-        classificationService.updateClassification(classification1);
+        classification1 = classificationService.updateClassification(classification1);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .parentClassificationKey("")
             .list();
-        Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().validUntil(Date.valueOf("9999-12-31")).list();
+        Assert.assertEquals(1, list.size());
+        list = classificationService.createClassificationQuery()
+            .list();
         Assert.assertEquals(2, list.size());
 
         List<ClassificationSummary> listAll = classificationService.createClassificationQuery().list();
-        list = classificationService.createClassificationQuery().validFrom(Date.valueOf(LocalDate.now())).list();
+        list = classificationService.createClassificationQuery().list();
         Assert.assertEquals(listAll.size(), list.size());
+
         list = classificationService.createClassificationQuery().validInDomain(true).list();
         Assert.assertEquals(listAll.size(), list.size());
-        list = classificationService.createClassificationQuery().created(Date.valueOf(LocalDate.now())).list();
+
+        list = classificationService.createClassificationQuery().created(Instant.now()).list();
         Assert.assertEquals(listAll.size(), list.size());
 
         list = classificationService.createClassificationQuery().domain("domain1").validInDomain(false).list();
         Assert.assertEquals(0, list.size());
+
         list = classificationService.createClassificationQuery()
-            .validFrom(Date.valueOf((LocalDate.now())))
-            .validUntil(Date.valueOf(LocalDate.now().minusDays(1)))
             .list();
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(2, list.size());
     }
 
     @AfterClass

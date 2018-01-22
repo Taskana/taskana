@@ -12,5 +12,4 @@ public class ConcurrencyException extends TaskanaException {
     }
 
     private static final long serialVersionUID = 1L;
-
 }

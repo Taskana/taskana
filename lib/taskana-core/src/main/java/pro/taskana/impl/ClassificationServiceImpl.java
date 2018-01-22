@@ -1,8 +1,7 @@
 package pro.taskana.impl;
 
-import java.sql.Date;
 import java.time.Duration;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import pro.taskana.model.mappings.ClassificationMapper;
  */
 public class ClassificationServiceImpl implements ClassificationService {
 
-    public static final Date CURRENT_CLASSIFICATIONS_VALID_UNTIL = Date.valueOf("9999-12-31");
     private static final String ID_PREFIX_CLASSIFICATION = "CLI";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
     private ClassificationMapper classificationMapper;
@@ -47,7 +45,6 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngineImpl.openConnection();
             rootClassificationSumamries = this.createClassificationQuery()
                 .parentClassificationKey("")
-                .validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL)
                 .list();
             rootClassificationSumamries = this.populateChildClassifications(rootClassificationSumamries);
             return rootClassificationSumamries;
@@ -75,7 +72,6 @@ public class ClassificationServiceImpl implements ClassificationService {
             for (ClassificationSummary classification : classificationSumamries) {
                 List<ClassificationSummary> childClassifications = this.createClassificationQuery()
                     .parentClassificationKey(classification.getKey())
-                    .validUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL)
                     .list();
                 children.addAll(populateChildClassifications(childClassifications));
             }
@@ -154,24 +150,21 @@ public class ClassificationServiceImpl implements ClassificationService {
             classificationImpl = (ClassificationImpl) classification;
             this.initDefaultClassificationValues(classificationImpl);
 
-            ClassificationImpl oldClassification = null;
+            // UPDATE/INSERT classification
             try {
-                oldClassification = (ClassificationImpl) this.getClassification(classificationImpl.getKey(),
-                    classificationImpl.getDomain());
-                LOGGER.debug("Method updateClassification() inserted classification {}.", classificationImpl);
-                // ! If you update an classification twice the same day,
-                // the older version is valid from today until yesterday.
-                if (!oldClassification.getDomain().equals(classificationImpl.getDomain())) {
-                    addClassificationToDomain(classificationImpl);
-                } else {
-                    updateExistingClassification(oldClassification, classificationImpl);
-                }
+                this.getClassification(classificationImpl.getKey(), classificationImpl.getDomain());
+                classificationMapper.update(classificationImpl);
+                LOGGER.debug("Method updateClassification() updated the classification {}.",
+                    classificationImpl);
             } catch (ClassificationNotFoundException e) {
-                classificationImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION)); // TODO
-                classificationImpl.setCreated(Date.valueOf(LocalDate.now()));
+                classificationImpl.setCreated(Instant.now());
                 classificationMapper.insert(classificationImpl);
-                LOGGER.debug("Method updateClassification() inserted classification {}.", classificationImpl);
+                LOGGER.debug(
+                    "Method updateClassification() inserted a unpersisted classification which was wanted to be updated {}.",
+                    classificationImpl);
             }
+
+            // CHECK if classification does exist now
             try {
                 Classification updatedClassification = this.getClassification(classificationImpl.getKey(),
                     classificationImpl.getDomain());
@@ -194,13 +187,12 @@ public class ClassificationServiceImpl implements ClassificationService {
      * @param classification
      */
     private void initDefaultClassificationValues(ClassificationImpl classification) throws IllegalStateException {
-        classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
-
-        classification.setValidFrom(Date.valueOf(LocalDate.now()));
-        classification.setValidUntil(CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+        if (classification.getId() == null) {
+            classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+        }
 
         if (classification.getCreated() == null) {
-            classification.setCreated(Date.valueOf(LocalDate.now()));
+            classification.setCreated(Instant.now());
         }
 
         if (classification.getIsValidInDomain() == null) {
@@ -226,33 +218,6 @@ public class ClassificationServiceImpl implements ClassificationService {
         if (classification.getDomain() == null) {
             classification.setDomain("");
         }
-    }
-
-    /**
-     * Add a new Classification if this Classification Key is not yet specified for this domain.
-     *
-     * @param classification
-     */
-    private void addClassificationToDomain(ClassificationImpl classification) {
-        classification.setCreated(Date.valueOf(LocalDate.now()));
-        classificationMapper.insert(classification);
-        LOGGER.debug("Method updateClassification() inserted classification {}.", classification);
-    }
-
-    /**
-     * Set the validUntil-Date of the oldClassification to yesterday and inserts the new Classification.
-     *
-     * @param oldClassification
-     * @param newClassification
-     */
-    private Classification updateExistingClassification(ClassificationImpl oldClassification,
-        ClassificationImpl newClassification) {
-        oldClassification.setValidUntil(Date.valueOf(LocalDate.now().minusDays(1)));
-        classificationMapper.update(oldClassification);
-        classificationMapper.insert(newClassification);
-        LOGGER.debug("Method updateClassification() updated old classification {} and inserted new {}.",
-            oldClassification, newClassification);
-        return newClassification;
     }
 
     @Override
@@ -285,9 +250,9 @@ public class ClassificationServiceImpl implements ClassificationService {
         Classification result = null;
         try {
             taskanaEngineImpl.openConnection();
-            result = classificationMapper.findByKeyAndDomain(key, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+            result = classificationMapper.findByKeyAndDomain(key, domain);
             if (result == null) {
-                result = classificationMapper.findByKeyAndDomain(key, "", CURRENT_CLASSIFICATIONS_VALID_UNTIL);
+                result = classificationMapper.findByKeyAndDomain(key, "");
                 if (result == null) {
                     throw new ClassificationNotFoundException("Classification for key " + key + " was not found");
                 }
@@ -316,7 +281,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     private boolean doesClassificationExist(String key, String domain) {
         boolean isExisting = false;
         try {
-            if (classificationMapper.findByKeyAndDomain(key, domain, CURRENT_CLASSIFICATIONS_VALID_UNTIL) != null) {
+            if (classificationMapper.findByKeyAndDomain(key, domain) != null) {
                 isExisting = true;
             }
         } catch (Exception ex) {
@@ -326,5 +291,4 @@ public class ClassificationServiceImpl implements ClassificationService {
         }
         return isExisting;
     }
-
 }

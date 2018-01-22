@@ -23,7 +23,7 @@ import pro.taskana.rest.model.WorkbasketCounterDataDto;
 import pro.taskana.rest.model.WorkbasketCounterDto;
 
 @RestController
-@RequestMapping(path = "/v1/monitor", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/v1/monitor", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class MonitorController {
 
     @Autowired
@@ -78,9 +78,10 @@ public class MonitorController {
                 states);
 
             for (DueWorkbasketCounter item : dwcList) {
-                String formattedDate = item.getDue()
-                    .toLocalDate()
-                    .format(new DateTimeFormatterBuilder().appendPattern("dd.MM.yyyy").toFormatter());
+                String formattedDate = new DateTimeFormatterBuilder()
+                    .appendPattern("dd.MM.yyyy")
+                    .toFormatter()
+                    .format(item.getDue());
                 for (int i = 0; i < dates.size(); i++) {
                     if (formattedDate.equalsIgnoreCase(dates.get(i))) {
                         for (int j = 0; j < data.size(); j++) {
@@ -92,9 +93,7 @@ public class MonitorController {
                     }
                 }
             }
-
             WorkbasketCounterDto.setData(data);
-
             return ResponseEntity.status(HttpStatus.OK).body(WorkbasketCounterDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

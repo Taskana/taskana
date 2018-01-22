@@ -1,6 +1,6 @@
 package pro.taskana;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import pro.taskana.model.WorkbasketType;
@@ -18,11 +18,11 @@ public interface Workbasket {
     String getId();
 
     /**
-     * Returns the timestamp when the workbasket was created.
+     * Returns the date when the workbasket was created.
      *
-     * @return created timestamp
+     * @return created as Instant
      */
-    Timestamp getCreated();
+    Instant getCreated();
 
     /**
      * Returns the key of the workbasket.
@@ -70,19 +70,19 @@ public interface Workbasket {
     void setType(WorkbasketType type);
 
     /**
-     * Returns the timestamp when the workbasket was modified the last time.
+     * Returns the date when the workbasket was modified the last time.
      *
-     * @return modified timestamp
+     * @return modified as Instant
      */
-    Timestamp getModified();
+    Instant getModified();
 
     /**
      * Sets the time when the workbasket was modified the last time.
      *
      * @param modified
-     *            the timestamp when the workbasket was last modified
+     *            as Instant
      */
-    void setModified(Timestamp modified);
+    void setModified(Instant modified);
 
     /**
      * Returns the name of the workbasket.

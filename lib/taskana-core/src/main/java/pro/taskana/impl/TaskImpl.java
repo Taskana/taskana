@@ -1,6 +1,6 @@
 package pro.taskana.impl;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,12 +21,12 @@ import pro.taskana.model.TaskState;
 public class TaskImpl implements Task {
 
     private String id;
-    private Timestamp created;
-    private Timestamp claimed;
-    private Timestamp completed;
-    private Timestamp modified;
-    private Timestamp planned;
-    private Timestamp due;
+    private Instant created;
+    private Instant claimed;
+    private Instant completed;
+    private Instant modified;
+    private Instant planned;
+    private Instant due;
     private String name;
     private String description;
     private String note;
@@ -70,57 +70,57 @@ public class TaskImpl implements Task {
     }
 
     @Override
-    public Timestamp getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
     @Override
-    public Timestamp getClaimed() {
+    public Instant getClaimed() {
         return claimed;
     }
 
-    public void setClaimed(Timestamp claimed) {
+    public void setClaimed(Instant claimed) {
         this.claimed = claimed;
     }
 
     @Override
-    public Timestamp getCompleted() {
+    public Instant getCompleted() {
         return completed;
     }
 
-    public void setCompleted(Timestamp completed) {
+    public void setCompleted(Instant completed) {
         this.completed = completed;
     }
 
     @Override
-    public Timestamp getModified() {
+    public Instant getModified() {
         return modified;
     }
 
-    public void setModified(Timestamp modified) {
+    public void setModified(Instant modified) {
         this.modified = modified;
     }
 
     @Override
-    public Timestamp getPlanned() {
+    public Instant getPlanned() {
         return planned;
     }
 
     @Override
-    public void setPlanned(Timestamp planned) {
+    public void setPlanned(Instant planned) {
         this.planned = planned;
     }
 
     @Override
-    public Timestamp getDue() {
+    public Instant getDue() {
         return due;
     }
 
-    public void setDue(Timestamp due) {
+    public void setDue(Instant due) {
         this.due = due;
     }
 
@@ -449,17 +449,17 @@ public class TaskImpl implements Task {
         builder.append("TaskImpl [id=");
         builder.append(id);
         builder.append(", created=");
-        builder.append(created);
+        builder.append(created.toString());
         builder.append(", claimed=");
-        builder.append(claimed);
+        builder.append(claimed.toString());
         builder.append(", completed=");
-        builder.append(completed);
+        builder.append(completed.toString());
         builder.append(", modified=");
-        builder.append(modified);
+        builder.append(modified.toString());
         builder.append(", planned=");
-        builder.append(planned);
+        builder.append(planned.toString());
         builder.append(", due=");
-        builder.append(due);
+        builder.append(due.toString());
         builder.append(", name=");
         builder.append(name);
         builder.append(", description=");
@@ -519,5 +519,4 @@ public class TaskImpl implements Task {
         builder.append("]");
         return builder.toString();
     }
-
 }

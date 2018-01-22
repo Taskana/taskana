@@ -367,6 +367,8 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(name));
         builder.append(", description=");
         builder.append(description);
+        builder.append(", note=");
+        builder.append(note);
         builder.append(", priority=");
         builder.append(Arrays.toString(priority));
         builder.append(", states=");
@@ -406,5 +408,4 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append("]");
         return builder.toString();
     }
-
 }
