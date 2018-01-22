@@ -42,5 +42,4 @@ public class GroupPrincipal implements Group {
     public Enumeration<? extends Principal> members() {
         return Collections.enumeration(this.members);
     }
-
 }

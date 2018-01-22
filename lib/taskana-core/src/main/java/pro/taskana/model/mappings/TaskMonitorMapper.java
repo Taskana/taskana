@@ -1,6 +1,6 @@
 package pro.taskana.model.mappings;
 
-import java.sql.Date;
+import java.time.Instant;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -36,7 +36,7 @@ public interface TaskMonitorMapper {
         + "AND STATE IN (<foreach collection='status' item='state' separator=','>#{state}</foreach>)"
         + "</script>")
     long getTaskCountForWorkbasketByDaysInPastAndState(@Param("workbasketId") String workbasketId,
-        @Param("fromDate") Date fromDate, @Param("status") List<TaskState> states);
+        @Param("fromDate") Instant fromDate, @Param("status") List<TaskState> states);
 
     @Select("<script>"
         + "SELECT CAST(DUE AS DATE) as DUE_DATE, WORKBASKETID, COUNT (*) as counter "
@@ -48,7 +48,7 @@ public interface TaskMonitorMapper {
     @Results({ @Result(column = "DUE_DATE", property = "due"),
         @Result(column = "WORKBASKETID", property = "workbasketId"),
         @Result(column = "counter", property = "taskCounter") })
-    List<DueWorkbasketCounter> getTaskCountByWorkbasketIdAndDaysInPastAndState(@Param("fromDate") Date fromDate,
+    List<DueWorkbasketCounter> getTaskCountByWorkbasketIdAndDaysInPastAndState(@Param("fromDate") Instant fromDate,
         @Param("status") List<TaskState> states);
 
     @Select("<script>"
@@ -62,5 +62,4 @@ public interface TaskMonitorMapper {
         @Result(column = "counter", property = "totalCount") })
     List<ReportLine> getDetailLinesByWorkbasketIdsAndStates(@Param("workbaskets") List<Workbasket> workbaskets,
         @Param("status") List<TaskState> states);
-
 }

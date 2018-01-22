@@ -1,7 +1,5 @@
 package pro.taskana.impl;
 
-import java.sql.Timestamp;
-
 import pro.taskana.ClassificationSummary;
 
 /**
@@ -15,7 +13,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     private String type;
     private String domain;
     private String name;
-    private Timestamp validUntil;
 
     @Override
     public String getId() {
@@ -72,15 +69,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     }
 
     @Override
-    public Timestamp getValidUntil() {
-        return validUntil;
-    }
-
-    public void setValidUntil(Timestamp validUntil) {
-        this.validUntil = validUntil;
-    }
-
-    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -90,7 +78,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         result = prime * result + ((key == null) ? 0 : key.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((validUntil == null) ? 0 : validUntil.hashCode());
         return result;
     }
 
@@ -148,13 +135,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         } else if (!type.equals(other.type)) {
             return false;
         }
-        if (validUntil == null) {
-            if (other.validUntil != null) {
-                return false;
-            }
-        } else if (!validUntil.equals(other.validUntil)) {
-            return false;
-        }
         return true;
     }
 
@@ -173,8 +153,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         builder.append(domain);
         builder.append(", name=");
         builder.append(name);
-        builder.append(", validUntil=");
-        builder.append(validUntil);
         builder.append("]");
         return builder.toString();
     }

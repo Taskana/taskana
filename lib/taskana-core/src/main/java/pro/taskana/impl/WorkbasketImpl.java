@@ -1,6 +1,6 @@
 package pro.taskana.impl;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +15,8 @@ public class WorkbasketImpl implements Workbasket {
 
     private String id;
     private String key;
-    private Timestamp created;
-    private Timestamp modified;
+    private Instant created;
+    private Instant modified;
     private String name;
     private String description;
     private String owner;
@@ -55,21 +55,21 @@ public class WorkbasketImpl implements Workbasket {
     }
 
     @Override
-    public Timestamp getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
     @Override
-    public Timestamp getModified() {
+    public Instant getModified() {
         return modified;
     }
 
     @Override
-    public void setModified(Timestamp modified) {
+    public void setModified(Instant modified) {
         this.modified = modified;
     }
 
@@ -237,9 +237,9 @@ public class WorkbasketImpl implements Workbasket {
         builder.append(", key=");
         builder.append(key);
         builder.append(", created=");
-        builder.append(created);
+        builder.append(created.toString());
         builder.append(", modified=");
-        builder.append(modified);
+        builder.append(modified.toString());
         builder.append(", name=");
         builder.append(name);
         builder.append(", description=");
@@ -271,5 +271,4 @@ public class WorkbasketImpl implements Workbasket {
         builder.append("]");
         return builder.toString();
     }
-
 }

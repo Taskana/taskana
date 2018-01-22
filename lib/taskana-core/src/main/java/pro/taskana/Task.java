@@ -1,6 +1,6 @@
 package pro.taskana;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -22,52 +22,52 @@ public interface Task {
     /**
      * Returns the time when the task was {@link TaskState#READY}.
      *
-     * @return created as exact {@link Timestamp}
+     * @return created as exact {@link Instant}
      */
-    Timestamp getCreated();
+    Instant getCreated();
 
     /**
      * Returns the time when the task was set to {@link TaskState#CLAIMED} by/to a user.
      *
-     * @return claimed as exact {@link Timestamp}
+     * @return claimed as exact {@link Instant}
      */
-    Timestamp getClaimed();
+    Instant getClaimed();
 
     /**
      * Returns the time when the task was set into {@link TaskState#COMPLETED}.
      *
-     * @return completed as exact {@link Timestamp}
+     * @return completed as exact {@link Instant}
      */
-    Timestamp getCompleted();
+    Instant getCompleted();
 
     /**
      * Returns the time when the task was modified the last time.
      *
-     * @return modified as exact {@link Timestamp}
+     * @return modified as exact {@link Instant}
      */
-    Timestamp getModified();
+    Instant getModified();
 
     /**
      * Returns the time when the work on this task was planned to be started.
      *
-     * @return planned as exact {@link Timestamp}
+     * @return planned as exact {@link Instant}
      */
-    Timestamp getPlanned();
+    Instant getPlanned();
 
     /**
      * Sets the time when the work on this task should be started.
      *
      * @param planned
-     *            as exact {@link Timestamp}
+     *            as exact {@link Instant}
      */
-    void setPlanned(Timestamp planned);
+    void setPlanned(Instant planned);
 
     /**
      * Returns the time when this task should be finished.
      *
-     * @return due as exact {@link Timestamp}
+     * @return due as exact {@link Instant}
      */
-    Timestamp getDue();
+    Instant getDue();
 
     /**
      * Return the name of the current task.

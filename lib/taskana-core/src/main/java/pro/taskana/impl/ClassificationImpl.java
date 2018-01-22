@@ -1,8 +1,7 @@
 package pro.taskana.impl;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.Instant;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationSummary;
@@ -19,7 +18,7 @@ public class ClassificationImpl implements Classification {
     private String type;
     private String domain;
     private Boolean isValidInDomain;
-    private Date created;
+    private Instant created;
     private String name;
     private String description;
     private int priority;
@@ -33,8 +32,6 @@ public class ClassificationImpl implements Classification {
     private String custom6;
     private String custom7;
     private String custom8;
-    private Date validFrom;
-    private Date validUntil;
 
     ClassificationImpl() {
     }
@@ -106,11 +103,11 @@ public class ClassificationImpl implements Classification {
     }
 
     @Override
-    public Date getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
@@ -250,24 +247,6 @@ public class ClassificationImpl implements Classification {
     }
 
     @Override
-    public Date getValidFrom() {
-        return validFrom;
-    }
-
-    public void setValidFrom(Date validFrom) {
-        this.validFrom = validFrom;
-    }
-
-    @Override
-    public Date getValidUntil() {
-        return validUntil;
-    }
-
-    public void setValidUntil(Date validUntil) {
-        this.validUntil = validUntil;
-    }
-
-    @Override
     public ClassificationSummary asSummary() {
         ClassificationSummaryImpl summary = new ClassificationSummaryImpl();
         summary.setCategory(this.category);
@@ -276,9 +255,6 @@ public class ClassificationImpl implements Classification {
         summary.setKey(this.key);
         summary.setName(this.name);
         summary.setType(this.type);
-        if (this.validUntil != null) {
-            summary.setValidUntil(new Timestamp(this.validUntil.getTime()));
-        }
         return summary;
     }
 
@@ -300,7 +276,7 @@ public class ClassificationImpl implements Classification {
         builder.append(", isValidInDomain=");
         builder.append(isValidInDomain);
         builder.append(", created=");
-        builder.append(created);
+        builder.append(created.toString());
         builder.append(", name=");
         builder.append(name);
         builder.append(", description=");
@@ -327,10 +303,6 @@ public class ClassificationImpl implements Classification {
         builder.append(custom7);
         builder.append(", custom8=");
         builder.append(custom8);
-        builder.append(", validFrom=");
-        builder.append(validFrom);
-        builder.append(", validUntil=");
-        builder.append(validUntil);
         builder.append("]");
         return builder.toString();
     }

@@ -31,5 +31,4 @@ public class Report {
     public void setSumLine(ReportLine sumLine) {
         this.sumLine = sumLine;
     }
-
 }

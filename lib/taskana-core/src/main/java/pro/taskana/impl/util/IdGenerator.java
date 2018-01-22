@@ -25,5 +25,4 @@ public final class IdGenerator {
 
     private IdGenerator() {
     }
-
 }

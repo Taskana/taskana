@@ -127,7 +127,7 @@ public interface TaskMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     List<TaskSummaryImpl> findTasksByWorkbasketIdAndState(@Param("workbasketKey") String workbasketKey,
         @Param("taskState") TaskState taskState);
 
@@ -168,6 +168,6 @@ public interface TaskMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10") })
     List<TaskSummaryImpl> findTaskSummariesByWorkbasketKey(@Param("workbasketKey") String workbasketKey);
 }

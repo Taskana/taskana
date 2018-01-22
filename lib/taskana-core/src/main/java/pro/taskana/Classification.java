@@ -1,6 +1,6 @@
 package pro.taskana;
 
-import java.sql.Date;
+import java.time.Instant;
 
 /**
  * Interface used to specify the Classification-Model.
@@ -79,9 +79,9 @@ public interface Classification {
     /**
      * Get the Date when this classification was as created.
      *
-     * @return created as date
+     * @return created as instant
      */
-    Date getCreated();
+    Instant getCreated();
 
     /**
      * Get the classification name.
@@ -280,24 +280,9 @@ public interface Classification {
     void setCustom8(String custom8);
 
     /**
-     * Get the sql-date since/when the classification is valid from.
-     *
-     * @return validFrom
-     */
-    Date getValidFrom();
-
-    /**
-     * Get the sql-date until the classification is valid.
-     *
-     * @return validUntil
-     */
-    Date getValidUntil();
-
-    /**
      * Return a summary of the current Classification.
      *
      * @return the ClassificationSummary object for the current classification
      */
     ClassificationSummary asSummary();
-
 }
