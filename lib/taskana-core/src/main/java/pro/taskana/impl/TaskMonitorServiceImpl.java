@@ -12,8 +12,11 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.DueWorkbasketCounter;
+import pro.taskana.model.MonitorQueryItem;
 import pro.taskana.model.Report;
 import pro.taskana.model.ReportLine;
+import pro.taskana.model.ReportLineItem;
+import pro.taskana.model.ReportLineItemDefinition;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.mappings.TaskMonitorMapper;
@@ -99,21 +102,29 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states) {
+        return getWorkbasketLevelReport(workbaskets, states, null);
+    }
+
+    @Override
+    public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
+        List<ReportLineItemDefinition> reportLineItemDefinitions) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("entry to getWorkbasketLevelReport(workbaskets = {})", LoggerUtils.listToString(workbaskets));
+            LOGGER.debug(
+                "entry to getWorkbasketLevelReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {})",
+                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(reportLineItemDefinitions));
         }
         try {
             taskanaEngineImpl.openConnection();
-            Report report = new Report();
-            report.setDetailLines(taskMonitorMapper.getDetailLinesByWorkbasketIdsAndStates(workbaskets, states));
-            int sumLineTotalCount = 0;
-            for (ReportLine reportLine : report.getDetailLines()) {
-                sumLineTotalCount += reportLine.getTotalCount();
+
+            Report report = createEmptyReport(workbaskets, reportLineItemDefinitions);
+            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
+                .findByWorkbasketIdsAndStates(workbaskets, states);
+
+            for (MonitorQueryItem item : monitorQueryItems) {
+                report.getDetailLines().get(item.getKey()).addNumberOfTasks(item);
             }
-            ReportLine sumLine = new ReportLine();
-            sumLine.setName("SumLine");
-            sumLine.setTotalCount(sumLineTotalCount);
-            report.setSumLine(sumLine);
+            report.generateSumLine();
             return report;
 
         } finally {
@@ -122,5 +133,30 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 LOGGER.debug("exit from getTaskCountByWorkbaskets().");
             }
         }
+    }
+
+    private Report createEmptyReport(List<Workbasket> workbaskets,
+        List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        Report report = new Report();
+        for (Workbasket workbasket : workbaskets) {
+            ReportLine reportLine = new ReportLine();
+            if (reportLineItemDefinitions != null) {
+                for (ReportLineItemDefinition reportLineItemDefinition : reportLineItemDefinitions) {
+                    ReportLineItem reportLineItem = new ReportLineItem();
+                    reportLineItem.setReportLineItemDefinition(reportLineItemDefinition);
+                    reportLine.getLineItems().add(reportLineItem);
+                }
+            }
+            report.getDetailLines().put(workbasket.getKey(), reportLine);
+        }
+        if (reportLineItemDefinitions != null) {
+            for (ReportLineItemDefinition reportLineItemDefinition : reportLineItemDefinitions) {
+                ReportLineItem reportLineItem = new ReportLineItem();
+                reportLineItem.setReportLineItemDefinition(reportLineItemDefinition);
+                report.getSumLine().getLineItems().add(reportLineItem);
+            }
+        }
+        return report;
+
     }
 }
