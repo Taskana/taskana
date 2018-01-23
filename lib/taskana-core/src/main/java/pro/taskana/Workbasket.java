@@ -1,7 +1,6 @@
 package pro.taskana;
 
 import java.time.Instant;
-import java.util.List;
 
 import pro.taskana.model.WorkbasketType;
 
@@ -120,21 +119,6 @@ public interface Workbasket {
      * @return ownerId
      */
     String getOwner();
-
-    /**
-     * Returns a list of all distribution targets.
-     *
-     * @return distributionTargets
-     */
-    List<WorkbasketSummary> getDistributionTargets();
-
-    /**
-     * Sets the list of distribution targets for this workbasket.
-     *
-     * @param distributionTargets
-     *            the distribution targets of the workbasket
-     */
-    void setDistributionTargets(List<WorkbasketSummary> distributionTargets);
 
     /**
      * Return the value for the custom1 attribute.
@@ -262,4 +246,5 @@ public interface Workbasket {
      * @return the WorkbasketSummary object for the current work basket
      */
     WorkbasketSummary asSummary();
+
 }

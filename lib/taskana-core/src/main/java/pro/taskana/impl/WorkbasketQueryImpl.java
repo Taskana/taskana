@@ -8,7 +8,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.BaseQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketSummary;
@@ -75,19 +74,19 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public BaseQuery<WorkbasketSummary> nameLike(String... names) {
+    public WorkbasketQuery nameLike(String... names) {
         this.nameLike = toUpperCopy(names);
         return this;
     }
 
     @Override
-    public BaseQuery<WorkbasketSummary> keyLike(String... keys) {
+    public WorkbasketQuery keyLike(String... keys) {
         this.keyLike = toUpperCopy(keys);
         return this;
     }
 
     @Override
-    public BaseQuery<WorkbasketSummary> keyOrNameLike(String... keysOrNames) {
+    public WorkbasketQuery keyOrNameLike(String... keysOrNames) {
         this.keyOrNameLike = toUpperCopy(keysOrNames);
         return this;
     }

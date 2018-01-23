@@ -518,7 +518,7 @@ public class TaskServiceImpl implements TaskService {
         for (TaskSummaryImpl task : taskSummaries) {
             String workbasketKey = task.getWorkbasketSummaryImpl().getKey();
 
-            // find the appropriate classification from the query result
+            // find the appropriate workbasket from the query result
             WorkbasketSummary aWorkbasket = workbaskets.stream()
                 .filter(x -> workbasketKey != null && workbasketKey.equals(x.getKey()))
                 .findFirst()

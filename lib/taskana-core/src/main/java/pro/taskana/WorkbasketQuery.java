@@ -30,7 +30,7 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      *            the keys as Strings
      * @return the query
      */
-    BaseQuery<WorkbasketSummary> keyLike(String... key);
+    WorkbasketQuery keyLike(String... key);
 
     /**
      * Add your names to your query. The names are compared case-insensitively to the names of workbaskets
@@ -51,7 +51,7 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      *            the names as Strings
      * @return the query
      */
-    BaseQuery<WorkbasketSummary> nameLike(String... name);
+    WorkbasketQuery nameLike(String... name);
 
     /**
      * Add search strings to your query that are searched case-insensitively in the key and name fields of workbaskets.
@@ -63,7 +63,7 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      *            the seach strings
      * @return the query
      */
-    BaseQuery<WorkbasketSummary> keyOrNameLike(String... searchString);
+    WorkbasketQuery keyOrNameLike(String... searchString);
 
     /**
      * Add your domains to your query.
