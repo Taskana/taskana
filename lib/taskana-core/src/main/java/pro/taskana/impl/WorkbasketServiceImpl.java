@@ -108,7 +108,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             for (String accessId : CurrentUserContext.getAccessIds()) {
                 workbaskets.addAll(workbasketMapper.findByPermission(permissions, accessId));
             }
-            result = new ArrayList<WorkbasketSummary>();
+            result = new ArrayList<>();
             result.addAll(workbaskets);
             return result;
         } finally {
@@ -135,7 +135,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = workbaskets == null ? 0 : workbaskets.size();
+                int numberOfResultObjects = workbaskets.size();
                 LOGGER.debug("exit from getWorkbaskets(). Returning {} resulting Objects: {} ", numberOfResultObjects,
                     LoggerUtils.listToString(workbaskets));
             }
@@ -388,7 +388,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
+                int numberOfResultObjects = result.size();
                 LOGGER.debug("exit from getDistributionTargets(workbasketId). Returning {} resulting Objects: {} ",
                     numberOfResultObjects, LoggerUtils.listToString(result));
             }
@@ -427,7 +427,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("setDistributionTargets set {} distribution targets to source workbasket {} ",
-                    targetWorkbasketIds.size(), sourceWorkbasketId);
+                    targetWorkbasketIds == null ? 0 : targetWorkbasketIds.size(), sourceWorkbasketId);
             }
         }
 
@@ -526,7 +526,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             List<String> accessIds = CurrentUserContext.getAccessIds();
             LOGGER.debug("checkAuthorization: Verifying that {} has the permission {} on workbasket {}",
-                CurrentUserContext.getUserid(), workbasketAuthorization.name(), workbasketKey);
+                CurrentUserContext.getUserid(),
+                workbasketAuthorization == null ? "null" : workbasketAuthorization.name(), workbasketKey);
 
             List<WorkbasketAccessItem> accessItems;
 

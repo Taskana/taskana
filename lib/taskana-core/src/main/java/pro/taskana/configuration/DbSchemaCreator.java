@@ -46,12 +46,13 @@ public class DbSchemaCreator {
         runner.setStopOnError(true);
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
-
-        if (!isSchemaPreexisting(runner)) {
-            runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_SCHEMA)));
+        try {
+            if (!isSchemaPreexisting(runner)) {
+                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_SCHEMA)));
+            }
+        } finally {
+            runner.closeConnection();
         }
-        runner.closeConnection();
-
         LOGGER.debug(outWriter.toString());
         if (!errorWriter.toString().trim().isEmpty()) {
             LOGGER.error(errorWriter.toString());

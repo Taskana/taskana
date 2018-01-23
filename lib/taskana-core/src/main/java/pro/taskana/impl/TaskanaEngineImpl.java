@@ -222,6 +222,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         String databaseProductName;
         try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
             databaseProductName = con.getMetaData().getDatabaseProductName();
+            databaseProductName = con.getMetaData()
+                .getDatabaseProductName();
             if (databaseProductName.contains("DB2")) {
                 configuration.setDatabaseId("db2");
             } else if (databaseProductName.contains("H2")) {
