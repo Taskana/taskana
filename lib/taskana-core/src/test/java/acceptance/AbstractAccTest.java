@@ -36,10 +36,14 @@ public abstract class AbstractAccTest {
         resetDb();
     }
 
-    public static void resetDb() throws SQLException {
+    public static void resetDb(boolean... dropTables) throws SQLException {
         DataSource dataSource = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, true);
+        if (dropTables == null || dropTables.length == 0) {
+            cleaner.clearDb(dataSource, true);
+        } else {
+            cleaner.clearDb(dataSource, dropTables[0]);
+        }
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();

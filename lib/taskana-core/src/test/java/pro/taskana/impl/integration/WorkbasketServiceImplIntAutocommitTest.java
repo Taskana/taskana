@@ -1,7 +1,5 @@
 package pro.taskana.impl.integration;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -9,6 +7,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -58,16 +57,13 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     private static final int SLEEP_TIME = 100;
     private static final int THREE = 3;
-    private static final Duration ONE_DAY = Duration.ofDays(1L);
-    private static final Duration TEN_DAYS = Duration.ofDays(10L);
-    private static final Duration FIFTEEN_DAYS = Duration.ofDays(15L);
-    private static final Duration TWENTY_DAYS = Duration.ofDays(20L);
     static int counter = 0;
     private DataSource dataSource;
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workBasketService;
+    private Instant now;
 
     @BeforeClass
     public static void resetDb() throws SQLException {
@@ -86,6 +82,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         workBasketService = taskanaEngine.getWorkbasketService();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource, false);
+        now = Instant.now();
     }
 
     @Test
@@ -165,18 +162,17 @@ public class WorkbasketServiceImplIntAutocommitTest {
         Workbasket wbDist2 = createTestWorkbasket(id, "key1", "novatec", "Megabasket", WorkbasketType.GROUP);
         wbDist2 = workBasketService.createWorkbasket(wbDist2);
         createWorkbasketWithSecurity(wbDist2, "Elena", true, true, false, false);
-
         id = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket = createTestWorkbasket(id, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
-        workbasket.setDistributionTargets(new ArrayList<>());
-        workbasket.getDistributionTargets().add(wbDist1.asSummary());
-        workbasket.getDistributionTargets().add(wbDist2.asSummary());
         workbasket = workBasketService.createWorkbasket(workbasket);
+        List<String> distributionTargets = new ArrayList<>(Arrays.asList(wbDist1.getId(), wbDist2.getId()));
         createWorkbasketWithSecurity(workbasket, "Elena", true, true, false, false);
+        workBasketService.setDistributionTargets(workbasket.getId(), distributionTargets);
 
         Workbasket foundWorkbasket = workBasketService.getWorkbasket(workbasket.getId());
         Assert.assertEquals(id, foundWorkbasket.getId());
-        Assert.assertEquals(2, foundWorkbasket.getDistributionTargets().size());
+        Assert.assertEquals(2, workBasketService.getDistributionTargets(foundWorkbasket.getId()).size());
+
     }
 
     @WithAccessId(userName = "Elena")
@@ -194,11 +190,10 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         String id2 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
-        workbasket2.setDistributionTargets(new ArrayList<>());
-        workbasket2.getDistributionTargets().add(workbasket0.asSummary());
-        workbasket2.getDistributionTargets().add(workbasket1.asSummary());
         workbasket2 = workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
+        List<String> distTargets = new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
+        workBasketService.setDistributionTargets(workbasket2.getId(), distTargets);
 
         String id3 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket3 = createTestWorkbasket(id3, "key3", "novatec", "hm ... irgend ein basket",
@@ -206,18 +201,19 @@ public class WorkbasketServiceImplIntAutocommitTest {
         workbasket3 = workBasketService.createWorkbasket(workbasket3);
         createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
 
-        workbasket2.getDistributionTargets().clear();
-        workbasket2.getDistributionTargets().add(workbasket3.asSummary());
-        Thread.sleep(SLEEP_TIME);
-        workbasket2 = workBasketService.updateWorkbasket(workbasket2);
+        List<String> newDistTargets = new ArrayList<>(Arrays.asList(workbasket3.getId()));
+        workBasketService.setDistributionTargets(workbasket2.getId(), newDistTargets);
 
         Workbasket foundBasket = workBasketService.getWorkbasket(workbasket2.getId());
 
-        List<WorkbasketSummary> distributionTargets = foundBasket.getDistributionTargets();
+        List<WorkbasketSummary> distributionTargets = workBasketService.getDistributionTargets(foundBasket.getId());
+
         Assert.assertEquals(1, distributionTargets.size());
         Assert.assertEquals(id3, distributionTargets.get(0).getId());
-        Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),
-            workBasketService.getWorkbasket(id2).getModified());
+        // Question: should we update the modfied timestamp on the source workbasket if we change its
+        // distributiontargets?
+        // Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),
+        // workBasketService.getWorkbasket(id2).getModified());
         Assert.assertEquals(workBasketService.getWorkbasket(id1).getCreated(),
             workBasketService.getWorkbasket(id1).getModified());
         Assert.assertEquals(workBasketService.getWorkbasket(id3).getCreated(),
@@ -267,12 +263,11 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         generateSampleDataForQuery();
 
-        Instant now = Instant.now();
-        Instant tomorrow = now.plus(ONE_DAY);
-        Instant yesterday = now.minus(ONE_DAY);
-        Instant tenDaysAgo = now.minus(TEN_DAYS);
-        Instant twentyDaysAgo = now.minus(TWENTY_DAYS);
-        Instant thirtyDaysAgo = now.minus(TWENTY_DAYS).minus(TEN_DAYS);
+        Instant tomorrow = now.plus(Duration.ofDays(1L));
+        Instant yesterday = now.minus(Duration.ofDays(1L));
+        Instant tenDaysAgo = now.minus(Duration.ofDays(10L));
+        Instant twentyDaysAgo = now.minus(Duration.ofDays(20L));
+        Instant thirtyDaysAgo = now.minus(Duration.ofDays(30L));
 
         WorkbasketQuery query1 = workBasketService.createWorkbasketQuery()
             .accessIdsHavePersmission(WorkbasketAuthorization.OPEN, "Bernd")
@@ -282,7 +277,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         Assert.assertEquals(1, result1.size());
         String workbasketId = result1.get(0).getId();
         Workbasket workBasket = workBasketService.getWorkbasket(workbasketId);
-        Assert.assertEquals(THREE, workBasket.getDistributionTargets().size());
+        Assert.assertEquals(THREE, workBasketService.getDistributionTargets(workBasket.getId()).size());
 
         WorkbasketQuery query2 = workBasketService.createWorkbasketQuery().accessIdsHavePersmission(
             WorkbasketAuthorization.OPEN, "Bernd",
@@ -313,12 +308,12 @@ public class WorkbasketServiceImplIntAutocommitTest {
             assertTrue("Basket1".equals(name) || "Basket2".equals(name) || "Basket3".equals(name));
         }
 
-        Thread.sleep(30L);
+        Thread.sleep(20L);
         WorkbasketQuery query5 = workBasketService.createWorkbasketQuery()
-            .modifiedAfter(now.minus(Duration.ofDays(31L)))
-            .modifiedBefore(now.minus(Duration.ofDays(9)));
+            .modifiedAfter(Instant.now().minus(Duration.ofDays(31)))
+            .modifiedBefore(Instant.now().minus(Duration.ofDays(14)));
         List<WorkbasketSummary> result5 = query5.list();
-        assertThat(result5.size(), equalTo(4));
+        assertTrue(result5.size() == 3);
         for (WorkbasketSummary workbasket : result5) {
             String name = workbasket.getName();
             assertTrue(
@@ -405,11 +400,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         basket4.setOwner("Holger");
         basket4.setType(WorkbasketType.PERSONAL);
         basket4.setDomain("");
-        List<WorkbasketSummary> distTargets = new ArrayList<WorkbasketSummary>();
-        distTargets.add(basket1.asSummary());
-        distTargets.add(basket2.asSummary());
-        distTargets.add(basket3.asSummary());
-        basket4.setDistributionTargets(distTargets);
+        List<String> distTargets = new ArrayList<>(Arrays.asList(basket1.getId(), basket2.getId(), basket3.getId()));
         basket4 = (WorkbasketImpl) workBasketService.createWorkbasket(basket4);
         WorkbasketAccessItem accessItem4 = new WorkbasketAccessItem();
         accessItem4.setId(IdGenerator.generateWithPrefix("WAI"));
@@ -418,6 +409,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         accessItem4.setPermOpen(true);
         accessItem4.setPermRead(true);
         workBasketService.createWorkbasketAuthorization(accessItem4);
+        workBasketService.setDistributionTargets(basket4.getId(), distTargets);
 
         updateModifiedTimestamps(basket1, basket2, basket3, basket4);
     }
@@ -435,16 +427,15 @@ public class WorkbasketServiceImplIntAutocommitTest {
         WorkbasketImpl wb2 = (WorkbasketImpl) basket2;
         WorkbasketImpl wb3 = (WorkbasketImpl) basket3;
         WorkbasketImpl wb4 = (WorkbasketImpl) basket4;
-        Instant now = Instant.now();
 
         engineProxy.openConnection();
-        wb1.setModified(now.minus(TEN_DAYS));
+        wb1.setModified(now.minus(Duration.ofDays(10L)));
         mapper.update(wb1);
-        wb2.setModified(now.minus(FIFTEEN_DAYS));
+        wb2.setModified(now.minus(Duration.ofDays(15L)));
         mapper.update(wb2);
-        wb3.setModified(now.minus(TWENTY_DAYS));
+        wb3.setModified(now.minus(Duration.ofDays(20L)));
         mapper.update(wb3);
-        wb4.setModified(now.minus(TWENTY_DAYS).minus(TEN_DAYS));
+        wb4.setModified(now.minus(Duration.ofDays(30L)));
         mapper.update(wb4);
         engineProxy.returnConnection();
     }
