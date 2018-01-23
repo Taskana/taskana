@@ -120,6 +120,7 @@ public class ClassificationServiceImplTest {
         verify(classificationMapperMock, times(1)).insert(any());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
+        Thread.sleep(15);
         assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
         assertFalse(classification.getCreated().isAfter(Instant.now()));
         assertTrue(classification.getCreated().isAfter(beforeTimestamp));
