@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.sql.SQLException;
 import java.util.Stack;
 
 import org.apache.ibatis.mapping.Environment;
@@ -22,6 +23,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.AutocommitFailedException;
 import pro.taskana.exceptions.ConnectionNotSetException;
+import pro.taskana.exceptions.UnsupportedDatabaseException;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.model.mappings.AttachmentMapper;
 import pro.taskana.model.mappings.ClassificationMapper;
@@ -209,7 +211,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
-     * This method creates the sqlSessionManager of myBatis. It integrates all the SQL mappers
+     * This method creates the sqlSessionManager of myBatis. It integrates all the SQL mappers and sets the databaseId
+     * attribute.
      *
      * @return a {@link SqlSessionFactory}
      */
@@ -217,6 +220,32 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         Environment environment = new Environment(DEFAULT, this.transactionFactory,
             taskanaEngineConfiguration.getDatasource());
         Configuration configuration = new Configuration(environment);
+
+        // set databaseId
+        String databaseProductName;
+        try {
+            databaseProductName = taskanaEngineConfiguration.getDatasource()
+                .getConnection()
+                .getMetaData()
+                .getDatabaseProductName();
+            if (databaseProductName.contains("DB2")) {
+                configuration.setDatabaseId("db2");
+            } else if (databaseProductName.contains("H2")) {
+                configuration.setDatabaseId("h2");
+            } else {
+                LOGGER.error(
+                    "Method createSqlSessionManager() didn't find database with name {}. Throwing UnsupportedDatabaseException",
+                    databaseProductName);
+                throw new UnsupportedDatabaseException(databaseProductName);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(
+                "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.",
+                e);
+            throw new RuntimeException(e);
+        }
+
         // add mappers
         configuration.addMapper(TaskMapper.class);
         configuration.addMapper(TaskMonitorMapper.class);

@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +27,9 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.model.DueWorkbasketCounter;
+import pro.taskana.model.MonitorQueryItem;
 import pro.taskana.model.Report;
-import pro.taskana.model.ReportLine;
+import pro.taskana.model.ReportLineItemDefinition;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 import pro.taskana.model.mappings.ObjectReferenceMapper;
@@ -125,23 +126,66 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetWorkbasketLevelReport() {
-        List<Workbasket> workbaskets = Arrays.asList(new WorkbasketImpl(), new WorkbasketImpl());
+    public void testGetTotalNumbersOfWorkbasketLevelReport() {
+        Workbasket workbasket = new WorkbasketImpl();
+        workbasket.setName("workbasket");
+        workbasket.setKey("wb1");
+        List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
 
-        Report expectedResult = new Report();
-        List<ReportLine> expectedDetailLines = new ArrayList<>();
-        doReturn(expectedDetailLines).when(taskMonitorMapperMock).getDetailLinesByWorkbasketIdsAndStates(any(), any());
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        monitorQueryItem.setKey("wb1");
+        monitorQueryItem.setNumberOfTasks(1);
+        expectedResult.add(monitorQueryItem);
+        doReturn(expectedResult).when(taskMonitorMapperMock).findByWorkbasketIdsAndStates(workbaskets,
+            states);
 
         Report actualResult = cut.getWorkbasketLevelReport(workbaskets, states);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).getDetailLinesByWorkbasketIdsAndStates(any(), any());
+        verify(taskMonitorMapperMock, times(1)).findByWorkbasketIdsAndStates(any(), any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
-        Assert.assertNotNull(actualResult);
-        assertThat(actualResult.getDetailLines(), equalTo(expectedResult.getDetailLines()));
+
+        assertNotNull(actualResult);
+        assertThat(actualResult.getDetailLines().get(workbasket.getKey()).getTotalNumberOfTasks(), equalTo(1));
+        assertThat(actualResult.getSumLine().getTotalNumberOfTasks(), equalTo(1));
+    }
+
+    @Test
+    public void testGetWorkbasketLevelReportWithReportLineItemDefinitions() {
+        Workbasket workbasket = new WorkbasketImpl();
+        workbasket.setName("workbasket");
+        workbasket.setKey("wb1");
+        List<Workbasket> workbaskets = Arrays.asList(workbasket);
+        List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
+            new ReportLineItemDefinition());
+
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        monitorQueryItem.setKey("wb1");
+        monitorQueryItem.setAgeInDays(0);
+        monitorQueryItem.setNumberOfTasks(1);
+        expectedResult.add(monitorQueryItem);
+        doReturn(expectedResult).when(taskMonitorMapperMock).findByWorkbasketIdsAndStates(workbaskets,
+            states);
+
+        Report actualResult = cut.getWorkbasketLevelReport(workbaskets, states, reportLineItemDefinitions);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMonitorMapperMock, times(1)).findByWorkbasketIdsAndStates(any(), any());
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+            taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+
+        assertNotNull(actualResult);
+        assertThat(actualResult.getDetailLines().get(workbasket.getKey()).getTotalNumberOfTasks(), equalTo(1));
+        assertThat(actualResult.getDetailLines().get(workbasket.getKey()).getLineItems().get(0).getNumberOfTasks(),
+            equalTo(1));
+        assertThat(actualResult.getSumLine().getTotalNumberOfTasks(), equalTo(1));
     }
 
 }

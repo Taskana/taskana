@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.Workbasket;
 import pro.taskana.model.DueWorkbasketCounter;
-import pro.taskana.model.ReportLine;
+import pro.taskana.model.MonitorQueryItem;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.TaskStateCounter;
 
@@ -52,14 +52,21 @@ public interface TaskMonitorMapper {
         @Param("status") List<TaskState> states);
 
     @Select("<script>"
-        + "SELECT WORKBASKET_KEY, COUNT(WORKBASKET_KEY) as counter "
+        + "<if test=\"_databaseId == 'db2'\">SELECT WORKBASKET_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'h2'\">SELECT WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "FROM TASK "
         + "WHERE WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
-        + "AND STATE IN (<foreach collection='status' item='state' separator=','>#{state}</foreach>) "
-        + "GROUP BY WORKBASKET_KEY"
+        + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
+        + "AND DUE IS NOT NULL "
+        + "<if test=\"_databaseId == 'db2'\">GROUP BY WORKBASKET_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
+        + "<if test=\"_databaseId == 'h2'\">GROUP BY WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
         + "</script>")
-    @Results({ @Result(column = "WORKBASKET_KEY", property = "name"),
-        @Result(column = "counter", property = "totalCount") })
-    List<ReportLine> getDetailLinesByWorkbasketIdsAndStates(@Param("workbaskets") List<Workbasket> workbaskets,
-        @Param("status") List<TaskState> states);
+    @Results({
+        @Result(column = "WORKBASKET_KEY", property = "key"),
+        @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
+        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
+    List<MonitorQueryItem> findByWorkbasketIdsAndStates(
+        @Param("workbaskets") List<Workbasket> workbaskets,
+        @Param("states") List<TaskState> states);
+
 }

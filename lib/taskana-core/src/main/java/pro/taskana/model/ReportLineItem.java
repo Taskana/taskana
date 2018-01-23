@@ -1,13 +1,17 @@
 package pro.taskana.model;
 
 /**
- * Each ReportLineItem consists of a {@link ReportLineItemDefinition} that defines the upper and lower limits of this
- * item and a count value that represents the count of tasks of this item.
+ * Each ReportLineItem consists of a {@link ReportLineItemDefinition} that defines the upper and lower age limits of
+ * this item and a number of tasks of this item.
  */
 public class ReportLineItem {
 
     private ReportLineItemDefinition reportLineItemDefinition;
-    private int count;
+    private int numberOfTasks;
+
+    public ReportLineItem() {
+        this.numberOfTasks = 0;
+    }
 
     public ReportLineItemDefinition getReportLineItemDefinition() {
         return reportLineItemDefinition;
@@ -17,11 +21,15 @@ public class ReportLineItem {
         this.reportLineItemDefinition = reportLineItemDefinition;
     }
 
-    public int getCount() {
-        return count;
+    public int getNumberOfTasks() {
+        return numberOfTasks;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setNumberOfTasks(int numberOfTasks) {
+        this.numberOfTasks = numberOfTasks;
     }
+    public void addNumberOfTasks(int numberOfTasks) {
+        this.numberOfTasks += numberOfTasks;
+    }
+
 }
