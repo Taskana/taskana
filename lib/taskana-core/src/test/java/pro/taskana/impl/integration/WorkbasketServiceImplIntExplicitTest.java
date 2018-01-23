@@ -186,7 +186,6 @@ public class WorkbasketServiceImplIntExplicitTest {
 
         String id2 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
-        //
         workbasket2 = workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
 
@@ -221,6 +220,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
 
         List<String> distTargets = new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
+        Thread.sleep(20L);
         workBasketService.setDistributionTargets(workbasket2.getId(), distTargets);
 
         String id3 = IdGenerator.generateWithPrefix("TWB");
@@ -230,6 +230,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
 
         List<String> newDistTargets = new ArrayList<>(Arrays.asList(workbasket3.getId()));
+        Thread.sleep(20L);
         workBasketService.setDistributionTargets(workbasket2.getId(), newDistTargets);
 
         Workbasket foundBasket = workBasketService.getWorkbasket(workbasket2.getId());
@@ -237,10 +238,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         List<WorkbasketSummary> distributionTargets = workBasketService.getDistributionTargets(foundBasket.getId());
         Assert.assertEquals(1, distributionTargets.size());
         Assert.assertEquals(workbasket3.getId(), distributionTargets.get(0).getId());
-        // Question: should we update the modfied timestamp on the source workbasket if we change its
-        // distributiontargets?
-        // Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),
-        // workBasketService.getWorkbasket(id2).getModified());
+        Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),
+            workBasketService.getWorkbasket(id2).getModified());
         Assert.assertEquals(workBasketService.getWorkbasket(id1).getCreated(),
             workBasketService.getWorkbasket(id1).getModified());
         Assert.assertEquals(workBasketService.getWorkbasket(id3).getCreated(),
