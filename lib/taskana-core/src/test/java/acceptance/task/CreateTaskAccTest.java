@@ -81,18 +81,16 @@ public class CreateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask();
         newTask.setClassificationKey("L12010");
-        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
         Task createdTask = taskService.createTask(newTask);
-
         assertNotNull(createdTask.getId());
 
         Task readTask = taskService.getTask(createdTask.getId());
-
         assertNotNull(readTask);
         assertNotNull(readTask.getAttachments());
         assertEquals(1, readTask.getAttachments().size());
@@ -116,11 +114,11 @@ public class CreateTaskAccTest extends AbstractAccTest {
         newTask.setClassificationKey("L12010");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setWorkbasketKey("USER_1_1");
-        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
@@ -151,7 +149,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task createdTask = null;
         Task newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             null,
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         try {
@@ -161,7 +159,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         }
 
         newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId", null),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         try {
@@ -171,7 +169,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         }
 
         newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", null,
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
@@ -181,7 +179,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
             // nothing to do
         }
         newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", null, "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
@@ -191,7 +189,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
             // nothing to do
         }
         newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", null, "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
@@ -201,7 +199,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
             // nothing to do
         }
         newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOKTYP_DEFAULT",
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference(null, "SYSTEM_B", "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));

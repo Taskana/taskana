@@ -276,7 +276,7 @@ public class ClassificationImpl implements Classification {
         builder.append(", isValidInDomain=");
         builder.append(isValidInDomain);
         builder.append(", created=");
-        builder.append(created.toString());
+        builder.append(created);
         builder.append(", name=");
         builder.append(name);
         builder.append(", description=");

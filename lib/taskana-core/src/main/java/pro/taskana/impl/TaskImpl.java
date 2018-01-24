@@ -3,6 +3,7 @@ package pro.taskana.impl;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class TaskImpl implements Task {
     private boolean isTransferred;
     // All objects have to be serializable
     private Map<String, Object> customAttributes = Collections.emptyMap();
-    private List<Attachment> attachments;
+    private List<Attachment> attachments = new ArrayList<>();
     private String custom1;
     private String custom2;
     private String custom3;
@@ -377,11 +378,22 @@ public class TaskImpl implements Task {
     }
 
     @Override
-    public void addAttachment(Attachment attachment) {
+    public void addAttachment(Attachment attachmentToAdd) {
         if (attachments == null) {
             attachments = new ArrayList<Attachment>();
         }
-        attachments.add(attachment);
+        if (attachmentToAdd != null) {
+            if (attachmentToAdd.getId() != null) {
+                Iterator<Attachment> i = attachments.iterator();
+                while (i.hasNext()) {
+                    Attachment attachment = i.next();
+                    if (attachmentToAdd.getId().equals(attachment.getId())) {
+                        i.remove();
+                    }
+                }
+            }
+            attachments.add(attachmentToAdd);
+        }
     }
 
     @Override
@@ -432,7 +444,11 @@ public class TaskImpl implements Task {
     }
 
     public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
+        if (attachments != null) {
+            this.attachments = attachments;
+        } else if (this.attachments == null) {
+            this.attachments = new ArrayList<>();
+        }
     }
 
     public String getClassificationKey() {
@@ -444,22 +460,38 @@ public class TaskImpl implements Task {
     }
 
     @Override
+    public Attachment removeAttachment(String attachmentId) {
+        Attachment result = null;
+        Iterator<Attachment> i = attachments.iterator();
+        while (i.hasNext()) {
+            Attachment attachment = i.next();
+            if (attachment.getId().equals(attachmentId)) {
+                if (attachments.remove(attachment)) {
+                    result = attachment;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("TaskImpl [id=");
         builder.append(id);
         builder.append(", created=");
-        builder.append(created.toString());
+        builder.append(created);
         builder.append(", claimed=");
-        builder.append(claimed.toString());
+        builder.append(claimed);
         builder.append(", completed=");
-        builder.append(completed.toString());
+        builder.append(completed);
         builder.append(", modified=");
-        builder.append(modified.toString());
+        builder.append(modified);
         builder.append(", planned=");
-        builder.append(planned.toString());
+        builder.append(planned);
         builder.append(", due=");
-        builder.append(due.toString());
+        builder.append(due);
         builder.append(", name=");
         builder.append(name);
         builder.append(", description=");

@@ -113,6 +113,7 @@ public class ClassificationServiceImplTest {
 
         classification = cutSpy.createClassification(classification);
 
+        Thread.sleep(10L);
         verify(taskanaEngineImplMock, times(2)).openConnection();
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, domain);
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, "");

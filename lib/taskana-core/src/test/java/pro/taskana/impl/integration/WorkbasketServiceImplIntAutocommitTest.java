@@ -1,5 +1,7 @@
 package pro.taskana.impl.integration;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -175,7 +177,6 @@ public class WorkbasketServiceImplIntAutocommitTest {
         Workbasket foundWorkbasket = workBasketService.getWorkbasket(workbasket.getId());
         Assert.assertEquals(id, foundWorkbasket.getId());
         Assert.assertEquals(2, foundWorkbasket.getDistributionTargets().size());
-
     }
 
     @WithAccessId(userName = "Elena")
@@ -262,7 +263,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
     @Test
     public void testWorkbasketQuery()
         throws NotAuthorizedException, InvalidArgumentException, InvalidWorkbasketException,
-        WorkbasketNotFoundException {
+        WorkbasketNotFoundException, InterruptedException {
 
         generateSampleDataForQuery();
 
@@ -312,11 +313,12 @@ public class WorkbasketServiceImplIntAutocommitTest {
             assertTrue("Basket1".equals(name) || "Basket2".equals(name) || "Basket3".equals(name));
         }
 
+        Thread.sleep(30L);
         WorkbasketQuery query5 = workBasketService.createWorkbasketQuery()
             .modifiedAfter(now.minus(Duration.ofDays(31L)))
             .modifiedBefore(now.minus(Duration.ofDays(9)));
         List<WorkbasketSummary> result5 = query5.list();
-        assertTrue(result5.size() == 4);
+        assertThat(result5.size(), equalTo(4));
         for (WorkbasketSummary workbasket : result5) {
             String name = workbasket.getName();
             assertTrue(
@@ -338,7 +340,6 @@ public class WorkbasketServiceImplIntAutocommitTest {
             String name = workbasket.getName();
             assertTrue("Basket1".equals(name) || "Basket2".equals(name));
         }
-
     }
 
     private void generateSampleDataForQuery()

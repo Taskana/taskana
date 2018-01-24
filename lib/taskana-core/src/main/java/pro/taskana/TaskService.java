@@ -2,6 +2,7 @@ package pro.taskana;
 
 import java.util.List;
 
+import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -229,8 +230,10 @@ public interface TaskService {
      *             if the updated task refers to a work basket that cannot be found
      * @throws NotAuthorizedException
      *             if the current user is not authorized to update the task
+     * @throws AttachmentPersistenceException
+     *             if an Attachment with ID will be added multiple times without using the task-methods.
      */
     Task updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
         WorkbasketNotFoundException, ClassificationNotFoundException, InvalidWorkbasketException,
-        NotAuthorizedException;
+        NotAuthorizedException, AttachmentPersistenceException;
 }
