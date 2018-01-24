@@ -180,6 +180,8 @@ public class TaskServiceImplIntExplicitTest {
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
         Connection connection = ds.getConnection();
         te.setConnection(connection);
+        DBCleaner cleaner = new DBCleaner();
+        cleaner.clearDb(ds, false);
         TaskServiceImpl taskServiceImpl = (TaskServiceImpl) te.getTaskService();
         WorkbasketServiceImpl workBasketServiceImpl = (WorkbasketServiceImpl) te.getWorkbasketService();
         ClassificationServiceImpl classificationServiceImpl = (ClassificationServiceImpl) te.getClassificationService();
@@ -190,7 +192,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setName("workbasket99");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
-        workBasketServiceImpl.createWorkbasket(workbasket);
+        workbasket = workBasketServiceImpl.createWorkbasket(workbasket);
         Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
         classification = classificationServiceImpl.createClassification(classification);
 
@@ -199,6 +201,7 @@ public class TaskServiceImplIntExplicitTest {
         task.setWorkbasketKey(workbasket.getKey());
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
+        task.addAttachment(null);
         task = taskServiceImpl.createTask(task);
 
         Assert.assertNotNull(task);
