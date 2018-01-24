@@ -1,17 +1,23 @@
 package acceptance.task;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -37,7 +43,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = {"group_1"})
+        groupNames = { "group_1" })
     @Test
     public void testUpdatePrimaryObjectReferenceOfTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -48,6 +54,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "7654321"));
         Task updatedTask = taskService.updateTask(task);
+        updatedTask = taskService.getTask(updatedTask.getId());
 
         Assert.assertNotNull(updatedTask);
         Assert.assertEquals("7654321", updatedTask.getPrimaryObjRef().getValue());
@@ -60,7 +67,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = {"group_1"})
+        groupNames = { "group_1" })
     @Test
     public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -73,6 +80,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task updatedTask = null;
         try {
             updatedTask = taskService.updateTask(task);
+            fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
@@ -80,6 +88,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
         try {
             updatedTask = taskService.updateTask(task);
+            fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
@@ -87,24 +96,28 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
         try {
             updatedTask = taskService.updateTask(task);
+            fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
         try {
             updatedTask = taskService.updateTask(task);
+            fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
         try {
             updatedTask = taskService.updateTask(task);
+            fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
         task.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         try {
             updatedTask = taskService.updateTask(task);
+            fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
@@ -112,7 +125,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = {"group_1"})
+        groupNames = { "group_1" })
     @Test
     public void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -126,6 +139,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         task.setCustom1("willi");
         Task updatedTask = null;
         updatedTask = taskService.updateTask(task);
+        updatedTask = taskService.getTask(updatedTask.getId());
 
         task2.setCustom2("Walter");
         try {
@@ -136,64 +150,59 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = {"group_1"})
+        groupNames = { "group_1" })
     @Test
     public void testUpdateClassificationOfTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
-
-        // TaskService taskService = taskanaEngine.getTaskService();
-        // Task with classification T2000
-        // Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-        // task.setClassificationKey("T2100"));
-        // Task updatedTask = taskService.updateTask(task);
-        //
-        // assertNotNull(updatedTask);
-        // assertEquals("T2100", updatedTask.getClassification().getKey());
-        // assertNotEquals(updatedTask.getCreated(), updatedTask.getModified());
-        // assertEquals(22, updatedTask.getPriority());
-        // assertEquals(task.getPlanned(), updatedTask.getPlanned());
-        // assertEquals(???, updatedTask.getDue()); // should be one day later
-        // assertEquals("T-Vertragstermin VERA", updatedTask.getName());
-        // assertEquals("T-Vertragstermin VERA", updatedTask.getDescription());
-    }
-
-    @Ignore
-    @WithAccessId(
-        userName = "user_1_1",
-        groupNames = {"group_1"})
-    @Test
-    public void testCustomPropertiesOfTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
-
-        // TaskService taskService = taskanaEngine.getTaskService();
-        // Task with classification T2000
-        // Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-        // task.setCustomProperty1("T2100"));
-        // ...
-        // Task updatedTask = taskService.updateTask(task);
-        //
-        // assertNotNull(updatedTask);
-        // meaningful assertions
-    }
-
-    @Ignore
-    @WithAccessId(
-        userName = "user_1_1",
-        groupNames = {"group_1"})
-    // @Test(expected = InvalidOperationException.class)
-    public void testUpdateOfWorkbasketKeyNotAllowed()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
+        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        // Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-        // task.setWorkbasketKey("USER_2_2");
-        // Task updatedTask = taskService.updateTask(task);
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+        ClassificationSummary classificationSummary = task.getClassificationSummary();
+        task.setClassificationKey("T2100");
+        Task updatedTask = taskService.updateTask(task);
+        updatedTask = taskService.getTask(updatedTask.getId());
+
+        assertNotNull(updatedTask);
+        assertEquals("T2100", updatedTask.getClassificationSummary().getKey());
+        assertThat(updatedTask.getClassificationSummary(), not(equalTo(classificationSummary)));
+        assertNotEquals(updatedTask.getCreated(), updatedTask.getModified());
+        assertEquals(task.getPlanned(), updatedTask.getPlanned());
+        assertEquals(task.getName(), updatedTask.getName());
+        assertEquals(task.getDescription(), updatedTask.getDescription());
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = { "group_1" })
+    @Test
+    public void testCustomPropertiesOfTask()
+        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
+        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException {
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+        task.setCustom1("T2100");
+        Task updatedTask = taskService.updateTask(task);
+        updatedTask = taskService.getTask(updatedTask.getId());
+
+        assertNotNull(updatedTask);
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = { "group_1" })
+    @Test(expected = InvalidArgumentException.class)
+    public void testUpdateOfWorkbasketKeyWhatIsNotAllowed()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        ConcurrencyException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+        task.setWorkbasketKey("USER_2_2");
+        Task updatedTask = taskService.updateTask(task);
     }
 
     @AfterClass

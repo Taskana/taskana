@@ -35,7 +35,7 @@ public interface QueryMapper {
         + "<if test='states != null'>AND t.STATE IN(<foreach item='item' collection='states' separator=',' >#{item}</foreach>)</if> "
         + "<if test='workbasketKey != null'>AND t.WORKBASKET_KEY IN(<foreach item='item' collection='workbasketKey' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationKey != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKey' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='domain != null'>AND t.DOMAIN IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='domain != null'>AND t.DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
         + "<if test='owner != null'>AND t.OWNER IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
         + "<if test='isRead != null'>AND t.IS_READ = #{isRead}</if> "
         + "<if test='isTransferred != null'>AND t.IS_TRANSFERRED = #{isTransferred}</if> "
