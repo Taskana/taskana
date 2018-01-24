@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import pro.taskana.Attachment;
 import pro.taskana.model.ObjectReference;
 
 /**
@@ -28,4 +29,15 @@ public final class JunitHelper {
         return objRef;
     }
 
+    public static Attachment createDefaultAttachment() {
+        return createAttachment("TAI:000", "CHANNEL", createDefaultObjRef());
+    }
+
+    public static Attachment createAttachment(String id, String channel, ObjectReference objectReference) {
+        AttachmentImpl attachment = new AttachmentImpl();
+        attachment.setChannel(channel);
+        attachment.setId(id);
+        attachment.setObjectReference(objectReference);
+        return attachment;
+    }
 }

@@ -382,7 +382,8 @@ public interface Task {
     void setCustom10(String custom10);
 
     /**
-     * Add an attachment.
+     * Add an attachment.<br>
+     * NULL will be ignored and an attachment with the same ID will be replaced by the newer one.<br>
      *
      * @param attachment
      *            the {@link Attachment attachment} to be added to the task
@@ -390,7 +391,9 @@ public interface Task {
     void addAttachment(Attachment attachment);
 
     /**
-     * Return the attachments for this task.
+     * Return the attachments for this task. <br>
+     * Do not use List.add()/addAll() for adding Elements, because it can cause redundant data. Use addAttachment().
+     * Clear() and remove() can be used, because it´s a controllable change.
      *
      * @return the {@link List list} of {@link Attachment attachments} for this task
      */
@@ -418,4 +421,14 @@ public interface Task {
      */
     TaskSummary asSummary();
 
+    /**
+     * Removes an attachment of the current task locally, when the ID is represented and does return the removed
+     * attachment or null if there was no match.<br>
+     * The changed Task need to be updated calling the {@link TaskService#updateTask(Task)}.
+     *
+     * @param attachmentID
+     *            ID of the attachment which should be removed.
+     * @return attachment which will be removed after updating OR null if there was no matching attachment
+     */
+    Attachment removeAttachment(String attachmentID);
 }

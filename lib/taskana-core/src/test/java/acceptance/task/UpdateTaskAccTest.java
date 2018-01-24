@@ -20,6 +20,7 @@ import acceptance.AbstractAccTest;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -48,7 +49,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     public void testUpdatePrimaryObjectReferenceOfTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException {
+        ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -72,7 +73,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException {
+        ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -130,7 +131,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     public void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException {
+        ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -156,7 +157,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     @Test
     public void testUpdateClassificationOfTask()
         throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException {
+        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
+        AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -180,7 +182,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     @Test
     public void testCustomPropertiesOfTask()
         throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException {
+        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
+        AttachmentPersistenceException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         task.setCustom1("T2100");
@@ -197,7 +200,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     public void testUpdateOfWorkbasketKeyWhatIsNotAllowed()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException {
+        ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");

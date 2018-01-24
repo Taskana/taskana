@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,6 +34,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import pro.taskana.Attachment;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
@@ -40,13 +42,16 @@ import pro.taskana.TaskSummary;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -1008,6 +1013,160 @@ public class TaskServiceImplTest {
 
         assertThat(actualResultList, equalTo(expectedResultList));
         assertThat(actualResultList.size(), equalTo(expectedResultList.size()));
+    }
+
+    @Test
+    public void testUpdateTaskAddingValidAttachment() throws TaskNotFoundException, SystemException,
+        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        Classification classification = createDummyClassification();
+        Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
+        Attachment attachment = JunitHelper.createDefaultAttachment();
+        ObjectReference objectReference = JunitHelper.createDefaultObjRef();
+        TaskImpl taskBeforeAttachment = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        TaskImpl task = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        task.setPrimaryObjRef(objectReference);
+        task.addAttachment(attachment);
+        taskBeforeAttachment.setModified(null);
+        taskBeforeAttachment.setCreated(Instant.now());
+        task.setModified(null);
+        task.setCreated(taskBeforeAttachment.getCreated());
+        TaskServiceImpl cutSpy = Mockito.spy(cut);
+        doReturn(taskBeforeAttachment).when(cutSpy).getTask(task.getId());
+
+        Task actualTask = cutSpy.updateTask(task);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(cutSpy, times(1)).getTask(task.getId());
+        verify(attachmentMapperMock, times(1)).insert(((AttachmentImpl) attachment));
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        assertThat(actualTask.getAttachments().size(), equalTo(1));
+    }
+
+    @Test
+    public void testUpdateTaskAddingValidAttachmentTwice() throws TaskNotFoundException, SystemException,
+        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        Classification classification = createDummyClassification();
+        Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
+        Attachment attachment = JunitHelper.createDefaultAttachment();
+        ObjectReference objectReference = JunitHelper.createDefaultObjRef();
+        TaskImpl taskBeforeAttachment = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        TaskImpl task = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        taskBeforeAttachment.setModified(null);
+        taskBeforeAttachment.setCreated(Instant.now());
+        task.setModified(null);
+        task.setCreated(taskBeforeAttachment.getCreated());
+        task.setPrimaryObjRef(objectReference);
+        task.addAttachment(attachment);
+        task.addAttachment(attachment);
+        TaskServiceImpl cutSpy = Mockito.spy(cut);
+        doReturn(taskBeforeAttachment).when(cutSpy).getTask(task.getId());
+
+        Task actualTask = cutSpy.updateTask(task);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(cutSpy, times(1)).getTask(task.getId());
+        verify(attachmentMapperMock, times(1)).insert(((AttachmentImpl) attachment));
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        assertThat(actualTask.getAttachments().size(), equalTo(1));
+    }
+
+    @Test(expected = AttachmentPersistenceException.class)
+    public void testUpdateTaskAddingAttachmentWithSameIdForcedUsingingListMethod()
+        throws TaskNotFoundException, SystemException,
+        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        Classification classification = createDummyClassification();
+        Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
+        Attachment attachment = JunitHelper.createDefaultAttachment();
+        ObjectReference objectReference = JunitHelper.createDefaultObjRef();
+        TaskImpl taskBeforeAttachment = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        TaskImpl task = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        taskBeforeAttachment.setModified(null);
+        taskBeforeAttachment.setCreated(Instant.now());
+        task.setModified(null);
+        task.setCreated(taskBeforeAttachment.getCreated());
+        task.setPrimaryObjRef(objectReference);
+        task.setAttachments(new ArrayList<>());
+        task.getAttachments().add(attachment);
+        task.getAttachments().add(attachment);
+        TaskServiceImpl cutSpy = Mockito.spy(cut);
+        doReturn(taskBeforeAttachment).when(cutSpy).getTask(task.getId());
+        doThrow(PersistenceException.class).when(attachmentMapperMock).insert(any());
+
+        try {
+            cutSpy.updateTask(task);
+        } catch (AttachmentPersistenceException e) {
+            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(cutSpy, times(1)).getTask(task.getId());
+            verify(attachmentMapperMock, times(1)).insert(((AttachmentImpl) attachment));
+            verify(taskanaEngineImpl, times(1)).returnConnection();
+            throw e;
+        }
+    }
+
+    @Test
+    public void testUpdateTaskUpdateAttachment() throws TaskNotFoundException, SystemException,
+        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        String channelUpdate = "OTHER CHANNEL";
+        Classification classification = createDummyClassification();
+        Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
+        Attachment attachment = JunitHelper.createDefaultAttachment();
+        Attachment attachmentToUpdate = JunitHelper.createDefaultAttachment();
+        attachmentToUpdate.setChannel(channelUpdate);
+        ObjectReference objectReference = JunitHelper.createDefaultObjRef();
+        TaskImpl taskBefore = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        taskBefore.addAttachment(attachment);
+        TaskImpl task = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        taskBefore.setModified(null);
+        taskBefore.setCreated(Instant.now());
+        task.setModified(null);
+        task.setCreated(taskBefore.getCreated());
+        task.addAttachment(taskBefore.getAttachments().get(0));
+        task.setPrimaryObjRef(objectReference);
+        task.addAttachment(attachmentToUpdate); // should override old one and differ at comparison
+        TaskServiceImpl cutSpy = Mockito.spy(cut);
+        doReturn(taskBefore).when(cutSpy).getTask(task.getId());
+
+        Task actualTask = cutSpy.updateTask(task);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(cutSpy, times(1)).getTask(task.getId());
+        verify(attachmentMapperMock, times(1)).update(((AttachmentImpl) attachmentToUpdate));
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        assertThat(actualTask.getAttachments().size(), equalTo(1));
+        assertThat(actualTask.getAttachments().get(0).getChannel(), equalTo(channelUpdate));
+    }
+
+    @Test
+    public void testUpdateTaskRemovingAttachment() throws TaskNotFoundException, SystemException,
+        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        Classification classification = createDummyClassification();
+        Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
+        Attachment attachment = JunitHelper.createDefaultAttachment();
+        ObjectReference objectReference = JunitHelper.createDefaultObjRef();
+        TaskImpl taskBefore = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        taskBefore.setPrimaryObjRef(objectReference);
+        taskBefore.addAttachment(attachment);
+        TaskImpl task = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        task.setPrimaryObjRef(objectReference);
+        taskBefore.setModified(null);
+        taskBefore.setCreated(Instant.now());
+        task.setModified(null);
+        task.setCreated(taskBefore.getCreated());
+        TaskServiceImpl cutSpy = Mockito.spy(cut);
+        doReturn(taskBefore).when(cutSpy).getTask(task.getId());
+
+        Task actualTask = cutSpy.updateTask(task);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(cutSpy, times(1)).getTask(task.getId());
+        verify(attachmentMapperMock, times(1)).deleteAttachment(attachment.getId());
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        assertThat(actualTask.getAttachments().size(), equalTo(0));
     }
 
     private TaskImpl createUnitTestTask(String id, String name, String workbasketKey, Classification classification) {

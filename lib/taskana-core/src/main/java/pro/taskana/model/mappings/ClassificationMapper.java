@@ -21,7 +21,7 @@ public interface ClassificationMapper {
         + "FROM CLASSIFICATION "
         + "WHERE KEY = #{key}"
         + "AND DOMAIN = #{domain}")
-    @Results({ @Result(property = "id", column = "ID"),
+    @Results({@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "parentClassificationKey", column = "PARENT_CLASSIFICATION_KEY"),
         @Result(property = "category", column = "CATEGORY"),
@@ -41,7 +41,7 @@ public interface ClassificationMapper {
         @Result(property = "custom5", column = "CUSTOM_5"),
         @Result(property = "custom6", column = "CUSTOM_6"),
         @Result(property = "custom7", column = "CUSTOM_7"),
-        @Result(property = "custom8", column = "CUSTOM_8") })
+        @Result(property = "custom8", column = "CUSTOM_8")})
     ClassificationImpl findByKeyAndDomain(@Param("key") String key, @Param("domain") String domain);
 
     @Insert("INSERT INTO CLASSIFICATION (ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8) VALUES (#{classification.id}, #{classification.key}, #{classification.parentClassificationKey}, #{classification.category}, #{classification.type}, #{classification.domain}, #{classification.isValidInDomain}, #{classification.created}, #{classification.name}, #{classification.description}, #{classification.priority}, #{classification.serviceLevel}, #{classification.applicationEntryPoint}, #{classification.custom1}, #{classification.custom2}, #{classification.custom3}, #{classification.custom4}, #{classification.custom5}, #{classification.custom6}, #{classification.custom7}, #{classification.custom8})")
@@ -58,12 +58,12 @@ public interface ClassificationMapper {
         + "AND DOMAIN = #{domain}"
         + "ORDER BY KEY DESC"
         + "</script>")
-    @Results({ @Result(property = "id", column = "ID"),
+    @Results({@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "category", column = "CATEGORY"),
         @Result(property = "type", column = "TYPE"),
         @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "name", column = "NAME") })
+        @Result(property = "name", column = "NAME")})
     List<ClassificationSummaryImpl> getAllClassificationsWithKey(@Param("key") String key,
         @Param("domain") String domain);
 
@@ -72,7 +72,7 @@ public interface ClassificationMapper {
         + "FROM CLASSIFICATION AS C LEFT JOIN WORKBASKET AS W ON C.DOMAIN = W.DOMAIN "
         + "WHERE c.KEY = #{classificationKey}"
         + "AND W.KEY = #{workbasketKey}")
-    @Results({ @Result(property = "id", column = "ID"),
+    @Results({@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "parentClassificationKey", column = "PARENT_CLASSIFICATION_KEY"),
         @Result(property = "category", column = "CATEGORY"),
@@ -92,7 +92,7 @@ public interface ClassificationMapper {
         @Result(property = "custom5", column = "CUSTOM_5"),
         @Result(property = "custom6", column = "CUSTOM_6"),
         @Result(property = "custom7", column = "CUSTOM_7"),
-        @Result(property = "custom8", column = "CUSTOM_8") })
+        @Result(property = "custom8", column = "CUSTOM_8")})
     ClassificationImpl findByTask(@Param("classificationKey") String classificationKey,
         @Param("workbasketKey") String workbasketKey);
 }
