@@ -299,7 +299,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 CurrentUserContext.getUserid(), workbasketAuthorization.name(), workbasketKey);
 
             List<WorkbasketAccessItem> accessItems = workbasketAccessMapper
-                .findByWorkbasketAndAccessIdAndAuthorizations(workbasketKey, accessIds, workbasketAuthorization.name());
+                .findByWorkbasketAndAccessIdAndAuthorization(workbasketKey, accessIds, workbasketAuthorization.name());
 
             if (accessItems.size() <= 0) {
                 throw new NotAuthorizedException("Not authorized. Authorization '" + workbasketAuthorization.name()
@@ -349,6 +349,14 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
+    public List<WorkbasketAuthorization> getPermissionsForWorkbasket(String workbasketKey) {
+        List<WorkbasketAuthorization> permissions = new ArrayList<>();
+        WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketAndAccessId(workbasketKey, CurrentUserContext.getAccessIds());
+        this.addWorkbasketAccessItemValuesToPermissionSet(wbAcc, permissions);
+        return permissions;
+    }
+
+    @Override
     public WorkbasketQuery createWorkbasketQuery() {
         return new WorkbasketQueryImpl(taskanaEngine, workbasketAccessMapper);
     }
@@ -368,6 +376,48 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         }
         if (workbasket.getType() == null) {
             throw new InvalidWorkbasketException("Type must not be null for " + workbasket);
+        }
+    }
+
+    private void addWorkbasketAccessItemValuesToPermissionSet(WorkbasketAccessItem workbasketAccessItem, List<WorkbasketAuthorization> permissions) {
+        if (workbasketAccessItem.isPermOpen()) {
+            permissions.add(WorkbasketAuthorization.OPEN);
+        }
+        if (workbasketAccessItem.isPermRead()) {
+            permissions.add(WorkbasketAuthorization.READ);
+        }
+        if (workbasketAccessItem.isPermAppend()) {
+            permissions.add(WorkbasketAuthorization.APPEND);
+        }
+        if (workbasketAccessItem.isPermTransfer()) {
+            permissions.add(WorkbasketAuthorization.TRANSFER);
+        }
+        if (workbasketAccessItem.isPermDistribute()) {
+            permissions.add(WorkbasketAuthorization.DISTRIBUTE);
+        }
+        if (workbasketAccessItem.isPermCustom1()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_1);
+        }
+        if (workbasketAccessItem.isPermCustom2()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_2);
+        }
+        if (workbasketAccessItem.isPermCustom3()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_3);
+        }
+        if (workbasketAccessItem.isPermCustom4()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_4);
+        }
+        if (workbasketAccessItem.isPermCustom5()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_5);
+        }
+        if (workbasketAccessItem.isPermCustom6()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_6);
+        }
+        if (workbasketAccessItem.isPermCustom7()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_7);
+        }
+        if (workbasketAccessItem.isPermCustom8()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_8);
         }
     }
 

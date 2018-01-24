@@ -167,4 +167,12 @@ public interface WorkbasketService {
      */
     Workbasket newWorkbasket();
 
+    /**
+     * Returns a set with all permissions of the current user at this workbasket.
+     *
+     * @param workbasketKey
+     * @return a Set with all permissions
+     */
+    List<WorkbasketAuthorization> getPermissionsForWorkbasket(String workbasketKey);
+
 }
