@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -55,7 +54,6 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         Workbasket workbasket = workbasketService.getWorkbasket("INVALID_ID");
     }
 
-    @Ignore
     @Test(expected = NotAuthorizedException.class)
     public void testThrowsExceptionIfNotAuthorized()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
