@@ -1,0 +1,19 @@
+svg-icon.logo {
+    float: left;
+    width: 55px;
+    height: 55px;
+    margin: 0px 15px;
+    fill:white
+}
+
+.logo-container {
+    padding-left: 0px;
+}
+
+p.navbar-brand >a{
+    text-decoration: none;
+    color: #9d9d9d;
+    &:hover {
+        color: white;
+    }
+}

@@ -4,7 +4,7 @@ import { Task } from '../model/task';
 @Component({
   selector: 'taskdetails',
   templateUrl: './taskdetails.component.html',
-  styleUrls: ['./taskdetails.component.css']
+  styleUrls: ['./taskdetails.component.scss']
 })
 export class TaskdetailsComponent implements OnInit {
 

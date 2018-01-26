@@ -1,0 +1,295 @@
+ 
+/*
+ * Base structure
+ */
+/* Move down content because we have a fixed navbar that is 55px tall */
+body {
+    padding-top: 55px;
+}
+
+/*
+ * All side bar links styling.
+*/
+.nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+    color: #fff;
+    background-color: #428bca;
+}
+
+
+.nav.nav-tabs { 
+    & > li {
+        & > a{
+            min-height: 56px;
+            padding-top: 17px;
+        }
+        
+        &:first-child > a{
+            border-left: none;
+        }
+    }
+    & > p{
+        margin: 0px;
+    }
+}
+
+.navbar-brand {
+    float: none;
+}
+
+.navbar-inverse {
+    border: none;
+}
+
+.navbar {
+    margin-bottom: 0px;
+}
+
+/*
+ * Placeholder dashboard ideas
+ */
+.placeholders {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.placeholders h4 {
+    margin-bottom: 0;
+}
+
+.placeholder {
+    margin-bottom: 20px;
+}
+
+.placeholder img {
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.no-margin {
+    margin: 0px;
+}
+
+.content-margin {
+    margin: 0px 10px 0px 10px;
+}
+
+.no-border-radius {
+    border-radius: 0px;
+}
+
+.container-main {
+    overflow-y: hidden;
+    /*Min mobile view size*/
+    min-width: 420px;
+}
+
+.container-scrollable {
+    max-height: calc(100vh - 52px);
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.vertical-center {
+    /* Make it a flex container */
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    /* In legacy web browsers such as Firefox 9
+     we need to specify the width of the flex container */
+    width: 100%;
+
+    /* Also 'margin: 0 auto' doesn't have any effect on flex items in such web browsers
+     hence the bootstrap's container won't be aligned to the center anymore.
+     Therefore, we should use the following declarations to get it centered again */
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.vertical-right-divider {
+    border-right: 1px solid #ccc;
+}
+
+.row.list-group {
+    margin-left: 2px;
+}
+
+.list-group > li {
+    border-left: none;
+    border-right: none;
+}
+
+.workbasket-title {
+    text-align: center;
+    font-weight: bold;
+}
+
+/*
+ *Remove bootstrap cols padding
+*/
+.no-gutter > [class*='col-'] {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+img.small {
+    width: 14px;
+    height: 14px;
+}
+
+.dropdown-menu.action {
+    min-width: 0px;
+}
+
+.footer-space {
+    max-height: calc(100vh - 160px);
+    height: calc(100vh - 160px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.full-height {
+    max-height: 100vh;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.margin-right {
+    margin-right: 2px;
+}
+
+.no-border-bottom {
+    border-bottom: none;
+}
+
+li > div.row > dl {
+    margin-bottom: 0px;
+}
+
+.selected {
+    z-index: 2;
+    background-color: #f5f5f5;
+    border-color: #f5f5f5;
+}
+
+.form-group.required .control-label:after {
+    content: " *";
+    color: red;
+}
+
+.detail-tab-content {
+    margin-top: 20px;
+}
+
+.col-xs-9.mod-col-9 {
+    width: 74%;
+    padding-right: 0px;
+}
+
+.list-group-seach {
+    padding: 10px 15px;
+}
+
+.user-select {
+    margin-left: 2px;
+}
+
+.orderby-dropdown {
+    min-width: 200px;
+}
+
+.dropdown-menu-users {
+    min-width: 0px;
+}
+
+.no-gutter > [class*='col-'] {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.table-center > thead > tr > th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-center > tbody > tr > td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-center > tbody > tr > td.text-align {
+    text-align: left;
+}
+
+.table-center > thead > tr > th.text-align {
+    text-align: left;
+}
+
+.table-center > tbody >tr:first-child >td {
+    border-bottom: 2px solid #ddd;
+}
+
+.btn.remove {
+    color: crimson;
+}
+
+.dropdown-menu-users >li {
+    margin-bottom: 5px;
+}
+
+.btn-users-list {
+    border: 0px solid transparent;
+    /* this was 1px earlier */
+}
+
+.dual-list .list-group {
+    margin-top: 8px;
+}
+
+.list-left li,
+.list-right li {
+    cursor: pointer;
+}
+
+.list-arrows {
+    padding-top: 100px;
+}
+
+.list-arrows button {
+    margin-bottom: 20px;
+}
+
+.well-dual-list {
+    min-height: 20px;
+    padding: 5px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+.green-32 {
+    color: green;
+}
+
+.blue-32 {
+    color: #337ab7;
+}
+
+.toolbar {
+    padding: 13px 15px;
+}

@@ -5,6 +5,8 @@ import { HttpModule } from '@angular/http';
 import { AlertModule } from 'ngx-bootstrap';
 import { ChartsModule } from 'ng2-charts';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { HttpClientModule } from '@angular/common/http';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { AppComponent } from './app.component';
 import { TasksComponent } from './tasks/tasks.component';
@@ -14,7 +16,7 @@ import { WorkbasketComponent } from './workbasket/workbasket.component';
   declarations: [
     AppComponent,
     TasksComponent,
-    WorkbasketComponent
+    WorkbasketComponent,
   ],
   imports: [
     BrowserModule,
@@ -22,9 +24,11 @@ import { WorkbasketComponent } from './workbasket/workbasket.component';
     HttpModule,
     AlertModule.forRoot(),
     ChartsModule,
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    HttpClientModule,
+    AngularSvgIconModule
   ],
-  providers: [],
+  providers: [HttpClientModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
