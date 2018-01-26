@@ -5,12 +5,9 @@ import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css']
+  styleUrls: ['./tasks.component.scss']
 })
 export class TasksComponent {
-
-  adminUrl: string = environment.taskanaAdminUrl;
-  monitorUrl: string = environment.taskanaMonitorUrl;
 
   @Input()
   tasks: Task[];

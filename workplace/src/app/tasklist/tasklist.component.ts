@@ -6,7 +6,7 @@ import { RestConnectorService } from '../services/rest-connector.service';
 @Component({
   selector: 'tasklist',
   templateUrl: './tasklist.component.html',
-  styleUrls: ['./tasklist.component.css']
+  styleUrls: ['./tasklist.component.scss']
 })
 export class TasklistComponent implements OnInit {
 

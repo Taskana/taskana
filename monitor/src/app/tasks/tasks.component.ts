@@ -5,7 +5,7 @@ import { State } from '../model/state';
 @Component({
   selector: 'tasks',
   templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css'],
+  styleUrls: ['./tasks.component.scss'],
   providers: [RestConnectorService]
 })
 export class TasksComponent implements OnInit {

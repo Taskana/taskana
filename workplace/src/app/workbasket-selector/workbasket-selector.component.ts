@@ -7,7 +7,7 @@ import { Workbasket } from '../model/workbasket';
 @Component({
   selector: 'workbasket-selector',
   templateUrl: './workbasket-selector.component.html',
-  styleUrls: ['./workbasket-selector.component.css']
+  styleUrls: ['./workbasket-selector.component.scss']
 })
 export class SelectorComponent implements OnInit {
 
