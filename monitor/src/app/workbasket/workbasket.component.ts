@@ -6,7 +6,7 @@ import { WorkbasketCounterData } from '../model/workbasket-counter-data';
 @Component({
   selector: 'workbasket',
   templateUrl: './workbasket.component.html',
-  styleUrls: ['./workbasket.component.css'],
+  styleUrls: ['./workbasket.component.scss'],
   providers: [RestConnectorService]
 })
 export class WorkbasketComponent implements OnInit {

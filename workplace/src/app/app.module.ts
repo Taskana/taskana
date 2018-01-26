@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
+import { HttpClientModule } from '@angular/common/http';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -34,8 +36,10 @@ import { TasksComponent } from './tasks/tasks.component';
     AlertModule.forRoot(),
     Ng2AutoCompleteModule,
     AppRoutingModule,
+    HttpClientModule,
+    AngularSvgIconModule
   ],
-  providers: [],
+  providers: [HttpClientModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
