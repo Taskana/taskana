@@ -8,7 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -109,14 +109,15 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> taskStates = Arrays.asList(TaskState.CLAIMED, TaskState.COMPLETED);
         List<DueWorkbasketCounter> expectedResult = new ArrayList<>();
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountByWorkbasketIdAndDaysInPastAndState(
-            any(Date.class),
+            any(Instant.class),
             any());
 
         List<DueWorkbasketCounter> actualResult = cut.getTaskCountByWorkbasketAndDaysInPastAndState(daysInPast,
             taskStates);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountByWorkbasketIdAndDaysInPastAndState(any(Date.class), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountByWorkbasketIdAndDaysInPastAndState(any(Instant.class),
+            any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);

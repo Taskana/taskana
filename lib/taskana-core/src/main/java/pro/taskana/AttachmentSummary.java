@@ -1,6 +1,6 @@
 package pro.taskana;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 /**
  * Interface for AttachmentSummaries. This is a specific short model-object which only contains the most important
@@ -25,16 +25,16 @@ public interface AttachmentSummary {
     /**
      * Gets the time when the attachment was created.
      *
-     * @return the created timestamp
+     * @return the created Instant
      */
-    Timestamp getCreated();
+    Instant getCreated();
 
     /**
      * Gets the time when the attachment was last modified.
      *
-     * @return the last modified timestamp
+     * @return the last modified Instant
      */
-    Timestamp getModified();
+    Instant getModified();
 
     /**
      * Gets the classificationSummary of the attachment.
@@ -46,8 +46,7 @@ public interface AttachmentSummary {
     /**
      * Gets the time when the attachment was received.
      *
-     * @return received timestamp
+     * @return received Instant
      */
-    Timestamp getReceived();
-
+    Instant getReceived();
 }

@@ -1,6 +1,6 @@
 package pro.taskana.impl;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 import pro.taskana.AttachmentSummary;
 import pro.taskana.ClassificationSummary;
@@ -12,10 +12,10 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
 
     private String id;
     private String taskId;
-    private Timestamp created;
-    private Timestamp modified;
+    private Instant created;
+    private Instant modified;
     private ClassificationSummary classificationSummary;
-    private Timestamp received;
+    private Instant received;
 
     /*
      * (non-Javadoc)
@@ -48,11 +48,11 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
      * @see pro.taskana.impl.AttachmentSummary#getCreated()
      */
     @Override
-    public Timestamp getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
@@ -61,11 +61,11 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
      * @see pro.taskana.impl.AttachmentSummary#getModified()
      */
     @Override
-    public Timestamp getModified() {
+    public Instant getModified() {
         return modified;
     }
 
-    public void setModified(Timestamp modified) {
+    public void setModified(Instant modified) {
         this.modified = modified;
     }
 
@@ -97,11 +97,11 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
      * @see pro.taskana.impl.AttachmentSummary#getReceived()
      */
     @Override
-    public Timestamp getReceived() {
+    public Instant getReceived() {
         return received;
     }
 
-    public void setReceived(Timestamp received) {
+    public void setReceived(Instant received) {
         this.received = received;
     }
 

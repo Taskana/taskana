@@ -1,6 +1,6 @@
 package pro.taskana;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Map;
 
 import pro.taskana.model.ObjectReference;
@@ -27,16 +27,16 @@ public interface Attachment {
     /**
      * Returns the time when the attachment was created.
      *
-     * @return the created time as {@link Timestamp}
+     * @return the created time as {@link Instant}
      */
-    Timestamp getCreated();
+    Instant getCreated();
 
     /**
      * Returns the time when the attachment was last modified.
      *
-     * @return modified {@link Timestamp} of the attachment
+     * @return modified {@link Instant} of the attachment
      */
-    Timestamp getModified();
+    Instant getModified();
 
     /**
      * Returns the classification summary of the attachment.
@@ -86,17 +86,17 @@ public interface Attachment {
     /**
      * Returns the time when this attachment was received.
      *
-     * @return received time as exact {@link Timestamp}
+     * @return received time as exact {@link Instant}
      */
-    Timestamp getReceived();
+    Instant getReceived();
 
     /**
      * Sets the time when the attachment was received.
      *
      * @param received
-     *            the time as {@link Timestamp} when the attachment was received
+     *            the time as {@link Instant} when the attachment was received
      **/
-    void setReceived(Timestamp received);
+    void setReceived(Instant received);
 
     /**
      * Returns the custom attributes of this attachment.

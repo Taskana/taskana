@@ -1,6 +1,6 @@
 package pro.taskana;
 
-import java.util.Date;
+import java.time.Instant;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -51,37 +51,37 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      * Add your createdAfter-Date to your query.
      *
      * @param createdAfter
-     *            the date after which the searched Workbaskets are created
+     *            as Instant
      * @return the query
      */
-    WorkbasketQuery createdAfter(Date createdAfter);
+    WorkbasketQuery createdAfter(Instant createdAfter);
 
     /**
      * Add your createdBefore-Date to your query.
      *
      * @param createdBefore
-     *            the date before which the searched Workbaskets are created
+     *            as Instant
      * @return the query
      */
-    WorkbasketQuery createdBefore(Date createdBefore);
+    WorkbasketQuery createdBefore(Instant createdBefore);
 
     /**
      * Add your modifiedAfter-Date to your query.
      *
      * @param modifiedAfter
-     *            the date after which the searched Workbaskets are modified
+     *            as Instant
      * @return the query
      */
-    WorkbasketQuery modifiedAfter(Date modifiedAfter);
+    WorkbasketQuery modifiedAfter(Instant modifiedAfter);
 
     /**
      * Add your modifiedBefore-Date to your query.
      *
      * @param modifiedBefore
-     *            the date before which the searched Workbaskets are modified
+     *            as Instant
      * @return the query
      */
-    WorkbasketQuery modifiedBefore(Date modifiedBefore);
+    WorkbasketQuery modifiedBefore(Instant modifiedBefore);
 
     /**
      * Add your description to your query. It will be compared in SQL with an LIKE. If you use a wildcard like % tehn it

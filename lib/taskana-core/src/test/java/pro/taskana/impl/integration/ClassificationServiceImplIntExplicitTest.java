@@ -8,9 +8,8 @@ import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -186,55 +185,56 @@ public class ClassificationServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("novatec", "t1");
         connection.commit();
-        classificationService.createClassification(classification);
-        classification.setDescription("TEST SOMETHING");
-        classificationService.updateClassification(classification);
+        classification = classificationService.createClassification(classification);
+
+        String updatedDescription = "TEST SOMETHING";
+        classification.setDescription(updatedDescription);
+        classification = classificationService.updateClassification(classification);
         connection.commit();
-        Assert.assertEquals(classification.getValidFrom(), Date.valueOf(LocalDate.now()));
+
+        classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
+        assertThat(classification.getDescription(), equalTo(updatedDescription));
     }
 
     @Test
-    public void testInsertAndClassificationMapper()
+    public void testInsertAndClassificationQuery()
         throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
         ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
         classificationService.createClassification(classification);
-        Date today = Date.valueOf(LocalDate.now());
+        Instant today = Instant.now();
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .validInDomain(Boolean.TRUE)
             .created(today)
-            .validFrom(today)
-            .validUntil(Date.valueOf("9999-12-31"))
             .list();
         Assert.assertEquals(1, list.size());
     }
 
     @Test
-    public void testUpdateAndClassificationMapper() throws NotAuthorizedException, SQLException,
+    public void testUpdateAndClassificationQuery() throws NotAuthorizedException, SQLException,
         ClassificationAlreadyExistException, ClassificationNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
-        classificationService.createClassification(classification);
-        System.out.println(classification.getKey());
+        classification.setDescription("");
+        classification = classificationService.createClassification(classification);
         classification.setDescription("description");
-        classificationService.updateClassification(classification);
+        classification = classificationService.updateClassification(classification);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .validUntil(Date.valueOf("9999-12-31"))
             .list();
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery().validInDomain(true).list();
-        Assert.assertEquals(2, list.size());
-
-        classificationService.updateClassification(classification);
-        System.out.println(classification.getKey());
-        list = classificationService.createClassificationQuery().validUntil(Date.valueOf("9999-12-31")).list();
         Assert.assertEquals(1, list.size());
+        classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
+        assertThat(classification.getDescription(), equalTo("description"));
 
-        System.out.println(classification.getParentClassificationKey());
+        classification = classificationService.updateClassification(classification);
+        list = classificationService.createClassificationQuery()
+            .list();
+        Assert.assertEquals(1, list.size());
 
         List<ClassificationSummary> allClassifications = classificationService.getClassificationTree();
         Assert.assertEquals(1, allClassifications.size());
@@ -386,40 +386,43 @@ public class ClassificationServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testDefaultSettingsWithClassificationMapper() throws NotAuthorizedException, SQLException,
+    public void testDefaultSettingsWithClassificationQuery() throws NotAuthorizedException, SQLException,
         ClassificationAlreadyExistException, ClassificationNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "type1");
+        classification = classificationService.createClassification(classification);
+
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "type1");
-        classificationService.createClassification(classification);
-        classificationService.createClassification(classification1);
+        classification1 = classificationService.createClassification(classification1);
         classification1.setParentClassificationKey(classification.getKey());
-        classificationService.updateClassification(classification1);
+        classification1 = classificationService.updateClassification(classification1);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .parentClassificationKey("")
             .list();
-        Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().validUntil(Date.valueOf("9999-12-31")).list();
+        Assert.assertEquals(1, list.size());
+        list = classificationService.createClassificationQuery()
+            .list();
         Assert.assertEquals(2, list.size());
         connection.commit();
 
-        List<ClassificationSummary> listAll = classificationService.createClassificationQuery().list();
-        list = classificationService.createClassificationQuery().validFrom(Date.valueOf(LocalDate.now())).list();
-        Assert.assertEquals(listAll.size(), list.size());
         list = classificationService.createClassificationQuery().validInDomain(true).list();
-        Assert.assertEquals(listAll.size(), list.size());
-        list = classificationService.createClassificationQuery().created(Date.valueOf(LocalDate.now())).list();
-        Assert.assertEquals(listAll.size(), list.size());
-
+        Assert.assertEquals(2, list.size());
+        list = classificationService.createClassificationQuery().created(Instant.now()).list();
+        Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().domain("domain1").validInDomain(false).list();
         Assert.assertEquals(0, list.size());
         list = classificationService.createClassificationQuery()
-            .validFrom(Date.valueOf((LocalDate.now())))
-            .validUntil(Date.valueOf(LocalDate.now().minusDays(1)))
+            .key(classification1.getKey())
             .list();
         Assert.assertEquals(1, list.size());
+
+        list = classificationService.createClassificationQuery()
+            .parentClassificationKey(classification.getKey())
+            .list();
+        Assert.assertEquals(1, list.size());
+        assertThat(list.get(0).getKey(), equalTo(classification1.getKey()));
         connection.commit();
     }
 

@@ -1,7 +1,5 @@
 package pro.taskana;
 
-import java.sql.Timestamp;
-
 /**
  * Interface for ClassificationSummaries. This is a specific short model-object which only requieres the most important
  * informations. Specific ones can be load afterwards via ID.
@@ -49,11 +47,4 @@ public interface ClassificationSummary {
      * @return classificationName
      */
     String getName();
-
-    /**
-     * Gets the timestamp until the classification is/was valid.
-     *
-     * @return validUntil as timestamp
-     */
-    Timestamp getValidUntil();
 }

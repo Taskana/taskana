@@ -1,7 +1,7 @@
 # Configuration file for Cloud Foundry, see https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html
 applications:
 - name: taskana-rest
-  path: rest/target/rest-0.0.5-SNAPSHOT.jar
+  path: rest/target/rest-0.0.6-SNAPSHOT.jar
   buildpack: https://github.com/cloudfoundry/java-buildpack.git#v3.10
   memory: 512M
   disk_quota: 256M

@@ -1,6 +1,6 @@
 package pro.taskana;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * ClassificationQuery for generating dynamic sql.
@@ -65,10 +65,10 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      * Add your created-Dates to your query.
      *
      * @param created
-     *            date of classification creation.
+     *            date (as instant) of classification creation.
      * @return the query
      */
-    ClassificationQuery created(Date... created);
+    ClassificationQuery created(Instant... created);
 
     /**
      * Add your name to your query.
@@ -124,22 +124,4 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      * @return the query
      */
     ClassificationQuery customFields(String... customFields);
-
-    /**
-     * Define after which date the classifications should be valid.
-     *
-     * @param validFrom
-     *            date when the classification was valid from
-     * @return the query
-     */
-    ClassificationQuery validFrom(Date... validFrom);
-
-    /**
-     * Define until which date the classifications should be valid.
-     *
-     * @param validUntil
-     *            date until the classification will be or was valid
-     * @return the query
-     */
-    ClassificationQuery validUntil(Date... validUntil);
 }

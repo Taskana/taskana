@@ -35,7 +35,7 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8")})
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
     WorkbasketAccessItem findById(@Param("id") String id);
 
     @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8 FROM WORKBASKET_ACCESS_LIST WHERE ACCESS_ID = #{accessId}")
@@ -55,7 +55,7 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8")})
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
     List<WorkbasketAccessItem> findByAccessId(@Param("accessId") String accessId);
 
     @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8 FROM WORKBASKET_ACCESS_LIST WHERE WORKBASKET_KEY = #{key}")
@@ -75,7 +75,7 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8")})
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
     List<WorkbasketAccessItem> findByWorkbasketKey(@Param("key") String key);
 
     @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8 FROM WORKBASKET_ACCESS_LIST ORDER BY ID")
@@ -95,7 +95,7 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8")})
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
     List<WorkbasketAccessItem> findAll();
 
     @Insert("INSERT INTO WORKBASKET_ACCESS_LIST (ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8) "
@@ -109,6 +109,28 @@ public interface WorkbasketAccessMapper {
 
     @Delete("DELETE FROM WORKBASKET_ACCESS_LIST where id = #{id}")
     void delete(@Param("id") String id);
+
+    @Select("<script>SELECT MAX(PERM_READ) AS P_READ, MAX(PERM_OPEN) AS P_OPEN, MAX(PERM_APPEND) AS P_APPEND, MAX(PERM_TRANSFER) AS P_TRANSFER, MAX(PERM_DISTRIBUTE) AS P_DISTRIBUTE, MAX(PERM_CUSTOM_1) AS P_CUSTOM_1, MAX(PERM_CUSTOM_2) AS P_CUSTOM_2, MAX(PERM_CUSTOM_3) AS P_CUSTOM_3, MAX(PERM_CUSTOM_4) AS P_CUSTOM_4, MAX(PERM_CUSTOM_5) AS P_CUSTOM_5, MAX(PERM_CUSTOM_6) AS P_CUSTOM_6, MAX(PERM_CUSTOM_7) AS P_CUSTOM_7, MAX(PERM_CUSTOM_8) AS P_CUSTOM_8 "
+            + "FROM WORKBASKET_ACCESS_LIST "
+            + "WHERE WORKBASKET_KEY = #{workbasketKey} "
+            + "AND ACCESS_ID IN(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>)"
+            + "</script>")
+    @Results(value = {
+            @Result(property = "permRead", column = "P_READ"),
+            @Result(property = "permOpen", column = "P_OPEN"),
+            @Result(property = "permAppend", column = "P_APPEND"),
+            @Result(property = "permTransfer", column = "P_TRANSFER"),
+            @Result(property = "permDistribute", column = "P_DISTRIBUTE"),
+            @Result(property = "permCustom1", column = "P_CUSTOM_1"),
+            @Result(property = "permCustom2", column = "P_CUSTOM_2"),
+            @Result(property = "permCustom3", column = "P_CUSTOM_3"),
+            @Result(property = "permCustom4", column = "P_CUSTOM_4"),
+            @Result(property = "permCustom5", column = "P_CUSTOM_5"),
+            @Result(property = "permCustom6", column = "P_CUSTOM_6"),
+            @Result(property = "permCustom7", column = "P_CUSTOM_7"),
+            @Result(property = "permCustom8", column = "P_CUSTOM_8") })
+    WorkbasketAccessItem findByWorkbasketAndAccessId(
+            @Param("workbasketKey") String workbasketKey, @Param("accessIds") List<String> accessIds);
 
     @Select("<script>SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8 "
         + "FROM WORKBASKET_ACCESS_LIST "
@@ -143,9 +165,8 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8")})
-    List<WorkbasketAccessItem> findByWorkbasketAndAccessIdAndAuthorizations(
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
+    List<WorkbasketAccessItem> findByWorkbasketAndAccessIdAndAuthorization(
         @Param("workbasketKey") String workbasketKey, @Param("accessIds") List<String> accessIds,
         @Param("authorization") String authorization);
-
 }

@@ -1,21 +1,21 @@
 package pro.taskana.model;
 
-import java.sql.Date;
+import java.time.Instant;
 
 /**
  * DueWorkbasketCounter entity.
  */
 public class DueWorkbasketCounter {
 
-    private Date due;
+    private Instant due;
     private String workbasketId;
     private long taskCounter;
 
-    public Date getDue() {
+    public Instant getDue() {
         return due;
     }
 
-    public void setDue(Date due) {
+    public void setDue(Instant due) {
         this.due = due;
     }
 

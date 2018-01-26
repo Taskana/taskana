@@ -1,6 +1,6 @@
 package pro.taskana.impl;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 
@@ -18,13 +18,13 @@ public class AttachmentImpl implements Attachment {
 
     private String id;
     private String taskId;
-    private Timestamp created;
-    private Timestamp modified;
+    private Instant created;
+    private Instant modified;
     private String classificationKey;
     private ClassificationSummary classificationSummary;
     private ObjectReference objectReference;
     private String channel;
-    private Timestamp received;
+    private Instant received;
     private Map<String, Object> customAttributes = Collections.emptyMap();
 
     AttachmentImpl() {
@@ -49,20 +49,20 @@ public class AttachmentImpl implements Attachment {
     }
 
     @Override
-    public Timestamp getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
     @Override
-    public Timestamp getModified() {
+    public Instant getModified() {
         return modified;
     }
 
-    public void setModified(Timestamp modified) {
+    public void setModified(Instant modified) {
         this.modified = modified;
     }
 
@@ -107,12 +107,12 @@ public class AttachmentImpl implements Attachment {
     }
 
     @Override
-    public Timestamp getReceived() {
+    public Instant getReceived() {
         return received;
     }
 
     @Override
-    public void setReceived(Timestamp received) {
+    public void setReceived(Instant received) {
         this.received = received;
     }
 
@@ -146,7 +146,7 @@ public class AttachmentImpl implements Attachment {
         builder.append(", taskId=");
         builder.append(taskId);
         builder.append(", created=");
-        builder.append(created);
+        builder.append(created.toString());
         builder.append(", modified=");
         builder.append(modified);
         builder.append(", classificationKey=");
@@ -164,5 +164,4 @@ public class AttachmentImpl implements Attachment {
         builder.append("]");
         return builder.toString();
     }
-
 }

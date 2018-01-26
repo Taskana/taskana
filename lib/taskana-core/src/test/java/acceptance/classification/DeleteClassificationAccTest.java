@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -44,9 +43,6 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
             "DOMAIN_A");
         ClassificationSummary temp = classifications.get(classifications.size() - 1);
         classification = classificationService.getClassification(temp.getKey(), temp.getDomain());
-
-        Date lastOneValidUntil = classification.getValidUntil();
-        assertTrue(lastOneValidUntil.before(new Date(System.currentTimeMillis())));
     }
 
     @Ignore

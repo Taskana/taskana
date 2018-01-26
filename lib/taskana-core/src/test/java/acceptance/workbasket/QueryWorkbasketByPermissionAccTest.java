@@ -36,8 +36,8 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePersmission(WorkbasketAuthorization.APPEND, "user_1_1")
             .list();
-        Assert.assertEquals(1L, results.size());
-        Assert.assertEquals("USER_1_1", results.get(0).getKey());
+        Assert.assertEquals(2, results.size());
+        Assert.assertEquals("USER_1_1", results.get(1).getKey());
     }
 
     @Test
@@ -47,12 +47,12 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePersmission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
             .list();
-        Assert.assertEquals(8L, results.size());
+        Assert.assertEquals(9, results.size());
     }
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = {"group_1"})
+        groupNames = { "group_1" })
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupFromSubject()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -60,11 +60,10 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .callerHasPermission(WorkbasketAuthorization.APPEND)
             .list();
-        Assert.assertEquals(8L, results.size());
+        Assert.assertEquals(9, results.size());
     }
 
-    @WithAccessId(
-        userName = "user_1_1")
+    @WithAccessId(userName = "user_1_1")
     @Test
     public void testQueryAllAvailableWorkbasketForOpeningForUserAndGroupFromSubject()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -72,7 +71,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .callerHasPermission(WorkbasketAuthorization.READ)
             .list();
-        Assert.assertEquals(1L, results.size());
+        Assert.assertEquals(2, results.size());
     }
 
     @AfterClass

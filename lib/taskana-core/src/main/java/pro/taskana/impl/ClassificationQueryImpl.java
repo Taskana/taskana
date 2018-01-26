@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
@@ -29,15 +29,12 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private String[] type;
     private String[] domain;
     private Boolean validInDomain;
-    private Date[] created;
+    private Instant[] created;
     private String[] name;
     private String description;
     private int[] priority;
     private String[] serviceLevel;
     private String[] customFields;
-    private Date[] validFrom;
-    private Date[] validUntil;
-
     private String[] applicationEntryPoint;
 
     public ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
@@ -81,7 +78,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery created(Date... created) {
+    public ClassificationQuery created(Instant... created) {
         this.created = created;
         return this;
     }
@@ -119,18 +116,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public ClassificationQuery customFields(String... customFields) {
         this.customFields = customFields;
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery validFrom(Date... validFrom) {
-        this.validFrom = validFrom;
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery validUntil(Date... validUntil) {
-        this.validUntil = validUntil;
         return this;
     }
 
@@ -265,11 +250,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         this.validInDomain = validInDomain;
     }
 
-    public Date[] getCreated() {
+    public Instant[] getCreated() {
         return created;
     }
 
-    public void setCreated(Date[] created) {
+    public void setCreated(Instant[] created) {
         this.created = created;
     }
 
@@ -287,22 +272,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     public void setCustomFields(String[] customFields) {
         this.customFields = customFields;
-    }
-
-    public Date[] getValidFrom() {
-        return validFrom;
-    }
-
-    public void setValidFrom(Date[] validFrom) {
-        this.validFrom = validFrom;
-    }
-
-    public Date[] getValidUntil() {
-        return validUntil;
-    }
-
-    public void setValidUntil(Date[] validUntil) {
-        this.validUntil = validUntil;
     }
 
     @Override
@@ -332,10 +301,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         builder.append(Arrays.toString(serviceLevel));
         builder.append(", customFields=");
         builder.append(Arrays.toString(customFields));
-        builder.append(", validFrom=");
-        builder.append(Arrays.toString(validFrom));
-        builder.append(", validUntil=");
-        builder.append(Arrays.toString(validUntil));
         builder.append("]");
         return builder.toString();
     }

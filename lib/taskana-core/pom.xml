@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pro.taskana</groupId>
 	<artifactId>taskana-core</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.6-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>The taskana library to include in your project.</description>
@@ -121,7 +121,7 @@
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
-			<version>3.4.4</version>
+			<version>3.4.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

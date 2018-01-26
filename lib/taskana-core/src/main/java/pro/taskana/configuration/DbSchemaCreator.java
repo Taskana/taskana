@@ -18,13 +18,10 @@ import org.slf4j.LoggerFactory;
 public class DbSchemaCreator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
-
     private static final String SQL = "/sql";
     private static final String DB_SCHEMA = SQL + "/taskana-schema.sql";
     private static final String DB_SCHEMA_DETECTION = SQL + "/schema-detection.sql";
-
     private DataSource dataSource;
-
     private StringWriter outWriter = new StringWriter();
     private PrintWriter logWriter = new PrintWriter(outWriter);
     private StringWriter errorWriter = new StringWriter();
@@ -37,7 +34,9 @@ public class DbSchemaCreator {
 
     /**
      * Run all db scripts.
-     * @throws SQLException TODO
+     *
+     * @throws SQLException
+     *             TODO
      */
     public void run() throws SQLException {
         Connection connection = dataSource.getConnection();

@@ -221,5 +221,4 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      * @return a {@link ObjectReferenceQuery}
      */
     ObjectReferenceQuery createObjectReferenceQuery();
-
 }

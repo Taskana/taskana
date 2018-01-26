@@ -16,7 +16,8 @@ public final class LoggerUtils {
     }
 
     /**
-     * make a String for logging from a list of objects.
+     * Creating an appended log-string of a list with generic type T. The logging does append informations using
+     * toString() on the entries.
      *
      * @param list
      *            the input list to be stringified
@@ -40,7 +41,8 @@ public final class LoggerUtils {
     }
 
     /**
-     * make a String for logging from a map.
+     * Creating an appended log-string of a map with generic types K/V. The logging does append informations using
+     * toString() on the entries.
      *
      * @param map
      *            the map to be stringified
@@ -68,6 +70,5 @@ public final class LoggerUtils {
             builder.append("]");
             return builder.toString();
         }
-
     }
 }

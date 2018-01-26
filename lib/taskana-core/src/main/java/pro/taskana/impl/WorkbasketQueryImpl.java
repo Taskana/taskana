@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
@@ -34,10 +34,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] key;
     private String[] domain;
     private WorkbasketType[] type;
-    private Date createdAfter;
-    private Date createdBefore;
-    private Date modifiedAfter;
-    private Date modifiedBefore;
+    private Instant createdAfter;
+    private Instant createdBefore;
+    private Instant modifiedAfter;
+    private Instant modifiedBefore;
     private String description;
     private String[] owner;
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -71,25 +71,25 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery createdAfter(Date createdAfter) {
+    public WorkbasketQuery createdAfter(Instant createdAfter) {
         this.createdAfter = createdAfter;
         return this;
     }
 
     @Override
-    public WorkbasketQuery createdBefore(Date createdBefore) {
+    public WorkbasketQuery createdBefore(Instant createdBefore) {
         this.createdBefore = createdBefore;
         return this;
     }
 
     @Override
-    public WorkbasketQuery modifiedAfter(Date modifiedAfter) {
+    public WorkbasketQuery modifiedAfter(Instant modifiedAfter) {
         this.modifiedAfter = modifiedAfter;
         return this;
     }
 
     @Override
-    public WorkbasketQuery modifiedBefore(Date modifiedBefore) {
+    public WorkbasketQuery modifiedBefore(Instant modifiedBefore) {
         this.modifiedBefore = modifiedBefore;
         return this;
     }
@@ -223,19 +223,19 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return type;
     }
 
-    public Date getCreatedAfter() {
+    public Instant getCreatedAfter() {
         return createdAfter;
     }
 
-    public Date getCreatedBefore() {
+    public Instant getCreatedBefore() {
         return createdBefore;
     }
 
-    public Date getModifiedAfter() {
+    public Instant getModifiedAfter() {
         return modifiedAfter;
     }
 
-    public Date getModifiedBefore() {
+    public Instant getModifiedBefore() {
         return modifiedBefore;
     }
 

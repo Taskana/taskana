@@ -207,8 +207,6 @@ public class TaskServiceImplIntAutocommitTest {
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         taskServiceImpl.createTask(task);
 
-        TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-
         List<TaskSummary> results = taskServiceImpl.createTaskQuery()
             .nameIn("bla", "test")
             .descriptionLike("test")

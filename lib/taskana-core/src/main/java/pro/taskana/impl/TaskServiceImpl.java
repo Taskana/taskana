@@ -1,8 +1,7 @@
 package pro.taskana.impl;
 
-import java.sql.Timestamp;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -98,7 +97,7 @@ public class TaskServiceImpl implements TaskService {
                     taskId, task.getOwner());
                 throw new InvalidOwnerException("Task is already claimed by user " + task.getOwner());
             }
-            Timestamp now = new Timestamp(System.currentTimeMillis());
+            Instant now = Instant.now();
             task.setOwner(userId);
             task.setModified(now);
             task.setClaimed(now);
@@ -148,7 +147,7 @@ public class TaskServiceImpl implements TaskService {
                     task = (TaskImpl) this.claim(taskId, true);
                 }
             }
-            Timestamp now = new Timestamp(System.currentTimeMillis());
+            Instant now = Instant.now();
             task.setCompleted(now);
             task.setModified(now);
             task.setState(TaskState.COMPLETED);
@@ -258,7 +257,7 @@ public class TaskServiceImpl implements TaskService {
             task.setWorkbasketKey(destinationWorkbasketKey);
             task.setWorkbasketSummary(destinationWorkbasket.asSummary());
             task.setDomain(destinationWorkbasket.getDomain());
-            task.setModified(Timestamp.valueOf(LocalDateTime.now()));
+            task.setModified(Instant.now());
             taskMapper.update(task);
 
             result = getTask(taskId);
@@ -280,7 +279,7 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             TaskImpl task = (TaskImpl) getTask(taskId);
             task.setRead(true);
-            task.setModified(Timestamp.valueOf(LocalDateTime.now()));
+            task.setModified(Instant.now());
             taskMapper.update(task);
             result = getTask(taskId);
             LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", result, isRead);
@@ -345,7 +344,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void standardSettings(TaskImpl task, Classification classification) {
-        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Instant now = Instant.now();
         task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
         task.setState(TaskState.READY);
         task.setCreated(now);
@@ -367,8 +366,8 @@ public class TaskServiceImpl implements TaskService {
         if (classification != null) {
             if (classification.getServiceLevel() != null) {
                 Duration serviceLevel = Duration.parse(classification.getServiceLevel());
-                LocalDateTime due = task.getPlanned().toLocalDateTime().plus(serviceLevel);
-                task.setDue(Timestamp.valueOf(due));
+                Instant due = task.getPlanned().plus(serviceLevel);
+                task.setDue(due);
             }
 
             if (task.getName() == null) {
@@ -733,8 +732,8 @@ public class TaskServiceImpl implements TaskService {
         if (newClassification != null) {
             if (newClassification.getServiceLevel() != null) {
                 Duration serviceLevel = Duration.parse(newClassification.getServiceLevel());
-                LocalDateTime due = newTaskImpl.getPlanned().toLocalDateTime().plus(serviceLevel);
-                newTaskImpl.setDue(Timestamp.valueOf(due));
+                Instant due = newTaskImpl.getPlanned().plus(serviceLevel);
+                newTaskImpl.setDue(due);
             }
 
             if (newTaskImpl.getName() == null) {
@@ -749,9 +748,7 @@ public class TaskServiceImpl implements TaskService {
                 newTaskImpl.setPriority(newClassification.getPriority());
             }
         }
-
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-        newTaskImpl.setModified(now);
+        newTaskImpl.setModified(Instant.now());
     }
 
     AttachmentMapper getAttachmentMapper() {

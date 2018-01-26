@@ -1,6 +1,6 @@
 package pro.taskana;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
@@ -20,44 +20,44 @@ public interface TaskSummary {
     /**
      * Gets the time when the task was created.
      *
-     * @return the created timestamp
+     * @return the created Instant
      */
-    Timestamp getCreated();
+    Instant getCreated();
 
     /**
      * Gets the time when the task was claimed.
      *
-     * @return the claimed timestamp
+     * @return the claimed Instant
      */
-    Timestamp getClaimed();
+    Instant getClaimed();
 
     /**
      * Gets the time when the task was completed.
      *
-     * @return the completed timestamp
+     * @return the completed Instant
      */
-    Timestamp getCompleted();
+    Instant getCompleted();
 
     /**
      * Gets the time when the task was last modified.
      *
-     * @return the last modified timestamp
+     * @return the last modified Instant
      */
-    Timestamp getModified();
+    Instant getModified();
 
     /**
      * Gets the time when the task is planned to be executed.
      *
-     * @return the planned timestamp
+     * @return the planned Instant
      */
-    Timestamp getPlanned();
+    Instant getPlanned();
 
     /**
      * Gets the time when the task is due.
      *
-     * @return the due timestamp
+     * @return the due Instant
      */
-    Timestamp getDue();
+    Instant getDue();
 
     /**
      * Gets the name of the task.
@@ -219,5 +219,4 @@ public interface TaskSummary {
      * @return the task's custom10 property
      */
     String getCustom10();
-
 }

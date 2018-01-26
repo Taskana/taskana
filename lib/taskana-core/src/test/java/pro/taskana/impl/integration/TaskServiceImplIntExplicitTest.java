@@ -8,8 +8,8 @@ import static org.junit.Assert.fail;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -238,7 +238,7 @@ public class TaskServiceImplIntExplicitTest {
         accessItem.setPermOpen(true);
         workbasketService.createWorkbasketAuthorization(accessItem);
 
-        Timestamp tomorrow = Timestamp.valueOf(LocalDateTime.now().plusDays(1));
+        Instant tomorrow = Instant.now().plus(Duration.ofDays(1L));
 
         Workbasket wb = workbasketService.newWorkbasket();
         wb.setDomain("novatec");
@@ -275,7 +275,7 @@ public class TaskServiceImplIntExplicitTest {
 
         Assert.assertEquals(resultTask.getClassificationSummary().getId(),
             resultTask2.getClassificationSummary().getId());
-        Assert.assertTrue(resultTask.getDue().after(resultTask2.getDue()));
+        Assert.assertTrue(resultTask.getDue().isAfter(resultTask2.getDue()));
         Assert.assertFalse(resultTask.getName().equals(resultTask2.getName()));
     }
 
@@ -325,7 +325,7 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.createTask(task);
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"DummyGroup"})
+    @WithAccessId(userName = "Elena", groupNames = { "DummyGroup" })
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
@@ -351,8 +351,6 @@ public class TaskServiceImplIntExplicitTest {
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
-
-        TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
 
         List<TaskSummary> results = taskServiceImpl.createTaskQuery()
             .nameIn("bla", "test")

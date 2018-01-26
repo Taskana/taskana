@@ -39,21 +39,13 @@ import pro.taskana.model.mappings.WorkbasketMapper;
 public class TaskanaEngineImpl implements TaskanaEngine {
 
     private static final String DEFAULT = "default";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
-
     protected static ThreadLocal<Stack<SqlSessionManager>> sessionStack = new ThreadLocal<Stack<SqlSessionManager>>();
-
     protected TaskanaEngineConfiguration taskanaEngineConfiguration;
-
     protected TransactionFactory transactionFactory;
-
     protected SqlSessionManager sessionManager;
-
     protected SqlSessionFactory sessionFactory;
-
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
-
     protected java.sql.Connection connection = null;
 
     public TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {

@@ -60,5 +60,4 @@ public interface TaskMonitorService {
      * @return a {@link Report} object
      */
     Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states);
-
 }
