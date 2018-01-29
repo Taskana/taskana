@@ -83,6 +83,7 @@ public class TaskServiceImplIntExplicitTest {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);
+        FileUtils.deleteRecursive("~/data", true);
     }
 
     @Before
@@ -325,7 +326,7 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.createTask(task);
     }
 
-    @WithAccessId(userName = "Elena", groupNames = { "DummyGroup" })
+    @WithAccessId(userName = "Elena", groupNames = {"DummyGroup"})
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,

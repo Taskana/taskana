@@ -6,7 +6,6 @@ import java.util.List;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -60,35 +59,32 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         Assert.assertEquals("GPK_KSC", results.get(0).getKey());
     }
 
-    @Ignore
     @Test
     public void testQueryWorkbasketByNameStartsWith()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            // .nameLike("%Gruppenpostkorb KSC%")
+            .nameLike("%Gruppenpostkorb KSC%")
             .list();
         Assert.assertEquals(6L, results.size());
     }
 
-    @Ignore
     @Test
     public void testQueryWorkbasketByNameContains()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            // .nameLike("%Teamlead%")
+            .nameLike("%Teamlead%", "%Gruppenpostkorb KSC%")
             .list();
-        Assert.assertEquals(2L, results.size());
+        Assert.assertEquals(8L, results.size());
     }
 
-    @Ignore
     @Test
     public void testQueryWorkbasketByNameContainsCaseInsensitive()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            // .nameLike("%TEAMLEAD%")
+            .nameLike("%TEAMLEAD%")
             .list();
         Assert.assertEquals(2L, results.size());
     }
@@ -118,40 +114,37 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .keyIn("GPK_KSC_1", "GPK_KSC_2", "GPK_KSC_3")
+            .keyIn("GPK_KSC_1", "GPK_Ksc_2", "GPK_KSC_3")
             .list();
         Assert.assertEquals(2L, results.size());
     }
 
-    @Ignore
     @Test
     public void testQueryWorkbasketByKeyContains()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            // .keyLike("%KSC%")
+            .keyLike("%KSC%")
             .list();
         Assert.assertEquals(6L, results.size());
     }
 
-    @Ignore
     @Test
     public void testQueryWorkbasketByKeyContainsIgnoreCase()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            // .keyLike("%kSc%")
+            .keyLike("%kSc%")
             .list();
         Assert.assertEquals(6L, results.size());
     }
 
-    @Ignore
     @Test
     public void testQueryWorkbasketByKeyOrNameContainsIgnoreCase()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            // .keyOrNameLike("%kSc%")
+            .keyOrNameLike("%kSc%")
             .list();
         Assert.assertEquals(12L, results.size());
     }

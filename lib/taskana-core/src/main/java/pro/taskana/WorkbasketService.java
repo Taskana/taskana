@@ -171,6 +171,7 @@ public interface WorkbasketService {
      * Returns a set with all permissions of the current user at this workbasket.
      *
      * @param workbasketKey
+     *            The key of the referenced workbasket
      * @return a Set with all permissions
      */
     List<WorkbasketAuthorization> getPermissionsForWorkbasket(String workbasketKey);

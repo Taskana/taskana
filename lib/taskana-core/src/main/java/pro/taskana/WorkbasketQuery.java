@@ -12,7 +12,8 @@ import pro.taskana.model.WorkbasketType;
 public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
 
     /**
-     * Add your keys to your query.
+     * Add your keys to your query. The keys are compared case-insensitively to the keys of workbaskets with the IN
+     * operator.
      *
      * @param key
      *            the keys as Strings
@@ -21,13 +22,48 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
     WorkbasketQuery keyIn(String... key);
 
     /**
-     * Add your names to your query.
+     * Add keys to your query. The keys are compared case-insensitively to the keys of workbaskets with the SQL LIKE
+     * operator. You may add a wildcard like '%' to search generically. If you specify multiple keys they are connected
+     * with an OR operator, this is, the query searches workbaskets whose keys are like key1 or like key2, etc.
+     *
+     * @param key
+     *            the keys as Strings
+     * @return the query
+     */
+    BaseQuery<WorkbasketSummary> keyLike(String... key);
+
+    /**
+     * Add your names to your query. The names are compared case-insensitively to the names of workbaskets
      *
      * @param name
      *            the names as Strings
      * @return the query
      */
     WorkbasketQuery nameIn(String... name);
+
+    /**
+     * Add names to your query. The names are compared case-insensitively to the names of workbaskets with the SQL LIKE
+     * operator. You may add a wildcard like '%' to search generically. If you specify multiple names, they are
+     * connected with an OR operator, this is, the query searches workbaskets whose names are like name1 or like name2,
+     * etc.
+     *
+     * @param name
+     *            the names as Strings
+     * @return the query
+     */
+    BaseQuery<WorkbasketSummary> nameLike(String... name);
+
+    /**
+     * Add search strings to your query that are searched case-insensitively in the key and name fields of workbaskets.
+     * You may add a wildcard like '%' to search generically. If you specify multiple keys they are connected with an OR
+     * operator, this is, the query searches workbaskets whose keys are like string1 or whose names are like string1 or
+     * whose keys are like string2 or whose names are like string2, etc...
+     *
+     * @param searchString
+     *            the seach strings
+     * @return the query
+     */
+    BaseQuery<WorkbasketSummary> keyOrNameLike(String... searchString);
 
     /**
      * Add your domains to your query.
@@ -84,8 +120,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
     WorkbasketQuery modifiedBefore(Instant modifiedBefore);
 
     /**
-     * Add your description to your query. It will be compared in SQL with an LIKE. If you use a wildcard like % tehn it
-     * will be transmitted to the database.
+     * Add your description to your query. It will be compared case-insensitively to the descriptions of workbaskets.
+     * You may use a wildcard like '%' to search generically.
      *
      * @param description
      *            your description
@@ -130,4 +166,5 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      *             when permission OR accessIds of the userContext are NULL.
      */
     WorkbasketQuery callerHasPermission(WorkbasketAuthorization permission) throws InvalidArgumentException;
+
 }
