@@ -8,6 +8,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.BaseQuery;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketSummary;
@@ -30,15 +31,18 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
     private String[] accessId;
     private WorkbasketAuthorization authorization;
-    private String[] name;
-    private String[] key;
+    private String[] nameIn;
+    private String[] nameLike;
+    private String[] keyIn;
+    private String[] keyLike;
+    private String[] keyOrNameLike;
     private String[] domain;
     private WorkbasketType[] type;
     private Instant createdAfter;
     private Instant createdBefore;
     private Instant modifiedAfter;
     private Instant modifiedBefore;
-    private String description;
+    private String descriptionLike;
     private String[] owner;
     private TaskanaEngineImpl taskanaEngineImpl;
 
@@ -48,7 +52,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     @Override
     public WorkbasketQuery keyIn(String... key) {
-        this.key = key;
+        this.keyIn = toUpperCopy(key);
         return this;
     }
 
@@ -66,7 +70,25 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     @Override
     public WorkbasketQuery nameIn(String... names) {
-        this.name = names;
+        this.nameIn = toUpperCopy(names);
+        return this;
+    }
+
+    @Override
+    public BaseQuery<WorkbasketSummary> nameLike(String... names) {
+        this.nameLike = toUpperCopy(names);
+        return this;
+    }
+
+    @Override
+    public BaseQuery<WorkbasketSummary> keyLike(String... keys) {
+        this.keyLike = toUpperCopy(keys);
+        return this;
+    }
+
+    @Override
+    public BaseQuery<WorkbasketSummary> keyOrNameLike(String... keysOrNames) {
+        this.keyOrNameLike = toUpperCopy(keysOrNames);
         return this;
     }
 
@@ -96,7 +118,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     @Override
     public WorkbasketQuery descriptionLike(String description) {
-        this.description = description;
+        this.descriptionLike = description.toUpperCase();
         return this;
     }
 
@@ -207,12 +229,24 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return authorization;
     }
 
-    public String[] getName() {
-        return name;
+    public String[] getNameIn() {
+        return nameIn;
     }
 
-    public String[] getKey() {
-        return key;
+    public String[] getNameLike() {
+        return nameLike;
+    }
+
+    public String[] getKeyIn() {
+        return keyIn;
+    }
+
+    public String[] getKeyLike() {
+        return keyLike;
+    }
+
+    public String[] getKeyOrNameLike() {
+        return keyOrNameLike;
     }
 
     public String[] getDomain() {
@@ -239,8 +273,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return modifiedBefore;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescriptionLike() {
+        return descriptionLike;
     }
 
     public String[] getOwner() {
@@ -254,10 +288,16 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(Arrays.toString(accessId));
         builder.append(", authorization=");
         builder.append(authorization);
-        builder.append(", name=");
-        builder.append(Arrays.toString(name));
-        builder.append(", key=");
-        builder.append(Arrays.toString(key));
+        builder.append(", nameIn=");
+        builder.append(Arrays.toString(nameIn));
+        builder.append(", nameLike=");
+        builder.append(Arrays.toString(nameLike));
+        builder.append(", keyIn=");
+        builder.append(Arrays.toString(keyIn));
+        builder.append(", keyLike=");
+        builder.append(Arrays.toString(keyLike));
+        builder.append(", keyOrNameLike=");
+        builder.append(Arrays.toString(keyOrNameLike));
         builder.append(", domain=");
         builder.append(Arrays.toString(domain));
         builder.append(", type=");
@@ -270,10 +310,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(modifiedAfter);
         builder.append(", modifiedBefore=");
         builder.append(modifiedBefore);
-        builder.append(", description=");
-        builder.append(description);
+        builder.append(", descriptionLike=");
+        builder.append(descriptionLike);
         builder.append(", owner=");
         builder.append(Arrays.toString(owner));
+        builder.append(", taskanaEngineImpl=");
+        builder.append(taskanaEngineImpl);
         builder.append("]");
         return builder.toString();
     }
@@ -288,4 +330,13 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             }
         }
     }
+
+    private String[] toUpperCopy(String... source) {
+        String[] target = new String[source.length];
+        for (int i = 0; i < source.length; i++) {
+            target[i] = source[i].toUpperCase();
+        }
+        return target;
+    }
+
 }

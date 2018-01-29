@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -119,7 +120,7 @@ public class ClassificationServiceImplTest {
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
         assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
-        assertTrue(classification.getCreated().isBefore(Instant.now()));
+        assertFalse(classification.getCreated().isAfter(Instant.now()));
         assertTrue(classification.getCreated().isAfter(beforeTimestamp));
         assertThat(classification.getDomain(), equalTo(domain));
         assertThat(classification.getKey(), equalTo(key));
