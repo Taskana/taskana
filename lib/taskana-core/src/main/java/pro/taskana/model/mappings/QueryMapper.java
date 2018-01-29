@@ -52,7 +52,7 @@ public interface QueryMapper {
         + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         + "</where>"
         + "</script>")
-    @Results(value = { @Result(property = "taskId", column = "ID"),
+    @Results(value = {@Result(property = "taskId", column = "ID"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "claimed", column = "CLAIMED"),
         @Result(property = "completed", column = "COMPLETED"),
@@ -86,7 +86,7 @@ public interface QueryMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10") })
+        @Result(property = "custom10", column = "CUSTOM_10")})
     List<TaskSummaryImpl> queryTasks(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
@@ -107,12 +107,12 @@ public interface QueryMapper {
         + "<if test='customFields != null'>AND (CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         + "</where>"
         + "</script>")
-    @Results({ @Result(property = "id", column = "ID"),
+    @Results({@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "category", column = "CATEGORY"),
         @Result(property = "type", column = "TYPE"),
         @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "name", column = "NAME") })
+        @Result(property = "name", column = "NAME")})
     List<ClassificationSummaryImpl> queryClassification(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
@@ -131,22 +131,25 @@ public interface QueryMapper {
         @Result(property = "system", column = "SYSTEM"),
         @Result(property = "systemInstance", column = "SYSTEM_INSTANCE"),
         @Result(property = "type", column = "TYPE"),
-        @Result(property = "value", column = "VALUE") })
+        @Result(property = "value", column = "VALUE")})
     List<ObjectReference> queryObjectReference(ObjectReferenceQueryImpl objectReference);
 
     @Select("<script>SELECT w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
         + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.KEY = a.WORKBASKET_KEY</if> "
         + "<where>"
         + "<if test='owner != null'>AND w.OWNER IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='key != null'>AND w.KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='name != null'>AND w.NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='keyIn != null'>AND UPPER(w.KEY) IN(<foreach item='item' collection='keyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='keyLike != null'>AND (<foreach item='item' collection='keyLike' separator=' OR ' >UPPER(w.KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='nameIn != null'>AND UPPER(w.NAME) IN(<foreach item='item' collection='nameIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='nameLike != null'>AND (<foreach item='item' collection='nameLike' separator=' OR ' >UPPER(w.NAME) LIKE #{item}</foreach>)</if> "
+        + "<if test='keyOrNameLike != null'>AND (<foreach item='item' collection='keyOrNameLike' separator=' OR ' >UPPER(w.NAME) LIKE #{item} OR UPPER(w.KEY) LIKE #{item}</foreach>)</if> "
         + "<if test='domain != null'>AND w.DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
         + "<if test='type!= null'>AND w.TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='createdAfter != null'>AND w.CREATED &gt; #{createdAfter}</if> "
         + "<if test='createdBefore != null'>AND w.CREATED &lt; #{createdBefore}</if> "
         + "<if test='modifiedAfter != null'>AND w.MODIFIED &gt; #{modifiedAfter}</if> "
         + "<if test='modifiedBefore != null'>AND w.MODIFIED &lt; #{modifiedBefore}</if> "
-        + "<if test='description != null'>AND w.DESCRIPTION like #{description}</if> "
+        + "<if test='descriptionLike != null'>AND UPPER(w.DESCRIPTION) like #{descriptionLike}</if> "
         + "<if test='accessId != null'>AND a.ACCESS_ID IN(<foreach item='item' collection='accessId' separator=',' >#{item}</foreach>) AND PERM_READ = 1 </if> "
         + "<if test='authorization != null'>AND "
         + "<if test=\"authorization.name().equals('OPEN')\">PERM_OPEN</if> "
@@ -176,6 +179,6 @@ public interface QueryMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4") })
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketSummaryImpl> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
 }

@@ -237,9 +237,9 @@ public class WorkbasketImpl implements Workbasket {
         builder.append(", key=");
         builder.append(key);
         builder.append(", created=");
-        builder.append(created.toString());
+        builder.append(created);
         builder.append(", modified=");
-        builder.append(modified.toString());
+        builder.append(modified);
         builder.append(", name=");
         builder.append(name);
         builder.append(", description=");

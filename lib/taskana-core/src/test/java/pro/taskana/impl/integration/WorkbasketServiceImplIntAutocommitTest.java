@@ -258,7 +258,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         }
     }
 
-    @WithAccessId(userName = "Bernd", groupNames = { "group1", "group2", "group3", "group4" })
+    @WithAccessId(userName = "Bernd", groupNames = {"group1", "group2", "group3", "group4"})
     @Test
     public void testWorkbasketQuery()
         throws NotAuthorizedException, InvalidArgumentException, InvalidWorkbasketException,
@@ -313,13 +313,14 @@ public class WorkbasketServiceImplIntAutocommitTest {
         }
 
         WorkbasketQuery query5 = workBasketService.createWorkbasketQuery()
-            .modifiedAfter(thirtyDaysAgo)
-            .modifiedBefore(tenDaysAgo);
+            .modifiedAfter(now.minus(Duration.ofDays(31L)))
+            .modifiedBefore(now.minus(Duration.ofDays(9)));
         List<WorkbasketSummary> result5 = query5.list();
-        assertTrue(result5.size() == THREE);
+        assertTrue(result5.size() == 4);
         for (WorkbasketSummary workbasket : result5) {
             String name = workbasket.getName();
-            assertTrue("Basket1".equals(name) || "Basket2".equals(name) || "Basket4".equals(name));
+            assertTrue(
+                "Basket1".equals(name) || "Basket2".equals(name) || "Basket3".equals(name) || "Basket4".equals(name));
         }
 
         WorkbasketQuery query6 = workBasketService.createWorkbasketQuery()
