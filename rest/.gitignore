@@ -1,4 +1,5 @@
 target/
+bin/
 .checkstyle
 !.mvn/wrapper/maven-wrapper.jar
 *.orig
