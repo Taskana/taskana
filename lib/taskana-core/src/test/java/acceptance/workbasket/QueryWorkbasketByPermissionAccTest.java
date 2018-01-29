@@ -6,6 +6,7 @@ import java.util.List;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,9 +51,37 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         Assert.assertEquals(9, results.size());
     }
 
+    @Ignore
+    @Test
+    public void testQueryAllTransferTargetsForUserAndGroupSortedByNameAscending()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .accessIdsHavePersmission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
+            // .orderByName()
+            // .ascending()
+            .list();
+        Assert.assertEquals(9, results.size());
+        Assert.assertEquals("GPK_B_KSC_2", results.get(0).getKey());
+    }
+
+    @Ignore
+    @Test
+    public void testQueryAllTransferTargetsForUserAndGroupSortedByNameDescending()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .accessIdsHavePersmission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
+            // .orderByName()
+            // .descending()
+            .list();
+        Assert.assertEquals(9, results.size());
+        Assert.assertEquals("GPK_B_KSC_2", results.get(0).getKey());
+    }
+
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupFromSubject()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
