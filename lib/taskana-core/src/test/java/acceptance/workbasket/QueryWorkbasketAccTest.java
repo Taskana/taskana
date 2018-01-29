@@ -6,6 +6,7 @@ import java.util.List;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -153,4 +154,61 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public static void cleanUpClass() {
         FileUtils.deleteRecursive("~/data", true);
     }
+
+    @Ignore
+    @Test
+    public void testQueryWorkbasketByNameStartsWithSortedByNameAscending()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .nameLike("%Gruppenpostkorb KSC%")
+            // .orderByName()
+            // .ascending()
+            .list();
+        Assert.assertEquals(6L, results.size());
+        Assert.assertEquals("GPK_KSC", results.get(0).getKey());
+    }
+
+    @Ignore
+    @Test
+    public void testQueryWorkbasketByNameStartsWithSortedByNameDescending()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .nameLike("%Gruppenpostkorb KSC%")
+            // .orderByName()
+            // .descending()
+            .list();
+        Assert.assertEquals(6L, results.size());
+        Assert.assertEquals("GPK_B_KSC_2", results.get(0).getKey());
+    }
+
+    @Ignore
+    @Test
+    public void testQueryWorkbasketByNameStartsWithSortedByKeyAscending()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .nameLike("%Gruppenpostkorb KSC%")
+            // .orderByKey()
+            // .ascending()
+            .list();
+        Assert.assertEquals(6L, results.size());
+        Assert.assertEquals("GPK_B_KSC", results.get(0).getKey());
+    }
+
+    @Ignore
+    @Test
+    public void testQueryWorkbasketByNameStartsWithSortedByKeyDescending()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .nameLike("%Gruppenpostkorb KSC%")
+            // .orderByKey()
+            // .descending()
+            .list();
+        Assert.assertEquals(6L, results.size());
+        Assert.assertEquals("GPK_KSC_2", results.get(0).getKey());
+    }
+
 }
