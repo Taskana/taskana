@@ -180,7 +180,7 @@ public interface WorkbasketService {
      * Returns the distribution targets for a given workbasket.
      *
      * @param workbasketId
-     *            the id of the workbasket for which the distribution targets are to be retrieved
+     *            the id of the referenced workbasket
      * @return the distribution targets of the specified workbasket
      * @throws NotAuthorizedException
      *             if the current user has no read permission for the specified workbasket
