@@ -1,0 +1,128 @@
+package pro.taskana.springtx;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import pro.taskana.TaskanaEngine;
+import pro.taskana.Workbasket;
+import pro.taskana.exceptions.InvalidWorkbasketException;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.WorkbasketImpl;
+import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.model.WorkbasketType;
+
+/**
+ * @author Titus Meyer (v081065)
+ */
+@RestController
+public class TaskanaTestController {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private TaskanaEngine taskanaEngine;
+
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping("/schema")
+    public @ResponseBody String schema() {
+        String schema = jdbcTemplate.queryForObject("SELECT SCHEMA()", String.class);
+        System.err.println("current schema: " + schema);
+        return schema;
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @RequestMapping("/workbaskets")
+    public @ResponseBody Integer workbaskets() {
+        return getWorkbaskets();
+    }
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @RequestMapping("/geschbuch-tests")
+    public @ResponseBody Integer geschbuchTests() {
+        return getGeschbuchTests();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping("/transaction")
+    public @ResponseBody String transaction(@RequestParam(value = "rollback", defaultValue = "false") String rollback)
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key", "workbasket"));
+
+        int workbaskets = getWorkbaskets();
+        if (Boolean.valueOf(rollback)) {
+            throw new RuntimeException("workbaskets: " + workbaskets);
+        } else {
+            return "workbaskets: " + workbaskets;
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping("/transaction-many")
+    public @ResponseBody String transactionMany(
+        @RequestParam(value = "rollback", defaultValue = "false") String rollback)
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
+        taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
+        taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key3", "workbasket3"));
+
+        if (Boolean.valueOf(rollback)) {
+            throw new RuntimeException("workbaskets: " + getWorkbaskets());
+        } else {
+            return "workbaskets: " + getWorkbaskets();
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping("/geschbuch")
+    public @ResponseBody String transactionGeschbuch(
+        @RequestParam(value = "rollback", defaultValue = "false") String rollback)
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
+        taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
+
+        jdbcTemplate.execute("INSERT INTO GESCHBUCH.TEST VALUES ('1', 'test')");
+        jdbcTemplate.execute("INSERT INTO GESCHBUCH.TEST VALUES ('2', 'test2')");
+
+        if (Boolean.valueOf(rollback)) {
+            throw new RuntimeException("workbaskets: " + getWorkbaskets() + ", tests: " + getGeschbuchTests());
+        } else {
+            return "workbaskets: " + getWorkbaskets() + ", tests: " + getGeschbuchTests();
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping("/cleanup")
+    public @ResponseBody String cleanup() {
+        jdbcTemplate.execute("DELETE FROM WORKBASKET");
+        jdbcTemplate.execute("DELETE FROM GESCHBUCH.TEST");
+        System.err.println("cleaned workbasket and test tables");
+        return "cleaned workbasket and test tables";
+    }
+
+    private int getWorkbaskets() {
+        // return taskanaEngine.getWorkbasketService().getWorkbaskets().size();
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM WORKBASKET", Integer.class);
+    }
+
+    private int getGeschbuchTests() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM GESCHBUCH.TEST", Integer.class);
+    }
+
+    private Workbasket createWorkBasket(String key, String name) {
+        WorkbasketImpl workbasket = (WorkbasketImpl) taskanaEngine.getWorkbasketService().newWorkbasket();
+        String id1 = IdGenerator.generateWithPrefix("TWB");
+        workbasket.setId(id1);
+        workbasket.setKey(key);
+        workbasket.setName(name);
+        workbasket.setType(WorkbasketType.GROUP);
+        workbasket.setDomain("generali");
+        return workbasket;
+    }
+}

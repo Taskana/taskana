@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Stack;
 
@@ -23,6 +24,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.AutocommitFailedException;
 import pro.taskana.exceptions.ConnectionNotSetException;
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.UnsupportedDatabaseException;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.model.mappings.AttachmentMapper;
@@ -42,7 +44,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     private static final String DEFAULT = "default";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
-    protected static ThreadLocal<Stack<SqlSessionManager>> sessionStack = new ThreadLocal<Stack<SqlSessionManager>>();
+    protected static ThreadLocal<Stack<SqlSessionManager>> sessionStack = new ThreadLocal<>();
     protected TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected TransactionFactory transactionFactory;
     protected SqlSessionManager sessionManager;
@@ -59,27 +61,24 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public TaskService getTaskService() {
         SqlSession session = this.sessionManager;
-        TaskServiceImpl taskServiceImpl = new TaskServiceImpl(this, session.getMapper(TaskMapper.class),
+        return new TaskServiceImpl(this, session.getMapper(TaskMapper.class),
             session.getMapper(ObjectReferenceMapper.class), session.getMapper(AttachmentMapper.class));
-        return taskServiceImpl;
     }
 
     @Override
     public TaskMonitorService getTaskMonitorService() {
         SqlSession session = this.sessionManager;
-        TaskMonitorServiceImpl taskMonitorServiceImpl = new TaskMonitorServiceImpl(this,
+        return new TaskMonitorServiceImpl(this,
             session.getMapper(TaskMonitorMapper.class));
-        return taskMonitorServiceImpl;
     }
 
     @Override
     public WorkbasketService getWorkbasketService() {
         SqlSession session = this.sessionManager;
-        WorkbasketServiceImpl workbasketServiceImpl = new WorkbasketServiceImpl(this,
+        return new WorkbasketServiceImpl(this,
             session.getMapper(WorkbasketMapper.class),
             session.getMapper(DistributionTargetMapper.class),
             session.getMapper(WorkbasketAccessMapper.class));
-        return workbasketServiceImpl;
     }
 
     @Override
@@ -123,7 +122,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      * TaskanaEngine.closeConnection() or TaskanaEngine.setConnection(null). Both calls have the same effect.
      *
      * @param connection
-     *            TODO
+     *            The connection that passed into TaskanaEngine
      */
     @Override
     public void setConnection(java.sql.Connection connection) {
@@ -171,10 +170,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     void initSqlSession() {
         if (mode == ConnectionManagementMode.EXPLICIT && this.connection == null) {
             throw new ConnectionNotSetException();
-        } else if (mode != ConnectionManagementMode.EXPLICIT) {
-            if (!this.sessionManager.isManagedSessionStarted()) {
-                this.sessionManager.startManagedSession();
-            }
+        } else if (mode != ConnectionManagementMode.EXPLICIT && !this.sessionManager.isManagedSessionStarted()) {
+            this.sessionManager.startManagedSession();
         }
     }
 
@@ -216,18 +213,15 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      *
      * @return a {@link SqlSessionFactory}
      */
-    private SqlSessionManager createSqlSessionManager() {
+    protected SqlSessionManager createSqlSessionManager() {
         Environment environment = new Environment(DEFAULT, this.transactionFactory,
             taskanaEngineConfiguration.getDatasource());
         Configuration configuration = new Configuration(environment);
 
         // set databaseId
         String databaseProductName;
-        try {
-            databaseProductName = taskanaEngineConfiguration.getDatasource()
-                .getConnection()
-                .getMetaData()
-                .getDatabaseProductName();
+        try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+            databaseProductName = con.getMetaData().getDatabaseProductName();
             if (databaseProductName.contains("DB2")) {
                 configuration.setDatabaseId("db2");
             } else if (databaseProductName.contains("H2")) {
@@ -243,7 +237,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             LOGGER.error(
                 "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.",
                 e);
-            throw new RuntimeException(e);
+            throw new SystemException(
+                "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set");
         }
 
         // add mappers
@@ -257,9 +252,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         configuration.addMapper(QueryMapper.class);
         configuration.addMapper(AttachmentMapper.class);
         configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
-        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-        SqlSessionManager sessionManager = SqlSessionManager.newInstance(sessionFactory);
-        return sessionManager;
+        SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+        return SqlSessionManager.newInstance(localSessionFactory);
     }
 
     /**
@@ -290,7 +284,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected static Stack<SqlSessionManager> getSessionStack() {
         Stack<SqlSessionManager> stack = sessionStack.get();
         if (stack == null) {
-            stack = new Stack<SqlSessionManager>();
+            stack = new Stack<>();
             sessionStack.set(stack);
         }
         return stack;
