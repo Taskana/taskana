@@ -29,9 +29,9 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .primaryObjectReferenceValueIn("Value1", "Value2")
+            .primaryObjectReferenceValueIn("11223344", "22334455")
             .list();
-        Assert.assertEquals(10L, results.size());
+        Assert.assertEquals(16L, results.size());
     }
 
     @Test
@@ -39,10 +39,10 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .primaryObjectReferenceTypeIn("Type3")
-            .primaryObjectReferenceValueIn("Value3")
+            .primaryObjectReferenceTypeIn("SDNR")
+            .primaryObjectReferenceValueIn("11223344")
             .list();
-        Assert.assertEquals(4L, results.size());
+        Assert.assertEquals(5L, results.size());
     }
 
     @Test
@@ -50,9 +50,9 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .primaryObjectReferenceValueLike("Val%")
+            .primaryObjectReferenceValueLike("%567%")
             .list();
-        Assert.assertEquals(14L, results.size());
+        Assert.assertEquals(5L, results.size());
     }
 
     @AfterClass

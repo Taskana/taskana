@@ -31,7 +31,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -43,7 +43,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -60,7 +60,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .domainIn("DOMAIN_B", "", "DOMAIN_A")
             .list();
-        assertThat(results.size(), equalTo(17));
+        assertThat(results.size(), equalTo(25));
 
         results = taskService.createTaskQuery()
             .domainIn("DOMAIN_A")
