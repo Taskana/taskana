@@ -55,6 +55,7 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_ATTACHMENT = "TAI";
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
+    private static final String MUST_NOT_BE_EMPTY = " must not be empty";
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workbasketService;
@@ -201,7 +202,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTask(String id) throws TaskNotFoundException, SystemException {
+    public Task getTask(String id) throws TaskNotFoundException {
         LOGGER.debug("entry to getTaskById(id = {})", id);
         TaskImpl resultTask = null;
         try {
@@ -402,16 +403,6 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
-        // insert ObjectReference if needed. Comment this out for the scope of tsk-123
-        // if (task.getPrimaryObjRef() != null) {
-        // ObjectReference objectReference = this.objectReferenceMapper.findByObjectReference(task.getPrimaryObjRef());
-        // if (objectReference == null) {
-        // objectReference = task.getPrimaryObjRef();
-        // objectReference.setId(IdGenerator.generateWithPrefix(ID_PREFIX_OBJECT_REFERENCE));
-        // this.objectReferenceMapper.insert(objectReference);
-        // }
-        // // task.setPrimaryObjRef(objectReference);
-        // }
     }
 
     @Override
@@ -427,9 +418,7 @@ public class TaskServiceImpl implements TaskService {
             // list<attachmentsummary>
             results = augmentTaskSummariesByContainedSummaries(taskSummaries);
 
-        } catch (WorkbasketNotFoundException ex) {
-            throw ex;
-        } catch (NotAuthorizedException ex) {
+        } catch (WorkbasketNotFoundException | NotAuthorizedException ex) {
             throw ex;
         } catch (Exception ex) {
             LOGGER.error("Getting TASKSUMMARY failed internally.", ex);
@@ -538,7 +527,7 @@ public class TaskServiceImpl implements TaskService {
             return;
         }
 
-        Set<String> taskIdSet = taskSummaries.stream().map(t -> t.getTaskId()).collect(Collectors.toSet());
+        Set<String> taskIdSet = taskSummaries.stream().map(TaskSummaryImpl::getTaskId).collect(Collectors.toSet());
         String[] taskIdArray = taskIdSet.toArray(new String[0]);
 
         List<AttachmentSummaryImpl> attachmentSummaries = attachmentMapper
@@ -566,7 +555,7 @@ public class TaskServiceImpl implements TaskService {
             || taskSummaries.isEmpty()) {
             return;
         }
-        Set<String> classificationDomainSet = taskSummaries.stream().map(t -> t.getDomain()).collect(
+        Set<String> classificationDomainSet = taskSummaries.stream().map(TaskSummaryImpl::getDomain).collect(
             Collectors.toSet());
         Set<String> classificationKeySet = attachmentSummaries.stream()
             .map(t -> t.getClassificationSummary().getKey())
@@ -650,8 +639,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task newTask() {
-        return new TaskImpl();
+    public Task newTask(String workbasketKey) {
+        TaskImpl task = new TaskImpl();
+        task.setWorkbasketKey(workbasketKey);
+        return task;
     }
 
     @Override
@@ -666,17 +657,17 @@ public class TaskServiceImpl implements TaskService {
             throw new InvalidArgumentException(objRefType + " of " + objName + " must not be null");
         } else if (objRef.getCompany() == null || objRef.getCompany().length() == 0) {
             throw new InvalidArgumentException(
-                "Company of " + objRefType + " of " + objName + " must not be empty");
+                "Company of " + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
         } else if (objRef.getSystem() == null || objRef.getSystem().length() == 0) {
             throw new InvalidArgumentException(
-                "System of " + objRefType + " of " + objName + " must not be empty");
+                "System of " + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
         } else if (objRef.getSystemInstance() == null || objRef.getSystemInstance().length() == 0) {
             throw new InvalidArgumentException(
-                "SystemInstance of " + objRefType + " of " + objName + " must not be empty");
+                "SystemInstance of " + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
         } else if (objRef.getType() == null || objRef.getType().length() == 0) {
-            throw new InvalidArgumentException("Type of " + objRefType + " of " + objName + " must not be empty");
+            throw new InvalidArgumentException("Type of " + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
         } else if (objRef.getValue() == null || objRef.getValue().length() == 0) {
-            throw new InvalidArgumentException("Value of" + objRefType + " of " + objName + " must not be empty");
+            throw new InvalidArgumentException("Value of" + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
         }
     }
 
@@ -702,7 +693,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
-        throws InvalidArgumentException, ConcurrencyException, WorkbasketNotFoundException, InvalidWorkbasketException,
+        throws InvalidArgumentException, ConcurrencyException, WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException {
         validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
         if (oldTaskImpl.getModified() != null && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
@@ -773,20 +764,18 @@ public class TaskServiceImpl implements TaskService {
                 boolean wasAlreadyRepresented = false;
                 if (attachment.getId() != null) {
                     for (Attachment oldAttachment : oldTaskImpl.getAttachments()) {
-                        if (oldAttachment != null) {
-                            // UPDATE when id is represented but objects are not equal
-                            if (attachment.getId().equals(oldAttachment.getId())) {
-                                wasAlreadyRepresented = true;
-                                if (!attachment.equals(oldAttachment)) {
-                                    AttachmentImpl temp = (AttachmentImpl) attachment;
-                                    temp.setModified(Instant.now());
-                                    attachmentMapper.update(temp);
-                                    LOGGER.debug("TaskService.updateTask() for TaskId={} UPDATED an Attachment={}.",
-                                        newTaskImpl.getId(),
-                                        attachment);
-                                    break;
-                                }
+                        if (oldAttachment != null && attachment.getId().equals(oldAttachment.getId())) {
+                            wasAlreadyRepresented = true;
+                            if (!attachment.equals(oldAttachment)) {
+                                AttachmentImpl temp = (AttachmentImpl) attachment;
+                                temp.setModified(Instant.now());
+                                attachmentMapper.update(temp);
+                                LOGGER.debug("TaskService.updateTask() for TaskId={} UPDATED an Attachment={}.",
+                                    newTaskImpl.getId(),
+                                    attachment);
+                                break;
                             }
+
                         }
                     }
                 }
@@ -818,11 +807,9 @@ public class TaskServiceImpl implements TaskService {
             if (oldAttachment != null) {
                 boolean isRepresented = false;
                 for (Attachment newAttachment : newTaskImpl.getAttachments()) {
-                    if (newAttachment != null) {
-                        if (oldAttachment.getId().equals(newAttachment.getId())) {
-                            isRepresented = true;
-                            break;
-                        }
+                    if (newAttachment != null && oldAttachment.getId().equals(newAttachment.getId())) {
+                        isRepresented = true;
+                        break;
                     }
                 }
                 if (!isRepresented) {

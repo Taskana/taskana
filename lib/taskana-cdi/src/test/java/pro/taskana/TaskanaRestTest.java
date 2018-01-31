@@ -22,7 +22,6 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.WorkbasketType;
 
@@ -50,9 +49,8 @@ public class TaskanaRestTest {
         Classification classification = classificationService.newClassification("cdiDomain", "TEST", "t1");
         taskanaEjb.getClassificationService().createClassification(classification);
 
-        Task task = taskanaEjb.getTaskService().newTask();
+        Task task = taskanaEjb.getTaskService().newTask(workbasket.getKey());
         task.setClassificationKey(classification.getKey());
-        task.setWorkbasketKey(workbasket.getKey());
         ObjectReference objRef = new ObjectReference();
         objRef.setCompany("aCompany");
         objRef.setSystem("aSystem");
