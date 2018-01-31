@@ -270,7 +270,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         Instant thirtyDaysAgo = now.minus(Duration.ofDays(30L));
 
         WorkbasketQuery query1 = workBasketService.createWorkbasketQuery()
-            .accessIdsHavePersmission(WorkbasketAuthorization.OPEN, "Bernd")
+            .accessIdsHavePermission(WorkbasketAuthorization.OPEN, "Bernd")
             .nameIn("Basket4");
         List<WorkbasketSummary> result1 = query1.list();
 
@@ -279,19 +279,19 @@ public class WorkbasketServiceImplIntAutocommitTest {
         Workbasket workBasket = workBasketService.getWorkbasket(workbasketId);
         Assert.assertEquals(THREE, workBasketService.getDistributionTargets(workBasket.getId()).size());
 
-        WorkbasketQuery query2 = workBasketService.createWorkbasketQuery().accessIdsHavePersmission(
+        WorkbasketQuery query2 = workBasketService.createWorkbasketQuery().accessIdsHavePermission(
             WorkbasketAuthorization.OPEN, "Bernd",
             "Konstantin");
         List<WorkbasketSummary> result2 = query2.list();
         Assert.assertEquals(2, result2.size());
 
-        WorkbasketQuery query3 = workBasketService.createWorkbasketQuery().accessIdsHavePersmission(
+        WorkbasketQuery query3 = workBasketService.createWorkbasketQuery().accessIdsHavePermission(
             WorkbasketAuthorization.CUSTOM_5,
             "Bernd", "Konstantin");
         List<WorkbasketSummary> result3 = query3.list();
         Assert.assertEquals(0, result3.size());
 
-        WorkbasketQuery query4 = workBasketService.createWorkbasketQuery().accessIdsHavePersmission(
+        WorkbasketQuery query4 = workBasketService.createWorkbasketQuery().accessIdsHavePermission(
             WorkbasketAuthorization.CUSTOM_1,
             "Bernd");
         List<WorkbasketSummary> result4 = query4.list();

@@ -3,6 +3,7 @@ package pro.taskana;
 import java.time.Instant;
 
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.WorkbasketType;
 
@@ -151,7 +152,7 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      * @throws InvalidArgumentException
      *             when permission OR the accessIds are NULL.
      */
-    WorkbasketQuery accessIdsHavePersmission(WorkbasketAuthorization permission, String... accessIds)
+    WorkbasketQuery accessIdsHavePermission(WorkbasketAuthorization permission, String... accessIds)
         throws InvalidArgumentException;
 
     /**
@@ -159,12 +160,52 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      * by default.<br>
      * The UserContext-AccessIds and the given permission will throw a Exception if they would be NULL.
      *
+     * @return the current query object.
      * @param permission
      *            which should be used for results.
-     * @return the current query object.
      * @throws InvalidArgumentException
      *             when permission OR accessIds of the userContext are NULL.
      */
     WorkbasketQuery callerHasPermission(WorkbasketAuthorization permission) throws InvalidArgumentException;
+
+    /**
+     * Sort the query result by name.
+     *
+     * @return the query
+     * @throws InvalidArgumentException
+     *             when orderByName() has already been called.
+     * @throws InvalidRequestException
+     *             when orderByName() has already been called.
+     */
+    WorkbasketQuery orderByName() throws InvalidArgumentException, InvalidRequestException;
+
+    /**
+     * Sort the query result by key.
+     *
+     * @return the query
+     * @throws InvalidRequestException
+     *             when orderByKey() has already been called.
+     */
+    WorkbasketQuery orderByKey() throws InvalidRequestException;
+
+    /**
+     * Sort the query result in ascending order.
+     *
+     * @return the query
+     * @throws InvalidRequestException
+     *             when neither orderByKey() nor orderByName has already been called previously or when ascending() or
+     *             descending() has been called immediately before this call
+     */
+    WorkbasketQuery ascending() throws InvalidRequestException;
+
+    /**
+     * Sort the query result in descending order.
+     *
+     * @return the query
+     * @throws InvalidRequestException
+     *             when neither orderByKey() nor orderByName has already been called previously or when ascending() or
+     *             descending() has been called immediately before this call
+     */
+    WorkbasketQuery descending() throws InvalidRequestException;
 
 }

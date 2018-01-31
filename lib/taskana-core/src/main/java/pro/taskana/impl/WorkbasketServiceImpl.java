@@ -302,7 +302,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public WorkbasketQuery createWorkbasketQuery() {
-        return new WorkbasketQueryImpl(taskanaEngine, workbasketAccessMapper);
+        return new WorkbasketQueryImpl(taskanaEngine);
     }
 
     private void validateWorkbasket(Workbasket workbasket) throws InvalidWorkbasketException {
