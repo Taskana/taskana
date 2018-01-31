@@ -18,7 +18,8 @@ import pro.taskana.model.WorkbasketAccessItem;
  */
 public interface WorkbasketAccessMapper {
 
-    @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8 FROM WORKBASKET_ACCESS_LIST WHERE ID = #{id}")
+    @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
+            + "FROM WORKBASKET_ACCESS_LIST WHERE ID = #{id}")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
@@ -35,10 +36,15 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8"),
+        @Result(property = "permCustom9", column = "PERM_CUSTOM_9"),
+        @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
+        @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
+        @Result(property = "permCustom12", column = "PERM_CUSTOM_12") })
     WorkbasketAccessItem findById(@Param("id") String id);
 
-    @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8 FROM WORKBASKET_ACCESS_LIST WHERE ACCESS_ID = #{accessId}")
+    @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
+            + "FROM WORKBASKET_ACCESS_LIST WHERE ACCESS_ID = #{accessId}")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
@@ -55,10 +61,15 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8"),
+        @Result(property = "permCustom9", column = "PERM_CUSTOM_9"),
+        @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
+        @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
+        @Result(property = "permCustom12", column = "PERM_CUSTOM_12") })
     List<WorkbasketAccessItem> findByAccessId(@Param("accessId") String accessId);
 
-    @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8 FROM WORKBASKET_ACCESS_LIST WHERE WORKBASKET_KEY = #{key}")
+    @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
+            + "FROM WORKBASKET_ACCESS_LIST WHERE WORKBASKET_KEY = #{key}")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
@@ -75,10 +86,15 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8"),
+        @Result(property = "permCustom9", column = "PERM_CUSTOM_9"),
+        @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
+        @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
+        @Result(property = "permCustom12", column = "PERM_CUSTOM_12") })
     List<WorkbasketAccessItem> findByWorkbasketKey(@Param("key") String key);
 
-    @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8 FROM WORKBASKET_ACCESS_LIST ORDER BY ID")
+    @Select("SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
+            + "FROM WORKBASKET_ACCESS_LIST ORDER BY ID")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
@@ -95,22 +111,26 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8"),
+        @Result(property = "permCustom9", column = "PERM_CUSTOM_9"),
+        @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
+        @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
+        @Result(property = "permCustom12", column = "PERM_CUSTOM_12") })
     List<WorkbasketAccessItem> findAll();
 
-    @Insert("INSERT INTO WORKBASKET_ACCESS_LIST (ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8) "
-        + "VALUES (#{workbasketAccessItem.id}, #{workbasketAccessItem.workbasketKey}, #{workbasketAccessItem.accessId}, #{workbasketAccessItem.permRead}, #{workbasketAccessItem.permOpen}, #{workbasketAccessItem.permAppend}, #{workbasketAccessItem.permTransfer}, #{workbasketAccessItem.permDistribute}, #{workbasketAccessItem.permCustom1}, #{workbasketAccessItem.permCustom2}, #{workbasketAccessItem.permCustom3}, #{workbasketAccessItem.permCustom4}, #{workbasketAccessItem.permCustom5}, #{workbasketAccessItem.permCustom6}, #{workbasketAccessItem.permCustom7}, #{workbasketAccessItem.permCustom8})")
+    @Insert("INSERT INTO WORKBASKET_ACCESS_LIST (ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12) "
+        + "VALUES (#{workbasketAccessItem.id}, #{workbasketAccessItem.workbasketKey}, #{workbasketAccessItem.accessId}, #{workbasketAccessItem.permRead}, #{workbasketAccessItem.permOpen}, #{workbasketAccessItem.permAppend}, #{workbasketAccessItem.permTransfer}, #{workbasketAccessItem.permDistribute}, #{workbasketAccessItem.permCustom1}, #{workbasketAccessItem.permCustom2}, #{workbasketAccessItem.permCustom3}, #{workbasketAccessItem.permCustom4}, #{workbasketAccessItem.permCustom5}, #{workbasketAccessItem.permCustom6}, #{workbasketAccessItem.permCustom7}, #{workbasketAccessItem.permCustom8}, #{workbasketAccessItem.permCustom9}, #{workbasketAccessItem.permCustom10}, #{workbasketAccessItem.permCustom11}, #{workbasketAccessItem.permCustom12})")
     @Options(keyProperty = "id", keyColumn = "ID")
     void insert(@Param("workbasketAccessItem") WorkbasketAccessItem workbasketAccessItem);
 
-    @Update("UPDATE WORKBASKET_ACCESS_LIST SET WORKBASKET_KEY = #{workbasketAccessItem.workbasketKey}, ACCESS_ID = #{workbasketAccessItem.accessId}, PERM_READ = #{workbasketAccessItem.permRead}, PERM_OPEN = #{workbasketAccessItem.permOpen}, PERM_APPEND = #{workbasketAccessItem.permAppend}, PERM_TRANSFER = #{workbasketAccessItem.permTransfer}, PERM_DISTRIBUTE = #{workbasketAccessItem.permDistribute}, PERM_CUSTOM_1 = #{workbasketAccessItem.permCustom1}, PERM_CUSTOM_2 = #{workbasketAccessItem.permCustom2}, PERM_CUSTOM_3 = #{workbasketAccessItem.permCustom3}, PERM_CUSTOM_4 = #{workbasketAccessItem.permCustom4}, PERM_CUSTOM_5 = #{workbasketAccessItem.permCustom5}, PERM_CUSTOM_6 = #{workbasketAccessItem.permCustom6}, PERM_CUSTOM_7 = #{workbasketAccessItem.permCustom7}, PERM_CUSTOM_8 = #{workbasketAccessItem.permCustom8} "
+    @Update("UPDATE WORKBASKET_ACCESS_LIST SET WORKBASKET_KEY = #{workbasketAccessItem.workbasketKey}, ACCESS_ID = #{workbasketAccessItem.accessId}, PERM_READ = #{workbasketAccessItem.permRead}, PERM_OPEN = #{workbasketAccessItem.permOpen}, PERM_APPEND = #{workbasketAccessItem.permAppend}, PERM_TRANSFER = #{workbasketAccessItem.permTransfer}, PERM_DISTRIBUTE = #{workbasketAccessItem.permDistribute}, PERM_CUSTOM_1 = #{workbasketAccessItem.permCustom1}, PERM_CUSTOM_2 = #{workbasketAccessItem.permCustom2}, PERM_CUSTOM_3 = #{workbasketAccessItem.permCustom3}, PERM_CUSTOM_4 = #{workbasketAccessItem.permCustom4}, PERM_CUSTOM_5 = #{workbasketAccessItem.permCustom5}, PERM_CUSTOM_6 = #{workbasketAccessItem.permCustom6}, PERM_CUSTOM_7 = #{workbasketAccessItem.permCustom7}, PERM_CUSTOM_8 = #{workbasketAccessItem.permCustom8}, PERM_CUSTOM_9 = #{workbasketAccessItem.permCustom9}, PERM_CUSTOM_10 = #{workbasketAccessItem.permCustom10}, PERM_CUSTOM_11 = #{workbasketAccessItem.permCustom11}, PERM_CUSTOM_12 = #{workbasketAccessItem.permCustom12} "
         + "WHERE id = #{workbasketAccessItem.id}")
     void update(@Param("workbasketAccessItem") WorkbasketAccessItem workbasketAccessItem);
 
     @Delete("DELETE FROM WORKBASKET_ACCESS_LIST where id = #{id}")
     void delete(@Param("id") String id);
 
-    @Select("<script>SELECT MAX(PERM_READ) AS P_READ, MAX(PERM_OPEN) AS P_OPEN, MAX(PERM_APPEND) AS P_APPEND, MAX(PERM_TRANSFER) AS P_TRANSFER, MAX(PERM_DISTRIBUTE) AS P_DISTRIBUTE, MAX(PERM_CUSTOM_1) AS P_CUSTOM_1, MAX(PERM_CUSTOM_2) AS P_CUSTOM_2, MAX(PERM_CUSTOM_3) AS P_CUSTOM_3, MAX(PERM_CUSTOM_4) AS P_CUSTOM_4, MAX(PERM_CUSTOM_5) AS P_CUSTOM_5, MAX(PERM_CUSTOM_6) AS P_CUSTOM_6, MAX(PERM_CUSTOM_7) AS P_CUSTOM_7, MAX(PERM_CUSTOM_8) AS P_CUSTOM_8 "
+    @Select("<script>SELECT MAX(PERM_READ) AS P_READ, MAX(PERM_OPEN) AS P_OPEN, MAX(PERM_APPEND) AS P_APPEND, MAX(PERM_TRANSFER) AS P_TRANSFER, MAX(PERM_DISTRIBUTE) AS P_DISTRIBUTE, MAX(PERM_CUSTOM_1) AS P_CUSTOM_1, MAX(PERM_CUSTOM_2) AS P_CUSTOM_2, MAX(PERM_CUSTOM_3) AS P_CUSTOM_3, MAX(PERM_CUSTOM_4) AS P_CUSTOM_4, MAX(PERM_CUSTOM_5) AS P_CUSTOM_5, MAX(PERM_CUSTOM_6) AS P_CUSTOM_6, MAX(PERM_CUSTOM_7) AS P_CUSTOM_7, MAX(PERM_CUSTOM_8) AS P_CUSTOM_8, MAX(PERM_CUSTOM_9) AS P_CUSTOM_9, MAX(PERM_CUSTOM_10) AS P_CUSTOM_10, MAX(PERM_CUSTOM_11) AS P_CUSTOM_11, MAX(PERM_CUSTOM_12) AS P_CUSTOM_12 "
             + "FROM WORKBASKET_ACCESS_LIST "
             + "WHERE WORKBASKET_KEY = #{workbasketKey} "
             + "AND ACCESS_ID IN(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>)"
@@ -128,11 +148,15 @@ public interface WorkbasketAccessMapper {
             @Result(property = "permCustom5", column = "P_CUSTOM_5"),
             @Result(property = "permCustom6", column = "P_CUSTOM_6"),
             @Result(property = "permCustom7", column = "P_CUSTOM_7"),
-            @Result(property = "permCustom8", column = "P_CUSTOM_8") })
+            @Result(property = "permCustom8", column = "P_CUSTOM_8"),
+            @Result(property = "permCustom9", column = "P_CUSTOM_9"),
+            @Result(property = "permCustom10", column = "P_CUSTOM_10"),
+            @Result(property = "permCustom11", column = "P_CUSTOM_11"),
+            @Result(property = "permCustom12", column = "P_CUSTOM_12") })
     WorkbasketAccessItem findByWorkbasketAndAccessId(
             @Param("workbasketKey") String workbasketKey, @Param("accessIds") List<String> accessIds);
 
-    @Select("<script>SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8 "
+    @Select("<script>SELECT ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
         + "FROM WORKBASKET_ACCESS_LIST "
         + "WHERE WORKBASKET_KEY = #{workbasketKey} "
         + "AND ACCESS_ID IN(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>)"
@@ -148,7 +172,11 @@ public interface WorkbasketAccessMapper {
         + "<if test=\"authorization == 'CUSTOM_5'\">PERM_CUSTOM_5</if>"
         + "<if test=\"authorization == 'CUSTOM_6'\">PERM_CUSTOM_6</if>"
         + "<if test=\"authorization == 'CUSTOM_7'\">PERM_CUSTOM_7</if>"
-        + "<if test=\"authorization == 'CUSTOM_8'\">PERM_CUSTOM_8</if> = 1</script>")
+        + "<if test=\"authorization == 'CUSTOM_8'\">PERM_CUSTOM_8</if>"
+        + "<if test=\"authorization == 'CUSTOM_9'\">PERM_CUSTOM_9</if>"
+        + "<if test=\"authorization == 'CUSTOM_10'\">PERM_CUSTOM_10</if>"
+        + "<if test=\"authorization == 'CUSTOM_11'\">PERM_CUSTOM_11</if>"
+        + "<if test=\"authorization == 'CUSTOM_12'\">PERM_CUSTOM_12</if> = 1</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
@@ -165,7 +193,11 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
         @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
         @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8") })
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8"),
+        @Result(property = "permCustom9", column = "PERM_CUSTOM_9"),
+        @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
+        @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
+        @Result(property = "permCustom12", column = "PERM_CUSTOM_12") })
     List<WorkbasketAccessItem> findByWorkbasketAndAccessIdAndAuthorization(
         @Param("workbasketKey") String workbasketKey, @Param("accessIds") List<String> accessIds,
         @Param("authorization") String authorization);

@@ -23,6 +23,10 @@ public class WorkbasketAccessItem {
     private boolean permCustom6;
     private boolean permCustom7;
     private boolean permCustom8;
+    private boolean permCustom9;
+    private boolean permCustom10;
+    private boolean permCustom11;
+    private boolean permCustom12;
 
     public String getId() {
         return id;
@@ -156,6 +160,38 @@ public class WorkbasketAccessItem {
         this.permCustom8 = permCustom8;
     }
 
+    public boolean isPermCustom9() {
+        return permCustom9;
+    }
+
+    public void setPermCustom9(boolean permCustom9) {
+        this.permCustom9 = permCustom9;
+    }
+
+    public boolean isPermCustom10() {
+        return permCustom10;
+    }
+
+    public void setPermCustom10(boolean permCustom10) {
+        this.permCustom10 = permCustom10;
+    }
+
+    public boolean isPermCustom11() {
+        return permCustom11;
+    }
+
+    public void setPermCustom11(boolean permCustom11) {
+        this.permCustom11 = permCustom11;
+    }
+
+    public boolean isPermCustom12() {
+        return permCustom12;
+    }
+
+    public void setPermCustom12(boolean permCustom12) {
+        this.permCustom12 = permCustom12;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -191,6 +227,14 @@ public class WorkbasketAccessItem {
         builder.append(permCustom7);
         builder.append(", permCustom8=");
         builder.append(permCustom8);
+        builder.append(", permCustom9=");
+        builder.append(permCustom9);
+        builder.append(", permCustom10=");
+        builder.append(permCustom10);
+        builder.append(", permCustom11=");
+        builder.append(permCustom11);
+        builder.append(", permCustom12=");
+        builder.append(permCustom12);
         builder.append("]");
         return builder.toString();
     }
