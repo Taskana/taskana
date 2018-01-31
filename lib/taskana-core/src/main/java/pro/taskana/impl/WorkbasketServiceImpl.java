@@ -364,6 +364,18 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         if (workbasketAccessItem.isPermCustom8()) {
             permissions.add(WorkbasketAuthorization.CUSTOM_8);
         }
+        if (workbasketAccessItem.isPermCustom9()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_9);
+        }
+        if (workbasketAccessItem.isPermCustom10()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_10);
+        }
+        if (workbasketAccessItem.isPermCustom11()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_11);
+        }
+        if (workbasketAccessItem.isPermCustom12()) {
+            permissions.add(WorkbasketAuthorization.CUSTOM_12);
+        }
     }
 
     @Override

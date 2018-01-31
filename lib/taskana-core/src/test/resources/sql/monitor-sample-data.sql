@@ -57,10 +57,10 @@ INSERT INTO WORKBASKET VALUES ('WBI:000000000000000000000000000000000003', 'USER
 INSERT INTO WORKBASKET VALUES ('WBI:000000000000000000000000000000000004', 'USER_1_4', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'PPK User 1 KSC 4', 'MONITOR_TEST_DOMAIN', 'PERSONAL', 'Monitor Test Postkorb 4', '', '', '', '', '', '', '', '', '');
 
 -- WorkbasketAccessLists
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:000000000000000000000000000000000001', 'USER_1_1', 'monitor_user_1', true, true, true, true, false, false, false, false, false, false, false, false, false);
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:000000000000000000000000000000000002', 'USER_1_2', 'monitor_user_1', true, true, true, true, false, false, false, false, false, false, false, false, false);
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:000000000000000000000000000000000003', 'USER_1_3', 'monitor_user_1', true, true, true, true, false, false, false, false, false, false, false, false, false);
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:000000000000000000000000000000000004', 'USER_1_4', 'monitor_user_1', true, true, true, true, false, false, false, false, false, false, false, false, false);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:000000000000000000000000000000000001', 'USER_1_1', 'monitor_user_1', true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:000000000000000000000000000000000002', 'USER_1_2', 'monitor_user_1', true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:000000000000000000000000000000000003', 'USER_1_3', 'monitor_user_1', true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:000000000000000000000000000000000004', 'USER_1_4', 'monitor_user_1', true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false);
 
 -- Classifications
 INSERT INTO CLASSIFICATION VALUES('CLI:000000000000000000000000000000000001', 'L10000', '', 'EXTERN', 'TASK', '', TRUE, CURRENT_TIMESTAMP, 'OLD-Leistungsfall', 'OLD-Leistungsfall', 999, 'P1D', '', 'VNR,RVNR,KOLVNR', '', '', '', '', '', '', '');
@@ -68,3 +68,4 @@ INSERT INTO CLASSIFICATION VALUES('CLI:000000000000000000000000000000000002', 'L
 INSERT INTO CLASSIFICATION VALUES('CLI:000000000000000000000000000000000003', 'L30000', '', 'AUTOMATIC', 'TASK', '', TRUE, CURRENT_TIMESTAMP, 'Widerruf', 'Widerruf', 1, 'P1D', '', 'VNR,RVNR,KOLVNR', '', '', '', '', '', '', '');
 INSERT INTO CLASSIFICATION VALUES('CLI:000000000000000000000000000000000004', 'L40000', '', 'MANUAL', 'TASK', '', TRUE, CURRENT_TIMESTAMP, 'Dynamikänderung', 'Dynamikänderung', 1, 'P1D', '', 'VNR,RVNR,KOLVNR', '', '', '', '', '', '', '');
 INSERT INTO CLASSIFICATION VALUES('CLI:000000000000000000000000000000000005', 'L50000', 'L11010', 'EXTERN', 'TASK', '', TRUE, CURRENT_TIMESTAMP, 'Dynamik-Ablehnung', 'Dynamik-Ablehnung', 5, 'P5D', '', 'VNR,RVNR,KOLVNR', '', '', '', '', '', '', '');
+
