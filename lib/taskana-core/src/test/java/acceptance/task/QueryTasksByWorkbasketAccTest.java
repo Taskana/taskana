@@ -36,7 +36,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     public void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
+        taskService.createTaskQuery()
             .workbasketKeyIn("USER_2_1")
             .list();
     }
@@ -48,7 +48,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     public void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
+        taskService.createTaskQuery()
             .workbasketKeyIn("USER_1_1", "USER_2_1")
             .list();
     }

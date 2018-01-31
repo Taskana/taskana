@@ -2,9 +2,9 @@ package pro.taskana.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import java.util.List;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +14,7 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.TaskState;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -24,9 +25,9 @@ import pro.taskana.model.WorkbasketAuthorization;
 public class TaskQueryImpl implements TaskQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryTasks";
+    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryTasks";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
-    private ClassificationServiceImpl classificationService;
     private TaskServiceImpl taskService;
     private String[] name;
     private String description;
@@ -53,7 +54,6 @@ public class TaskQueryImpl implements TaskQuery {
 
     public TaskQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-        this.classificationService = (ClassificationServiceImpl) taskanaEngineImpl.getClassificationService();
         this.taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
     }
 
@@ -196,12 +196,13 @@ public class TaskQueryImpl implements TaskQuery {
 
     @Override
     public List<TaskSummary> list() throws NotAuthorizedException {
-        LOGGER.debug("entry to list(), this = {}", this);
         List<TaskSummary> result = new ArrayList<>();
         try {
+            LOGGER.debug("entry to list(), this = {}", this);
             taskanaEngineImpl.openConnection();
             checkAuthorization();
-            List<TaskSummaryImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            List<TaskSummaryImpl> tasks = new ArrayList<>();
+            tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
         } finally {
@@ -225,6 +226,16 @@ public class TaskQueryImpl implements TaskQuery {
             List<TaskSummaryImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                if (e.getMessage().contains("ERRORCODE=-4470")) {
+                    TaskanaRuntimeException ex = new TaskanaRuntimeException(
+                        "The offset beginning was set over the amount of result-rows.", e.getCause());
+                    ex.setStackTrace(e.getStackTrace());
+                    throw ex;
+                }
+            }
+            throw e;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -255,6 +266,21 @@ public class TaskQueryImpl implements TaskQuery {
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", result);
+        }
+    }
+
+    @Override
+    public long count() throws NotAuthorizedException {
+        LOGGER.debug("entry to count(), this = {}", this);
+        Long rowCount = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            checkAuthorization();
+            rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            return (rowCount == null) ? 0L : rowCount;
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
     }
 

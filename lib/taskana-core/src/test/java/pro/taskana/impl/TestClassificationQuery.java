@@ -103,4 +103,9 @@ public class TestClassificationQuery implements ClassificationQuery {
     public ClassificationSummary single() throws NotAuthorizedException {
         return null;
     }
+
+    @Override
+    public long count() throws NotAuthorizedException {
+        return 0;
+    }
 }
