@@ -121,7 +121,7 @@ public interface WorkbasketService {
      * @param authorization
      *            the needed Authorization
      * @throws NotAuthorizedException
-     *             if the current user has not the requested authorization fot the specified workbasket
+     *             if the current user has not the requested authorization for the specified workbasket
      */
     void checkAuthorization(String workbasketKey, WorkbasketAuthorization authorization) throws NotAuthorizedException;
 
@@ -171,9 +171,68 @@ public interface WorkbasketService {
      * Returns a set with all permissions of the current user at this workbasket.
      *
      * @param workbasketKey
-     *            The key of the referenced workbasket
+     *            the key of the referenced workbasket
      * @return a Set with all permissions
      */
     List<WorkbasketAuthorization> getPermissionsForWorkbasket(String workbasketKey);
+
+    /**
+     * Returns the distribution targets for a given workbasket.
+     *
+     * @param workbasketId
+     *            the id of the referenced workbasket
+     * @return the distribution targets of the specified workbasket
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the specified workbasket
+     * @throws WorkbasketNotFoundException
+     *             if the workbasket doesn't exist
+     */
+    List<WorkbasketSummary> getDistributionTargets(String workbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException;
+
+    /**
+     * Set the distribution targets for a workbasket.
+     *
+     * @param sourceWorkbasketId
+     *            the id of the source workbasket for which the distribution targets are to be set
+     * @param targetWorkbasketIds
+     *            a list of the ids of the target workbaskets
+     * @throws NotAuthorizedException
+     *             if the current used doesn't have READ permission for the source workbasket
+     * @throws WorkbasketNotFoundException
+     *             if either the source workbasket or any of the target workbaskets don't exist
+     */
+    void setDistributionTargets(String sourceWorkbasketId, List<String> targetWorkbasketIds)
+        throws NotAuthorizedException, WorkbasketNotFoundException;
+
+    /**
+     * Add a distribution target to a workbasket. If the specified distribution target exists already, the method
+     * silently returns without doing anything.
+     *
+     * @param sourceWorkbasketId
+     *            the id of the source workbasket
+     * @param targetWorkbasketId
+     *            the id of the target workbasket
+     * @throws NotAuthorizedException
+     *             if the current user doesn't have READ permission for the source workbasket
+     * @throws WorkbasketNotFoundException
+     *             if either the source workbasket or the target workbasket doesn't exist
+     */
+    void addDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException;
+
+    /**
+     * Remove a distribution target from a workbasket. If the the specified distribution target doesn't exist, the
+     * method silently returns without doing anything.
+     *
+     * @param sourceWorkbasketId
+     *            The id of the source workbasket
+     * @param targetWorkbasketId
+     *            The id of the target workbasket
+     * @throws NotAuthorizedException
+     *             If the current user doesn't have READ permission for the source workbasket
+     */
+    void removeDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
+        throws NotAuthorizedException;
 
 }

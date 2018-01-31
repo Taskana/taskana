@@ -113,12 +113,14 @@ public class ClassificationServiceImplTest {
 
         classification = cutSpy.createClassification(classification);
 
+        Thread.sleep(10L);
         verify(taskanaEngineImplMock, times(2)).openConnection();
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, domain);
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, "");
         verify(classificationMapperMock, times(1)).insert(any());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
+        Thread.sleep(15);
         assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
         assertFalse(classification.getCreated().isAfter(Instant.now()));
         assertTrue(classification.getCreated().isAfter(beforeTimestamp));

@@ -4,10 +4,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -323,7 +326,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task updateTask(Task task)
         throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        ClassificationNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        AttachmentPersistenceException {
         String userId = CurrentUserContext.getUserid();
         LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
         TaskImpl newTaskImpl = (TaskImpl) task;
@@ -332,6 +336,8 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.openConnection();
             oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
             standardUpdateActions(oldTaskImpl, newTaskImpl);
+            handleAttachmentsOnTaskUpdate(oldTaskImpl, newTaskImpl);
+            newTaskImpl.setModified(Instant.now());
 
             taskMapper.update(newTaskImpl);
             LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
@@ -387,12 +393,12 @@ public class TaskServiceImpl implements TaskService {
         List<Attachment> attachments = task.getAttachments();
         if (attachments != null) {
             for (Attachment attachment : attachments) {
-                AttachmentImpl attImpl = (AttachmentImpl) attachment;
-                attImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
-                attImpl.setTaskId(task.getId());
-                attImpl.setCreated(now);
-                attImpl.setModified(now);
-                attachmentMapper.insert(attImpl);
+                AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
+                attachmentImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
+                attachmentImpl.setTaskId(task.getId());
+                attachmentImpl.setCreated(now);
+                attachmentImpl.setModified(now);
+                attachmentMapper.insert(attachmentImpl);
             }
         }
 
@@ -512,7 +518,7 @@ public class TaskServiceImpl implements TaskService {
         for (TaskSummaryImpl task : taskSummaries) {
             String workbasketKey = task.getWorkbasketSummaryImpl().getKey();
 
-            // find the appropriate classification from the query result
+            // find the appropriate workbasket from the query result
             WorkbasketSummary aWorkbasket = workbaskets.stream()
                 .filter(x -> workbasketKey != null && workbasketKey.equals(x.getKey()))
                 .findFirst()
@@ -679,12 +685,18 @@ public class TaskServiceImpl implements TaskService {
         if (attachments == null || attachments.isEmpty()) {
             return;
         }
-
-        for (Attachment attachment : attachments) {
-            ObjectReference objRef = attachment.getObjectReference();
-            validateObjectReference(objRef, "ObjectReference", "Attachment");
-            if (attachment.getClassificationSummary() == null) {
-                throw new InvalidArgumentException("Classification of attachment " + attachment + " must not be null");
+        Iterator<Attachment> i = attachments.iterator();
+        while (i.hasNext()) {
+            Attachment attachment = i.next();
+            if (attachment == null) {
+                i.remove();
+            } else {
+                ObjectReference objRef = attachment.getObjectReference();
+                validateObjectReference(objRef, "ObjectReference", "Attachment");
+                if (attachment.getClassificationSummary() == null) {
+                    throw new InvalidArgumentException(
+                        "Classification of attachment " + attachment + " must not be null");
+                }
             }
         }
     }
@@ -751,8 +763,90 @@ public class TaskServiceImpl implements TaskService {
         newTaskImpl.setModified(Instant.now());
     }
 
-    AttachmentMapper getAttachmentMapper() {
-        return attachmentMapper;
+    private void handleAttachmentsOnTaskUpdate(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
+        throws AttachmentPersistenceException {
+        // Iterator for removing invalid current values directly. OldAttachments can be ignored.
+        Iterator<Attachment> i = newTaskImpl.getAttachments().iterator();
+        while (i.hasNext()) {
+            Attachment attachment = i.next();
+            if (attachment != null) {
+                boolean wasAlreadyRepresented = false;
+                if (attachment.getId() != null) {
+                    for (Attachment oldAttachment : oldTaskImpl.getAttachments()) {
+                        if (oldAttachment != null) {
+                            // UPDATE when id is represented but objects are not equal
+                            if (attachment.getId().equals(oldAttachment.getId())) {
+                                wasAlreadyRepresented = true;
+                                if (!attachment.equals(oldAttachment)) {
+                                    AttachmentImpl temp = (AttachmentImpl) attachment;
+                                    temp.setModified(Instant.now());
+                                    attachmentMapper.update(temp);
+                                    LOGGER.debug("TaskService.updateTask() for TaskId={} UPDATED an Attachment={}.",
+                                        newTaskImpl.getId(),
+                                        attachment);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ADD, when ID not set or not found in elements
+                if (!wasAlreadyRepresented) {
+                    AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
+                    initAttachment(attachmentImpl, newTaskImpl);
+                    try {
+                        attachmentMapper.insert(attachmentImpl);
+                        LOGGER.debug("TaskService.updateTask() for TaskId={} INSERTED an Attachment={}.",
+                            newTaskImpl.getId(),
+                            attachmentImpl);
+                    } catch (PersistenceException e) {
+                        LOGGER.error(
+                            "TaskService.updateTask() for TaskId={} can NOT INSERT the current Attachment, because it was added fored multiple times and wasn´t persisted before. ID={}",
+                            newTaskImpl.getId(), attachmentImpl.getId());
+                        throw new AttachmentPersistenceException(attachmentImpl.getId());
+                    }
+
+                }
+            } else {
+                i.remove();
+            }
+        }
+
+        // DELETE, when an Attachment was only represented before
+        for (Attachment oldAttachment : oldTaskImpl.getAttachments()) {
+            if (oldAttachment != null) {
+                boolean isRepresented = false;
+                for (Attachment newAttachment : newTaskImpl.getAttachments()) {
+                    if (newAttachment != null) {
+                        if (oldAttachment.getId().equals(newAttachment.getId())) {
+                            isRepresented = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isRepresented) {
+                    attachmentMapper.deleteAttachment(oldAttachment.getId());
+                    LOGGER.debug("TaskService.updateTask() for TaskId={} DELETED an Attachment={}.",
+                        newTaskImpl.getId(),
+                        oldAttachment);
+                }
+            }
+        }
     }
 
+    private void initAttachment(AttachmentImpl attachment, Task newTask) {
+        if (attachment.getId() == null) {
+            attachment.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
+        }
+        if (attachment.getCreated() == null) {
+            attachment.setCreated(Instant.now());
+        }
+        if (attachment.getModified() == null) {
+            attachment.setModified(attachment.getCreated());
+        }
+        if (attachment.getTaskId() == null) {
+            attachment.setTaskId(newTask.getId());
+        }
+    }
 }

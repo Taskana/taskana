@@ -1,5 +1,8 @@
 package acceptance.task;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -72,12 +75,12 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states);
 
-        Assert.assertNotNull(report);
-        Assert.assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        Assert.assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        Assert.assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
-        Assert.assertEquals(0, report.getDetailLines().get(workbaskets.get(3).getKey()).getTotalNumberOfTasks());
-        Assert.assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
+        assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
+        assertEquals(0, report.getDetailLines().get(workbaskets.get(3).getKey()).getTotalNumberOfTasks());
+        assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
 
     }
 
@@ -104,21 +107,21 @@ public class ProvideWorkbasketLevelReportAccTest {
 
         Assert.assertNotNull(report);
 
-        Assert.assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        Assert.assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        Assert.assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
-        Assert.assertEquals(0, report.getDetailLines().get(workbaskets.get(3).getKey()).getTotalNumberOfTasks());
+        assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
+        assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
+        assertEquals(0, report.getDetailLines().get(workbaskets.get(3).getKey()).getTotalNumberOfTasks());
 
-        Assert.assertEquals(22, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
-        Assert.assertEquals(5, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
-        Assert.assertEquals(3, report.getSumLine().getLineItems().get(2).getNumberOfTasks());
-        Assert.assertEquals(4, report.getSumLine().getLineItems().get(3).getNumberOfTasks());
-        Assert.assertEquals(1, report.getSumLine().getLineItems().get(4).getNumberOfTasks());
-        Assert.assertEquals(4, report.getSumLine().getLineItems().get(5).getNumberOfTasks());
-        Assert.assertEquals(11, report.getSumLine().getLineItems().get(6).getNumberOfTasks());
+        assertEquals(22, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
+        assertEquals(5, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
+        assertEquals(3, report.getSumLine().getLineItems().get(2).getNumberOfTasks());
+        assertEquals(4, report.getSumLine().getLineItems().get(3).getNumberOfTasks());
+        assertEquals(1, report.getSumLine().getLineItems().get(4).getNumberOfTasks());
+        assertEquals(4, report.getSumLine().getLineItems().get(5).getNumberOfTasks());
+        assertEquals(11, report.getSumLine().getLineItems().get(6).getNumberOfTasks());
 
-        Assert.assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
-        Assert.assertEquals(50, sumLineCount);
+        assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
+        assertEquals(50, sumLineCount);
 
     }
 
@@ -136,9 +139,9 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states);
 
-        Assert.assertNotNull(report);
-        Assert.assertEquals(0, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        Assert.assertEquals(0, report.getSumLine().getTotalNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(0, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
+        assertEquals(0, report.getSumLine().getTotalNumberOfTasks());
     }
 
     private List<Workbasket> getListOfWorkbaskets() throws WorkbasketNotFoundException, NotAuthorizedException {

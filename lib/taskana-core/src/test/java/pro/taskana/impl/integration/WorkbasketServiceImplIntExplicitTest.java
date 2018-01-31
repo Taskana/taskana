@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -185,15 +186,15 @@ public class WorkbasketServiceImplIntExplicitTest {
 
         String id2 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
-        workbasket2.setDistributionTargets(new ArrayList<>());
-        workbasket2.getDistributionTargets().add(workbasket0.asSummary());
-        workbasket2.getDistributionTargets().add(workbasket1.asSummary());
         workbasket2 = workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
 
+        List<String> distributionTargets = new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
+        workBasketService.setDistributionTargets(workbasket2.getId(), distributionTargets);
+
         Workbasket foundWorkbasket = workBasketService.getWorkbasket(id2);
         Assert.assertEquals(id2, foundWorkbasket.getId());
-        Assert.assertEquals(2, foundWorkbasket.getDistributionTargets().size());
+        Assert.assertEquals(2, workBasketService.getDistributionTargets(foundWorkbasket.getId()).size());
         connection.commit();
     }
 
@@ -215,29 +216,26 @@ public class WorkbasketServiceImplIntExplicitTest {
 
         String id2 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
-        workbasket2.setDistributionTargets(new ArrayList<>());
-        workbasket2.getDistributionTargets().add(workbasket0.asSummary());
-        workbasket2.getDistributionTargets().add(workbasket1.asSummary());
         workbasket2 = workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
+
+        List<String> distTargets = new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
+        Thread.sleep(20L);
+        workBasketService.setDistributionTargets(workbasket2.getId(), distTargets);
 
         String id3 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket3 = createTestWorkbasket(id3, "key3", "novatec", "hm ... irgend ein basket",
             WorkbasketType.GROUP);
-        workbasket3.setDistributionTargets(new ArrayList<>());
-        workbasket3.getDistributionTargets().add(workbasket0.asSummary());
-        workbasket3.getDistributionTargets().add(workbasket1.asSummary());
         workbasket3 = workBasketService.createWorkbasket(workbasket3);
         createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
 
-        workbasket2.getDistributionTargets().clear();
-        workbasket2.getDistributionTargets().add(workbasket3.asSummary());
-        Thread.sleep(SLEEP_TIME);
-        workbasket2 = workBasketService.updateWorkbasket(workbasket2);
+        List<String> newDistTargets = new ArrayList<>(Arrays.asList(workbasket3.getId()));
+        Thread.sleep(20L);
+        workBasketService.setDistributionTargets(workbasket2.getId(), newDistTargets);
 
         Workbasket foundBasket = workBasketService.getWorkbasket(workbasket2.getId());
 
-        List<WorkbasketSummary> distributionTargets = foundBasket.getDistributionTargets();
+        List<WorkbasketSummary> distributionTargets = workBasketService.getDistributionTargets(foundBasket.getId());
         Assert.assertEquals(1, distributionTargets.size());
         Assert.assertEquals(workbasket3.getId(), distributionTargets.get(0).getId());
         Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),

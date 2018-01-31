@@ -201,4 +201,43 @@ public interface WorkbasketAccessMapper {
     List<WorkbasketAccessItem> findByWorkbasketAndAccessIdAndAuthorization(
         @Param("workbasketKey") String workbasketKey, @Param("accessIds") List<String> accessIds,
         @Param("authorization") String authorization);
+    @Select("<script>SELECT A.ID, A.WORKBASKET_KEY, A.ACCESS_ID, A.PERM_READ, A.PERM_OPEN, A.PERM_APPEND, A.PERM_TRANSFER, A.PERM_DISTRIBUTE, A.PERM_CUSTOM_1, A.PERM_CUSTOM_2, A.PERM_CUSTOM_3, A.PERM_CUSTOM_4, A.PERM_CUSTOM_5, A.PERM_CUSTOM_6, A.PERM_CUSTOM_7, A.PERM_CUSTOM_8 "
+        + "FROM WORKBASKET_ACCESS_LIST AS A "
+        + "LEFT JOIN WORKBASKET AS W ON A.WORKBASKET_KEY = W.KEY "
+        + "WHERE W.ID = #{workbasketId} "
+        + "AND A.ACCESS_ID IN(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>)"
+        + "AND <if test=\"authorization == 'OPEN'\">PERM_OPEN</if>"
+        + "<if test=\"authorization == 'READ'\">PERM_READ</if>"
+        + "<if test=\"authorization == 'APPEND'\">PERM_APPEND</if>"
+        + "<if test=\"authorization == 'TRANSFER'\">PERM_TRANSFER</if>"
+        + "<if test=\"authorization == 'DISTRIBUTE'\">PERM_DISTRIBUTE</if>"
+        + "<if test=\"authorization == 'CUSTOM_1'\">PERM_CUSTOM_1</if>"
+        + "<if test=\"authorization == 'CUSTOM_2'\">PERM_CUSTOM_2</if>"
+        + "<if test=\"authorization == 'CUSTOM_3'\">PERM_CUSTOM_3</if>"
+        + "<if test=\"authorization == 'CUSTOM_4'\">PERM_CUSTOM_4</if>"
+        + "<if test=\"authorization == 'CUSTOM_5'\">PERM_CUSTOM_5</if>"
+        + "<if test=\"authorization == 'CUSTOM_6'\">PERM_CUSTOM_6</if>"
+        + "<if test=\"authorization == 'CUSTOM_7'\">PERM_CUSTOM_7</if>"
+        + "<if test=\"authorization == 'CUSTOM_8'\">PERM_CUSTOM_8</if> = 1</script>")
+    @Results(value = {
+        @Result(property = "id", column = "ID"),
+        @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
+        @Result(property = "accessId", column = "ACCESS_ID"),
+        @Result(property = "permRead", column = "PERM_READ"),
+        @Result(property = "permOpen", column = "PERM_OPEN"),
+        @Result(property = "permAppend", column = "PERM_APPEND"),
+        @Result(property = "permTransfer", column = "PERM_TRANSFER"),
+        @Result(property = "permDistribute", column = "PERM_DISTRIBUTE"),
+        @Result(property = "permCustom1", column = "PERM_CUSTOM_1"),
+        @Result(property = "permCustom2", column = "PERM_CUSTOM_2"),
+        @Result(property = "permCustom3", column = "PERM_CUSTOM_3"),
+        @Result(property = "permCustom4", column = "PERM_CUSTOM_4"),
+        @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
+        @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
+        @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8")})
+    List<WorkbasketAccessItem> findByWorkbasketAndAccessIdAndAuthorizationsById(
+        @Param("workbasketId") String workbasketId, @Param("accessIds") List<String> accessIds,
+        @Param("authorization") String authorization);
+
 }
