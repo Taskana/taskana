@@ -82,9 +82,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         task.setPrimaryObjRef(null);
-        Task updatedTask = null;
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
@@ -92,7 +91,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
@@ -100,28 +99,28 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
         task.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
@@ -209,7 +208,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         ((TaskImpl) task).setWorkbasketKey("USER_2_2");
-        Task updatedTask = taskService.updateTask(task);
+        taskService.updateTask(task);
     }
 
     @AfterClass

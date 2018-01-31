@@ -52,10 +52,10 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(
-            userName = "user_1_1",
-            groupNames = {"group_1"})
-        @Test
-        public void testGetWorkbasketPermissions() {
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testGetWorkbasketPermissions() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketAuthorization> permissions = workbasketService.getPermissionsForWorkbasket("USER_1_2");
 
@@ -71,7 +71,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         InvalidWorkbasketException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        Workbasket workbasket = workbasketService.getWorkbasket("INVALID_ID");
+        workbasketService.getWorkbasket("INVALID_ID");
     }
 
     @Test(expected = NotAuthorizedException.class)
@@ -79,7 +79,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         InvalidWorkbasketException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        Workbasket workbasket = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
+        workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
     }
 
     @AfterClass
