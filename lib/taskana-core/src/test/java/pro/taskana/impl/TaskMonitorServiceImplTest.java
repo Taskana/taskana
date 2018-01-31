@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -138,20 +139,20 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setKey("wb1");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).findByWorkbasketIdsAndStates(workbaskets,
-            states);
+        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbasketsByWorkbasketsAndStates(
+            workbaskets, states);
 
         Report actualResult = cut.getWorkbasketLevelReport(workbaskets, states);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).findByWorkbasketIdsAndStates(any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbasketsByWorkbasketsAndStates(any(), any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertThat(actualResult.getDetailLines().get(workbasket.getKey()).getTotalNumberOfTasks(), equalTo(1));
-        assertThat(actualResult.getSumLine().getTotalNumberOfTasks(), equalTo(1));
+        assertEquals(actualResult.getDetailLines().get(workbasket.getKey()).getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }
 
     @Test
@@ -170,22 +171,83 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).findByWorkbasketIdsAndStates(workbaskets,
-            states);
+        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbasketsByWorkbasketsAndStates(
+            workbaskets, states);
 
         Report actualResult = cut.getWorkbasketLevelReport(workbaskets, states, reportLineItemDefinitions);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).findByWorkbasketIdsAndStates(any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbasketsByWorkbasketsAndStates(any(), any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertThat(actualResult.getDetailLines().get(workbasket.getKey()).getTotalNumberOfTasks(), equalTo(1));
-        assertThat(actualResult.getDetailLines().get(workbasket.getKey()).getLineItems().get(0).getNumberOfTasks(),
-            equalTo(1));
-        assertThat(actualResult.getSumLine().getTotalNumberOfTasks(), equalTo(1));
+        assertEquals(actualResult.getDetailLines().get(workbasket.getKey()).getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getDetailLines().get(workbasket.getKey()).getLineItems().get(0).getNumberOfTasks(),
+            1);
+        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }
 
+    @Test
+    public void testGetTotalNumbersOfCatgoryReport() {
+        Workbasket workbasket = new WorkbasketImpl();
+        workbasket.setName("workbasket");
+        workbasket.setKey("wb1");
+        List<Workbasket> workbaskets = Arrays.asList(workbasket);
+        List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        monitorQueryItem.setKey("EXTERN");
+        monitorQueryItem.setNumberOfTasks(1);
+        expectedResult.add(monitorQueryItem);
+        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategoriesByWorkbasketsAndStates(
+            workbaskets, states);
+
+        Report actualResult = cut.getCategoryReport(workbaskets, states);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategoriesByWorkbasketsAndStates(any(), any());
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+            taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+
+        assertNotNull(actualResult);
+        assertEquals(actualResult.getDetailLines().get("EXTERN").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+    }
+
+    @Test
+    public void testGetCategoryReportWithReportLineItemDefinitions() {
+        Workbasket workbasket = new WorkbasketImpl();
+        workbasket.setName("workbasket");
+        workbasket.setKey("wb1");
+        List<Workbasket> workbaskets = Arrays.asList(workbasket);
+        List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
+            new ReportLineItemDefinition());
+
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        monitorQueryItem.setKey("EXTERN");
+        monitorQueryItem.setAgeInDays(0);
+        monitorQueryItem.setNumberOfTasks(1);
+        expectedResult.add(monitorQueryItem);
+        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategoriesByWorkbasketsAndStates(
+            workbaskets, states);
+
+        Report actualResult = cut.getCategoryReport(workbaskets, states, reportLineItemDefinitions);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategoriesByWorkbasketsAndStates(any(), any());
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+            taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+
+        assertNotNull(actualResult);
+        assertEquals(actualResult.getDetailLines().get("EXTERN").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getDetailLines().get("EXTERN").getLineItems().get(0).getNumberOfTasks(), 1);
+        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+    }
 }

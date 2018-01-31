@@ -13,7 +13,6 @@ import javax.sql.DataSource;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,10 +37,10 @@ import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
 /**
- * Acceptance test for all "workbasket level report" scenarios.
+ * Acceptance test for all "category report" scenarios.
  */
 @RunWith(JAASRunner.class)
-public class ProvideWorkbasketLevelReportAccTest {
+public class ProvideCategoryReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
@@ -66,36 +65,40 @@ public class ProvideWorkbasketLevelReportAccTest {
 
     @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetTotalNumbersOfTasksOfWorkbasketLevelReport()
+    public void testGetTotalNumbersOfTasksOfCategoryReport()
         throws WorkbasketNotFoundException, NotAuthorizedException {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states);
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
+        Report report = taskMonitorService.getCategoryReport(workbaskets, states);
 
         assertNotNull(report);
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(0, report.getDetailLines().get(workbaskets.get(3).getKey()).getTotalNumberOfTasks());
+        assertEquals(33, report.getDetailLines().get(categories.get(0)).getTotalNumberOfTasks());
+        assertEquals(7, report.getDetailLines().get(categories.get(1)).getTotalNumberOfTasks());
+        assertEquals(10, report.getDetailLines().get(categories.get(2)).getTotalNumberOfTasks());
+        assertEquals(0, report.getDetailLines().get(categories.get(0)).getLineItems().size());
+        assertEquals(0, report.getDetailLines().get(categories.get(1)).getLineItems().size());
+        assertEquals(0, report.getDetailLines().get(categories.get(2)).getLineItems().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
 
     }
 
     @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetWorkbasketLevelReportWithReportLineItemDefinitions()
+    public void testGetCategoryReportWithReportLineItemDefinitions()
         throws WorkbasketNotFoundException, NotAuthorizedException {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states, reportLineItemDefinitions);
+        Report report = taskMonitorService.getCategoryReport(workbaskets, states, reportLineItemDefinitions);
 
         int sumLineCount = report.getSumLine().getLineItems().get(0).getNumberOfTasks()
             + report.getSumLine().getLineItems().get(1).getNumberOfTasks()
@@ -105,12 +108,10 @@ public class ProvideWorkbasketLevelReportAccTest {
             + report.getSumLine().getLineItems().get(5).getNumberOfTasks()
             + report.getSumLine().getLineItems().get(6).getNumberOfTasks();
 
-        Assert.assertNotNull(report);
-
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(0, report.getDetailLines().get(workbaskets.get(3).getKey()).getTotalNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(33, report.getDetailLines().get(categories.get(0)).getTotalNumberOfTasks());
+        assertEquals(7, report.getDetailLines().get(categories.get(1)).getTotalNumberOfTasks());
+        assertEquals(10, report.getDetailLines().get(categories.get(2)).getTotalNumberOfTasks());
 
         assertEquals(22, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(5, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
@@ -127,7 +128,7 @@ public class ProvideWorkbasketLevelReportAccTest {
 
     @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetWorkbasketLevelReportIfWorkbasketContainsNoTask()
+    public void testGetCategoryReportIfWorkbasketContainsNoTask()
         throws WorkbasketNotFoundException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -137,10 +138,10 @@ public class ProvideWorkbasketLevelReportAccTest {
             .getWorkbasket("WBI:000000000000000000000000000000000004");
         workbaskets.add(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states);
+        Report report = taskMonitorService.getCategoryReport(workbaskets, states);
 
         assertNotNull(report);
-        assertEquals(0, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
+        assertEquals(0, report.getDetailLines().size());
         assertEquals(0, report.getSumLine().getTotalNumberOfTasks());
     }
 
