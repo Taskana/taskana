@@ -121,9 +121,8 @@ public class TaskServiceImplIntExplicitTest {
         taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
         taskanaEngineImpl.getClassificationService().createClassification(classification);
         connection.commit();
-        Task task = taskServiceImpl.newTask();
+        Task task = taskServiceImpl.newTask(workbasket.getKey());
         task.setName("Unit Test Task");
-        task.setWorkbasketKey(workbasket.getKey());
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
@@ -196,9 +195,8 @@ public class TaskServiceImplIntExplicitTest {
         Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
         classification = classificationServiceImpl.createClassification(classification);
 
-        Task task = taskServiceImpl.newTask();
+        Task task = taskServiceImpl.newTask(workbasket.getKey());
         task.setName("Unit Test Task");
-        task.setWorkbasketKey(workbasket.getKey());
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task.addAttachment(null);
@@ -251,8 +249,7 @@ public class TaskServiceImplIntExplicitTest {
         wb.setKey("k1");
         workbasketService.createWorkbasket(wb);
 
-        Task test = taskServiceImpl.newTask();
-        test.setWorkbasketKey("k1");
+        Task test = taskServiceImpl.newTask("k1");
         test.setPrimaryObjRef(objectReference);
         test.setPlanned(tomorrow);
         test.setClassificationKey(classification.getKey());
@@ -267,8 +264,7 @@ public class TaskServiceImplIntExplicitTest {
         Assert.assertNotEquals(resultTask.getPlanned(), resultTask.getCreated());
         Assert.assertNotNull(resultTask.getDue());
 
-        Task task2 = taskServiceImpl.newTask();
-        task2.setWorkbasketKey(task.getWorkbasketKey());
+        Task task2 = taskServiceImpl.newTask(task.getWorkbasketKey());
         task2.setClassificationKey(classification.getKey());
         task2.setPrimaryObjRef(objectReference);
         task2.setDescription("desc");
@@ -295,7 +291,7 @@ public class TaskServiceImplIntExplicitTest {
         generateSampleAccessItems();
 
         Task test = this.generateDummyTask();
-        test.setWorkbasketKey("2");
+        ((TaskImpl) test).setWorkbasketKey("2");
         taskServiceImpl.createTask(test);
     }
 
@@ -324,7 +320,7 @@ public class TaskServiceImplIntExplicitTest {
         classification.setName("not persisted - so not found.");
 
         Task task = this.generateDummyTask();
-        task.setWorkbasketKey(wb.getKey());
+        ((TaskImpl) task).setWorkbasketKey(wb.getKey());
         task.setClassificationKey(classification.getKey());
         taskServiceImpl.createTask(task);
     }
@@ -349,9 +345,8 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setDomain("novatec");
         workbasket = (WorkbasketImpl) workbasketService.createWorkbasket(workbasket);
 
-        Task task = taskServiceImpl.newTask();
+        Task task = taskServiceImpl.newTask("k1");
         task.setName("Unit Test Task");
-        task.setWorkbasketKey("k1");
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
@@ -424,10 +419,9 @@ public class TaskServiceImplIntExplicitTest {
         classificationService.createClassification(classification);
 
         // Task which should be transfered
-        task = (TaskImpl) taskServiceImpl.newTask();
+        task = (TaskImpl) taskServiceImpl.newTask(sourceWB.getKey());
         task.setName("Task Name");
         task.setDescription("Task used for transfer Test");
-        task.setWorkbasketKey(sourceWB.getKey());
         task.setRead(true);
         task.setTransferred(false);
         task.setModified(null);
@@ -512,10 +506,9 @@ public class TaskServiceImplIntExplicitTest {
         wbNoTransfer = (WorkbasketImpl) workbasketService.createWorkbasket(wbNoTransfer);
         createWorkbasketWithSecurity(wbNoTransfer, wbNoTransfer.getOwner(), true, true, true, false);
 
-        TaskImpl task = (TaskImpl) taskServiceImpl.newTask();
+        TaskImpl task = (TaskImpl) taskServiceImpl.newTask(wb.getKey());
         task.setName("Task Name");
         task.setDescription("Task used for transfer Test");
-        task.setWorkbasketKey(wb.getKey());
         task.setOwner(user);
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
@@ -563,8 +556,7 @@ public class TaskServiceImplIntExplicitTest {
         Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = taskServiceImpl.newTask();
-        task.setWorkbasketKey(workbasket.getKey());
+        Task task = taskServiceImpl.newTask(workbasket.getKey());
         task.setClassificationKey(classification.getKey());
         return task;
     }

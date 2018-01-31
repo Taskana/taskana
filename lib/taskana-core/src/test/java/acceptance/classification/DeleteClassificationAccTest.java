@@ -38,19 +38,15 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         Classification classification = classificationService.getClassification("L140101", "DOMAIN_A");
         assertNotNull(classification);
         assertEquals("", classification.getDomain());
-
-        classification = classificationService.getClassification("L140101", "DOMAIN_A");
-        assertTrue(classification.getDomain() == "");
-        assertTrue("DOMAIN_A" != classification.getDomain());
     }
 
-    @Test (expected = ClassificationInUseException.class)
+    @Test(expected = ClassificationInUseException.class)
     public void testThrowExeptionIfDeleteClassificationWithExistingTasks()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
         classificationService.deleteClassification("L1050", "DOMAIN_A");
     }
 
-    @Test (expected = ClassificationInUseException.class)
+    @Test(expected = ClassificationInUseException.class)
     public void testThrowExeptionIfDeleteMasterClassificationWithExistingTasks()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
         classificationService.deleteClassification("L1050", "");
@@ -85,7 +81,7 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
 
         classificationInUse = false;
         try {
-        classificationService.deleteClassification("L11010", "");
+            classificationService.deleteClassification("L11010", "");
         } catch (ClassificationInUseException e) {
             classificationInUse = true;
         }
@@ -97,12 +93,14 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
     }
 
     @Test(expected = ClassificationNotFoundException.class)
-    public void testThrowClassificationNotFoundIfClassificationNotExists() throws ClassificationNotFoundException, ClassificationInUseException {
+    public void testThrowClassificationNotFoundIfClassificationNotExists()
+        throws ClassificationNotFoundException, ClassificationInUseException {
         classificationService.deleteClassification("not existing classification key", "");
     }
 
     @Test(expected = ClassificationNotFoundException.class)
-    public void testThrowClassificationNotFoundIfClassificationNotExistsInDomain() throws ClassificationNotFoundException, ClassificationInUseException {
+    public void testThrowClassificationNotFoundIfClassificationNotExistsInDomain()
+        throws ClassificationNotFoundException, ClassificationInUseException {
         classificationService.deleteClassification("L10000", "DOMAIN_B");
     }
 
