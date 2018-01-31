@@ -36,6 +36,23 @@ public interface BaseQuery<T> {
     List<T> list(int offset, int limit) throws NotAuthorizedException;
 
     /**
+     * This method will return all results for page X with a size of Y of the current query.<br>
+     * Negative pageNumber/size will be changed to 0 and the last page got maybe less elements.
+     *
+     * @param pageNumber
+     *            current pagination page starting at 0.
+     * @param pageSize
+     *            amount of elements for this page.
+     * @return resulList for the current query starting at X and returning max Y elements.
+     * @throws NotAuthorizedException
+     */
+    default List<T> listPage(int pageNumber, int pageSize) throws NotAuthorizedException {
+        int offset = (pageNumber < 0) ? 0 : (pageNumber * pageSize);
+        int limit = (pageSize < 0) ? 0 : pageSize;
+        return list(offset, limit);
+    }
+
+    /**
      * This method will return a single object of {@link T}.
      *
      * @return T a single object of given Type.
@@ -44,4 +61,12 @@ public interface BaseQuery<T> {
      */
     T single() throws NotAuthorizedException;
 
+    /**
+     * Counting the amount of rows/results for the current query. This can be used for a pagination afterwards.
+     *
+     * @throws NotAuthorizedException
+     *             when permissions not granted.
+     * @return resultRowCount
+     */
+    long count() throws NotAuthorizedException;
 }

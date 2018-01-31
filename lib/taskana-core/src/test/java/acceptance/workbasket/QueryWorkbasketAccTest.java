@@ -220,7 +220,6 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
                 .orderByName()
                 .orderByName()
                 .list();
-
             fail("WorkbasketQuery should have thrown InvalidRequestException.");
         } catch (InvalidRequestException ignored) {
             // nothing to do
@@ -232,7 +231,6 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
                 .orderByKey()
                 .orderByKey()
                 .list();
-
             fail("WorkbasketQuery should have thrown InvalidRequestException.");
         } catch (InvalidRequestException ignored) {
             // nothing to do
@@ -244,34 +242,34 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
                 .ascending()
                 .orderByName()
                 .list();
-
             fail("WorkbasketQuery should have thrown InvalidRequestException.");
         } catch (InvalidRequestException ignored) {
             // nothing to do
         }
+
         try {
             workbasketService.createWorkbasketQuery()
                 .nameLike("%Gruppenpostkorb KSC%")
                 .descending()
                 .orderByName()
                 .list();
-
             fail("WorkbasketQuery should have thrown InvalidRequestException.");
         } catch (InvalidRequestException ignored) {
             // nothing to do
         }
+
         try {
             workbasketService.createWorkbasketQuery()
                 .nameLike("%Gruppenpostkorb KSC%")
                 .orderByName()
                 .ascending()
-                .ascending()
-                .list();
+                .ascending();
 
             fail("WorkbasketQuery should have thrown InvalidRequestException.");
         } catch (InvalidRequestException ignored) {
             // nothing to do
         }
+
         try {
             workbasketService.createWorkbasketQuery()
                 .nameLike("%Gruppenpostkorb KSC%")
@@ -279,11 +277,11 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
                 .ascending()
                 .descending()
                 .list();
-
             fail("WorkbasketQuery should have thrown InvalidRequestException.");
         } catch (InvalidRequestException ignored) {
             // nothing to do
         }
+
         try {
             workbasketService.createWorkbasketQuery()
                 .nameLike("%Gruppenpostkorb KSC%")
@@ -291,23 +289,20 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
                 .descending()
                 .ascending()
                 .list();
-
             fail("WorkbasketQuery should have thrown InvalidRequestException.");
         } catch (InvalidRequestException ignored) {
             // nothing to do
         }
+
         try {
             workbasketService.createWorkbasketQuery()
                 .nameLike("%Gruppenpostkorb KSC%")
                 .orderByName()
                 .orderByName()
                 .list();
-
             fail("WorkbasketQuery should have thrown InvalidRequestException.");
         } catch (InvalidRequestException ignored) {
             // nothing to do
         }
-
     }
-
 }

@@ -3,22 +3,27 @@ package pro.taskana.impl;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.ObjectReference;
 
 /**
  * Implementation of ObjectReferenceQuery interface.
+ *
  * @author EH
  */
 public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryObjectReference";
+    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryObjectReferences";
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceQueryImpl.class);
 
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -68,13 +73,14 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         List<ObjectReference> result = null;
         try {
             taskanaEngineImpl.openConnection();
-            result =  taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
             return result;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
             }
         }
     }
@@ -88,13 +94,24 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
             RowBounds rowBounds = new RowBounds(offset, limit);
             result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             return result;
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                if (e.getMessage().contains("ERRORCODE=-4470")) {
+                    TaskanaRuntimeException ex = new TaskanaRuntimeException(
+                        "The offset beginning was set over the amount of result-rows.", e.getCause());
+                    ex.setStackTrace(e.getStackTrace());
+                    throw ex;
+                }
+            }
+            throw e;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects, LoggerUtils.listToString(result));
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
             }
-       }
+        }
     }
 
     @Override
@@ -149,6 +166,20 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
     public void setValue(String[] value) {
         this.value = value;
+    }
+
+    @Override
+    public long count() throws NotAuthorizedException {
+        LOGGER.debug("entry to count(), this = {}", this);
+        Long rowCount = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            return (rowCount == null) ? 0L : rowCount;
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from count(). Returning result {} ", rowCount);
+        }
     }
 
     @Override

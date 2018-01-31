@@ -145,14 +145,13 @@ public class CreateTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task createdTask = null;
         Task newTask = makeNewTask(taskService);
         newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             null,
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         try {
-            createdTask = taskService.createTask(newTask);
-            fail("taskService should have thrown InvalidArgumentException.");
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue Attachment-ObjRef is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
@@ -162,8 +161,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId", null),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         try {
-            createdTask = taskService.createTask(newTask);
-            fail("taskService should have thrown InvalidArgumentException.");
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Value is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
@@ -174,8 +173,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         try {
-            createdTask = taskService.createTask(newTask);
-            fail("taskService should have thrown InvalidArgumentException.");
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Type is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
@@ -185,8 +184,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         try {
-            createdTask = taskService.createTask(newTask);
-            fail("taskService should have thrown InvalidArgumentException.");
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-SystemInstance is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
@@ -196,8 +195,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         try {
-            createdTask = taskService.createTask(newTask);
-            fail("taskService should have thrown InvalidArgumentException.");
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-System is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
@@ -207,12 +206,11 @@ public class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         try {
-            createdTask = taskService.createTask(newTask);
-            fail("taskService should have thrown InvalidArgumentException.");
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Company is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
-
     }
 
     private Task makeNewTask(TaskService taskService) throws ClassificationNotFoundException {
@@ -302,74 +300,67 @@ public class CreateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1");
         newTask.setClassificationKey("T2100");
-        Task createdTask;
         try {
-            createdTask = taskService.createTask(newTask);
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
 
         // Exception
-
         newTask = taskService.newTask("USER_1_1");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
         try {
-            createdTask = taskService.createTask(newTask);
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Value is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
 
         // Exception
-
         newTask = taskService.newTask("USER_1_1");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
-
         try {
-            createdTask = taskService.createTask(newTask);
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Type is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
 
         // Exception
-
         newTask = taskService.newTask("USER_1_1");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
-
         try {
-            createdTask = taskService.createTask(newTask);
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-SystemInstances is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
 
         // Exception
-
         newTask = taskService.newTask("USER_1_1");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
-
         try {
-            createdTask = taskService.createTask(newTask);
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-System is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
 
         // Exception
-
         newTask = taskService.newTask("USER_1_1");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-
         try {
-            createdTask = taskService.createTask(newTask);
+            taskService.createTask(newTask);
+            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Company is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
-
-        // Exception
-
     }
 
     @WithAccessId(
