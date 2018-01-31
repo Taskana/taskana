@@ -2,7 +2,9 @@ package pro.taskana.impl;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,46 +119,88 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         try {
             taskanaEngineImpl.openConnection();
 
-            Report report = createEmptyReport(workbaskets, reportLineItemDefinitions);
+            Report report = new Report();
+            report.setDetailLines(createEmptyDetailLinesForWorkbaskets(workbaskets, reportLineItemDefinitions));
+
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
-                .findByWorkbasketIdsAndStates(workbaskets, states);
+                .getTaskCountOfWorkbasketsByWorkbasketsAndStates(workbaskets, states);
 
             for (MonitorQueryItem item : monitorQueryItems) {
                 report.getDetailLines().get(item.getKey()).addNumberOfTasks(item);
             }
+            report.setSumLine(createEmptyReportLine(reportLineItemDefinitions));
             report.generateSumLine();
+
             return report;
 
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("exit from getTaskCountByWorkbaskets().");
+                LOGGER.debug("exit from getWorkbasketLevelReport().");
             }
         }
     }
 
-    private Report createEmptyReport(List<Workbasket> workbaskets,
+    @Override
+    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states) {
+        return getCategoryReport(workbaskets, states, null);
+    }
+
+    @Override
+    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states,
         List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        Report report = new Report();
-        for (Workbasket workbasket : workbaskets) {
-            ReportLine reportLine = new ReportLine();
-            if (reportLineItemDefinitions != null) {
-                for (ReportLineItemDefinition reportLineItemDefinition : reportLineItemDefinitions) {
-                    ReportLineItem reportLineItem = new ReportLineItem();
-                    reportLineItem.setReportLineItemDefinition(reportLineItemDefinition);
-                    reportLine.getLineItems().add(reportLineItem);
-                }
-            }
-            report.getDetailLines().put(workbasket.getKey(), reportLine);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "entry to getCategoryReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {})",
+                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(reportLineItemDefinitions));
         }
+        try {
+            taskanaEngineImpl.openConnection();
+
+            Report report = new Report();
+
+            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
+                .getTaskCountOfCategoriesByWorkbasketsAndStates(workbaskets, states);
+            for (MonitorQueryItem item : monitorQueryItems) {
+                if (!report.getDetailLines().containsKey(item.getKey())) {
+                    report.getDetailLines().put(item.getKey(), createEmptyReportLine(reportLineItemDefinitions));
+                }
+                report.getDetailLines().get(item.getKey()).addNumberOfTasks(item);
+            }
+            report.setSumLine(createEmptyReportLine(reportLineItemDefinitions));
+            report.generateSumLine();
+
+            return report;
+
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("exit from getCategoryReport().");
+            }
+        }
+    }
+
+    private ReportLine createEmptyReportLine(List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        ReportLine reportLine = new ReportLine();
         if (reportLineItemDefinitions != null) {
             for (ReportLineItemDefinition reportLineItemDefinition : reportLineItemDefinitions) {
                 ReportLineItem reportLineItem = new ReportLineItem();
                 reportLineItem.setReportLineItemDefinition(reportLineItemDefinition);
-                report.getSumLine().getLineItems().add(reportLineItem);
+                reportLine.getLineItems().add(reportLineItem);
             }
         }
-        return report;
-
+        return reportLine;
     }
+
+    private Map<String, ReportLine> createEmptyDetailLinesForWorkbaskets(List<Workbasket> workbaskets,
+        List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        Map<String, ReportLine> detailLines = new LinkedHashMap<>();
+        for (Workbasket workbasket : workbaskets) {
+            ReportLine reportLine = createEmptyReportLine(reportLineItemDefinitions);
+            detailLines.put(workbasket.getKey(), reportLine);
+        }
+        return detailLines;
+    }
+
 }
