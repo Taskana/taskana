@@ -79,6 +79,7 @@ public class TaskServiceImplIntAutocommitTest {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);
+        FileUtils.deleteRecursive("~/data", true);
     }
 
     @Before
@@ -162,6 +163,8 @@ public class TaskServiceImplIntAutocommitTest {
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
+        DBCleaner cleaner = new DBCleaner();
+        cleaner.clearDb(TaskanaEngineConfiguration.createDefaultDataSource(), false);
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
         ((TaskanaEngineImpl) te).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);

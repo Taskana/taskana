@@ -176,12 +176,12 @@ public class TaskServiceImplIntExplicitTest {
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         DataSource ds = TaskanaEngineConfiguration.createDefaultDataSource();
+        DBCleaner cleaner = new DBCleaner();
+        cleaner.clearDb(ds, false);
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
         Connection connection = ds.getConnection();
         te.setConnection(connection);
-        DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(ds, false);
         TaskServiceImpl taskServiceImpl = (TaskServiceImpl) te.getTaskService();
         WorkbasketServiceImpl workBasketServiceImpl = (WorkbasketServiceImpl) te.getWorkbasketService();
         ClassificationServiceImpl classificationServiceImpl = (ClassificationServiceImpl) te.getClassificationService();
