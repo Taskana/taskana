@@ -137,27 +137,11 @@ public interface Task {
     String getWorkbasketKey();
 
     /**
-     * Sets the key of the Workbasket where the task should be stored in.
-     *
-     * @param workbasketKey
-     *            the key of the workbasket
-     */
-    void setWorkbasketKey(String workbasketKey);
-
-    /**
      * Returns the the Summary of the workbasket where the task is stored in.
      *
      * @return workbasketSummary
      */
     WorkbasketSummary getWorkbasketSummary();
-
-    /**
-     * Sets the Summary of the Workbasket where the task should be stored in.
-     *
-     * @param workbasket
-     *            the WorkbasketSummary
-     */
-    void setWorkbasketSummary(WorkbasketSummary workbasket);
 
     /**
      * Returns the Domain, to which the Task belongs at this moment.

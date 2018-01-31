@@ -188,7 +188,6 @@ public class TaskImpl implements Task {
         return workbasketKey;
     }
 
-    @Override
     public void setWorkbasketKey(String workbasketKey) {
         this.workbasketKey = workbasketKey;
     }
@@ -198,7 +197,6 @@ public class TaskImpl implements Task {
         return workbasketSummary;
     }
 
-    @Override
     public void setWorkbasketSummary(WorkbasketSummary workbasket) {
         this.workbasketSummary = workbasket;
     }

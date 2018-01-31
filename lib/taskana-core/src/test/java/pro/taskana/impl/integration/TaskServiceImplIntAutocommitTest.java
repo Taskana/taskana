@@ -111,9 +111,8 @@ public class TaskServiceImplIntAutocommitTest {
         Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = taskServiceImpl.newTask();
+        Task task = taskServiceImpl.newTask(wb.getKey());
         task.setName("Unit Test Task");
-        task.setWorkbasketKey(wb.getKey());
 
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
@@ -145,9 +144,8 @@ public class TaskServiceImplIntAutocommitTest {
             classification.getKey(),
             classification.getDomain());
 
-        TaskImpl task = (TaskImpl) taskServiceImpl.newTask();
+        TaskImpl task = (TaskImpl) taskServiceImpl.newTask(wb.getKey());
         task.setName("Unit Test Task");
-        task.setWorkbasketKey(wb.getKey());
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         taskServiceImpl.createTask(task);
@@ -179,9 +177,8 @@ public class TaskServiceImplIntAutocommitTest {
         Classification classification = te.getClassificationService().newClassification("novatec", "TEST", "t1");
         te.getClassificationService().createClassification(classification);
 
-        Task task = taskServiceImpl.newTask();
+        Task task = taskServiceImpl.newTask(wb.getKey());
         task.setName("Unit Test Task");
-        task.setWorkbasketKey(wb.getKey());
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
@@ -203,9 +200,8 @@ public class TaskServiceImplIntAutocommitTest {
         Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = taskServiceImpl.newTask();
+        Task task = taskServiceImpl.newTask(wb.getKey());
         task.setName("Unit Test Task");
-        task.setWorkbasketKey(wb.getKey());
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         taskServiceImpl.createTask(task);
@@ -242,11 +238,10 @@ public class TaskServiceImplIntAutocommitTest {
         dummyClassification.setName("Dummy-Classification");
         classificationService.createClassification(dummyClassification);
 
-        TaskImpl dummyTask = (TaskImpl) taskServiceImpl.newTask();
+        TaskImpl dummyTask = (TaskImpl) taskServiceImpl.newTask(dummyWorkbasket.getKey());
         dummyTask.setId(null);
         dummyTask.setName("Dummy-Task");
         dummyTask.setClassificationKey(dummyClassification.getKey());
-        dummyTask.setWorkbasketKey(dummyWorkbasket.getKey());
         dummyTask.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         dummyTask = (TaskImpl) taskServiceImpl.createTask(dummyTask);
 
@@ -323,10 +318,9 @@ public class TaskServiceImplIntAutocommitTest {
         classificationService.createClassification(classification);
 
         // Task which should be transfered
-        task = (TaskImpl) taskServiceImpl.newTask();
+        task = (TaskImpl) taskServiceImpl.newTask(sourceWB.getKey());
         task.setName("Task Name");
         task.setDescription("Task used for transfer Test");
-        task.setWorkbasketKey(sourceWB.getKey());
         task.setRead(true);
         task.setTransferred(false);
         task.setModified(null);
@@ -405,10 +399,9 @@ public class TaskServiceImplIntAutocommitTest {
         wbNoTransfer = (WorkbasketImpl) workbasketService.createWorkbasket(wbNoTransfer);
         createWorkbasketWithSecurity(wbNoTransfer, wbNoTransfer.getOwner(), true, true, true, false);
 
-        TaskImpl task = (TaskImpl) taskServiceImpl.newTask();
+        TaskImpl task = (TaskImpl) taskServiceImpl.newTask(wb.getKey());
         task.setName("Task Name");
         task.setDescription("Task used for transfer Test");
-        task.setWorkbasketKey(wb.getKey());
         task.setOwner(user);
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
@@ -457,9 +450,8 @@ public class TaskServiceImplIntAutocommitTest {
         Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
         taskanaEngine.getClassificationService().createClassification(classification);
 
-        Task task = taskServiceImpl.newTask();
+        Task task = taskServiceImpl.newTask(wb.getKey());
         task.setName("Unit Test Task");
-        task.setWorkbasketKey(wb.getKey());
 
         task.setClassificationKey(classification.getKey());
 

@@ -38,7 +38,7 @@ public class TaskanaEjb {
     public void triggerRollback() throws NotAuthorizedException, WorkbasketNotFoundException,
         ClassificationNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException,
         InvalidArgumentException {
-        Task task = taskService.newTask();
+        Task task = taskService.newTask(null);
         ObjectReference objRef = new ObjectReference();
         objRef.setCompany("aCompany");
         objRef.setSystem("aSystem");

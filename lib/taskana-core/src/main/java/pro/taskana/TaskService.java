@@ -199,9 +199,11 @@ public interface TaskService {
     /**
      * Returns a not persisted instance of {@link Task}.
      *
+     * @param workbasketKey
+     *            the key of the workbasket to which the task belongs
      * @return an empty new Task
      */
-    Task newTask();
+    Task newTask(String workbasketKey);
 
     /**
      * Returns a not persisted instance of {@link Attachment}.
