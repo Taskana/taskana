@@ -164,7 +164,11 @@ public interface QueryMapper {
         + "<if test=\"authorization.name().equals('CUSTOM_5')\">PERM_CUSTOM_5</if>"
         + "<if test=\"authorization.name().equals('CUSTOM_6')\">PERM_CUSTOM_6</if>"
         + "<if test=\"authorization.name().equals('CUSTOM_7')\">PERM_CUSTOM_7</if>"
-        + "<if test=\"authorization.name().equals('CUSTOM_8')\">PERM_CUSTOM_8</if> = 1 "
+        + "<if test=\"authorization.name().equals('CUSTOM_8')\">PERM_CUSTOM_8</if>"
+        + "<if test=\"authorization.name().equals('CUSTOM_9')\">PERM_CUSTOM_9</if>"
+        + "<if test=\"authorization.name().equals('CUSTOM_10')\">PERM_CUSTOM_10</if>"
+        + "<if test=\"authorization.name().equals('CUSTOM_11')\">PERM_CUSTOM_11</if>"
+        + "<if test=\"authorization.name().equals('CUSTOM_12')\">PERM_CUSTOM_12</if> = 1 "
         + "</if>"
         + "</where>"
         + "</script>")
