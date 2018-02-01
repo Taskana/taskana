@@ -1,16 +1,16 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Workbasket } from '../model/workbasket';
-import { WorkbasketserviceService } from '../services/workbasketservice.service'
+import { Workbasket } from '../../model/workbasket';
+import { WorkbasketserviceService } from '../../services/workbasketservice.service'
 import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
-  selector: 'app-workbasketlist',
+  selector: 'workbasket-list',
   outputs: ['selectedWorkbasket'],
-  templateUrl: './workbasketlist.component.html',
-  styleUrls: ['./workbasketlist.component.css'],
+  templateUrl: './workbasket-list.component.html',
+  styleUrls: ['./workbasket-list.component.css'],
   providers: [WorkbasketserviceService]
 })
-export class WorkbasketlistComponent implements OnInit {
+export class WorkbasketListComponent implements OnInit {
   public selectedWorkbasket: EventEmitter<Workbasket> = new EventEmitter();
 
   workbasket: Workbasket = this.getEmptyObject();

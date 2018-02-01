@@ -14,7 +14,6 @@ describe('AppComponent', () => {
     { path: 'categories', component: AppComponent }
   ];
 
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -24,7 +23,6 @@ describe('AppComponent', () => {
         AngularSvgIconModule,
         RouterTestingModule.withRoutes(routes),
         HttpClientModule
-        
       ]
     }).compileComponents();
 
