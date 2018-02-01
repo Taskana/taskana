@@ -50,6 +50,7 @@ public interface TaskMapper {
         @Result(property = "workbasketSummary", column = "WORKBASKET_KEY", javaType = WorkbasketSummaryImpl.class,
             one = @One(select = WORKBASKET_FINDSUMMARYBYKEY)),
         @Result(property = "classificationKey", column = "CLASSIFICATION_KEY"),
+        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
         @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
@@ -105,7 +106,7 @@ public interface TaskMapper {
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
         @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
-        @Result(property = "classificationSummaryImpl.Key", column = "CLASSIFICATION_KEY"),
+        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
         @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
@@ -127,7 +128,7 @@ public interface TaskMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10") })
+        @Result(property = "custom10", column = "CUSTOM_10")})
     List<TaskSummaryImpl> findTasksByWorkbasketIdAndState(@Param("workbasketKey") String workbasketKey,
         @Param("taskState") TaskState taskState);
 
@@ -168,6 +169,6 @@ public interface TaskMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10") })
+        @Result(property = "custom10", column = "CUSTOM_10")})
     List<TaskSummaryImpl> findTaskSummariesByWorkbasketKey(@Param("workbasketKey") String workbasketKey);
 }
