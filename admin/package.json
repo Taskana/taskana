@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": " npm run",
+    "build": " ng build --env=dev",
     "build:prod": "ng build --env=prod",
     "test": "ng test",
     "lint": "ng lint",

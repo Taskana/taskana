@@ -28,7 +28,8 @@
       </button>
       </td>
     </tr>
-    <tr *ngFor="let workbasket of workbaskets" (click)="onSelect(workbasket)" [class.active]="workbasket.id == selected.id" [routerLink]="['/workbaskets', workbasket.id]">
+
+    <tr *ngFor="let workbasket of workbaskets" (click)="onSelect(workbasket)" [class.active]="workbasket.id == selected.id" [routerLink]="[ {outlets: { detail: [workbasket.id] } }]">
       <td *ngIf="workbasket.id != editing.id">{{ workbasket.id }}</td>
       <td *ngIf="workbasket.id == editing.id">
         <input class="form-control" placeholder="Id" name="editid" [(ngModel)]="editing.id" readonly>

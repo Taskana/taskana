@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WorkbasketlistComponent } from './workbasketlist.component';
+import { WorkbasketListComponent } from './workbasket-list.component';
 
-describe('WorkbasketlistComponent', () => {
-  let component: WorkbasketlistComponent;
-  let fixture: ComponentFixture<WorkbasketlistComponent>;
+describe('WorkbasketListComponent', () => {
+  let component: WorkbasketListComponent;
+  let fixture: ComponentFixture<WorkbasketListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WorkbasketlistComponent ]
+      declarations: [ WorkbasketListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WorkbasketlistComponent);
+    fixture = TestBed.createComponent(WorkbasketListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
