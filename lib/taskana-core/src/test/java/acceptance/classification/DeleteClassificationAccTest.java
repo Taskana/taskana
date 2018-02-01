@@ -1,6 +1,7 @@
 package acceptance.classification;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -78,8 +79,9 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         } catch (ClassificationInUseException e) {
             classificationInUse = true;
         }
+        Classification rollback = classificationService.getClassification("L11010", "DOMAIN_A");
         assertTrue(classificationInUse);
-        classificationService.getClassification("L11010", "DOMAIN_A");
+        assertEquals("DOMAIN_A", rollback.getDomain());
 
         classificationInUse = false;
         try {
@@ -87,9 +89,11 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         } catch (ClassificationInUseException e) {
             classificationInUse = true;
         }
+        Classification rollbackMaster = classificationService.getClassification("L11010", "");
+        Classification rollbackA = classificationService.getClassification("L11010", "DOMAIN_A");
         assertTrue(classificationInUse);
-        classificationService.getClassification("L11010", "");
-        classificationService.getClassification("L11010", "DOMAIN_A");
+        assertEquals(rollbackMaster.getKey(), rollbackA.getKey());
+        assertNotEquals(rollbackMaster.getDomain(), rollbackA.getDomain());
     }
 
     @Test(expected = ClassificationNotFoundException.class)
