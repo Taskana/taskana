@@ -12,6 +12,7 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
@@ -311,9 +312,14 @@ public class ClassificationServiceImpl implements ClassificationService {
             }
 
             TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
-            int countTasks = taskService.countTasksByClassificationAndDomain(classificationKey, domain);
-            if (countTasks > 0) {
-                throw new ClassificationInUseException("There are " + countTasks + " Tasks which belong to this classification or a child classification. Please complete them and try again.");
+            try {
+                List<TaskSummary> classificationTasks = taskService.createTaskQuery().classificationKeyIn(classificationKey).domainIn(domain).list();
+                if (!classificationTasks.isEmpty()) {
+                    throw new ClassificationInUseException("There are " + classificationTasks.size() + " Tasks which belong to this classification or a child classification. Please complete them and try again.");
+                }
+            } catch (NotAuthorizedException e) {
+                LOGGER.error("ClassificationQuery unexpectedly returned NotauthorizedException. Throwing SystemException ");
+                throw new SystemException("ClassificationQuery unexpectedly returned NotauthorizedException.");
             }
 
             List<String> childKeys = this.classificationMapper.getChildrenOfClassification(classificationKey, domain);
