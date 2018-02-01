@@ -63,7 +63,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     public TaskService getTaskService() {
         SqlSession session = this.sessionManager;
         return new TaskServiceImpl(this, session.getMapper(TaskMapper.class),
-            session.getMapper(ObjectReferenceMapper.class), session.getMapper(AttachmentMapper.class));
+            session.getMapper(AttachmentMapper.class));
     }
 
     @Override
