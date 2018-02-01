@@ -22,7 +22,6 @@ import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -105,6 +104,9 @@ public class TaskServiceImplTest {
 
     @Mock
     private ClassificationQueryImpl classificationQueryImplMock;
+
+    @Mock
+    private WorkbasketQueryImpl workbasketQueryImplMock;
 
     @Mock
     private SqlSession sqlSessionMock;
@@ -417,16 +419,21 @@ public class TaskServiceImplTest {
             classificationServiceImplMock)
             .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
 
+        List<ClassificationSummaryImpl> classificationList = Arrays
+            .asList((ClassificationSummaryImpl) dummyClassification.asSummary());
+        doReturn(classificationList).when(
+            classificationQueryImplMock)
+            .list();
+
         // Mockito.doReturn(expectedOwner).when(currentUserContext).getUserid();
         Task acturalTask = cut.claim(expectedTask.getId(), true);
 
         verify(taskanaEngineImpl, times(2)).openConnection();
         verify(taskMapperMock, times(1)).findById(expectedTask.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(expectedTask.getId());
-        verify(classificationServiceImplMock, times(1)).getClassification(any(), any());
-        verify(classificationQueryImplMock, times(0)).domain(any());
-        verify(classificationQueryImplMock, times(0)).key(any());
-        verify(classificationQueryImplMock, times(0)).list();
+        verify(classificationQueryImplMock, times(1)).domain(any());
+        verify(classificationQueryImplMock, times(1)).key(any());
+        verify(classificationQueryImplMock, times(1)).list();
         verify(taskMapperMock, times(1)).update(any());
         verify(taskanaEngineImpl, times(2)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
@@ -478,19 +485,21 @@ public class TaskServiceImplTest {
         doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domain(any());
         doReturn(classificationQueryImplMock).when(classificationQueryImplMock).key(any());
         doReturn(new ArrayList<>()).when(classificationQueryImplMock).list();
-        doReturn(dummyClassification).when(
-            classificationServiceImplMock)
-            .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
+        List<ClassificationSummaryImpl> classificationList = Arrays
+            .asList((ClassificationSummaryImpl) dummyClassification.asSummary());
+        doReturn(classificationList).when(
+            classificationQueryImplMock)
+            .list();
 
         Task actualTask = cut.completeTask(task.getId());
 
         verify(taskanaEngineImpl, times(2)).openConnection();
         verify(taskMapperMock, times(1)).findById(task.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(task.getId());
-        verify(classificationServiceImplMock, times(0)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(0)).domain(any());
-        verify(classificationQueryImplMock, times(0)).key(any());
-        verify(classificationQueryImplMock, times(0)).list();
+        verify(classificationServiceImplMock, times(1)).createClassificationQuery();
+        verify(classificationQueryImplMock, times(1)).domain(any());
+        verify(classificationQueryImplMock, times(1)).key(any());
+        verify(classificationQueryImplMock, times(1)).list();
         verify(taskMapperMock, times(1)).update(any());
         verify(taskanaEngineImpl, times(2)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
@@ -906,18 +915,20 @@ public class TaskServiceImplTest {
         doReturn(classificationQueryImplMock).when(classificationQueryImplMock).key(any());
         doReturn(new ArrayList<>()).when(classificationQueryImplMock).list();
 
-        doReturn(dummyClassification).when(
-            classificationServiceImplMock)
-            .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
+        List<ClassificationSummaryImpl> classificationList = Arrays
+            .asList((ClassificationSummaryImpl) dummyClassification.asSummary());
+        doReturn(classificationList).when(
+            classificationQueryImplMock)
+            .list();
         Task actualTask = cut.getTask(expectedTask.getId());
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMapperMock, times(1)).findById(expectedTask.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(expectedTask.getId());
-        verify(classificationServiceImplMock, times(0)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(0)).domain(any());
-        verify(classificationQueryImplMock, times(0)).key(any());
-        verify(classificationQueryImplMock, times(0)).list();
+        verify(classificationServiceImplMock, times(1)).createClassificationQuery();
+        verify(classificationQueryImplMock, times(1)).domain(any());
+        verify(classificationQueryImplMock, times(1)).key(any());
+        verify(classificationQueryImplMock, times(1)).list();
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
             taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
@@ -970,25 +981,63 @@ public class TaskServiceImplTest {
         assertThat(actualResultList, equalTo(expectedResultList));
     }
 
-    @Ignore
     @Test
     public void testGetTaskSummariesByWorkbasketIdGettingResults()
         throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         String workbasketKey = "1";
-        List<TaskSummaryImpl> expectedResultList = Arrays.asList(new TaskSummaryImpl(), new TaskSummaryImpl());
+        WorkbasketSummaryImpl wbs = new WorkbasketSummaryImpl();
+        wbs.setDomain("domain");
+        wbs.setKey("key");
+        ClassificationSummaryImpl cl = new ClassificationSummaryImpl();
+        cl.setDomain("domain");
+        cl.setKey("clKey");
+        TaskSummaryImpl t1 = new TaskSummaryImpl();
+        t1.setWorkbasketSummary(wbs);
+        t1.setDomain("domain");
+        t1.setClassificationSummary(cl);
+        t1.setTaskId("007");
+        TaskSummaryImpl t2 = new TaskSummaryImpl();
+        t2.setWorkbasketSummary(wbs);
+        t2.setDomain("domain");
+        t2.setClassificationSummary(cl);
+        t2.setTaskId("008");
+        List<TaskSummaryImpl> expectedResultList = Arrays.asList(t1, t2);
+        List<ClassificationSummaryImpl> expectedClassifications = Arrays.asList(cl);
+        List<WorkbasketSummaryImpl> expectedWorkbaskets = Arrays.asList(wbs);
+
         doNothing().when(taskanaEngineImpl).openConnection();
         doNothing().when(taskanaEngineImpl).returnConnection();
         doReturn(new WorkbasketImpl()).when(workbasketServiceMock).getWorkbasketByKey(any());
         doReturn(expectedResultList).when(taskMapperMock).findTaskSummariesByWorkbasketKey(workbasketKey);
+        doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).key(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domain(any());
+        doReturn(workbasketQueryImplMock).when(workbasketServiceMock).createWorkbasketQuery();
+        doReturn(workbasketQueryImplMock).when(workbasketQueryImplMock).keyIn(any());
+        doReturn(expectedWorkbaskets).when(workbasketQueryImplMock).list();
+
+        doReturn(expectedClassifications).when(classificationQueryImplMock).list();
 
         List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketKey(workbasketKey);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMapperMock, times(1)).findTaskSummariesByWorkbasketKey(workbasketKey);
+        verify(workbasketServiceMock, times(1)).getWorkbasketByKey(workbasketKey);
+        verify(classificationServiceImplMock, times(1)).createClassificationQuery();
+        verify(classificationQueryImplMock, times(1)).domain(any());
+        verify(classificationQueryImplMock, times(1)).key(any());
+        verify(classificationQueryImplMock, times(1)).list();
+        verify(workbasketServiceMock, times(1)).createWorkbasketQuery();
+        verify(workbasketQueryImplMock, times(1)).keyIn(any());
+        verify(workbasketQueryImplMock, times(1)).list();
+
         verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(attachmentMapperMock, times(1)).findAttachmentSummariesByTaskIds(any());
+
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
-            classificationQueryImplMock);
+            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock,
+            workbasketQueryImplMock,
+            sqlSessionMock, classificationQueryImplMock);
         assertThat(actualResultList, equalTo(expectedResultList));
         assertThat(actualResultList.size(), equalTo(expectedResultList.size()));
     }
