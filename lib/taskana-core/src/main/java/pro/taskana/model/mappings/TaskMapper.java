@@ -170,10 +170,4 @@ public interface TaskMapper {
         @Result(property = "custom9", column = "CUSTOM_9"),
         @Result(property = "custom10", column = "CUSTOM_10") })
     List<TaskSummaryImpl> findTaskSummariesByWorkbasketKey(@Param("workbasketKey") String workbasketKey);
-
-    @Select("SELECT COUNT(ID) "
-        + "FROM TASK "
-        + "WHERE CLASSIFICATION_KEY = #{classificationKey} "
-        + "AND DOMAIN = #{domain}")
-    int countTasksByClassificationAndDomain(@Param("classificationKey") String classificationKey, @Param("domain") String domain);
 }
