@@ -1,0 +1,15 @@
+
+<div class="{{showDetail? 'col-md-4 hidden-xs hidden-sm':'col-xs-12 col-md-4'}} vertical-right-divider full-height" >
+    <router-outlet name="master"></router-outlet>
+</div>
+<div class="{{showDetail? 'col-xs-12 col-md-8': 'hidden'}} container-scrollable" >
+    <router-outlet name="detail">
+        <a class="{{showDetail? 'hidden visible-xs visible-sm': 'hidden'}}" (click) = "backClicked()"> < Back</a>
+    </router-outlet>
+</div>
+<div class="{{showDetail? 'hidden': 'col-md-8 container-no-detail' }}">
+    <div class = "center-block no-detail" >
+        <h3>Select a worbasket</h3>
+        <svg-icon class="img-responsive no-detail-icon" src="./assets/icons/no-shopping-basket.svg"></svg-icon>
+    </div>
+</div>
