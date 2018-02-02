@@ -56,13 +56,9 @@ public interface WorkbasketService {
      * @return the created and persisted Workbasket
      * @throws InvalidWorkbasketException
      *             If a required property of the Workbasket is not set.
-     * @throws WorkbasketNotFoundException
-     *             If the to be created work basket references a distribution target that does not exist.
-     * @throws NotAuthorizedException
-     *             If the current user or group does not have the permissions for interactions.
      */
     Workbasket createWorkbasket(Workbasket workbasket)
-        throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException;
+        throws InvalidWorkbasketException;
 
     /**
      * Update a Workbasket.
@@ -163,9 +159,11 @@ public interface WorkbasketService {
     /**
      * Returns a new workbasket which is not persisted.
      *
+     * @param key
+     *            the workbasket key used to identify the workbasket
      * @return newWorkbasket
      */
-    Workbasket newWorkbasket();
+    Workbasket newWorkbasket(String key);
 
     /**
      * Returns a set with all permissions of the current user at this workbasket.

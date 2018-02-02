@@ -45,6 +45,7 @@ public interface BaseQuery<T> {
      *            amount of elements for this page.
      * @return resulList for the current query starting at X and returning max Y elements.
      * @throws NotAuthorizedException
+     *             if the user is not authorized to perform this query
      */
     default List<T> listPage(int pageNumber, int pageSize) throws NotAuthorizedException {
         int offset = (pageNumber < 0) ? 0 : (pageNumber * pageSize);

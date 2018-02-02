@@ -64,7 +64,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Assert.assertEquals("7654321", updatedTask.getPrimaryObjRef().getValue());
         Assert.assertNotNull(updatedTask.getCreated());
         Assert.assertNotNull(updatedTask.getModified());
-        Assert.assertTrue(modifiedOriginal.isBefore(updatedTask.getModified()));
+        Assert.assertFalse(modifiedOriginal.isAfter(updatedTask.getModified()));
         Assert.assertNotEquals(updatedTask.getCreated(), updatedTask.getModified());
         Assert.assertEquals(task.getCreated(), updatedTask.getCreated());
         Assert.assertEquals(task.isRead(), updatedTask.isRead());
