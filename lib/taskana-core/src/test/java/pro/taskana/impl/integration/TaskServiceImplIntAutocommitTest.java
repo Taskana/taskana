@@ -102,8 +102,7 @@ public class TaskServiceImplIntAutocommitTest {
         WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
         ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
         InvalidArgumentException {
-        Workbasket wb = workbasketService.newWorkbasket();
-        wb.setKey("workbasket");
+        Workbasket wb = workbasketService.newWorkbasket("workbasket");
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
@@ -130,11 +129,10 @@ public class TaskServiceImplIntAutocommitTest {
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
-        Workbasket wb = workbasketService.newWorkbasket();
+        Workbasket wb = workbasketService.newWorkbasket("wb1k1");
         wb.setName("sdf");
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
-        wb.setKey("wb1k1");
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
 
         Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
@@ -168,8 +166,7 @@ public class TaskServiceImplIntAutocommitTest {
         ((TaskanaEngineImpl) te).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         TaskServiceImpl taskServiceImpl = (TaskServiceImpl) te.getTaskService();
 
-        Workbasket wb = workbasketService.newWorkbasket();
-        wb.setKey("workbasket");
+        Workbasket wb = workbasketService.newWorkbasket("workbasket");
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
@@ -191,8 +188,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException, SystemException {
-        Workbasket wb = workbasketService.newWorkbasket();
-        wb.setKey("key");
+        Workbasket wb = workbasketService.newWorkbasket("key");
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
@@ -227,8 +223,7 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test
     public void shouldReturnTaskSummaryListWithValues() throws Exception {
-        Workbasket dummyWorkbasket = workbasketService.newWorkbasket();
-        dummyWorkbasket.setKey("Dummy-Key");
+        Workbasket dummyWorkbasket = workbasketService.newWorkbasket("Dummy-Key");
         dummyWorkbasket.setName("Dummy-Basket");
         dummyWorkbasket.setType(WorkbasketType.GROUP);
         dummyWorkbasket.setDomain("novatec");
@@ -266,8 +261,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test(expected = WorkbasketNotFoundException.class)
     public void shouldThrowWorkbasketNotFoundExceptionByInvalidWorkbasketParameter()
         throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
-        WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket();
-        wb.setKey("key");
+        WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket("key");
         wb.setName("wb");
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");
@@ -292,19 +286,18 @@ public class TaskServiceImplIntAutocommitTest {
         final int sleepTime = 100;
 
         // Source Workbasket
-        wb = (WorkbasketImpl) workbasketService.newWorkbasket();
+        wb = (WorkbasketImpl) workbasketService.newWorkbasket("key1");
         wb.setName("Basic-Workbasket");
         wb.setDescription("Just used as base WB for Task here");
-        wb.setKey("key1");
         wb.setDomain("domain");
         wb.setType(WorkbasketType.GROUP);
         wb.setOwner("The Tester ID");
         sourceWB = workbasketService.createWorkbasket(wb);
 
         // Destination Workbasket
-        wb = (WorkbasketImpl) workbasketService.newWorkbasket();
+        wb = (WorkbasketImpl) workbasketService.newWorkbasket("k1");
         wb.setName("Desination-WorkBasket");
-        wb.setKey("k1");
+
         wb.setDomain("domain");
         wb.setType(WorkbasketType.CLEARANCE);
         wb.setDescription("Destination WB where Task should be transfered to");
@@ -369,33 +362,32 @@ public class TaskServiceImplIntAutocommitTest {
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
 
-        WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket();
+        WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket("k5");
         wb.setName("BASE WB");
         wb.setDescription("Normal base WB");
         wb.setOwner(user);
-        wb.setKey("k5");
         wb.setDomain("test-domain");
         wb.setType(WorkbasketType.TOPIC);
         wb = (WorkbasketImpl) workbasketService.createWorkbasket(wb);
         createWorkbasketWithSecurity(wb, wb.getOwner(), true, true, true, true);
 
-        WorkbasketImpl wbNoAppend = (WorkbasketImpl) workbasketService.newWorkbasket();
+        WorkbasketImpl wbNoAppend = (WorkbasketImpl) workbasketService.newWorkbasket("key77");
         wbNoAppend.setName("Test-Security-WorkBasket-APPEND");
         wbNoAppend.setDescription("Workbasket without permission APPEND on Task");
         wbNoAppend.setOwner(user);
         wbNoAppend.setDomain("d2");
         wbNoAppend.setType(WorkbasketType.PERSONAL);
-        wbNoAppend.setKey("key77");
+
         wbNoAppend = (WorkbasketImpl) workbasketService.createWorkbasket(wbNoAppend);
         createWorkbasketWithSecurity(wbNoAppend, wbNoAppend.getOwner(), true, true, false, true);
 
-        WorkbasketImpl wbNoTransfer = (WorkbasketImpl) workbasketService.newWorkbasket();
+        WorkbasketImpl wbNoTransfer = (WorkbasketImpl) workbasketService.newWorkbasket("k99");
         wbNoTransfer.setName("Test-Security-WorkBasket-TRANSFER");
         wbNoTransfer.setDescription("Workbasket without permission TRANSFER on Task");
         wbNoTransfer.setOwner(user);
         wbNoTransfer.setDomain("test-domain");
         wbNoTransfer.setType(WorkbasketType.CLEARANCE);
-        wbNoTransfer.setKey("k99");
+
         wbNoTransfer = (WorkbasketImpl) workbasketService.createWorkbasket(wbNoTransfer);
         createWorkbasketWithSecurity(wbNoTransfer, wbNoTransfer.getOwner(), true, true, true, false);
 
@@ -441,8 +433,7 @@ public class TaskServiceImplIntAutocommitTest {
         WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
         ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
         InvalidArgumentException {
-        Workbasket wb = workbasketService.newWorkbasket();
-        wb.setKey("workbasket");
+        Workbasket wb = workbasketService.newWorkbasket("workbasket");
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
         wb.setDomain("novatec");

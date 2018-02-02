@@ -144,7 +144,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public Workbasket createWorkbasket(Workbasket newWorkbasket)
-        throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException {
+        throws InvalidWorkbasketException {
         LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
         Workbasket result = null;
         WorkbasketImpl workbasket = (WorkbasketImpl) newWorkbasket;
@@ -379,8 +379,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public Workbasket newWorkbasket() {
-        return new WorkbasketImpl();
+    public Workbasket newWorkbasket(String key) {
+        WorkbasketImpl wb = new WorkbasketImpl();
+        wb.setKey(key);
+        return wb;
     }
 
     @Override
@@ -526,6 +528,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         throws NotAuthorizedException {
         LOGGER.debug("entry to checkAuthorization(workbasketId = {}, workbasketAuthorization = {})", workbasketKey,
             workbasketAuthorization);
+        if ((workbasketAuthorization == null && workbasketKey == null) || workbasketAuthorization == null) {
+            throw new SystemException("checkAuthorization was called with an invalid parameter combination");
+        }
         boolean isAuthorized = false;
         try {
             taskanaEngine.openConnection();
@@ -556,7 +561,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                     "checkAuthorizationImpl was called with both workbasketKey and workbasketId set to null");
             }
 
-            if (accessItems.size() <= 0) {
+            if (accessItems.isEmpty()) {
                 throw new NotAuthorizedException("Not authorized. Authorization '" + workbasketAuthorization.name()
                     + "' on workbasket '" + workbasketKey + "' is needed.");
             }

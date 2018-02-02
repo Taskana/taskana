@@ -31,14 +31,6 @@ public interface Workbasket {
     String getKey();
 
     /**
-     * Set the key of the workbasket.
-     *
-     * @param key
-     *            the key of the workbasket
-     */
-    void setKey(String key);
-
-    /**
      * Returns the domain of the workbasket.
      *
      * @return domain of the workbasket
@@ -74,14 +66,6 @@ public interface Workbasket {
      * @return modified as Instant
      */
     Instant getModified();
-
-    /**
-     * Sets the time when the workbasket was modified the last time.
-     *
-     * @param modified
-     *            as Instant
-     */
-    void setModified(Instant modified);
 
     /**
      * Returns the name of the workbasket.

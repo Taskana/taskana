@@ -80,10 +80,9 @@ public class WorkbasketServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
         int before = workBasketService.getWorkbaskets().size();
-        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket();
+        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket("key");
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket.setId(id1);
-        workbasket.setKey("key");
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
@@ -99,26 +98,23 @@ public class WorkbasketServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
         int before = workBasketService.getWorkbaskets().size();
-        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket();
+        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket("key0");
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
-        workbasket0.setKey("key0");
         workbasket0.setName("Superbasket");
         workbasket0.setType(WorkbasketType.GROUP);
         workbasket0.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket0);
-        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket();
+        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket("key1");
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
-        workbasket1.setKey("key1");
         workbasket1.setName("Megabasket");
         workbasket1.setType(WorkbasketType.GROUP);
         workbasket1.setDomain("novatec");
         workbasket1 = (WorkbasketImpl) workBasketService.createWorkbasket(workbasket1);
-        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket();
+        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket("key2");
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
-        workbasket2.setKey("key2");
         workbasket2.setName("Hyperbasket");
         workbasket2.setType(WorkbasketType.GROUP);
         workbasket2.setDomain("novatec");
@@ -135,10 +131,9 @@ public class WorkbasketServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
-        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket();
+        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket("key0");
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket.setId(id0);
-        workbasket.setKey("key0");
         workbasket.setName("Superbasket");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
@@ -299,9 +294,8 @@ public class WorkbasketServiceImplIntExplicitTest {
     }
 
     private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type) {
-        WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket();
+        WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket(key);
         wb.setId(id);
-        wb.setKey(key);
         wb.setDomain(domain);
         wb.setName(name);
         wb.setDescription("Description of a Workbasket...");
