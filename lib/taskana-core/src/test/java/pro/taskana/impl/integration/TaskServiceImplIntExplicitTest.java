@@ -111,10 +111,10 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket();
+        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("k1");
         workbasket.setName("workbasket");
         workbasket.setId("1"); // set id manually for authorization tests
-        workbasket.setKey("k1");
+
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
         Classification classification = classificationService.newClassification("novatec", "TEST", "type1");
@@ -185,9 +185,9 @@ public class TaskServiceImplIntExplicitTest {
         WorkbasketServiceImpl workBasketServiceImpl = (WorkbasketServiceImpl) te.getWorkbasketService();
         ClassificationServiceImpl classificationServiceImpl = (ClassificationServiceImpl) te.getClassificationService();
 
-        Workbasket workbasket = workbasketService.newWorkbasket();
+        Workbasket workbasket = workbasketService.newWorkbasket("K99");
         workbasket.setName("workbasket");
-        workbasket.setKey("K99");
+
         workbasket.setName("workbasket99");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
@@ -242,11 +242,11 @@ public class TaskServiceImplIntExplicitTest {
 
         Instant tomorrow = Instant.now().plus(Duration.ofDays(1L));
 
-        Workbasket wb = workbasketService.newWorkbasket();
+        Workbasket wb = workbasketService.newWorkbasket("k1");
         wb.setDomain("novatec");
         wb.setName("wbk1");
         wb.setType(WorkbasketType.PERSONAL);
-        wb.setKey("k1");
+
         workbasketService.createWorkbasket(wb);
 
         Task test = taskServiceImpl.newTask("k1");
@@ -306,9 +306,8 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Workbasket wb = workbasketService.newWorkbasket();
+        Workbasket wb = workbasketService.newWorkbasket("WB NR.1");
         wb.setName("dummy-WB");
-        wb.setKey("WB NR.1");
         wb.setDomain("nova");
         wb.setType(WorkbasketType.PERSONAL);
         wb = workbasketService.createWorkbasket(wb);
@@ -335,12 +334,11 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket();
+        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("k1");
         workbasket.setName("workbasket");
         Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
         classificationService.createClassification(classification);
         workbasket.setId("1"); // set id manually for authorization tests
-        workbasket.setKey("k1");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
         workbasket = (WorkbasketImpl) workbasketService.createWorkbasket(workbasket);
@@ -389,12 +387,11 @@ public class TaskServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
 
         // Source Workbasket
-        wb = (WorkbasketImpl) workbasketService.newWorkbasket();
+        wb = (WorkbasketImpl) workbasketService.newWorkbasket("sourceWbKey");
         wb.setName("Basic-Workbasket");
         wb.setDescription("Just used as base WB for Task here");
         wb.setOwner(user);
         wb.setDomain("domain");
-        wb.setKey("sourceWbKey");
         wb.setType(WorkbasketType.PERSONAL);
         sourceWB = workbasketService.createWorkbasket(wb);
 
@@ -402,13 +399,13 @@ public class TaskServiceImplIntExplicitTest {
         createWorkbasketWithSecurity(sourceWB, sourceWB.getOwner(), true, true, true, true);
 
         // Destination Workbasket
-        wb = (WorkbasketImpl) workbasketService.newWorkbasket();
+        wb = (WorkbasketImpl) workbasketService.newWorkbasket("wb2Key");
         wb.setName("Desination-WorkBasket");
         wb.setDescription("Destination WB where Task should be transfered to");
         wb.setOwner(user);
         wb.setDomain("domain");
         wb.setType(WorkbasketType.TOPIC);
-        wb.setKey("wb2Key");
+
         destinationWB = workbasketService.createWorkbasket(wb);
         createWorkbasketWithSecurity(destinationWB, destinationWB.getOwner(), false, true, true, true);
 
@@ -476,31 +473,29 @@ public class TaskServiceImplIntExplicitTest {
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
 
-        WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket();
+        WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket("wbKey1");
         wb.setName("BASE WB");
         wb.setDescription("Normal base WB");
         wb.setOwner(user);
-        wb.setKey("wbKey1");
         wb.setDomain("test-domain");
         wb.setType(WorkbasketType.GROUP);
         wb = (WorkbasketImpl) workbasketService.createWorkbasket(wb);
         createWorkbasketWithSecurity(wb, wb.getOwner(), true, true, true, true);
 
-        WorkbasketImpl wbNoAppend = (WorkbasketImpl) workbasketService.newWorkbasket();
+        WorkbasketImpl wbNoAppend = (WorkbasketImpl) workbasketService.newWorkbasket("keyNoAppend");
         wbNoAppend.setName("Test-Security-WorkBasket-APPEND");
         wbNoAppend.setDescription("Workbasket without permission APPEND on Task");
         wbNoAppend.setOwner(user);
-        wbNoAppend.setKey("keyNoAppend");
+
         wbNoAppend.setDomain("anotherDomain");
         wbNoAppend.setType(WorkbasketType.CLEARANCE);
         wbNoAppend = (WorkbasketImpl) workbasketService.createWorkbasket(wbNoAppend);
         createWorkbasketWithSecurity(wbNoAppend, wbNoAppend.getOwner(), true, true, false, true);
 
-        WorkbasketImpl wbNoTransfer = (WorkbasketImpl) workbasketService.newWorkbasket();
+        WorkbasketImpl wbNoTransfer = (WorkbasketImpl) workbasketService.newWorkbasket("keyNoTransfer");
         wbNoTransfer.setName("Test-Security-WorkBasket-TRANSFER");
         wbNoTransfer.setDescription("Workbasket without permission TRANSFER on Task");
         wbNoTransfer.setOwner(user);
-        wbNoTransfer.setKey("keyNoTransfer");
         wbNoTransfer.setDomain("test-domain");
         wbNoTransfer.setType(WorkbasketType.GROUP);
         wbNoTransfer = (WorkbasketImpl) workbasketService.createWorkbasket(wbNoTransfer);
@@ -545,8 +540,7 @@ public class TaskServiceImplIntExplicitTest {
 
     private Task generateDummyTask() throws ClassificationAlreadyExistException, ClassificationNotFoundException,
         WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
-        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket();
-        workbasket.setKey("wb");
+        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("wb");
         workbasket.setName("wb");
         workbasket.setId("1"); // set id manually for authorization tests
         workbasket.setType(WorkbasketType.GROUP);

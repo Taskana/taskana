@@ -128,7 +128,7 @@ public class TaskMonitorServiceImplTest {
 
     @Test
     public void testGetTotalNumbersOfWorkbasketLevelReport() {
-        Workbasket workbasket = new WorkbasketImpl();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setName("workbasket");
         workbasket.setKey("wb1");
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
@@ -157,7 +157,7 @@ public class TaskMonitorServiceImplTest {
 
     @Test
     public void testGetWorkbasketLevelReportWithReportLineItemDefinitions() {
-        Workbasket workbasket = new WorkbasketImpl();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setName("workbasket");
         workbasket.setKey("wb1");
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
@@ -191,7 +191,7 @@ public class TaskMonitorServiceImplTest {
 
     @Test
     public void testGetTotalNumbersOfCatgoryReport() {
-        Workbasket workbasket = new WorkbasketImpl();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setName("workbasket");
         workbasket.setKey("wb1");
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
@@ -220,7 +220,7 @@ public class TaskMonitorServiceImplTest {
 
     @Test
     public void testGetCategoryReportWithReportLineItemDefinitions() {
-        Workbasket workbasket = new WorkbasketImpl();
+        WorkbasketImpl workbasket = new WorkbasketImpl();
         workbasket.setName("workbasket");
         workbasket.setKey("wb1");
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
