@@ -1,0 +1,27 @@
+
+<div class="row">
+    <div class="col-md-6">
+      <h2>Details</h2>
+    </div>
+    <div class="col-md-6">
+      <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onEdit()">
+          <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+        </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" (click)="onSave()">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
+    </div>
+  </div>
+  <dl class="dl-horizontal" *ngIf = "workbasket">
+    <dt>Id</dt>
+    <dd>{{ workbasket.id }}</dd>
+    <dt>Created Date</dt>
+    <dd>{{ workbasket.created | date: 'dd/MM/yyyy HH:mm' }}</dd>
+    <dt>Modified Date</dt>
+    <dd>{{ workbasket.modified | date: 'dd/MM/yyyy HH:mm' }}</dd>
+    <dt>Name</dt>
+    <dd><input class="form-control" placeholder="Name" name="editName" [(ngModel)]="workbasket.name" required></dd>
+    <dt>Owner</dt>
+    <dd><input class="form-control" placeholder="Owner" name="editOwner" [(ngModel)]="workbasket.owner" required></dd>
+    <dt>Description</dt>
+    <dd><textarea class="form-control" rows="3" placeholder="Description" name="editDescription" [(ngModel)]="workbasket.description"></textarea></dd>
+  </dl>
