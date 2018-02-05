@@ -32,6 +32,7 @@ import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -53,10 +54,8 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketServiceImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
@@ -149,10 +148,7 @@ public class TaskServiceImplIntExplicitTest {
         Task task = this.generateDummyTask();
         connection.commit();
 
-        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        accessItem.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem.setWorkbasketKey("wb");
-        accessItem.setAccessId("Elena");
+        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("wb", "Elena");
         accessItem.setPermAppend(true);
         accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
@@ -231,10 +227,7 @@ public class TaskServiceImplIntExplicitTest {
         objectReference.setValue("4444");
         objectReference.setType("type");
 
-        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        accessItem.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem.setWorkbasketKey("wb");
-        accessItem.setAccessId("Elena");
+        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("wb", "Elena");
         accessItem.setPermAppend(true);
         accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
@@ -556,19 +549,13 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     private void generateSampleAccessItems() {
-        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        accessItem.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem.setWorkbasketKey("k1");
-        accessItem.setAccessId("Elena");
+        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("k1", "Elena");
         accessItem.setPermAppend(true);
         accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
         workbasketService.createWorkbasketAuthorization(accessItem);
 
-        WorkbasketAccessItem accessItem2 = new WorkbasketAccessItem();
-        accessItem2.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem2.setWorkbasketKey("k2");
-        accessItem2.setAccessId("DummyGroup");
+        WorkbasketAccessItem accessItem2 = workbasketService.newWorkbasketAccessItem("k2", "DummyGroup");
         accessItem.setPermRead(true);
         accessItem2.setPermOpen(true);
         workbasketService.createWorkbasketAuthorization(accessItem2);
@@ -576,10 +563,7 @@ public class TaskServiceImplIntExplicitTest {
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
         boolean permRead, boolean permAppend, boolean permTransfer) {
-        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        accessItem.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem.setWorkbasketKey(wb.getKey());
-        accessItem.setAccessId(accessId);
+        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wb.getKey(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
         accessItem.setPermAppend(permAppend);

@@ -2,10 +2,10 @@ package pro.taskana;
 
 import java.util.List;
 
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
 
 /**
@@ -77,6 +77,17 @@ public interface WorkbasketService {
         throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
+     * Returns a new WorkbasketAccessItem which is not persisted.
+     *
+     * @param workbasketKey
+     *            the workbasket key used to identify the referenced workbasket
+     * @param accessId
+     *            the group id or user id for which access is controlled
+     * @return new WorkbasketAccessItem
+     */
+    WorkbasketAccessItem newWorkbasketAccessItem(String workbasketKey, String accessId);
+
+    /**
      * Create and persist a new Workbasket Authorization with a Workbasket and a AccessId.
      *
      * @param workbasketAccessItem
@@ -91,15 +102,11 @@ public interface WorkbasketService {
      * @param workbasketAccessItem
      *            the Authorization
      * @return the updated entity
+     * @throws InvalidArgumentException
+     *             if accessid or workbasketkey is changed in the workbasketAccessItem
      */
-    WorkbasketAccessItem updateWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem);
-
-    /**
-     * Get all authorizations of the workbasket.
-     *
-     * @return a WorkbasketAccessItem list
-     */
-    List<WorkbasketAccessItem> getAllAuthorizations();
+    WorkbasketAccessItem updateWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
+        throws InvalidArgumentException;
 
     /**
      * Deletes a specific authorization.
@@ -120,15 +127,6 @@ public interface WorkbasketService {
      *             if the current user has not the requested authorization for the specified workbasket
      */
     void checkAuthorization(String workbasketKey, WorkbasketAuthorization authorization) throws NotAuthorizedException;
-
-    /**
-     * This method get one WorkbasketAccessItem with an id.
-     *
-     * @param id
-     *            the id of the requested WorkbasketAccessItem
-     * @return the full {@link WorkbasketAccessItem}
-     */
-    WorkbasketAccessItem getWorkbasketAuthorization(String id);
 
     /**
      * Get all authorizations for a Workbasket.
@@ -161,7 +159,7 @@ public interface WorkbasketService {
      *
      * @param key
      *            the workbasket key used to identify the workbasket
-     * @return newWorkbasket
+     * @return new Workbasket
      */
     Workbasket newWorkbasket(String key);
 
