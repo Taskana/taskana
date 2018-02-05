@@ -2,9 +2,7 @@ package pro.taskana.impl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,12 +102,18 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states) {
-        return getWorkbasketLevelReport(workbaskets, states, null);
+        return getWorkbasketLevelReport(workbaskets, states, null, false);
     }
 
     @Override
     public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
         List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        return getWorkbasketLevelReport(workbaskets, states, reportLineItemDefinitions, true);
+    }
+
+    @Override
+    public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
+        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                 "entry to getWorkbasketLevelReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {})",
@@ -119,36 +123,32 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         try {
             taskanaEngineImpl.openConnection();
 
-            Report report = new Report();
-            report.setDetailLines(createEmptyDetailLinesForWorkbaskets(workbaskets, reportLineItemDefinitions));
-
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
                 .getTaskCountOfWorkbasketsByWorkbasketsAndStates(workbaskets, states);
 
-            for (MonitorQueryItem item : monitorQueryItems) {
-                report.getDetailLines().get(item.getKey()).addNumberOfTasks(item);
-            }
-            report.setSumLine(createEmptyReportLine(reportLineItemDefinitions));
-            report.generateSumLine();
-
-            return report;
+            return createReport(reportLineItemDefinitions, inWorkingDays, monitorQueryItems);
 
         } finally {
             taskanaEngineImpl.returnConnection();
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("exit from getWorkbasketLevelReport().");
-            }
+            LOGGER.debug("exit from getWorkbasketLevelReport().");
+
         }
     }
 
     @Override
     public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states) {
-        return getCategoryReport(workbaskets, states, null);
+        return getCategoryReport(workbaskets, states, null, false);
     }
 
     @Override
     public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states,
         List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        return getCategoryReport(workbaskets, states, reportLineItemDefinitions, true);
+    }
+
+    @Override
+    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states,
+        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                 "entry to getCategoryReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {})",
@@ -158,27 +158,38 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         try {
             taskanaEngineImpl.openConnection();
 
-            Report report = new Report();
-
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
                 .getTaskCountOfCategoriesByWorkbasketsAndStates(workbaskets, states);
-            for (MonitorQueryItem item : monitorQueryItems) {
-                if (!report.getDetailLines().containsKey(item.getKey())) {
-                    report.getDetailLines().put(item.getKey(), createEmptyReportLine(reportLineItemDefinitions));
-                }
-                report.getDetailLines().get(item.getKey()).addNumberOfTasks(item);
-            }
-            report.setSumLine(createEmptyReportLine(reportLineItemDefinitions));
-            report.generateSumLine();
 
-            return report;
+            return createReport(reportLineItemDefinitions, inWorkingDays, monitorQueryItems);
 
         } finally {
             taskanaEngineImpl.returnConnection();
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("exit from getCategoryReport().");
-            }
+            LOGGER.debug("exit from getCategoryReport().");
         }
+    }
+
+    private Report createReport(List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays,
+        List<MonitorQueryItem> monitorQueryItems) {
+        Report report = new Report();
+
+        DaysToWorkingDaysConverter instance = null;
+        if (reportLineItemDefinitions != null && inWorkingDays) {
+            instance = DaysToWorkingDaysConverter.initialize(reportLineItemDefinitions);
+        }
+
+        for (MonitorQueryItem item : monitorQueryItems) {
+            if (instance != null) {
+                item.setAgeInDays(instance.convertDaysToWorkingDays(item.getAgeInDays()));
+            }
+            if (!report.getDetailLines().containsKey(item.getKey())) {
+                report.getDetailLines().put(item.getKey(), createEmptyReportLine(reportLineItemDefinitions));
+            }
+            report.getDetailLines().get(item.getKey()).addNumberOfTasks(item);
+        }
+
+        report.generateSumLine(createEmptyReportLine(reportLineItemDefinitions));
+        return report;
     }
 
     private ReportLine createEmptyReportLine(List<ReportLineItemDefinition> reportLineItemDefinitions) {
@@ -191,16 +202,6 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
             }
         }
         return reportLine;
-    }
-
-    private Map<String, ReportLine> createEmptyDetailLinesForWorkbaskets(List<Workbasket> workbaskets,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        Map<String, ReportLine> detailLines = new LinkedHashMap<>();
-        for (Workbasket workbasket : workbaskets) {
-            ReportLine reportLine = createEmptyReportLine(reportLineItemDefinitions);
-            detailLines.put(workbasket.getKey(), reportLine);
-        }
-        return detailLines;
     }
 
 }
