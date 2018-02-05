@@ -29,6 +29,7 @@ import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -49,10 +50,8 @@ import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
@@ -464,10 +463,7 @@ public class TaskServiceImplIntAutocommitTest {
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
         boolean permRead, boolean permAppend, boolean permTransfer) {
-        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        accessItem.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem.setWorkbasketKey(wb.getKey());
-        accessItem.setAccessId(accessId);
+        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wb.getKey(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
         accessItem.setPermAppend(permAppend);
