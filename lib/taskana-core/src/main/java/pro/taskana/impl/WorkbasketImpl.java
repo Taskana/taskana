@@ -46,7 +46,6 @@ public class WorkbasketImpl implements Workbasket {
         return key;
     }
 
-    @Override
     public void setKey(String key) {
         this.key = key;
     }
@@ -65,7 +64,6 @@ public class WorkbasketImpl implements Workbasket {
         return modified;
     }
 
-    @Override
     public void setModified(Instant modified) {
         this.modified = modified;
     }

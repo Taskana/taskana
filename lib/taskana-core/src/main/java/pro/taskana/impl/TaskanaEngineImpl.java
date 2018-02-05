@@ -2,7 +2,8 @@ package pro.taskana.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -44,7 +45,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     private static final String DEFAULT = "default";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
-    protected static ThreadLocal<Stack<SqlSessionManager>> sessionStack = new ThreadLocal<>();
+    protected static ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
     protected TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected TransactionFactory transactionFactory;
     protected SqlSessionManager sessionManager;
@@ -222,8 +223,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         String databaseProductName;
         try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
             databaseProductName = con.getMetaData().getDatabaseProductName();
-            databaseProductName = con.getMetaData()
-                .getDatabaseProductName();
             if (databaseProductName.contains("DB2")) {
                 configuration.setDatabaseId("db2");
             } else if (databaseProductName.contains("H2")) {
@@ -240,7 +239,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
                 "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.",
                 e);
             throw new SystemException(
-                "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set");
+                "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.");
         }
 
         // add mappers
@@ -283,17 +282,17 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      *
      * @return Stack of SqlSessionManager
      */
-    protected static Stack<SqlSessionManager> getSessionStack() {
-        Stack<SqlSessionManager> stack = sessionStack.get();
+    protected static Deque<SqlSessionManager> getSessionStack() {
+        Deque<SqlSessionManager> stack = sessionStack.get();
         if (stack == null) {
-            stack = new Stack<>();
+            stack = new ArrayDeque<>();
             sessionStack.set(stack);
         }
         return stack;
     }
 
     protected static SqlSessionManager getSessionFromStack() {
-        Stack<SqlSessionManager> stack = getSessionStack();
+        Deque<SqlSessionManager> stack = getSessionStack();
         if (stack.isEmpty()) {
             return null;
         }
@@ -305,7 +304,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     protected static void popSessionFromStack() {
-        Stack<SqlSessionManager> stack = getSessionStack();
+        Deque<SqlSessionManager> stack = getSessionStack();
         if (!stack.isEmpty()) {
             stack.pop();
         }

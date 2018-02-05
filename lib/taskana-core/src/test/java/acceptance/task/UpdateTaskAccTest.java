@@ -9,6 +9,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.time.Instant;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
@@ -29,6 +30,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.TaskImpl;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -44,7 +46,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testUpdatePrimaryObjectReferenceOfTask()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -53,6 +55,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+        Instant modifiedOriginal = task.getModified();
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "7654321"));
         Task updatedTask = taskService.updateTask(task);
         updatedTask = taskService.getTask(updatedTask.getId());
@@ -61,6 +64,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Assert.assertEquals("7654321", updatedTask.getPrimaryObjRef().getValue());
         Assert.assertNotNull(updatedTask.getCreated());
         Assert.assertNotNull(updatedTask.getModified());
+        Assert.assertFalse(modifiedOriginal.isAfter(updatedTask.getModified()));
         Assert.assertNotEquals(updatedTask.getCreated(), updatedTask.getModified());
         Assert.assertEquals(task.getCreated(), updatedTask.getCreated());
         Assert.assertEquals(task.isRead(), updatedTask.isRead());
@@ -68,7 +72,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -78,9 +82,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         task.setPrimaryObjRef(null);
-        Task updatedTask = null;
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
@@ -88,7 +91,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
@@ -96,28 +99,28 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
         task.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         try {
-            updatedTask = taskService.updateTask(task);
+            taskService.updateTask(task);
             fail("update() should have thrown InvalidArgumentException.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
@@ -126,7 +129,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -153,7 +156,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testUpdateClassificationOfTask()
         throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
@@ -178,7 +181,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testCustomPropertiesOfTask()
         throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
@@ -195,7 +198,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test(expected = InvalidArgumentException.class)
     public void testUpdateOfWorkbasketKeyWhatIsNotAllowed()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -204,8 +207,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-        task.setWorkbasketKey("USER_2_2");
-        Task updatedTask = taskService.updateTask(task);
+        ((TaskImpl) task).setWorkbasketKey("USER_2_2");
+        taskService.updateTask(task);
     }
 
     @AfterClass

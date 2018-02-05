@@ -26,9 +26,8 @@ public class TaskanaComponent {
     public void triggerRollback() throws NotAuthorizedException, WorkbasketNotFoundException,
         ClassificationNotFoundException, InvalidWorkbasketException, TaskAlreadyExistException,
         InvalidArgumentException {
-        Task task = taskService.newTask();
+        Task task = taskService.newTask("1");
         task.setName("Unit Test Task");
-        task.setWorkbasketKey("1");
         ObjectReference objRef = new ObjectReference();
         objRef.setCompany("aCompany");
         objRef.setSystem("aSystem");

@@ -27,7 +27,7 @@ import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
 
 @RestController
-@RequestMapping(path = "/v1/workbaskets", produces = { MediaType.APPLICATION_JSON_VALUE })
+@RequestMapping(path = "/v1/workbaskets", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class WorkbasketController {
 
     @Autowired
@@ -110,10 +110,6 @@ public class WorkbasketController {
             return new ResponseEntity<>(createdWorkbasket, HttpStatus.CREATED);
         } catch (InvalidWorkbasketException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } catch (WorkbasketNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NotAuthorizedException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 

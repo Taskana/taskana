@@ -3,9 +3,12 @@ package acceptance.task;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
@@ -230,6 +233,115 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
+    }
+
+    @Test
+    public void modifyExistingAttachment()
+        throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
+        AttachmentPersistenceException {
+        // setup test
+        assertThat(task.getAttachments().size(), equalTo(0));
+        task.addAttachment(attachment);
+        Attachment attachment2 = createAttachment("DOCTYPE_DEFAULT",
+            createObjectReference("COMPANY_B", "SYSTEM_C", "INSTANCE_C", "ArchiveId",
+                "ABC45678901234567890123456789012345678901234567890"),
+            "ROHRPOST", "2018-01-15", createSimpleCustomProperties(4));
+        task.addAttachment(attachment2);
+        task = taskService.updateTask(task);
+        task = taskService.getTask(task.getId());
+
+        assertThat(task.getAttachments().size(), equalTo(2));
+        List<Attachment> attachments = task.getAttachments();
+        boolean rohrpostFound = false;
+        boolean emailFound = false;
+        for (Attachment att : attachments) {
+            String channel = att.getChannel();
+            int custAttSize = att.getCustomAttributes().size();
+            if ("ROHRPOST".equals(channel)) {
+                rohrpostFound = true;
+            } else if ("E-MAIL".equals(channel)) {
+                emailFound = true;
+            } else {
+                fail("unexpected attachment detected " + att);
+            }
+            assertTrue(("ROHRPOST".equals(channel) && custAttSize == 4)
+                || ("E-MAIL".equals(channel) && custAttSize == 3));
+        }
+        assertTrue(rohrpostFound && emailFound);
+
+        // modify existing attachment
+        for (Attachment att : task.getAttachments()) {
+            if (att.getCustomAttributes().size() == 3) {
+                att.setChannel("FAX");
+                break;
+            }
+        }
+        task = taskService.updateTask(task);
+        task = taskService.getTask(task.getId());
+
+        rohrpostFound = false;
+        boolean faxFound = false;
+
+        for (Attachment att : task.getAttachments()) {
+            String channel = att.getChannel();
+            int custAttSize = att.getCustomAttributes().size();
+            if ("FAX".equals(channel)) {
+                faxFound = true;
+            } else if ("ROHRPOST".equals(channel)) {
+                rohrpostFound = true;
+            } else {
+                fail("unexpected attachment detected " + att);
+            }
+
+            assertTrue(("ROHRPOST".equals(channel) && custAttSize == 4)
+                || ("FAX".equals(channel) && custAttSize == 3));
+        }
+        assertTrue(faxFound && rohrpostFound);
+    }
+
+    @Test
+    public void replaceExistingAttachments()
+        throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
+        AttachmentPersistenceException {
+        // setup test
+        assertThat(task.getAttachments().size(), equalTo(0));
+        task.addAttachment(attachment);
+        Attachment attachment2 = createAttachment("DOCTYPE_DEFAULT",
+            createObjectReference("COMPANY_B", "SYSTEM_C", "INSTANCE_C", "ArchiveId",
+                "ABC45678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(4));
+        task.addAttachment(attachment2);
+        task = taskService.updateTask(task);
+        task = taskService.getTask(task.getId());
+        assertThat(task.getAttachments().size(), equalTo(2));
+        assertThat(task.getAttachments().get(0).getClassificationSummary().getKey(), equalTo("DOCTYPE_DEFAULT"));
+        assertThat(task.getAttachments().get(1).getCustomAttributes().size(), equalTo(4));
+
+        Attachment attachment3 = createAttachment("DOCTYPE_DEFAULT",
+            createObjectReference("COMPANY_C", "SYSTEM_7", "INSTANCE_7", "ArchiveId",
+                "ABC4567890123456789012345678901234567890DEF"),
+            "DHL", "2018-01-15", createSimpleCustomProperties(4));
+
+        // replace existing attachments by new via addAttachment call
+        task.getAttachments().clear();
+        task.addAttachment(attachment3);
+        task = taskService.updateTask(task);
+        assertThat(task.getAttachments().size(), equalTo(1));
+        assertThat(task.getAttachments().get(0).getChannel(), equalTo("DHL"));
+
+        // setup environment for 2nd version of replacement (list.add call)
+        task.getAttachments().add(attachment2);
+        task = taskService.updateTask(task);
+        assertThat(task.getAttachments().size(), equalTo(2));
+        assertThat(task.getAttachments().get(1).getChannel(), equalTo("E-MAIL"));
+        // replace attachments
+        task.getAttachments().clear();
+        task.getAttachments().add(attachment3);
+        task = taskService.updateTask(task);
+        assertThat(task.getAttachments().size(), equalTo(1));
+        assertThat(task.getAttachments().get(0).getChannel(), equalTo("DHL"));
     }
 
     @AfterClass

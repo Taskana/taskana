@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 
 /**
@@ -21,6 +24,7 @@ import pro.taskana.impl.util.LoggerUtils;
 public class ClassificationQueryImpl implements ClassificationQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryClassification";
+    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryClassifications";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
     private String[] key;
@@ -146,6 +150,16 @@ public class ClassificationQueryImpl implements ClassificationQuery {
             RowBounds rowBounds = new RowBounds(offset, limit);
             result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             return result;
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                if (e.getMessage().contains("ERRORCODE=-4470")) {
+                    TaskanaRuntimeException ex = new TaskanaRuntimeException(
+                        "The offset beginning was set over the amount of result-rows.", e.getCause());
+                    ex.setStackTrace(e.getStackTrace());
+                    throw ex;
+                }
+            }
+            throw e;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -272,6 +286,20 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     public void setCustomFields(String[] customFields) {
         this.customFields = customFields;
+    }
+
+    @Override
+    public long count() throws NotAuthorizedException {
+        LOGGER.debug("entry to count(), this = {}", this);
+        Long rowCount = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            return (rowCount == null) ? 0L : rowCount;
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from count(). Returning result {} ", rowCount);
+        }
     }
 
     @Override

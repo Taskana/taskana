@@ -29,9 +29,8 @@ public class ExampleBootstrap {
         ClassificationNotFoundException, InvalidStateException, InvalidOwnerException, InvalidWorkbasketException,
         TaskAlreadyExistException, InvalidArgumentException {
         System.out.println("---------------------------> Start App");
-        Task task = taskService.newTask();
+        Task task = taskService.newTask("1");
         task.setName("Spring example task");
-        task.setWorkbasketKey("1");
         ObjectReference objRef = new ObjectReference();
         objRef.setCompany("aCompany");
         objRef.setSystem("aSystem");

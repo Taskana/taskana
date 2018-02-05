@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +14,13 @@ import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.InvalidRequestException;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.SystemException;
+import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.WorkbasketType;
-import pro.taskana.model.mappings.WorkbasketAccessMapper;
 import pro.taskana.security.CurrentUserContext;
 
 /**
@@ -27,7 +31,14 @@ import pro.taskana.security.CurrentUserContext;
 public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryWorkbasket";
+    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryWorkbaskets";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
+    private static final String KEY_COL_NAME = "KEY";
+    private static final String NAME_COL_NAME = "NAME";
+    private static final String ASCENDING = " ASC";
+    private static final String DESCENDING = " DESC";
+    private static final String ORDER_BY = "ORDER BY ";
+
     private String[] accessId;
     private WorkbasketAuthorization authorization;
     private String[] nameIn;
@@ -43,10 +54,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private Instant modifiedBefore;
     private String descriptionLike;
     private String[] owner;
+    private String orderClause;
     private TaskanaEngineImpl taskanaEngineImpl;
 
-    public WorkbasketQueryImpl(TaskanaEngine taskanaEngine, WorkbasketAccessMapper workbasketAccessMapper) {
+    public WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        orderClause = "";
     }
 
     @Override
@@ -128,7 +141,74 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery accessIdsHavePersmission(WorkbasketAuthorization permission, String... accessIds)
+    public WorkbasketQuery orderByName() throws InvalidRequestException {
+        if (orderClause.contains(NAME_COL_NAME)) {
+            throw new InvalidRequestException("orderByName() has already been called");
+        }
+        if (orderClause.isEmpty()) {
+            orderClause = ORDER_BY + NAME_COL_NAME;
+        } else if (orderClause.contains(ORDER_BY)) {
+            orderClause += ", " + NAME_COL_NAME;
+        } else {
+            throw new SystemException("orderByName() was called, but orderClause is unexpectedly: " + orderClause);
+        }
+
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery orderByKey() throws InvalidRequestException {
+        if (orderClause.contains(KEY_COL_NAME)) {
+            throw new InvalidRequestException("orderByKey() has already been called");
+        }
+        if (orderClause.isEmpty()) {
+            orderClause = ORDER_BY + KEY_COL_NAME;
+        } else if (orderClause.contains(ORDER_BY)) {
+            orderClause += ", " + KEY_COL_NAME;
+        } else {
+            throw new SystemException("orderByKey() was called, but orderClause is unexpectedly: " + orderClause);
+        }
+
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery ascending() throws InvalidRequestException {
+        if (!orderClause.startsWith(ORDER_BY)) {
+            throw new InvalidRequestException(
+                "ascending() has been called before orderByKey() or orderByName() was called");
+        }
+        if (orderClause.endsWith(KEY_COL_NAME) || orderClause.endsWith(NAME_COL_NAME)) {
+            orderClause += ASCENDING;
+        } else if (orderClause.endsWith(ASCENDING) || orderClause.endsWith(DESCENDING)) {
+            throw new InvalidRequestException(
+                "ascending() has been called immediately after ascending() or descending()");
+        } else {
+            throw new SystemException("ascending() was called, but orderClause is unexpectedly: " + orderClause);
+        }
+
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery descending() throws InvalidRequestException {
+        if (!orderClause.startsWith(ORDER_BY)) {
+            throw new InvalidRequestException(
+                "descending() has been called before orderByKey or orderByName was called");
+        }
+        if (orderClause.endsWith(KEY_COL_NAME) || orderClause.endsWith(NAME_COL_NAME)) {
+            orderClause += DESCENDING;
+        } else if (orderClause.endsWith(ASCENDING) || orderClause.endsWith(DESCENDING)) {
+            throw new InvalidRequestException(
+                "descending() has been called immediately after ascending() or descending()");
+        } else {
+            throw new SystemException("descending() was called, but orderClause is unexpectedly: " + orderClause);
+        }
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery accessIdsHavePermission(WorkbasketAuthorization permission, String... accessIds)
         throws InvalidArgumentException {
         // Checking pre-conditions
         if (permission == null) {
@@ -154,7 +234,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             throw new InvalidArgumentException("Permission cannot be null.");
         }
         List<String> ucAccessIds = CurrentUserContext.getAccessIds();
-        if (ucAccessIds != null && ucAccessIds.size() > 0) {
+        if (ucAccessIds != null && !ucAccessIds.isEmpty()) {
             accessIds = new String[ucAccessIds.size()];
             accessIds = ucAccessIds.toArray(accessIds);
         } else {
@@ -196,6 +276,16 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             RowBounds rowBounds = new RowBounds(offset, limit);
             workbaskets = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             return workbaskets;
+        } catch (Exception e) {
+            if (e instanceof PersistenceException) {
+                if (e.getMessage().contains("ERRORCODE=-4470")) {
+                    TaskanaRuntimeException ex = new TaskanaRuntimeException(
+                        "The offset beginning was set over the amount of result-rows.", e.getCause());
+                    ex.setStackTrace(e.getStackTrace());
+                    throw ex;
+                }
+            }
+            throw e;
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -278,6 +368,24 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     public String[] getOwner() {
         return owner;
+    }
+
+    public String getOrderClause() {
+        return orderClause;
+    }
+
+    @Override
+    public long count() throws NotAuthorizedException {
+        LOGGER.debug("entry to count(), this = {}", this);
+        Long rowCount = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            return (rowCount == null) ? 0L : rowCount;
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from count(). Returning result {} ", rowCount);
+        }
     }
 
     @Override

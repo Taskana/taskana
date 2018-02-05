@@ -46,7 +46,6 @@ public class TaskQueryImplTest {
 
     @Before
     public void setup() {
-        when(taskanaEngine.getClassificationService()).thenReturn(classificationService);
         when(taskanaEngine.getTaskService()).thenReturn(taskServiceMock);
         taskQueryImpl = new TaskQueryImpl(taskanaEngine);
     }

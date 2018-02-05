@@ -14,7 +14,6 @@ public interface ClassificationService {
     /**
      * Get all available Classification summaries as a tree.
      *
-
      * @return The List of all Classification summaries
      */
     List<ClassificationSummary> getClassificationTree();
