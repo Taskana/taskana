@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { WorkbasketserviceService } from './workbasketservice.service';
+import { WorkbasketService } from './workbasketservice.service';
 
-describe('WorkbasketserviceService', () => {
+describe('WorkbasketService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [WorkbasketserviceService]
+      providers: [WorkbasketService]
     });
   });
 
-  xit('should be created', inject([WorkbasketserviceService], (service: WorkbasketserviceService) => {
+  xit('should be created', inject([WorkbasketService], (service: WorkbasketService) => {
     expect(service).toBeTruthy();
   }));
 });

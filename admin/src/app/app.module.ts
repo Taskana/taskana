@@ -22,10 +22,11 @@ import { CategorieslistComponent } from './categorieslist/categorieslist.compone
 import { CategoriestreeComponent } from './categoriestree/categoriestree.component';
 import { CategoryeditorComponent } from './categoryeditor/categoryeditor.component';
 import { CategoriesadministrationComponent } from './categoriesadministration/categoriesadministration.component';
-import { WorkbasketadministrationComponent } from './workbasketadministration/workbasketadministration.component';
 import { WorkbasketAuthorizationComponent } from './workbasket-authorization/workbasket-authorization.component';
-import { WorkbasketDetailsComponent } from './workbasket-details/workbasket-details.component';
 import { WorkbasketDistributiontargetsComponent } from './workbasket-distributiontargets/workbasket-distributiontargets.component';
+import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component'
+import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component'
+
 //Shared
 import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-detail.component';
 
@@ -33,6 +34,8 @@ import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-det
 /**
  * Services
  */
+import { WorkbasketService } from './services/workbasketservice.service'
+
 
 const MODULES =     [
                     BrowserModule,
@@ -55,16 +58,16 @@ const COMPONENTS =  [
                       CategoriestreeComponent,
                       CategoryeditorComponent,
                       CategoriesadministrationComponent,
-                      WorkbasketadministrationComponent,
                       WorkbasketAuthorizationComponent,
                       WorkbasketDetailsComponent,
                       WorkbasketDistributiontargetsComponent,
-                      MasterAndDetailComponent
+                      MasterAndDetailComponent,
+                      WorkbasketInformationComponent
                     ];
 @NgModule({
   declarations: COMPONENTS,
   imports: MODULES,
-  providers: [HttpClientModule],
+  providers: [HttpClientModule, WorkbasketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

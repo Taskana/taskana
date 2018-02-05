@@ -1,0 +1,20 @@
+  <div class="col-xs-1">
+      <ul class="nav nav-tabs tabs-left sideways">
+        <li [class.active]="wbClicked"><a href="#workbaskets-information" data-toggle="tab" ><br>Details</a></li>
+        <li [class.active]="authClicked"><a href="#workbaskets-authorization" data-toggle="tab" ><br>Authorizations</a></li>
+        <li [class.active]="dtClicked"><a href="#workbaskets-distribution-targets" data-toggle="tab" >Distribution Targets</a></li>
+      </ul>
+  </div>
+  <div class="col-xs-10">
+      <div class="tab-content">
+        <div class="tab-pane" [class.active]="wbClicked" id="workbaskets-information">
+          <workbasket-information [workbasket]="workbasket"></workbasket-information>
+        </div>
+        <div class="tab-pane" [class.active]="authClicked" id="workbaskets-authorization">
+          <app-workbasket-authorization [workbasket]="workbasket"></app-workbasket-authorization>
+        </div>
+        <div class="tab-pane" [class.active]="dtClicked" id="workbaskets-distribution-targets">
+          <app-workbasket-distributiontargets [workbasket]="workbasket"></app-workbasket-distributiontargets>
+        </div>
+      </div>
+  </div>
