@@ -54,14 +54,13 @@ public interface WorkbasketMapper {
         @Result(property = "custom2", column = "CUSTOM_2"),
         @Result(property = "custom3", column = "CUSTOM_3"),
         @Result(property = "custom4", column = "CUSTOM_4"),
-
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     WorkbasketImpl findByKey(@Param("key") String key);
 
-    @Select("SELECT * FROM WORKBASKET WHERE id IN (SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id})")
+    @Select("SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM WORKBASKET WHERE ID IN (SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id})")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
@@ -70,7 +69,6 @@ public interface WorkbasketMapper {
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "type", column = "TYPE"),
-
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
@@ -90,7 +88,6 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
-
     List<WorkbasketSummaryImpl> findSummaryByKey(@Param("key") String key);
 
     @Select("SELECT * FROM WORKBASKET ORDER BY id")
@@ -124,7 +121,11 @@ public interface WorkbasketMapper {
         + "<if test=\"authorization.name() == 'CUSTOM_5'\">PERM_CUSTOM_5</if>"
         + "<if test=\"authorization.name() == 'CUSTOM_6'\">PERM_CUSTOM_6</if>"
         + "<if test=\"authorization.name() == 'CUSTOM_7'\">PERM_CUSTOM_7</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_8'\">PERM_CUSTOM_8</if> = 1 </foreach> "
+        + "<if test=\"authorization.name() == 'CUSTOM_8'\">PERM_CUSTOM_8</if>"
+        + "<if test=\"authorization.name() == 'CUSTOM_9'\">PERM_CUSTOM_9</if>"
+        + "<if test=\"authorization.name() == 'CUSTOM_10'\">PERM_CUSTOM_10</if>"
+        + "<if test=\"authorization.name() == 'CUSTOM_11'\">PERM_CUSTOM_11</if>"
+        + "<if test=\"authorization.name() == 'CUSTOM_12'\">PERM_CUSTOM_12</if> = 1 </foreach> "
         + "ORDER BY id</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
@@ -135,7 +136,6 @@ public interface WorkbasketMapper {
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "type", column = "TYPE"),
-
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),

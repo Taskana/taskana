@@ -40,7 +40,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     private Task task;
     private Attachment attachment;
-    TaskService taskService;
+    private TaskService taskService;
 
     public UpdateTaskAttachmentsAccTest() {
         super();
@@ -317,7 +317,6 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(2));
         assertThat(task.getAttachments().get(0).getClassificationSummary().getKey(), equalTo("DOCTYPE_DEFAULT"));
-        assertThat(task.getAttachments().get(1).getCustomAttributes().size(), equalTo(4));
 
         Attachment attachment3 = createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_C", "SYSTEM_7", "INSTANCE_7", "ArchiveId",

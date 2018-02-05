@@ -57,6 +57,9 @@ public class WorkbasketController {
                         case "DISTRIBUTE":
                             authorizations.add(WorkbasketAuthorization.DISTRIBUTE);
                             break;
+                        case "DELETE":
+                            authorizations.add(WorkbasketAuthorization.DELETE);
+                            break;
                         case "CUSTOM_1":
                             authorizations.add(WorkbasketAuthorization.CUSTOM_1);
                             break;
@@ -80,6 +83,18 @@ public class WorkbasketController {
                             break;
                         case "CUSTOM_8":
                             authorizations.add(WorkbasketAuthorization.CUSTOM_8);
+                            break;
+                        case "CUSTOM_9":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_9);
+                            break;
+                        case "CUSTOM_10":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_10);
+                            break;
+                        case "CUSTOM_11":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_11);
+                            break;
+                        case "CUSTOM_12":
+                            authorizations.add(WorkbasketAuthorization.CUSTOM_12);
                             break;
                     }
                 }

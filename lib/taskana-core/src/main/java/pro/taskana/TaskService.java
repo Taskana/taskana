@@ -188,13 +188,11 @@ public interface TaskService {
      * @return TaskSummaryList with all TaskSummaries of a work basket
      * @throws WorkbasketNotFoundException
      *             if a Work basket can´t be located.
-     * @throws InvalidWorkbasketException
-     *             thrown if the Workbasket specified with workbasketId has a missing required property
      * @throws NotAuthorizedException
      *             if the current user got no rights for reading on this work basket.
      */
     List<TaskSummary> getTaskSummariesByWorkbasketKey(String workbasketKey)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException;
+        throws WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
      * Returns a not persisted instance of {@link Task}.
