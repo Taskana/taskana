@@ -1,4 +1,4 @@
-package acceptance.task;
+package acceptance.monitoring;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -13,7 +13,6 @@ import javax.sql.DataSource;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,10 +37,10 @@ import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
 /**
- * Acceptance test for all "workbasket level report" scenarios.
+ * Acceptance test for all "category report" scenarios.
  */
 @RunWith(JAASRunner.class)
-public class ProvideWorkbasketLevelReportAccTest {
+public class ProvideCategoryReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
@@ -66,36 +65,40 @@ public class ProvideWorkbasketLevelReportAccTest {
 
     @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetTotalNumbersOfTasksOfWorkbasketLevelReport()
+    public void testGetTotalNumbersOfTasksOfCategoryReport()
         throws WorkbasketNotFoundException, NotAuthorizedException {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states);
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
+        Report report = taskMonitorService.getCategoryReport(workbaskets, states);
 
         assertNotNull(report);
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(0, report.getDetailLines().get(workbaskets.get(3).getKey()).getTotalNumberOfTasks());
+        assertEquals(33, report.getDetailLines().get(categories.get(0)).getTotalNumberOfTasks());
+        assertEquals(7, report.getDetailLines().get(categories.get(1)).getTotalNumberOfTasks());
+        assertEquals(10, report.getDetailLines().get(categories.get(2)).getTotalNumberOfTasks());
+        assertEquals(0, report.getDetailLines().get(categories.get(0)).getLineItems().size());
+        assertEquals(0, report.getDetailLines().get(categories.get(1)).getLineItems().size());
+        assertEquals(0, report.getDetailLines().get(categories.get(2)).getLineItems().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
 
     }
 
     @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetWorkbasketLevelReportWithReportLineItemDefinitions()
+    public void testGetCategoryReportWithReportLineItemDefinitions()
         throws WorkbasketNotFoundException, NotAuthorizedException {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states, reportLineItemDefinitions);
+        Report report = taskMonitorService.getCategoryReport(workbaskets, states, reportLineItemDefinitions);
 
         int sumLineCount = report.getSumLine().getLineItems().get(0).getNumberOfTasks()
             + report.getSumLine().getLineItems().get(1).getNumberOfTasks()
@@ -103,23 +106,25 @@ public class ProvideWorkbasketLevelReportAccTest {
             + report.getSumLine().getLineItems().get(3).getNumberOfTasks()
             + report.getSumLine().getLineItems().get(4).getNumberOfTasks()
             + report.getSumLine().getLineItems().get(5).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(6).getNumberOfTasks();
+            + report.getSumLine().getLineItems().get(6).getNumberOfTasks()
+            + report.getSumLine().getLineItems().get(7).getNumberOfTasks()
+            + report.getSumLine().getLineItems().get(8).getNumberOfTasks();
 
-        Assert.assertNotNull(report);
+        assertNotNull(report);
 
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(0, report.getDetailLines().get(workbaskets.get(3).getKey()).getTotalNumberOfTasks());
+        assertEquals(33, report.getDetailLines().get(categories.get(0)).getTotalNumberOfTasks());
+        assertEquals(7, report.getDetailLines().get(categories.get(1)).getTotalNumberOfTasks());
+        assertEquals(10, report.getDetailLines().get(categories.get(2)).getTotalNumberOfTasks());
 
-        assertEquals(22, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
-        assertEquals(5, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
-        assertEquals(3, report.getSumLine().getLineItems().get(2).getNumberOfTasks());
-        assertEquals(4, report.getSumLine().getLineItems().get(3).getNumberOfTasks());
-        assertEquals(1, report.getSumLine().getLineItems().get(4).getNumberOfTasks());
-        assertEquals(4, report.getSumLine().getLineItems().get(5).getNumberOfTasks());
-        assertEquals(11, report.getSumLine().getLineItems().get(6).getNumberOfTasks());
-
+        assertEquals(11, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
+        assertEquals(8, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
+        assertEquals(11, report.getSumLine().getLineItems().get(2).getNumberOfTasks());
+        assertEquals(0, report.getSumLine().getLineItems().get(3).getNumberOfTasks());
+        assertEquals(4, report.getSumLine().getLineItems().get(4).getNumberOfTasks());
+        assertEquals(0, report.getSumLine().getLineItems().get(5).getNumberOfTasks());
+        assertEquals(7, report.getSumLine().getLineItems().get(6).getNumberOfTasks());
+        assertEquals(4, report.getSumLine().getLineItems().get(7).getNumberOfTasks());
+        assertEquals(5, report.getSumLine().getLineItems().get(8).getNumberOfTasks());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
         assertEquals(50, sumLineCount);
 
@@ -127,7 +132,7 @@ public class ProvideWorkbasketLevelReportAccTest {
 
     @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetWorkbasketLevelReportIfWorkbasketContainsNoTask()
+    public void testGetCategoryReportIfWorkbasketContainsNoTask()
         throws WorkbasketNotFoundException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -137,10 +142,10 @@ public class ProvideWorkbasketLevelReportAccTest {
             .getWorkbasket("WBI:000000000000000000000000000000000004");
         workbaskets.add(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states);
+        Report report = taskMonitorService.getCategoryReport(workbaskets, states);
 
         assertNotNull(report);
-        assertEquals(0, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
+        assertEquals(0, report.getDetailLines().size());
         assertEquals(0, report.getSumLine().getTotalNumberOfTasks());
     }
 
@@ -161,13 +166,15 @@ public class ProvideWorkbasketLevelReportAccTest {
 
     private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {
         List<ReportLineItemDefinition> reportLineItemDefinitions = new ArrayList<>();
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -6));
+        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -11));
+        reportLineItemDefinitions.add(new ReportLineItemDefinition(-10, -6));
         reportLineItemDefinitions.add(new ReportLineItemDefinition(-5, -2));
         reportLineItemDefinitions.add(new ReportLineItemDefinition(-1));
         reportLineItemDefinitions.add(new ReportLineItemDefinition(0));
         reportLineItemDefinitions.add(new ReportLineItemDefinition(1));
         reportLineItemDefinitions.add(new ReportLineItemDefinition(2, 5));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(6, Integer.MAX_VALUE));
+        reportLineItemDefinitions.add(new ReportLineItemDefinition(6, 10));
+        reportLineItemDefinitions.add(new ReportLineItemDefinition(11, Integer.MAX_VALUE));
         return reportLineItemDefinitions;
     }
 

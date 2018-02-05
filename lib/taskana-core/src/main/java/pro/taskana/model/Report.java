@@ -36,7 +36,8 @@ public class Report {
         this.sumLine = sumLine;
     }
 
-    public void generateSumLine() {
+    public void generateSumLine(ReportLine sumLine) {
+        this.sumLine = sumLine;
         int totalNumberOfTasks = 0;
         for (ReportLine reportLine : this.getDetailLines().values()) {
             Iterator<ReportLineItem> reportLineItemIterator = reportLine.getLineItems().iterator();
@@ -48,7 +49,6 @@ public class Report {
             totalNumberOfTasks += reportLine.getTotalNumberOfTasks();
         }
         this.sumLine.setTotalNumberOfTasks(totalNumberOfTasks);
-
     }
 
 }
