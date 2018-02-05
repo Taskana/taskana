@@ -40,4 +40,9 @@ public class ReportLineItemDefinition {
     public void setUpperAgeLimit(int upperAgeLimit) {
         this.upperAgeLimit = upperAgeLimit;
     }
+
+    @Override
+    public String toString() {
+        return "(" + this.lowerAgeLimit + "," + this.upperAgeLimit + ")";
+    }
 }
