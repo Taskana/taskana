@@ -1,22 +1,30 @@
 import { Injectable } from '@angular/core';
 import { RequestOptions, Headers, Http, Response } from '@angular/http';
+import { WorkbasketSummary } from '../model/workbasketSummary';
 import { Workbasket } from '../model/workbasket';
 import { WorkbasketAuthorization } from '../model/workbasket-authorization';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
-export class WorkbasketserviceService {
+export class WorkbasketService {
+
+  public workBasketSelected = new Subject<string>();
 
   constructor(private http: Http) { }
 
-  getAllWorkBaskets(): Observable<Workbasket[]> {
+  getWorkBasketsSummary(): Observable<WorkbasketSummary[]> {
     return this.http.get(environment.taskanaRestUrl + "/v1/workbaskets", this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
-  createWorkbasket(workbasket: Workbasket): Observable<Workbasket> {
+  getWorkBasket(id: string): Observable<Workbasket> {
+    return this.http.get(`${environment.taskanaRestUrl}/v1/workbaskets/${id}`, this.createAuthorizationHeader())
+      .map(res => res.json());
+  }
+
+  createWorkbasket(workbasket: WorkbasketSummary): Observable<WorkbasketSummary> {
     return this.http.post(environment.taskanaRestUrl + "/v1/workbaskets", workbasket, this.createAuthorizationHeader())
       .map(res => res.json());
   }
@@ -26,7 +34,7 @@ export class WorkbasketserviceService {
       .map(res => res.json());
   }
 
-  updateWorkbasket(workbasket: Workbasket): Observable<Workbasket> {
+  updateWorkbasket(workbasket: WorkbasketSummary): Observable<WorkbasketSummary> {
     return this.http.put(environment.taskanaRestUrl + "/v1/workbaskets/" + workbasket.id, workbasket, this.createAuthorizationHeader())
       .map(res => res.json());
   }
@@ -48,6 +56,14 @@ export class WorkbasketserviceService {
 
   deleteWorkBasketAuthorization(workbasketAuthorization: WorkbasketAuthorization) {
     return this.http.delete(environment.taskanaRestUrl + "/v1/workbaskets/authorizations/" + workbasketAuthorization.id, this.createAuthorizationHeader());
+  }
+
+  selectWorkBasket(id: string){
+    this.workBasketSelected.next(id);
+  }
+
+  getSelectedWorkBasket(){
+    return this.workBasketSelected.asObservable();
   }
 
   private createAuthorizationHeader() {

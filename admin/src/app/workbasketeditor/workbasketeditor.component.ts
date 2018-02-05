@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Workbasket } from '../model/workbasket';
+import { WorkbasketSummary } from '../model/workbasketSummary';
 
 @Component({
   selector: 'app-workbasketeditor',
@@ -9,13 +9,13 @@ import { Workbasket } from '../model/workbasket';
   styleUrls: ['./workbasketeditor.component.css']
 })
 export class WorkbasketeditorComponent implements OnInit {
-  public workbasket: Workbasket;
-  public workbasketSaved: EventEmitter<Workbasket> = new EventEmitter();
+  public workbasket: WorkbasketSummary;
+  public workbasketSaved: EventEmitter<WorkbasketSummary> = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() {
-    this.workbasket = new Workbasket("", "", "", "", "", "", null);
+    this.workbasket = new WorkbasketSummary("", "", "", "", "", "", "", "", "", "", "", null);
   }
 
   onSubmit() {
