@@ -60,7 +60,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .domainIn("DOMAIN_B", "", "DOMAIN_A")
             .list();
-        assertThat(results.size(), equalTo(25));
+        assertThat(results.size(), equalTo(36));
 
         results = taskService.createTaskQuery()
             .domainIn("DOMAIN_A")
