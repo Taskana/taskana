@@ -9,6 +9,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
@@ -19,6 +20,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
+import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
@@ -412,7 +414,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             // check existence of source workbasket
             WorkbasketImpl sourceWorkbasket = (WorkbasketImpl) getWorkbasket(sourceWorkbasketId);
             checkAuthorizationByWorkbasketId(sourceWorkbasketId, WorkbasketAuthorization.READ);
-            distributionTargetMapper.deleteAllDistributionTargets(sourceWorkbasketId);
+            distributionTargetMapper.deleteAllDistributionTargetsBySourceId(sourceWorkbasketId);
 
             sourceWorkbasket.setModified(Instant.now());
             workbasketMapper.update(sourceWorkbasket);
@@ -505,7 +507,38 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from addDistributionTarget");
         }
+    }
 
+    @Override
+    public void deleteWorkbasket(String workbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException {
+        LOGGER.debug("entry to deleteWorkbasket(workbasketId = {})", workbasketId);
+        try {
+            taskanaEngine.openConnection();
+            if (workbasketId == null || workbasketId.isEmpty()) {
+                throw new InvalidArgumentException("The WorkbasketId can´t be NULL or EMPTY for deleteWorkbasket()");
+            }
+
+            // check if the workbasket does exist and is empty (Task)
+            Workbasket wb = this.getWorkbasket(workbasketId);
+            List<TaskSummary> taskUsages = taskanaEngine.getTaskService()
+                .createTaskQuery()
+                .workbasketKeyIn(wb.getKey())
+                .list();
+            if (taskUsages == null || taskUsages.size() > 0) {
+                throw new WorkbasketInUseException(
+                    "Workbasket is used on tasks and can´t be deleted. WorkbasketId=" + workbasketId);
+            }
+
+            // delete workbasket and sub-tables
+            distributionTargetMapper.deleteAllDistributionTargetsBySourceId(wb.getId());
+            distributionTargetMapper.deleteAllDistributionTargetsByTargetId(wb.getId());
+            workbasketAccessMapper.deleteAllForWorkbasketkey(wb.getKey());
+            workbasketMapper.delete(workbasketId);
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from deleteWorkbasket(workbasketId = {})", workbasketId);
+        }
     }
 
     private void checkAuthorizationByWorkbasketId(String workbasketId,
@@ -563,5 +596,4 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             LOGGER.debug("exit from checkAuthorization(). User is authorized = {}.", isAuthorized);
         }
     }
-
 }

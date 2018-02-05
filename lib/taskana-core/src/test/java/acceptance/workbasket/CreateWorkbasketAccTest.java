@@ -89,7 +89,5 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
             fail("InvalidWorkbasketException was expected");
         } catch (InvalidWorkbasketException e) {
         }
-
     }
-
 }
