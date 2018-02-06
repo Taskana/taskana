@@ -41,7 +41,6 @@ public class TransferTaskAccTest extends AbstractAccTest {
         super();
     }
 
-    @Ignore
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
