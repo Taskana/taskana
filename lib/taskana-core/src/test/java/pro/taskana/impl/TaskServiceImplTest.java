@@ -715,6 +715,7 @@ public class TaskServiceImplTest {
             classificationQueryImplMock);
 
         assertThat(actualTask.isRead(), equalTo(false));
+        assertThat(actualTask.getState(), equalTo(TaskState.READY));
         assertThat(actualTask.isTransferred(), equalTo(true));
         assertThat(actualTask.getWorkbasketKey(), equalTo(destinationWorkbasket.getKey()));
     }
@@ -754,6 +755,7 @@ public class TaskServiceImplTest {
             classificationQueryImplMock);
 
         assertThat(actualTask.isRead(), equalTo(false));
+        assertThat(actualTask.getState(), equalTo(TaskState.READY));
         assertThat(actualTask.isTransferred(), equalTo(true));
         assertThat(actualTask.getWorkbasketKey(), equalTo(destinationWorkbasket.getKey()));
     }
