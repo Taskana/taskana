@@ -60,23 +60,40 @@
     justify-content: center;
 }
 
-.vertical-right-divider {
-    border-right: 1px solid #ccc;
+
+/*
+    Colors
+*/
+.white{
+    color: white;
+    & svg {
+        fill: white;
+    }
 }
 
-.row.list-group {
-    margin-left: 2px;
+.blue{
+    color: #337ab7;
+    & svg {
+        fill: #337ab7;
+    }
 }
 
-.list-group > li {
-    border-left: none;
-    border-right: none;
+.green {
+    color: green;
+    & svg {
+        fill: green;
+    }
 }
 
-.workbasket-title {
-    text-align: center;
-    font-weight: bold;
+.grey {
+    color:grey;
+    & svg {
+        fill: grey;
+    }
 }
+
+
+
 
 /*
  *Remove bootstrap cols padding for master and detail component
@@ -214,24 +231,6 @@ li > div.row > dl {
     border: 1px solid #e3e3e3;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
-}
-
-.white{
-    color: white;
-    & svg {
-        fill: white;
-    }
-}
-
-.blue{
-    color: #337ab7;
-    & svg {
-        fill: #337ab7;
-    }
-}
-
-.green {
-    color: green;
 }
 
 
