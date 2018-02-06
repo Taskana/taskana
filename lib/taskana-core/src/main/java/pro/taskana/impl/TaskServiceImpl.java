@@ -247,10 +247,10 @@ public class TaskServiceImpl implements TaskService {
     public Task transfer(String taskId, String destinationWorkbasketKey)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketKey = {})", taskId, destinationWorkbasketKey);
-        Task result = null;
+        TaskImpl task = null;
         try {
             taskanaEngineImpl.openConnection();
-            TaskImpl task = (TaskImpl) getTask(taskId);
+            task = (TaskImpl) getTask(taskId);
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
             workbasketService.checkAuthorization(destinationWorkbasketKey, WorkbasketAuthorization.APPEND);
@@ -267,15 +267,14 @@ public class TaskServiceImpl implements TaskService {
             task.setWorkbasketSummary(destinationWorkbasket.asSummary());
             task.setDomain(destinationWorkbasket.getDomain());
             task.setModified(Instant.now());
+            task.setState(TaskState.READY);
             taskMapper.update(task);
-
-            result = getTask(taskId);
             LOGGER.debug("Method transfer() transferred Task '{}' to destination workbasket {}", taskId,
                 destinationWorkbasketKey);
-            return result;
+            return task;
         } finally {
             taskanaEngineImpl.returnConnection();
-            LOGGER.debug("exit from transfer(). Returning result {} ", result);
+            LOGGER.debug("exit from transfer(). Returning result {} ", task);
         }
     }
 

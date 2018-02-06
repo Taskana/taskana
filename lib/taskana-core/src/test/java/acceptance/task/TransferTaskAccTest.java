@@ -10,7 +10,6 @@ import java.sql.SQLException;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,7 +39,6 @@ public class TransferTaskAccTest extends AbstractAccTest {
         super();
     }
 
-    @Ignore
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
