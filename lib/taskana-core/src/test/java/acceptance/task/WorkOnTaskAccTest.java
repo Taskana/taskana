@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
@@ -17,7 +18,9 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
@@ -238,6 +241,61 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         assertEquals(completedTask.getCompleted(), completedTask.getModified());
         assertTrue(completedTask.isRead());
         assertEquals("user_1_2", completedTask.getOwner());
+    }
+
+    @Ignore
+    @WithAccessId(
+        userName = "user_1_2",
+        groupNames = {"group_1"})
+    @Test(expected = TaskNotFoundException.class)
+    public void testBulkCompleteTasks()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        ConcurrencyException, AttachmentPersistenceException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        ArrayList<String> taskIdList = new ArrayList();
+        taskIdList.add("TKI:000000000000000000000000000000000100");
+        taskIdList.add("TKI:000000000000000000000000000000000101");
+
+        // BulkOperationResults results = taskService.completeTasks(taskIdList);
+
+        // assertFalse(results.containsError());
+        Task completedTask1 = taskService.getTask("TKI:000000000000000000000000000000000100");
+        assertEquals(TaskState.COMPLETED, completedTask1.getState());
+        assertNotNull(completedTask1.getCompleted());
+        Task completedTask2 = taskService.getTask("TKI:000000000000000000000000000000000101");
+        assertEquals(TaskState.COMPLETED, completedTask2.getState());
+        assertNotNull(completedTask2.getCompleted());
+    }
+
+    @Ignore
+    @WithAccessId(
+        userName = "user_1_2",
+        groupNames = {"group_1"})
+    @Test(expected = TaskNotFoundException.class)
+    public void testBulkDeleteTasksWithException()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        ConcurrencyException, AttachmentPersistenceException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        ArrayList<String> taskIdList = new ArrayList();
+        taskIdList.add("TKI:000000000000000000000000000000000102");
+        taskIdList.add("TKI:000000000000000000000000000000000103");
+        taskIdList.add("TKI:000000000000000000000000000000000033");
+
+        // BulkOperationResults results = taskService.deleteTasks(taskIdList);
+
+        // assertTrue(results.containsError());
+        // more assertions ...
+        // assert exception is invalidstateexception
+        Task completedTask1 = taskService.getTask("TKI:000000000000000000000000000000000102");
+        assertEquals(TaskState.COMPLETED, completedTask1.getState());
+        assertNotNull(completedTask1.getCompleted());
+        Task completedTask2 = taskService.getTask("TKI:000000000000000000000000000000000103");
+        assertEquals(TaskState.COMPLETED, completedTask2.getState());
+        assertNotNull(completedTask2.getCompleted());
     }
 
     @AfterClass
