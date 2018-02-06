@@ -1,7 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { WorkbasketSummary } from '../../model/workbasketSummary';
 import { WorkbasketService } from '../../services/workbasketservice.service'
-import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -20,7 +19,7 @@ export class WorkbasketListComponent implements OnInit {
   private workBasketSummarySubscription: Subscription;
   private workbasketServiceSubscription: Subscription;
 
-  constructor(private service: WorkbasketService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private service: WorkbasketService) { }
 
   ngOnInit() {
     this.workBasketSummarySubscription = this.service.getWorkBasketsSummary().subscribe(resultList => {
@@ -56,7 +55,7 @@ export class WorkbasketListComponent implements OnInit {
   }
 
   getEmptyObject() {
-    return new WorkbasketSummary("", "", "", "", "", "", "", "", "", "", "", null);
+    return new WorkbasketSummary("", "", "", "", "", "", "", "", "", "", "", "");
   }
 
   ngOnDestroy(){

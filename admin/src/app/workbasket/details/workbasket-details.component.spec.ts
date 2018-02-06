@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 
 describe('WorkbasketDetailsComponent', () => {
