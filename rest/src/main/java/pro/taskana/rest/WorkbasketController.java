@@ -18,12 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketAuthorization;
 
 @RestController
@@ -141,7 +142,7 @@ public class WorkbasketController {
 
     @RequestMapping(value = "/authorizations/{authid}", method = RequestMethod.PUT)
     public WorkbasketAccessItem updateWorkbasketAuthorization(@PathVariable(value = "authid") String authId,
-        @RequestBody WorkbasketAccessItem workbasketAccessItem) {
+        @RequestBody WorkbasketAccessItem workbasketAccessItem) throws InvalidArgumentException {
         return workbasketService.updateWorkbasketAuthorization(workbasketAccessItem);
     }
 

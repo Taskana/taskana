@@ -200,7 +200,7 @@ public class TaskQueryImpl implements TaskQuery {
         try {
             LOGGER.debug("entry to list(), this = {}", this);
             taskanaEngineImpl.openConnection();
-            checkAuthorization();
+            checkOpenPermissionForWorkbasketKey();
             List<TaskSummaryImpl> tasks = new ArrayList<>();
             tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
@@ -221,7 +221,7 @@ public class TaskQueryImpl implements TaskQuery {
         List<TaskSummary> result = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
-            checkAuthorization();
+            checkOpenPermissionForWorkbasketKey();
             RowBounds rowBounds = new RowBounds(offset, limit);
             List<TaskSummaryImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
@@ -252,7 +252,7 @@ public class TaskQueryImpl implements TaskQuery {
         TaskSummary result = null;
         try {
             taskanaEngineImpl.openConnection();
-            checkAuthorization();
+            checkOpenPermissionForWorkbasketKey();
             TaskSummaryImpl taskSummaryImpl = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             if (taskSummaryImpl == null) {
                 return null;
@@ -275,7 +275,7 @@ public class TaskQueryImpl implements TaskQuery {
         Long rowCount = null;
         try {
             taskanaEngineImpl.openConnection();
-            checkAuthorization();
+            checkOpenPermissionForWorkbasketKey();
             rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
@@ -284,7 +284,7 @@ public class TaskQueryImpl implements TaskQuery {
         }
     }
 
-    private void checkAuthorization() throws NotAuthorizedException {
+    private void checkOpenPermissionForWorkbasketKey() throws NotAuthorizedException {
         if (this.workbasketKey != null && this.workbasketKey.length > 0) {
             for (String wbKey : this.workbasketKey) {
                 taskanaEngineImpl.getWorkbasketService().checkAuthorization(wbKey, WorkbasketAuthorization.OPEN);
