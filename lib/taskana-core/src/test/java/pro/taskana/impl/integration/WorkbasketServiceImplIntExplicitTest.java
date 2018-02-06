@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -33,7 +34,6 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.model.WorkbasketAccessItem;
 import pro.taskana.model.WorkbasketType;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -247,14 +247,14 @@ public class WorkbasketServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
-        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        accessItem.setWorkbasketKey("Key1");
-        accessItem.setAccessId("Arthur Dent");
+        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
+            "Key1",
+            "Arthur Dent");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
         workBasketService.createWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals(1, workBasketService.getAllAuthorizations().size());
+        Assert.assertEquals(1, workBasketService.getWorkbasketAuthorizations("Key1").size());
         connection.commit();
     }
 
@@ -263,29 +263,22 @@ public class WorkbasketServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
-        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        accessItem.setWorkbasketKey("key2");
-        accessItem.setAccessId("Arthur Dent");
+        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
+            "key2",
+            "Zaphod Beeblebrox");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
         workBasketService.createWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals(1, workBasketService.getAllAuthorizations().size());
-
-        accessItem.setAccessId("Zaphod Beeblebrox");
-        workBasketService.updateWorkbasketAuthorization(accessItem);
-
-        Assert.assertEquals("zaphod beeblebrox",
-            workBasketService.getWorkbasketAuthorization(accessItem.getId()).getAccessId());
+        Assert.assertEquals(1, workBasketService.getWorkbasketAuthorizations("key2").size());
+        Assert.assertEquals("zaphod beeblebrox", accessItem.getAccessId());
         connection.commit();
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
         boolean permRead, boolean permAppend, boolean permTransfer) {
-        WorkbasketAccessItem accessItem = new WorkbasketAccessItem();
-        accessItem.setId(IdGenerator.generateWithPrefix("WAI"));
-        accessItem.setWorkbasketKey(wb.getKey());
-        accessItem.setAccessId(accessId);
+        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
+            wb.getKey(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
         accessItem.setPermAppend(permAppend);

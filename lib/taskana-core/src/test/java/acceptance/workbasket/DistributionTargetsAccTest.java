@@ -1,5 +1,8 @@
 package acceptance.workbasket;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,13 +48,13 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         List<WorkbasketSummary> retrievedDistributionTargets = workbasketService
             .getDistributionTargets(workbasketSummary.getId());
 
-        Assert.assertEquals(4, retrievedDistributionTargets.size());
+        assertEquals(4, retrievedDistributionTargets.size());
         List<String> expectedTargetIds = new ArrayList<>(
             Arrays.asList("WBI:100000000000000000000000000000000002", "WBI:100000000000000000000000000000000003",
                 "WBI:100000000000000000000000000000000004", "WBI:100000000000000000000000000000000005"));
 
         for (WorkbasketSummary wbSummary : retrievedDistributionTargets) {
-            Assert.assertTrue(expectedTargetIds.contains(wbSummary.getId()));
+            assertTrue(expectedTargetIds.contains(wbSummary.getId()));
         }
 
     }
@@ -68,7 +71,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
 
         try {
             workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000xx1");
-            Assert.assertTrue("This line of code should not be reached", false);
+            assertTrue("This line of code should not be reached", false);
         } catch (WorkbasketNotFoundException ex) {
             // nothing to do
         }
@@ -77,14 +80,14 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
             List<String> distributionTargets = new ArrayList<>(
                 Arrays.asList(nonExistingWb));
             workbasketService.setDistributionTargets(existingWb, distributionTargets);
-            Assert.assertTrue("This line of code should not be reached", false);
+            assertTrue("This line of code should not be reached", false);
         } catch (WorkbasketNotFoundException ex) {
             // nothing to do
         }
 
         try {
             workbasketService.addDistributionTarget(existingWb, nonExistingWb);
-            Assert.assertTrue("This line of code should not be reached", false);
+            assertTrue("This line of code should not be reached", false);
         } catch (WorkbasketNotFoundException ex) {
             // nothing to do
         }
@@ -93,7 +96,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         workbasketService.removeDistributionTarget(existingWb, nonExistingWb);
         int afterCount = workbasketService.getDistributionTargets(existingWb).size();
 
-        Assert.assertEquals(afterCount, beforeCount);
+        assertEquals(afterCount, beforeCount);
 
     }
 
@@ -107,7 +110,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
 
         try {
             workbasketService.getDistributionTargets(existingWb);
-            Assert.assertTrue("This line of code should not be reached", false);
+            assertTrue("This line of code should not be reached", false);
         } catch (NotAuthorizedException ex) {
             // nothing to do
         }
@@ -116,7 +119,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
             List<String> distributionTargets = new ArrayList<>(
                 Arrays.asList("WBI:100000000000000000000000000000000002"));
             workbasketService.setDistributionTargets(existingWb, distributionTargets);
-            Assert.assertTrue("This line of code should not be reached", false);
+            assertTrue("This line of code should not be reached", false);
         } catch (NotAuthorizedException ex) {
             // nothing to do
         }
@@ -124,7 +127,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         try {
             workbasketService.addDistributionTarget(existingWb,
                 "WBI:100000000000000000000000000000000002");
-            Assert.assertTrue("This line of code should not be reached", false);
+            assertTrue("This line of code should not be reached", false);
         } catch (NotAuthorizedException ex) {
             // nothing to do
         }
@@ -132,7 +135,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         try {
             workbasketService.removeDistributionTarget(existingWb,
                 "WBI:100000000000000000000000000000000002");
-            Assert.assertTrue("This line of code should not be reached", false);
+            assertTrue("This line of code should not be reached", false);
         } catch (NotAuthorizedException ex) {
             // nothing to do
         }
@@ -149,24 +152,24 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         Workbasket workbasket = workbasketService.getWorkbasketByKey("GPK_KSC_1");
 
         List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
-        Assert.assertEquals(4, distributionTargets.size());
+        assertEquals(4, distributionTargets.size());
 
         // add a new distribution target
         Workbasket newTarget = workbasketService.getWorkbasketByKey("GPK_B_KSC_2");
         workbasketService.addDistributionTarget(workbasket.getId(), newTarget.getId());
 
         distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
-        Assert.assertEquals(5, distributionTargets.size());
+        assertEquals(5, distributionTargets.size());
 
         // remove the new target
         workbasketService.removeDistributionTarget(workbasket.getId(), newTarget.getId());
         distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
-        Assert.assertEquals(4, distributionTargets.size());
+        assertEquals(4, distributionTargets.size());
 
         // remove the new target again Question: should this throw an exception?
         workbasketService.removeDistributionTarget(workbasket.getId(), newTarget.getId());
         distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
-        Assert.assertEquals(4, distributionTargets.size());
+        assertEquals(4, distributionTargets.size());
 
     }
 
@@ -182,23 +185,38 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
 
         List<WorkbasketSummary> initialDistributionTargets = workbasketService
             .getDistributionTargets(sourceWorkbasket.getId());
-        Assert.assertEquals(4, initialDistributionTargets.size());
+        assertEquals(4, initialDistributionTargets.size());
 
         List<WorkbasketSummary> newDistributionTargets = workbasketService.createWorkbasketQuery()
             .keyIn("USER_1_1", "GPK_B_KSC_1")
             .list();
-        Assert.assertEquals(2, newDistributionTargets.size());
+        assertEquals(2, newDistributionTargets.size());
 
         List<String> newDistributionTargetIds = newDistributionTargets.stream().map(t -> t.getId()).collect(
             Collectors.toList());
 
         workbasketService.setDistributionTargets(sourceWorkbasket.getId(), newDistributionTargetIds);
         List<WorkbasketSummary> changedTargets = workbasketService.getDistributionTargets(sourceWorkbasket.getId());
-        Assert.assertEquals(2, changedTargets.size());
+        assertEquals(2, changedTargets.size());
 
         // reset DB to original state
         resetDb(false);
 
+    }
+
+    @Ignore
+    @WithAccessId(
+        userName = "user_2_2",
+        groupNames = {"group_1", "group_2"})
+    @Test
+    public void testQueryWorkbasketsWhereGivenWorkbasketIsDistributionTarget()
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {
+        // WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        //
+        // List<WorkbasketSummary> distributionSources = workbasketService
+        // .getDistributionSources("WBI:100000000000000000000000000000000004");
+        //
+        // assertEquals(2, distributionSources.size());
     }
 
     @AfterClass

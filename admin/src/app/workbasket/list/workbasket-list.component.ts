@@ -1,40 +1,37 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Workbasket } from '../../model/workbasket';
-import { WorkbasketserviceService } from '../../services/workbasketservice.service'
-import { ActivatedRoute, Params } from '@angular/router';
+import { WorkbasketSummary } from '../../model/workbasketSummary';
+import { WorkbasketService } from '../../services/workbasketservice.service'
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'workbasket-list',
   outputs: ['selectedWorkbasket'],
   templateUrl: './workbasket-list.component.html',
-  styleUrls: ['./workbasket-list.component.css'],
-  providers: [WorkbasketserviceService]
+  styleUrls: ['./workbasket-list.component.scss']
 })
 export class WorkbasketListComponent implements OnInit {
-  public selectedWorkbasket: EventEmitter<Workbasket> = new EventEmitter();
+  public selectedWorkbasket: EventEmitter<WorkbasketSummary> = new EventEmitter();
 
-  workbasket: Workbasket = this.getEmptyObject();
-  selected: Workbasket = this.getEmptyObject();
-  editing: Workbasket = this.getEmptyObject();
-  isEditing: boolean = false;
+  newWorkbasket: WorkbasketSummary;
+  selectedId: string = undefined;
+  workbaskets : Array<WorkbasketSummary> = [];
 
-  wbClicked = true;
-  authClicked = false;
-  dtClicked = false
+  private workBasketSummarySubscription: Subscription;
+  private workbasketServiceSubscription: Subscription;
 
-  workbaskets = [];
-
-  public alerts: any = [];
-
-  constructor(private service: WorkbasketserviceService, private route: ActivatedRoute) { }
+  constructor(private service: WorkbasketService) { }
 
   ngOnInit() {
-    this.service.getAllWorkBaskets().subscribe(resultList => {
+    this.workBasketSummarySubscription = this.service.getWorkBasketsSummary().subscribe(resultList => {
       this.workbaskets = resultList;
+    });
+
+    this.workbasketServiceSubscription = this.service.getSelectedWorkBasket().subscribe( workbasketIdSelected => {
+      this.selectedId = workbasketIdSelected;
     });
   }
 
-  onDelete(workbasket: Workbasket) {
+  onDelete(workbasket: WorkbasketSummary) {
     this.service.deleteWorkbasket(workbasket.id).subscribe(result => {
       var index = this.workbaskets.indexOf(workbasket);
       if (index > -1) {
@@ -44,72 +41,26 @@ export class WorkbasketListComponent implements OnInit {
   }
 
   onAdd() {
-    this.service.createWorkbasket(this.workbasket).subscribe(result => {
+    this.service.createWorkbasket(this.newWorkbasket).subscribe(result => {
       this.workbaskets.push(result);
       this.onClear();
     });
   }
 
-  onEdit(workbasket: Workbasket) {
-    this.editing = { ...workbasket };
-    this.isEditing = true;
-  }
-
-  onSelect(workbasket: Workbasket) {
-    if (!this.isEditing) {
-      this.selected = workbasket;
-    }
-  }
-
   onClear() {
-    this.workbasket.id = "";
-    this.workbasket.name = "";
-    this.workbasket.description = "";
-    this.workbasket.owner = "";
-  }
-
-  onSave() {
-    if (this.isEditing) {
-      this.service.updateWorkbasket(this.editing).subscribe(result => {
-        this.selected.id = result.id;
-        this.selected.name = result.name;
-        this.selected.description = result.description;
-        this.selected.owner = result.owner;
-      }, (err) => {
-        this.alerts = [{
-          type: "danger",
-          msg: "You are not authorized."
-        }]
-      });
-    }
-    this.isEditing = false;
-    this.editing = this.getEmptyObject();
-  }
-
-  onCancel() {
-    this.editing = this.getEmptyObject();
-    this.isEditing = false;
+    this.newWorkbasket.id = "";
+    this.newWorkbasket.name = "";
+    this.newWorkbasket.description = "";
+    this.newWorkbasket.owner = "";
   }
 
   getEmptyObject() {
-    return new Workbasket("", "", "", "", "", "", null);
+    return new WorkbasketSummary("", "", "", "", "", "", "", "", "", "", "", "");
   }
 
-  onClickWB() {
-    this.wbClicked = !this.wbClicked;
-    this.authClicked = false;
-    this.dtClicked = false;
+  ngOnDestroy(){
+    this.workBasketSummarySubscription.unsubscribe();
+    this.workbasketServiceSubscription.unsubscribe();
   }
 
-  onClickAuth() {
-    this.authClicked = !this.authClicked;
-    this.wbClicked = false;
-    this.dtClicked = false;
-  }
-
-  onClickDt() {
-    this.dtClicked = !this.dtClicked;
-    this.wbClicked = false;
-    this.authClicked = false;
-  }
 }

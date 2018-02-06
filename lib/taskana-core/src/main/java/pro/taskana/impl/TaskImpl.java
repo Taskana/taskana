@@ -409,7 +409,13 @@ public class TaskImpl implements Task {
         taskSummary.setAttachmentSummaries(attSummaries);
         taskSummary.setBusinessProcessId(this.businessProcessId);
         taskSummary.setClaimed(claimed);
-        taskSummary.setClassificationSummary(classificationSummary);
+        if (classificationSummary != null) {
+            taskSummary.setClassificationSummary(classificationSummary);
+        } else {
+            ClassificationSummaryImpl aClassificationSummary = new ClassificationSummaryImpl();
+            aClassificationSummary.setKey(classificationKey);
+            taskSummary.setClassificationSummary(aClassificationSummary);
+        }
         taskSummary.setCompleted(completed);
         taskSummary.setCreated(created);
         taskSummary.setCustom1(custom1);
@@ -454,6 +460,14 @@ public class TaskImpl implements Task {
     }
 
     public void setClassificationSummary(ClassificationSummary classificationSummary) {
+        this.classificationSummary = classificationSummary;
+    }
+
+    public ClassificationSummaryImpl getClassificationSummaryImpl() {
+        return (ClassificationSummaryImpl) classificationSummary;
+    }
+
+    public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
         this.classificationSummary = classificationSummary;
     }
 
