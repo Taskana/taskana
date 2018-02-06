@@ -6,8 +6,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": " ng build --env=dev",
-    "build:prod": "ng build --env=prod",
-    "test": "ng test",
+    "build:prod": "npm run test && ng build --environment=prod --no-progress",
+    "test": "ng test --single-run",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
