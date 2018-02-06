@@ -1,4 +1,4 @@
-import {WorkbasketSummary} from './WorkbasketSummary';
+import {WorkbasketSummary} from './workbasketSummary';
 export class Workbasket {
     constructor(
         public id: string,
