@@ -25,8 +25,11 @@ public interface DistributionTargetMapper {
     int getNumberOfDistributionTargets(@Param("sourceId") String sourceId, @Param("targetId") String targetId);
 
     @Delete("<script>DELETE FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID IN (<foreach item='target' collection='targetId' separator=',' > #{target} </foreach>)</script>")
-    void deleteMultiple(@Param("sourceId") String sourceId, @Param("targetId") List<String> targetId);
+    void deleteMultipleBySourceId(@Param("sourceId") String sourceId, @Param("targetId") List<String> targetId);
 
     @Delete("DELETE FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId}")
-    void deleteAllDistributionTargets(@Param("sourceId") String sourceId);
+    void deleteAllDistributionTargetsBySourceId(@Param("sourceId") String sourceId);
+
+    @Delete("DELETE FROM DISTRIBUTION_TARGETS WHERE TARGET_ID = #{targetId}")
+    void deleteAllDistributionTargetsByTargetId(@Param("targetId") String targetId);
 }

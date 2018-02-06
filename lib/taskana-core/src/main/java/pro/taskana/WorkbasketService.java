@@ -5,6 +5,7 @@ import java.util.List;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.WorkbasketAuthorization;
 
@@ -231,4 +232,20 @@ public interface WorkbasketService {
     void removeDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
         throws NotAuthorizedException;
 
+    /**
+     * Deletes the workbasket by the given ID of it.
+     *
+     * @param workbasketId
+     *            Id of the workbasket which should be deleted.
+     * @throws NotAuthorizedException
+     *             if the current user got no permissions for this interaction.
+     * @throws WorkbasketNotFoundException
+     *             if the workbasket does not exist.
+     * @throws WorkbasketInUseException
+     *             if the workbasket does contain task-content.
+     * @throws InvalidArgumentException
+     *             if the workbasketId is NULL or EMPTY
+     */
+    void deleteWorkbasket(String workbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException;
 }
