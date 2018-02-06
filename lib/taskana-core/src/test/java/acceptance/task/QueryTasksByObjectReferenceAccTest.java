@@ -31,7 +31,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueIn("11223344", "22334455")
             .list();
-        Assert.assertEquals(16L, results.size());
+        Assert.assertEquals(32L, results.size());
     }
 
     @Test
@@ -42,7 +42,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
             .primaryObjectReferenceTypeIn("SDNR")
             .primaryObjectReferenceValueIn("11223344")
             .list();
-        Assert.assertEquals(5L, results.size());
+        Assert.assertEquals(10L, results.size());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueLike("%567%")
             .list();
-        Assert.assertEquals(5L, results.size());
+        Assert.assertEquals(10L, results.size());
     }
 
     @AfterClass

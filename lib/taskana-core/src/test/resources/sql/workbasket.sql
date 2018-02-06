@@ -2,6 +2,7 @@ INSERT INTO WORKBASKET VALUES ('1', 'key1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
 INSERT INTO WORKBASKET VALUES ('2', 'key2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket2', 'DOMAIN_A', 'CLEARANCE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Susanne', '', '', '', '', '', '', '', '');
 INSERT INTO WORKBASKET VALUES ('3', 'key3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket3', 'DOMAIN_A', 'TOPIC',     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Max', '', '', '', '', '', '', '', '');
 INSERT INTO WORKBASKET VALUES ('4', 'key4', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket4', 'DOMAIN_A', 'TOPIC',     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('5', 'key5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basket5', 'DOMAIN_A', 'TOPIC',     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Max', '', '', '', '', '', '', '', '');
 
 -- KSC workbaskets
 INSERT INTO WORKBASKET VALUES ('WBI:100000000000000000000000000000000001', 'GPK_KSC', '2018-02-01 12:00:00', '2018-02-01 12:00:00', 'Gruppenpostkorb KSC', 'DOMAIN_A', 'GROUP', 'Gruppenpostkorb KSC', '', '', '', '', '', '', '', '', '');

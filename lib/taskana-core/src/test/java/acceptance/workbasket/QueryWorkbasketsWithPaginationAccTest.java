@@ -99,7 +99,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-        assertThat(results.size(), equalTo(13));
+        assertThat(results.size(), equalTo(14));
 
         // Getting last results on multiple pages
         pageNumber = 2;
@@ -107,7 +107,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-        assertThat(results.size(), equalTo(3));
+        assertThat(results.size(), equalTo(4));
     }
 
     @Test
@@ -167,7 +167,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         long count = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .count();
-        assertThat(count, equalTo(13L));
+        assertThat(count, equalTo(14L));
     }
 
     @AfterClass
