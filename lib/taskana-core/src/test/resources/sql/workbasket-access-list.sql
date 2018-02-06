@@ -37,3 +37,4 @@ INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:10000000000000000000000000000000
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000023', 'GPK_B_KSC_1', 'group_1',   true, false, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000024', 'GPK_B_KSC_2', 'group_2',   true, false, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
 
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000025', 'key5',        'group_1',   true, true,  true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);

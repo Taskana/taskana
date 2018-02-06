@@ -116,7 +116,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
-        ArrayList<String> taskIdList = new ArrayList();
+        ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000004");
         taskIdList.add("TKI:000000000000000000000000000000000005");
 
@@ -144,7 +144,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
-        ArrayList<String> taskIdList = new ArrayList();
+        ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000006");
         taskIdList.add("TKI:000000000000000000000000000000000002");
 
