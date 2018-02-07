@@ -36,6 +36,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
@@ -268,6 +269,7 @@ public class TaskServiceImpl implements TaskService {
             task.setDomain(destinationWorkbasket.getDomain());
             task.setModified(Instant.now());
             task.setState(TaskState.READY);
+            task.setOwner(null);
             taskMapper.update(task);
             LOGGER.debug("Method transfer() transferred Task '{}' to destination workbasket {}", taskId,
                 destinationWorkbasketKey);
@@ -275,6 +277,91 @@ public class TaskServiceImpl implements TaskService {
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from transfer(). Returning result {} ", task);
+        }
+    }
+
+    @Override
+    public BulkOperationResults<String, TaskanaException> transferBulk(String destinationWorkbasketKey,
+        List<String> taskIds) throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+        try {
+            taskanaEngineImpl.openConnection();
+            LOGGER.debug("entry to transferBulk(targetWbKey = {}, taskIds = {})", destinationWorkbasketKey, taskIds);
+            // Check pre-conditions with trowing Exceptions
+            if (destinationWorkbasketKey == null || taskIds == null) {
+                throw new InvalidArgumentException(
+                    "DestinationWorkbasketKey or TaskIds can´t be used as NULL-Parameter.");
+            }
+            Workbasket destinationWorkbasket = workbasketService.getWorkbasketByKey(destinationWorkbasketKey);
+
+            BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+            // check tasks exist and Ids valid - log and remove
+            List<TaskSummary> taskSummaries = this.createTaskQuery().idIn(taskIds.toArray(new String[0])).list();
+            Iterator<String> taskIdIterator = taskIds.iterator();
+            while (taskIdIterator.hasNext()) {
+                String currentTaskId = taskIdIterator.next();
+                if (currentTaskId == null || currentTaskId.equals("")) {
+                    bulkLog.addError("",
+                        new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
+                    taskIdIterator.remove();
+                } else if (!taskSummaries.stream()
+                    .filter(taskSummary -> currentTaskId.equals(taskSummary.getTaskId()))
+                    .findFirst()
+                    .isPresent()) {
+                    bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId));
+                    taskIdIterator.remove();
+                }
+            }
+
+            // check source WB (read)+transfer
+            Set<String> workbasketKeys = new HashSet<>();
+            taskSummaries.stream().forEach(t -> workbasketKeys.add(t.getWorkbasketSummary().getKey()));
+            List<WorkbasketSummary> sourceWorkbaskets = workbasketService.createWorkbasketQuery()
+                .callerHasPermission(WorkbasketAuthorization.TRANSFER)
+                .keyIn(workbasketKeys.toArray(new String[0]))
+                .list();
+            taskIdIterator = taskIds.iterator();
+            while (taskIdIterator.hasNext()) {
+                String currentTaskId = taskIdIterator.next();
+                TaskSummary taskSummary = taskSummaries.stream()
+                    .filter(t -> currentTaskId.equals(t.getTaskId()))
+                    .findFirst()
+                    .orElse(null);
+                if (taskSummaries != null) {
+                    if (!sourceWorkbaskets.stream()
+                        .filter(wb -> taskSummary.getWorkbasketSummary().getKey().equals(wb.getKey()))
+                        .findFirst()
+                        .isPresent()) {
+                        bulkLog.addError(currentTaskId,
+                            new NotAuthorizedException(
+                                "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId));
+                        taskIdIterator.remove();
+                    }
+                }
+            }
+
+            // filter taskSummaries and update values
+            taskSummaries = taskSummaries.stream().filter(ts -> taskIds.contains(ts.getTaskId())).collect(
+                Collectors.toList());
+            if (!taskSummaries.isEmpty()) {
+                Instant now = Instant.now();
+                List<TaskSummaryImpl> updateObjects = new ArrayList<>();
+                for (TaskSummary ts : taskSummaries) {
+                    TaskSummaryImpl taskSummary = (TaskSummaryImpl) ts;
+                    taskSummary.setRead(false);
+                    taskSummary.setTransferred(true);
+                    taskSummary.setWorkbasketSummary(destinationWorkbasket.asSummary());
+                    taskSummary.setDomain(destinationWorkbasket.getDomain());
+                    taskSummary.setModified(now);
+                    taskSummary.setState(TaskState.READY);
+                    taskSummary.setOwner(null);
+                    updateObjects.add(taskSummary);
+                }
+                taskMapper.updateTransfered(taskIds, updateObjects.get(0));
+            }
+            return bulkLog;
+        } finally {
+            LOGGER.debug("exit from transferBulk(targetWbKey = {}, taskIds = {})", destinationWorkbasketKey, taskIds);
+            taskanaEngineImpl.returnConnection();
         }
     }
 
