@@ -144,7 +144,7 @@ public class TaskServiceImplTest {
             .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
         expectedTask.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
 
-        Task actualTask = cutSpy.createTask(expectedTask);
+        TaskSummary actualTask = cutSpy.createTask(expectedTask);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).checkAuthorization(any(), any());
@@ -161,7 +161,7 @@ public class TaskServiceImplTest {
         assertNotNull(actualTask.getCreated());
         assertNotNull(actualTask.getModified());
         assertNull(actualTask.getCompleted());
-        assertThat(actualTask.getWorkbasketKey(), equalTo(expectedTask.getWorkbasketKey()));
+        assertThat(actualTask.getWorkbasketSummary().getKey(), equalTo(expectedTask.getWorkbasketKey()));
         assertThat(actualTask.getName(), equalTo(expectedTask.getName()));
         assertThat(actualTask.getState(), equalTo(TaskState.READY));
     }
@@ -190,7 +190,7 @@ public class TaskServiceImplTest {
             classificationServiceImplMock)
             .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
         doNothing().when(taskMapperMock).insert(expectedTask);
-        Task actualTask = cutSpy.createTask(expectedTask);
+        TaskSummary actualTask = cutSpy.createTask(expectedTask);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).getWorkbasketByKey(wb.getKey());
@@ -207,7 +207,7 @@ public class TaskServiceImplTest {
         assertNotNull(actualTask.getCreated());
         assertNotNull(actualTask.getModified());
         assertNull(actualTask.getCompleted());
-        assertThat(actualTask.getWorkbasketKey(), equalTo(expectedTask.getWorkbasketKey()));
+        assertThat(actualTask.getWorkbasketSummary().getKey(), equalTo(expectedTask.getWorkbasketKey()));
         assertThat(actualTask.getName(), equalTo(expectedTask.getName()));
         assertThat(actualTask.getState(), equalTo(TaskState.READY));
         assertThat(actualTask.getPrimaryObjRef(), equalTo(expectedObjectReference));
@@ -237,7 +237,7 @@ public class TaskServiceImplTest {
         doNothing().when(objectReferenceMapperMock).insert(expectedObjectReference);
         doReturn(null).when(objectReferenceMapperMock).findByObjectReference(expectedTask.getPrimaryObjRef());
 
-        Task actualTask = cutSpy.createTask(expectedTask);
+        TaskSummary actualTask = cutSpy.createTask(expectedTask);
         expectedTask.getPrimaryObjRef().setId(actualTask.getPrimaryObjRef().getId());   // get only new ID
 
         verify(taskanaEngineImpl, times(1)).openConnection();
@@ -256,7 +256,7 @@ public class TaskServiceImplTest {
         assertNotNull(actualTask.getCreated());
         assertNotNull(actualTask.getModified());
         assertNull(actualTask.getCompleted());
-        assertThat(actualTask.getWorkbasketKey(), equalTo(expectedTask.getWorkbasketKey()));
+        assertThat(actualTask.getWorkbasketSummary().getKey(), equalTo(expectedTask.getWorkbasketKey()));
         assertThat(actualTask.getName(), equalTo(expectedTask.getName()));
         assertThat(actualTask.getState(), equalTo(TaskState.READY));
         assertThat(actualTask.getPrimaryObjRef(), equalTo(expectedObjectReference));
@@ -408,7 +408,7 @@ public class TaskServiceImplTest {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
-        doReturn(expectedTask).when(cutSpy).claim(expectedTask.getId(), false);
+        doReturn(expectedTask.asSummary()).when(cutSpy).claim(expectedTask.getId(), false);
         cutSpy.claim(expectedTask.getId());
         verify(cutSpy, times(1)).claim(expectedTask.getId(), false);
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
@@ -426,7 +426,7 @@ public class TaskServiceImplTest {
         PowerMockito.mockStatic(CurrentUserContext.class);
         Mockito.when(CurrentUserContext.getUserid()).thenReturn(expectedOwner);
 
-        Task acturalTask = cutSpy.claim(expectedTask.getId(), true);
+        TaskSummary acturalTask = cutSpy.claim(expectedTask.getId(), true);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(expectedTask.getId());
@@ -558,7 +558,7 @@ public class TaskServiceImplTest {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
-        doReturn(expectedTask).when(cutSpy).cancelClaim(expectedTask.getId(), false);
+        doReturn(expectedTask.asSummary()).when(cutSpy).cancelClaim(expectedTask.getId(), false);
         cutSpy.cancelClaim(expectedTask.getId());
         verify(cutSpy, times(1)).cancelClaim(expectedTask.getId(), false);
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
@@ -580,7 +580,7 @@ public class TaskServiceImplTest {
         PowerMockito.mockStatic(CurrentUserContext.class);
         Mockito.when(CurrentUserContext.getUserid()).thenReturn(owner);
 
-        Task acturalTask = cutSpy.cancelClaim(expectedTask.getId(), true);
+        TaskSummary acturalTask = cutSpy.cancelClaim(expectedTask.getId(), true);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(expectedTask.getId());
@@ -610,7 +610,7 @@ public class TaskServiceImplTest {
         PowerMockito.mockStatic(CurrentUserContext.class);
         Mockito.when(CurrentUserContext.getUserid()).thenReturn(owner);
 
-        Task acturalTask = cutSpy.cancelClaim(expectedTask.getId(), true);
+        TaskSummary acturalTask = cutSpy.cancelClaim(expectedTask.getId(), true);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(expectedTask.getId());
@@ -642,7 +642,7 @@ public class TaskServiceImplTest {
         task.setOwner(CurrentUserContext.getUserid());
         doReturn(task).when(taskMapperMock).findById(task.getId());
         doReturn(null).when(attachmentMapperMock).findAttachmentsByTaskId(task.getId());
-        doReturn(task).when(cutSpy).completeTask(task.getId(), isForced);
+        doReturn(task.asSummary()).when(cutSpy).completeTask(task.getId(), isForced);
         doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
         doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domainIn(any());
         doReturn(classificationQueryImplMock).when(classificationQueryImplMock).keyIn(any());
@@ -653,7 +653,7 @@ public class TaskServiceImplTest {
             classificationQueryImplMock)
             .list();
 
-        Task actualTask = cut.completeTask(task.getId());
+        TaskSummary actualTask = cut.completeTask(task.getId());
 
         verify(taskanaEngineImpl, times(2)).openConnection();
         verify(taskMapperMock, times(1)).findById(task.getId());
@@ -690,7 +690,7 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(taskMapperMock).update(task);
 
-        Task actualTask = cutSpy.completeTask(task.getId(), isForced);
+        TaskSummary actualTask = cutSpy.completeTask(task.getId(), isForced);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
@@ -794,7 +794,7 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(taskMapperMock).update(task);
 
-        Task actualTask = cutSpy.completeTask(task.getId(), isForced);
+        TaskSummary actualTask = cutSpy.completeTask(task.getId(), isForced);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
@@ -822,26 +822,22 @@ public class TaskServiceImplTest {
         task.setState(TaskState.READY);
         task.setClaimed(null);
         doReturn(task).when(cutSpy).getTask(task.getId());
-        TaskImpl claimedTask = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
-        // created and modify should be able to be different.
-        Thread.sleep(sleepTime);
-        claimedTask.setState(TaskState.CLAIMED);
-        claimedTask.setClaimed(Instant.now());
-        doReturn(claimedTask).when(cutSpy).claim(task.getId(), isForced);
-        doNothing().when(taskMapperMock).update(claimedTask);
+        doReturn(null).when(cutSpy).claim(task.getId(), isForced);
+        doNothing().when(taskMapperMock).update(task);
 
-        Task actualTask = cutSpy.completeTask(task.getId(), isForced);
+        Thread.sleep(sleepTime);
+        TaskSummary actualTask = cutSpy.completeTask(task.getId(), isForced);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(cutSpy, times(1)).getTask(task.getId());
+        verify(cutSpy, times(2)).getTask(task.getId());
         verify(cutSpy, times(1)).claim(task.getId(), isForced);
-        verify(taskMapperMock, times(1)).update(claimedTask);
+        verify(taskMapperMock, times(1)).update(task);
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
             taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
         assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
-        assertThat(actualTask.getCreated(), not(equalTo(claimedTask.getModified())));
+        assertThat(actualTask.getCreated(), not(equalTo(task.getModified())));
         assertThat(actualTask.getCompleted(), not(equalTo(null)));
         assertThat(actualTask.getCompleted(), equalTo(actualTask.getModified()));
     }
@@ -865,7 +861,7 @@ public class TaskServiceImplTest {
         doNothing().when(workbasketServiceMock).checkAuthorization(task.getWorkbasketKey(),
             WorkbasketAuthorization.TRANSFER);
 
-        Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getKey());
+        TaskSummary actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getKey());
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasket.getKey(),
@@ -882,7 +878,7 @@ public class TaskServiceImplTest {
         assertThat(actualTask.isRead(), equalTo(false));
         assertThat(actualTask.getState(), equalTo(TaskState.READY));
         assertThat(actualTask.isTransferred(), equalTo(true));
-        assertThat(actualTask.getWorkbasketKey(), equalTo(destinationWorkbasket.getKey()));
+        assertThat(actualTask.getWorkbasketSummary().getKey(), equalTo(destinationWorkbasket.getKey()));
     }
 
     @Test
@@ -903,7 +899,7 @@ public class TaskServiceImplTest {
             WorkbasketAuthorization.APPEND);
         doNothing().when(workbasketServiceMock).checkAuthorization(task.getWorkbasketKey(),
             WorkbasketAuthorization.TRANSFER);
-        Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getKey());
+        TaskSummary actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getKey());
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasket.getKey(),
@@ -922,7 +918,7 @@ public class TaskServiceImplTest {
         assertThat(actualTask.isRead(), equalTo(false));
         assertThat(actualTask.getState(), equalTo(TaskState.READY));
         assertThat(actualTask.isTransferred(), equalTo(true));
-        assertThat(actualTask.getWorkbasketKey(), equalTo(destinationWorkbasket.getKey()));
+        assertThat(actualTask.getWorkbasketSummary().getKey(), equalTo(destinationWorkbasket.getKey()));
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
@@ -1040,7 +1036,7 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(taskMapperMock).update(task);
 
-        Task actualTask = cutSpy.setTaskRead("1", true);
+        TaskSummary actualTask = cutSpy.setTaskRead("1", true);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMapperMock, times(1)).update(task);
@@ -1128,114 +1124,20 @@ public class TaskServiceImplTest {
         }
     }
 
-    @Test
-    public void testGetTaskSummariesByWorkbasketIdWithInternalException()
+    @Test (expected = NullPointerException.class)
+    public void testThrowNullPointerExceptionIfWorkbasketNotExists()
         throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
         // given - set behaviour and expected result
         String workbasketKey = "1";
         List<TaskSummaryImpl> expectedResultList = new ArrayList<>();
         doNothing().when(taskanaEngineImpl).openConnection();
-        doThrow(new IllegalArgumentException("Invalid ID: " + workbasketKey)).when(taskMapperMock)
-            .findTaskSummariesByWorkbasketKey(workbasketKey);
         doNothing().when(taskanaEngineImpl).returnConnection();
         doReturn(new WorkbasketImpl()).when(workbasketServiceMock).getWorkbasket(any());
 
         // when - make the call
-        List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketKey(workbasketKey);
-
-        // then - verify external communications and assert result
-        verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMapperMock, times(1)).findTaskSummariesByWorkbasketKey(workbasketKey);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
-        verify(workbasketServiceMock, times(1)).getWorkbasketByKey(any());
-        verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
-            classificationQueryImplMock);
-        assertThat(actualResultList, equalTo(expectedResultList));
-    }
-
-    @Test
-    public void testGetTaskSummariesByWorkbasketIdGettingResults()
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
-        String workbasketKey = "1";
-        WorkbasketSummaryImpl wbs = new WorkbasketSummaryImpl();
-        wbs.setDomain("domain");
-        wbs.setKey("key");
-        ClassificationSummaryImpl cl = new ClassificationSummaryImpl();
-        cl.setDomain("domain");
-        cl.setKey("clKey");
-        TaskSummaryImpl t1 = new TaskSummaryImpl();
-        t1.setWorkbasketSummary(wbs);
-        t1.setDomain("domain");
-        t1.setClassificationSummary(cl);
-        t1.setTaskId("007");
-        TaskSummaryImpl t2 = new TaskSummaryImpl();
-        t2.setWorkbasketSummary(wbs);
-        t2.setDomain("domain");
-        t2.setClassificationSummary(cl);
-        t2.setTaskId("008");
-        List<TaskSummaryImpl> expectedResultList = Arrays.asList(t1, t2);
-        List<ClassificationSummaryImpl> expectedClassifications = Arrays.asList(cl);
-        List<WorkbasketSummaryImpl> expectedWorkbaskets = Arrays.asList(wbs);
-
-        doNothing().when(taskanaEngineImpl).openConnection();
-        doNothing().when(taskanaEngineImpl).returnConnection();
-        doReturn(new WorkbasketImpl()).when(workbasketServiceMock).getWorkbasketByKey(any());
-        doReturn(expectedResultList).when(taskMapperMock).findTaskSummariesByWorkbasketKey(workbasketKey);
-        doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).keyIn(any());
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domainIn(any());
-        doReturn(workbasketQueryImplMock).when(workbasketServiceMock).createWorkbasketQuery();
-        doReturn(workbasketQueryImplMock).when(workbasketQueryImplMock).keyIn(any());
-        doReturn(expectedWorkbaskets).when(workbasketQueryImplMock).list();
-
-        doReturn(expectedClassifications).when(classificationQueryImplMock).list();
-
-        List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketKey(workbasketKey);
-
-        verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMapperMock, times(1)).findTaskSummariesByWorkbasketKey(workbasketKey);
-        verify(workbasketServiceMock, times(1)).getWorkbasketByKey(workbasketKey);
-        verify(classificationServiceImplMock, times(1)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(1)).domainIn(any());
-        verify(classificationQueryImplMock, times(1)).keyIn(any());
-        verify(classificationQueryImplMock, times(1)).list();
-        verify(workbasketServiceMock, times(1)).createWorkbasketQuery();
-        verify(workbasketQueryImplMock, times(1)).keyIn(any());
-        verify(workbasketQueryImplMock, times(1)).list();
-
-        verify(taskanaEngineImpl, times(1)).returnConnection();
-        verify(attachmentMapperMock, times(1)).findAttachmentSummariesByTaskIds(any());
-
-        verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock,
-            workbasketQueryImplMock,
-            sqlSessionMock, classificationQueryImplMock);
-        assertThat(actualResultList, equalTo(expectedResultList));
-        assertThat(actualResultList.size(), equalTo(expectedResultList.size()));
-    }
-
-    @Test
-    public void testGetTaskSummariesByWorkbasketIdGettingNull()
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
-        String workbasketKey = "1";
-        List<TaskSummaryImpl> expectedResultList = new ArrayList<>();
-        doNothing().when(taskanaEngineImpl).openConnection();
-        doNothing().when(taskanaEngineImpl).returnConnection();
-        doReturn(null).when(taskMapperMock).findTaskSummariesByWorkbasketKey(workbasketKey);
-        doReturn(new WorkbasketImpl()).when(workbasketServiceMock).getWorkbasketByKey(any());
-
-        List<TaskSummary> actualResultList = cut.getTaskSummariesByWorkbasketKey(workbasketKey);
-
-        verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMapperMock, times(1)).findTaskSummariesByWorkbasketKey(workbasketKey);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
-        verify(workbasketServiceMock, times(1)).getWorkbasketByKey(any());
+        cut.createTaskQuery().workbasketKeyIn(workbasketKey).list();
         verifyNoMoreInteractions(attachmentMapperMock, taskMapperMock, taskanaEngineImpl,
             workbasketServiceMock);
-
-        assertThat(actualResultList, equalTo(expectedResultList));
-        assertThat(actualResultList.size(), equalTo(expectedResultList.size()));
     }
 
     @Test
@@ -1257,13 +1159,13 @@ public class TaskServiceImplTest {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         doReturn(taskBeforeAttachment).when(cutSpy).getTask(task.getId());
 
-        Task actualTask = cutSpy.updateTask(task);
+        TaskSummary actualTask = cutSpy.updateTask(task);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(attachmentMapperMock, times(1)).insert(((AttachmentImpl) attachment));
         verify(taskanaEngineImpl, times(1)).returnConnection();
-        assertThat(actualTask.getAttachments().size(), equalTo(1));
+        assertThat(actualTask.getAttachmentSummaries().size(), equalTo(1));
     }
 
     @Test
@@ -1286,13 +1188,13 @@ public class TaskServiceImplTest {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         doReturn(taskBeforeAttachment).when(cutSpy).getTask(task.getId());
 
-        Task actualTask = cutSpy.updateTask(task);
+        TaskSummary actualTask = cutSpy.updateTask(task);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(attachmentMapperMock, times(1)).insert(((AttachmentImpl) attachment));
         verify(taskanaEngineImpl, times(1)).returnConnection();
-        assertThat(actualTask.getAttachments().size(), equalTo(1));
+        assertThat(actualTask.getAttachmentSummaries().size(), equalTo(1));
     }
 
     @Test(expected = AttachmentPersistenceException.class)
@@ -1353,14 +1255,14 @@ public class TaskServiceImplTest {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         doReturn(taskBefore).when(cutSpy).getTask(task.getId());
 
-        Task actualTask = cutSpy.updateTask(task);
+        TaskSummary actualTask = cutSpy.updateTask(task);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(attachmentMapperMock, times(1)).update(((AttachmentImpl) attachmentToUpdate));
         verify(taskanaEngineImpl, times(1)).returnConnection();
-        assertThat(actualTask.getAttachments().size(), equalTo(1));
-        assertThat(actualTask.getAttachments().get(0).getChannel(), equalTo(channelUpdate));
+        assertThat(actualTask.getAttachmentSummaries().size(), equalTo(1));
+        assertThat(actualTask.getAttachmentSummaries().get(0), equalTo(task.getAttachments().get(0).asSummary()));
     }
 
     @Test
@@ -1383,13 +1285,13 @@ public class TaskServiceImplTest {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         doReturn(taskBefore).when(cutSpy).getTask(task.getId());
 
-        Task actualTask = cutSpy.updateTask(task);
+        TaskSummary actualTask = cutSpy.updateTask(task);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(attachmentMapperMock, times(1)).deleteAttachment(attachment.getId());
         verify(taskanaEngineImpl, times(1)).returnConnection();
-        assertThat(actualTask.getAttachments().size(), equalTo(0));
+        assertThat(actualTask.getAttachmentSummaries().size(), equalTo(0));
     }
 
     private TaskImpl createUnitTestTask(String id, String name, String workbasketKey, Classification classification) {

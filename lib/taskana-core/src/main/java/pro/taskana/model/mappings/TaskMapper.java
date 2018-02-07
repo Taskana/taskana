@@ -18,7 +18,6 @@ import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
-import pro.taskana.model.TaskState;
 
 /**
  * This class is the mybatis mapping of task.
@@ -88,89 +87,6 @@ public interface TaskMapper {
 
     @Delete("DELETE FROM TASK WHERE ID = #{id}")
     void delete(String id);
-
-    @Select("SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_KEY, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10 "
-        + "FROM TASK "
-        + "WHERE WORKBASKET_KEY = #{workbasketKey} "
-        + "AND STATE = #{taskState}")
-    @Results(value = {
-        @Result(property = "taskId", column = "ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "claimed", column = "CLAIMED"),
-        @Result(property = "completed", column = "COMPLETED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "planned", column = "PLANNED"),
-        @Result(property = "due", column = "DUE"),
-        @Result(property = "name", column = "NAME"),
-        @Result(property = "note", column = "NOTE"),
-        @Result(property = "priority", column = "PRIORITY"),
-        @Result(property = "state", column = "STATE"),
-        @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
-        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
-        @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY"),
-        @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
-        @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
-        @Result(property = "owner", column = "OWNER"),
-        @Result(property = "primaryObjRef.company", column = "POR_COMPANY"),
-        @Result(property = "primaryObjRef.system", column = "POR_SYSTEM"),
-        @Result(property = "primaryObjRef.systemInstance", column = "POR_INSTANCE"),
-        @Result(property = "primaryObjRef.type", column = "POR_TYPE"),
-        @Result(property = "primaryObjRef.value", column = "POR_VALUE"),
-        @Result(property = "isRead", column = "IS_READ"),
-        @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
-        @Result(property = "custom1", column = "CUSTOM_1"),
-        @Result(property = "custom2", column = "CUSTOM_2"),
-        @Result(property = "custom3", column = "CUSTOM_3"),
-        @Result(property = "custom4", column = "CUSTOM_4"),
-        @Result(property = "custom5", column = "CUSTOM_5"),
-        @Result(property = "custom6", column = "CUSTOM_6"),
-        @Result(property = "custom7", column = "CUSTOM_7"),
-        @Result(property = "custom8", column = "CUSTOM_8"),
-        @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
-    List<TaskSummaryImpl> findTasksByWorkbasketIdAndState(@Param("workbasketKey") String workbasketKey,
-        @Param("taskState") TaskState taskState);
-
-    @Select("SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_KEY, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10 "
-        + "FROM TASK "
-        + "WHERE WORKBASKET_KEY = #{workbasketKey} ")
-    @Results(value = {
-        @Result(property = "taskId", column = "ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "claimed", column = "CLAIMED"),
-        @Result(property = "completed", column = "COMPLETED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "planned", column = "PLANNED"),
-        @Result(property = "due", column = "DUE"),
-        @Result(property = "name", column = "NAME"),
-        @Result(property = "note", column = "NOTE"),
-        @Result(property = "priority", column = "PRIORITY"),
-        @Result(property = "state", column = "STATE"),
-        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
-        @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY"),
-        @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
-        @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
-        @Result(property = "owner", column = "OWNER"),
-        @Result(property = "primaryObjRef.company", column = "POR_COMPANY"),
-        @Result(property = "primaryObjRef.system", column = "POR_SYSTEM"),
-        @Result(property = "primaryObjRef.systemInstance", column = "POR_INSTANCE"),
-        @Result(property = "primaryObjRef.type", column = "POR_TYPE"),
-        @Result(property = "primaryObjRef.value", column = "POR_VALUE"),
-        @Result(property = "isRead", column = "IS_READ"),
-        @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
-        @Result(property = "custom1", column = "CUSTOM_1"),
-        @Result(property = "custom2", column = "CUSTOM_2"),
-        @Result(property = "custom3", column = "CUSTOM_3"),
-        @Result(property = "custom4", column = "CUSTOM_4"),
-        @Result(property = "custom5", column = "CUSTOM_5"),
-        @Result(property = "custom6", column = "CUSTOM_6"),
-        @Result(property = "custom7", column = "CUSTOM_7"),
-        @Result(property = "custom8", column = "CUSTOM_8"),
-        @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
-    List<TaskSummaryImpl> findTaskSummariesByWorkbasketKey(@Param("workbasketKey") String workbasketKey);
 
     @Update("<script>"
         + " UPDATE TASK SET MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}, WORKBASKET_KEY = #{referencetask.workbasketSummary.key}, DOMAIN = #{referencetask.domain}, OWNER = #{referencetask.owner}, IS_READ = #{referencetask.isRead}, IS_TRANSFERRED = #{referencetask.isTransferred}"

@@ -157,9 +157,20 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
              .parentClassificationKeyIn("L11010")
+             .custom2Like("TEXT_1")
+            .list();
+        assertNotNull(classifications);
+        assertEquals(2, classifications.size());
+    }
+
+    @Test
+    public void testGetClassificationsWithParentAndTwoValuesForCustom2()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
+             .parentClassificationKeyIn("L11010")
              .custom2Like("TEXT_1", "TEXT_2")
             .list();
-        // zwei tests
         assertNotNull(classifications);
         assertEquals(3, classifications.size());
     }

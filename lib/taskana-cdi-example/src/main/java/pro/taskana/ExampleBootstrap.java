@@ -37,7 +37,7 @@ public class ExampleBootstrap {
         objRef.setType("aType");
         objRef.setValue("aValue");
         task.setPrimaryObjRef(objRef);
-        task = taskanaEjb.getTaskService().createTask(task);
+        taskanaEjb.getTaskService().createTask(task);
         System.out.println("---------------------------> Task started: " + task.getId());
         taskanaEjb.getTaskService().claim(task.getId());
         System.out.println(

@@ -15,7 +15,6 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.BulkOperationResults;
-import pro.taskana.model.TaskState;
 
 /**
  * The Task Service manages all operations on tasks.
@@ -31,11 +30,11 @@ public interface TaskService {
      * @throws TaskNotFoundException
      *             if the task with taskId was not found
      * @throws InvalidStateException
-     *             if the state of the task with taskId is not {@link TaskState#READY}
+     *             if the state of the task with taskId has not the TaskState READY
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by some else
      */
-    Task claim(String taskId)
+    TaskSummary claim(String taskId)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
@@ -49,11 +48,11 @@ public interface TaskService {
      * @throws TaskNotFoundException
      *             if the task with taskId was not found
      * @throws InvalidStateException
-     *             if the state of the task with taskId is not {@link TaskState#READY}
+     *             if the state of the task with taskId has not the TaskState READY
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by someone else
      */
-    Task claim(String taskId, boolean forceClaim)
+    TaskSummary claim(String taskId, boolean forceClaim)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
@@ -67,9 +66,9 @@ public interface TaskService {
      * @throws InvalidStateException
      *             when the task is already completed.
      * @throws InvalidOwnerException
-     *             when the unclaim is not forced and user is diffrent.
+     *             when the unclaim is not forced and user is different.
      */
-    Task cancelClaim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+    TaskSummary cancelClaim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
      * Unclaim a existing Task which was claimed and owned by you before. Also there can be enabled a force flag for
@@ -77,6 +76,8 @@ public interface TaskService {
      *
      * @param taskId
      *            id of the task which should be unclaimed.
+     * @param forceUnclaim
+     *             if true, unclaim is performed, even if the Task wasn't claimed by the current user.
      * @return updated unclaimed task
      * @throws TaskNotFoundException
      *             if the task can´t be found or does not exist
@@ -85,7 +86,7 @@ public interface TaskService {
      * @throws InvalidOwnerException
      *             when the unclaim is not forced and user is diffrent.
      */
-    Task cancelClaim(String taskId, boolean forceUnclaim)
+    TaskSummary cancelClaim(String taskId, boolean forceUnclaim)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
@@ -101,7 +102,7 @@ public interface TaskService {
      * @throws InvalidOwnerException
      *             if current user is not the task-owner or administrator.
      */
-    Task completeTask(String taskId)
+    TaskSummary completeTask(String taskId)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
 
     /**
@@ -119,7 +120,7 @@ public interface TaskService {
      * @throws InvalidOwnerException
      *             if current user is not the task-owner or administrator.
      */
-    Task completeTask(String taskId, boolean isForced)
+    TaskSummary completeTask(String taskId, boolean isForced)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
 
     /**
@@ -141,7 +142,7 @@ public interface TaskService {
      * @throws InvalidArgumentException
      *             thrown if the primary ObjectReference is invalid
      */
-    Task createTask(Task taskToCreate)
+    TaskSummary createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException;
 
@@ -173,7 +174,7 @@ public interface TaskService {
      * @throws InvalidWorkbasketException
      *             Thrown if either the source or the target workbasket has a missing required property
      */
-    Task transfer(String taskId, String workbasketKey)
+    TaskSummary transfer(String taskId, String workbasketKey)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException;
 
     /**
@@ -187,7 +188,7 @@ public interface TaskService {
      * @throws TaskNotFoundException
      *             Thrown if the {@link Task} with taskId was not found
      */
-    Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
+    TaskSummary setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
 
     /**
      * This method provides a query builder for quering the database.
@@ -195,38 +196,6 @@ public interface TaskService {
      * @return a {@link TaskQuery}
      */
     TaskQuery createTaskQuery();
-
-    /**
-     * Getting a list of all Task summaries which got matching workbasketIds and states.
-     *
-     * @param workbasketKey
-     *            the key of the workbasket where the tasks need to be in.
-     * @param taskState
-     *            which is required for the request,
-     * @return a filled/empty list of tasks with attributes which are matching given params.
-     * @throws WorkbasketNotFoundException
-     *             if the workbasketId can´t be resolved to a existing work basket.
-     * @throws NotAuthorizedException
-     *             if the current user got no rights for reading on this work basket.
-     * @throws ClassificationNotFoundException
-     *             if a single Classification can not be found for a task which is returned
-     */
-    List<TaskSummary> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException;
-
-    /**
-     * Getting a short summary of all tasks in a specific work basket.
-     *
-     * @param workbasketKey
-     *            Key of work basket where tasks are located.
-     * @return TaskSummaryList with all TaskSummaries of a work basket
-     * @throws WorkbasketNotFoundException
-     *             if a Work basket can´t be located.
-     * @throws NotAuthorizedException
-     *             if the current user got no rights for reading on this work basket.
-     */
-    List<TaskSummary> getTaskSummariesByWorkbasketKey(String workbasketKey)
-        throws WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
      * Returns a not persisted instance of {@link Task}.
@@ -267,7 +236,7 @@ public interface TaskService {
      * @throws AttachmentPersistenceException
      *             if an Attachment with ID will be added multiple times without using the task-methods.
      */
-    Task updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
+    TaskSummary updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
         WorkbasketNotFoundException, ClassificationNotFoundException, InvalidWorkbasketException,
         NotAuthorizedException, AttachmentPersistenceException;
 

@@ -34,6 +34,7 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -124,7 +125,7 @@ public class TaskServiceImplIntExplicitTest {
         task.setName("Unit Test Task");
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-        task = taskServiceImpl.createTask(task);
+        taskServiceImpl.createTask(task);
         connection.commit();
         taskServiceImpl.getTask(workbasket.getId());
 
@@ -155,7 +156,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasketService.createWorkbasketAuthorization(accessItem);
 
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-        task = taskServiceImpl.createTask(task);
+        taskServiceImpl.createTask(task);
         connection.commit();  // needed so that the change is visible in the other session
 
         TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -187,16 +188,16 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setName("workbasket99");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
-        workbasket = workBasketServiceImpl.createWorkbasket(workbasket);
+        workBasketServiceImpl.createWorkbasket(workbasket);
         Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
-        classification = classificationServiceImpl.createClassification(classification);
+        classificationServiceImpl.createClassification(classification);
 
         Task task = taskServiceImpl.newTask(workbasket.getKey());
         task.setName("Unit Test Task");
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task.addAttachment(null);
-        task = taskServiceImpl.createTask(task);
+        taskServiceImpl.createTask(task);
 
         Assert.assertNotNull(task);
         Assert.assertNotNull(task.getId());
@@ -246,14 +247,14 @@ public class TaskServiceImplIntExplicitTest {
         test.setPrimaryObjRef(objectReference);
         test.setPlanned(tomorrow);
         test.setClassificationKey(classification.getKey());
-        test = taskServiceImpl.createTask(test);
+        taskServiceImpl.createTask(test);
 
         Task task = this.generateDummyTask();
         task.setClassificationKey(classification.getKey());
         task.setName("Name");
         task.setPrimaryObjRef(objectReference);
         task.setPlanned(tomorrow);
-        Task resultTask = taskServiceImpl.createTask(task);
+        TaskSummary resultTask = taskServiceImpl.createTask(task);
         Assert.assertNotEquals(resultTask.getPlanned(), resultTask.getCreated());
         Assert.assertNotNull(resultTask.getDue());
 
@@ -261,7 +262,7 @@ public class TaskServiceImplIntExplicitTest {
         task2.setClassificationKey(classification.getKey());
         task2.setPrimaryObjRef(objectReference);
         task2.setDescription("desc");
-        Task resultTask2 = taskServiceImpl.createTask(task2);
+        TaskSummary resultTask2 = taskServiceImpl.createTask(task2);
 
         Assert.assertEquals(resultTask2.getPlanned(), resultTask2.getCreated());
         Assert.assertTrue(resultTask2.getName().equals(classification.getName()));
@@ -303,8 +304,8 @@ public class TaskServiceImplIntExplicitTest {
         wb.setName("dummy-WB");
         wb.setDomain("nova");
         wb.setType(WorkbasketType.PERSONAL);
-        wb = workbasketService.createWorkbasket(wb);
-        this.createWorkbasketWithSecurity(wb, CurrentUserContext.getUserid(), true, true,
+        workbasketService.createWorkbasket(wb);
+        this.createWorkbasketWithSecurity(wb.asSummary(), CurrentUserContext.getUserid(), true, true,
             true, false);
         Classification classification = classificationService.newClassification(wb.getDomain(),
             UUID.randomUUID().toString(), "t1"); // not persisted,
@@ -334,13 +335,13 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setId("1"); // set id manually for authorization tests
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
-        workbasket = (WorkbasketImpl) workbasketService.createWorkbasket(workbasket);
+        workbasketService.createWorkbasket(workbasket);
 
         Task task = taskServiceImpl.newTask("k1");
         task.setName("Unit Test Task");
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-        task = taskServiceImpl.createTask(task);
+        taskServiceImpl.createTask(task);
 
         List<TaskSummary> results = taskServiceImpl.createTaskQuery()
             .nameIn("bla", "test")
@@ -368,12 +369,12 @@ public class TaskServiceImplIntExplicitTest {
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         ClassificationAlreadyExistException, TaskNotFoundException, InterruptedException, TaskAlreadyExistException,
         SQLException, InvalidWorkbasketException, InvalidArgumentException {
-        Workbasket sourceWB;
-        Workbasket destinationWB;
+        WorkbasketSummary sourceWB;
+        WorkbasketSummary destinationWB;
         WorkbasketImpl wb;
         ClassificationImpl classification;
         TaskImpl task;
-        Task resultTask;
+        TaskSummary resultTask;
         final int sleepTime = 100;
         final String user = CurrentUserContext.getUserid();
         Connection connection = dataSource.getConnection();
@@ -388,7 +389,7 @@ public class TaskServiceImplIntExplicitTest {
         wb.setType(WorkbasketType.PERSONAL);
         sourceWB = workbasketService.createWorkbasket(wb);
 
-        createWorkbasketWithSecurity(wb, wb.getOwner(), false, false, false, false);
+        createWorkbasketWithSecurity(wb.asSummary(), wb.getOwner(), false, false, false, false);
         createWorkbasketWithSecurity(sourceWB, sourceWB.getOwner(), true, true, true, true);
 
         // Destination Workbasket
@@ -418,7 +419,7 @@ public class TaskServiceImplIntExplicitTest {
         task.setClassificationKey("KEY");
         task.setOwner(user);
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-        task = (TaskImpl) taskServiceImpl.createTask(task);
+        taskServiceImpl.createTask(task);
         Thread.sleep(sleepTime);    // Sleep for modification-timestamp
         connection.commit();
 
@@ -426,7 +427,7 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
         assertThat(resultTask.isRead(), equalTo(false));
         assertThat(resultTask.isTransferred(), equalTo(true));
-        assertThat(resultTask.getWorkbasketKey(), equalTo(destinationWB.getKey()));
+        assertThat(resultTask.getWorkbasketSummary().getKey(), equalTo(destinationWB.getKey()));
         assertThat(resultTask.getModified(), not(equalTo(null)));
         assertThat(resultTask.getModified(), not(equalTo(task.getModified())));
         assertThat(resultTask.getCreated(), not(equalTo(null)));
@@ -472,8 +473,8 @@ public class TaskServiceImplIntExplicitTest {
         wb.setOwner(user);
         wb.setDomain("test-domain");
         wb.setType(WorkbasketType.GROUP);
-        wb = (WorkbasketImpl) workbasketService.createWorkbasket(wb);
-        createWorkbasketWithSecurity(wb, wb.getOwner(), true, true, true, true);
+        WorkbasketSummary wbSummary = workbasketService.createWorkbasket(wb);
+        createWorkbasketWithSecurity(wbSummary, wb.getOwner(), true, true, true, true);
 
         WorkbasketImpl wbNoAppend = (WorkbasketImpl) workbasketService.newWorkbasket("keyNoAppend");
         wbNoAppend.setName("Test-Security-WorkBasket-APPEND");
@@ -482,8 +483,8 @@ public class TaskServiceImplIntExplicitTest {
 
         wbNoAppend.setDomain("anotherDomain");
         wbNoAppend.setType(WorkbasketType.CLEARANCE);
-        wbNoAppend = (WorkbasketImpl) workbasketService.createWorkbasket(wbNoAppend);
-        createWorkbasketWithSecurity(wbNoAppend, wbNoAppend.getOwner(), true, true, false, true);
+        WorkbasketSummary wbNoAppendSummary = workbasketService.createWorkbasket(wbNoAppend);
+        createWorkbasketWithSecurity(wbNoAppendSummary, wbNoAppend.getOwner(), true, true, false, true);
 
         WorkbasketImpl wbNoTransfer = (WorkbasketImpl) workbasketService.newWorkbasket("keyNoTransfer");
         wbNoTransfer.setName("Test-Security-WorkBasket-TRANSFER");
@@ -491,8 +492,8 @@ public class TaskServiceImplIntExplicitTest {
         wbNoTransfer.setOwner(user);
         wbNoTransfer.setDomain("test-domain");
         wbNoTransfer.setType(WorkbasketType.GROUP);
-        wbNoTransfer = (WorkbasketImpl) workbasketService.createWorkbasket(wbNoTransfer);
-        createWorkbasketWithSecurity(wbNoTransfer, wbNoTransfer.getOwner(), true, true, true, false);
+        WorkbasketSummary wbNoTransferSummary = workbasketService.createWorkbasket(wbNoTransfer);
+        createWorkbasketWithSecurity(wbNoTransferSummary, wbNoTransfer.getOwner(), true, true, true, false);
 
         TaskImpl task = (TaskImpl) taskServiceImpl.newTask(wb.getKey());
         task.setName("Task Name");
@@ -500,7 +501,7 @@ public class TaskServiceImplIntExplicitTest {
         task.setOwner(user);
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-        task = (TaskImpl) taskServiceImpl.createTask(task);
+        taskServiceImpl.createTask(task);
 
         // Check failing with missing APPEND
         try {
@@ -518,9 +519,9 @@ public class TaskServiceImplIntExplicitTest {
         // Check failing with missing TRANSFER
         task.setId("");
         task.setWorkbasketKey(wbNoTransfer.getKey());
-        task = (TaskImpl) taskServiceImpl.createTask(task);
+        taskServiceImpl.createTask(task);
         try {
-            task = (TaskImpl) taskServiceImpl.transfer(task.getId(), wb.getKey());
+            taskServiceImpl.transfer(task.getId(), wb.getKey());
             fail("Transfer Task should be FAILD, because there are no TRANSFER-Rights on current WB.");
         } catch (NotAuthorizedException e) {
             if (!e.getMessage().contains("TRANSFER")) {
@@ -561,7 +562,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasketService.createWorkbasketAuthorization(accessItem2);
     }
 
-    private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
+    private void createWorkbasketWithSecurity(WorkbasketSummary wb, String accessId, boolean permOpen,
         boolean permRead, boolean permAppend, boolean permTransfer) {
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wb.getKey(), accessId);
         accessItem.setPermOpen(permOpen);

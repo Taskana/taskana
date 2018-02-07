@@ -111,7 +111,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket1.setName("Megabasket");
         workbasket1.setType(WorkbasketType.GROUP);
         workbasket1.setDomain("novatec");
-        workbasket1 = (WorkbasketImpl) workBasketService.createWorkbasket(workbasket1);
+        workBasketService.createWorkbasket(workbasket1);
         WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket("key2");
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
@@ -137,7 +137,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket.setName("Superbasket");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setDomain("novatec");
-        workbasket = (WorkbasketImpl) workBasketService.createWorkbasket(workbasket);
+        workBasketService.createWorkbasket(workbasket);
 
         createWorkbasketWithSecurity(workbasket, "Elena", true, true, true, true);
         connection.commit();
@@ -154,7 +154,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         workBasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket wb = createTestWorkbasket("ID-1", "KEY-1", "DOMAIN", "Name-1", WorkbasketType.PERSONAL);
-        wb = workBasketService.createWorkbasket(wb);
+        workBasketService.createWorkbasket(wb);
         createWorkbasketWithSecurity(wb, "Elena", false, false, false, false);
 
         workBasketService.getWorkbasket(wb.getId());
@@ -171,17 +171,17 @@ public class WorkbasketServiceImplIntExplicitTest {
 
         String id0 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket0 = createTestWorkbasket(id0, "key0", "novatec", "Superbasket", WorkbasketType.GROUP);
-        workbasket0 = workBasketService.createWorkbasket(workbasket0);
+        workBasketService.createWorkbasket(workbasket0);
         createWorkbasketWithSecurity(workbasket0, "Elena", true, true, false, false);
 
         String id1 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket1 = createTestWorkbasket(id1, "key1", "novatec", "Megabasket", WorkbasketType.GROUP);
-        workbasket1 = workBasketService.createWorkbasket(workbasket1);
+        workBasketService.createWorkbasket(workbasket1);
         createWorkbasketWithSecurity(workbasket1, "Elena", true, true, false, false);
 
         String id2 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
-        workbasket2 = workBasketService.createWorkbasket(workbasket2);
+        workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
 
         List<String> distributionTargets = new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
@@ -201,17 +201,17 @@ public class WorkbasketServiceImplIntExplicitTest {
         workBasketService = taskanaEngine.getWorkbasketService();
         String id0 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket0 = createTestWorkbasket(id0, "key0", "novatec", "Superbasket", WorkbasketType.GROUP);
-        workbasket0 = workBasketService.createWorkbasket(workbasket0);
+        workBasketService.createWorkbasket(workbasket0);
         createWorkbasketWithSecurity(workbasket0, "Elena", true, true, false, false);
 
         String id1 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket1 = createTestWorkbasket(id1, "key1", "novatec", "Megabasket", WorkbasketType.GROUP);
-        workbasket1 = workBasketService.createWorkbasket(workbasket1);
+        workBasketService.createWorkbasket(workbasket1);
         createWorkbasketWithSecurity(workbasket1, "Elena", true, true, false, false);
 
         String id2 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
-        workbasket2 = workBasketService.createWorkbasket(workbasket2);
+        workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
 
         List<String> distTargets = new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
@@ -221,7 +221,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         String id3 = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket3 = createTestWorkbasket(id3, "key3", "novatec", "hm ... irgend ein basket",
             WorkbasketType.GROUP);
-        workbasket3 = workBasketService.createWorkbasket(workbasket3);
+        workBasketService.createWorkbasket(workbasket3);
         createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
 
         List<String> newDistTargets = new ArrayList<>(Arrays.asList(workbasket3.getId()));

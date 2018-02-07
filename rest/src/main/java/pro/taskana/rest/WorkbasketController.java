@@ -120,7 +120,7 @@ public class WorkbasketController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> createWorkbasket(@RequestBody Workbasket workbasket) {
-        Workbasket createdWorkbasket;
+        WorkbasketSummary createdWorkbasket;
         try {
             createdWorkbasket = workbasketService.createWorkbasket(workbasket);
             return new ResponseEntity<>(createdWorkbasket, HttpStatus.CREATED);
@@ -133,7 +133,7 @@ public class WorkbasketController {
     public ResponseEntity<?> updateWorkbasket(@PathVariable(value = "workbasketkey") String workbasketKey,
         @RequestBody Workbasket workbasket) {
         try {
-            Workbasket updatedWorkbasket = workbasketService.updateWorkbasket(workbasket);
+            WorkbasketSummary updatedWorkbasket = workbasketService.updateWorkbasket(workbasket);
             return new ResponseEntity<>(updatedWorkbasket, HttpStatus.OK);
         } catch (InvalidWorkbasketException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);

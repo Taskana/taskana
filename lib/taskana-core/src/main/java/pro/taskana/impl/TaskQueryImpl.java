@@ -210,8 +210,7 @@ public class TaskQueryImpl implements TaskQuery {
             LOGGER.debug("entry to list(), this = {}", this);
             taskanaEngineImpl.openConnection();
             checkOpenPermissionForWorkbasketKey();
-            List<TaskSummaryImpl> tasks = new ArrayList<>();
-            tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            List<TaskSummaryImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
         } finally {

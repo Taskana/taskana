@@ -58,10 +58,10 @@ public class TaskanaRestTest {
         objRef.setValue("aValue");
         task.setPrimaryObjRef(objRef);
 
-        Task result = taskanaEjb.getTaskService().createTask(task);
+        TaskSummary result = taskanaEjb.getTaskService().createTask(task);
 
-        logger.info(result.getId() + ":" + result.getOwner());
-        return Response.status(200).entity(result.getId()).build();
+        logger.info(result.getTaskId() + ":" + result.getOwner());
+        return Response.status(200).entity(result.getTaskId()).build();
     }
 
     @POST

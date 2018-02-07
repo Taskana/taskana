@@ -111,7 +111,7 @@ public class ClassificationServiceImplTest {
             classification.getDomain());
         doReturn(classification).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(), "");
 
-        classification = cutSpy.createClassification(classification);
+        cutSpy.createClassification(classification);
 
         Thread.sleep(10L);
         verify(taskanaEngineImplMock, times(2)).openConnection();
@@ -130,7 +130,7 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
-        throws ClassificationAlreadyExistException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException {
         Classification classification = createDummyClassification();
         String domain = classification.getDomain();
         String key = classification.getKey();
@@ -138,7 +138,7 @@ public class ClassificationServiceImplTest {
             classification.getDomain());
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(), "");
 
-        classification = cutSpy.createClassification(classification);
+        cutSpy.createClassification(classification);
 
         verify(taskanaEngineImplMock, times(2)).openConnection();
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, domain);
@@ -159,7 +159,7 @@ public class ClassificationServiceImplTest {
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
 
-        classification = (ClassificationImpl) cutSpy.createClassification(classification);
+        cutSpy.createClassification(classification);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
@@ -176,10 +176,10 @@ public class ClassificationServiceImplTest {
         ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
         doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
 
-        classification = cutSpy.updateClassification(classification);
+        ClassificationSummary classificationSummary = cutSpy.updateClassification(classification);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
-        verify(cutSpy, times(2)).getClassification(classification.getKey(), classification.getDomain());
+        verify(cutSpy, times(2)).getClassification(classificationSummary.getKey(), classificationSummary.getDomain());
         verify(classificationMapperMock, times(1)).update(any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);

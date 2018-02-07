@@ -28,7 +28,6 @@ import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.model.TaskState;
 import pro.taskana.rest.query.TaskFilter;
 
@@ -76,10 +75,8 @@ public class TaskController {
         @PathVariable(value = "workbasketKey") String workbasketKey,
         @PathVariable(value = "taskState") TaskState taskState) {
         try {
-            List<TaskSummary> taskList = taskService.getTasksByWorkbasketKeyAndState(workbasketKey, taskState);
+            List<TaskSummary> taskList = taskService.createTaskQuery().workbasketKeyIn(workbasketKey).stateIn(taskState).list();
             return ResponseEntity.status(HttpStatus.OK).body(taskList);
-        } catch (WorkbasketNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (NotAuthorizedException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
@@ -121,9 +118,9 @@ public class TaskController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+    public ResponseEntity<TaskSummary> createTask(@RequestBody Task task) {
         try {
-            Task createdTask = taskService.createTask(task);
+            TaskSummary createdTask = taskService.createTask(task);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         } catch (Exception e) {
             logger.error("Something went wrong: ", e);
@@ -132,9 +129,9 @@ public class TaskController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/transfer/{workbasketKey}")
-    public ResponseEntity<Task> transferTask(@PathVariable String taskId, @PathVariable String workbasketKey) {
+    public ResponseEntity<TaskSummary> transferTask(@PathVariable String taskId, @PathVariable String workbasketKey) {
         try {
-            Task updatedTask = taskService.transfer(taskId, workbasketKey);
+            TaskSummary updatedTask = taskService.transfer(taskId, workbasketKey);
             return ResponseEntity.status(HttpStatus.CREATED).body(updatedTask);
         } catch (Exception e) {
             logger.error("Something went wrong: ", e);
@@ -147,7 +144,7 @@ public class TaskController {
         @PathVariable(value = "workbasketKey") String workbasketKey) {
         List<TaskSummary> taskSummaries = null;
         try {
-            taskSummaries = taskService.getTaskSummariesByWorkbasketKey(workbasketKey);
+            taskSummaries = taskService.createTaskQuery().workbasketKeyIn(workbasketKey).list();
             return ResponseEntity.status(HttpStatus.OK).body(taskSummaries);
         } catch (Exception ex) {
             if (taskSummaries == null) {

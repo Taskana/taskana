@@ -21,6 +21,7 @@ import acceptance.AbstractAccTest;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
@@ -57,8 +58,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         Instant modifiedOriginal = task.getModified();
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "7654321"));
-        Task updatedTask = taskService.updateTask(task);
-        updatedTask = taskService.getTask(updatedTask.getId());
+        TaskSummary updatedTask = taskService.updateTask(task);
 
         Assert.assertNotNull(updatedTask);
         Assert.assertEquals("7654321", updatedTask.getPrimaryObjRef().getValue());
@@ -141,9 +141,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
 
         task.setCustom1("willi");
-        Task updatedTask = null;
-        updatedTask = taskService.updateTask(task);
-        updatedTask = taskService.getTask(updatedTask.getId());
+        TaskSummary updatedTask = taskService.updateTask(task);
+        assertNotNull(updatedTask);
 
         task2.setCustom2("Walter");
         try {
@@ -167,8 +166,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         ClassificationSummary classificationSummary = task.getClassificationSummary();
         task.setClassificationKey("T2100");
-        Task updatedTask = taskService.updateTask(task);
-        updatedTask = taskService.getTask(updatedTask.getId());
+        TaskSummary updatedTask = taskService.updateTask(task);
+        Task updatedTaskWithDescription = taskService.getTask(updatedTask.getTaskId());
 
         assertNotNull(updatedTask);
         assertEquals("T2100", updatedTask.getClassificationSummary().getKey());
@@ -176,7 +175,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         assertNotEquals(updatedTask.getCreated(), updatedTask.getModified());
         assertEquals(task.getPlanned(), updatedTask.getPlanned());
         assertEquals(task.getName(), updatedTask.getName());
-        assertEquals(task.getDescription(), updatedTask.getDescription());
+        assertEquals(task.getDescription(), updatedTaskWithDescription.getDescription());
     }
 
     @WithAccessId(
@@ -190,10 +189,11 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         task.setCustom1("T2100");
-        Task updatedTask = taskService.updateTask(task);
-        updatedTask = taskService.getTask(updatedTask.getId());
+        String taskId = taskService.updateTask(task).getTaskId();
+        Task updatedTask = taskService.getTask(taskId);
 
         assertNotNull(updatedTask);
+        assertEquals("T2100", updatedTask.getCustom1());
     }
 
     @WithAccessId(
