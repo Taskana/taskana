@@ -46,7 +46,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         try {
             taskanaEngineImpl.openConnection();
             rootClassificationSumamries = this.createClassificationQuery()
-                .parentClassificationKey("")
+                .parentClassificationKeyIn("")
                 .list();
             rootClassificationSumamries = this.populateChildClassifications(rootClassificationSumamries);
             return rootClassificationSumamries;
@@ -73,7 +73,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             List<ClassificationSummary> children = new ArrayList<>();
             for (ClassificationSummary classification : classificationSumamries) {
                 List<ClassificationSummary> childClassifications = this.createClassificationQuery()
-                    .parentClassificationKey(classification.getKey())
+                    .parentClassificationKeyIn(classification.getKey())
                     .list();
                 children.addAll(populateChildClassifications(childClassifications));
             }

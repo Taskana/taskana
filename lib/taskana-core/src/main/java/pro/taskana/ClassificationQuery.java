@@ -14,7 +14,7 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      *            as String
      * @return the query
      */
-    ClassificationQuery key(String... key);
+    ClassificationQuery keyIn(String... key);
 
     /**
      * Add your parentClassificationKey to your query.
@@ -23,7 +23,7 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      *            as String
      * @return the query
      */
-    ClassificationQuery parentClassificationKey(String... parentClassificationKey);
+    ClassificationQuery parentClassificationKeyIn(String... parentClassificationKey);
 
     /**
      * Add your category to your query.
@@ -32,7 +32,7 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      *            as String
      * @return the query
      */
-    ClassificationQuery category(String... category);
+    ClassificationQuery categoryIn(String... category);
 
     /**
      * Add your type to your query.
@@ -41,7 +41,7 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      *            as String
      * @return the query
      */
-    ClassificationQuery type(String... type);
+    ClassificationQuery typeIn(String... type);
 
     /**
      * Add your domains to your query which are used as filter.
@@ -50,7 +50,7 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      *            or domains for filtering.
      * @return the query
      */
-    ClassificationQuery domain(String... domain);
+    ClassificationQuery domainIn(String... domain);
 
     /**
      * Add to your query if the Classification shall be valid in its domain.
@@ -73,21 +73,30 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
     /**
      * Add your name to your query.
      *
-     * @param name
+     * @param nameIn
      *            as String
      * @return the query
      */
-    ClassificationQuery name(String... name);
+    ClassificationQuery nameIn(String... nameIn);
 
     /**
-     * Add your description to your query. It will be compared in SQL with an LIKE. If you use a wildcard like % tehn it
+     * Add your name to your query. It will be compared in SQL with an LIKE.
+     *
+     * @param nameLike
+     *            as String
+     * @return the query
+     */
+    ClassificationQuery nameLike(String... nameLike);
+
+    /**
+     * Add your description to your query. It will be compared in SQL with an LIKE. If you use a wildcard like % then it
      * will be transmitted to the database.
      *
-     * @param description
+     * @param descriptionLike
      *            your description
      * @return the query
      */
-    ClassificationQuery descriptionLike(String description);
+    ClassificationQuery descriptionLike(String descriptionLike);
 
     /**
      * Add your priority to your query.
@@ -101,27 +110,180 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
     /**
      * Add your serviceLevel to your query.
      *
-     * @param serviceLevel
+     * @param serviceLevelIn
      *            as String
      * @return the query
      */
-    ClassificationQuery serviceLevel(String... serviceLevel);
+    ClassificationQuery serviceLevelIn(String... serviceLevelIn);
+
+    /**
+     * Add your serviceLevel to your query. It will be compared in SQL with an LIKE.
+     *
+     * @param serviceLevelLike
+     *            as String
+     * @return the query
+     */
+    ClassificationQuery serviceLevelLike(String... serviceLevelLike);
 
     /**
      * Add your applicationEntryPoint to your query.
      *
-     * @param applicationEntryPoint
+     * @param applicationEntryPointIn
      *            name of the applications entrypoint
      * @return the query
      */
-    ClassificationQuery applicationEntryPoint(String... applicationEntryPoint);
+    ClassificationQuery applicationEntryPointIn(String... applicationEntryPointIn);
 
     /**
-     * Add your customFields to your query.
+     * Add your applicationEntryPoint to your query. It will be compared in SQL with an LIKE.
      *
-     * @param customFields
-     *            filtering the content of all custom attributes
+     * @param applicationEntryPointLike
+     *            name of the applications entrypoint
      * @return the query
      */
-    ClassificationQuery customFields(String... customFields);
+    ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike);
+
+    /**
+     * Add custom1 to your query.
+     *
+     * @param custom1In
+     *            filter for custom1
+     * @return the query
+     */
+    ClassificationQuery custom1In(String... custom1In);
+
+    /**
+     * Add custom1 to your query.
+     *
+     * @param custom1Like
+     *            filter for custom1 with a LIKE-query
+     * @return the query
+     */
+    ClassificationQuery custom1Like(String... custom1Like);
+
+    /**
+     * Add custom2 to your query.
+     *
+     * @param custom2In
+     *            filter for custom2
+     * @return the query
+     */
+    ClassificationQuery custom2In(String... custom2In);
+
+    /**
+     * Add custom2 to your query.
+     *
+     * @param custom2Like
+     *            filter for custom2 with a LIKE-query
+     * @return the query
+     */
+    ClassificationQuery custom2Like(String... custom2Like);
+
+    /**
+     * Add custom3 to your query.
+     *
+     * @param custom3In
+     *            filter for custom3
+     * @return the query
+     */
+    ClassificationQuery custom3In(String... custom3In);
+
+    /**
+     * Add custom3 to your query.
+     *
+     * @param custom3Like
+     *            filter for custom3 with a LIKE-query
+     * @return the query
+     */
+    ClassificationQuery custom3Like(String... custom3Like);
+
+    /**
+     * Add custom4 to your query.
+     *
+     * @param custom4In
+     *            filter for custom4
+     * @return the query
+     */
+    ClassificationQuery custom4In(String... custom4In);
+
+    /**
+     * Add custom4 to your query.
+     *
+     * @param custom4Like
+     *            filter for custom4 with a LIKE-query
+     * @return the query
+     */
+    ClassificationQuery custom4Like(String... custom4Like);
+
+    /**
+     * Add custom5 to your query.
+     *
+     * @param custom5In
+     *            filter for custom5
+     * @return the query
+     */
+    ClassificationQuery custom5In(String... custom5In);
+
+    /**
+     * Add custom5 to your query.
+     *
+     * @param custom5Like
+     *            filter for custom5 with a LIKE-query
+     * @return the query
+     */
+    ClassificationQuery custom5Like(String... custom5Like);
+
+    /**
+     * Add custom6 to your query.
+     *
+     * @param custom6In
+     *            filter for custom6
+     * @return the query
+     */
+    ClassificationQuery custom6In(String... custom6In);
+
+    /**
+     * Add custom6 to your query.
+     *
+     * @param custom6Like
+     *            filter for custom6 with a LIKE-query
+     * @return the query
+     */
+    ClassificationQuery custom6Like(String... custom6Like);
+
+    /**
+     * Add custom7 to your query.
+     *
+     * @param custom7In
+     *            filter for custom7
+     * @return the query
+     */
+    ClassificationQuery custom7In(String... custom7In);
+
+    /**
+     * Add custom7 to your query.
+     *
+     * @param custom7Like
+     *            filter for custom7 with a LIKE-query
+     * @return the query
+     */
+    ClassificationQuery custom7Like(String... custom7Like);
+
+    /**
+     * Add custom8 to your query.
+     *
+     * @param custom8In
+     *            filter for custom8
+     * @return the query
+     */
+    ClassificationQuery custom8In(String... custom8In);
+
+    /**
+     * Add custom8 to your query.
+     *
+     * @param custom8Like
+     *            filter for custom8 with a LIKE-query
+     * @return the query
+     */
+    ClassificationQuery custom8Like(String... custom8Like);
 }

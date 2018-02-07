@@ -67,14 +67,14 @@ public class ClassificationServiceImplTest {
         List<Classification> classifications = new ArrayList<>();
 
         doReturn(classificationQueryImplMock).when(cutSpy).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).parentClassificationKey("");
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).parentClassificationKeyIn("");
         doReturn(classifications).when(classificationQueryImplMock).list();
 
         List<ClassificationSummary> actaulResults = cutSpy.getClassificationTree();
 
         verify(taskanaEngineImplMock, times(2)).openConnection();
         verify(cutSpy, times(1)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(1)).parentClassificationKey("");
+        verify(classificationQueryImplMock, times(1)).parentClassificationKeyIn("");
         verify(classificationQueryImplMock, times(1)).list();
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         assertThat(actaulResults, equalTo(classifications));
