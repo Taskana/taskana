@@ -44,10 +44,10 @@ public class ClassificationQueryImplTest {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
-        List<ClassificationSummary> result = classificationQueryImpl.name("test", "asd", "blubber")
-            .type("cool", "bla")
+        List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
+            .typeIn("cool", "bla")
             .priority(1, 2)
-            .parentClassificationKey("superId")
+            .parentClassificationKeyIn("superId")
             .list();
         Assert.assertNotNull(result);
     }
@@ -58,10 +58,10 @@ public class ClassificationQueryImplTest {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
-        List<ClassificationSummary> result = classificationQueryImpl.name("test", "asd", "blubber")
-            .type("cool", "bla")
+        List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
+            .typeIn("cool", "bla")
             .priority(1, 2)
-            .parentClassificationKey("superId")
+            .parentClassificationKeyIn("superId")
             .list(1, 1);
         Assert.assertNotNull(result);
     }
@@ -71,10 +71,10 @@ public class ClassificationQueryImplTest {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationSummaryImpl());
 
-        ClassificationSummary result = classificationQueryImpl.name("test", "asd", "blubber")
-            .type("cool", "bla")
+        ClassificationSummary result = classificationQueryImpl.nameIn("test", "asd", "blubber")
+            .typeIn("cool", "bla")
             .priority(1, 2)
-            .parentClassificationKey("superId")
+            .parentClassificationKeyIn("superId")
             .single();
         Assert.assertNotNull(result);
     }

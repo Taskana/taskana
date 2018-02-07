@@ -32,7 +32,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     public void testGetFirstPageOfClassificationQueryWithOffset() throws NotAuthorizedException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .list(0, 5);
         assertThat(results.size(), equalTo(5));
     }
@@ -41,7 +41,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     public void testGetSecondPageOfClassificationQueryWithOffset() throws NotAuthorizedException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .list(5, 5);
         assertThat(results.size(), equalTo(5));
     }
@@ -52,19 +52,19 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
 
         // both will be 0, working
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .list(-1, -3);
         assertThat(results.size(), equalTo(0));
 
         // limit will be 0
         results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .list(1, -3);
         assertThat(results.size(), equalTo(0));
 
         // offset will be 0
         results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .list(-1, 3);
         assertThat(results.size(), equalTo(3));
     }
@@ -77,7 +77,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         int pageNumber = 1;
         int pageSize = 4;
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(4));
 
@@ -85,7 +85,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         pageNumber = 3;
         pageSize = 4;
         results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(3));
 
@@ -93,7 +93,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         pageNumber = 0;
         pageSize = 100;
         results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(15));
 
@@ -101,7 +101,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         pageNumber = 1;
         pageSize = 10;
         results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(5));
     }
@@ -114,7 +114,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         int pageNumber = 1;
         int pageSize = 0;
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(0));
 
@@ -122,7 +122,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         pageNumber = 1;
         pageSize = -1;
         results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(0));
 
@@ -130,7 +130,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         pageNumber = -1;
         pageSize = 10;
         results = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(10));
     }
@@ -150,7 +150,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         int pageNumber = 5;
         int pageSize = 10;
         classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
     }
 
@@ -159,7 +159,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         throws NotAuthorizedException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         long count = classificationService.createClassificationQuery()
-            .domain("DOMAIN_A")
+            .domainIn("DOMAIN_A")
             .count();
         assertThat(count, equalTo(15L));
     }

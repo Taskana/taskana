@@ -412,8 +412,8 @@ public class TaskServiceImplTest {
         PowerMockito.mockStatic(CurrentUserContext.class);
         Mockito.when(CurrentUserContext.getUserid()).thenReturn(expectedOwner);
         doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domain(any());
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).key(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domainIn(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).keyIn(any());
         doReturn(new ArrayList<>()).when(classificationQueryImplMock).list();
         doReturn(dummyClassification).when(
             classificationServiceImplMock)
@@ -431,8 +431,8 @@ public class TaskServiceImplTest {
         verify(taskanaEngineImpl, times(2)).openConnection();
         verify(taskMapperMock, times(1)).findById(expectedTask.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(expectedTask.getId());
-        verify(classificationQueryImplMock, times(1)).domain(any());
-        verify(classificationQueryImplMock, times(1)).key(any());
+        verify(classificationQueryImplMock, times(1)).domainIn(any());
+        verify(classificationQueryImplMock, times(1)).keyIn(any());
         verify(classificationQueryImplMock, times(1)).list();
         verify(taskMapperMock, times(1)).update(any());
         verify(taskanaEngineImpl, times(2)).returnConnection();
@@ -482,8 +482,8 @@ public class TaskServiceImplTest {
         doReturn(null).when(attachmentMapperMock).findAttachmentsByTaskId(task.getId());
         doReturn(task).when(cutSpy).completeTask(task.getId(), isForced);
         doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domain(any());
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).key(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domainIn(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).keyIn(any());
         doReturn(new ArrayList<>()).when(classificationQueryImplMock).list();
         List<ClassificationSummaryImpl> classificationList = Arrays
             .asList((ClassificationSummaryImpl) dummyClassification.asSummary());
@@ -497,8 +497,8 @@ public class TaskServiceImplTest {
         verify(taskMapperMock, times(1)).findById(task.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(task.getId());
         verify(classificationServiceImplMock, times(1)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(1)).domain(any());
-        verify(classificationQueryImplMock, times(1)).key(any());
+        verify(classificationQueryImplMock, times(1)).domainIn(any());
+        verify(classificationQueryImplMock, times(1)).keyIn(any());
         verify(classificationQueryImplMock, times(1)).list();
         verify(taskMapperMock, times(1)).update(any());
         verify(taskanaEngineImpl, times(2)).returnConnection();
@@ -913,8 +913,8 @@ public class TaskServiceImplTest {
         doReturn(null).when(attachmentMapperMock).findAttachmentsByTaskId(expectedTask.getId());
 
         doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domain(any());
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).key(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domainIn(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).keyIn(any());
         doReturn(new ArrayList<>()).when(classificationQueryImplMock).list();
 
         List<ClassificationSummaryImpl> classificationList = Arrays
@@ -928,8 +928,8 @@ public class TaskServiceImplTest {
         verify(taskMapperMock, times(1)).findById(expectedTask.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(expectedTask.getId());
         verify(classificationServiceImplMock, times(1)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(1)).domain(any());
-        verify(classificationQueryImplMock, times(1)).key(any());
+        verify(classificationQueryImplMock, times(1)).domainIn(any());
+        verify(classificationQueryImplMock, times(1)).keyIn(any());
         verify(classificationQueryImplMock, times(1)).list();
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
@@ -1012,8 +1012,8 @@ public class TaskServiceImplTest {
         doReturn(new WorkbasketImpl()).when(workbasketServiceMock).getWorkbasketByKey(any());
         doReturn(expectedResultList).when(taskMapperMock).findTaskSummariesByWorkbasketKey(workbasketKey);
         doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).key(any());
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domain(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).keyIn(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domainIn(any());
         doReturn(workbasketQueryImplMock).when(workbasketServiceMock).createWorkbasketQuery();
         doReturn(workbasketQueryImplMock).when(workbasketQueryImplMock).keyIn(any());
         doReturn(expectedWorkbaskets).when(workbasketQueryImplMock).list();
@@ -1026,8 +1026,8 @@ public class TaskServiceImplTest {
         verify(taskMapperMock, times(1)).findTaskSummariesByWorkbasketKey(workbasketKey);
         verify(workbasketServiceMock, times(1)).getWorkbasketByKey(workbasketKey);
         verify(classificationServiceImplMock, times(1)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(1)).domain(any());
-        verify(classificationQueryImplMock, times(1)).key(any());
+        verify(classificationQueryImplMock, times(1)).domainIn(any());
+        verify(classificationQueryImplMock, times(1)).keyIn(any());
         verify(classificationQueryImplMock, times(1)).list();
         verify(workbasketServiceMock, times(1)).createWorkbasketQuery();
         verify(workbasketQueryImplMock, times(1)).keyIn(any());
