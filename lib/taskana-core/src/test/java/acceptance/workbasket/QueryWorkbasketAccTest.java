@@ -1,7 +1,5 @@
 package acceptance.workbasket;
 
-import static org.junit.Assert.fail;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -12,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -25,6 +24,9 @@ import pro.taskana.security.JAASRunner;
  */
 @RunWith(JAASRunner.class)
 public class QueryWorkbasketAccTest extends AbstractAccTest {
+
+    private static SortDirection asc = SortDirection.ASCENDING;
+    private static SortDirection desc = SortDirection.DESCENDING;
 
     public QueryWorkbasketAccTest() {
         super();
@@ -163,11 +165,21 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Gruppenpostkorb KSC%")
-            .orderByName()
-            .ascending()
+            .orderByName(asc)
             .list();
         Assert.assertEquals(6L, results.size());
         Assert.assertEquals("GPK_KSC", results.get(0).getKey());
+
+        // check sort order is correct
+        WorkbasketSummary previousSummary = null;
+        for (WorkbasketSummary wbSummary : results) {
+            if (previousSummary != null) {
+                Assert.assertTrue(wbSummary.getName().compareToIgnoreCase(
+                    previousSummary.getName()) >= 0);
+            }
+            previousSummary = wbSummary;
+        }
+
     }
 
     @Test
@@ -175,12 +187,19 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidRequestException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .nameLike("%Gruppenpostkorb KSC%")
-            .orderByName()
-            .descending()
+            .nameLike("basxet%")
+            .orderByName(desc)
             .list();
-        Assert.assertEquals(6L, results.size());
-        Assert.assertEquals("GPK_B_KSC_2", results.get(0).getKey());
+        Assert.assertEquals(10L, results.size());
+        // check sort order is correct
+        WorkbasketSummary previousSummary = null;
+        for (WorkbasketSummary wbSummary : results) {
+            if (previousSummary != null) {
+                Assert.assertTrue(wbSummary.getName().compareToIgnoreCase(
+                    previousSummary.getName()) <= 0);
+            }
+            previousSummary = wbSummary;
+        }
     }
 
     @Test
@@ -188,12 +207,19 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, InvalidRequestException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .nameLike("%Gruppenpostkorb KSC%")
-            .orderByKey()
-            .ascending()
+            .nameLike("basxet%")
+            .orderByKey(asc)
             .list();
-        Assert.assertEquals(6L, results.size());
-        Assert.assertEquals("GPK_B_KSC", results.get(0).getKey());
+        Assert.assertEquals(10L, results.size());
+        // check sort order is correct
+        WorkbasketSummary previousSummary = null;
+        for (WorkbasketSummary wbSummary : results) {
+            if (previousSummary != null) {
+                Assert.assertTrue(wbSummary.getKey().compareToIgnoreCase(
+                    previousSummary.getKey()) >= 0);
+            }
+            previousSummary = wbSummary;
+        }
     }
 
     @Test
@@ -201,108 +227,19 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, InvalidRequestException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .nameLike("%Gruppenpostkorb KSC%")
-            .orderByKey()
-            .descending()
+            .nameLike("basxet%")
+            .orderByKey(desc)
             .list();
-        Assert.assertEquals(6L, results.size());
-        Assert.assertEquals("GPK_KSC_2", results.get(0).getKey());
-    }
-
-    @Test
-    public void testQuerySortingWithInvalidInput()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
-        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-        try {
-            workbasketService.createWorkbasketQuery()
-                .nameLike("%Gruppenpostkorb KSC%")
-                .orderByName()
-                .orderByName()
-                .list();
-            fail("WorkbasketQuery should have thrown InvalidRequestException.");
-        } catch (InvalidRequestException ignored) {
-            // nothing to do
-        }
-
-        try {
-            workbasketService.createWorkbasketQuery()
-                .nameLike("%Gruppenpostkorb KSC%")
-                .orderByKey()
-                .orderByKey()
-                .list();
-            fail("WorkbasketQuery should have thrown InvalidRequestException.");
-        } catch (InvalidRequestException ignored) {
-            // nothing to do
-        }
-
-        try {
-            workbasketService.createWorkbasketQuery()
-                .nameLike("%Gruppenpostkorb KSC%")
-                .ascending()
-                .orderByName()
-                .list();
-            fail("WorkbasketQuery should have thrown InvalidRequestException.");
-        } catch (InvalidRequestException ignored) {
-            // nothing to do
-        }
-
-        try {
-            workbasketService.createWorkbasketQuery()
-                .nameLike("%Gruppenpostkorb KSC%")
-                .descending()
-                .orderByName()
-                .list();
-            fail("WorkbasketQuery should have thrown InvalidRequestException.");
-        } catch (InvalidRequestException ignored) {
-            // nothing to do
-        }
-
-        try {
-            workbasketService.createWorkbasketQuery()
-                .nameLike("%Gruppenpostkorb KSC%")
-                .orderByName()
-                .ascending()
-                .ascending();
-
-            fail("WorkbasketQuery should have thrown InvalidRequestException.");
-        } catch (InvalidRequestException ignored) {
-            // nothing to do
-        }
-
-        try {
-            workbasketService.createWorkbasketQuery()
-                .nameLike("%Gruppenpostkorb KSC%")
-                .orderByName()
-                .ascending()
-                .descending()
-                .list();
-            fail("WorkbasketQuery should have thrown InvalidRequestException.");
-        } catch (InvalidRequestException ignored) {
-            // nothing to do
-        }
-
-        try {
-            workbasketService.createWorkbasketQuery()
-                .nameLike("%Gruppenpostkorb KSC%")
-                .orderByName()
-                .descending()
-                .ascending()
-                .list();
-            fail("WorkbasketQuery should have thrown InvalidRequestException.");
-        } catch (InvalidRequestException ignored) {
-            // nothing to do
-        }
-
-        try {
-            workbasketService.createWorkbasketQuery()
-                .nameLike("%Gruppenpostkorb KSC%")
-                .orderByName()
-                .orderByName()
-                .list();
-            fail("WorkbasketQuery should have thrown InvalidRequestException.");
-        } catch (InvalidRequestException ignored) {
-            // nothing to do
+        Assert.assertEquals(10L, results.size());
+        // check sort order is correct
+        WorkbasketSummary previousSummary = null;
+        for (WorkbasketSummary wbSummary : results) {
+            if (previousSummary != null) {
+                Assert.assertTrue(wbSummary.getKey().compareToIgnoreCase(
+                    previousSummary.getKey()) <= 0);
+            }
+            previousSummary = wbSummary;
         }
     }
+
 }
