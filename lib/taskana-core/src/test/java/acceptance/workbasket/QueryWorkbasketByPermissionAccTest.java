@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -25,6 +26,9 @@ import pro.taskana.security.WithAccessId;
  */
 @RunWith(JAASRunner.class)
 public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
+
+    private static SortDirection asc = SortDirection.ASCENDING;
+    private static SortDirection desc = SortDirection.DESCENDING;
 
     public QueryWorkbasketByPermissionAccTest() {
         super();
@@ -58,8 +62,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
-            .orderByName()
-            .ascending()
+            .orderByName(asc)
             .list();
         Assert.assertEquals(9, results.size());
         Assert.assertEquals("key4", results.get(0).getKey());
@@ -72,10 +75,8 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
-            .orderByName()
-            .descending()
-            .orderByKey()
-            .ascending()
+            .orderByName(desc)
+            .orderByKey(asc)
             .list();
         Assert.assertEquals(9, results.size());
         Assert.assertEquals("USER_2_2", results.get(0).getKey());

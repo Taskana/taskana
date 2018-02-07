@@ -28,56 +28,56 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class TransactionTest {
 
-	@Autowired
-	TaskService taskService;
+    @Autowired
+    TaskService taskService;
 
-	@Autowired
-	private TestRestTemplate restTemplate;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
-	@LocalServerPort
-	int port;
+    @LocalServerPort
+    int port;
 
-	@Before
-	public void init() throws SQLException, ClassNotFoundException {
-		Class.forName("org.h2.Driver");
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine", "SA", "SA")) {
-			conn.createStatement().executeUpdate("DELETE FROM TASK WHERE 1=1");
-			conn.commit();
-		}
-	}
+    @Before
+    public void init() throws SQLException, ClassNotFoundException {
+        Class.forName("org.h2.Driver");
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE", "SA", "SA")) {
+            conn.createStatement().executeUpdate("DELETE FROM TASK WHERE 1=1");
+            conn.commit();
+        }
+    }
 
-	@Test
-	@Ignore
-	public void testCommit() throws SQLException {
-		restTemplate.getForEntity("http://127.0.0.1:" + port + "/test", String.class);
+    @Test
+    @Ignore
+    public void testCommit() throws SQLException {
+        restTemplate.getForEntity("http://127.0.0.1:" + port + "/test", String.class);
 
-		int resultCount = 0;
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine", "SA", "SA")) {
-			ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
+        int resultCount = 0;
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE", "SA", "SA")) {
+            ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
 
-			while (rs.next()) {
-				resultCount++;
-			}
-		}
+            while (rs.next()) {
+                resultCount++;
+            }
+        }
 
-		Assert.assertEquals(1, resultCount);
-	}
+        Assert.assertEquals(1, resultCount);
+    }
 
-	@Test
-	@Ignore
-	public void testRollback() throws SQLException {
-		restTemplate.postForEntity("http://127.0.0.1:" + port + "/test", null, String.class);
+    @Test
+    @Ignore
+    public void testRollback() throws SQLException {
+        restTemplate.postForEntity("http://127.0.0.1:" + port + "/test", null, String.class);
 
-		int resultCount = 0;
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine", "SA", "SA")) {
-			ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
+        int resultCount = 0;
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE", "SA", "SA")) {
+            ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
 
-			while (rs.next()) {
-				resultCount++;
-			}
-		}
+            while (rs.next()) {
+                resultCount++;
+            }
+        }
 
-		Assert.assertEquals(0, resultCount);
-	}
+        Assert.assertEquals(0, resultCount);
+    }
 
 }

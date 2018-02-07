@@ -57,7 +57,7 @@ public class TaskanaProducersTest {
 
         Class.forName("org.h2.Driver");
         int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:~/data/testdb;AUTO_SERVER=TRUE", "SA", "SA")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:~/data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE", "SA", "SA")) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASK");
 
             while (rs.next()) {
@@ -74,7 +74,7 @@ public class TaskanaProducersTest {
 
         Class.forName("org.h2.Driver");
         int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:~/data/testdb;AUTO_SERVER=TRUE", "SA", "SA")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:~/data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE", "SA", "SA")) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASK");
 
             while (rs.next()) {

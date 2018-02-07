@@ -1,9 +1,9 @@
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('1', 'key1', 'Elena', 	true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false);
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('2', 'key2', 'Max', 		true, true, true, true, true, true,  true,  true,  true,  false, false, false, false, false, false, false, false);
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('3', 'key3', 'Simone', 	true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('1', 'key1', 'Elena',        true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('2', 'key2', 'Max',          true, true, true, true, true, true,  true,  true,  true,  false, false, false, false, false, false, false, false);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('3', 'key3', 'Simone',       true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('4', 'key4', 'user_1_1', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
 
--- KSC authorizations (                    ID, 										   WB_KEY, 	     ACCESS_ID,    READ, OPEN, APPEND, TRANSFER, DISTRIBUTE, C1, .., C12)
+-- KSC authorizations (                    ID,                                                                             WB_KEY,           ACCESS_ID,    READ, OPEN, APPEND, TRANSFER, DISTRIBUTE, C1, .., C12)
 -- PPKs
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000001', 'TEAMLEAD_1', 'teamlead_1', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000002', 'TEAMLEAD_2', 'teamlead_2', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
@@ -38,3 +38,15 @@ INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:10000000000000000000000000000000
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000024', 'GPK_B_KSC_2', 'group_2',   true, false, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
 
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000025', 'key5',        'group_1',   true, true,  true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
+
+-- Access to workbaskets for sorting test
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('900', 'sort001', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('901', 'Sort002', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('902', 'sOrt003', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('903', 'soRt004', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('904', 'sorT005', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('905', 'Sort006', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('906', 'SOrt007', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('907', 'SoRt008', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('908', 'SorT009', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('909', 'Sort010', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
