@@ -57,6 +57,38 @@ public interface TaskService {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
+     * Unclaim a existing Task which was claimed and owned by you before.
+     *
+     * @param taskId
+     *            id of the task which should be unclaimed.
+     * @return updated unclaimed task
+     * @throws TaskNotFoundException
+     *             if the task can´t be found or does not exist
+     * @throws InvalidStateException
+     *             when the task is already completed.
+     * @throws InvalidOwnerException
+     *             when the unclaim is not forced and user is diffrent.
+     */
+    Task cancelClaim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+
+    /**
+     * Unclaim a existing Task which was claimed and owned by you before. Also there can be enabled a force flag for
+     * admins.
+     *
+     * @param taskId
+     *            id of the task which should be unclaimed.
+     * @return updated unclaimed task
+     * @throws TaskNotFoundException
+     *             if the task can´t be found or does not exist
+     * @throws InvalidStateException
+     *             when the task is already completed.
+     * @throws InvalidOwnerException
+     *             when the unclaim is not forced and user is diffrent.
+     */
+    Task cancelClaim(String taskId, boolean forceUnclaim)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+
+    /**
      * Complete a claimed Task as owner/admin and update State and Timestamps.
      *
      * @param taskId
