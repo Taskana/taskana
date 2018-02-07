@@ -101,6 +101,40 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         }
     }
 
+    @Override
+    public Report getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states) {
+        return getClassificationReport(workbaskets, states, null, false);
+    }
+
+    @Override
+    public Report getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+        List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        return getClassificationReport(workbaskets, states, reportLineItemDefinitions, true);
+    }
+
+    @Override
+    public Report getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "entry to getClassificationReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {})",
+                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(reportLineItemDefinitions));
+        }
+        try {
+            taskanaEngineImpl.openConnection();
+
+            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
+                .getTaskCountOfClassificationsByWorkbasketsAndStates(workbaskets, states);
+
+            return createReport(reportLineItemDefinitions, inWorkingDays, monitorQueryItems);
+
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getClassificationReport().");
+        }
+    }
+
     private Report createReport(List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays,
         List<MonitorQueryItem> monitorQueryItems) {
         Report report = new Report();
