@@ -52,4 +52,22 @@ public interface TaskMonitorMapper {
         @Param("workbaskets") List<Workbasket> workbaskets,
         @Param("states") List<TaskState> states);
 
+    @Select("<script>"
+        + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "FROM TASK "
+        + "WHERE WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
+        + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
+        + "AND DUE IS NOT NULL "
+        + "<if test=\"_databaseId == 'db2'\">GROUP BY CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
+        + "<if test=\"_databaseId == 'h2'\">GROUP BY CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "</script>")
+    @Results({
+        @Result(column = "CLASSIFICATION_KEY", property = "key"),
+        @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
+        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
+    List<MonitorQueryItem> getTaskCountOfClassificationsByWorkbasketsAndStates(
+        @Param("workbaskets") List<Workbasket> workbaskets,
+        @Param("states") List<TaskState> states);
+
 }
