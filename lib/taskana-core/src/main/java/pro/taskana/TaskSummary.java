@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import java.time.Instant;
+import java.util.List;
 
 import pro.taskana.model.ObjectReference;
 import pro.taskana.model.TaskState;
@@ -149,6 +150,13 @@ public interface TaskSummary {
      * @return the task's isTransferred flag.
      */
     boolean isTransferred();
+
+    /**
+     * Gets the isTransferred flag of the task.
+     *
+     * @return the task's isTransferred flag.
+     */
+    List<AttachmentSummary> getAttachmentSummaries();
 
     /**
      * Gets the custom1 property of the task.

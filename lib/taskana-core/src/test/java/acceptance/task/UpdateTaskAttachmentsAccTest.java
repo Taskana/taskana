@@ -70,11 +70,12 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         int attachmentCount = task.getAttachments().size();
         task.addAttachment(attachment);
 
-        task = taskService.updateTask(task);
+        String updatedTaskId = taskService.updateTask(task).getTaskId();
+        Task updatedTask = taskService.getTask(updatedTaskId);
 
-        task = taskService.getTask(task.getId());
-        assertThat(task.getAttachments().size(), equalTo(attachmentCount + 1));
-        assertThat(task.getAttachments().get(0).getClassificationSummary().getKey(), equalTo("DOCTYPE_DEFAULT"));
+        updatedTask = taskService.getTask(updatedTask.getId());
+        assertThat(updatedTask.getAttachments().size(), equalTo(attachmentCount + 1));
+        assertThat(updatedTask.getAttachments().get(0).getClassificationSummary().getKey(), equalTo("DOCTYPE_DEFAULT"));
     }
 
     @Test(expected = AttachmentPersistenceException.class)
@@ -84,7 +85,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         AttachmentPersistenceException {
         int attachmentCount = 0;
         task.getAttachments().clear();
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
 
@@ -93,7 +94,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task.getAttachments().add(attachment);
         task.getAttachments().add(attachment);
         task.getAttachments().add(attachment);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
     }
 
     @Test
@@ -105,7 +106,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.getTask(task.getId());
         int attachmentCount = task.getAttachments().size();
         task.addAttachment(attachment);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount + 1));
 
@@ -115,7 +116,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         Attachment updatedAttachment = task.getAttachments().get(0);
         updatedAttachment.setChannel(newChannel);
         task.addAttachment(updatedAttachment);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
@@ -132,7 +133,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task.addAttachment(attachment);
         task.addAttachment(attachment); // overwrite, same id
         task.addAttachment(attachment); // overwrite, same id
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount + 1));
 
@@ -140,7 +141,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         attachmentCount = task.getAttachments().size();
         Attachment redundantAttachment = task.getAttachments().get(0);
         task.addAttachment(redundantAttachment);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
+        task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
     }
 
@@ -152,13 +154,13 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         // Try to add a single NULL-Element
         int attachmentCount = task.getAttachments().size();
         task.addAttachment(null);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
 
         // Try to set the Attachments to NULL and update it
         ((TaskImpl) task).setAttachments(null);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, not persisted
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // persisted values not changed
@@ -169,7 +171,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task.getAttachments().add(null);
         task.getAttachments().add(null);
         task.getAttachments().add(null);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, not persisted
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // persisted values not changed
@@ -181,12 +183,13 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
         AttachmentPersistenceException {
         task.addAttachment(attachment);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
+        task = taskService.getTask(task.getId());
 
         int attachmentCount = task.getAttachments().size();
         Attachment attachmentToRemove = task.getAttachments().get(0);
         task.removeAttachment(attachmentToRemove.getId());
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         assertThat(task.getAttachments().size(), equalTo(attachmentCount - 1)); // locally, removed and not persisted
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount - 1)); // persisted, values removed
@@ -198,17 +201,18 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
         AttachmentPersistenceException {
         task.addAttachment(attachment);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
+        task = taskService.getTask(task.getId());
         int attachmentCount = task.getAttachments().size();
 
         task.removeAttachment(null);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, nothing changed
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // persisted, still same
 
         task.removeAttachment("INVALID ID HERE");
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, nothing changed
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // persisted, still same
@@ -220,16 +224,17 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
         AttachmentPersistenceException {
         ((TaskImpl) task).setAttachments(new ArrayList<>());
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
 
         Attachment attachment = this.attachment;
         task.addAttachment(attachment);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
+        task = taskService.getTask(task.getId());
         int attachmentCount = task.getAttachments().size();
 
         String newChannel = attachment.getChannel() + "-X";
         task.getAttachments().get(0).setChannel(newChannel);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
@@ -248,7 +253,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
                 "ABC45678901234567890123456789012345678901234567890"),
             "ROHRPOST", "2018-01-15", createSimpleCustomProperties(4));
         task.addAttachment(attachment2);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         task = taskService.getTask(task.getId());
 
         assertThat(task.getAttachments().size(), equalTo(2));
@@ -277,7 +282,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
                 break;
             }
         }
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         task = taskService.getTask(task.getId());
 
         rohrpostFound = false;
@@ -313,7 +318,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
                 "ABC45678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(4));
         task.addAttachment(attachment2);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(2));
         assertThat(task.getAttachments().get(0).getClassificationSummary().getKey(), equalTo("DOCTYPE_DEFAULT"));
@@ -326,19 +331,20 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         // replace existing attachments by new via addAttachment call
         task.getAttachments().clear();
         task.addAttachment(attachment3);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
+        task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(1));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo("DHL"));
 
         // setup environment for 2nd version of replacement (list.add call)
         task.getAttachments().add(attachment2);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         assertThat(task.getAttachments().size(), equalTo(2));
         assertThat(task.getAttachments().get(1).getChannel(), equalTo("E-MAIL"));
         // replace attachments
         task.getAttachments().clear();
         task.getAttachments().add(attachment3);
-        task = taskService.updateTask(task);
+        taskService.updateTask(task);
         assertThat(task.getAttachments().size(), equalTo(1));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo("DHL"));
     }

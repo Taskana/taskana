@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.TaskSummary;
 import pro.taskana.Workbasket;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -80,7 +81,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         String domain1 = task.getDomain();
 
-        Task transferedTask = taskService.transfer(task.getId(), "GPK_B_KSC_1");
+        TaskSummary transferedTask = taskService.transfer(task.getId(), "GPK_B_KSC_1");
 
         assertNotNull(transferedTask);
         assertNotEquals(domain1, transferedTask.getDomain());

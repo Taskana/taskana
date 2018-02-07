@@ -69,7 +69,7 @@ public interface ClassificationService {
      * @throws ClassificationAlreadyExistException
      *             when the classification does already exists at the given domain.
      */
-    Classification createClassification(Classification classification)
+    ClassificationSummary createClassification(Classification classification)
         throws ClassificationAlreadyExistException;
 
     /**
@@ -81,7 +81,7 @@ public interface ClassificationService {
      * @throws ClassificationNotFoundException
      *             when the classification does not exist already.
      */
-    Classification updateClassification(Classification classification) throws ClassificationNotFoundException;
+    ClassificationSummary updateClassification(Classification classification) throws ClassificationNotFoundException;
 
     /**
      * This method provides a query builder for quering the database.

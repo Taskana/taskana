@@ -87,8 +87,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
         // empty classification (root)
         expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey("", "t1");
-        expectedClassification = (ClassificationImpl) classificationService
-            .createClassification(expectedClassification);
+        classificationService.createClassification(expectedClassification);
         connection.commit();
         actualClassification = classificationService.getClassification(expectedClassification.getKey(),
             expectedClassification.getDomain());
@@ -100,8 +99,7 @@ public class ClassificationServiceImplIntExplicitTest {
         // specific to domain + root
         expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey(domain, "t1");
         expectedClassification.setKey(key);
-        expectedClassification = (ClassificationImpl) classificationService
-            .createClassification(expectedClassification);
+        classificationService.createClassification(expectedClassification);
         connection.commit();
         actualClassification = classificationService.getClassification(expectedClassification.getKey(),
             expectedClassification.getDomain());
@@ -185,11 +183,11 @@ public class ClassificationServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("novatec", "t1");
         connection.commit();
-        classification = classificationService.createClassification(classification);
+        classificationService.createClassification(classification);
 
         String updatedDescription = "TEST SOMETHING";
         classification.setDescription(updatedDescription);
-        classification = classificationService.updateClassification(classification);
+        classificationService.updateClassification(classification);
         connection.commit();
 
         classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
@@ -219,9 +217,9 @@ public class ClassificationServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
         classification.setDescription("");
-        classification = classificationService.createClassification(classification);
+        classificationService.createClassification(classification);
         classification.setDescription("description");
-        classification = classificationService.updateClassification(classification);
+        classificationService.updateClassification(classification);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .list();
@@ -231,7 +229,7 @@ public class ClassificationServiceImplIntExplicitTest {
         classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
         assertThat(classification.getDescription(), equalTo("description"));
 
-        classification = classificationService.updateClassification(classification);
+        classificationService.updateClassification(classification);
         list = classificationService.createClassificationQuery()
             .list();
         Assert.assertEquals(1, list.size());
@@ -391,12 +389,12 @@ public class ClassificationServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "type1");
-        classification = classificationService.createClassification(classification);
+        classificationService.createClassification(classification);
 
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "type1");
-        classification1 = classificationService.createClassification(classification1);
+        classificationService.createClassification(classification1);
         classification1.setParentClassificationKey(classification.getKey());
-        classification1 = classificationService.updateClassification(classification1);
+        classificationService.updateClassification(classification1);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .parentClassificationKeyIn("")

@@ -58,7 +58,7 @@ public interface WorkbasketService {
      * @throws InvalidWorkbasketException
      *             If a required property of the Workbasket is not set.
      */
-    Workbasket createWorkbasket(Workbasket workbasket)
+    WorkbasketSummary createWorkbasket(Workbasket workbasket)
         throws InvalidWorkbasketException;
 
     /**
@@ -74,7 +74,7 @@ public interface WorkbasketService {
      * @throws NotAuthorizedException
      *             if the current user is not authorized to update the work basket
      */
-    Workbasket updateWorkbasket(Workbasket workbasket)
+    WorkbasketSummary updateWorkbasket(Workbasket workbasket)
         throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException;
 
     /**

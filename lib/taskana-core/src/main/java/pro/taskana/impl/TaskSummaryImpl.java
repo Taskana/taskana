@@ -319,6 +319,7 @@ public class TaskSummaryImpl implements TaskSummary {
         this.isTransferred = isTransferred;
     }
 
+    @Override
     public List<AttachmentSummary> getAttachmentSummaries() {
         return attachmentSummaries;
     }

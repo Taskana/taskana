@@ -76,13 +76,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task claim(String taskId)
+    public TaskSummary claim(String taskId)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         return claim(taskId, false);
     }
 
     @Override
-    public Task claim(String taskId, boolean forceClaim)
+    public TaskSummary claim(String taskId, boolean forceClaim)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         String userId = CurrentUserContext.getUserid();
         LOGGER.debug("entry to claim(id = {}, forceClaim = {}, userId = {})", taskId, forceClaim, userId);
@@ -115,17 +115,17 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from claim()");
         }
-        return task;
+        return task.asSummary();
     }
 
     @Override
-    public Task completeTask(String taskId)
+    public TaskSummary completeTask(String taskId)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
         return completeTask(taskId, false);
     }
 
     @Override
-    public Task completeTask(String taskId, boolean isForced)
+    public TaskSummary completeTask(String taskId, boolean isForced)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
         LOGGER.debug("entry to completeTask(id = {}, isForced {})", taskId, isForced);
         TaskImpl task = null;
@@ -149,7 +149,8 @@ public class TaskServiceImpl implements TaskService {
             } else {
                 // CLAIM-forced, if task was not already claimed before.
                 if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
-                    task = (TaskImpl) this.claim(taskId, true);
+                    this.claim(taskId, true);
+                    task = (TaskImpl) this.getTask(taskId);
                 }
             }
             Instant now = Instant.now();
@@ -162,11 +163,11 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from completeTask()");
         }
-        return task;
+        return task.asSummary();
     }
 
     @Override
-    public Task createTask(Task taskToCreate)
+    public TaskSummary createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         LOGGER.debug("entry to createTask(task = {})", taskToCreate);
@@ -195,7 +196,7 @@ public class TaskServiceImpl implements TaskService {
                 this.taskMapper.insert(task);
                 LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
             }
-            return task;
+            return task.asSummary();
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from createTask(task = {})");
@@ -245,7 +246,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task transfer(String taskId, String destinationWorkbasketKey)
+    public TaskSummary transfer(String taskId, String destinationWorkbasketKey)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketKey = {})", taskId, destinationWorkbasketKey);
         TaskImpl task = null;
@@ -273,7 +274,7 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.update(task);
             LOGGER.debug("Method transfer() transferred Task '{}' to destination workbasket {}", taskId,
                 destinationWorkbasketKey);
-            return task;
+            return task.asSummary();
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from transfer(). Returning result {} ", task);
@@ -366,7 +367,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task setTaskRead(String taskId, boolean isRead)
+    public TaskSummary setTaskRead(String taskId, boolean isRead)
         throws TaskNotFoundException {
         LOGGER.debug("entry to setTaskRead(taskId = {}, isRead = {})", taskId, isRead);
         Task result = null;
@@ -378,7 +379,7 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.update(task);
             result = getTask(taskId);
             LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", result, isRead);
-            return result;
+            return result.asSummary();
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from setTaskRead(taskId, isRead). Returning result {} ", result);
@@ -416,7 +417,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateTask(Task task)
+    public TaskSummary updateTask(Task task)
         throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException, WorkbasketNotFoundException,
         ClassificationNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
         AttachmentPersistenceException {
@@ -438,7 +439,7 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from claim()");
         }
-        return task;
+        return task.asSummary();
     }
 
     private void standardSettings(TaskImpl task, Classification classification) {

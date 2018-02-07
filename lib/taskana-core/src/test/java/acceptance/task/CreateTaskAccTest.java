@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.TaskSummary;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -50,7 +51,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task newTask = taskService.newTask("USER_1_1");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        Task createdTask = taskService.createTask(newTask);
+        TaskSummary createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
         assertEquals("T-Vertragstermin VERA", createdTask.getName());
@@ -86,10 +87,10 @@ public class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        Task createdTask = taskService.createTask(newTask);
-        assertNotNull(createdTask.getId());
+        TaskSummary createdTask = taskService.createTask(newTask);
+        assertNotNull(createdTask.getTaskId());
 
-        Task readTask = taskService.getTask(createdTask.getId());
+        Task readTask = taskService.getTask(createdTask.getTaskId());
         assertNotNull(readTask);
         assertNotNull(readTask.getAttachments());
         assertEquals(1, readTask.getAttachments().size());
@@ -120,11 +121,11 @@ public class CreateTaskAccTest extends AbstractAccTest {
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        Task createdTask = taskService.createTask(newTask);
+        TaskSummary createdTask = taskService.createTask(newTask);
 
-        assertNotNull(createdTask.getId());
+        assertNotNull(createdTask.getTaskId());
 
-        Task readTask = taskService.getTask(createdTask.getId());
+        Task readTask = taskService.getTask(createdTask.getTaskId());
 
         assertNotNull(readTask);
         assertNotNull(readTask.getAttachments());
@@ -234,7 +235,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setName("Test Name");
-        Task createdTask = taskService.createTask(newTask);
+        TaskSummary createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
         assertEquals("Test Name", createdTask.getName());
@@ -253,7 +254,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setName("Test Name");
-        Task createdTask = taskService.createTask(newTask);
+        TaskSummary createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
         assertEquals(2, createdTask.getPriority());  // priority is 22 in DOMAIN_B, task is created in DOMAIN_A
@@ -379,7 +380,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task newTask = taskService.newTask("USER_1_1");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        Task createdTask = taskService.createTask(newTask);
+        TaskSummary createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
         assertNotNull(createdTask.getDomain());

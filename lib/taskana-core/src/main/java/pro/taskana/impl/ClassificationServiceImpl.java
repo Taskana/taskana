@@ -85,7 +85,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public Classification createClassification(Classification classification)
+    public ClassificationSummary createClassification(Classification classification)
         throws ClassificationAlreadyExistException {
         LOGGER.debug("entry to createClassification(classification = {})", classification);
         ClassificationImpl classificationImpl;
@@ -108,7 +108,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from createClassification()");
         }
-        return classificationImpl;
+        return classificationImpl.asSummary();
     }
 
     private void addClassificationToRootDomain(ClassificationImpl classificationImpl) {
@@ -144,7 +144,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public Classification updateClassification(Classification classification) {
+    public ClassificationSummary updateClassification(Classification classification) {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
         ClassificationImpl classificationImpl = null;
         try {
@@ -170,7 +170,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             try {
                 Classification updatedClassification = this.getClassification(classificationImpl.getKey(),
                     classificationImpl.getDomain());
-                return updatedClassification;
+                return updatedClassification.asSummary();
             } catch (ClassificationNotFoundException e) {
                 LOGGER.debug(
                     "Throwing SystemException because updateClassification didn't find new classification {} after update",

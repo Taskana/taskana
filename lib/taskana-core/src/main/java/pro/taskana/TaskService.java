@@ -35,7 +35,7 @@ public interface TaskService {
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by some else
      */
-    Task claim(String taskId)
+    TaskSummary claim(String taskId)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
@@ -53,7 +53,7 @@ public interface TaskService {
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by someone else
      */
-    Task claim(String taskId, boolean forceClaim)
+    TaskSummary claim(String taskId, boolean forceClaim)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
@@ -69,7 +69,7 @@ public interface TaskService {
      * @throws InvalidOwnerException
      *             if current user is not the task-owner or administrator.
      */
-    Task completeTask(String taskId)
+    TaskSummary completeTask(String taskId)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
 
     /**
@@ -87,7 +87,7 @@ public interface TaskService {
      * @throws InvalidOwnerException
      *             if current user is not the task-owner or administrator.
      */
-    Task completeTask(String taskId, boolean isForced)
+    TaskSummary completeTask(String taskId, boolean isForced)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
 
     /**
@@ -109,7 +109,7 @@ public interface TaskService {
      * @throws InvalidArgumentException
      *             thrown if the primary ObjectReference is invalid
      */
-    Task createTask(Task taskToCreate)
+    TaskSummary createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException;
 
@@ -141,7 +141,7 @@ public interface TaskService {
      * @throws InvalidWorkbasketException
      *             Thrown if either the source or the target workbasket has a missing required property
      */
-    Task transfer(String taskId, String workbasketKey)
+    TaskSummary transfer(String taskId, String workbasketKey)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException;
 
     /**
@@ -155,7 +155,7 @@ public interface TaskService {
      * @throws TaskNotFoundException
      *             Thrown if the {@link Task} with taskId was not found
      */
-    Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
+    TaskSummary setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
 
     /**
      * This method provides a query builder for quering the database.
@@ -235,7 +235,7 @@ public interface TaskService {
      * @throws AttachmentPersistenceException
      *             if an Attachment with ID will be added multiple times without using the task-methods.
      */
-    Task updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
+    TaskSummary updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
         WorkbasketNotFoundException, ClassificationNotFoundException, InvalidWorkbasketException,
         NotAuthorizedException, AttachmentPersistenceException;
 

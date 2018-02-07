@@ -117,7 +117,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         Task newTask = taskService.newTask(wbKey);
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        Task createdTask = taskService.createTask(newTask);
+        TaskSummary createdTask = taskService.createTask(newTask);
         List<TaskSummary> tasks = taskService.createTaskQuery()
             .workbasketKeyIn(wbKey)
             .list();

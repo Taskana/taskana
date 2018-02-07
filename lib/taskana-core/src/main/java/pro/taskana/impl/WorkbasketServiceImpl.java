@@ -146,7 +146,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public Workbasket createWorkbasket(Workbasket newWorkbasket)
+    public WorkbasketSummary createWorkbasket(Workbasket newWorkbasket)
         throws InvalidWorkbasketException {
         LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
         Workbasket result = null;
@@ -164,7 +164,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             workbasketMapper.insert(workbasket);
             LOGGER.debug("Method createWorkbasket() created Workbasket '{}'", workbasket);
             result = workbasketMapper.findById(workbasket.getId());
-            return result;
+            return result.asSummary();
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from createWorkbasket(workbasket). Returning result {} ", result);
@@ -172,7 +172,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public Workbasket updateWorkbasket(Workbasket workbasketToUpdate)
+    public WorkbasketSummary updateWorkbasket(Workbasket workbasketToUpdate)
         throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
         LOGGER.debug("entry to updateWorkbasket(workbasket)", workbasketToUpdate);
 
@@ -184,7 +184,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             workbasketMapper.update(workbasket);
             LOGGER.debug("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
             result = workbasketMapper.findById(workbasket.getId());
-            return result;
+            return result.asSummary();
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from updateWorkbasket(). Returning result {} ", result);
