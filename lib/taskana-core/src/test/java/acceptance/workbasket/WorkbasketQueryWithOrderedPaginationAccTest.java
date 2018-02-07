@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidRequestException;
@@ -24,6 +25,9 @@ import pro.taskana.security.JAASRunner;
 @RunWith(JAASRunner.class)
 public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
 
+    private static SortDirection asc = SortDirection.ASCENDING;
+    private static SortDirection desc = SortDirection.DESCENDING;
+
     public WorkbasketQueryWithOrderedPaginationAccTest() {
         super();
     }
@@ -35,8 +39,7 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
-            .orderByKey()
-            .ascending()
+            .orderByKey(asc)
             .list(0, 5);
         assertThat(results.size(), equalTo(5));
         assertThat(results.get(0).getKey(), equalTo("GPK_KSC"));
@@ -44,8 +47,7 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
 
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
-            .orderByKey()
-            .descending()
+            .orderByKey(desc)
             .list(0, 5);
         assertThat(results.size(), equalTo(5));
         assertThat(results.get(0).getKey(), equalTo("USER_2_2"));
@@ -59,8 +61,7 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
-            .orderByKey()
-            .ascending()
+            .orderByKey(asc)
             .list(5, 5);
         assertThat(results.size(), equalTo(5));
         assertThat(results.get(0).getKey(), equalTo("key3"));
@@ -68,8 +69,7 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
 
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
-            .orderByKey()
-            .descending()
+            .orderByKey(desc)
             .list(5, 5);
         assertThat(results.size(), equalTo(5));
         assertThat(results.get(0).getKey(), equalTo("TEAMLEAD_1"));

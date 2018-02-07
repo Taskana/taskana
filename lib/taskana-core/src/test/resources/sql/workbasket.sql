@@ -20,3 +20,16 @@ INSERT INTO WORKBASKET VALUES ('WBI:100000000000000000000000000000000011', 'GPK_
 INSERT INTO WORKBASKET VALUES ('WBI:100000000000000000000000000000000012', 'GPK_B_KSC_1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Gruppenpostkorb KSC B1', 'DOMAIN_B', 'GROUP', 'Gruppenpostkorb KSC 1', '', '', '', '', '', '', '', '', '');
 INSERT INTO WORKBASKET VALUES ('WBI:100000000000000000000000000000000013', 'GPK_B_KSC_2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Gruppenpostkorb KSC B2', 'DOMAIN_B', 'GROUP', 'Gruppenpostkorb KSC 2', '', '', '', '', '', '', '', '', '');
 
+-- Workbaskets for sorting test
+
+INSERT INTO WORKBASKET VALUES ('900', 'sort001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basxet0', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('901', 'Sort002', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basxet1', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('902', 'sOrt003', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'bAsxet2', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('903', 'soRt004', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'baSxet3', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('904', 'sorT005', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basXet4', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('905', 'Sort006', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basxEt5', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('906', 'SOrt007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basxeT6', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('907', 'SoRt008', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'BAsxet7', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('908', 'SorT009', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'BaSxet8', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO WORKBASKET VALUES ('909', 'Sort010', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'BasXet9', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+

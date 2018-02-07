@@ -153,7 +153,8 @@ public interface QueryMapper {
         @Result(property = "value", column = "VALUE")})
     List<ObjectReference> queryObjectReference(ObjectReferenceQueryImpl objectReference);
 
-    @Select("<script>SELECT DISTINCT w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
+    @Select("<script>"
+        + "SELECT DISTINCT w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
         + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.KEY = a.WORKBASKET_KEY</if> "
         + "<where>"
         + "<if test='owner != null'>AND w.OWNER IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
@@ -190,7 +191,7 @@ public interface QueryMapper {
         + "<if test=\"authorization.name().equals('CUSTOM_12')\">PERM_CUSTOM_12</if> = 1 "
         + "</if>"
         + "</where>"
-        + "<if test='!orderClause.isEmpty()'> ${orderClause}</if> "
+        + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
         + "</script>")
     @Results({
         @Result(property = "id", column = "ID"),

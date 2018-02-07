@@ -3,7 +3,6 @@ package pro.taskana;
 import java.time.Instant;
 
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.model.WorkbasketAuthorization;
 import pro.taskana.model.WorkbasketType;
 
@@ -171,41 +170,21 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
     /**
      * Sort the query result by name.
      *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
      * @return the query
-     * @throws InvalidArgumentException
-     *             when orderByName() has already been called.
-     * @throws InvalidRequestException
-     *             when orderByName() has already been called.
      */
-    WorkbasketQuery orderByName() throws InvalidArgumentException, InvalidRequestException;
+    WorkbasketQuery orderByName(SortDirection sortDirection);
 
     /**
      * Sort the query result by key.
      *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
      * @return the query
-     * @throws InvalidRequestException
-     *             when orderByKey() has already been called.
      */
-    WorkbasketQuery orderByKey() throws InvalidRequestException;
-
-    /**
-     * Sort the query result in ascending order.
-     *
-     * @return the query
-     * @throws InvalidRequestException
-     *             when neither orderByKey() nor orderByName has already been called previously or when ascending() or
-     *             descending() has been called immediately before this call
-     */
-    WorkbasketQuery ascending() throws InvalidRequestException;
-
-    /**
-     * Sort the query result in descending order.
-     *
-     * @return the query
-     * @throws InvalidRequestException
-     *             when neither orderByKey() nor orderByName has already been called previously or when ascending() or
-     *             descending() has been called immediately before this call
-     */
-    WorkbasketQuery descending() throws InvalidRequestException;
+    WorkbasketQuery orderByKey(SortDirection sortDirection);
 
 }

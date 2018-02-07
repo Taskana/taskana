@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,9 +15,7 @@ import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -33,12 +32,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryWorkbasket";
     private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryWorkbaskets";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
-    private static final String KEY_COL_NAME = "KEY";
-    private static final String NAME_COL_NAME = "NAME";
-    private static final String ASCENDING = " ASC";
-    private static final String DESCENDING = " DESC";
-    private static final String ORDER_BY = "ORDER BY ";
-
     private String[] accessId;
     private WorkbasketAuthorization authorization;
     private String[] nameIn;
@@ -54,12 +47,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private Instant modifiedBefore;
     private String descriptionLike;
     private String[] owner;
-    private String orderClause;
     private TaskanaEngineImpl taskanaEngineImpl;
+    private List<String> orderBy;
 
     public WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-        orderClause = "";
+        orderBy = new ArrayList<>();
     }
 
     @Override
@@ -141,70 +134,13 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery orderByName() throws InvalidRequestException {
-        if (orderClause.contains(NAME_COL_NAME)) {
-            throw new InvalidRequestException("orderByName() has already been called");
-        }
-        if (orderClause.isEmpty()) {
-            orderClause = ORDER_BY + NAME_COL_NAME;
-        } else if (orderClause.contains(ORDER_BY)) {
-            orderClause += ", " + NAME_COL_NAME;
-        } else {
-            throw new SystemException("orderByName() was called, but orderClause is unexpectedly: " + orderClause);
-        }
-
-        return this;
+    public WorkbasketQuery orderByName(SortDirection sortDirection) {
+        return addOrderCriteria("NAME", sortDirection);
     }
 
     @Override
-    public WorkbasketQuery orderByKey() throws InvalidRequestException {
-        if (orderClause.contains(KEY_COL_NAME)) {
-            throw new InvalidRequestException("orderByKey() has already been called");
-        }
-        if (orderClause.isEmpty()) {
-            orderClause = ORDER_BY + KEY_COL_NAME;
-        } else if (orderClause.contains(ORDER_BY)) {
-            orderClause += ", " + KEY_COL_NAME;
-        } else {
-            throw new SystemException("orderByKey() was called, but orderClause is unexpectedly: " + orderClause);
-        }
-
-        return this;
-    }
-
-    @Override
-    public WorkbasketQuery ascending() throws InvalidRequestException {
-        if (!orderClause.startsWith(ORDER_BY)) {
-            throw new InvalidRequestException(
-                "ascending() has been called before orderByKey() or orderByName() was called");
-        }
-        if (orderClause.endsWith(KEY_COL_NAME) || orderClause.endsWith(NAME_COL_NAME)) {
-            orderClause += ASCENDING;
-        } else if (orderClause.endsWith(ASCENDING) || orderClause.endsWith(DESCENDING)) {
-            throw new InvalidRequestException(
-                "ascending() has been called immediately after ascending() or descending()");
-        } else {
-            throw new SystemException("ascending() was called, but orderClause is unexpectedly: " + orderClause);
-        }
-
-        return this;
-    }
-
-    @Override
-    public WorkbasketQuery descending() throws InvalidRequestException {
-        if (!orderClause.startsWith(ORDER_BY)) {
-            throw new InvalidRequestException(
-                "descending() has been called before orderByKey or orderByName was called");
-        }
-        if (orderClause.endsWith(KEY_COL_NAME) || orderClause.endsWith(NAME_COL_NAME)) {
-            orderClause += DESCENDING;
-        } else if (orderClause.endsWith(ASCENDING) || orderClause.endsWith(DESCENDING)) {
-            throw new InvalidRequestException(
-                "descending() has been called immediately after ascending() or descending()");
-        } else {
-            throw new SystemException("descending() was called, but orderClause is unexpectedly: " + orderClause);
-        }
-        return this;
+    public WorkbasketQuery orderByKey(SortDirection sortDirection) {
+        return addOrderCriteria("KEY", sortDirection);
     }
 
     @Override
@@ -370,8 +306,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return owner;
     }
 
-    public String getOrderClause() {
-        return orderClause;
+    public List<String> getOrderBy() {
+        return orderBy;
     }
 
     @Override
@@ -444,6 +380,15 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             target[i] = source[i].toUpperCase();
         }
         return target;
+    }
+
+    private WorkbasketQuery addOrderCriteria(String colName, SortDirection sortDirection) {
+        String orderByDirection = " ASC";
+        if (sortDirection != null && SortDirection.DESCENDING.equals(sortDirection)) {
+            orderByDirection = " DESC";
+        }
+        orderBy.add(colName + orderByDirection);
+        return this;
     }
 
 }

@@ -458,169 +458,165 @@ public class TaskQueryImpl implements TaskQuery {
 
     @Override
     public TaskQuery orderByClassificationKey(SortDirection sortDirection) {
-        return addOrderCriteria("CLASSIFICATION_KEY", true, sortDirection);
+        return addOrderCriteria("CLASSIFICATION_KEY", sortDirection);
     }
 
     @Override
     public TaskQuery orderByDomain(SortDirection sortDirection) {
-        return addOrderCriteria("DOMAIN", true, sortDirection);
+        return addOrderCriteria("DOMAIN", sortDirection);
     }
 
     @Override
     public TaskQuery orderByPlanned(SortDirection sortDirection) {
-        return addOrderCriteria("PLANNED", false, sortDirection);
+        return addOrderCriteria("PLANNED", sortDirection);
     }
 
     @Override
     public TaskQuery orderByDue(SortDirection sortDirection) {
-        return addOrderCriteria("DUE", false, sortDirection);
+        return addOrderCriteria("DUE", sortDirection);
     }
 
     @Override
     public TaskQuery orderByModified(SortDirection sortDirection) {
-        return addOrderCriteria("MODIFIED", false, sortDirection);
+        return addOrderCriteria("MODIFIED", sortDirection);
     }
 
     @Override
     public TaskQuery orderByName(SortDirection sortDirection) {
-        return addOrderCriteria("NAME", true, sortDirection);
+        return addOrderCriteria("NAME", sortDirection);
     }
 
     @Override
     public TaskQuery orderByOwner(SortDirection sortDirection) {
-        return addOrderCriteria("OWNER", true, sortDirection);
+        return addOrderCriteria("OWNER", sortDirection);
     }
 
     @Override
     public TaskQuery orderByPrimaryObjectReferenceCompany(SortDirection sortDirection) {
-        return addOrderCriteria("POR_COMPANY", true, sortDirection);
+        return addOrderCriteria("POR_COMPANY", sortDirection);
     }
 
     @Override
     public TaskQuery orderByPrimaryObjectReferenceSystem(SortDirection sortDirection) {
-        return addOrderCriteria("POR_SYSTEM", true, sortDirection);
+        return addOrderCriteria("POR_SYSTEM", sortDirection);
     }
 
     @Override
     public TaskQuery orderByPrimaryObjectReferenceSystemInstance(SortDirection sortDirection) {
-        return addOrderCriteria("POR_INSTANCE", true, sortDirection);
+        return addOrderCriteria("POR_INSTANCE", sortDirection);
     }
 
     @Override
     public TaskQuery orderByPrimaryObjectReferenceType(SortDirection sortDirection) {
-        return addOrderCriteria("POR_TYPE", true, sortDirection);
+        return addOrderCriteria("POR_TYPE", sortDirection);
     }
 
     @Override
     public TaskQuery orderByPrimaryObjectReferenceValue(SortDirection sortDirection) {
-        return addOrderCriteria("POR_VALUE", true, sortDirection);
+        return addOrderCriteria("POR_VALUE", sortDirection);
     }
 
     @Override
     public TaskQuery orderByPriority(SortDirection sortDirection) {
-        return addOrderCriteria("PRIORITY", false, sortDirection);
+        return addOrderCriteria("PRIORITY", sortDirection);
     }
 
     @Override
     public TaskQuery orderByState(SortDirection sortDirection) {
-        return addOrderCriteria("STATE", false, sortDirection);
+        return addOrderCriteria("STATE", sortDirection);
     }
 
     @Override
     public TaskQuery orderByWorkbasketKey(SortDirection sortDirection) {
-        return addOrderCriteria("WORKBASKET_KEY", true, sortDirection);
+        return addOrderCriteria("WORKBASKET_KEY", sortDirection);
     }
 
     @Override
     public TaskQuery orderByNote(SortDirection sortDirection) {
-        return addOrderCriteria("NOTE", true, sortDirection);
+        return addOrderCriteria("NOTE", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom1(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_1", true, sortDirection);
+        return addOrderCriteria("CUSTOM_1", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom2(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_2", true, sortDirection);
+        return addOrderCriteria("CUSTOM_2", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom3(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_3", true, sortDirection);
+        return addOrderCriteria("CUSTOM_3", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom4(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_4", true, sortDirection);
+        return addOrderCriteria("CUSTOM_4", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom5(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_5", true, sortDirection);
+        return addOrderCriteria("CUSTOM_5", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom6(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_6", true, sortDirection);
+        return addOrderCriteria("CUSTOM_6", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom7(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_7", true, sortDirection);
+        return addOrderCriteria("CUSTOM_7", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom8(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_8", true, sortDirection);
+        return addOrderCriteria("CUSTOM_8", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom9(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_9", true, sortDirection);
+        return addOrderCriteria("CUSTOM_9", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCustom10(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_10", true, sortDirection);
+        return addOrderCriteria("CUSTOM_10", sortDirection);
     }
 
     @Override
     public TaskQuery orderByBusinessProcessId(SortDirection sortDirection) {
-        return addOrderCriteria("BUSINESS_PROCESS_ID", true, sortDirection);
+        return addOrderCriteria("BUSINESS_PROCESS_ID", sortDirection);
     }
 
     @Override
     public TaskQuery orderByClaimed(SortDirection sortDirection) {
-        return addOrderCriteria("CLAIMED", false, sortDirection);
+        return addOrderCriteria("CLAIMED", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCompleted(SortDirection sortDirection) {
-        return addOrderCriteria("COMPLETED", false, sortDirection);
+        return addOrderCriteria("COMPLETED", sortDirection);
     }
 
     @Override
     public TaskQuery orderByCreated(SortDirection sortDirection) {
-        return addOrderCriteria("CREATED", false, sortDirection);
+        return addOrderCriteria("CREATED", sortDirection);
     }
 
     @Override
     public TaskQuery orderByParentBusinessProcessId(SortDirection sortDirection) {
-        return addOrderCriteria("PARENT_BUSINESS_PROCESS_ID", true, sortDirection);
+        return addOrderCriteria("PARENT_BUSINESS_PROCESS_ID", sortDirection);
     }
 
-    private TaskQuery addOrderCriteria(String columnName, boolean useUpper, SortDirection sortDirection) {
+    private TaskQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
         String orderByDirection = " ASC";
         if (sortDirection != null && SortDirection.DESCENDING.equals(sortDirection)) {
             orderByDirection = " DESC";
         }
-        if (useUpper) {
-            orderBy.add("UPPER(" + columnName + ")" + orderByDirection);
-        } else {
-            orderBy.add(columnName + orderByDirection);
-        }
+        orderBy.add(columnName + orderByDirection);
         return this;
     }
 }
