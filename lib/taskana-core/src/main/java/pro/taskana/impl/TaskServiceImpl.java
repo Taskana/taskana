@@ -96,11 +96,12 @@ public class TaskServiceImpl implements TaskService {
                     taskId);
                 throw new InvalidStateException("Task is already completed");
             }
-            if (state == TaskState.CLAIMED && !forceClaim) {
+            if (state == TaskState.CLAIMED && !forceClaim && !task.getOwner().equals(userId)) {
                 LOGGER.warn(
                     "Method claim() found that task {} is claimed by {} and forceClaim is false. Throwing InvalidOwnerException",
                     taskId, task.getOwner());
-                throw new InvalidOwnerException("Task is already claimed by user " + task.getOwner());
+                throw new InvalidOwnerException(
+                    "You´re not the owner of this task and it is already claimed by other user " + task.getOwner());
             }
             Instant now = Instant.now();
             task.setOwner(userId);
@@ -110,10 +111,53 @@ public class TaskServiceImpl implements TaskService {
             task.setState(TaskState.CLAIMED);
             taskMapper.update(task);
             LOGGER.debug("Method claim() claimed task '{}' for user '{}'.", taskId, userId);
-
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from claim()");
+        }
+        return task;
+    }
+
+    @Override
+    public Task cancelClaim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        return this.cancelClaim(taskId, false);
+    }
+
+    @Override
+    public Task cancelClaim(String taskId, boolean forceUnclaim)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        String userId = CurrentUserContext.getUserid();
+        LOGGER.debug("entry to cancelClaim(taskId = {}) with userId = {}, forceFlag = {}", taskId, userId,
+            forceUnclaim);
+        TaskImpl task = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            task = (TaskImpl) getTask(taskId);
+            TaskState state = task.getState();
+            if (state == TaskState.COMPLETED) {
+                LOGGER.warn(
+                    "Method cancelClaim() found that task {} is already completed. Throwing InvalidStateException",
+                    taskId);
+                throw new InvalidStateException("Task is already completed");
+            }
+            if (state == TaskState.CLAIMED && !forceUnclaim && !userId.equals(task.getOwner())) {
+                LOGGER.warn(
+                    "Method cancelClaim() found that task {} is claimed by {} and forceClaim is false. Throwing InvalidOwnerException",
+                    taskId, task.getOwner());
+                throw new InvalidOwnerException("Task is already claimed by an other user = " + task.getOwner());
+            }
+            Instant now = Instant.now();
+            task.setOwner(null);
+            task.setModified(now);
+            task.setClaimed(null);
+            task.setRead(true);
+            task.setState(TaskState.READY);
+            taskMapper.update(task);
+            LOGGER.debug("Method cancelClaim() unclaimed task '{}' for user '{}'.", taskId, userId);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from cancelClaim(taskId = {}) with userId = {}, forceFlag = {}", taskId, userId,
+                forceUnclaim);
         }
         return task;
     }
@@ -139,7 +183,7 @@ public class TaskServiceImpl implements TaskService {
                     LOGGER.warn("Method completeTask() does expect a task which need to be CLAIMED before. TaskId={}",
                         taskId);
                     throw new InvalidStateException(taskId);
-                } else if (CurrentUserContext.getUserid() != task.getOwner()) {
+                } else if (!CurrentUserContext.getAccessIds().contains(task.getOwner())) {
                     LOGGER.warn(
                         "Method completeTask() does expect to be invoced by the task-owner or a administrator. TaskId={}, TaskOwner={}, CurrentUser={}",
                         taskId, task.getOwner(), CurrentUserContext.getUserid());
