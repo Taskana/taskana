@@ -30,6 +30,7 @@ public class TaskQueryImpl implements TaskQuery {
     private TaskanaEngineImpl taskanaEngineImpl;
     private TaskServiceImpl taskService;
     private String[] name;
+    private String[] taskIds;
     private String description;
     private String note;
     private int[] priority;
@@ -57,6 +58,12 @@ public class TaskQueryImpl implements TaskQuery {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
         this.orderBy = new ArrayList<>();
+    }
+
+    @Override
+    public TaskQuery idIn(String... taskIds) {
+        this.taskIds = taskIds;
+        return this;
     }
 
     @Override
@@ -300,6 +307,10 @@ public class TaskQueryImpl implements TaskQuery {
 
     public void setTaskanaEngine(TaskanaEngineImpl taskanaEngine) {
         this.taskanaEngineImpl = taskanaEngine;
+    }
+
+    public String[] getTaskIds() {
+        return taskIds;
     }
 
     public String[] getName() {

@@ -171,4 +171,11 @@ public interface TaskMapper {
         @Result(property = "custom9", column = "CUSTOM_9"),
         @Result(property = "custom10", column = "CUSTOM_10")})
     List<TaskSummaryImpl> findTaskSummariesByWorkbasketKey(@Param("workbasketKey") String workbasketKey);
+
+    @Update("<script>"
+        + " UPDATE TASK SET MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}, WORKBASKET_KEY = #{referencetask.workbasketSummary.key}, DOMAIN = #{referencetask.domain}, OWNER = #{referencetask.owner}, IS_READ = #{referencetask.isRead}, IS_TRANSFERRED = #{referencetask.isTransferred}"
+        + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
+        + "</script>")
+    void updateTransfered(@Param("taskIds") List<String> taskIds,
+        @Param("referencetask") TaskSummaryImpl referencetask);
 }
