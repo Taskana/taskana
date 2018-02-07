@@ -22,28 +22,28 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery key(String... key) {
+    public ClassificationQuery keyIn(String... key) {
         return this;
     }
 
     @Override
-    public ClassificationQuery parentClassificationKey(String... parentClassificationKey) {
+    public ClassificationQuery parentClassificationKeyIn(String... parentClassificationKey) {
         this.parentClassificationKey = parentClassificationKey;
         return this;
     }
 
     @Override
-    public ClassificationQuery category(String... category) {
+    public ClassificationQuery categoryIn(String... category) {
         return this;
     }
 
     @Override
-    public ClassificationQuery type(String... type) {
+    public ClassificationQuery typeIn(String... type) {
         return this;
     }
 
     @Override
-    public ClassificationQuery domain(String... domain) {
+    public ClassificationQuery domainIn(String... domain) {
         return this;
     }
 
@@ -58,7 +58,12 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery name(String... name) {
+    public ClassificationQuery nameIn(String... name) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery nameLike(String... nameLike) {
         return this;
     }
 
@@ -73,17 +78,102 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery serviceLevel(String... serviceLevel) {
+    public ClassificationQuery serviceLevelIn(String... serviceLevel) {
         return this;
     }
 
     @Override
-    public ClassificationQuery applicationEntryPoint(String... applicationEntryPoint) {
+    public ClassificationQuery serviceLevelLike(String... serviceLevelLike) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery applicationEntryPointIn(String... applicationEntryPoint) {
         return null;
     }
 
     @Override
-    public ClassificationQuery customFields(String... customFields) {
+    public ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom1In(String... customFields) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom1Like(String... custom1Like) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom2In(String... custom2In) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom2Like(String... custom2Like) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom3In(String... custom3In) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom3Like(String... custom3Like) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom4In(String... custom4In) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom4Like(String... custom4Like) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom5In(String... custom5In) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom5Like(String... custom5Like) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom6In(String... custom6In) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom6Like(String... custom6Like) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom7In(String... custom7In) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom7Like(String... custom7Like) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom8In(String... custom8In) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery custom8Like(String... custom8Like) {
         return this;
     }
 

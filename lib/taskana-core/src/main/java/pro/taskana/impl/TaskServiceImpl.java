@@ -552,8 +552,8 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("getClassificationsForTasksAndAttachments() about to query classifications and exit");
         // perform classification query
         return this.classificationService.createClassificationQuery()
-            .domain(classificationDomainArray)
-            .key(classificationKeyArray)
+            .domainIn(classificationDomainArray)
+            .keyIn(classificationKeyArray)
             .list();
     }
 

@@ -259,11 +259,11 @@ public class ClassificationServiceImplIntExplicitTest {
         classificationService.createClassification(classification3);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .category("category1")
-            .domain("domain1")
+            .categoryIn("category1")
+            .domainIn("domain1")
             .list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().domain("domain1", "domain3").list();
+        list = classificationService.createClassificationQuery().domainIn("domain1", "domain3").list();
         Assert.assertEquals(2, list.size());
         connection.commit();
     }
@@ -296,12 +296,12 @@ public class ClassificationServiceImplIntExplicitTest {
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .descriptionLike("DESC1")
-            .customFields("custom1")
+            .custom1In("custom1")
             .list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().customFields("custom2").list();
-        Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().descriptionLike("DESC1").category("category1").list();
+        list = classificationService.createClassificationQuery().custom1In("custom2").list();
+        Assert.assertEquals(1, list.size());
+        list = classificationService.createClassificationQuery().descriptionLike("DESC1").categoryIn("category1").list();
         Assert.assertEquals(2, list.size());
         connection.commit();
     }
@@ -329,15 +329,15 @@ public class ClassificationServiceImplIntExplicitTest {
         classificationService.createClassification(classification3);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .parentClassificationKey(classification.getKey())
+            .parentClassificationKeyIn(classification.getKey())
             .list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().type("type1").priority(Integer.decode("5")).list();
+        list = classificationService.createClassificationQuery().typeIn("type1").priority(Integer.decode("5")).list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery()
             .priority(Integer.decode("5"))
-            .type("type1")
-            .parentClassificationKey(classification1.getKey())
+            .typeIn("type1")
+            .parentClassificationKeyIn(classification1.getKey())
             .list();
         Assert.assertEquals(1, list.size());
         connection.commit();
@@ -374,11 +374,11 @@ public class ClassificationServiceImplIntExplicitTest {
         classificationService.createClassification(classification3);
         all++;
 
-        List<ClassificationSummary> list = classificationService.createClassificationQuery().name("name").list();
+        List<ClassificationSummary> list = classificationService.createClassificationQuery().nameIn("name").list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().serviceLevel("P1D").descriptionLike("desc").list();
+        list = classificationService.createClassificationQuery().serviceLevelIn("P1D").descriptionLike("desc").list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().serviceLevel("P1DT1H").name("name").list();
+        list = classificationService.createClassificationQuery().serviceLevelIn("P1DT1H").nameIn("name").list();
         Assert.assertEquals(0, list.size());
         list = classificationService.createClassificationQuery().descriptionLike("desc%").list();
         Assert.assertEquals(all, list.size());
@@ -399,7 +399,7 @@ public class ClassificationServiceImplIntExplicitTest {
         classification1 = classificationService.updateClassification(classification1);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .parentClassificationKey("")
+            .parentClassificationKeyIn("")
             .list();
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery()
@@ -411,15 +411,15 @@ public class ClassificationServiceImplIntExplicitTest {
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().created(Instant.now()).list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().domain("domain1").validInDomain(false).list();
+        list = classificationService.createClassificationQuery().domainIn("domain1").validInDomain(false).list();
         Assert.assertEquals(0, list.size());
         list = classificationService.createClassificationQuery()
-            .key(classification1.getKey())
+            .keyIn(classification1.getKey())
             .list();
         Assert.assertEquals(1, list.size());
 
         list = classificationService.createClassificationQuery()
-            .parentClassificationKey(classification.getKey())
+            .parentClassificationKeyIn(classification.getKey())
             .list();
         Assert.assertEquals(1, list.size());
         assertThat(list.get(0).getKey(), equalTo(classification1.getKey()));
