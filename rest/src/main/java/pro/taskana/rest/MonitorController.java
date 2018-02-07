@@ -1,11 +1,7 @@
 package pro.taskana.rest;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,90 +9,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pro.taskana.TaskMonitorService;
-import pro.taskana.WorkbasketService;
-import pro.taskana.WorkbasketSummary;
-import pro.taskana.model.DueWorkbasketCounter;
 import pro.taskana.model.TaskState;
-import pro.taskana.model.TaskStateCounter;
-import pro.taskana.rest.model.WorkbasketCounterDataDto;
-import pro.taskana.rest.model.WorkbasketCounterDto;
 
 @RestController
 @RequestMapping(path = "/v1/monitor", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class MonitorController {
 
-    @Autowired
-    private TaskMonitorService taskMonitorService;
-
-    @Autowired
-    private WorkbasketService workbasketService;
-
     @RequestMapping(value = "/countByState")
-    public ResponseEntity<List<TaskStateCounter>> getTaskcountForState(
+    public ResponseEntity<?> getTaskcountForState(
         @RequestParam(value = "states") List<TaskState> taskStates) {
-        try {
-            List<TaskStateCounter> taskCount = taskMonitorService.getTaskCountForState(taskStates);
-            return ResponseEntity.status(HttpStatus.OK).body(taskCount);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        String taskCount = "[{\"state\": \"READY\", \"counter\": 7},{\"state\": \"CLAIMED\",\"counter\": 4},{\"state\": \"COMPLETED\",\"counter\": 4 }]";
+        return ResponseEntity.status(HttpStatus.OK).body(taskCount);
     }
 
     @RequestMapping(value = "/taskcountByWorkbasketDaysAndState")
     public ResponseEntity<?> getTaskCountByWorkbasketAndDaysInPastAndState(
         @RequestParam(value = "daysInPast") Long daysInPast,
         @RequestParam(value = "states") List<TaskState> states) {
-        try {
-            WorkbasketCounterDto WorkbasketCounterDto = new WorkbasketCounterDto();
 
-            LocalDate date = LocalDate.now();
-            date = date.minusDays(daysInPast);
-            List<String> dates = new ArrayList<>();
-
-            for (int i = 0; i < (daysInPast * 2 + 1); i++) {
-                dates.add(date.format(new DateTimeFormatterBuilder().appendPattern("dd.MM.yyyy").toFormatter()));
-                date = date.plusDays(1);
-            }
-            WorkbasketCounterDto.setDates(dates);
-
-            List<WorkbasketCounterDataDto> data = new ArrayList<>();
-
-            for (WorkbasketSummary workbasket : workbasketService.getWorkbaskets()) {
-                WorkbasketCounterDataDto counterDto = new WorkbasketCounterDataDto();
-                counterDto.setLabel(workbasket.getName());
-                List<Integer> zeroData = new ArrayList<>();
-                for (int i = 0; i < dates.size(); i++) {
-                    zeroData.add(0);
-                }
-                counterDto.setData(zeroData);
-                data.add(counterDto);
-            }
-
-            List<DueWorkbasketCounter> dwcList = taskMonitorService.getTaskCountByWorkbasketAndDaysInPastAndState(
-                daysInPast,
-                states);
-
-            for (DueWorkbasketCounter item : dwcList) {
-                String formattedDate = new DateTimeFormatterBuilder()
-                    .appendPattern("dd.MM.yyyy")
-                    .toFormatter()
-                    .format(item.getDue());
-                for (int i = 0; i < dates.size(); i++) {
-                    if (formattedDate.equalsIgnoreCase(dates.get(i))) {
-                        for (int j = 0; j < data.size(); j++) {
-                            if (data.get(j).getLabel().equalsIgnoreCase(
-                                workbasketService.getWorkbasket(item.getWorkbasketId()).getName())) {
-                                data.get(j).getData().set(i, (int) item.getTaskCounter());
-                            }
-                        }
-                    }
-                }
-            }
-            WorkbasketCounterDto.setData(data);
-            return ResponseEntity.status(HttpStatus.OK).body(WorkbasketCounterDto);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(
+            "{ \"dates\": [\"02.02.2018\",\"03.02.2018\",\"04.02.2018\", \"05.02.2018\", \"06.02.2018\",  \"07.02.2018\",\"08.02.2018\",\"09.02.2018\",\"10.02.2018\",\"11.02.2018\", \"12.02.2018\"],");
+        builder.append("\"data\": [");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Basket1\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Basket2\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Basket3\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Basket4\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Gruppenpostkorb KSC\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Gruppenpostkorb KSC 1\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Gruppenpostkorb KSC 2\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"PPK Teamlead KSC 1\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"PPK Teamlead KSC 2\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"PPK User 1 KSC 1\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"PPK User 2 KSC 1\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"PPK User 1 KSC 2\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"PPK User 2 KSC 2\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Gruppenpostkorb KSC B\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Gruppenpostkorb KSC B1\"},");
+        builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Gruppenpostkorb KSC B2\"}");
+        builder.append("]}");
+        return ResponseEntity.status(HttpStatus.OK).body(builder.toString());
     }
 }
