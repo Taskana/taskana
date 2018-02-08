@@ -105,7 +105,7 @@ public class TestDataGenerator {
         StringBuilder sql = new StringBuilder();
         String line;
 
-        List<Integer> ages = Arrays.asList(-70000, -14000, -2800, -1400, -1400, -700, -700, -35, -28, -28, -15, -14,
+        List<Integer> ages = Arrays.asList(-70000, -14000, -2800, -1400, -1400, -700, -700, -35, -28, -28, -14, -14,
             -14, -14, -14, -14, -14, -14, -14, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, 0, 0, 0, 0, 7, 7, 7, 7, 7, 7,
             7, 14, 14, 14, 14, 21, 210, 210, 28000, 700000);
         int i = 0;
