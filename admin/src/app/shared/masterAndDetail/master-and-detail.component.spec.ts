@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Router, Routes, ActivatedRoute, NavigationStart, RouterEvent } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
+import { MasterAndDetailService } from '../../services/master-and-detail.service'
 
 @Component({
     selector: 'dummy-master',
@@ -52,7 +53,8 @@ describe('MasterAndDetailComponent ', () => {
         RouterTestingModule.withRoutes(routes),
         AngularSvgIconModule,
         HttpClientModule
-      ]
+      ],
+      providers: [MasterAndDetailService]
     })
     .compileComponents();
 

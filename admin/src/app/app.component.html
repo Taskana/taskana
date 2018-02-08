@@ -1,13 +1,13 @@
 <nav class="navbar navbar-fixed-top"> 
   <div class="navbar show no-border-radius navbar-inverse no-gutter"> 
-      <div class="col-xs-2 col-md-4">
+      <div class="col-xs-3 col-md-4">
           <svg-icon class="logo hidden visible-xs visible-sm" src="./assets/icons/logo.svg"></svg-icon>
           <ul class="nav logo">
               <svg-icon class="logo hidden-xs hidden-sm" src="./assets/icons/logo.svg"></svg-icon>
               <p class="navbar-brand no-margin hidden-xs hidden-sm" > <a [href]="adminUrl">{{title}}</a></p>
           </ul>
       </div>         
-      <div class="col-xs-9 col-md-7 logo-container">
+      <div class="col-xs-8 col-md-7 logo-container">
           <ul class="nav nav-tabs no-border-bottom" id="myTabs" role="tablist">
                 <li role="presentation" class="{{workbasketsRoute? 'active' : 'inactive'}}" role="tab" data-toggle="tab" ><a routerLink="/workbaskets" aria-controls="Work baskets"  routerLinkActive="active">Workbaskets</a></li>
                 <li role="presentation" class="{{workbasketsRoute? 'inactive' : 'active'}}" role="tab" data-toggle="tab" ><a routerLink="/clasifications" aria-controls="Clasifications" routerLinkActive="active">Clasifications</a></li>

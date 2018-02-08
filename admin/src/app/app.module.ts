@@ -4,7 +4,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,  } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule, JsonpModule } from '@angular/http';
+import { HttpModule, JsonpModule, Http } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AlertModule } from 'ngx-bootstrap';
@@ -17,24 +17,26 @@ import { TreeModule } from 'angular-tree-component';
  */
 import { AppComponent } from './app.component';
 import { WorkbasketListComponent } from './workbasket/list/workbasket-list.component';
-import { WorkbasketeditorComponent } from './workbasketeditor/workbasketeditor.component';
 import { CategorieslistComponent } from './categorieslist/categorieslist.component';
 import { CategoriestreeComponent } from './categoriestree/categoriestree.component';
 import { CategoryeditorComponent } from './categoryeditor/categoryeditor.component';
 import { CategoriesadministrationComponent } from './categoriesadministration/categoriesadministration.component';
 import { WorkbasketAuthorizationComponent } from './workbasket-authorization/workbasket-authorization.component';
 import { WorkbasketDistributiontargetsComponent } from './workbasket-distributiontargets/workbasket-distributiontargets.component';
-import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component'
-import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component'
+import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component';
+import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component';
+import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
 
 //Shared
 import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-detail.component';
 
-
 /**
  * Services
  */
-import { WorkbasketService } from './services/workbasketservice.service'
+import { WorkbasketService } from './services/workbasketservice.service';
+import { MasterAndDetailService } from './services/master-and-detail.service';
+import { HttpExtensionService } from './services/http-extension.service';
+import { PermissionService } from './services/permission.service';
 
 
 const MODULES =     [
@@ -53,7 +55,6 @@ const MODULES =     [
 const COMPONENTS =  [  
                       AppComponent,
                       WorkbasketListComponent,
-                      WorkbasketeditorComponent,
                       CategorieslistComponent,
                       CategoriestreeComponent,
                       CategoryeditorComponent,
@@ -62,12 +63,18 @@ const COMPONENTS =  [
                       WorkbasketDetailsComponent,
                       WorkbasketDistributiontargetsComponent,
                       MasterAndDetailComponent,
-                      WorkbasketInformationComponent
+                      WorkbasketInformationComponent,
+                      NoAccessComponent
                     ];
 @NgModule({
   declarations: COMPONENTS,
   imports: MODULES,
-  providers: [HttpClientModule, WorkbasketService],
+  providers: [
+    WorkbasketService,
+    MasterAndDetailService,
+    PermissionService,
+    { provide: Http, useClass: HttpExtensionService }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

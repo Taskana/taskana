@@ -62,13 +62,13 @@ export class WorkbasketService {
     this.workBasketSelected.next(id);
   }
 
-  getSelectedWorkBasket(){
+  getSelectedWorkBasket(): Observable<string>{
     return this.workBasketSelected.asObservable();
   }
 
   private createAuthorizationHeader() {
     let headers: Headers = new Headers();
-    headers.append("Authorization", "Basic dXNlcl8xXzE6dXNlcl8xXzE=");
+    headers.append("Authorization", "Basic VEVBTUxFQURfMTpURUFNTEVBRF8x");
     headers.append("content-type", "application/json");
 
     return new RequestOptions({ headers: headers });
