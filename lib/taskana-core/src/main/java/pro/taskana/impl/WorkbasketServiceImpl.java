@@ -402,6 +402,30 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
+    public List<WorkbasketSummary> getDistributionSources(String workbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException {
+        LOGGER.debug("entry to getDistributionSources(workbasketId = {})", workbasketId);
+        List<WorkbasketSummary> result = new ArrayList<>();
+        try {
+            taskanaEngine.openConnection();
+            // check that source workbasket exists
+            getWorkbasket(workbasketId);
+            checkAuthorizationByWorkbasketId(workbasketId, WorkbasketAuthorization.READ);
+            List<WorkbasketSummaryImpl> distributionSources = workbasketMapper
+                .findDistributionSources(workbasketId);
+            result.addAll(distributionSources);
+            return result;
+        } finally {
+            taskanaEngine.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result.size();
+                LOGGER.debug("exit from getDistributionSources(workbasketId). Returning {} resulting Objects: {} ",
+                    numberOfResultObjects, LoggerUtils.listToString(result));
+            }
+        }
+    }
+
+    @Override
     public void setDistributionTargets(String sourceWorkbasketId, List<String> targetWorkbasketIds)
         throws WorkbasketNotFoundException, NotAuthorizedException {
         if (LOGGER.isDebugEnabled()) {

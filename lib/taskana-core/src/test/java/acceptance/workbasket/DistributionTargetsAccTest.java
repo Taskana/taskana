@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -204,19 +203,46 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
 
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_2_2",
         groupNames = {"group_1", "group_2"})
     @Test
     public void testQueryWorkbasketsWhereGivenWorkbasketIsDistributionTarget()
         throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {
-        // WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        //
-        // List<WorkbasketSummary> distributionSources = workbasketService
-        // .getDistributionSources("WBI:100000000000000000000000000000000004");
-        //
-        // assertEquals(2, distributionSources.size());
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+        List<WorkbasketSummary> distributionSources = workbasketService
+            .getDistributionSources("WBI:100000000000000000000000000000000004");
+
+        assertEquals(2, distributionSources.size());
+    }
+
+    @WithAccessId(
+        userName = "henry",
+        groupNames = {"undefinedgroup"})
+    @Test(expected = NotAuthorizedException.class)
+    public void testQueryDistributionSourcesThrowsNotAuthorized()
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+        List<WorkbasketSummary> distributionSources = workbasketService
+            .getDistributionSources("WBI:100000000000000000000000000000000004");
+
+        assertEquals(2, distributionSources.size());
+    }
+
+    @WithAccessId(
+        userName = "user_2_2",
+        groupNames = {"group_1", "group_2"})
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void testQueryDistributionSourcesThrowsWorkbasketNotFound()
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+        List<WorkbasketSummary> distributionSources = workbasketService
+            .getDistributionSources("WBI:10dasgibtsdochnicht00000000000000004");
+
+        assertEquals(2, distributionSources.size());
     }
 
     @AfterClass
