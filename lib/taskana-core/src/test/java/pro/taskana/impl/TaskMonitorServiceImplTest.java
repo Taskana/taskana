@@ -251,4 +251,72 @@ public class TaskMonitorServiceImplTest {
         assertEquals(actualResult.getDetailLines().get("L10000").getLineItems().get(0).getNumberOfTasks(), 1);
         assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }
+
+    @Test
+    public void testGetTotalNumbersOfCustomFieldValueReport() {
+        WorkbasketImpl workbasket = new WorkbasketImpl();
+        workbasket.setName("workbasket");
+        workbasket.setKey("wb1");
+        List<Workbasket> workbaskets = Arrays.asList(workbasket);
+        List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        monitorQueryItem.setKey("Geschaeftsstelle A");
+        monitorQueryItem.setNumberOfTasks(1);
+        expectedResult.add(monitorQueryItem);
+        doReturn(expectedResult).when(taskMonitorMapperMock)
+            .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(
+                workbaskets, states, CustomField.CUSTOM_1);
+
+        Report actualResult = cut.getCustomFieldValueReport(workbaskets, states, CustomField.CUSTOM_1);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMonitorMapperMock, times(1))
+            .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(any(), any(), any());
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+            taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+
+        assertNotNull(actualResult);
+        assertEquals(actualResult.getDetailLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+    }
+
+    @Test
+    public void testGetCustomFieldValueReportWithReportLineItemDefinitions() {
+        WorkbasketImpl workbasket = new WorkbasketImpl();
+        workbasket.setName("workbasket");
+        workbasket.setKey("wb1");
+        List<Workbasket> workbaskets = Arrays.asList(workbasket);
+        List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
+            new ReportLineItemDefinition());
+
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        monitorQueryItem.setKey("Geschaeftsstelle A");
+        monitorQueryItem.setAgeInDays(0);
+        monitorQueryItem.setNumberOfTasks(1);
+        expectedResult.add(monitorQueryItem);
+        doReturn(expectedResult).when(taskMonitorMapperMock)
+            .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(
+                workbaskets, states, CustomField.CUSTOM_1);
+
+        Report actualResult = cut.getCustomFieldValueReport(workbaskets, states, CustomField.CUSTOM_1,
+            reportLineItemDefinitions);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMonitorMapperMock, times(1))
+            .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(any(), any(), any());
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+            taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+
+        assertNotNull(actualResult);
+        assertEquals(actualResult.getDetailLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getDetailLines().get("Geschaeftsstelle A").getLineItems().get(0).getNumberOfTasks(),
+            1);
+        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+    }
 }
