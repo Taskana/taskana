@@ -4,7 +4,6 @@
     </div>
     <div class="{{showDetail? 'col-xs-12 col-md-8': 'hidden'}}" >
         <router-outlet name="detail">
-            <a class="{{showDetail? 'hidden visible-xs visible-sm': 'hidden'}}" (click) = "backClicked()"> < Back</a>
         </router-outlet>
     </div>
     <div class="{{showDetail? 'hidden': 'hidden-xs hidden-sm col-md-8 container-no-detail'}}">

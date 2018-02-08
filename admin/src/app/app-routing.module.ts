@@ -5,6 +5,7 @@ import { WorkbasketListComponent } from './workbasket/list/workbasket-list.compo
 import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component';
 import { CategoriesadministrationComponent } from './categoriesadministration/categoriesadministration.component';
 import { MasterAndDetailComponent } from './shared/masterAndDetail/master-and-detail.component';
+import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
 
 const appRoutes: Routes = [
     {   path: 'workbaskets',
@@ -14,6 +15,11 @@ const appRoutes: Routes = [
                 path: '',
                 component: WorkbasketListComponent,
                 outlet: 'master'
+            },
+            {
+                path: 'noaccess',
+                component: NoAccessComponent,
+                outlet: 'detail'
             },
             {
                 path: ':id',

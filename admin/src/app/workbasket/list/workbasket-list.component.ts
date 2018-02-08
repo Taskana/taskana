@@ -19,20 +19,25 @@ export class WorkbasketListComponent implements OnInit {
   private workBasketSummarySubscription: Subscription;
   private workbasketServiceSubscription: Subscription;
 
-  constructor(private service: WorkbasketService) { }
+  constructor(private workbasketService: WorkbasketService) { }
 
   ngOnInit() {
-    this.workBasketSummarySubscription = this.service.getWorkBasketsSummary().subscribe(resultList => {
+
+    this.workBasketSummarySubscription = this.workbasketService.getWorkBasketsSummary().subscribe(resultList => {
       this.workbaskets = resultList;
     });
 
-    this.workbasketServiceSubscription = this.service.getSelectedWorkBasket().subscribe( workbasketIdSelected => {
-      this.selectedId = workbasketIdSelected;
+    this.workbasketServiceSubscription = this.workbasketService.getSelectedWorkBasket().subscribe( workbasketIdSelected => {
+        this.selectedId = workbasketIdSelected;
     });
   }
 
+  selectWorkbasket(id:string){
+    this.selectedId = id;
+  }
+
   onDelete(workbasket: WorkbasketSummary) {
-    this.service.deleteWorkbasket(workbasket.id).subscribe(result => {
+    this.workbasketService.deleteWorkbasket(workbasket.id).subscribe(result => {
       var index = this.workbaskets.indexOf(workbasket);
       if (index > -1) {
         this.workbaskets.splice(index, 1);
@@ -41,7 +46,7 @@ export class WorkbasketListComponent implements OnInit {
   }
 
   onAdd() {
-    this.service.createWorkbasket(this.newWorkbasket).subscribe(result => {
+    this.workbasketService.createWorkbasket(this.newWorkbasket).subscribe(result => {
       this.workbaskets.push(result);
       this.onClear();
     });

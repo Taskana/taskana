@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, Routes,  ActivatedRoute, NavigationStart,  RouterEvent } from '@angular/router';
+import { MasterAndDetailService } from '../../services/master-and-detail.service'
 
 @Component({
     selector: 'master-and-detail',
@@ -12,14 +13,16 @@ export class MasterAndDetailComponent implements OnInit{
     private sub: any;
 
     showDetail: Boolean = false;
-    constructor(private route: ActivatedRoute, private router: Router){
+    constructor(private route: ActivatedRoute, private router: Router, private masterAndDetailService: MasterAndDetailService){
     }
 
     ngOnInit(): void {
         this.showDetail = this.showDetails();
+        this.masterAndDetailService.setShowDetail(this.showDetail? true: false);
         this.router.events.subscribe(event => {
             if(event instanceof NavigationStart) { 
                 this.showDetail = this.showDetails(event);
+                this.masterAndDetailService.setShowDetail(this.showDetail? true: false);
             }
         });
     }
