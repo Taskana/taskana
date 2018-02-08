@@ -1,0 +1,19 @@
+.nav.nav-tabs { 
+    & > li {
+        & > a{
+            min-height: 56px;
+            padding-top: 17px;
+        }
+        
+        &:first-child > a{
+            border-left: none;
+        }
+    }
+    & > p{
+        margin: 0px;
+    }
+}
+
+.workbasket-details{
+    margin-top:1px;
+}

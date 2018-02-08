@@ -107,7 +107,7 @@
                 </dl>                                         
             </div>                                     
         </li>                                 
-        <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.id === selectedId" type="text" [routerLink]="[ {outlets: { detail: [workbasket.id] } }]">
+        <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.id == selectedId" type="text" (click) ="selectWorkbasket(workbasket.id)"  [routerLink]="[ {outlets: { detail: [workbasket.id] } }]">
             <div class="row">
                 <dl class="col-xs-1">
                     <dt><svg-icon class="{{workbasket.id === selectedId? 'white': 'blue' }} small" src="./assets/icons/{{workbasket.type === 'PERSONAL'? 'user.svg': 'users.svg'}}"></svg-icon></dt>

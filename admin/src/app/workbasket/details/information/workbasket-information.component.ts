@@ -17,7 +17,7 @@ export class WorkbasketInformationComponent implements OnInit {
   ngOnInit() {
   }
 
-  ngOnChanges() {
+  selectType(type: number){
+    this.workbasket.type = type === 0 ? 'PERSONAL': 'MULTIPLE';
   }
-
 }
