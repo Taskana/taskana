@@ -98,7 +98,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        ArrayList<String> taskIdList = new ArrayList();
+        ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000037");
         taskIdList.add("TKI:000000000000000000000000000000000038");
 
@@ -119,7 +119,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        ArrayList<String> taskIdList = new ArrayList();
+        ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000039");
         taskIdList.add("TKI:000000000000000000000000000000000040");
         taskIdList.add("TKI:000000000000000000000000000000000028");

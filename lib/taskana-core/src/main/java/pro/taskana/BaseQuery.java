@@ -70,4 +70,15 @@ public interface BaseQuery<T> {
      * @return resultRowCount
      */
     long count() throws NotAuthorizedException;
+
+    /**
+     * Determines the sort direction.
+     *
+     * @author bbr
+     */
+    enum SortDirection {
+        ASCENDING,
+        DESCENDING
+    }
+
 }

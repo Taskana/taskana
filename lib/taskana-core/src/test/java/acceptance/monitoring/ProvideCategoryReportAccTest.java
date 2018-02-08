@@ -130,25 +130,6 @@ public class ProvideCategoryReportAccTest {
 
     }
 
-    @WithAccessId(userName = "monitor_user_1")
-    @Test
-    public void testGetCategoryReportIfWorkbasketContainsNoTask()
-        throws WorkbasketNotFoundException, NotAuthorizedException {
-        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
-        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-        List<Workbasket> workbaskets = new ArrayList<>();
-        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000004");
-        workbaskets.add(workbasket);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        Report report = taskMonitorService.getCategoryReport(workbaskets, states);
-
-        assertNotNull(report);
-        assertEquals(0, report.getDetailLines().size());
-        assertEquals(0, report.getSumLine().getTotalNumberOfTasks());
-    }
-
     private List<Workbasket> getListOfWorkbaskets() throws WorkbasketNotFoundException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 

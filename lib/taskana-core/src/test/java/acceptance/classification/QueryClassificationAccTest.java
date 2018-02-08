@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import acceptance.AbstractAccTest;
@@ -28,42 +27,39 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         super();
     }
 
-    @Ignore
     @Test
     public void testFindClassificationsByCategoryAndDomain()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
-            // .categoryIn("MANUAL")
-            // .domainIn("DOMAIN_A")
+            .categoryIn("MANUAL")
+            .domainIn("DOMAIN_A")
             .list();
 
         assertNotNull(classificationSummaryList);
         assertEquals(2, classificationSummaryList.size());
     }
 
-    @Ignore
     @Test
     public void testGetOneClassificationForMultipleDomains()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            // .keyIn("L10000")
-            // .domainIn("DOMAIN_A", "DOMAIN_B", "")
+            .keyIn("L10000")
+            .domainIn("DOMAIN_A", "DOMAIN_B", "")
             .list();
 
         assertNotNull(classifications);
         assertEquals(2, classifications.size());
     }
 
-    @Ignore
     @Test
     public void testGetClassificationsForTypeAndParent()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            // .typeIn("TASK", "DOCUMENT")
-            // .parentClassificationKeyIn("")
+            .typeIn("TASK", "DOCUMENT")
+            .parentClassificationKeyIn("")
             .list();
 
         assertNotNull(classifications);
@@ -82,14 +78,13 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         assertEquals(18, taskTypes.size());
     }
 
-    @Ignore
     @Test
     public void testGetClassificationsForKeyAndCategories()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            // .keyIn("T2100", "L10000")
-            // .categoryIn("EXTERN", "MANUAL")
+            .keyIn("T2100", "L10000")
+            .categoryIn("EXTERN", "MANUAL")
             .list();
 
         assertNotNull(classifications);
@@ -108,80 +103,65 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         assertEquals(3, manualCategory.size());
     }
 
-    @Ignore
     @Test
     public void testGetClassificationsWithParentKey()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            // .keyIn("A12", "A13")
-            // .categoryIn("EXTERN", "MANUAL")
-            // .parentClassificationKeyIn("L10000")
+            .keyIn("A12", "A13")
+            .categoryIn("EXTERN", "MANUAL")
+            .parentClassificationKeyIn("L10000")
             .list();
 
         assertNotNull(classifications);
         assertEquals(1, classifications.size());
 
         classifications = classificationService.createClassificationQuery()
-            // .keyIn("A12", "A13")
-            // .categoryIn("EXTERN", "MANUAL", "AUTOMATIC")
-            // .parentClassificationKeyIn("L10000", "T2100", "T6310")
-            // .domainIn("DOMAIN_A")
+            .keyIn("A12", "A13")
+            .categoryIn("EXTERN", "MANUAL", "AUTOMATIC")
+            .parentClassificationKeyIn("L10000", "T2100", "T6310")
+            .domainIn("DOMAIN_A")
             .list();
         assertNotNull(classifications);
         assertEquals(2, classifications.size());
     }
 
-    @Ignore
-    @Test
-    public void testGetClassificationsWithCustomFields()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-        List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            // .custom1In("VNR,RVNR,KOLVNR", "VNR")
-            // .domainIn("DOMAIN_A")
-            .list();
-        assertNotNull(classifications);
-        assertEquals(13, classifications.size());
-    }
-
-    @Ignore
     @Test
     public void testGetClassificationsWithCustom1()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            // .custom1In("VNR,RVNR,KOLVNR", "VNR")
-            // .domainIn("DOMAIN_A")
-            .list();
+             .custom1Like("VNR,RVNR,KOLVNR", "VNR")
+             .domainIn("DOMAIN_A")
+             .list();
         assertNotNull(classifications);
-        assertEquals(13, classifications.size());
+        assertEquals(12, classifications.size());
     }
 
-    @Ignore
     @Test
     public void testGetClassificationsWithCustom1Like()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            // .custom1Like("%RVNR%")
-            // .domainIn("DOMAIN_A")
-            .list();
+             .custom1Like("%RVNR%")
+             .domainIn("DOMAIN_A")
+             .typeIn("TASK")
+             .list();
         assertNotNull(classifications);
-        assertEquals(11, classifications.size());
+        assertEquals(10, classifications.size());
     }
 
-    @Ignore
     @Test
     public void testGetClassificationsWithParentAndCustom2()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            // .parentClassificationKeyIn("L11010")
-            // .custom2In("TEXT_1")
+             .parentClassificationKeyIn("L11010")
+             .custom2Like("TEXT_1", "TEXT_2")
             .list();
+        // zwei tests
         assertNotNull(classifications);
-        assertEquals(2, classifications.size());
+        assertEquals(3, classifications.size());
     }
 
     @AfterClass

@@ -28,6 +28,7 @@ public interface QueryMapper {
     @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
         + "FROM TASK t "
         + "<where>"
+        + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
         + "<if test='name != null'>AND t.NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
         + "<if test='description != null'>AND t.DESCRIPTION like #{description}</if> "
         + "<if test='note != null'>AND t.NOTE like #{note}</if> "
@@ -51,6 +52,7 @@ public interface QueryMapper {
         + "<if test='porValueLike != null'>AND t.POR_VALUE like #{porValueLike}</if> "
         + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         + "</where>"
+        + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
         + "</script>")
     @Results(value = {@Result(property = "taskId", column = "ID"),
         @Result(property = "created", column = "CREATED"),
@@ -60,7 +62,6 @@ public interface QueryMapper {
         @Result(property = "planned", column = "PLANNED"),
         @Result(property = "due", column = "DUE"),
         @Result(property = "name", column = "NAME"),
-        // @Result(property = "description", column = "DESCRIPTION"),
         @Result(property = "note", column = "NOTE"),
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
@@ -99,12 +100,30 @@ public interface QueryMapper {
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
         + "<if test='validInDomain != null'>AND VALID_IN_DOMAIN = #{validInDomain}</if> "
         + "<if test='created != null'>AND CREATED IN(<foreach item='item' collection='created' separator=',' >SUBSTRING(#{item}, 1, 10)</foreach>)</if> "
-        + "<if test='name != null'>AND NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='description != null'>AND DESCRIPTION like #{description}</if> "
+        + "<if test='nameIn != null'>AND NAME IN(<foreach item='item' collection='nameIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='nameLike != null'>AND (<foreach item='item' collection='nameLike' separator=' OR '>NAME LIKE #{item}</foreach>)</if> "
+        + "<if test='descriptionLike != null'>AND DESCRIPTION like #{descriptionLike}</if> "
         + "<if test='priority != null'>AND PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='serviceLevel != null'>AND SERVICE_LEVEL IN(<foreach item='item' collection='serviceLevel' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='applicationEntryPoint != null'>AND APPLICATION_ENTRY_POINT IN(<foreach item='item' collection='applicationEntryPoint' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='customFields != null'>AND (CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
+        + "<if test='serviceLevelIn != null'>AND SERVICE_LEVEL IN(<foreach item='item' collection='serviceLevelIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='serviceLevelLike != null'>AND (<foreach item='item' collection='serviceLevelLike' separator=' OR ' >SERVICE_LEVEL LIKE #{item}</foreach>)</if> "
+        + "<if test='applicationEntryPointIn != null'>AND APPLICATION_ENTRY_POINT IN(<foreach item='item' collection='applicationEntryPoint' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='applicationEntryPointLike != null'>AND (<foreach item='item' collection='applicationEntryPointLike' separator=' OR ' >APPLICATION_ENTRY_POINT LIKE #{item}</foreach>)</if> "
+        + "<if test='custom1In != null'>AND CUSTOM_1 IN(<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR ' >CUSTOM_1 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom2In != null'>AND CUSTOM_2 IN(<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR ' > CUSTOM_2 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom3In != null'>AND CUSTOM_3 IN(<foreach item='item' collection='custom3In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR ' > CUSTOM_3 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom4In != null'>AND CUSTOM_4 IN(<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR ' > CUSTOM_4 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom5In != null'>AND CUSTOM_5 IN(<foreach item='item' collection='custom5In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom5Like != null'>AND (<foreach item='item' collection='custom5Like' separator=' OR ' > CUSTOM_5 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom6In != null'>AND CUSTOM_6 IN(<foreach item='item' collection='custom6In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom6Like != null'>AND (<foreach item='item' collection='custom6Like' separator=' OR ' > CUSTOM_6 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom7In != null'>AND CUSTOM_7 IN(<foreach item='item' collection='custom7In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom7Like != null'>AND (<foreach item='item' collection='custom7Like' separator=' OR ' > CUSTOM_7 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom8In != null'>AND CUSTOM_8 IN(<foreach item='item' collection='custom8In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR ' > CUSTOM_8 LIKE #{item}</foreach>)</if> "
         + "</where>"
         + "</script>")
     @Results({@Result(property = "id", column = "ID"),
@@ -224,12 +243,30 @@ public interface QueryMapper {
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
         + "<if test='validInDomain != null'>AND VALID_IN_DOMAIN = #{validInDomain}</if> "
         + "<if test='created != null'>AND CREATED IN(<foreach item='item' collection='created' separator=',' >SUBSTRING(#{item}, 1, 10)</foreach>)</if> "
-        + "<if test='name != null'>AND NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='description != null'>AND DESCRIPTION like #{description}</if> "
+        + "<if test='nameIn != null'>AND NAME IN(<foreach item='item' collection='nameIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='nameLike != null'>AND (<foreach item='item' collection='nameLike' separator=' OR '>NAME LIKE #{item}</foreach>)</if> "
+        + "<if test='descriptionLike != null'>AND DESCRIPTION like #{descriptionLike}</if> "
         + "<if test='priority != null'>AND PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='serviceLevel != null'>AND SERVICE_LEVEL IN(<foreach item='item' collection='serviceLevel' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='applicationEntryPoint != null'>AND APPLICATION_ENTRY_POINT IN(<foreach item='item' collection='applicationEntryPoint' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='customFields != null'>AND (CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
+        + "<if test='serviceLevelIn != null'>AND SERVICE_LEVEL IN(<foreach item='item' collection='serviceLevelIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='serviceLevelLike != null'>AND (<foreach item='item' collection='serviceLevelLike' separator=' OR ' >SERVICE_LEVEL LIKE #{item}</foreach>)</if> "
+        + "<if test='applicationEntryPointIn != null'>AND APPLICATION_ENTRY_POINT IN(<foreach item='item' collection='applicationEntryPoint' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='applicationEntryPointLike != null'>AND (<foreach item='item' collection='applicationEntryPointLike' separator=' OR ' >APPLICATION_ENTRY_POINT LIKE #{item}</foreach>)</if> "
+        + "<if test='custom1In != null'>AND CUSTOM_1 IN(<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR ' >CUSTOM_1 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom2In != null'>AND CUSTOM_2 IN(<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR ' > CUSTOM_2 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom3In != null'>AND CUSTOM_3 IN(<foreach item='item' collection='custom3In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR ' > CUSTOM_3 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom4In != null'>AND CUSTOM_4 IN(<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR ' > CUSTOM_4 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom5In != null'>AND CUSTOM_5 IN(<foreach item='item' collection='custom5In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom5Like != null'>AND (<foreach item='item' collection='custom5Like' separator=' OR ' > CUSTOM_5 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom6In != null'>AND CUSTOM_6 IN(<foreach item='item' collection='custom6In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom6Like != null'>AND (<foreach item='item' collection='custom6Like' separator=' OR ' > CUSTOM_6 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom7In != null'>AND CUSTOM_7 IN(<foreach item='item' collection='custom7In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom7Like != null'>AND (<foreach item='item' collection='custom7Like' separator=' OR ' > CUSTOM_7 LIKE #{item}</foreach>)</if> "
+        + "<if test='custom8In != null'>AND CUSTOM_8 IN(<foreach item='item' collection='custom8In' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR ' > CUSTOM_8 LIKE #{item}</foreach>)</if> "
         + "</where>"
         + "</script>")
     Long countQueryClassifications(ClassificationQueryImpl classificationQuery);

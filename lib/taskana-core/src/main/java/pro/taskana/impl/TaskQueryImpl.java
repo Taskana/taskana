@@ -30,6 +30,7 @@ public class TaskQueryImpl implements TaskQuery {
     private TaskanaEngineImpl taskanaEngineImpl;
     private TaskServiceImpl taskService;
     private String[] name;
+    private String[] taskIds;
     private String description;
     private String note;
     private int[] priority;
@@ -51,10 +52,18 @@ public class TaskQueryImpl implements TaskQuery {
     private String porTypeLike;
     private String[] porValueIn;
     private String porValueLike;
+    private List<String> orderBy;
 
     public TaskQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
+        this.orderBy = new ArrayList<>();
+    }
+
+    @Override
+    public TaskQuery idIn(String... taskIds) {
+        this.taskIds = taskIds;
+        return this;
     }
 
     @Override
@@ -300,6 +309,10 @@ public class TaskQueryImpl implements TaskQuery {
         this.taskanaEngineImpl = taskanaEngine;
     }
 
+    public String[] getTaskIds() {
+        return taskIds;
+    }
+
     public String[] getName() {
         return name;
     }
@@ -384,11 +397,17 @@ public class TaskQueryImpl implements TaskQuery {
         return porValueLike;
     }
 
+    public List<String> getOrderBy() {
+        return orderBy;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("TaskQueryImpl [taskanaEngineImpl=");
         builder.append(taskanaEngineImpl);
+        builder.append(", taskService=");
+        builder.append(taskService);
         builder.append(", name=");
         builder.append(Arrays.toString(name));
         builder.append(", description=");
@@ -403,6 +422,8 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(classificationKey));
         builder.append(", workbasketKey=");
         builder.append(Arrays.toString(workbasketKey));
+        builder.append(", domain=");
+        builder.append(Arrays.toString(domain));
         builder.append(", owner=");
         builder.append(Arrays.toString(owner));
         builder.append(", isRead=");
@@ -433,5 +454,173 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(porValueLike);
         builder.append("]");
         return builder.toString();
+    }
+
+    @Override
+    public TaskQuery orderByClassificationKey(SortDirection sortDirection) {
+        return addOrderCriteria("CLASSIFICATION_KEY", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByDomain(SortDirection sortDirection) {
+        return addOrderCriteria("DOMAIN", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByPlanned(SortDirection sortDirection) {
+        return addOrderCriteria("PLANNED", false, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByDue(SortDirection sortDirection) {
+        return addOrderCriteria("DUE", false, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByModified(SortDirection sortDirection) {
+        return addOrderCriteria("MODIFIED", false, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByName(SortDirection sortDirection) {
+        return addOrderCriteria("NAME", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByOwner(SortDirection sortDirection) {
+        return addOrderCriteria("OWNER", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByPrimaryObjectReferenceCompany(SortDirection sortDirection) {
+        return addOrderCriteria("POR_COMPANY", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByPrimaryObjectReferenceSystem(SortDirection sortDirection) {
+        return addOrderCriteria("POR_SYSTEM", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByPrimaryObjectReferenceSystemInstance(SortDirection sortDirection) {
+        return addOrderCriteria("POR_INSTANCE", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByPrimaryObjectReferenceType(SortDirection sortDirection) {
+        return addOrderCriteria("POR_TYPE", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByPrimaryObjectReferenceValue(SortDirection sortDirection) {
+        return addOrderCriteria("POR_VALUE", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByPriority(SortDirection sortDirection) {
+        return addOrderCriteria("PRIORITY", false, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByState(SortDirection sortDirection) {
+        return addOrderCriteria("STATE", false, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByWorkbasketKey(SortDirection sortDirection) {
+        return addOrderCriteria("WORKBASKET_KEY", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByNote(SortDirection sortDirection) {
+        return addOrderCriteria("NOTE", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom1(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_1", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom2(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_2", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom3(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_3", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom4(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_4", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom5(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_5", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom6(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_6", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom7(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_7", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom8(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_8", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom9(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_9", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCustom10(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_10", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByBusinessProcessId(SortDirection sortDirection) {
+        return addOrderCriteria("BUSINESS_PROCESS_ID", true, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByClaimed(SortDirection sortDirection) {
+        return addOrderCriteria("CLAIMED", false, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCompleted(SortDirection sortDirection) {
+        return addOrderCriteria("COMPLETED", false, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByCreated(SortDirection sortDirection) {
+        return addOrderCriteria("CREATED", false, sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByParentBusinessProcessId(SortDirection sortDirection) {
+        return addOrderCriteria("PARENT_BUSINESS_PROCESS_ID", true, sortDirection);
+    }
+
+    private TaskQuery addOrderCriteria(String columnName, boolean useUpper, SortDirection sortDirection) {
+        String orderByDirection = " ASC";
+        if (sortDirection != null && SortDirection.DESCENDING.equals(sortDirection)) {
+            orderByDirection = " DESC";
+        }
+        if (useUpper) {
+            orderBy.add("UPPER(" + columnName + ")" + orderByDirection);
+        } else {
+            orderBy.add(columnName + orderByDirection);
+        }
+        return this;
     }
 }

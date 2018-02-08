@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 
 import org.h2.store.fs.FileUtils;
@@ -80,7 +82,6 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         taskService.claim(task.getId());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
@@ -109,7 +110,6 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         taskService.claim(task.getId());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
@@ -121,7 +121,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000029");
 
-        // taskService.cancelClaim(claimedTask.getId());
+        taskService.cancelClaim(claimedTask.getId());
 
         Task unclaimedTask = taskService.getTask("TKI:000000000000000000000000000000000029");
         assertNotNull(unclaimedTask);
@@ -131,7 +131,6 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         assertNull(unclaimedTask.getOwner());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
@@ -143,10 +142,9 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000030");
 
-        // taskService.cancelClaim(claimedTask.getId());
+        taskService.cancelClaim(claimedTask.getId());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
@@ -158,10 +156,16 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000031");
 
-        // taskService.cancelClaim(claimedTask.getId(), true);
+        taskService.cancelClaim(claimedTask.getId(), true);
+
+        Task unclaimedTask = taskService.getTask("TKI:000000000000000000000000000000000031");
+        assertNotNull(unclaimedTask);
+        assertEquals(TaskState.READY, unclaimedTask.getState());
+        assertNull(unclaimedTask.getClaimed());
+        assertTrue(unclaimedTask.isRead());
+        assertNull(unclaimedTask.getOwner());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
@@ -170,6 +174,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
+        Instant before = Instant.now().minus(Duration.ofSeconds(3L));
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000032");
 
@@ -179,7 +184,9 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         assertNotNull(completedTask);
         assertEquals(TaskState.COMPLETED, completedTask.getState());
         assertNotNull(completedTask.getCompleted());
-        assertEquals(completedTask.getCompleted(), claimedTask.getModified());
+        assertEquals(completedTask.getCompleted(), completedTask.getModified());
+        assertTrue(completedTask.getCompleted().isAfter(before));
+        assertTrue(completedTask.getModified().isAfter(before));
         assertTrue(completedTask.isRead());
         assertEquals("user_1_2", completedTask.getOwner());
     }
@@ -254,7 +261,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        ArrayList<String> taskIdList = new ArrayList();
+        ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000100");
         taskIdList.add("TKI:000000000000000000000000000000000101");
 
@@ -280,7 +287,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        ArrayList<String> taskIdList = new ArrayList();
+        ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000102");
         taskIdList.add("TKI:000000000000000000000000000000000103");
         taskIdList.add("TKI:000000000000000000000000000000000033");

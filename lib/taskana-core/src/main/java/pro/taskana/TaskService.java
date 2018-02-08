@@ -12,7 +12,9 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.BulkOperationResults;
 import pro.taskana.model.TaskState;
 
 /**
@@ -52,6 +54,38 @@ public interface TaskService {
      *             if the task with taskId is claimed by someone else
      */
     Task claim(String taskId, boolean forceClaim)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+
+    /**
+     * Unclaim a existing Task which was claimed and owned by you before.
+     *
+     * @param taskId
+     *            id of the task which should be unclaimed.
+     * @return updated unclaimed task
+     * @throws TaskNotFoundException
+     *             if the task can´t be found or does not exist
+     * @throws InvalidStateException
+     *             when the task is already completed.
+     * @throws InvalidOwnerException
+     *             when the unclaim is not forced and user is diffrent.
+     */
+    Task cancelClaim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+
+    /**
+     * Unclaim a existing Task which was claimed and owned by you before. Also there can be enabled a force flag for
+     * admins.
+     *
+     * @param taskId
+     *            id of the task which should be unclaimed.
+     * @return updated unclaimed task
+     * @throws TaskNotFoundException
+     *             if the task can´t be found or does not exist
+     * @throws InvalidStateException
+     *             when the task is already completed.
+     * @throws InvalidOwnerException
+     *             when the unclaim is not forced and user is diffrent.
+     */
+    Task cancelClaim(String taskId, boolean forceUnclaim)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**
@@ -236,4 +270,23 @@ public interface TaskService {
     Task updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
         WorkbasketNotFoundException, ClassificationNotFoundException, InvalidWorkbasketException,
         NotAuthorizedException, AttachmentPersistenceException;
+
+    /**
+     * Transfers a list of tasks to an other workbasket. Exceptions will be thrown if the caller got no permissions on
+     * the target or it doesn´t exist. Other Exceptions will be stored and returned in the end.
+     *
+     * @param destinationWorkbasketKey
+     *            target workbasket key
+     * @param taskIds
+     *            source task which will be moved
+     * @return Bulkresult with ID and Error in it for failed transactions.
+     * @throws NotAuthorizedException
+     *             if the caller hasn´t permissions on tarket WB.
+     * @throws InvalidArgumentException
+     *             if the method paramesters are EMPTY or NULL.
+     * @throws WorkbasketNotFoundException
+     *             if the target WB can´t be found.
+     */
+    BulkOperationResults<String, TaskanaException> transferBulk(String destinationWorkbasketKey, List<String> taskIds)
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
 }
