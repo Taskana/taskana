@@ -248,4 +248,18 @@ public interface WorkbasketService {
      */
     void deleteWorkbasket(String workbasketId)
         throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException;
+
+    /**
+     * Returns the distribution sources for a given workbasket.
+     *
+     * @param workbasketId
+     *            the id of the referenced workbasket
+     * @return the workbaskets that are distribution sources of the specified workbasket.
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the specified workbasket
+     * @throws WorkbasketNotFoundException
+     *             if the workbasket doesn't exist
+     */
+    List<WorkbasketSummary> getDistributionSources(String workbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException;
 }

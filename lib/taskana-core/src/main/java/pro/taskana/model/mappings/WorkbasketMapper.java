@@ -75,6 +75,22 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketSummaryImpl> findByDistributionTargets(@Param("id") String id);
 
+    @Select("SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM WORKBASKET "
+        + " WHERE ID IN (SELECT SOURCE_ID FROM DISTRIBUTION_TARGETS WHERE TARGET_ID = #{id})")
+    @Results(value = {
+        @Result(property = "id", column = "ID"),
+        @Result(property = "key", column = "KEY"),
+        @Result(property = "name", column = "NAME"),
+        @Result(property = "description", column = "DESCRIPTION"),
+        @Result(property = "owner", column = "OWNER"),
+        @Result(property = "domain", column = "DOMAIN"),
+        @Result(property = "type", column = "TYPE"),
+        @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
+        @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
+        @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
+    List<WorkbasketSummaryImpl> findDistributionSources(@Param("id") String id);
+
     @Select("SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4  FROM WORKBASKET WHERE key = #{key}")
     @Results(value = {
         @Result(property = "id", column = "ID"),
