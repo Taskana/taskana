@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.Workbasket;
+import pro.taskana.impl.CustomField;
 import pro.taskana.model.MonitorQueryItem;
 import pro.taskana.model.TaskState;
 
@@ -69,5 +70,25 @@ public interface TaskMonitorMapper {
     List<MonitorQueryItem> getTaskCountOfClassificationsByWorkbasketsAndStates(
         @Param("workbaskets") List<Workbasket> workbaskets,
         @Param("states") List<TaskState> states);
+
+    @Select("<script>"
+        + "<if test=\"_databaseId == 'db2'\">SELECT ${customField} as CUSTOM_FIELD, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'h2'\">SELECT ${customField} as CUSTOM_FIELD, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "FROM TASK "
+        + "WHERE WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
+        + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
+        + "AND DUE IS NOT NULL "
+        + "AND ${customField} IS NOT NULL "
+        + "<if test=\"_databaseId == 'db2'\">GROUP BY ${customField}, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
+        + "<if test=\"_databaseId == 'h2'\">GROUP BY ${customField}, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "</script>")
+    @Results({
+        @Result(column = "CUSTOM_FIELD", property = "key"),
+        @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
+        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
+    List<MonitorQueryItem> getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(
+        @Param("workbaskets") List<Workbasket> workbaskets,
+        @Param("states") List<TaskState> states,
+        @Param("customField") CustomField customField);
 
 }

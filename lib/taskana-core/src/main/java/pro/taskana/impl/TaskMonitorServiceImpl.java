@@ -135,6 +135,41 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         }
     }
 
+    @Override
+    public Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states,
+        CustomField customField) {
+        return getCustomFieldValueReport(workbaskets, states, customField, null, false);
+    }
+
+    @Override
+    public Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states,
+        CustomField customField, List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        return getCustomFieldValueReport(workbaskets, states, customField, reportLineItemDefinitions, true);
+    }
+
+    @Override
+    public Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states,
+        CustomField customField, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "entry to getCustomFieldValueReport(workbaskets = {}, states = {}, customField = {}, reportLineItemDefinitions = {})",
+                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states), customField,
+                LoggerUtils.listToString(reportLineItemDefinitions));
+        }
+        try {
+            taskanaEngineImpl.openConnection();
+
+            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
+                .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(workbaskets, states, customField);
+
+            return createReport(reportLineItemDefinitions, inWorkingDays, monitorQueryItems);
+
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getCustomFieldValueReport().");
+        }
+    }
+
     private Report createReport(List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays,
         List<MonitorQueryItem> monitorQueryItems) {
         Report report = new Report();
