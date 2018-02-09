@@ -18,7 +18,7 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 install:
   - (cd workplace && npm install --no-progress && ng build --environment=prod --no-progress)
-    && (cd admin && npm install --no-progress && ng build:prod && npm run test)
+    && (cd admin && npm install --no-progress && npm run build:prod && npm run test)
     && (cd monitor && npm install --no-progress && ng build --environment=prod --no-progress)
     && mvn clean install -q -f lib/ -DskipTests=true -Dmaven.javadoc.skip=true -B
     && mvn clean install -q -f rest/ -DskipTests=true -B
