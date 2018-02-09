@@ -14,6 +14,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
 
+import pro.taskana.impl.MinimalTaskSummary;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
@@ -88,6 +89,9 @@ public interface TaskMapper {
 
     @Delete("DELETE FROM TASK WHERE ID = #{id}")
     void delete(String id);
+
+    @Delete("<script>DELETE FROM TASK WHERE ID IN(<foreach item='item' collection='ids' separator=',' >#{item}</foreach>)</script>")
+    void deleteMultiple(@Param("ids") List<String> ids);
 
     @Select("SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_KEY, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10 "
         + "FROM TASK "
@@ -178,4 +182,14 @@ public interface TaskMapper {
         + "</script>")
     void updateTransfered(@Param("taskIds") List<String> taskIds,
         @Param("referencetask") TaskSummaryImpl referencetask);
+
+    @Select("<script>SELECT ID, STATE, WORKBASKET_KEY FROM TASK "
+        + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
+        + "</script>")
+    @Results(value = {
+        @Result(property = "taskId", column = "ID"),
+        @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
+        @Result(property = "taskState", column = "STATE")})
+    List<MinimalTaskSummary> findExistingTasks(@Param("taskIds") List<String> taskIds);
+
 }
