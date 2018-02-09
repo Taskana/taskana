@@ -289,4 +289,39 @@ public interface TaskService {
      */
     BulkOperationResults<String, TaskanaException> transferBulk(String destinationWorkbasketKey, List<String> taskIds)
         throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
+
+    /**
+     * Deletes the task with the given Id.
+     *
+     * @param taskId
+     *            The Id of the task to delete.
+     * @throws TaskNotFoundException
+     *             If the given Id does not refer to an existing task.
+     * @throws InvalidStateException
+     *             If the state of the referenced task is not Completed.
+     */
+    void deleteTask(String taskId) throws TaskNotFoundException, InvalidStateException;
+
+    /**
+     * Deletes the task with the given Id.
+     *
+     * @param taskId
+     *            The Id of the task to delete.
+     * @param forceDelete
+     *            force the deletion. If true, a task is deleted even if it is not in state completed.
+     * @throws TaskNotFoundException
+     *             If the given Id does not refer to an existing task.
+     * @throws InvalidStateException
+     *             If the state of the referenced task is not Completed and forceDelet is false.
+     */
+    void deleteTask(String taskId, boolean forceDelete) throws TaskNotFoundException, InvalidStateException;
+
+    /**
+     * Deletes a list of tasks.
+     *
+     * @param tasks
+     *            the ids of the tasks to delete.
+     * @return the result of the operations with Id and Exception for each failed task deletion.
+     */
+    BulkOperationResults<String, TaskanaException> deleteTasks(List<String> tasks);
 }
