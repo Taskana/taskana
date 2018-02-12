@@ -33,7 +33,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     private ClassificationMapper classificationMapper;
     private TaskanaEngineImpl taskanaEngineImpl;
 
-    public ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper) {
+    ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper) {
         super();
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.classificationMapper = classificationMapper;
@@ -295,15 +295,17 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public void deleteClassification(String classificationKey, String domain) throws ClassificationInUseException, ClassificationNotFoundException {
+    public void deleteClassification(String classificationKey, String domain)
+        throws ClassificationInUseException, ClassificationNotFoundException {
         try {
             taskanaEngineImpl.openConnection();
             if (this.classificationMapper.findByKeyAndDomain(classificationKey, domain) == null) {
-                throw new ClassificationNotFoundException("The classification " + classificationKey + "wasn't found in the domain " + domain);
+                throw new ClassificationNotFoundException(
+                    "The classification " + classificationKey + "wasn't found in the domain " + domain);
             }
 
             if (domain.equals("")) {
-                //master mode - delete all associated classifications in every domain.
+                // master mode - delete all associated classifications in every domain.
                 List<String> domains = this.classificationMapper.getDomainsForClassification(classificationKey);
                 domains.remove("");
                 for (String classificationDomain : domains) {
@@ -313,12 +315,17 @@ public class ClassificationServiceImpl implements ClassificationService {
 
             TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
             try {
-                List<TaskSummary> classificationTasks = taskService.createTaskQuery().classificationKeyIn(classificationKey).domainIn(domain).list();
+                List<TaskSummary> classificationTasks = taskService.createTaskQuery()
+                    .classificationKeyIn(classificationKey)
+                    .domainIn(domain)
+                    .list();
                 if (!classificationTasks.isEmpty()) {
-                    throw new ClassificationInUseException("There are " + classificationTasks.size() + " Tasks which belong to this classification or a child classification. Please complete them and try again.");
+                    throw new ClassificationInUseException("There are " + classificationTasks.size()
+                        + " Tasks which belong to this classification or a child classification. Please complete them and try again.");
                 }
             } catch (NotAuthorizedException e) {
-                LOGGER.error("ClassificationQuery unexpectedly returned NotauthorizedException. Throwing SystemException ");
+                LOGGER.error(
+                    "ClassificationQuery unexpectedly returned NotauthorizedException. Throwing SystemException ");
                 throw new SystemException("ClassificationQuery unexpectedly returned NotauthorizedException.");
             }
 

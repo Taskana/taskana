@@ -54,7 +54,7 @@ public class TaskQueryImpl implements TaskQuery {
     private String porValueLike;
     private List<String> orderBy;
 
-    public TaskQueryImpl(TaskanaEngine taskanaEngine) {
+    TaskQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
         this.orderBy = new ArrayList<>();

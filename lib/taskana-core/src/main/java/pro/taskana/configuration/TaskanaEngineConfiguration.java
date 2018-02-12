@@ -66,7 +66,7 @@ public class TaskanaEngineConfiguration {
      * @return the TaskanaEngine
      */
     public TaskanaEngine buildTaskanaEngine() {
-        return new TaskanaEngineImpl(this);
+        return TaskanaEngineImpl.createTaskanaEngine(this);
     }
 
     /**

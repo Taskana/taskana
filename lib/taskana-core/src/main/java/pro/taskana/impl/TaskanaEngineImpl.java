@@ -53,7 +53,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
 
-    public TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+    public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+        return new TaskanaEngineImpl(taskanaEngineConfiguration);
+    }
+
+    protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();

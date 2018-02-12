@@ -64,7 +64,7 @@ public class TaskServiceImpl implements TaskService {
     private TaskMapper taskMapper;
     private AttachmentMapper attachmentMapper;
 
-    public TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
+    TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
         AttachmentMapper attachmentMapper) {
         super();
         this.taskanaEngine = taskanaEngine;

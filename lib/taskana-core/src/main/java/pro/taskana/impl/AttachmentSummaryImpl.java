@@ -17,6 +17,10 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     private ClassificationSummary classificationSummary;
     private Instant received;
 
+    AttachmentSummaryImpl() {
+
+    }
+
     /*
      * (non-Javadoc)
      * @see pro.taskana.impl.AttachmentSummary#getId()
