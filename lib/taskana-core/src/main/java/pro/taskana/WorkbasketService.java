@@ -156,6 +156,13 @@ public interface WorkbasketService {
     WorkbasketQuery createWorkbasketQuery();
 
     /**
+     * This method provides a query builder for querying the database.
+     *
+     * @return a {@link WorkbasketAccessItemQuery}
+     */
+    WorkbasketAccessItemQuery createWorkbasketAccessItemQuery();
+
+    /**
      * Returns a new workbasket which is not persisted.
      *
      * @param key
@@ -262,4 +269,5 @@ public interface WorkbasketService {
      */
     List<WorkbasketSummary> getDistributionSources(String workbasketId)
         throws NotAuthorizedException, WorkbasketNotFoundException;
+
 }
