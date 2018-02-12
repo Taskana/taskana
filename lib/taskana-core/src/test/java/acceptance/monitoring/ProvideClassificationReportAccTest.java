@@ -127,8 +127,8 @@ public class ProvideClassificationReportAccTest {
         assertEquals(10, report.getDetailLines().get(classifications.get(3).getKey()).getTotalNumberOfTasks());
         assertEquals(13, report.getDetailLines().get(classifications.get(4).getKey()).getTotalNumberOfTasks());
 
-        assertEquals(11, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
-        assertEquals(8, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
+        assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
+        assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
         assertEquals(11, report.getSumLine().getLineItems().get(2).getNumberOfTasks());
         assertEquals(0, report.getSumLine().getLineItems().get(3).getNumberOfTasks());
         assertEquals(4, report.getSumLine().getLineItems().get(4).getNumberOfTasks());
