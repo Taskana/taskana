@@ -157,7 +157,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         // set up permissions and ids
         this.authorization = permission;
         this.accessId = accessIds;
-        lowercaseAccessIds();
+        lowercaseAccessIds(this.accessId);
 
         return this;
     }
@@ -180,7 +180,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         // set up permissions and ids
         this.authorization = permission;
         this.accessId = accessIds;
-        lowercaseAccessIds();
+        lowercaseAccessIds(this.accessId);
 
         return this;
     }
@@ -363,12 +363,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return builder.toString();
     }
 
-    private void lowercaseAccessIds() {
+    static void lowercaseAccessIds(String[] accessIdArray) {
         if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-            for (int i = 0; i < this.accessId.length; i++) {
-                String id = this.accessId[i];
+            for (int i = 0; i < accessIdArray.length; i++) {
+                String id = accessIdArray[i];
                 if (id != null) {
-                    this.accessId[i] = id.toLowerCase();
+                    accessIdArray[i] = id.toLowerCase();
                 }
             }
         }

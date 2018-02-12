@@ -67,7 +67,7 @@ public interface TaskService {
      * @throws InvalidStateException
      *             when the task is already completed.
      * @throws InvalidOwnerException
-     *             when the unclaim is not forced and user is diffrent.
+     *             when the task is claimed by another user.
      */
     Task cancelClaim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
@@ -77,15 +77,18 @@ public interface TaskService {
      *
      * @param taskId
      *            id of the task which should be unclaimed.
+     * @param forceCancel
+     *            force the cancellation of claim. If true, the task is unclaimed even if it was claimed by another
+     *            user.
      * @return updated unclaimed task
      * @throws TaskNotFoundException
      *             if the task can´t be found or does not exist
      * @throws InvalidStateException
      *             when the task is already completed.
      * @throws InvalidOwnerException
-     *             when the unclaim is not forced and user is diffrent.
+     *             when forceCancel is false and the task is claimed by another user.
      */
-    Task cancelClaim(String taskId, boolean forceUnclaim)
+    Task cancelClaim(String taskId, boolean forceCancel)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
 
     /**

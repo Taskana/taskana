@@ -13,6 +13,7 @@ import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
+import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
@@ -565,6 +566,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         }
     }
 
+    @Override
+    public WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() {
+        return new WorkbasketAccessItemQueryImpl(this.taskanaEngine);
+    }
+
     private void checkAuthorizationByWorkbasketId(String workbasketId,
         WorkbasketAuthorization workbasketAuthorization) throws NotAuthorizedException {
         checkAuthorization(null, workbasketId, workbasketAuthorization);
@@ -620,4 +626,5 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             LOGGER.debug("exit from checkAuthorization(). User is authorized = {}.", isAuthorized);
         }
     }
+
 }
