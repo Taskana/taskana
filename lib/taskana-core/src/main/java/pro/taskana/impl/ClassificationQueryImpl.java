@@ -59,7 +59,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private String[] custom8In;
     private String[] custom8Like;
 
-    public ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
+    ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     }
 
@@ -159,7 +159,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         return this;
     }
 
-   @Override
+    @Override
     public ClassificationQuery custom1Like(String... custom1Like) {
         this.custom1Like = custom1Like;
         return this;

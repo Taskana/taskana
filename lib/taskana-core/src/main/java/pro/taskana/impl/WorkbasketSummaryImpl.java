@@ -22,6 +22,10 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     private String orgLevel3;
     private String orgLevel4;
 
+    WorkbasketSummaryImpl() {
+
+    }
+
     /*
      * (non-Javadoc)
      * @see pro.taskana.impl.WorkbasketSummary#getId()

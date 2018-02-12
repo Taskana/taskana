@@ -49,6 +49,10 @@ public class TaskSummaryImpl implements TaskSummary {
     private String custom9;
     private String custom10;
 
+    TaskSummaryImpl() {
+
+    }
+
     /*
      * (non-Javadoc)
      * @see pro.taskana.impl.TaskSummary#getId()

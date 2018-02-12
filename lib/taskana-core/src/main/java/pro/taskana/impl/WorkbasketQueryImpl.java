@@ -51,7 +51,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private TaskanaEngineImpl taskanaEngineImpl;
     private List<String> orderBy;
 
-    public WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
+    WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         orderBy = new ArrayList<>();
     }

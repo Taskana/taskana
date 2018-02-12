@@ -33,7 +33,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     private String[] type;
     private String[] value;
 
-    public ObjectReferenceQueryImpl(TaskanaEngine taskanaEngine) {
+    ObjectReferenceQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     }
 

@@ -32,7 +32,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     private TaskanaEngineImpl taskanaEngineImpl;
     private List<String> orderBy;
 
-    public WorkbasketAccessItemQueryImpl(TaskanaEngine taskanaEngine) {
+    WorkbasketAccessItemQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         orderBy = new ArrayList<>();
     }
