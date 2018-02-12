@@ -11,6 +11,8 @@ import pro.taskana.impl.ClassificationSummaryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.impl.TaskSummaryImpl;
+import pro.taskana.impl.WorkbasketAccessItemImpl;
+import pro.taskana.impl.WorkbasketAccessItemQueryImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.model.ObjectReference;
@@ -207,6 +209,40 @@ public interface QueryMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketSummaryImpl> queryWorkbasket(WorkbasketQueryImpl workbasketQuery);
 
+    @Select("<script>"
+        + "SELECT "
+        + "ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, "
+        + "PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
+        + "from WORKBASKET_ACCESS_LIST "
+        + "<where>"
+        + "<if test='workbasketKeyIn != null'>AND UPPER(WORKBASKET_KEY) IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
+        + "</where>"
+        + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
+        + "</script>")
+    @Results({
+        @Result(property = "id", column = "ID"),
+        @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
+        @Result(property = "accessId", column = "ACCESS_ID"),
+        @Result(property = "permRead", column = "PERM_READ"),
+        @Result(property = "permOpen", column = "PERM_OPEN"),
+        @Result(property = "permAppend", column = "PERM_APPEND"),
+        @Result(property = "permTransfer", column = "PERM_TRANSFER"),
+        @Result(property = "permDistribute", column = "PERM_DISTRIBUTE"),
+        @Result(property = "permCustom1", column = "PERM_CUSTOM_1"),
+        @Result(property = "permCustom2", column = "PERM_CUSTOM_2"),
+        @Result(property = "permCustom3", column = "PERM_CUSTOM_3"),
+        @Result(property = "permCustom4", column = "PERM_CUSTOM_4"),
+        @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
+        @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
+        @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8"),
+        @Result(property = "permCustom9", column = "PERM_CUSTOM_9"),
+        @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
+        @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
+        @Result(property = "permCustom12", column = "PERM_CUSTOM_12")})
+    List<WorkbasketAccessItemImpl> queryWorkbasketAccessItem(WorkbasketAccessItemQueryImpl accessItemQuery);
+
     @Select("<script>SELECT COUNT(ID) FROM TASK t "
         + "<where>"
         + "<if test='name != null'>AND t.NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
@@ -322,4 +358,13 @@ public interface QueryMapper {
         + "</where>"
         + "</script>")
     Long countQueryWorkbaskets(WorkbasketQueryImpl workbasketQuery);
+
+    @Select("<script>SELECT COUNT(ID) from WORKBASKET_ACCESS_LIST "
+        + "<where>"
+        + "<if test='workbasketKeyIn != null'>AND UPPER(WORKBASKET_KEY) IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
+        + "</where>"
+        + "</script>")
+    Long countQueryWorkbasketAccessItems(WorkbasketAccessItemQueryImpl accessItem);
+
 }
