@@ -1,8 +1,9 @@
 package pro.taskana.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BulkOperationResults<K, V> {
 
-    private Optional<Map<K, V>> errorMap = Optional.of(new HashMap<K, V>());
+    private Map<K, V> errorMap = new HashMap<K, V>();
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkOperationResults.class);
 
     /**
@@ -26,7 +27,7 @@ public class BulkOperationResults<K, V> {
      * @return map of errors which can´t be null.
      */
     public Map<K, V> getErrorMap() {
-        return this.errorMap.get();
+        return this.errorMap;
     }
 
     /**
@@ -42,7 +43,7 @@ public class BulkOperationResults<K, V> {
         boolean status = false;
         try {
             if (objectId != null) {
-                this.errorMap.get().put(objectId, error);
+                this.errorMap.put(objectId, error);
                 status = true;
             }
         } catch (Exception e) {
@@ -58,9 +59,9 @@ public class BulkOperationResults<K, V> {
      *
      * @return true if there are logged errors.
      */
-    public boolean containErrors() {
+    public boolean containsErrors() {
         boolean isContainingErrors = false;
-        if (!this.errorMap.get().isEmpty()) {
+        if (!this.errorMap.isEmpty()) {
             isContainingErrors = true;
         }
         return isContainingErrors;
@@ -76,15 +77,24 @@ public class BulkOperationResults<K, V> {
     public V getErrorForId(K idKey) {
         V result = null;
         if (idKey != null) {
-            result = this.errorMap.get().get(idKey);
+            result = this.errorMap.get(idKey);
         }
         return result;
+    }
+
+    /**
+     * Returns the IDs of the Object with failed requests.
+     *
+     * @return a List of IDs that could not be processed successfully.
+     */
+    public List<K> getFailedIds() {
+        return new ArrayList<>(this.errorMap.keySet());
     }
 
     /**
      * Clearing the map - all entries will be removed.
      */
     public void clearErrors() {
-        this.errorMap.get().clear();
+        this.errorMap.clear();
     }
 }

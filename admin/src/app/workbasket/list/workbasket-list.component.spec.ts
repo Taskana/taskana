@@ -5,7 +5,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { WorkbasketSummary } from '../../model/workbasketSummary';
 import { WorkbasketService } from '../../services/workbasketservice.service';
-import { HttpModule, JsonpModule } from '@angular/http';
+import { HttpModule } from '@angular/http';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
@@ -40,21 +40,23 @@ describe('WorkbasketListComponent', () => {
       
       imports:[
         AngularSvgIconModule,
-        HttpClientModule,
         HttpModule,
+        HttpClientModule,
         RouterTestingModule.withRoutes(routes)
       ],
       providers:[WorkbasketService]
     })
     .compileComponents();
+    
 
     fixture = TestBed.createComponent(WorkbasketListComponent);
     component = fixture.componentInstance;
     debugElement = fixture.debugElement.nativeElement;
-    fixture.detectChanges();
     workbasketService = TestBed.get(WorkbasketService);
     spyOn(workbasketService, 'getWorkBasketsSummary').and.returnValue(Observable.of(workbasketSummary));   
     spyOn(workbasketService, 'getSelectedWorkBasket') .and.returnValue(Observable.of('2'));
+
+    fixture.detectChanges();
   }));
 
   afterEach(() =>{
@@ -74,35 +76,22 @@ describe('WorkbasketListComponent', () => {
   });
 
   it('should have wb-action-toolbar, wb-search-bar, wb-list-container and wb-pagination created in the html', fakeAsync( () => {
-    component.ngOnInit();
     expect(debugElement.querySelector('#wb-action-toolbar')).not.toBeNull();
     expect(debugElement.querySelector('#wb-search-bar')).not.toBeNull();
     expect(debugElement.querySelector('#wb-pagination')).not.toBeNull();
     expect(debugElement.querySelector('#wb-list-container')).not.toBeNull();
-    expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(2);
-    workbasketService.getWorkBasketsSummary().subscribe(value => {
-      fixture.detectChanges();
-      expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(4);
-    });
+    expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(4);
   }));
 
   it('should have two workbasketsummary rows created with the second one selected.', fakeAsync( () => {
-    component.ngOnInit();
-    workbasketService.getWorkBasketsSummary().subscribe(value => {
-      fixture.detectChanges();
-      expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(4);
-      expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class')).toBe('list-group-item');
-      expect(debugElement.querySelectorAll('#wb-list-container > li')[3].getAttribute('class')).toBe('list-group-item active');
-    });
+    expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(4);
+    expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class')).toBe('list-group-item');
+    expect(debugElement.querySelectorAll('#wb-list-container > li')[3].getAttribute('class')).toBe('list-group-item active');
   }));
 
   it('should have two workbasketsummary rows created with two different icons: user and users', fakeAsync( () => {
-    component.ngOnInit();
-    workbasketService.getWorkBasketsSummary().subscribe(value => {
-      fixture.detectChanges();
-      expect(debugElement.querySelectorAll('#wb-list-container > li')[2].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
-      expect(debugElement.querySelectorAll('#wb-list-container > li')[3].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
-    });
+    expect(debugElement.querySelectorAll('#wb-list-container > li')[2].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
+    expect(debugElement.querySelectorAll('#wb-list-container > li')[3].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
   }));
 
 });

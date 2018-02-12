@@ -17,8 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pro.taskana.Classification;
-import pro.taskana.ClassificationService;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
@@ -29,7 +27,7 @@ import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.ClassificationImpl;
+import pro.taskana.impl.CustomField;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
@@ -45,7 +43,7 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "classification report" scenarios.
  */
 @RunWith(JAASRunner.class)
-public class ProvideClassificationReportAccTest {
+public class ProvideCustomFieldValueReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
@@ -70,62 +68,83 @@ public class ProvideClassificationReportAccTest {
 
     @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetTotalNumbersOfTasksOfClassificationReport()
+    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1()
         throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
-        List<Classification> classifications = getListOfClassifications();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
 
-        Report report = taskMonitorService.getClassificationReport(workbaskets, states);
+        CustomField customField = CustomField.CUSTOM_1;
+        String customFieldValue1 = "Geschaeftsstelle A";
+        String customFieldValue2 = "Geschaeftsstelle B";
+        String customFieldValue3 = "Geschaeftsstelle C";
+
+        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, customField);
 
         assertNotNull(report);
-        assertEquals(10, report.getDetailLines().get(classifications.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(classifications.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(7, report.getDetailLines().get(classifications.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(classifications.get(3).getKey()).getTotalNumberOfTasks());
-        assertEquals(13, report.getDetailLines().get(classifications.get(4).getKey()).getTotalNumberOfTasks());
-        assertEquals(0, report.getDetailLines().get(classifications.get(0).getKey()).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(classifications.get(1).getKey()).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(classifications.get(2).getKey()).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(classifications.get(3).getKey()).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(classifications.get(4).getKey()).getLineItems().size());
+        assertEquals(25, report.getDetailLines().get(customFieldValue1).getTotalNumberOfTasks());
+        assertEquals(10, report.getDetailLines().get(customFieldValue2).getTotalNumberOfTasks());
+        assertEquals(15, report.getDetailLines().get(customFieldValue3).getTotalNumberOfTasks());
+        assertEquals(0, report.getDetailLines().get(customFieldValue1).getLineItems().size());
+        assertEquals(0, report.getDetailLines().get(customFieldValue2).getLineItems().size());
+        assertEquals(0, report.getDetailLines().get(customFieldValue3).getLineItems().size());
+        assertEquals(3, report.getDetailLines().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
     @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetClassificationReportWithReportLineItemDefinitions()
+    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2()
         throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<Classification> classifications = getListOfClassifications();
+
+        CustomField customField = CustomField.CUSTOM_2;
+        String customFieldValue1 = "Vollkasko";
+        String customFieldValue2 = "Teilkasko";
+
+        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, customField);
+        assertNotNull(report);
+        assertEquals(21, report.getDetailLines().get(customFieldValue1).getTotalNumberOfTasks());
+        assertEquals(29, report.getDetailLines().get(customFieldValue2).getTotalNumberOfTasks());
+
+        assertEquals(0, report.getDetailLines().get(customFieldValue1).getLineItems().size());
+        assertEquals(0, report.getDetailLines().get(customFieldValue2).getLineItems().size());
+
+        assertEquals(2, report.getDetailLines().size());
+        assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
+    }
+
+    @WithAccessId(userName = "monitor_user_1")
+    @Test
+    public void testGetCustomFieldValueReportWithReportLineItemDefinitions()
+        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
+
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getClassificationReport(workbaskets, states, reportLineItemDefinitions);
+        CustomField customField = CustomField.CUSTOM_1;
+        String customFieldValue1 = "Geschaeftsstelle A";
+        String customFieldValue2 = "Geschaeftsstelle B";
+        String customFieldValue3 = "Geschaeftsstelle C";
 
-        int sumLineCount = report.getSumLine().getLineItems().get(0).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(1).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(2).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(3).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(4).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(5).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(6).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(7).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(8).getNumberOfTasks();
+        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, customField,
+            reportLineItemDefinitions);
 
         assertNotNull(report);
 
-        assertEquals(10, report.getDetailLines().get(classifications.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(classifications.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(7, report.getDetailLines().get(classifications.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(classifications.get(3).getKey()).getTotalNumberOfTasks());
-        assertEquals(13, report.getDetailLines().get(classifications.get(4).getKey()).getTotalNumberOfTasks());
+        assertEquals(25, report.getDetailLines().get(customFieldValue1).getTotalNumberOfTasks());
+        assertEquals(10, report.getDetailLines().get(customFieldValue2).getTotalNumberOfTasks());
+        assertEquals(15, report.getDetailLines().get(customFieldValue3).getTotalNumberOfTasks());
 
         assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
@@ -136,58 +155,90 @@ public class ProvideClassificationReportAccTest {
         assertEquals(7, report.getSumLine().getLineItems().get(6).getNumberOfTasks());
         assertEquals(4, report.getSumLine().getLineItems().get(7).getNumberOfTasks());
         assertEquals(5, report.getSumLine().getLineItems().get(8).getNumberOfTasks());
+
+        assertEquals(3, report.getDetailLines().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
-        assertEquals(50, sumLineCount);
     }
 
     @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testEachItemOfClassificationReport()
+    public void testGetCustomFieldValueReportWithReportLineItemDefinitionsNotInWorkingDays()
         throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<Classification> classifications = getListOfClassifications();
+
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
+
+        CustomField customField = CustomField.CUSTOM_1;
+        String customFieldValue1 = "Geschaeftsstelle A";
+        String customFieldValue2 = "Geschaeftsstelle B";
+        String customFieldValue3 = "Geschaeftsstelle C";
+
+        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, customField,
+            reportLineItemDefinitions, false);
+
+        assertNotNull(report);
+
+        assertEquals(25, report.getDetailLines().get(customFieldValue1).getTotalNumberOfTasks());
+        assertEquals(10, report.getDetailLines().get(customFieldValue2).getTotalNumberOfTasks());
+        assertEquals(15, report.getDetailLines().get(customFieldValue3).getTotalNumberOfTasks());
+
+        assertEquals(19, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
+        assertEquals(11, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, report.getSumLine().getLineItems().get(2).getNumberOfTasks());
+        assertEquals(0, report.getSumLine().getLineItems().get(3).getNumberOfTasks());
+        assertEquals(4, report.getSumLine().getLineItems().get(4).getNumberOfTasks());
+        assertEquals(0, report.getSumLine().getLineItems().get(5).getNumberOfTasks());
+        assertEquals(0, report.getSumLine().getLineItems().get(6).getNumberOfTasks());
+        assertEquals(7, report.getSumLine().getLineItems().get(7).getNumberOfTasks());
+        assertEquals(9, report.getSumLine().getLineItems().get(8).getNumberOfTasks());
+
+        assertEquals(3, report.getDetailLines().size());
+        assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
+    }
+
+    @WithAccessId(userName = "monitor_user_1")
+    @Test
+    public void testEachItemOfCustomFieldValueReport()
+        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getClassificationReport(workbaskets, states, reportLineItemDefinitions);
+        CustomField customField = CustomField.CUSTOM_1;
+        String customFieldValue1 = "Geschaeftsstelle A";
+        String customFieldValue2 = "Geschaeftsstelle B";
+        String customFieldValue3 = "Geschaeftsstelle C";
 
-        List<ReportLineItem> line1 = report.getDetailLines().get(classifications.get(0).getKey()).getLineItems();
-        assertEquals(7, line1.get(0).getNumberOfTasks());
-        assertEquals(2, line1.get(1).getNumberOfTasks());
-        assertEquals(1, line1.get(2).getNumberOfTasks());
-        assertEquals(0, line1.get(3).getNumberOfTasks());
-        assertEquals(0, line1.get(4).getNumberOfTasks());
+        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, customField,
+            reportLineItemDefinitions);
 
-        List<ReportLineItem> line2 = report.getDetailLines().get(classifications.get(1).getKey()).getLineItems();
+        List<ReportLineItem> line1 = report.getDetailLines().get(customFieldValue1).getLineItems();
+        assertEquals(11, line1.get(0).getNumberOfTasks());
+        assertEquals(4, line1.get(1).getNumberOfTasks());
+        assertEquals(3, line1.get(2).getNumberOfTasks());
+        assertEquals(4, line1.get(3).getNumberOfTasks());
+        assertEquals(3, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getDetailLines().get(customFieldValue2).getLineItems();
         assertEquals(5, line2.get(0).getNumberOfTasks());
         assertEquals(3, line2.get(1).getNumberOfTasks());
-        assertEquals(1, line2.get(2).getNumberOfTasks());
-        assertEquals(1, line2.get(3).getNumberOfTasks());
+        assertEquals(0, line2.get(2).getNumberOfTasks());
+        assertEquals(2, line2.get(3).getNumberOfTasks());
         assertEquals(0, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getDetailLines().get(classifications.get(2).getKey()).getLineItems();
-        assertEquals(2, line3.get(0).getNumberOfTasks());
-        assertEquals(1, line3.get(1).getNumberOfTasks());
-        assertEquals(0, line3.get(2).getNumberOfTasks());
+        List<ReportLineItem> line3 = report.getDetailLines().get(customFieldValue3).getLineItems();
+        assertEquals(3, line3.get(0).getNumberOfTasks());
+        assertEquals(4, line3.get(1).getNumberOfTasks());
+        assertEquals(1, line3.get(2).getNumberOfTasks());
         assertEquals(1, line3.get(3).getNumberOfTasks());
-        assertEquals(3, line3.get(4).getNumberOfTasks());
-
-        List<ReportLineItem> line4 = report.getDetailLines().get(classifications.get(3).getKey()).getLineItems();
-        assertEquals(2, line4.get(0).getNumberOfTasks());
-        assertEquals(2, line4.get(1).getNumberOfTasks());
-        assertEquals(2, line4.get(2).getNumberOfTasks());
-        assertEquals(0, line4.get(3).getNumberOfTasks());
-        assertEquals(4, line4.get(4).getNumberOfTasks());
-
-        List<ReportLineItem> line5 = report.getDetailLines().get(classifications.get(4).getKey()).getLineItems();
-        assertEquals(3, line5.get(0).getNumberOfTasks());
-        assertEquals(3, line5.get(1).getNumberOfTasks());
-        assertEquals(0, line5.get(2).getNumberOfTasks());
-        assertEquals(5, line5.get(3).getNumberOfTasks());
-        assertEquals(2, line5.get(4).getNumberOfTasks());
+        assertEquals(6, line3.get(4).getNumberOfTasks());
     }
 
     private List<Workbasket> getListOfWorkbaskets() throws WorkbasketNotFoundException, NotAuthorizedException {
@@ -203,16 +254,6 @@ public class ProvideClassificationReportAccTest {
             .getWorkbasket("WBI:000000000000000000000000000000000004");
 
         return Arrays.asList(workbasket1, workbasket2, workbasket3, workbasket4);
-    }
-
-    private List<Classification> getListOfClassifications() throws ClassificationNotFoundException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-        ClassificationImpl c1 = (ClassificationImpl) classificationService.getClassification("L10000", "DOMAIN_A");
-        ClassificationImpl c2 = (ClassificationImpl) classificationService.getClassification("L20000", "DOMAIN_A");
-        ClassificationImpl c3 = (ClassificationImpl) classificationService.getClassification("L30000", "DOMAIN_A");
-        ClassificationImpl c4 = (ClassificationImpl) classificationService.getClassification("L40000", "DOMAIN_A");
-        ClassificationImpl c5 = (ClassificationImpl) classificationService.getClassification("L50000", "DOMAIN_A");
-        return Arrays.asList(c1, c2, c3, c4, c5);
     }
 
     private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {

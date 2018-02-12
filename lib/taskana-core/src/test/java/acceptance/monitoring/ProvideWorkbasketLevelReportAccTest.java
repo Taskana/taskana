@@ -111,8 +111,8 @@ public class ProvideWorkbasketLevelReportAccTest {
         assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
         assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
 
-        assertEquals(11, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
-        assertEquals(8, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
+        assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
+        assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
         assertEquals(11, report.getSumLine().getLineItems().get(2).getNumberOfTasks());
         assertEquals(0, report.getSumLine().getLineItems().get(3).getNumberOfTasks());
         assertEquals(4, report.getSumLine().getLineItems().get(4).getNumberOfTasks());

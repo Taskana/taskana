@@ -127,7 +127,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskIdList.add("TKI:000000000000000000000000000000000005");
 
         BulkOperationResults<String, TaskanaException> results = taskService.transferBulk("USER_1_1", taskIdList);
-        assertFalse(results.containErrors());
+        assertFalse(results.containsErrors());
 
         Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasketByKey("USER_1_1");
         Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000004");
@@ -137,7 +137,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         assertEquals(TaskState.READY, transferredTask.getState());
         assertThat(transferredTask.getWorkbasketKey(), equalTo(wb.getKey()));
         assertThat(transferredTask.getDomain(), equalTo(wb.getDomain()));
-        assertTrue(transferredTask.getModified().isAfter(before));
+        assertFalse(transferredTask.getModified().isBefore(before));
         assertThat(transferredTask.getOwner(), equalTo(null));
         transferredTask = taskService.getTask("TKI:000000000000000000000000000000000005");
         assertNotNull(transferredTask);
@@ -146,7 +146,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         assertEquals(TaskState.READY, transferredTask.getState());
         assertThat(transferredTask.getWorkbasketKey(), equalTo(wb.getKey()));
         assertThat(transferredTask.getDomain(), equalTo(wb.getDomain()));
-        assertTrue(transferredTask.getModified().isAfter(before));
+        assertFalse(transferredTask.getModified().isBefore(before));
         assertThat(transferredTask.getOwner(), equalTo(null));
     }
 
@@ -167,7 +167,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskIdList.add("TKI:000000000000000000000000000000000099"); // TaskNotFound
 
         BulkOperationResults<String, TaskanaException> results = taskService.transferBulk("USER_1_1", taskIdList);
-        assertTrue(results.containErrors());
+        assertTrue(results.containsErrors());
         assertThat(results.getErrorMap().values().size(), equalTo(3));
         // react to result
         for (String taskId : results.getErrorMap().keySet()) {
@@ -189,7 +189,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         assertEquals(TaskState.READY, transferredTask.getState());
         assertThat(transferredTask.getWorkbasketKey(), equalTo(wb.getKey()));
         assertThat(transferredTask.getDomain(), equalTo(wb.getDomain()));
-        assertTrue(transferredTask.getModified().isAfter(before));
+        assertFalse(transferredTask.getModified().isBefore(before));
         assertThat(transferredTask.getOwner(), equalTo(null));
 
         transferredTask = taskService.getTask("TKI:000000000000000000000000000000000002");

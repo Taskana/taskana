@@ -338,8 +338,8 @@ public class TaskServiceImpl implements TaskService {
             Workbasket destinationWorkbasket = workbasketService.getWorkbasketByKey(destinationWorkbasketKey);
 
             BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
-            // check tasks exist and Ids valid - log and remove
-            List<TaskSummary> taskSummaries = this.createTaskQuery().idIn(taskIds.toArray(new String[0])).list();
+
+            // check tasks Ids exist and not empty - log and remove
             Iterator<String> taskIdIterator = taskIds.iterator();
             while (taskIdIterator.hasNext()) {
                 String currentTaskId = taskIdIterator.next();
@@ -347,18 +347,16 @@ public class TaskServiceImpl implements TaskService {
                     bulkLog.addError("",
                         new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
                     taskIdIterator.remove();
-                } else if (!taskSummaries.stream()
-                    .filter(taskSummary -> currentTaskId.equals(taskSummary.getTaskId()))
-                    .findFirst()
-                    .isPresent()) {
-                    bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId));
-                    taskIdIterator.remove();
                 }
             }
 
+            // query for existing tasks. use taskMapper.findExistingTasks because this method
+            // returns only the required information.
+            List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds);
+
             // check source WB (read)+transfer
             Set<String> workbasketKeys = new HashSet<>();
-            taskSummaries.stream().forEach(t -> workbasketKeys.add(t.getWorkbasketSummary().getKey()));
+            taskSummaries.stream().forEach(t -> workbasketKeys.add(t.getWorkbasketKey()));
             List<WorkbasketSummary> sourceWorkbaskets = workbasketService.createWorkbasketQuery()
                 .callerHasPermission(WorkbasketAuthorization.TRANSFER)
                 .keyIn(workbasketKeys.toArray(new String[0]))
@@ -366,20 +364,19 @@ public class TaskServiceImpl implements TaskService {
             taskIdIterator = taskIds.iterator();
             while (taskIdIterator.hasNext()) {
                 String currentTaskId = taskIdIterator.next();
-                TaskSummary taskSummary = taskSummaries.stream()
+                MinimalTaskSummary taskSummary = taskSummaries.stream()
                     .filter(t -> currentTaskId.equals(t.getTaskId()))
                     .findFirst()
                     .orElse(null);
-                if (taskSummaries != null) {
-                    if (!sourceWorkbaskets.stream()
-                        .filter(wb -> taskSummary.getWorkbasketSummary().getKey().equals(wb.getKey()))
-                        .findFirst()
-                        .isPresent()) {
-                        bulkLog.addError(currentTaskId,
-                            new NotAuthorizedException(
-                                "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId));
-                        taskIdIterator.remove();
-                    }
+                if (taskSummary == null) {
+                    bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId));
+                    taskIdIterator.remove();
+                } else if (!sourceWorkbaskets.stream()
+                    .anyMatch(wb -> taskSummary.getWorkbasketKey().equals(wb.getKey()))) {
+                    bulkLog.addError(currentTaskId,
+                        new NotAuthorizedException(
+                            "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId));
+                    taskIdIterator.remove();
                 }
             }
 
@@ -388,19 +385,15 @@ public class TaskServiceImpl implements TaskService {
                 Collectors.toList());
             if (!taskSummaries.isEmpty()) {
                 Instant now = Instant.now();
-                List<TaskSummaryImpl> updateObjects = new ArrayList<>();
-                for (TaskSummary ts : taskSummaries) {
-                    TaskSummaryImpl taskSummary = (TaskSummaryImpl) ts;
-                    taskSummary.setRead(false);
-                    taskSummary.setTransferred(true);
-                    taskSummary.setWorkbasketSummary(destinationWorkbasket.asSummary());
-                    taskSummary.setDomain(destinationWorkbasket.getDomain());
-                    taskSummary.setModified(now);
-                    taskSummary.setState(TaskState.READY);
-                    taskSummary.setOwner(null);
-                    updateObjects.add(taskSummary);
-                }
-                taskMapper.updateTransfered(taskIds, updateObjects.get(0));
+                TaskSummaryImpl updateObject = new TaskSummaryImpl();
+                updateObject.setRead(false);
+                updateObject.setTransferred(true);
+                updateObject.setWorkbasketSummary(destinationWorkbasket.asSummary());
+                updateObject.setDomain(destinationWorkbasket.getDomain());
+                updateObject.setModified(now);
+                updateObject.setState(TaskState.READY);
+                updateObject.setOwner(null);
+                taskMapper.updateTransfered(taskIds, updateObject);
             }
             return bulkLog;
         } finally {
@@ -815,6 +808,76 @@ public class TaskServiceImpl implements TaskService {
         return new AttachmentImpl();
     }
 
+    @Override
+    public void deleteTask(String taskId) throws TaskNotFoundException, InvalidStateException {
+        deleteTask(taskId, false);
+    }
+
+    @Override
+    public void deleteTask(String taskId, boolean forceDelete) throws TaskNotFoundException, InvalidStateException {
+        LOGGER.debug("entry to deleteTask(taskId = {} , forceDelete = {} )", taskId, forceDelete);
+        TaskImpl task = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            task = (TaskImpl) getTask(taskId);
+
+            // reset read flag and set transferred flag
+            if (!TaskState.COMPLETED.equals(task.getState()) && !forceDelete) {
+                LOGGER.warn(
+                    "Method deleteTask() found that task {} is not completed and forceDelete is false. Throwing InvalidStateException",
+                    task);
+                throw new InvalidStateException("Cannot delete Task " + taskId + " because it is not completed");
+            }
+            taskMapper.delete(taskId);
+            LOGGER.debug("Method deleteTask() deleted Task {}", taskId);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from deleteTask(). ");
+        }
+    }
+
+    @Override
+    public BulkOperationResults<String, TaskanaException> deleteTasks(List<String> taskIds) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to deleteTasks(tasks = {})", LoggerUtils.listToString(taskIds));
+        }
+        try {
+            taskanaEngineImpl.openConnection();
+            BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+
+            List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds);
+
+            Iterator<String> taskIdIterator = taskIds.iterator();
+            while (taskIdIterator.hasNext()) {
+                String currentTaskId = taskIdIterator.next();
+                if (currentTaskId == null || currentTaskId.equals("")) {
+                    bulkLog.addError("",
+                        new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
+                    taskIdIterator.remove();
+                } else {
+                    MinimalTaskSummary foundSummary = taskSummaries.stream()
+                        .filter(taskState -> currentTaskId.equals(taskState.getTaskId()))
+                        .findFirst()
+                        .orElse(null);
+                    if (foundSummary == null) {
+                        bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId));
+                        taskIdIterator.remove();
+                    } else {
+                        if (!TaskState.COMPLETED.equals(foundSummary.getTaskState())) {
+                            bulkLog.addError(currentTaskId, new InvalidStateException(currentTaskId));
+                            taskIdIterator.remove();
+                        }
+                    }
+                }
+            }
+            taskMapper.deleteMultiple(taskIds);
+            return bulkLog;
+        } finally {
+            LOGGER.debug("exit from deleteTasks()");
+            taskanaEngineImpl.returnConnection();
+        }
+    }
+
     private void validateObjectReference(ObjectReference objRef, String objRefType, String objName)
         throws InvalidArgumentException {
         // check that all values in the ObjectReference are set correctly
@@ -1007,4 +1070,5 @@ public class TaskServiceImpl implements TaskService {
             attachment.setTaskId(newTask.getId());
         }
     }
+
 }
