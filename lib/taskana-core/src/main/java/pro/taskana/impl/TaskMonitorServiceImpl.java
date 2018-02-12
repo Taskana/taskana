@@ -26,7 +26,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     private TaskanaEngineImpl taskanaEngineImpl;
     private TaskMonitorMapper taskMonitorMapper;
 
-    public TaskMonitorServiceImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    TaskMonitorServiceImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super();
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.taskMonitorMapper = taskMonitorMapper;

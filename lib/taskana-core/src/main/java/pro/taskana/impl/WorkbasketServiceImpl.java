@@ -47,7 +47,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public WorkbasketServiceImpl() {
     }
 
-    public WorkbasketServiceImpl(TaskanaEngine taskanaEngine, WorkbasketMapper workbasketMapper,
+    WorkbasketServiceImpl(TaskanaEngine taskanaEngine, WorkbasketMapper workbasketMapper,
         DistributionTargetMapper distributionTargetMapper, WorkbasketAccessMapper workbasketAccessMapper) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.workbasketMapper = workbasketMapper;

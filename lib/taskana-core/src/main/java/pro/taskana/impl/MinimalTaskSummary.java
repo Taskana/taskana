@@ -11,6 +11,10 @@ public class MinimalTaskSummary {
     private String workbasketKey;
     private TaskState taskState;
 
+    MinimalTaskSummary() {
+
+    }
+
     public String getTaskId() {
         return taskId;
     }
