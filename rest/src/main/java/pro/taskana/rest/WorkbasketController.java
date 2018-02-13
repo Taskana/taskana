@@ -1,10 +1,8 @@
 package pro.taskana.rest;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -31,7 +29,7 @@ public class WorkbasketController {
     private static final String KEY  = "key";
     private static final String DESCRIPTION  = "description";
     private static final String OWNER  = "owner";
-    private static final String DESC = "DESC";
+    private static final String DESC = "desc";
 
     @Autowired
     private WorkbasketService workbasketService;
@@ -263,7 +261,7 @@ public class WorkbasketController {
 
     private static WorkbasketSummaryDto WorkbasketSummaryLink(WorkbasketSummaryDto workbasketSummaryDto){
 
-        Link selfLink = linkTo(WorkbasketController.class).slash(workbasketSummaryDto.getWorkBasketId()).withSelfRel();
+        Link selfLink = linkTo(WorkbasketController.class).slash(workbasketSummaryDto.getWorkbasketId()).withSelfRel();
         workbasketSummaryDto.add(selfLink);
         return workbasketSummaryDto;
     }

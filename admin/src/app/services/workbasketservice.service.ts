@@ -35,7 +35,7 @@ export class WorkbasketService {
   }
 
   updateWorkbasket(workbasket: WorkbasketSummary): Observable<WorkbasketSummary> {
-    return this.http.put(environment.taskanaRestUrl + "/v1/workbaskets/" + workbasket.id, workbasket, this.createAuthorizationHeader())
+    return this.http.put(environment.taskanaRestUrl + "/v1/workbaskets/" + workbasket.workbasketId, workbasket, this.createAuthorizationHeader())
       .map(res => res.json());
   }
 
