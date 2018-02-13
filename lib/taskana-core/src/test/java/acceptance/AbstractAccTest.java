@@ -3,6 +3,8 @@ package acceptance;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,5 +95,9 @@ public abstract class AbstractAccTest {
         attachment.setCustomAttributes(customAttributes);
 
         return attachment;
+    }
+
+    protected Instant getInstant(String datetime) {
+        return LocalDateTime.parse(datetime).atZone(ZoneId.systemDefault()).toInstant();
     }
 }
