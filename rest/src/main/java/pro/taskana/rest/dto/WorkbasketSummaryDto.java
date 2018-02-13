@@ -5,7 +5,7 @@ import pro.taskana.model.WorkbasketType;
 
 public class WorkbasketSummaryDto extends ResourceSupport{
 
-    private String workBasketSummaryId;
+    private String workBasketId;
     private String key;
     private String name;
     private String description;
@@ -17,12 +17,12 @@ public class WorkbasketSummaryDto extends ResourceSupport{
     private String orgLevel3;
     private String orgLevel4;
 
-    public String getWorkBasketSummaryId() {
-        return workBasketSummaryId;
+    public String getWorkBasketId() {
+        return workBasketId;
     }
 
-    public void setWorkBasketSummaryId(String workBasketSummaryId) {
-        this.workBasketSummaryId = workBasketSummaryId;
+    public void setWorkBasketId(String workBasketId) {
+        this.workBasketId = workBasketId;
     }
 
     public String getKey() {

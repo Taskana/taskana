@@ -262,7 +262,7 @@ public class WorkbasketController {
 
     private static WorkbasketSummaryDto WorkbasketSummaryLink(WorkbasketSummaryDto workbasketSummaryDto){
 
-        Link selfLink = linkTo(WorkbasketController.class).slash(workbasketSummaryDto.getWorkBasketSummaryId()).withSelfRel();
+        Link selfLink = linkTo(WorkbasketController.class).slash(workbasketSummaryDto.getWorkBasketId()).withSelfRel();
         workbasketSummaryDto.add(selfLink);
         return workbasketSummaryDto;
     }

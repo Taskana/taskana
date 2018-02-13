@@ -15,7 +15,7 @@ public class WorkbasketSummaryMapper extends ResourceSupport {
 
     public WorkbasketSummaryDto convertToDto(WorkbasketSummary workbasketSummary){
         WorkbasketSummaryDto dto = modelMapper.map(workbasketSummary, WorkbasketSummaryDto.class);
-        dto.setWorkBasketSummaryId(workbasketSummary.getId());
+        dto.setWorkBasketId(workbasketSummary.getId());
         return dto;
     }
 }
