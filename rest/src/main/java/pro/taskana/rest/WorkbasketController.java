@@ -31,7 +31,6 @@ public class WorkbasketController {
     private static final String KEY  = "key";
     private static final String DESCRIPTION  = "description";
     private static final String OWNER  = "owner";
-    private static final String ASC  = "ASC";
     private static final String DESC = "DESC";
 
     @Autowired
@@ -56,9 +55,8 @@ public class WorkbasketController {
 
         try{
 
-            AddSortByQuery(query, sortBy);
+            AddSortByQuery(query, sortBy, order);
             AddFilterQuery(query, name, nameLike, descLike, owner, ownerLike, type);
-            AddOrderQuery(query, order);
             AddAuthorization(query, requiredPermission);
             workbasketsSummary = query.list();
 
@@ -205,27 +203,30 @@ public class WorkbasketController {
         }
     }
 
-    private void AddOrderQuery(WorkbasketQuery query, String order) throws InvalidRequestException {
-        if(order.equals(ASC)){
-            query.ascending();
-        } else if (order.equals(DESC)){
-            query.descending();
-        };
-    }
 
-    private void AddSortByQuery(WorkbasketQuery query, String sortBy) throws InvalidRequestException, InvalidArgumentException {
+    private void AddSortByQuery(WorkbasketQuery query, String sortBy, String order) throws InvalidRequestException, InvalidArgumentException {
+        BaseQuery.SortDirection sortDirection = GetSortDirecction(order);
+
         if (sortBy.equals(NAME)) {
-            query.orderByName();
+            query.orderByKey(sortDirection);
         } else if (sortBy.equals(KEY)){
-            query.orderByKey();
+            query.orderByKey(sortDirection);
         }
         /*else if (sortBy.equals(DESCRIPTION)){
-            query.orderByKey();
+            query.orderByDescription(sortDirection);
         }
         else if (sortBy.equals(OWNER)){
-            query.orderByKey();
+            query.orderByOwner(sortDirection);
         }*/
     }
+
+    private BaseQuery.SortDirection GetSortDirecction(String order) throws InvalidRequestException {
+        if (order.equals(DESC)){
+            return BaseQuery.SortDirection.DESCENDING;
+        }
+        return BaseQuery.SortDirection.ASCENDING;
+    }
+
 
     private void AddFilterQuery(WorkbasketQuery query,
                                 String name, String nameLike,
