@@ -37,7 +37,7 @@ export class WorkbasketListComponent implements OnInit {
   }
 
   onDelete(workbasket: WorkbasketSummary) {
-    this.workbasketService.deleteWorkbasket(workbasket.id).subscribe(result => {
+    this.workbasketService.deleteWorkbasket(workbasket.workbasketId).subscribe(result => {
       var index = this.workbaskets.indexOf(workbasket);
       if (index > -1) {
         this.workbaskets.splice(index, 1);
@@ -53,7 +53,7 @@ export class WorkbasketListComponent implements OnInit {
   }
 
   onClear() {
-    this.newWorkbasket.id = "";
+    this.newWorkbasket.workbasketId = "";
     this.newWorkbasket.name = "";
     this.newWorkbasket.description = "";
     this.newWorkbasket.owner = "";
