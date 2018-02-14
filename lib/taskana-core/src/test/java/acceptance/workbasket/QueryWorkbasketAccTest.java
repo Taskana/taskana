@@ -95,6 +95,29 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     }
 
     @Test
+    public void testQueryWorkbasketByDescription()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .descriptionLike("%consectetur%", "%gruppen%")
+            .orderByType(desc)
+            .orderByDescription(asc)
+            .list();
+        Assert.assertEquals(11L, results.size());
+    }
+
+    @Test
+    public void testQueryWorkbasketByOwnerLike()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .ownerLike("%an%", "%te%")
+            .orderByOwner(asc)
+            .list();
+        Assert.assertEquals(3L, results.size());
+    }
+
+    @Test
     public void testQueryWorkbasketByKey()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
