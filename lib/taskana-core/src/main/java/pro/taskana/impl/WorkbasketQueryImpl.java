@@ -45,8 +45,9 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private Instant createdBefore;
     private Instant modifiedAfter;
     private Instant modifiedBefore;
-    private String descriptionLike;
-    private String[] owner;
+    private String[] descriptionLike;
+    private String[] ownerIn;
+    private String[] ownerLike;
     private TaskanaEngineImpl taskanaEngineImpl;
     private List<String> orderBy;
 
@@ -122,14 +123,20 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery descriptionLike(String description) {
-        this.descriptionLike = description.toUpperCase();
+    public WorkbasketQuery descriptionLike(String... description) {
+        this.descriptionLike = toUpperCopy(description);
         return this;
     }
 
     @Override
     public WorkbasketQuery ownerIn(String... owners) {
-        this.owner = owners;
+        this.ownerIn = owners;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery ownerLike(String... owners) {
+        this.ownerLike = toUpperCopy(owners);
         return this;
     }
 
@@ -141,6 +148,21 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     @Override
     public WorkbasketQuery orderByKey(SortDirection sortDirection) {
         return addOrderCriteria("KEY", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByDescription(SortDirection sortDirection) {
+        return addOrderCriteria("DESCRIPTION", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByOwner(SortDirection sortDirection) {
+        return addOrderCriteria("OWNER", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByType(SortDirection sortDirection) {
+        return addOrderCriteria("TYPE", sortDirection);
     }
 
     @Override
@@ -298,12 +320,16 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return modifiedBefore;
     }
 
-    public String getDescriptionLike() {
+    public String[] getDescriptionLike() {
         return descriptionLike;
     }
 
-    public String[] getOwner() {
-        return owner;
+    public String[] getOwnerIn() {
+        return ownerIn;
+    }
+
+    public String[] getOwnerLike() {
+        return ownerLike;
     }
 
     public List<String> getOrderBy() {
@@ -354,11 +380,13 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(", modifiedBefore=");
         builder.append(modifiedBefore);
         builder.append(", descriptionLike=");
-        builder.append(descriptionLike);
-        builder.append(", owner=");
-        builder.append(Arrays.toString(owner));
-        builder.append(", taskanaEngineImpl=");
-        builder.append(taskanaEngineImpl);
+        builder.append(Arrays.toString(descriptionLike));
+        builder.append(", ownerIn=");
+        builder.append(Arrays.toString(ownerIn));
+        builder.append(", ownerLike=");
+        builder.append(Arrays.toString(ownerLike));
+        builder.append(", orderBy=");
+        builder.append(orderBy);
         builder.append("]");
         return builder.toString();
     }
@@ -374,12 +402,16 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         }
     }
 
-    private String[] toUpperCopy(String... source) {
-        String[] target = new String[source.length];
-        for (int i = 0; i < source.length; i++) {
-            target[i] = source[i].toUpperCase();
+    static String[] toUpperCopy(String... source) {
+        if (source == null || source.length == 0) {
+            return null;
+        } else {
+            String[] target = new String[source.length];
+            for (int i = 0; i < source.length; i++) {
+                target[i] = source[i].toUpperCase();
+            }
+            return target;
         }
-        return target;
     }
 
     private WorkbasketQuery addOrderCriteria(String colName, SortDirection sortDirection) {
