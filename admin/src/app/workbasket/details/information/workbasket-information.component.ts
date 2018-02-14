@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { WorkbasketSummary } from '../../../model/workbasketSummary';
+import { Workbasket } from '../../../model/workbasket';
 import { WorkbasketService } from '../../../services/workbasketservice.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { WorkbasketService } from '../../../services/workbasketservice.service';
 export class WorkbasketInformationComponent implements OnInit {
 
   @Input()
-  workbasket: WorkbasketSummary;
+  workbasket: Workbasket;
 
   constructor(private service: WorkbasketService) { }
 

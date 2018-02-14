@@ -1,109 +1,75 @@
 package pro.taskana.rest;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.WorkbasketService;
-import pro.taskana.WorkbasketSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.*;
+import pro.taskana.exceptions.*;
 import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.model.WorkbasketType;
+import pro.taskana.rest.dto.WorkbasketSummaryDto;
+import pro.taskana.rest.mapper.WorkbasketSummaryMapper;
+import pro.taskana.security.CurrentUserContext;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(path = "/v1/workbaskets", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class WorkbasketController {
 
+    private static final String LIKE = "%";
+    private static final String NAME = "name";
+    private static final String KEY  = "key";
+    private static final String DESCRIPTION  = "description";
+    private static final String OWNER  = "owner";
+    private static final String TYPE  = "type";
+    private static final String DESC = "desc";
+
     @Autowired
     private WorkbasketService workbasketService;
+    @Autowired
+    private WorkbasketSummaryMapper workbasketSummaryMapper;
 
-    @GetMapping
-    public ResponseEntity<List<WorkbasketSummary>> getWorkbaskets(@RequestParam MultiValueMap<String, String> params) {
-        List<WorkbasketSummary> workbaskets = new ArrayList<>();
-        if (params.containsKey("requiredPermission")) {
-            List<WorkbasketAuthorization> authorizations = new ArrayList<>();
-            params.get("requiredPermission").stream().forEach(item -> {
-                for (String authorization : Arrays.asList(item.split(","))) {
-                    switch (authorization.trim()) {
-                        case "READ":
-                            authorizations.add(WorkbasketAuthorization.READ);
-                            break;
-                        case "OPEN":
-                            authorizations.add(WorkbasketAuthorization.OPEN);
-                            break;
-                        case "APPEND":
-                            authorizations.add(WorkbasketAuthorization.APPEND);
-                            break;
-                        case "TRANSFER":
-                            authorizations.add(WorkbasketAuthorization.TRANSFER);
-                            break;
-                        case "DISTRIBUTE":
-                            authorizations.add(WorkbasketAuthorization.DISTRIBUTE);
-                            break;
-                        case "DELETE":
-                            authorizations.add(WorkbasketAuthorization.DELETE);
-                            break;
-                        case "CUSTOM_1":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_1);
-                            break;
-                        case "CUSTOM_2":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_2);
-                            break;
-                        case "CUSTOM_3":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_3);
-                            break;
-                        case "CUSTOM_4":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_4);
-                            break;
-                        case "CUSTOM_5":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_5);
-                            break;
-                        case "CUSTOM_6":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_6);
-                            break;
-                        case "CUSTOM_7":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_7);
-                            break;
-                        case "CUSTOM_8":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_8);
-                            break;
-                        case "CUSTOM_9":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_9);
-                            break;
-                        case "CUSTOM_10":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_10);
-                            break;
-                        case "CUSTOM_11":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_11);
-                            break;
-                        case "CUSTOM_12":
-                            authorizations.add(WorkbasketAuthorization.CUSTOM_12);
-                            break;
-                    }
-                }
-            });
-            workbaskets = workbasketService.getWorkbaskets(authorizations);
-        } else {
-            workbaskets = workbasketService.getWorkbaskets();
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<WorkbasketSummaryDto>> GetWorkbaskets(@RequestParam(value = "sortBy", defaultValue = "name", required = false) String sortBy ,
+                                                                     @RequestParam(value = "order", defaultValue = "asc", required = false) String order ,
+                                                                     @RequestParam(value = "name", defaultValue = "", required = false) String name ,
+                                                                     @RequestParam(value = "nameLike", defaultValue = "", required = false) String nameLike ,
+                                                                     @RequestParam(value = "descLike", defaultValue = "", required = false) String descLike ,
+                                                                     @RequestParam(value = "owner", defaultValue = "", required = false) String owner ,
+                                                                     @RequestParam(value = "ownerLike", defaultValue = "", required = false) String ownerLike ,
+                                                                     @RequestParam(value = "type", defaultValue = "", required = false) String type ,
+                                                                     @RequestParam(value = "requiredPermission", defaultValue = "", required = false) String requiredPermission) {
+
+        List<WorkbasketSummary> workbasketsSummary;
+        WorkbasketQuery query = workbasketService.createWorkbasketQuery();
+
+        try{
+
+            AddSortByQuery(query, sortBy, order);
+            AddFilterQuery(query, name, nameLike, descLike, owner, ownerLike, type);
+            AddAuthorization(query, requiredPermission);
+            workbasketsSummary = query.list();
+
+        } catch (InvalidArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (InvalidRequestException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (NotAuthorizedException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(workbaskets, HttpStatus.OK);
+
+
+        return new ResponseEntity<>(workbasketsSummary.stream().map(workbasket -> workbasketSummaryMapper.convertToDto(workbasket))
+                                                               .map(WorkbasketController::WorkbasketSummaryLink).collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{workbasketid}")
@@ -166,4 +132,139 @@ public class WorkbasketController {
         workbasketService.deleteWorkbasketAuthorization(authId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+
+    private void AddAuthorization(WorkbasketQuery query, String requiredPermission) throws InvalidArgumentException {
+       if (requiredPermission.isEmpty()) {return;}
+
+       String[] accessIds = GetCurrentUserAccessIds();
+        for (String authorization : Arrays.asList(requiredPermission.split(","))) {
+            try {
+                switch (authorization.trim()) {
+                case "READ":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.READ, accessIds);
+                    break;
+                case "OPEN":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.OPEN, accessIds);
+                    break;
+                case "APPEND":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.APPEND, accessIds);
+                    break;
+                case "TRANSFER":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.TRANSFER, accessIds);
+                    break;
+                case "DISTRIBUTE":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.DISTRIBUTE, accessIds);
+                    break;
+                case "DELETE":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.DELETE, accessIds);
+                    break;
+                case "CUSTOM_1":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_1, accessIds);
+                    break;
+                case "CUSTOM_2":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_2, accessIds);
+                    break;
+                case "CUSTOM_3":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_3, accessIds);
+                    break;
+                case "CUSTOM_4":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_4, accessIds);
+                    break;
+                case "CUSTOM_5":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_5, accessIds);
+                    break;
+                case "CUSTOM_6":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_6, accessIds);
+                    break;
+                case "CUSTOM_7":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_7, accessIds);
+                    break;
+                case "CUSTOM_8":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_8, accessIds);
+                    break;
+                case "CUSTOM_9":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_9, accessIds);
+                    break;
+                case "CUSTOM_10":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_10, accessIds);
+                    break;
+                case "CUSTOM_11":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_11, accessIds);
+                    break;
+                case "CUSTOM_12":
+                    query.accessIdsHavePermission(WorkbasketAuthorization.CUSTOM_12, accessIds);
+                    break;
+                }
+            } catch (InvalidArgumentException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void AddSortByQuery(WorkbasketQuery query, String sortBy, String order) throws InvalidRequestException, InvalidArgumentException {
+        BaseQuery.SortDirection sortDirection = GetSortDirecction(order);
+
+        if (sortBy.equals(NAME)) {
+            query.orderByKey(sortDirection);
+        } else if (sortBy.equals(KEY)){
+            query.orderByKey(sortDirection);
+        } else if (sortBy.equals(DESCRIPTION)){
+            query.orderByDescription(sortDirection);
+        } else if (sortBy.equals(OWNER)){
+            query.orderByOwner(sortDirection);
+        } else if (sortBy.equals(TYPE)){
+            query.orderByType(sortDirection);
+        }
+    }
+
+    private BaseQuery.SortDirection GetSortDirecction(String order) throws InvalidRequestException {
+        if (order.equals(DESC)){
+            return BaseQuery.SortDirection.DESCENDING;
+        }
+        return BaseQuery.SortDirection.ASCENDING;
+    }
+
+
+    private void AddFilterQuery(WorkbasketQuery query,
+                                String name, String nameLike,
+                                String descLike, String owner,
+                                String ownerLike, String type) throws NotAuthorizedException, InvalidArgumentException {
+        if(!name.isEmpty())query.nameIn(name);
+        if(!nameLike.isEmpty())query.nameLike(LIKE + nameLike + LIKE);
+        if(!owner.isEmpty())query.ownerIn(owner);
+        if(!ownerLike.isEmpty())query.ownerLike(LIKE + ownerLike + LIKE);
+        if(!descLike.isEmpty())query.descriptionLike(LIKE + descLike + LIKE);
+        switch (type) {
+            case "PERSONAL":
+                query.typeIn(WorkbasketType.PERSONAL);
+            case "GROUP":
+                query.typeIn(WorkbasketType.GROUP);
+            case "CLEARANCE":
+                query.typeIn(WorkbasketType.CLEARANCE);
+            case "TOPIC":
+                query.typeIn(WorkbasketType.TOPIC);
+        }
+    }
+
+    private String[] GetCurrentUserAccessIds() throws InvalidArgumentException{
+        String[] accessIds;
+        List<String> ucAccessIds = CurrentUserContext.getAccessIds();
+        if (ucAccessIds != null && !ucAccessIds.isEmpty()) {
+            accessIds = new String[ucAccessIds.size()];
+            accessIds = ucAccessIds.toArray(accessIds);
+        } else {
+            throw new InvalidArgumentException("CurrentUserContext need to have at least one accessId.");
+        }
+        return accessIds;
+    }
+
+    private static WorkbasketSummaryDto WorkbasketSummaryLink(WorkbasketSummaryDto workbasketSummaryDto){
+
+        Link selfLink = linkTo(WorkbasketController.class).slash(workbasketSummaryDto.getWorkbasketId()).withSelfRel();
+        workbasketSummaryDto.add(selfLink);
+        return workbasketSummaryDto;
+    }
+
 }

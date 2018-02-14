@@ -107,10 +107,10 @@
                 </dl>                                         
             </div>                                     
         </li>                                 
-        <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.id == selectedId" type="text" (click) ="selectWorkbasket(workbasket.id)"  [routerLink]="[ {outlets: { detail: [workbasket.id] } }]">
+        <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId" type="text" (click) ="selectWorkbasket(workbasket.workbasketId)"  [routerLink]="[ {outlets: { detail: [workbasket.workbasketId] } }]">
             <div class="row">
                 <dl class="col-xs-1">
-                    <dt><svg-icon class="{{workbasket.id === selectedId? 'white': 'blue' }} small" src="./assets/icons/{{workbasket.type === 'PERSONAL'? 'user.svg': 'users.svg'}}"></svg-icon></dt>
+                    <dt><svg-icon class="{{workbasket.workbasketId === selectedId? 'white': 'blue' }} small" src="./assets/icons/{{workbasket.type === 'PERSONAL'? 'user.svg': 'users.svg'}}"></svg-icon></dt>
                 </dl>
                 <dl class="col-xs-10">
                     <dt>{{workbasket.name}}  ({{workbasket.key}}) </dt>
