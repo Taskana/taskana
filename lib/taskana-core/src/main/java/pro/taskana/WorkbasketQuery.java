@@ -120,14 +120,15 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
     WorkbasketQuery modifiedBefore(Instant modifiedBefore);
 
     /**
-     * Add your description to your query. It will be compared case-insensitively to the descriptions of workbaskets.
-     * You may use a wildcard like '%' to search generically.
+     * Add your description to your query. It will be compared case-insensitively to the descriptions of workbaskets
+     * using the LIKE operator. You may use a wildcard like '%' to search generically. If you specify multiple arguments
+     * they are combined with the OR keyword.
      *
      * @param description
      *            your description
      * @return the query
      */
-    WorkbasketQuery descriptionLike(String description);
+    WorkbasketQuery descriptionLike(String... description);
 
     /**
      * Add the owners to your query.
@@ -137,6 +138,17 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      * @return the query
      */
     WorkbasketQuery ownerIn(String... owners);
+
+    /**
+     * Add the owners for pattern matching to your query. It will be compared in SQL with the LIKE operator. You may use
+     * a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param owners
+     *            the owners as Strings
+     * @return the query
+     */
+    WorkbasketQuery ownerLike(String... owners);
 
     /**
      * Setting up the permission which should be granted on the result workbaskets and the users which should be
@@ -186,5 +198,35 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      * @return the query
      */
     WorkbasketQuery orderByKey(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by description.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByDescription(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by owner.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByOwner(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by type.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByType(SortDirection sortDirection);
 
 }
