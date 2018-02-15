@@ -1,6 +1,7 @@
 package acceptance.classification;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -15,6 +16,9 @@ import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.impl.TaskImpl;
 
 /**
  * Acceptance test for all "update classification" scenarios.
@@ -26,7 +30,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testUpdateClassification() throws SQLException, ClassificationNotFoundException {
+    public void testUpdateClassification()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
         ClassificationService classificationService = taskanaEngine.getClassificationService();
@@ -59,7 +64,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testUpdateUnpersistedClassification() throws SQLException, ClassificationNotFoundException {
+    public void testUpdateUnpersistedClassification()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
         ClassificationService classificationService = taskanaEngine.getClassificationService();
@@ -97,6 +103,27 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         assertNotNull(persistedClassification);
         assertThat(persistedClassification.getName(), equalTo(newName));
         assertThat(persistedClassification.getApplicationEntryPoint(), equalTo(newEntryPoint));
+    }
+
+    @Test
+    public void testUpdateTaskOnClassificationKeyCategoryChange()
+        throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException {
+        TaskImpl beforeTask = (TaskImpl) taskanaEngine.getTaskService()
+            .getTask("TKI:000000000000000000000000000000000000");
+
+        Classification classification = taskanaEngine.getClassificationService()
+            .getClassification(beforeTask.getClassificationSummary().getKey(), beforeTask.getDomain());
+        classification.setCategory("NEW CATEGORY");
+        taskanaEngine.getClassificationService().updateClassification(classification);
+
+        TaskImpl updatedTask = (TaskImpl) taskanaEngine.getTaskService()
+            .getTask("TKI:000000000000000000000000000000000000");
+        assertThat(updatedTask.getClassificationCategory(), not(equalTo(beforeTask.getClassificationCategory())));
+        assertThat(updatedTask.getClassificationSummary().getCategory(),
+            not(equalTo(beforeTask.getClassificationSummary().getCategory())));
+        assertThat(updatedTask.getClassificationCategory(), equalTo("NEW CATEGORY"));
+        assertThat(updatedTask.getClassificationSummary().getCategory(),
+            equalTo("NEW CATEGORY"));
     }
 
     @AfterClass

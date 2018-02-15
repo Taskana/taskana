@@ -170,7 +170,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testModifiedClassification()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException {
         String description = "TEST SOMETHING";
         Classification classification = this.createDummyClassificationWithUniqueKey("domain1", "type1");
         classification.setDescription("");

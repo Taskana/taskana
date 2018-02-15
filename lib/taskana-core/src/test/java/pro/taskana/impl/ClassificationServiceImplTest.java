@@ -171,7 +171,7 @@ public class ClassificationServiceImplTest {
     }
 
     @Test
-    public void testUpdateExistingClassification() throws ClassificationNotFoundException {
+    public void testUpdateExistingClassification() throws ClassificationNotFoundException, NotAuthorizedException {
         Classification classification = createDummyClassification();
         ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
         doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
@@ -261,6 +261,7 @@ public class ClassificationServiceImplTest {
         ClassificationImpl classificationImpl = new ClassificationImpl();
         classificationImpl.setDescription("A DUMMY FOR TESTING A SERVICE");
         classificationImpl.setName("SERVICE-DUMMY");
+        classificationImpl.setCategory("dummy-category");
         classificationImpl.setDomain("test-domain");
         classificationImpl.setServiceLevel("P2D");
         classificationImpl.setId("ID: 1");
