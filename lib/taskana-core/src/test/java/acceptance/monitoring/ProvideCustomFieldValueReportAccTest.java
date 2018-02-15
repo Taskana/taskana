@@ -84,13 +84,13 @@ public class ProvideCustomFieldValueReportAccTest {
         Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, customField);
 
         assertNotNull(report);
-        assertEquals(25, report.getDetailLines().get(customFieldValue1).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(customFieldValue2).getTotalNumberOfTasks());
-        assertEquals(15, report.getDetailLines().get(customFieldValue3).getTotalNumberOfTasks());
-        assertEquals(0, report.getDetailLines().get(customFieldValue1).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(customFieldValue2).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(customFieldValue3).getLineItems().size());
-        assertEquals(3, report.getDetailLines().size());
+        assertEquals(25, report.getReportLines().get(customFieldValue1).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(customFieldValue2).getTotalNumberOfTasks());
+        assertEquals(15, report.getReportLines().get(customFieldValue3).getTotalNumberOfTasks());
+        assertEquals(0, report.getReportLines().get(customFieldValue1).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(customFieldValue2).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(customFieldValue3).getLineItems().size());
+        assertEquals(3, report.getReportLines().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
@@ -110,13 +110,13 @@ public class ProvideCustomFieldValueReportAccTest {
 
         Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, customField);
         assertNotNull(report);
-        assertEquals(21, report.getDetailLines().get(customFieldValue1).getTotalNumberOfTasks());
-        assertEquals(29, report.getDetailLines().get(customFieldValue2).getTotalNumberOfTasks());
+        assertEquals(21, report.getReportLines().get(customFieldValue1).getTotalNumberOfTasks());
+        assertEquals(29, report.getReportLines().get(customFieldValue2).getTotalNumberOfTasks());
 
-        assertEquals(0, report.getDetailLines().get(customFieldValue1).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(customFieldValue2).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(customFieldValue1).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(customFieldValue2).getLineItems().size());
 
-        assertEquals(2, report.getDetailLines().size());
+        assertEquals(2, report.getReportLines().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
@@ -142,9 +142,9 @@ public class ProvideCustomFieldValueReportAccTest {
 
         assertNotNull(report);
 
-        assertEquals(25, report.getDetailLines().get(customFieldValue1).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(customFieldValue2).getTotalNumberOfTasks());
-        assertEquals(15, report.getDetailLines().get(customFieldValue3).getTotalNumberOfTasks());
+        assertEquals(25, report.getReportLines().get(customFieldValue1).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(customFieldValue2).getTotalNumberOfTasks());
+        assertEquals(15, report.getReportLines().get(customFieldValue3).getTotalNumberOfTasks());
 
         assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
@@ -156,7 +156,7 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(4, report.getSumLine().getLineItems().get(7).getNumberOfTasks());
         assertEquals(5, report.getSumLine().getLineItems().get(8).getNumberOfTasks());
 
-        assertEquals(3, report.getDetailLines().size());
+        assertEquals(3, report.getReportLines().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
@@ -182,9 +182,9 @@ public class ProvideCustomFieldValueReportAccTest {
 
         assertNotNull(report);
 
-        assertEquals(25, report.getDetailLines().get(customFieldValue1).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(customFieldValue2).getTotalNumberOfTasks());
-        assertEquals(15, report.getDetailLines().get(customFieldValue3).getTotalNumberOfTasks());
+        assertEquals(25, report.getReportLines().get(customFieldValue1).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(customFieldValue2).getTotalNumberOfTasks());
+        assertEquals(15, report.getReportLines().get(customFieldValue3).getTotalNumberOfTasks());
 
         assertEquals(19, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(11, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
@@ -196,7 +196,7 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(7, report.getSumLine().getLineItems().get(7).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(8).getNumberOfTasks());
 
-        assertEquals(3, report.getDetailLines().size());
+        assertEquals(3, report.getReportLines().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
@@ -219,21 +219,21 @@ public class ProvideCustomFieldValueReportAccTest {
         Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, customField,
             reportLineItemDefinitions);
 
-        List<ReportLineItem> line1 = report.getDetailLines().get(customFieldValue1).getLineItems();
+        List<ReportLineItem> line1 = report.getReportLines().get(customFieldValue1).getLineItems();
         assertEquals(11, line1.get(0).getNumberOfTasks());
         assertEquals(4, line1.get(1).getNumberOfTasks());
         assertEquals(3, line1.get(2).getNumberOfTasks());
         assertEquals(4, line1.get(3).getNumberOfTasks());
         assertEquals(3, line1.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line2 = report.getDetailLines().get(customFieldValue2).getLineItems();
+        List<ReportLineItem> line2 = report.getReportLines().get(customFieldValue2).getLineItems();
         assertEquals(5, line2.get(0).getNumberOfTasks());
         assertEquals(3, line2.get(1).getNumberOfTasks());
         assertEquals(0, line2.get(2).getNumberOfTasks());
         assertEquals(2, line2.get(3).getNumberOfTasks());
         assertEquals(0, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getDetailLines().get(customFieldValue3).getLineItems();
+        List<ReportLineItem> line3 = report.getReportLines().get(customFieldValue3).getLineItems();
         assertEquals(3, line3.get(0).getNumberOfTasks());
         assertEquals(4, line3.get(1).getNumberOfTasks());
         assertEquals(1, line3.get(2).getNumberOfTasks());

@@ -28,6 +28,7 @@ public class ReportLineItem {
     public void setNumberOfTasks(int numberOfTasks) {
         this.numberOfTasks = numberOfTasks;
     }
+
     public void addNumberOfTasks(int numberOfTasks) {
         this.numberOfTasks += numberOfTasks;
     }

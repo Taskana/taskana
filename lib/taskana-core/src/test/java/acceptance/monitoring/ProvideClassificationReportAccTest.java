@@ -82,16 +82,16 @@ public class ProvideClassificationReportAccTest {
         Report report = taskMonitorService.getClassificationReport(workbaskets, states);
 
         assertNotNull(report);
-        assertEquals(10, report.getDetailLines().get(classifications.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(classifications.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(7, report.getDetailLines().get(classifications.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(classifications.get(3).getKey()).getTotalNumberOfTasks());
-        assertEquals(13, report.getDetailLines().get(classifications.get(4).getKey()).getTotalNumberOfTasks());
-        assertEquals(0, report.getDetailLines().get(classifications.get(0).getKey()).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(classifications.get(1).getKey()).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(classifications.get(2).getKey()).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(classifications.get(3).getKey()).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(classifications.get(4).getKey()).getLineItems().size());
+        assertEquals(10, report.getReportLines().get(classifications.get(0).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(classifications.get(1).getKey()).getTotalNumberOfTasks());
+        assertEquals(7, report.getReportLines().get(classifications.get(2).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(classifications.get(3).getKey()).getTotalNumberOfTasks());
+        assertEquals(13, report.getReportLines().get(classifications.get(4).getKey()).getTotalNumberOfTasks());
+        assertEquals(0, report.getReportLines().get(classifications.get(0).getKey()).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(classifications.get(1).getKey()).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(classifications.get(2).getKey()).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(classifications.get(3).getKey()).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(classifications.get(4).getKey()).getLineItems().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
@@ -121,11 +121,11 @@ public class ProvideClassificationReportAccTest {
 
         assertNotNull(report);
 
-        assertEquals(10, report.getDetailLines().get(classifications.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(classifications.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(7, report.getDetailLines().get(classifications.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(classifications.get(3).getKey()).getTotalNumberOfTasks());
-        assertEquals(13, report.getDetailLines().get(classifications.get(4).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(classifications.get(0).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(classifications.get(1).getKey()).getTotalNumberOfTasks());
+        assertEquals(7, report.getReportLines().get(classifications.get(2).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(classifications.get(3).getKey()).getTotalNumberOfTasks());
+        assertEquals(13, report.getReportLines().get(classifications.get(4).getKey()).getTotalNumberOfTasks());
 
         assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
@@ -154,35 +154,35 @@ public class ProvideClassificationReportAccTest {
 
         Report report = taskMonitorService.getClassificationReport(workbaskets, states, reportLineItemDefinitions);
 
-        List<ReportLineItem> line1 = report.getDetailLines().get(classifications.get(0).getKey()).getLineItems();
+        List<ReportLineItem> line1 = report.getReportLines().get(classifications.get(0).getKey()).getLineItems();
         assertEquals(7, line1.get(0).getNumberOfTasks());
         assertEquals(2, line1.get(1).getNumberOfTasks());
         assertEquals(1, line1.get(2).getNumberOfTasks());
         assertEquals(0, line1.get(3).getNumberOfTasks());
         assertEquals(0, line1.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line2 = report.getDetailLines().get(classifications.get(1).getKey()).getLineItems();
+        List<ReportLineItem> line2 = report.getReportLines().get(classifications.get(1).getKey()).getLineItems();
         assertEquals(5, line2.get(0).getNumberOfTasks());
         assertEquals(3, line2.get(1).getNumberOfTasks());
         assertEquals(1, line2.get(2).getNumberOfTasks());
         assertEquals(1, line2.get(3).getNumberOfTasks());
         assertEquals(0, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getDetailLines().get(classifications.get(2).getKey()).getLineItems();
+        List<ReportLineItem> line3 = report.getReportLines().get(classifications.get(2).getKey()).getLineItems();
         assertEquals(2, line3.get(0).getNumberOfTasks());
         assertEquals(1, line3.get(1).getNumberOfTasks());
         assertEquals(0, line3.get(2).getNumberOfTasks());
         assertEquals(1, line3.get(3).getNumberOfTasks());
         assertEquals(3, line3.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line4 = report.getDetailLines().get(classifications.get(3).getKey()).getLineItems();
+        List<ReportLineItem> line4 = report.getReportLines().get(classifications.get(3).getKey()).getLineItems();
         assertEquals(2, line4.get(0).getNumberOfTasks());
         assertEquals(2, line4.get(1).getNumberOfTasks());
         assertEquals(2, line4.get(2).getNumberOfTasks());
         assertEquals(0, line4.get(3).getNumberOfTasks());
         assertEquals(4, line4.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line5 = report.getDetailLines().get(classifications.get(4).getKey()).getLineItems();
+        List<ReportLineItem> line5 = report.getReportLines().get(classifications.get(4).getKey()).getLineItems();
         assertEquals(3, line5.get(0).getNumberOfTasks());
         assertEquals(3, line5.get(1).getNumberOfTasks());
         assertEquals(0, line5.get(2).getNumberOfTasks());
