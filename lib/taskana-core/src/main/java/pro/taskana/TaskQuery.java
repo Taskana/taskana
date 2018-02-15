@@ -88,6 +88,26 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery classificationKeyLike(String... classificationKeys);
 
     /**
+     * Add your classificationCategory to your query.
+     *
+     * @param classificationCategories
+     *            the classification category for filtering
+     * @return the query
+     */
+    TaskQuery classificationCategoryIn(String... classificationCategories);
+
+    /**
+     * Add your classificationCategory for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param classificationCategories
+     *            the classification categories for filtering
+     * @return the query
+     */
+    TaskQuery classificationCategoryLike(String... classificationCategories);
+
+    /**
      * Add your workbasket key to the query.
      *
      * @param workbasketKeys

@@ -32,6 +32,7 @@ public class TaskImpl implements Task {
     private int priority;
     private TaskState state;
     private String classificationKey;
+    private String classificationCategory;
     private ClassificationSummary classificationSummary;
     private WorkbasketSummary workbasketSummary;
     private String workbasketKey;
@@ -179,6 +180,15 @@ public class TaskImpl implements Task {
     @Override
     public void setClassificationKey(String classificationKey) {
         this.classificationKey = classificationKey;
+    }
+
+    public void setClassificationCategory(String classificationCategory) {
+        this.classificationCategory = classificationCategory;
+    }
+
+    @Override
+    public String getClassificationCategory() {
+        return this.classificationCategory;
     }
 
     @Override
