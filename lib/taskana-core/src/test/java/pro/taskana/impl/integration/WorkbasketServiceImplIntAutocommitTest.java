@@ -6,6 +6,10 @@ import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,8 +26,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.TimeInterval;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketQuery;
@@ -289,8 +295,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         Assert.assertEquals(1, result4.size());
 
         WorkbasketQuery query0 = workBasketService.createWorkbasketQuery()
-            .createdBefore(tomorrow)
-            .createdAfter(yesterday)
+            .createdWithin(today())
             .nameIn("Basket1", "Basket2", "Basket3");
         List<WorkbasketSummary> result0 = query0.list();
         assertTrue(result0.size() == THREE);
@@ -301,8 +306,8 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
         Thread.sleep(20L);
         WorkbasketQuery query5 = workBasketService.createWorkbasketQuery()
-            .modifiedAfter(Instant.now().minus(Duration.ofDays(31)))
-            .modifiedBefore(Instant.now().minus(Duration.ofDays(14)));
+            .modifiedWithin(
+                new TimeInterval(Instant.now().minus(Duration.ofDays(31)), Instant.now().minus(Duration.ofDays(14))));
         List<WorkbasketSummary> result5 = query5.list();
         assertTrue(result5.size() == 3);
         for (WorkbasketSummary workbasket : result5) {
@@ -312,10 +317,11 @@ public class WorkbasketServiceImplIntAutocommitTest {
         }
 
         WorkbasketQuery query6 = workBasketService.createWorkbasketQuery()
-            .modifiedAfter(twentyDaysAgo)
-            .domainIn("novatec", "consulting");
+            .modifiedWithin(new TimeInterval(now.minus(Duration.ofDays(21L)), null))
+            .domainIn("novatec", "consulting")
+            .orderByName(SortDirection.ASCENDING);
         List<WorkbasketSummary> result6 = query6.list();
-        assertTrue(result6.size() == 1);
+        assertTrue(result6.size() == 2);
         assertTrue("Basket1".equals(result6.get(0).getName()));
 
         WorkbasketQuery query7 = workBasketService.createWorkbasketQuery()
@@ -433,6 +439,12 @@ public class WorkbasketServiceImplIntAutocommitTest {
         wb.setDescription("Description of a Workbasket...");
         wb.setType(type);
         return wb;
+    }
+
+    private TimeInterval today() {
+        Instant begin = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant();
+        Instant end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
+        return new TimeInterval(begin, end);
     }
 
     @AfterClass

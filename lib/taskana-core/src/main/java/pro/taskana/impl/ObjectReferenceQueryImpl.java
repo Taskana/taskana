@@ -36,31 +36,31 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     }
 
     @Override
-    public ObjectReferenceQuery company(String... companies) {
+    public ObjectReferenceQuery companyIn(String... companies) {
         this.company = companies;
         return this;
     }
 
     @Override
-    public ObjectReferenceQuery system(String... systems) {
+    public ObjectReferenceQuery systemIn(String... systems) {
         this.system = systems;
         return this;
     }
 
     @Override
-    public ObjectReferenceQuery systemInstance(String... systemInstances) {
+    public ObjectReferenceQuery systemInstanceIn(String... systemInstances) {
         this.systemInstance = systemInstances;
         return this;
     }
 
     @Override
-    public ObjectReferenceQuery type(String... types) {
+    public ObjectReferenceQuery typeIn(String... types) {
         this.type = types;
         return this;
     }
 
     @Override
-    public ObjectReferenceQuery value(String... values) {
+    public ObjectReferenceQuery valueIn(String... values) {
         this.value = values;
         return this;
     }

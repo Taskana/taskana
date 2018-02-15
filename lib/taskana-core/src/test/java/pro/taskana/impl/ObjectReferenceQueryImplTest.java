@@ -43,10 +43,10 @@ public class ObjectReferenceQueryImplTest {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
-        List<ObjectReference> result = objectReferenceQueryImpl.value("test", "asd", "blubber")
-            .type("cool", "bla")
-            .systemInstance("1", "2")
-            .system("superId")
+        List<ObjectReference> result = objectReferenceQueryImpl.valueIn("test", "asd", "blubber")
+            .typeIn("cool", "bla")
+            .systemInstanceIn("1", "2")
+            .systemIn("superId")
             .list();
         Assert.assertNotNull(result);
     }
@@ -57,10 +57,10 @@ public class ObjectReferenceQueryImplTest {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
-        List<ObjectReference> result = objectReferenceQueryImpl.value("test", "asd", "blubber")
-            .type("cool", "bla")
-            .systemInstance("1", "2")
-            .system("superId")
+        List<ObjectReference> result = objectReferenceQueryImpl.valueIn("test", "asd", "blubber")
+            .typeIn("cool", "bla")
+            .systemInstanceIn("1", "2")
+            .systemIn("superId")
             .list(1, 1);
         Assert.assertNotNull(result);
     }
@@ -70,10 +70,10 @@ public class ObjectReferenceQueryImplTest {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new ObjectReference());
 
-        ObjectReference result = objectReferenceQueryImpl.value("test", "asd", "blubber")
-            .type("cool", "bla")
-            .systemInstance("1", "2")
-            .system("superId")
+        ObjectReference result = objectReferenceQueryImpl.valueIn("test", "asd", "blubber")
+            .typeIn("cool", "bla")
+            .systemInstanceIn("1", "2")
+            .systemIn("superId")
             .single();
         Assert.assertNotNull(result);
     }

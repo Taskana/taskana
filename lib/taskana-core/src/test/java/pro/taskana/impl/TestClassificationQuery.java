@@ -47,7 +47,7 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery validInDomain(Boolean validInDomain) {
+    public ClassificationQuery validInDomainEquals(Boolean validInDomain) {
         return this;
     }
 
@@ -72,7 +72,7 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery priority(int... priorities) {
+    public ClassificationQuery priorityIn(int... priorities) {
         return this;
     }
 
