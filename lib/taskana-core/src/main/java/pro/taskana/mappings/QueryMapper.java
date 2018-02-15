@@ -1,4 +1,4 @@
-package pro.taskana.model.mappings;
+package pro.taskana.mappings;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ClassificationSummaryImpl;
+import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.impl.TaskSummaryImpl;
@@ -15,43 +16,77 @@ import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.impl.WorkbasketAccessItemQueryImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
-import pro.taskana.model.ObjectReference;
 
 /**
  * This class provides a mapper for all queries.
  */
 public interface QueryMapper {
 
-    String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.model.mappings.ObjectReferenceMapper.findById";
-    String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByKeyAndDomain";
-    String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findById";
-    String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.model.mappings.WorkbasketMapper.findSummaryByKey";
+    String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.mappings.ObjectReferenceMapper.findById";
+    String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.mappings.ClassificationMapper.findByKeyAndDomain";
+    String CLASSIFICATION_FINDBYID = "pro.taskana.mappings.ClassificationMapper.findById";
+    String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.mappings.WorkbasketMapper.findSummaryByKey";
 
     @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
         + "FROM TASK t "
         + "<where>"
         + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='name != null'>AND t.NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='description != null'>AND t.DESCRIPTION like #{description}</if> "
-        + "<if test='note != null'>AND t.NOTE like #{note}</if> "
+        + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='claimedIn !=null'> AND ( <foreach item='item' collection='claimedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CLAIMED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CLAIMED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='completedIn !=null'> AND ( <foreach item='item' collection='completedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.COMPLETED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.COMPLETED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='modifiedIn !=null'> AND ( <foreach item='item' collection='modifiedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.MODIFIED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.MODIFIED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='plannedIn !=null'> AND ( <foreach item='item' collection='plannedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.PLANNED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.PLANNED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='dueIn !=null'> AND ( <foreach item='item' collection='dueIn' separator=' OR ' > ( <if test='item.begin!=null'> t.DUE &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.DUE &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='nameIn != null'>AND t.NAME IN(<foreach item='item' collection='nameIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='nameLike != null'>AND (<foreach item='item' collection='nameLike' separator=' OR '>UPPER(t.NAME) LIKE #{item}</foreach>)</if> "
+        + "<if test='description != null'>AND (<foreach item='item' collection='description' separator=' OR '>t.DESCRIPTION LIKE #{item}</foreach>)</if> "
+        + "<if test='note != null'>AND (<foreach item='item' collection='note' separator=' OR '>t.NOTE LIKE #{item}</foreach>)</if> "
         + "<if test='priority != null'>AND t.PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
         + "<if test='states != null'>AND t.STATE IN(<foreach item='item' collection='states' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='workbasketKey != null'>AND t.WORKBASKET_KEY IN(<foreach item='item' collection='workbasketKey' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='classificationKey != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKey' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='domain != null'>AND t.DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='owner != null'>AND t.OWNER IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyIn != null'>AND t.WORKBASKET_KEY IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR '>UPPER(t.WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='classificationKeyIn != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='classificationKeyLike != null'>AND (<foreach item='item' collection='classificationKeyLike' separator=' OR '>UPPER(t.CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='domainIn != null'>AND t.DOMAIN IN(<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR '>UPPER(t.DOMAIN) LIKE #{item}</foreach>)</if> "
+        + "<if test='ownerIn != null'>AND t.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR '>UPPER(t.OWNER) LIKE #{item}</foreach>)</if> "
         + "<if test='isRead != null'>AND t.IS_READ = #{isRead}</if> "
         + "<if test='isTransferred != null'>AND t.IS_TRANSFERRED = #{isTransferred}</if> "
         + "<if test='porCompanyIn != null'>AND t.POR_COMPANY IN(<foreach item='item' collection='porCompanyIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porCompanyLike != null'>AND t.POR_COMPANY like #{porCompanyLike}</if> "
+        + "<if test='porCompanyLike != null'>AND (<foreach item='item' collection='porCompanyLike' separator=' OR '>UPPER(t.POR_COMPANY) LIKE #{item}</foreach>)</if> "
         + "<if test='porSystemIn != null'>AND t.POR_SYSTEM IN(<foreach item='item' collection='porSystemIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porSystemLike != null'>AND t.POR_SYSTEM like #{porSystemLike}</if> "
+        + "<if test='porSystemLike != null'>AND (<foreach item='item' collection='porSystemLike' separator=' OR '>UPPER(t.POR_SYSTEM) LIKE #{item}</foreach>)</if> "
         + "<if test='porSystemInstanceIn != null'>AND t.POR_INSTANCE IN(<foreach item='item' collection='porSystemInstanceIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porSystemInstanceLike != null'>AND t.POR_INSTANCE like #{porSystemInstanceLike}</if> "
+        + "<if test='porSystemInstanceLike != null'>AND (<foreach item='item' collection='porSystemInstanceLike' separator=' OR '>UPPER(t.POR_INSTANCE) LIKE #{item}</foreach>)</if> "
         + "<if test='porTypeIn != null'>AND t.POR_TYPE IN(<foreach item='item' collection='porTypeIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porTypeLike != null'>AND t.POR_TYPE like #{porTypeLike}</if> "
+        + "<if test='porTypeLike != null'>AND (<foreach item='item' collection='porTypeLike' separator=' OR '>UPPER(t.POR_TYPE) LIKE #{item}</foreach>)</if> "
         + "<if test='porValueIn != null'>AND t.POR_VALUE IN(<foreach item='item' collection='porValueIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porValueLike != null'>AND t.POR_VALUE like #{porValueLike}</if> "
+        + "<if test='porValueLike != null'>AND (<foreach item='item' collection='porValueLike' separator=' OR '>UPPER(t.POR_VALUE) LIKE #{item}</foreach>)</if> "
+        + "<if test='parentBusinessProcessIdIn != null'>AND t.PARENT_BUSINESS_PROCESS_ID IN(<foreach item='item' collection='parentBusinessProcessIdIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='parentBusinessProcessIdLike != null'>AND (<foreach item='item' collection='parentBusinessProcessIdLike' separator=' OR '>UPPER(t.PARENT_BUSINESS_PROCESS_ID) LIKE #{item}</foreach>)</if> "
+        + "<if test='businessProcessIdIn != null'>AND t.BUSINESS_PROCESS_ID IN(<foreach item='item' collection='businessProcessIdIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='businessProcessIdLike != null'>AND (<foreach item='item' collection='businessProcessIdLike' separator=' OR '>UPPER(t.BUSINESS_PROCESS_ID) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom1In != null'>AND t.CUSTOM_1 IN(<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR '>UPPER(t.CUSTOM_1) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom2In != null'>AND t.CUSTOM_2 IN(<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR '>UPPER(t.CUSTOM_2) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom3In != null'>AND t.CUSTOM_3 IN(<foreach item='item' collection='custom3In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR '>UPPER(t.CUSTOM_3) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom4In != null'>AND t.CUSTOM_4 IN(<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR '>UPPER(t.CUSTOM_4) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom5In != null'>AND t.CUSTOM_5 IN(<foreach item='item' collection='custom5In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom5Like != null'>AND (<foreach item='item' collection='custom5Like' separator=' OR '>UPPER(t.CUSTOM_5) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom6In != null'>AND t.CUSTOM_6 IN(<foreach item='item' collection='custom6In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom6Like != null'>AND (<foreach item='item' collection='custom6Like' separator=' OR '>UPPER(t.CUSTOM_6) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom7In != null'>AND t.CUSTOM_7 IN(<foreach item='item' collection='custom7In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom7Like != null'>AND (<foreach item='item' collection='custom7Like' separator=' OR '>UPPER(t.CUSTOM_7) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom8In != null'>AND t.CUSTOM_8 IN(<foreach item='item' collection='custom8In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR '>UPPER(t.CUSTOM_8) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom9In != null'>AND t.CUSTOM_9 IN(<foreach item='item' collection='custom9In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom9Like != null'>AND (<foreach item='item' collection='custom9Like' separator=' OR '>UPPER(t.CUSTOM_9) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom10In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom10In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom10Like != null'>AND (<foreach item='item' collection='custom10Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
         + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
@@ -246,27 +281,63 @@ public interface QueryMapper {
 
     @Select("<script>SELECT COUNT(ID) FROM TASK t "
         + "<where>"
-        + "<if test='name != null'>AND t.NAME IN(<foreach item='item' collection='name' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='description != null'>AND t.DESCRIPTION like #{description}</if> "
-        + "<if test='note != null'>AND t.NOTE like #{note}</if> "
+        + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='claimedIn !=null'> AND ( <foreach item='item' collection='claimedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CLAIMED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CLAIMED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='completedIn !=null'> AND ( <foreach item='item' collection='completedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.COMPLETED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.COMPLETED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='modifiedIn !=null'> AND ( <foreach item='item' collection='modifiedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.MODIFIED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.MODIFIED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='plannedIn !=null'> AND ( <foreach item='item' collection='plannedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.PLANNED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.PLANNED &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='dueIn !=null'> AND ( <foreach item='item' collection='dueIn' separator=' OR ' > ( <if test='item.begin!=null'> t.DUE &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.DUE &lt;=#{item.end} </if>)</foreach>)</if> "
+        + "<if test='nameIn != null'>AND t.NAME IN(<foreach item='item' collection='nameIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='nameLike != null'>AND (<foreach item='item' collection='nameLike' separator=' OR '>UPPER(t.NAME) LIKE #{item}</foreach>)</if> "
+        + "<if test='description != null'>AND (<foreach item='item' collection='description' separator=' OR '>t.DESCRIPTION LIKE #{item}</foreach>)</if> "
+        + "<if test='note != null'>AND (<foreach item='item' collection='note' separator=' OR '>t.NOTE LIKE #{item}</foreach>)</if> "
         + "<if test='priority != null'>AND t.PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
         + "<if test='states != null'>AND t.STATE IN(<foreach item='item' collection='states' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='workbasketKey != null'>AND t.WORKBASKET_KEY IN(<foreach item='item' collection='workbasketKey' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='classificationKey != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKey' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='domain != null'>AND t.DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='owner != null'>AND t.OWNER IN(<foreach item='item' collection='owner' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyIn != null'>AND t.WORKBASKET_KEY IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR '>UPPER(t.WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='classificationKeyIn != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='classificationKeyLike != null'>AND (<foreach item='item' collection='classificationKeyLike' separator=' OR '>UPPER(t.CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='domainIn != null'>AND t.DOMAIN IN(<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR '>UPPER(t.DOMAIN) LIKE #{item}</foreach>)</if> "
+        + "<if test='ownerIn != null'>AND t.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR '>UPPER(t.OWNER) LIKE #{item}</foreach>)</if> "
         + "<if test='isRead != null'>AND t.IS_READ = #{isRead}</if> "
         + "<if test='isTransferred != null'>AND t.IS_TRANSFERRED = #{isTransferred}</if> "
         + "<if test='porCompanyIn != null'>AND t.POR_COMPANY IN(<foreach item='item' collection='porCompanyIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porCompanyLike != null'>AND t.POR_COMPANY like #{porCompanyLike}</if> "
+        + "<if test='porCompanyLike != null'>AND (<foreach item='item' collection='porCompanyLike' separator=' OR '>UPPER(t.POR_COMPANY) LIKE #{item}</foreach>)</if> "
         + "<if test='porSystemIn != null'>AND t.POR_SYSTEM IN(<foreach item='item' collection='porSystemIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porSystemLike != null'>AND t.POR_SYSTEM like #{porSystemLike}</if> "
+        + "<if test='porSystemLike != null'>AND (<foreach item='item' collection='porSystemLike' separator=' OR '>UPPER(t.POR_SYSTEM) LIKE #{item}</foreach>)</if> "
         + "<if test='porSystemInstanceIn != null'>AND t.POR_INSTANCE IN(<foreach item='item' collection='porSystemInstanceIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porSystemInstanceLike != null'>AND t.POR_INSTANCE like #{porSystemInstanceLike}</if> "
+        + "<if test='porSystemInstanceLike != null'>AND (<foreach item='item' collection='porSystemInstanceLike' separator=' OR '>UPPER(t.POR_INSTANCE) LIKE #{item}</foreach>)</if> "
         + "<if test='porTypeIn != null'>AND t.POR_TYPE IN(<foreach item='item' collection='porTypeIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porTypeLike != null'>AND t.POR_TYPE like #{porTypeLike}</if> "
+        + "<if test='porTypeLike != null'>AND (<foreach item='item' collection='porTypeLike' separator=' OR '>UPPER(t.POR_TYPE) LIKE #{item}</foreach>)</if> "
         + "<if test='porValueIn != null'>AND t.POR_VALUE IN(<foreach item='item' collection='porValueIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='porValueLike != null'>AND t.POR_VALUE like #{porValueLike}</if> "
+        + "<if test='porValueLike != null'>AND (<foreach item='item' collection='porValueLike' separator=' OR '>UPPER(t.POR_VALUE) LIKE #{item}</foreach>)</if> "
+        + "<if test='parentBusinessProcessIdIn != null'>AND t.PARENT_BUSINESS_PROCESS_ID IN(<foreach item='item' collection='parentBusinessProcessIdIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='parentBusinessProcessIdLike != null'>AND (<foreach item='item' collection='parentBusinessProcessIdLike' separator=' OR '>UPPER(t.PARENT_BUSINESS_PROCESS_ID) LIKE #{item}</foreach>)</if> "
+        + "<if test='businessProcessIdIn != null'>AND t.BUSINESS_PROCESS_ID IN(<foreach item='item' collection='businessProcessIdIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='businessProcessIdLike != null'>AND (<foreach item='item' collection='businessProcessIdLike' separator=' OR '>UPPER(t.BUSINESS_PROCESS_ID) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom1In != null'>AND t.CUSTOM_1 IN(<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR '>UPPER(t.CUSTOM_1) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom2In != null'>AND t.CUSTOM_2 IN(<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR '>UPPER(t.CUSTOM_2) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom3In != null'>AND t.CUSTOM_3 IN(<foreach item='item' collection='custom3In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR '>UPPER(t.CUSTOM_3) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom4In != null'>AND t.CUSTOM_4 IN(<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR '>UPPER(t.CUSTOM_4) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom5In != null'>AND t.CUSTOM_5 IN(<foreach item='item' collection='custom5In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom5Like != null'>AND (<foreach item='item' collection='custom5Like' separator=' OR '>UPPER(t.CUSTOM_5) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom6In != null'>AND t.CUSTOM_6 IN(<foreach item='item' collection='custom6In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom6Like != null'>AND (<foreach item='item' collection='custom6Like' separator=' OR '>UPPER(t.CUSTOM_6) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom7In != null'>AND t.CUSTOM_7 IN(<foreach item='item' collection='custom7In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom7Like != null'>AND (<foreach item='item' collection='custom7Like' separator=' OR '>UPPER(t.CUSTOM_7) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom8In != null'>AND t.CUSTOM_8 IN(<foreach item='item' collection='custom8In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR '>UPPER(t.CUSTOM_8) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom9In != null'>AND t.CUSTOM_9 IN(<foreach item='item' collection='custom9In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom9Like != null'>AND (<foreach item='item' collection='custom9Like' separator=' OR '>UPPER(t.CUSTOM_9) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom10In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom10In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom10Like != null'>AND (<foreach item='item' collection='custom10Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
         + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         + "</where>"
         + "</script>")

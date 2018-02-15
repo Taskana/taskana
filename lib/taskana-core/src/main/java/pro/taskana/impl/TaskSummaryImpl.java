@@ -8,8 +8,6 @@ import pro.taskana.AttachmentSummary;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskSummary;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.TaskState;
 
 /**
  * Entity which contains the most important informations about a Task.
@@ -48,6 +46,10 @@ public class TaskSummaryImpl implements TaskSummary {
     private String custom8;
     private String custom9;
     private String custom10;
+
+    TaskSummaryImpl() {
+
+    }
 
     /*
      * (non-Javadoc)

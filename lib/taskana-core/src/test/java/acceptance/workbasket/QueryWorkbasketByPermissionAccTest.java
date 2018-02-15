@@ -17,7 +17,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
-import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

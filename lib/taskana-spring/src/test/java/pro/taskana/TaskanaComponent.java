@@ -10,7 +10,7 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.ObjectReference;
+import pro.taskana.impl.ObjectReference;
 
 @Component
 @Transactional

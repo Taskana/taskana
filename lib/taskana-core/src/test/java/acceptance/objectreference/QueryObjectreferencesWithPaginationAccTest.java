@@ -18,7 +18,7 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
-import pro.taskana.model.ObjectReference;
+import pro.taskana.impl.ObjectReference;
 import pro.taskana.security.JAASRunner;
 
 /**

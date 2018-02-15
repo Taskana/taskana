@@ -28,15 +28,15 @@ import pro.taskana.exceptions.ConnectionNotSetException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.UnsupportedDatabaseException;
 import pro.taskana.impl.persistence.MapTypeHandler;
-import pro.taskana.model.mappings.AttachmentMapper;
-import pro.taskana.model.mappings.ClassificationMapper;
-import pro.taskana.model.mappings.DistributionTargetMapper;
-import pro.taskana.model.mappings.ObjectReferenceMapper;
-import pro.taskana.model.mappings.QueryMapper;
-import pro.taskana.model.mappings.TaskMapper;
-import pro.taskana.model.mappings.TaskMonitorMapper;
-import pro.taskana.model.mappings.WorkbasketAccessMapper;
-import pro.taskana.model.mappings.WorkbasketMapper;
+import pro.taskana.mappings.AttachmentMapper;
+import pro.taskana.mappings.ClassificationMapper;
+import pro.taskana.mappings.DistributionTargetMapper;
+import pro.taskana.mappings.ObjectReferenceMapper;
+import pro.taskana.mappings.QueryMapper;
+import pro.taskana.mappings.TaskMapper;
+import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.mappings.WorkbasketAccessMapper;
+import pro.taskana.mappings.WorkbasketMapper;
 
 /**
  * This is the implementation of TaskanaEngine.
@@ -53,7 +53,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
 
-    public TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+    public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+        return new TaskanaEngineImpl(taskanaEngineConfiguration);
+    }
+
+    protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();

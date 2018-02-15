@@ -15,11 +15,8 @@ import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.WorkbasketType;
 import pro.taskana.security.CurrentUserContext;
 
 /**
@@ -29,8 +26,8 @@ import pro.taskana.security.CurrentUserContext;
  */
 public class WorkbasketQueryImpl implements WorkbasketQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryWorkbasket";
-    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryWorkbaskets";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasket";
+    private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbaskets";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
     private String[] accessId;
     private WorkbasketAuthorization authorization;
@@ -51,7 +48,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private TaskanaEngineImpl taskanaEngineImpl;
     private List<String> orderBy;
 
-    public WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
+    WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         orderBy = new ArrayList<>();
     }
@@ -337,7 +334,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public long count() throws NotAuthorizedException {
+    public long count() {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {

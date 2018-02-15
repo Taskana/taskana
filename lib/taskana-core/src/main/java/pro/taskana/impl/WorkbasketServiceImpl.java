@@ -25,10 +25,9 @@ import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.mappings.DistributionTargetMapper;
-import pro.taskana.model.mappings.WorkbasketAccessMapper;
-import pro.taskana.model.mappings.WorkbasketMapper;
+import pro.taskana.mappings.DistributionTargetMapper;
+import pro.taskana.mappings.WorkbasketAccessMapper;
+import pro.taskana.mappings.WorkbasketMapper;
 import pro.taskana.security.CurrentUserContext;
 
 /**
@@ -47,7 +46,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public WorkbasketServiceImpl() {
     }
 
-    public WorkbasketServiceImpl(TaskanaEngine taskanaEngine, WorkbasketMapper workbasketMapper,
+    WorkbasketServiceImpl(TaskanaEngine taskanaEngine, WorkbasketMapper workbasketMapper,
         DistributionTargetMapper distributionTargetMapper, WorkbasketAccessMapper workbasketAccessMapper) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.workbasketMapper = workbasketMapper;

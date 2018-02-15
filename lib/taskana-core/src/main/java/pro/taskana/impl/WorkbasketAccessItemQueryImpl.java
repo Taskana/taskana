@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemQuery;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 
@@ -23,8 +22,8 @@ import pro.taskana.impl.util.LoggerUtils;
  */
 public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryWorkbasketAccessItem";
-    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryWorkbasketAccessItems";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasketAccessItem";
+    private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbasketAccessItems";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
     private String[] accessIdIn;
     private String[] workbasketKeyIn;
@@ -32,7 +31,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     private TaskanaEngineImpl taskanaEngineImpl;
     private List<String> orderBy;
 
-    public WorkbasketAccessItemQueryImpl(TaskanaEngine taskanaEngine) {
+    WorkbasketAccessItemQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         orderBy = new ArrayList<>();
     }
@@ -61,7 +60,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     }
 
     @Override
-    public List<WorkbasketAccessItem> list() throws NotAuthorizedException {
+    public List<WorkbasketAccessItem> list() {
         LOGGER.debug("entry to list(), this = {}", this);
         List<WorkbasketAccessItem> result = new ArrayList<>();
         try {
@@ -81,7 +80,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     }
 
     @Override
-    public List<WorkbasketAccessItem> list(int offset, int limit) throws NotAuthorizedException {
+    public List<WorkbasketAccessItem> list(int offset, int limit) {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<WorkbasketAccessItem> result = new ArrayList<>();
         try {
@@ -91,14 +90,12 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
                 .selectList(LINK_TO_MAPPER, this, rowBounds);
             result.addAll(foundAccessItms);
             return result;
-        } catch (Exception e) {
-            if (e instanceof PersistenceException) {
-                if (e.getMessage().contains("ERRORCODE=-4470")) {
-                    TaskanaRuntimeException ex = new TaskanaRuntimeException(
-                        "The offset beginning was set over the amount of result-rows.", e.getCause());
-                    ex.setStackTrace(e.getStackTrace());
-                    throw ex;
-                }
+        } catch (PersistenceException e) {
+            if (e.getMessage().contains("ERRORCODE=-4470")) {
+                TaskanaRuntimeException ex = new TaskanaRuntimeException(
+                    "The offset beginning was set over the amount of result-rows.", e.getCause());
+                ex.setStackTrace(e.getStackTrace());
+                throw ex;
             }
             throw e;
         } finally {
@@ -112,7 +109,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     }
 
     @Override
-    public WorkbasketAccessItem single() throws NotAuthorizedException {
+    public WorkbasketAccessItem single() {
         LOGGER.debug("entry to single(), this = {}", this);
         WorkbasketAccessItem accessItm = null;
         try {

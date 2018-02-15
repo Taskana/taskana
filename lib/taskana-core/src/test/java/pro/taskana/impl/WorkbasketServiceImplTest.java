@@ -37,11 +37,9 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.WorkbasketType;
-import pro.taskana.model.mappings.DistributionTargetMapper;
-import pro.taskana.model.mappings.WorkbasketAccessMapper;
-import pro.taskana.model.mappings.WorkbasketMapper;
+import pro.taskana.mappings.DistributionTargetMapper;
+import pro.taskana.mappings.WorkbasketAccessMapper;
+import pro.taskana.mappings.WorkbasketMapper;
 
 /**
  * Unit Test for workbasketServiceImpl.

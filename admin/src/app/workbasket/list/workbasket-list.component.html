@@ -25,58 +25,31 @@
                     </button>
                 </div>
                 <div class="dropdown clearfix btn-group"> 
-                    <button class="btn btn-default" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                        <span class="glyphicon glyphicon-sort blue dropdown-toggle"></span> 
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right orderby-dropdown popup" aria-labelledby="dropdownMenu1"> 
+                    <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+                        <span class="glyphicon {{sortDirection === 'asc'? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes' }} blue"
+                            data-toggle= "tooltip" title="{{sortDirection === 'asc'? 'A-Z' : 'Z-A' }}"></span> 
+                    </button>         
+                    <ul class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown"> 
                         <li>
                             <div class="col-xs-6">
-                                <h5>Order By</h5>
+                                <h5>Sort By</h5>
                             </div>
-                            <button type="button" placeholder="des" class="btn btn-default" data-toggle="tooltip" title="descending">
-                                <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
+                            <button  id="sort-by-direction-asc" type="button" (click)="changeOrder('asc')" data-toggle="tooltip" title="A-Z" class="btn btn-default {{sortDirection === 'asc'? 'selected' : '' }}">
+                                    <span class="glyphicon glyphicon-sort-by-attributes-alt blue" aria-hidden="true"></span>
                             </button>
-                            <button type="button" data-toggle="tooltip" title="ascending" class="btn btn-default">
-                                <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-                            </button>        
-                        </li>    
+                            <button id= "sort-by-direction-desc" type="button" (click)="changeOrder('desc')" data-toggle="tooltip" title="Z-A" class="btn btn-default {{sortDirection === 'desc'? 'selected' : '' }}" >
+                                <span class="glyphicon glyphicon-sort-by-attributes blue" aria-hidden="true"></span>
+                            </button>
+                        </li>                                                 
                         <li role="separator" class="divider"></li>
-                        <li class="link-padding">
+                        <li id="sort-by-{{sortingField.key}}"(click)="changeSortBy(sortingField.key)"  *ngFor="let sortingField of sortingFields | mapValues">
                             <a>
-                                <div class="radio">
-                                    <label class="radio-inline active">
-                                        <input type="radio" name="orderRadio" id="nameRadio" value="Name" aria-label="Name">Name
-                                    </label>
-                                </div>
+                                <label>
+                                    <span class="glyphicon {{sortBy === sortingField.key? 'glyphicon-check': 'glyphicon-unchecked'}} blue" aria-hidden="true"></span>
+                                    {{sortingField.value}}
+                                </label>
                             </a>
-                        </li>    
-                        <li>
-                            <a>
-                                <div class="radio">
-                                    <label class="radio-inline">
-                                        <input type="radio" name="orderRadio" id="descriptionRadio" value="Description" aria-label="Description">Description
-                                    </label>
-                                </div>
-                            </a>
-                        </li>    
-                        <li>
-                            <a>
-                                <div class="radio">
-                                    <label class="radio-inline">
-                                        <input type="radio" name="orderRadio" id="ownerRadio" value="Owner" aria-label="Name">Owner
-                                    </label>
-                                </div>
-                            </a>
-                        </li>    
-                        <li>
-                            <a>
-                                <div class="radio">
-                                    <label class="radio-inline">
-                                        <input type="radio" name="orderRadio" id="typeRadio" value="Type" aria-label="Name">Type
-                                    </label>
-                                </div>
-                            </a>
-                        </li>    
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -106,11 +79,11 @@
                     <dt><input type="text" class="form-control" id="wb-display-task-owner-search" placeholder="Filter by Task owner"> </dt>
                 </dl>                                         
             </div>                                     
-        </li>
-        <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.id == selectedId" type="text" (click) ="selectWorkbasket(workbasket.id)"  [routerLink]="[ {outlets: { detail: [workbasket.id] } }]">
+        </li>                                 
+        <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId" type="text" (click) ="selectWorkbasket(workbasket.workbasketId)"  [routerLink]="[ {outlets: { detail: [workbasket.workbasketId] } }]">
             <div class="row">
                 <dl class="col-xs-1">
-                    <dt><svg-icon class="{{workbasket.id === selectedId? 'white': 'blue' }} small" src="./assets/icons/{{workbasket.type === 'PERSONAL'? 'user.svg': 'users.svg'}}"></svg-icon></dt>
+                    <dt><svg-icon class="{{workbasket.workbasketId === selectedId? 'white': 'blue' }} small" src="./assets/icons/{{workbasket.type === 'PERSONAL'? 'user.svg': 'users.svg'}}"></svg-icon></dt>
                 </dl>
                 <dl class="col-xs-10">
                     <dt>{{workbasket.name}}  ({{workbasket.key}}) </dt>

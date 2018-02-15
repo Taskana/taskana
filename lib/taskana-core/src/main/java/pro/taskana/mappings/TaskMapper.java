@@ -1,4 +1,4 @@
-package pro.taskana.model.mappings;
+package pro.taskana.mappings;
 
 import java.util.List;
 import java.util.Map;
@@ -16,20 +16,20 @@ import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.impl.MinimalTaskSummary;
 import pro.taskana.impl.TaskImpl;
+import pro.taskana.impl.TaskState;
 import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
-import pro.taskana.model.TaskState;
 
 /**
  * This class is the mybatis mapping of task.
  */
 public interface TaskMapper {
 
-    String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.model.mappings.ObjectReferenceMapper.findById";
-    String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByKeyAndDomain";
-    String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.model.mappings.WorkbasketMapper.findSummaryByKey";
-    String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findById";
+    String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.mappings.ObjectReferenceMapper.findById";
+    String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.mappings.ClassificationMapper.findByKeyAndDomain";
+    String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.mappings.WorkbasketMapper.findSummaryByKey";
+    String CLASSIFICATION_FINDBYID = "pro.taskana.mappings.ClassificationMapper.findById";
 
     @Select("SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_KEY, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10 "
         + "FROM TASK "
@@ -181,6 +181,13 @@ public interface TaskMapper {
         + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
         + "</script>")
     void updateTransfered(@Param("taskIds") List<String> taskIds,
+        @Param("referencetask") TaskSummaryImpl referencetask);
+
+    @Update("<script>"
+        + " UPDATE TASK SET COMPLETED = #{referencetask.completed}, MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}"
+        + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
+        + "</script>")
+    void updateCompleted(@Param("taskIds") List<String> taskIds,
         @Param("referencetask") TaskSummaryImpl referencetask);
 
     @Select("<script>SELECT ID, STATE, WORKBASKET_KEY FROM TASK "

@@ -3,6 +3,8 @@ package acceptance;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +20,10 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.ObjectReference;
 
 /**
  * Base class for all acceptance tests.
@@ -93,5 +95,9 @@ public abstract class AbstractAccTest {
         attachment.setCustomAttributes(customAttributes);
 
         return attachment;
+    }
+
+    protected Instant getInstant(String datetime) {
+        return LocalDateTime.parse(datetime).atZone(ZoneId.systemDefault()).toInstant();
     }
 }

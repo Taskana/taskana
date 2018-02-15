@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { WorkbasketSummary } from '../../model/workbasketSummary';
-import { WorkbasketService } from '../../services/workbasketservice.service'
+import { WorkbasketService, Direction } from '../../services/workbasketservice.service'
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -16,6 +16,10 @@ export class WorkbasketListComponent implements OnInit {
   selectedId: string = undefined;
   workbaskets : Array<WorkbasketSummary> = [];
   requestInProgress: boolean =  false;
+
+  sortBy: string = 'key';
+  sortDirection: Direction = Direction.ASC;
+  sortingFields : Map<string, string> = new Map([['name', 'Name'], ['key', 'Id'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
 
   private workBasketSummarySubscription: Subscription;
   private workbasketServiceSubscription: Subscription;
@@ -38,8 +42,18 @@ export class WorkbasketListComponent implements OnInit {
     this.selectedId = id;
   }
 
+  changeOrder(sortDirection: string) {
+    this.sortDirection = (sortDirection === Direction.ASC)? Direction.ASC: Direction.DESC;
+    this.performRequest();
+  }
+
+  changeSortBy(sortBy: string){
+    this.sortBy = sortBy;
+    this.performRequest();
+  }
+
   onDelete(workbasket: WorkbasketSummary) {
-    this.workbasketService.deleteWorkbasket(workbasket.id).subscribe(result => {
+    this.workbasketService.deleteWorkbasket(workbasket.workbasketId).subscribe(result => {
       var index = this.workbaskets.indexOf(workbasket);
       if (index > -1) {
         this.workbaskets.splice(index, 1);
@@ -55,7 +69,7 @@ export class WorkbasketListComponent implements OnInit {
   }
 
   onClear() {
-    this.newWorkbasket.id = "";
+    this.newWorkbasket.workbasketId = "";
     this.newWorkbasket.name = "";
     this.newWorkbasket.description = "";
     this.newWorkbasket.owner = "";
@@ -65,7 +79,13 @@ export class WorkbasketListComponent implements OnInit {
     return new WorkbasketSummary("", "", "", "", "", "", "", "", "", "", "", "");
   }
 
-  ngOnDestroy(){
+  private performRequest(): void{
+    this.workbasketServiceSubscription.add(this.workbasketService.getWorkBasketsSummary(this.sortBy,this.sortDirection).subscribe(resultList => {
+      this.workbaskets = resultList;
+    }));
+  }
+
+  private ngOnDestroy(){
     this.workBasketSummarySubscription.unsubscribe();
     this.workbasketServiceSubscription.unsubscribe();
   }

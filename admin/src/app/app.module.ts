@@ -4,7 +4,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,  } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule, JsonpModule, Http } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AlertModule } from 'ngx-bootstrap';
@@ -36,15 +35,19 @@ import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-det
  */
 import { WorkbasketService } from './services/workbasketservice.service';
 import { MasterAndDetailService } from './services/master-and-detail.service';
-import { HttpExtensionService } from './services/http-extension.service';
+import { HttpClientInterceptor } from './services/http-client-interceptor.service';
 import { PermissionService } from './services/permission.service';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
+/**
+ * Pipes
+ */
+import { MapValuesPipe } from './pipes/map-values.pipe';
 
 
 const MODULES =     [
                     BrowserModule,
                     FormsModule,
-                    HttpModule,
-                    JsonpModule,
                     TabsModule.forRoot(),
                     TreeModule,
                     AppRoutingModule,
@@ -66,7 +69,8 @@ const COMPONENTS =  [
                       MasterAndDetailComponent,
                       WorkbasketInformationComponent,
                       NoAccessComponent,
-                      SpinnerComponent
+                      SpinnerComponent,
+                      MapValuesPipe
                     ];
 @NgModule({
   declarations: COMPONENTS,
@@ -75,7 +79,12 @@ const COMPONENTS =  [
     WorkbasketService,
     MasterAndDetailService,
     PermissionService,
-    { provide: Http, useClass: HttpExtensionService }
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpClientInterceptor,
+      multi: true
+    },
+    
   ],
   bootstrap: [AppComponent]
 })

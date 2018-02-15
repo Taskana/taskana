@@ -1,4 +1,4 @@
-package pro.taskana.model;
+package pro.taskana.impl;
 
 import java.util.ArrayList;
 import java.util.List;

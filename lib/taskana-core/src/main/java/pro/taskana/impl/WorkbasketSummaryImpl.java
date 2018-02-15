@@ -1,7 +1,6 @@
 package pro.taskana.impl;
 
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.model.WorkbasketType;
 
 /**
  * This entity contains the most important information about a workbasket.
@@ -21,6 +20,10 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     private String orgLevel2;
     private String orgLevel3;
     private String orgLevel4;
+
+    WorkbasketSummaryImpl() {
+
+    }
 
     /*
      * (non-Javadoc)

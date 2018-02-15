@@ -14,6 +14,10 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     private String domain;
     private String name;
 
+    ClassificationSummaryImpl() {
+
+    }
+
     @Override
     public String getId() {
         return id;

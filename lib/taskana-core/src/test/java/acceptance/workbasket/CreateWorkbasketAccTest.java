@@ -15,7 +15,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.WorkbasketType;
+import pro.taskana.impl.WorkbasketType;
 import pro.taskana.security.JAASRunner;
 
 /**

@@ -43,16 +43,16 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.JunitHelper;
+import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
+import pro.taskana.impl.TaskState;
 import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
+import pro.taskana.impl.WorkbasketType;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.WorkbasketType;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -240,7 +240,8 @@ public class TaskServiceImplIntAutocommitTest {
         dummyTask = (TaskImpl) taskServiceImpl.createTask(dummyTask);
 
         List<TaskSummaryImpl> expectedTaskSumamries = new ArrayList<>();
-        TaskSummaryImpl taskSummary = new TaskSummaryImpl();
+        TaskSummaryImpl taskSummary = (TaskSummaryImpl) taskServiceImpl.newTask(dummyTask.getWorkbasketKey())
+            .asSummary();
         taskSummary.setTaskId(dummyTask.getId());
         taskSummary.setName(dummyTask.getName());
         expectedTaskSumamries.add(taskSummary);

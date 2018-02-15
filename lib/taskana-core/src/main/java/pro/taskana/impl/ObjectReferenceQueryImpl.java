@@ -10,10 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.ObjectReference;
 
 /**
  * Implementation of ObjectReferenceQuery interface.
@@ -22,8 +20,8 @@ import pro.taskana.model.ObjectReference;
  */
 public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryObjectReference";
-    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryObjectReferences";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryObjectReference";
+    private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryObjectReferences";
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceQueryImpl.class);
 
     private TaskanaEngineImpl taskanaEngineImpl;
@@ -33,7 +31,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     private String[] type;
     private String[] value;
 
-    public ObjectReferenceQueryImpl(TaskanaEngine taskanaEngine) {
+    ObjectReferenceQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     }
 
@@ -169,7 +167,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     }
 
     @Override
-    public long count() throws NotAuthorizedException {
+    public long count() {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {

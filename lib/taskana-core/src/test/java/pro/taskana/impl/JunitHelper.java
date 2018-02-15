@@ -1,7 +1,6 @@
 package pro.taskana.impl;
 
 import pro.taskana.Attachment;
-import pro.taskana.model.ObjectReference;
 
 /**
  * This class contains helper methods for Junit Tests.

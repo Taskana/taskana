@@ -14,7 +14,7 @@ import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.TaskState;
+import pro.taskana.impl.TaskState;
 
 @Component
 public class TaskFilter {

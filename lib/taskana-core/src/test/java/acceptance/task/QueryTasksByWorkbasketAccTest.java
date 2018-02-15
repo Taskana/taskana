@@ -16,6 +16,7 @@ import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -32,7 +33,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = NotAuthorizedException.class)
+    @Test(expected = NotAuthorizedToQueryWorkbasketException.class)
     public void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -44,7 +45,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = NotAuthorizedException.class)
+    @Test(expected = NotAuthorizedToQueryWorkbasketException.class)
     public void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();

@@ -1,7 +1,5 @@
 package pro.taskana.impl;
 
-import pro.taskana.model.TaskState;
-
 /**
  * A convenience class to represent pairs of task id and task state.
  */
@@ -10,6 +8,10 @@ public class MinimalTaskSummary {
     private String taskId;
     private String workbasketKey;
     private TaskState taskState;
+
+    MinimalTaskSummary() {
+
+    }
 
     public String getTaskId() {
         return taskId;

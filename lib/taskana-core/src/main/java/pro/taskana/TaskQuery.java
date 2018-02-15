@@ -1,7 +1,6 @@
 package pro.taskana;
 
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.TaskState;
+import pro.taskana.impl.TaskState;
 
 /**
  * TaskQuery for generating dynamic sql.
@@ -11,31 +10,44 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     /**
      * Add your names to your query.
      *
-     * @param name
+     * @param names
      *            the names as Strings
      * @return the query
      */
-    TaskQuery nameIn(String... name);
+    TaskQuery nameIn(String... names);
+
+    /**
+     * Add your name for pattern matching to your query. It will be compared in SQL with the LIKE operator. You may use
+     * a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param names
+     *            your names
+     * @return the query
+     */
+    TaskQuery nameLike(String... names);
 
     /**
      * Add your description for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern.
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
      *
      * @param description
      *            your description
      * @return the query
      */
-    TaskQuery descriptionLike(String description);
+    TaskQuery descriptionLike(String... description);
 
     /**
      * Add your custom note for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern.
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
      *
      * @param note
      *            your custom note
      * @return the query
      */
-    TaskQuery noteLike(String note);
+    TaskQuery noteLike(String... note);
 
     /**
      * Add your priorities to your query.
@@ -58,11 +70,22 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     /**
      * Add your classificationKey to your query.
      *
-     * @param classificationKey
+     * @param classificationKeys
      *            the classification key
      * @return the query
      */
-    TaskQuery classificationKeyIn(String... classificationKey);
+    TaskQuery classificationKeyIn(String... classificationKeys);
+
+    /**
+     * Add your classificationKey for pattern matching to your query. It will be compared in SQL with the LIKE operator.
+     * You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with
+     * the OR keyword.
+     *
+     * @param classificationKeys
+     *            the classification key
+     * @return the query
+     */
+    TaskQuery classificationKeyLike(String... classificationKeys);
 
     /**
      * Add your workbasket key to the query.
@@ -70,19 +93,39 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      * @param workbasketKeys
      *            the workbasket keys as String
      * @return the query
-     * @throws NotAuthorizedException
-     *             if the user have no rights
      */
-    TaskQuery workbasketKeyIn(String... workbasketKeys) throws NotAuthorizedException;
+    TaskQuery workbasketKeyIn(String... workbasketKeys);
+
+    /**
+     * Add your workbasketKey for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param workbasketKeys
+     *            the workbasket keys
+     * @return the query
+     */
+    TaskQuery workbasketKeyLike(String... workbasketKeys);
 
     /**
      * Add your domain to the query.
      *
-     * @param domain
+     * @param domains
      *            the domain as String
      * @return the query
      */
-    TaskQuery domainIn(String... domain);
+    TaskQuery domainIn(String... domains);
+
+    /**
+     * Add your domains for pattern matching to your query. It will be compared in SQL with the LIKE operator. You may
+     * use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param domains
+     *            the domains of the searched-for workbaskets
+     * @return the query
+     */
+    TaskQuery domainLike(String... domains);
 
     /**
      * Add the owners to your query.
@@ -92,6 +135,17 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      * @return the query
      */
     TaskQuery ownerIn(String... owners);
+
+    /**
+     * Add the owner for pattern matching to your query. It will be compared in SQL with the LIKE operator. You may use
+     * a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param owners
+     *            the owners of the searched tasks
+     * @return the query
+     */
+    TaskQuery ownerLike(String... owners);
 
     /**
      * Add the companies of the primary object reference for exact matching to your query.
@@ -104,13 +158,14 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
 
     /**
      * Add the company of the primary object reference for pattern matching to your query. It will be compared in SQL
-     * with the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments
+     * they are combined with the OR keyword.
      *
      * @param company
      *            the company of your primary object reference
      * @return the query
      */
-    TaskQuery primaryObjectReferenceCompanyLike(String company);
+    TaskQuery primaryObjectReferenceCompanyLike(String... company);
 
     /**
      * Add the systems of the primary object reference for exact matching to your query.
@@ -123,13 +178,14 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
 
     /**
      * Add the system of the primary object reference for pattern matching to your query. It will be compared in SQL
-     * with the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments
+     * they are combined with the OR keyword.
      *
-     * @param system
+     * @param systems
      *            the system of your primary object reference
      * @return the query
      */
-    TaskQuery primaryObjectReferenceSystemLike(String system);
+    TaskQuery primaryObjectReferenceSystemLike(String... systems);
 
     /**
      * Add the system instances of the primary object reference for exact matching to your query.
@@ -142,13 +198,14 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
 
     /**
      * Add the system instance of the primary object reference for pattern matching to your query. It will be compared
-     * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple
+     * arguments they are combined with the OR keyword.
      *
-     * @param systemInstance
-     *            the system instance of your primary object reference
+     * @param systemInstances
+     *            the system instances of your primary object reference
      * @return the query
      */
-    TaskQuery primaryObjectReferenceSystemInstanceLike(String systemInstance);
+    TaskQuery primaryObjectReferenceSystemInstanceLike(String... systemInstances);
 
     /**
      * Add the types of the primary object reference for exact matching to your query.
@@ -161,13 +218,25 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
 
     /**
      * Add the type of the primary object reference for pattern matching to your query. It will be compared in SQL with
-     * the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they
+     * are combined with the OR keyword.
      *
-     * @param type
-     *            the type of your primary object reference
+     * @param types
+     *            the types of your primary object reference
      * @return the query
      */
-    TaskQuery primaryObjectReferenceTypeLike(String type);
+    TaskQuery primaryObjectReferenceTypeLike(String... types);
+
+    /**
+     * Add the value of the primary object reference for pattern matching to your query. It will be compared in SQL with
+     * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they
+     * are combined with the OR keyword.
+     *
+     * @param values
+     *            the values of your primary object reference
+     * @return the query
+     */
+    TaskQuery primaryObjectReferenceValueLike(String... values);
 
     /**
      * Add the values of the primary object reference for exact matching to your query.
@@ -179,14 +248,76 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery primaryObjectReferenceValueIn(String... values);
 
     /**
-     * Add the value of the primary object reference for pattern matching to your query. It will be compared in SQL with
-     * the LIKE operator. You may use a wildcard like % to specify the pattern.
+     * Add the time intervals within which the task was created to your query. For each time interval, the database
+     * query will search for tasks whose created timestamp is after or at the interval's begin and before or at the
+     * interval's end. If more than one interval is specified, the query will connect them with the OR keyword. If
+     * either begin or end of an interval are null, these values will not be specified in the query.
      *
-     * @param value
-     *            the value of your primary object reference
+     * @param intervals
+     *            - the TimeIntervals within which the task was created
      * @return the query
      */
-    TaskQuery primaryObjectReferenceValueLike(String value);
+    TaskQuery createdWithin(TimeInterval... intervals);
+
+    /**
+     * Add the time intervals within which the task was claimed to your query. For each time interval, the database
+     * query will search for tasks whose claimed timestamp is after or at the interval's begin and before or at the
+     * interval's end. If more than one interval is specified, the query will connect them with the OR keyword. If
+     * either begin or end of an interval are null, these values will not be specified in the query.
+     *
+     * @param intervals
+     *            - the TimeIntervals within which the task was claimed
+     * @return the query
+     */
+    TaskQuery claimedWithin(TimeInterval... intervals);
+
+    /**
+     * Add the time intervals within which the task was completed to your query. For each time interval, the database
+     * query will search for tasks whose completed timestamp is after or at the interval's begin and before or at the
+     * interval's end. If more than one interval is specified, the query will connect them with the OR keyword. If
+     * either begin or end of an interval are null, these values will not be specified in the query.
+     *
+     * @param intervals
+     *            - the TimeIntervals within which the task was completed
+     * @return the query
+     */
+    TaskQuery completedWithin(TimeInterval... intervals);
+
+    /**
+     * Add the time intervals within which the task was modified to your query. For each time interval, the database
+     * query will search for tasks whose modified timestamp is after or at the interval's begin and before or at the
+     * interval's end. If more than one interval is specified, the query will connect them with the OR keyword. If
+     * either begin or end of an interval are null, these values will not be specified in the query.
+     *
+     * @param intervals
+     *            - the TimeIntervals within which the task was modified
+     * @return the query
+     */
+    TaskQuery modifiedWithin(TimeInterval... intervals);
+
+    /**
+     * Add the time intervals within which the task is planned to your query. For each time interval, the database query
+     * will search for tasks whose planned timestamp is after or at the interval's begin and before or at the interval's
+     * end. If more than one interval is specified, the query will connect them with the OR keyword. If either begin or
+     * end of an interval are null, these values will not be specified in the query.
+     *
+     * @param intervals
+     *            - the TimeIntervals within which the task is planned
+     * @return the query
+     */
+    TaskQuery plannedWithin(TimeInterval... intervals);
+
+    /**
+     * Add the time intervals within which the task is due to your query. For each time interval, the database query
+     * will search for tasks whose due timestamp is after or at the interval's begin and before or at the interval's
+     * end. If more than one interval is specified, the query will connect them with the OR keyword. If either begin or
+     * end of an interval are null, these values will not be specified in the query.
+     *
+     * @param intervals
+     *            - the TimeIntervals within which the task is due
+     * @return the query
+     */
+    TaskQuery dueWithin(TimeInterval... intervals);
 
     /**
      * Add the isRead flag to the query.
@@ -207,6 +338,46 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery transferredEquals(Boolean isTransferred);
 
     /**
+     * Add the parent business process ids for exact matching to your query.
+     *
+     * @param parentBusinessProcessIds
+     *            the parent businessProcessIds of the searched for tasks
+     * @return the query
+     */
+    TaskQuery parentBusinessProcessIdIn(String... parentBusinessProcessIds);
+
+    /**
+     * Add the parent business process id for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param parentBusinessProcessIds
+     *            the parent businessprocess ids of the searched for tasks
+     * @return the query
+     */
+    TaskQuery parentBusinessProcessIdLike(String... parentBusinessProcessIds);
+
+    /**
+     * Add the business process ids for exact matching to your query.
+     *
+     * @param businessProcessIds
+     *            the businessProcessIds of the searched for tasks
+     * @return the query
+     */
+    TaskQuery businessProcessIdIn(String... businessProcessIds);
+
+    /**
+     * Add the business process id for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param businessProcessIds
+     *            the business process ids of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery businessProcessIdLike(String... businessProcessIds);
+
+    /**
      * Filter the custom fields with this query. The scan will be run over all 10 fields.
      *
      * @param customFields
@@ -214,6 +385,206 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      * @return the query
      */
     TaskQuery customFieldsIn(String... customFields);
+
+    /**
+     * Add the custom_1 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_1 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom1In(String... strings);
+
+    /**
+     * Add the custom_1 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param strings
+     *            the custom_1 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom1Like(String... strings);
+
+    /**
+     * Add the custom_2 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_2 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom2In(String... strings);
+
+    /**
+     * Add the custom_2 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param strings
+     *            the custom_2 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom2Like(String... strings);
+
+    /**
+     * Add the custom_3 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_3 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom3In(String... strings);
+
+    /**
+     * Add the custom_3 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param strings
+     *            the custom_3 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom3Like(String... strings);
+
+    /**
+     * Add the custom_4 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_4 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom4In(String... strings);
+
+    /**
+     * Add the custom_4 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param strings
+     *            the custom_4 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom4Like(String... strings);
+
+    /**
+     * Add the custom_5 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_5 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom5In(String... strings);
+
+    /**
+     * Add the custom_5 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param strings
+     *            the custom_5 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom5Like(String... strings);
+
+    /**
+     * Add the custom_6 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_6 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom6In(String... strings);
+
+    /**
+     * Add the custom_6 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param strings
+     *            the custom_6 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom6Like(String... strings);
+
+    /**
+     * Add the custom_7 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_7 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom7In(String... strings);
+
+    /**
+     * Add the custom_7 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param strings
+     *            the custom_7 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom7Like(String... strings);
+
+    /**
+     * Add the custom_8 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_8 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom8In(String... strings);
+
+    /**
+     * Add the custom_8 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param strings
+     *            the custom_8 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom8Like(String... strings);
+
+    /**
+     * Add the custom_9 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_9 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom9In(String... strings);
+
+    /**
+     * Add the custom_9 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
+     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param strings
+     *            the custom_9 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom9Like(String... strings);
+
+    /**
+     * Add the custom_10 values for exact matching to your query.
+     *
+     * @param strings
+     *            the custom_10 values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery custom10In(String... strings);
+
+    /**
+     * Add the custom_10 value for pattern matching to your query. It will be compared in SQL with the LIKE operator.
+     * You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with
+     * the OR keyword.
+     *
+     * @param strings
+     *            the custom_10 values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery custom10Like(String... strings);
 
     /**
      * This method provides a query builder for quering the database.
@@ -532,9 +903,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      */
     TaskQuery orderByCustom10(SortDirection sortDirection);
 
-    /*
+    /**
      * Filter for summaries which are containing one of the given taskIds.
+     *
      * @param taskIds
+     *            The ids of the searched-for tasks.
      * @return the taskQuery
      */
     TaskQuery idIn(String... taskIds);
