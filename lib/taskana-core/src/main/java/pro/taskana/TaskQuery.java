@@ -903,9 +903,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      */
     TaskQuery orderByCustom10(SortDirection sortDirection);
 
-    /*
+    /**
      * Filter for summaries which are containing one of the given taskIds.
+     *
      * @param taskIds
+     *            The ids of the searched-for tasks.
      * @return the taskQuery
      */
     TaskQuery idIn(String... taskIds);

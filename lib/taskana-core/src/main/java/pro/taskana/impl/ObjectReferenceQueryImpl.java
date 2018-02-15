@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.ObjectReference;
@@ -169,7 +168,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     }
 
     @Override
-    public long count() throws NotAuthorizedException {
+    public long count() {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {
