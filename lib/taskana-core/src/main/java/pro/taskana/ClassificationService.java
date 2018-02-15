@@ -5,6 +5,7 @@ import java.util.List;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
  * This class manages the classifications.
@@ -48,16 +49,17 @@ public interface ClassificationService {
      * Delete a classification with all child classifications.
      *
      * @param classificationKey
-     *              the key of the classification you want to delete.
+     *            the key of the classification you want to delete.
      * @param domain
-     *              the domains for which you want to delete the classification.
-     *              if "", the function tries to delete the "master domain" classification and any other classification with this key.
+     *            the domains for which you want to delete the classification. if "", the function tries to delete the
+     *            "master domain" classification and any other classification with this key.
      * @throws ClassificationInUseException
-     *              if there are Task existing, which refer to this classification.
+     *             if there are Task existing, which refer to this classification.
      * @throws ClassificationNotFoundException
-     *              if for an domain no classification specification is found.
+     *             if for an domain no classification specification is found.
      */
-    void deleteClassification(String classificationKey, String domain) throws ClassificationInUseException, ClassificationNotFoundException;
+    void deleteClassification(String classificationKey, String domain)
+        throws ClassificationInUseException, ClassificationNotFoundException;
 
     /**
      * Persists a new classification after adding default values. <br >
@@ -80,8 +82,11 @@ public interface ClassificationService {
      * @return the updated Classification.
      * @throws ClassificationNotFoundException
      *             when the classification does not exist already.
+     * @throws NotAuthorizedException
+     *             when a user got no permissions for WB content tasks.
      */
-    Classification updateClassification(Classification classification) throws ClassificationNotFoundException;
+    Classification updateClassification(Classification classification)
+        throws ClassificationNotFoundException, NotAuthorizedException;
 
     /**
      * This method provides a query builder for quering the database.

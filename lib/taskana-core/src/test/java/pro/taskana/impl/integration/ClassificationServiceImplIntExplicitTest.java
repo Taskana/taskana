@@ -184,7 +184,8 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testModifiedClassification()
-        throws SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException {
+        throws SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException,
+        NotAuthorizedException {
 
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
