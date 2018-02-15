@@ -21,6 +21,7 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
@@ -137,8 +138,8 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             taskService.createTaskQuery()
                 .workbasketKeyIn(wbKey)
                 .list();
-            fail("NotAuthorizedException was expected ");
-        } catch (NotAuthorizedException ignored) {
+            fail("NotAuthorizedToQueryWorkbasketException was expected ");
+        } catch (NotAuthorizedToQueryWorkbasketException ignored) {
             // nothing to do
         }
 

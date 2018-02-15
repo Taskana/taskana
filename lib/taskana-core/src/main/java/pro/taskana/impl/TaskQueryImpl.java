@@ -15,6 +15,7 @@ import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TimeInterval;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.TaskState;
@@ -635,7 +636,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public List<TaskSummary> list() throws NotAuthorizedException {
+    public List<TaskSummary> list() {
         List<TaskSummary> result = new ArrayList<>();
         try {
             LOGGER.debug("entry to list(), this = {}", this);
@@ -645,6 +646,8 @@ public class TaskQueryImpl implements TaskQuery {
             tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
+        } catch (NotAuthorizedException e) {
+            throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -656,7 +659,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public List<TaskSummary> list(int offset, int limit) throws NotAuthorizedException {
+    public List<TaskSummary> list(int offset, int limit) {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<TaskSummary> result = new ArrayList<>();
         try {
@@ -666,16 +669,16 @@ public class TaskQueryImpl implements TaskQuery {
             List<TaskSummaryImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
-        } catch (Exception e) {
-            if (e instanceof PersistenceException) {
-                if (e.getMessage().contains("ERRORCODE=-4470")) {
-                    TaskanaRuntimeException ex = new TaskanaRuntimeException(
-                        "The offset beginning was set over the amount of result-rows.", e.getCause());
-                    ex.setStackTrace(e.getStackTrace());
-                    throw ex;
-                }
+        } catch (PersistenceException e) {
+            if (e.getMessage().contains("ERRORCODE=-4470")) {
+                TaskanaRuntimeException ex = new TaskanaRuntimeException(
+                    "The offset beginning was set over the amount of result-rows.", e.getCause());
+                ex.setStackTrace(e.getStackTrace());
+                throw ex;
             }
             throw e;
+        } catch (NotAuthorizedException e) {
+            throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         } finally {
             taskanaEngineImpl.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -687,7 +690,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskSummary single() throws NotAuthorizedException {
+    public TaskSummary single() {
         LOGGER.debug("entry to single(), this = {}", this);
         TaskSummary result = null;
         try {
@@ -703,6 +706,8 @@ public class TaskQueryImpl implements TaskQuery {
             result = augmentedList.get(0);
 
             return result;
+        } catch (NotAuthorizedException e) {
+            throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", result);
@@ -710,7 +715,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public long count() throws NotAuthorizedException {
+    public long count() {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {
@@ -724,11 +729,15 @@ public class TaskQueryImpl implements TaskQuery {
         }
     }
 
-    private void checkOpenPermissionForWorkbasketKey() throws NotAuthorizedException {
-        if (this.workbasketKeyIn != null && this.workbasketKeyIn.length > 0) {
-            for (String wbKey : this.workbasketKeyIn) {
-                taskanaEngineImpl.getWorkbasketService().checkAuthorization(wbKey, WorkbasketAuthorization.OPEN);
+    private void checkOpenPermissionForWorkbasketKey() {
+        try {
+            if (this.workbasketKeyIn != null && this.workbasketKeyIn.length > 0) {
+                for (String wbKey : this.workbasketKeyIn) {
+                    taskanaEngineImpl.getWorkbasketService().checkAuthorization(wbKey, WorkbasketAuthorization.OPEN);
+                }
             }
+        } catch (NotAuthorizedException e) {
+            throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         }
     }
 
