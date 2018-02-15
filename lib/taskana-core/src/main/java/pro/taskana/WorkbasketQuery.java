@@ -3,8 +3,8 @@ package pro.taskana;
 import java.time.Instant;
 
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.WorkbasketType;
+import pro.taskana.impl.WorkbasketAuthorization;
+import pro.taskana.impl.WorkbasketType;
 
 /**
  * WorkitemQuery for generating dynamic sql.

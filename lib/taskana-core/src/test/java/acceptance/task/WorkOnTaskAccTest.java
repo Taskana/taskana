@@ -36,7 +36,7 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.BulkOperationResults;
-import pro.taskana.model.TaskState;
+import pro.taskana.impl.TaskState;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

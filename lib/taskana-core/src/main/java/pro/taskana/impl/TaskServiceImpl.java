@@ -40,11 +40,8 @@ import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.mappings.AttachmentMapper;
-import pro.taskana.model.mappings.TaskMapper;
+import pro.taskana.mappings.AttachmentMapper;
+import pro.taskana.mappings.TaskMapper;
 import pro.taskana.security.CurrentUserContext;
 
 /**

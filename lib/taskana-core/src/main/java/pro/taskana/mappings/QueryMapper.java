@@ -1,4 +1,4 @@
-package pro.taskana.model.mappings;
+package pro.taskana.mappings;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ClassificationSummaryImpl;
+import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.impl.TaskSummaryImpl;
@@ -15,17 +16,16 @@ import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.impl.WorkbasketAccessItemQueryImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
-import pro.taskana.model.ObjectReference;
 
 /**
  * This class provides a mapper for all queries.
  */
 public interface QueryMapper {
 
-    String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.model.mappings.ObjectReferenceMapper.findById";
-    String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.model.mappings.ClassificationMapper.findByKeyAndDomain";
-    String CLASSIFICATION_FINDBYID = "pro.taskana.model.mappings.ClassificationMapper.findById";
-    String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.model.mappings.WorkbasketMapper.findSummaryByKey";
+    String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.mappings.ObjectReferenceMapper.findById";
+    String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.mappings.ClassificationMapper.findByKeyAndDomain";
+    String CLASSIFICATION_FINDBYID = "pro.taskana.mappings.ClassificationMapper.findById";
+    String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.mappings.WorkbasketMapper.findSummaryByKey";
 
     @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
         + "FROM TASK t "

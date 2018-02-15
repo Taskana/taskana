@@ -1,9 +1,10 @@
 package pro.taskana.rest.dto;
 
 import org.springframework.hateoas.ResourceSupport;
-import pro.taskana.model.WorkbasketType;
 
-public class WorkbasketSummaryDto extends ResourceSupport{
+import pro.taskana.impl.WorkbasketType;
+
+public class WorkbasketSummaryDto extends ResourceSupport {
 
     private String workbasketId;
     private String key;

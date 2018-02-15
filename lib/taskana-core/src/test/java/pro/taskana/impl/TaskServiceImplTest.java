@@ -56,12 +56,9 @@ import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.WorkbasketAuthorization;
-import pro.taskana.model.mappings.AttachmentMapper;
-import pro.taskana.model.mappings.ObjectReferenceMapper;
-import pro.taskana.model.mappings.TaskMapper;
+import pro.taskana.mappings.AttachmentMapper;
+import pro.taskana.mappings.ObjectReferenceMapper;
+import pro.taskana.mappings.TaskMapper;
 import pro.taskana.security.CurrentUserContext;
 
 /**

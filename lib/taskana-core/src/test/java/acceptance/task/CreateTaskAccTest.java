@@ -24,7 +24,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.TaskState;
+import pro.taskana.impl.TaskState;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

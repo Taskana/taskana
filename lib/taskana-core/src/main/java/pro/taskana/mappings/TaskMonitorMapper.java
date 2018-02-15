@@ -1,4 +1,4 @@
-package pro.taskana.model.mappings;
+package pro.taskana.mappings;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.Workbasket;
 import pro.taskana.impl.CustomField;
-import pro.taskana.model.MonitorQueryItem;
-import pro.taskana.model.TaskState;
+import pro.taskana.impl.MonitorQueryItem;
+import pro.taskana.impl.TaskState;
 
 /**
  * This class is the mybatis mapping of task monitoring.

@@ -18,16 +18,14 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.WorkbasketAuthorization;
 
 /**
  * TaskQuery for generating dynamic sql.
  */
 public class TaskQueryImpl implements TaskQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryTasks";
-    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryTasks";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryTasks";
+    private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryTasks";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
     private TaskServiceImpl taskService;

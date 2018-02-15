@@ -19,7 +19,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.TaskState;
 
 /**
  * Test for TaskQueryImpl.
