@@ -1,4 +1,4 @@
-package pro.taskana.model;
+package pro.taskana.impl;
 
 /**
  * Each ReportLineItem consists of a {@link ReportLineItemDefinition} that defines the upper and lower age limits of

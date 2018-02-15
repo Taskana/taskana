@@ -1,4 +1,4 @@
-package pro.taskana.model;
+package pro.taskana.impl;
 
 /**
  * A ReportLineItemDefinition has a lower and an upper age limit which subdivide the count of tasks into different

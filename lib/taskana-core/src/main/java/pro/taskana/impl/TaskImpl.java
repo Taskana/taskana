@@ -13,8 +13,6 @@ import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskSummary;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.TaskState;
 
 /**
  * Task entity.

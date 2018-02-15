@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pro.taskana.model.TaskState;
+import pro.taskana.impl.TaskState;
 
 @RestController
 @RequestMapping(path = "/v1/monitor", produces = { MediaType.APPLICATION_JSON_VALUE })

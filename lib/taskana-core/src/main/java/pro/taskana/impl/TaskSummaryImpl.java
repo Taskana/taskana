@@ -8,8 +8,6 @@ import pro.taskana.AttachmentSummary;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskSummary;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.TaskState;
 
 /**
  * Entity which contains the most important informations about a Task.

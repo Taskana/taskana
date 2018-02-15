@@ -3,7 +3,7 @@ package pro.taskana;
 import java.time.Instant;
 import java.util.Map;
 
-import pro.taskana.model.ObjectReference;
+import pro.taskana.impl.ObjectReference;
 
 /**
  * Attachment-Interface to specify Attachment Attributes.

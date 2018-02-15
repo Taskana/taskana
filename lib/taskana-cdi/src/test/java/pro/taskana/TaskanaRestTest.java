@@ -22,8 +22,8 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.ObjectReference;
-import pro.taskana.model.WorkbasketType;
+import pro.taskana.impl.ObjectReference;
+import pro.taskana.impl.WorkbasketType;
 
 @Path("/test")
 public class TaskanaRestTest {

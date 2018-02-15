@@ -31,7 +31,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.mappings.ClassificationMapper;
+import pro.taskana.mappings.ClassificationMapper;
 
 /**
  * Unit Test for ClassificationServiceImpl.

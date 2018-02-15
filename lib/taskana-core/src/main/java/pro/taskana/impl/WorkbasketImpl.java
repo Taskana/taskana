@@ -4,7 +4,6 @@ import java.time.Instant;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.model.WorkbasketType;
 
 /**
  * Workbasket entity.
