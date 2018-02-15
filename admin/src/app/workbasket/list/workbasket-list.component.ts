@@ -80,8 +80,11 @@ export class WorkbasketListComponent implements OnInit {
   }
 
   private performRequest(): void{
+    this.requestInProgress = true;
+    this.workbaskets = undefined;
     this.workbasketServiceSubscription.add(this.workbasketService.getWorkBasketsSummary(this.sortBy,this.sortDirection).subscribe(resultList => {
       this.workbaskets = resultList;
+      this.requestInProgress = false;
     }));
   }
 
