@@ -290,7 +290,7 @@ public interface TaskService {
      * @throws WorkbasketNotFoundException
      *             if the target WB can´t be found.
      */
-    BulkOperationResults<String, TaskanaException> transferBulk(String destinationWorkbasketKey, List<String> taskIds)
+    BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketKey, List<String> taskIds)
         throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
 
     /**
@@ -325,6 +325,21 @@ public interface TaskService {
      * @param tasks
      *            the ids of the tasks to delete.
      * @return the result of the operations with Id and Exception for each failed task deletion.
+     * @throws InvalidArgumentException
+     *             if the TaskIds parameter is NULL
      */
-    BulkOperationResults<String, TaskanaException> deleteTasks(List<String> tasks);
+    BulkOperationResults<String, TaskanaException> deleteTasks(List<String> tasks) throws InvalidArgumentException;
+
+    /**
+     * Completes a list of tasks.
+     *
+     * @param taskIds
+     *            of the tasks which should be completed.
+     * @return the result of the operations with Id and Exception for each failed task completion.
+     * @throws InvalidArgumentException
+     *             If the taskId parameter is NULL.
+     * @throws NotAuthorizedException
+     */
+    BulkOperationResults<String, TaskanaException> completeTasks(List<String> taskIds)
+        throws InvalidArgumentException, NotAuthorizedException;
 }

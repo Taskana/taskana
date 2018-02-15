@@ -183,6 +183,13 @@ public interface TaskMapper {
     void updateTransfered(@Param("taskIds") List<String> taskIds,
         @Param("referencetask") TaskSummaryImpl referencetask);
 
+    @Update("<script>"
+        + " UPDATE TASK SET COMPLETED = #{referencetask.completed}, MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}"
+        + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
+        + "</script>")
+    void updateCompleted(@Param("taskIds") List<String> taskIds,
+        @Param("referencetask") TaskSummaryImpl referencetask);
+
     @Select("<script>SELECT ID, STATE, WORKBASKET_KEY FROM TASK "
         + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
         + "</script>")

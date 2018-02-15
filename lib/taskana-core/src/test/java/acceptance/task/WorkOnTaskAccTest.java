@@ -1,19 +1,22 @@
 package acceptance.task;
 
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,7 +33,9 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.BulkOperationResults;
 import pro.taskana.model.TaskState;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -227,7 +232,6 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         taskService.completeTask(claimedTask.getId());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
@@ -250,24 +254,23 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         assertEquals("user_1_2", completedTask.getOwner());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
-    @Test(expected = TaskNotFoundException.class)
+    @Test
     public void testBulkCompleteTasks()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        ArrayList<String> taskIdList = new ArrayList<>();
+        List<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000100");
         taskIdList.add("TKI:000000000000000000000000000000000101");
 
-        // BulkOperationResults results = taskService.completeTasks(taskIdList);
+        BulkOperationResults<String, TaskanaException> results = taskService.completeTasks(taskIdList);
 
-        // assertFalse(results.containsError());
+        assertFalse(results.containsErrors());
         Task completedTask1 = taskService.getTask("TKI:000000000000000000000000000000000100");
         assertEquals(TaskState.COMPLETED, completedTask1.getState());
         assertNotNull(completedTask1.getCompleted());
@@ -276,33 +279,26 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         assertNotNull(completedTask2.getCompleted());
     }
 
-    @Ignore
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
-    @Test(expected = TaskNotFoundException.class)
+    @Test
     public void testBulkDeleteTasksWithException()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        ArrayList<String> taskIdList = new ArrayList<>();
+        List<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000102");
-        taskIdList.add("TKI:000000000000000000000000000000000103");
-        taskIdList.add("TKI:000000000000000000000000000000000033");
+        taskIdList.add("TKI:000000000000000000000000000000003333");
 
-        // BulkOperationResults results = taskService.deleteTasks(taskIdList);
+        BulkOperationResults<String, TaskanaException> results = taskService.deleteTasks(taskIdList);
 
-        // assertTrue(results.containsError());
-        // more assertions ...
-        // assert exception is invalidstateexception
-        Task completedTask1 = taskService.getTask("TKI:000000000000000000000000000000000102");
-        assertEquals(TaskState.COMPLETED, completedTask1.getState());
-        assertNotNull(completedTask1.getCompleted());
-        Task completedTask2 = taskService.getTask("TKI:000000000000000000000000000000000103");
-        assertEquals(TaskState.COMPLETED, completedTask2.getState());
-        assertNotNull(completedTask2.getCompleted());
+        assertTrue(results.containsErrors());
+        assertThat(results.getErrorMap().size(), equalTo(2));
+        assertTrue(results.getErrorForId("TKI:000000000000000000000000000000003333") instanceof TaskNotFoundException);
+        assertTrue(results.getErrorForId("TKI:000000000000000000000000000000000102") instanceof InvalidStateException);
     }
 
     @AfterClass
