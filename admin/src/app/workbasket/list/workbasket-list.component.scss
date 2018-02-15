@@ -14,3 +14,12 @@
     border-left: none;
     border-right: none;
 }
+
+a > label{
+    height: 2em;
+    width: 100%;
+}
+
+.sortby-dropdown {
+    min-width: 200px;
+}
