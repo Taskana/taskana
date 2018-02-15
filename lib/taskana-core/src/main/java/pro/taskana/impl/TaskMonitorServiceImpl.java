@@ -42,17 +42,19 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "entry to getWorkbasketLevelReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {})",
+                "entry to getWorkbasketLevelReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {},"
+                    + " inWorkingDays = {})",
                 LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
-                LoggerUtils.listToString(reportLineItemDefinitions));
+                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
 
+            Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
                 .getTaskCountOfWorkbasketsByWorkbasketsAndStates(workbaskets, states);
-
-            return createReport(reportLineItemDefinitions, inWorkingDays, monitorQueryItems);
+            report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
+            return report;
 
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -77,17 +79,19 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "entry to getCategoryReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {})",
+                "entry to getCategoryReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {},"
+                    + " inWorkingDays = {})",
                 LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
-                LoggerUtils.listToString(reportLineItemDefinitions));
+                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
 
+            Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
                 .getTaskCountOfCategoriesByWorkbasketsAndStates(workbaskets, states);
-
-            return createReport(reportLineItemDefinitions, inWorkingDays, monitorQueryItems);
+            report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
+            return report;
 
         } finally {
             taskanaEngineImpl.returnConnection();
@@ -96,36 +100,77 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public Report getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states) {
+    public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states) {
         return getClassificationReport(workbaskets, states, null, false);
     }
 
     @Override
-    public Report getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
         List<ReportLineItemDefinition> reportLineItemDefinitions) {
         return getClassificationReport(workbaskets, states, reportLineItemDefinitions, true);
     }
 
     @Override
-    public Report getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
         List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "entry to getClassificationReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {})",
+                "entry to getClassificationReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {},"
+                    + " inWorkingDays = {})",
                 LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
-                LoggerUtils.listToString(reportLineItemDefinitions));
+                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
 
+            ClassificationReport report = new ClassificationReport();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
                 .getTaskCountOfClassificationsByWorkbasketsAndStates(workbaskets, states);
-
-            return createReport(reportLineItemDefinitions, inWorkingDays, monitorQueryItems);
+            report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
+            return report;
 
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from getClassificationReport().");
+        }
+    }
+
+    @Override
+    public DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets,
+        List<TaskState> states) {
+        return getDetailedClassificationReport(workbaskets, states, null, false);
+    }
+
+    @Override
+    public DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets,
+        List<TaskState> states, List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        return getDetailedClassificationReport(workbaskets, states, reportLineItemDefinitions, true);
+    }
+
+    @Override
+    public DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets,
+        List<TaskState> states, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "entry to getDetailedClassificationReport(workbaskets = {}, states = {}, customField = {}, "
+                    + "reportLineItemDefinitions = {}, inWorkingDays = {})",
+                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
+        }
+        try {
+            taskanaEngineImpl.openConnection();
+
+            DetailedClassificationReport report = new DetailedClassificationReport();
+            List<DetailedMonitorQueryItem> detailedMonitorQueryItems = taskMonitorMapper
+                .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states);
+            report.addDetailedMonitoringQueryItems(detailedMonitorQueryItems, reportLineItemDefinitions,
+                inWorkingDays);
+            return report;
+
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getDetailedClassificationReport().");
         }
     }
 
@@ -146,57 +191,24 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         CustomField customField, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "entry to getCustomFieldValueReport(workbaskets = {}, states = {}, customField = {}, reportLineItemDefinitions = {})",
+                "entry to getCustomFieldValueReport(workbaskets = {}, states = {}, customField = {}, "
+                    + "reportLineItemDefinitions = {}, inWorkingDays = {})",
                 LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states), customField,
-                LoggerUtils.listToString(reportLineItemDefinitions));
+                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
 
+            Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
                 .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(workbaskets, states, customField);
-
-            return createReport(reportLineItemDefinitions, inWorkingDays, monitorQueryItems);
+            report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
+            return report;
 
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from getCustomFieldValueReport().");
         }
-    }
-
-    private Report createReport(List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays,
-        List<MonitorQueryItem> monitorQueryItems) {
-        Report report = new Report();
-
-        DaysToWorkingDaysConverter instance = null;
-        if (reportLineItemDefinitions != null && inWorkingDays) {
-            instance = DaysToWorkingDaysConverter.initialize(reportLineItemDefinitions);
-        }
-
-        for (MonitorQueryItem item : monitorQueryItems) {
-            if (instance != null) {
-                item.setAgeInDays(instance.convertDaysToWorkingDays(item.getAgeInDays()));
-            }
-            if (!report.getDetailLines().containsKey(item.getKey())) {
-                report.getDetailLines().put(item.getKey(), createEmptyReportLine(reportLineItemDefinitions));
-            }
-            report.getDetailLines().get(item.getKey()).addNumberOfTasks(item);
-        }
-
-        report.generateSumLine(createEmptyReportLine(reportLineItemDefinitions));
-        return report;
-    }
-
-    private ReportLine createEmptyReportLine(List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        ReportLine reportLine = new ReportLine();
-        if (reportLineItemDefinitions != null) {
-            for (ReportLineItemDefinition reportLineItemDefinition : reportLineItemDefinitions) {
-                ReportLineItem reportLineItem = new ReportLineItem();
-                reportLineItem.setReportLineItemDefinition(reportLineItemDefinition);
-                reportLine.getLineItems().add(reportLineItem);
-            }
-        }
-        return reportLine;
     }
 
 }
