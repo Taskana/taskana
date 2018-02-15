@@ -10,13 +10,15 @@ import java.util.Set;
  * this class represents a workbasket including its distro targets and authorisations.
  */
 public class WorkbasketDefinition {
+
     private final Workbasket workbasket;
-    private final Set<String> distroTargets;
+    private final Set<String> distributionTargets;
     private final List<WorkbasketAccessItem> authorizations;
 
-    public WorkbasketDefinition(Workbasket workbasket, Set<String> distroTargets, List<WorkbasketAccessItem> authorizations) {
+    public WorkbasketDefinition(Workbasket workbasket, Set<String> distributionTargets,
+        List<WorkbasketAccessItem> authorizations) {
         this.workbasket = workbasket;
-        this.distroTargets = distroTargets;
+        this.distributionTargets = distributionTargets;
         this.authorizations = authorizations;
     }
 
@@ -24,19 +26,19 @@ public class WorkbasketDefinition {
         return workbasket;
     }
 
-    public Set<String> getDistroTargets() {
-        return distroTargets;
+    public Set<String> getdistributionTargets() {
+        return distributionTargets;
     }
 
     public List<WorkbasketAccessItem> getAuthorizations() {
         return authorizations;
     }
 
-    @Override
-    public String toString() {
-        return "WorkbasketDefinition{"
-                + "workbasket=" + workbasket.toString()
-                + ", authorizations=" + authorizations.toString()
-                + '}';
+    @Override public String toString() {
+        return "WorkbasketDefinition{" +
+            "workbasket=" + workbasket +
+            ", distributionTargets=" + distributionTargets +
+            ", authorizations=" + authorizations +
+            '}';
     }
 }
