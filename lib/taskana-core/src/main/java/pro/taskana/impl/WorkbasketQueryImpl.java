@@ -15,7 +15,6 @@ import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.model.WorkbasketAuthorization;
@@ -51,7 +50,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private TaskanaEngineImpl taskanaEngineImpl;
     private List<String> orderBy;
 
-    public WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
+    WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         orderBy = new ArrayList<>();
     }
@@ -337,7 +336,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public long count() throws NotAuthorizedException {
+    public long count() {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {

@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
@@ -80,7 +81,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test(expected = TaskNotFoundException.class)
-    public void testBulkDeleteTask() throws TaskNotFoundException {
+    public void testBulkDeleteTask() throws TaskNotFoundException, InvalidArgumentException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         ArrayList<String> taskIdList = new ArrayList<>();
@@ -97,7 +98,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test(expected = TaskNotFoundException.class)
-    public void testBulkDeleteTasksWithException() throws TaskNotFoundException {
+    public void testBulkDeleteTasksWithException() throws TaskNotFoundException, InvalidArgumentException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         ArrayList<String> taskIdList = new ArrayList<>();

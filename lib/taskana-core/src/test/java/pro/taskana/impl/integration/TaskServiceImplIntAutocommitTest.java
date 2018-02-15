@@ -240,7 +240,8 @@ public class TaskServiceImplIntAutocommitTest {
         dummyTask = (TaskImpl) taskServiceImpl.createTask(dummyTask);
 
         List<TaskSummaryImpl> expectedTaskSumamries = new ArrayList<>();
-        TaskSummaryImpl taskSummary = new TaskSummaryImpl();
+        TaskSummaryImpl taskSummary = (TaskSummaryImpl) taskServiceImpl.newTask(dummyTask.getWorkbasketKey())
+            .asSummary();
         taskSummary.setTaskId(dummyTask.getId());
         taskSummary.setName(dummyTask.getName());
         expectedTaskSumamries.add(taskSummary);

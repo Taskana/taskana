@@ -64,7 +64,7 @@ public class TaskServiceImpl implements TaskService {
     private TaskMapper taskMapper;
     private AttachmentMapper attachmentMapper;
 
-    public TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
+    TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
         AttachmentMapper attachmentMapper) {
         super();
         this.taskanaEngine = taskanaEngine;
@@ -200,6 +200,7 @@ public class TaskServiceImpl implements TaskService {
             task.setCompleted(now);
             task.setModified(now);
             task.setState(TaskState.COMPLETED);
+            task.setOwner(CurrentUserContext.getUserid());
             taskMapper.update(task);
             LOGGER.debug("Method completeTask() completed Task '{}'.", taskId);
         } finally {
@@ -207,6 +208,72 @@ public class TaskServiceImpl implements TaskService {
             LOGGER.debug("exit from completeTask()");
         }
         return task;
+    }
+
+    @Override
+    public BulkOperationResults<String, TaskanaException> completeTasks(List<String> taskIds)
+        throws InvalidArgumentException, NotAuthorizedException {
+        try {
+            LOGGER.debug("entry to completeTasks(taskIds = {})", taskIds);
+            taskanaEngineImpl.openConnection();
+
+            // Check pre-conditions with throwing Exceptions
+            if (taskIds == null) {
+                throw new InvalidArgumentException(
+                    "TaskIds can´t be used as NULL-Parameter.");
+            }
+
+            // process bulk-complete
+            BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+            if (!taskIds.isEmpty()) {
+                // remove null/empty taskIds with message
+                Iterator<String> taskIdIterator = taskIds.iterator();
+                while (taskIdIterator.hasNext()) {
+                    String currentTaskId = taskIdIterator.next();
+                    if (currentTaskId == null || currentTaskId.isEmpty()) {
+                        bulkLog.addError("",
+                            new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed and invalid."));
+                        taskIdIterator.remove();
+                    }
+                }
+
+                // query for existing tasks, modify values and LOG missing ones.
+                List<TaskSummary> taskSummaries = this.createTaskQuery().idIn(taskIds.toArray(new String[0])).list();
+                Instant now = Instant.now();
+                taskIdIterator = taskIds.iterator();
+                while (taskIdIterator.hasNext()) {
+                    String currentTaskId = taskIdIterator.next();
+                    TaskSummaryImpl taskSummary = (TaskSummaryImpl) taskSummaries.stream()
+                        .filter(ts -> currentTaskId.equals(ts.getTaskId()))
+                        .findFirst()
+                        .orElse(null);
+                    if (taskSummary == null) {
+                        bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId));
+                        taskIdIterator.remove();
+                    } else if (taskSummary.getClaimed() == null || taskSummary.getState() != TaskState.CLAIMED) {
+                        bulkLog.addError(currentTaskId, new InvalidStateException(currentTaskId));
+                        taskIdIterator.remove();
+                    } else if (!CurrentUserContext.getAccessIds().contains(taskSummary.getOwner())) {
+                        bulkLog.addError(currentTaskId, new InvalidOwnerException(
+                            "TaskOwner is" + taskSummary.getOwner() + ", but current User is "
+                                + CurrentUserContext.getUserid()));
+                        taskIdIterator.remove();
+                    } else {
+                        taskSummary.setCompleted(now);
+                        taskSummary.setModified(now);
+                        taskSummary.setState(TaskState.COMPLETED);
+                    }
+                }
+
+                if (!taskIds.isEmpty() && !taskSummaries.isEmpty()) {
+                    taskMapper.updateCompleted(taskIds, (TaskSummaryImpl) taskSummaries.get(0));
+                }
+            }
+            return bulkLog;
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from to completeTasks(taskIds = {})", taskIds);
+        }
     }
 
     @Override
@@ -325,7 +392,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public BulkOperationResults<String, TaskanaException> transferBulk(String destinationWorkbasketKey,
+    public BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketKey,
         List<String> taskIds) throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         try {
             taskanaEngineImpl.openConnection();
@@ -837,12 +904,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public BulkOperationResults<String, TaskanaException> deleteTasks(List<String> taskIds) {
+    public BulkOperationResults<String, TaskanaException> deleteTasks(List<String> taskIds)
+        throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to deleteTasks(tasks = {})", LoggerUtils.listToString(taskIds));
         }
         try {
             taskanaEngineImpl.openConnection();
+            if (taskIds == null) {
+                throw new InvalidArgumentException("TaskIds can´t be NULL as parameter for deleteTasks().");
+            }
             BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
             List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds);
@@ -870,7 +941,9 @@ public class TaskServiceImpl implements TaskService {
                     }
                 }
             }
-            taskMapper.deleteMultiple(taskIds);
+            if (!taskIds.isEmpty()) {
+                taskMapper.deleteMultiple(taskIds);
+            }
             return bulkLog;
         } finally {
             LOGGER.debug("exit from deleteTasks()");

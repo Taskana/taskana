@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 
@@ -59,7 +58,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private String[] custom8In;
     private String[] custom8Like;
 
-    public ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
+    ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     }
 
@@ -159,7 +158,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         return this;
     }
 
-   @Override
+    @Override
     public ClassificationQuery custom1Like(String... custom1Like) {
         this.custom1Like = custom1Like;
         return this;
@@ -559,7 +558,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public long count() throws NotAuthorizedException {
+    public long count() {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {
