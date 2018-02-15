@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -32,12 +33,14 @@ public class WorkbasketDefinitionController {
     @GetMapping
     public ResponseEntity<List<WorkbasketDefinition>> exportWorkbaskets(@RequestParam(required = false) String domain) {
         try {
+            WorkbasketQuery workbasketQuery = workbasketService.createWorkbasketQuery();
+            List<WorkbasketSummary> workbasketSummaryList = domain != null
+                ? workbasketQuery.domainIn(domain).list()
+                : workbasketQuery.list();
             List<WorkbasketDefinition> basketExports = new ArrayList<>();
-            for (WorkbasketSummary summary : workbasketService.getWorkbaskets()) {
-                if (domain == null || summary.getDomain().equals(domain)) {
-                    Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
-                    basketExports.add(workbasketDefinitionMapper.toResource(workbasket));
-                }
+            for (WorkbasketSummary summary : workbasketSummaryList) {
+                Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
+                basketExports.add(workbasketDefinitionMapper.toResource(workbasket));
             }
             return new ResponseEntity<>(basketExports, HttpStatus.OK);
         } catch (WorkbasketNotFoundException e) {
