@@ -26,7 +26,7 @@ public class WorkbasketDefinition {
         return workbasket;
     }
 
-    public Set<String> getdistributionTargets() {
+    public Set<String> getDistributionTargets() {
         return distributionTargets;
     }
 
