@@ -46,7 +46,7 @@ public class ClassificationQueryImplTest {
 
         List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
             .typeIn("cool", "bla")
-            .priority(1, 2)
+            .priorityIn(1, 2)
             .parentClassificationKeyIn("superId")
             .list();
         Assert.assertNotNull(result);
@@ -60,7 +60,7 @@ public class ClassificationQueryImplTest {
 
         List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
             .typeIn("cool", "bla")
-            .priority(1, 2)
+            .priorityIn(1, 2)
             .parentClassificationKeyIn("superId")
             .list(1, 1);
         Assert.assertNotNull(result);
@@ -73,7 +73,7 @@ public class ClassificationQueryImplTest {
 
         ClassificationSummary result = classificationQueryImpl.nameIn("test", "asd", "blubber")
             .typeIn("cool", "bla")
-            .priority(1, 2)
+            .priorityIn(1, 2)
             .parentClassificationKeyIn("superId")
             .single();
         Assert.assertNotNull(result);

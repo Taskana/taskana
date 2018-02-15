@@ -57,7 +57,7 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      *            a simple flag showing if domain is valid
      * @return the query
      */
-    ClassificationQuery validInDomain(Boolean validInDomain);
+    ClassificationQuery validInDomainEquals(Boolean validInDomain);
 
     /**
      * Add your created-Dates to your query.
@@ -103,7 +103,7 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      *            as integers
      * @return the query
      */
-    ClassificationQuery priority(int... priorities);
+    ClassificationQuery priorityIn(int... priorities);
 
     /**
      * Add your serviceLevel to your query.

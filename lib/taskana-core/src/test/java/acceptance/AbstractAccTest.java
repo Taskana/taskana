@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import org.junit.BeforeClass;
 import pro.taskana.Attachment;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -95,6 +97,12 @@ public abstract class AbstractAccTest {
         attachment.setCustomAttributes(customAttributes);
 
         return attachment;
+    }
+
+    protected TimeInterval todaysInterval() {
+        Instant begin = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant();
+        Instant end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
+        return new TimeInterval(begin, end);
     }
 
     protected Instant getInstant(String datetime) {

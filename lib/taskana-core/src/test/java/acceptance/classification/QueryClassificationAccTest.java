@@ -131,9 +131,9 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-             .custom1Like("VNR,RVNR,KOLVNR", "VNR")
-             .domainIn("DOMAIN_A")
-             .list();
+            .custom1Like("VNR,RVNR,KOLVNR", "VNR")
+            .domainIn("DOMAIN_A")
+            .list();
         assertNotNull(classifications);
         assertEquals(12, classifications.size());
     }
@@ -143,10 +143,10 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-             .custom1Like("%RVNR%")
-             .domainIn("DOMAIN_A")
-             .typeIn("TASK")
-             .list();
+            .custom1Like("%RVNR%")
+            .domainIn("DOMAIN_A")
+            .typeIn("TASK")
+            .list();
         assertNotNull(classifications);
         assertEquals(10, classifications.size());
     }
@@ -156,12 +156,37 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-             .parentClassificationKeyIn("L11010")
-             .custom2Like("TEXT_1", "TEXT_2")
+            .parentClassificationKeyIn("L11010")
+            .custom2Like("TEXT_1", "TEXT_2")
             .list();
         // zwei tests
         assertNotNull(classifications);
         assertEquals(3, classifications.size());
+    }
+
+    @Test
+    public void testFindClassificationsByCreatedTimestamp()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
+            .domainIn("DOMAIN_A")
+            .createdWithin(todaysInterval())
+            .list();
+
+        assertNotNull(classificationSummaryList);
+        assertEquals(15, classificationSummaryList.size());
+    }
+
+    @Test
+    public void testFindClassificationsByPriorityAndValidInDomain()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        List<ClassificationSummary> list = classificationService.createClassificationQuery()
+            .validInDomainEquals(Boolean.TRUE)
+            .priorityIn(1, 2, 3)
+            .list();
+        assertEquals(20, list.size());
+
     }
 
     @AfterClass

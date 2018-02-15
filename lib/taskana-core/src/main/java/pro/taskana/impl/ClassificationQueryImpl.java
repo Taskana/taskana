@@ -93,7 +93,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery validInDomain(Boolean validInDomain) {
+    public ClassificationQuery validInDomainEquals(Boolean validInDomain) {
         this.validInDomain = validInDomain;
         return this;
     }
@@ -128,7 +128,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery priority(int... priorities) {
+    public ClassificationQuery priorityIn(int... priorities) {
         this.priority = priorities;
         return this;
     }

@@ -190,7 +190,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classification = classificationService.createClassification(classification);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .validInDomain(Boolean.TRUE)
+            .validInDomainEquals(Boolean.TRUE)
             .createdWithin(today())
             .list();
 
@@ -206,7 +206,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classification = classificationService.updateClassification(classification);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .validInDomain(true)
+            .validInDomainEquals(true)
             .list();
         Assert.assertEquals(1, list.size());
 
@@ -305,10 +305,10 @@ public class ClassificationServiceImplIntAutoCommitTest {
             .parentClassificationKeyIn(classification.getKey())
             .list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().typeIn("type1").priority(Integer.decode("5")).list();
+        list = classificationService.createClassificationQuery().typeIn("type1").priorityIn(Integer.decode("5")).list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery()
-            .priority(Integer.decode("5"))
+            .priorityIn(Integer.decode("5"))
             .typeIn("type1")
             .parentClassificationKeyIn(classification1.getKey())
             .list();
@@ -379,13 +379,13 @@ public class ClassificationServiceImplIntAutoCommitTest {
         list = classificationService.createClassificationQuery().list();
         Assert.assertEquals(listAll.size(), list.size());
 
-        list = classificationService.createClassificationQuery().validInDomain(true).list();
+        list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
         Assert.assertEquals(listAll.size(), list.size());
 
         list = classificationService.createClassificationQuery().createdWithin(today()).list();
         Assert.assertEquals(listAll.size(), list.size());
 
-        list = classificationService.createClassificationQuery().domainIn("domain1").validInDomain(false).list();
+        list = classificationService.createClassificationQuery().domainIn("domain1").validInDomainEquals(false).list();
         Assert.assertEquals(0, list.size());
 
         list = classificationService.createClassificationQuery()
