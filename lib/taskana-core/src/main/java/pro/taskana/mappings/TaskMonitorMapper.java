@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.Workbasket;
 import pro.taskana.impl.CustomField;
+import pro.taskana.impl.DetailedMonitorQueryItem;
 import pro.taskana.impl.MonitorQueryItem;
 import pro.taskana.impl.TaskState;
 
@@ -68,6 +69,25 @@ public interface TaskMonitorMapper {
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
         @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
     List<MonitorQueryItem> getTaskCountOfClassificationsByWorkbasketsAndStates(
+        @Param("workbaskets") List<Workbasket> workbaskets,
+        @Param("states") List<TaskState> states);
+
+    @Select("<script>"
+        + "<if test=\"_databaseId == 'db2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'h2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
+        + "WHERE WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
+        + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
+        + "AND DUE IS NOT NULL "
+        + "<if test=\"_databaseId == 'db2'\">GROUP BY T.CLASSIFICATION_KEY, A.CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
+        + "<if test=\"_databaseId == 'h2'\">GROUP BY T.CLASSIFICATION_KEY, A.CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "</script>")
+    @Results({
+        @Result(column = "TASK_CLASSIFICATION_KEY", property = "key"),
+        @Result(column = "ATTACHMENT_CLASSIFICATION_KEY", property = "attachmentKey"),
+        @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
+        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
+    List<DetailedMonitorQueryItem> getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(
         @Param("workbaskets") List<Workbasket> workbaskets,
         @Param("states") List<TaskState> states);
 

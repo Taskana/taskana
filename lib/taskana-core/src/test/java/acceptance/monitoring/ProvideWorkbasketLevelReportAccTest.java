@@ -75,9 +75,9 @@ public class ProvideWorkbasketLevelReportAccTest {
         Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states);
 
         assertNotNull(report);
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
+        assertEquals(20, report.getReportLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
+        assertEquals(20, report.getReportLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
 
     }
@@ -107,9 +107,9 @@ public class ProvideWorkbasketLevelReportAccTest {
 
         assertNotNull(report);
 
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(20, report.getDetailLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
+        assertEquals(20, report.getReportLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
+        assertEquals(20, report.getReportLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
 
         assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());

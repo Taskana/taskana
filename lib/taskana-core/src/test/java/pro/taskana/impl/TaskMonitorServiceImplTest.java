@@ -86,7 +86,7 @@ public class TaskMonitorServiceImplTest {
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getDetailLines().get(workbasket.getKey()).getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get(workbasket.getKey()).getTotalNumberOfTasks(), 1);
         assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }
 
@@ -118,8 +118,8 @@ public class TaskMonitorServiceImplTest {
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getDetailLines().get(workbasket.getKey()).getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getDetailLines().get(workbasket.getKey()).getLineItems().get(0).getNumberOfTasks(),
+        assertEquals(actualResult.getReportLines().get(workbasket.getKey()).getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get(workbasket.getKey()).getLineItems().get(0).getNumberOfTasks(),
             1);
         assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }
@@ -149,7 +149,7 @@ public class TaskMonitorServiceImplTest {
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getDetailLines().get("EXTERN").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get("EXTERN").getTotalNumberOfTasks(), 1);
         assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }
 
@@ -181,8 +181,8 @@ public class TaskMonitorServiceImplTest {
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getDetailLines().get("EXTERN").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getDetailLines().get("EXTERN").getLineItems().get(0).getNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get("EXTERN").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get("EXTERN").getLineItems().get(0).getNumberOfTasks(), 1);
         assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }
 
@@ -202,7 +202,7 @@ public class TaskMonitorServiceImplTest {
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfClassificationsByWorkbasketsAndStates(
             workbaskets, states);
 
-        Report actualResult = cut.getClassificationReport(workbaskets, states);
+        ClassificationReport actualResult = cut.getClassificationReport(workbaskets, states);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassificationsByWorkbasketsAndStates(any(), any());
@@ -211,7 +211,7 @@ public class TaskMonitorServiceImplTest {
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getDetailLines().get("L10000").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get("L10000").getTotalNumberOfTasks(), 1);
         assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }
 
@@ -234,7 +234,7 @@ public class TaskMonitorServiceImplTest {
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfClassificationsByWorkbasketsAndStates(
             workbaskets, states);
 
-        Report actualResult = cut.getClassificationReport(workbaskets, states, reportLineItemDefinitions);
+        ClassificationReport actualResult = cut.getClassificationReport(workbaskets, states, reportLineItemDefinitions);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassificationsByWorkbasketsAndStates(any(), any());
@@ -243,9 +243,82 @@ public class TaskMonitorServiceImplTest {
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getDetailLines().get("L10000").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getDetailLines().get("L10000").getLineItems().get(0).getNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get("L10000").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get("L10000").getLineItems().get(0).getNumberOfTasks(), 1);
         assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+    }
+
+    @Test
+    public void testGetTotalNumbersOfDetailedClassificationReport() {
+        WorkbasketImpl workbasket = new WorkbasketImpl();
+        workbasket.setName("workbasket");
+        workbasket.setKey("wb1");
+        List<Workbasket> workbaskets = Arrays.asList(workbasket);
+        List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+
+        List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
+        DetailedMonitorQueryItem detailedMonitorQueryItem = new DetailedMonitorQueryItem();
+        detailedMonitorQueryItem.setKey("L10000");
+        detailedMonitorQueryItem.setAttachmentKey("L11000");
+        detailedMonitorQueryItem.setNumberOfTasks(1);
+        expectedResult.add(detailedMonitorQueryItem);
+        doReturn(expectedResult).when(taskMonitorMapperMock)
+            .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states);
+
+        DetailedClassificationReport actualResult = cut.getDetailedClassificationReport(workbaskets, states);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(any(),
+            any());
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+            taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+
+        DetailedReportLine line = (DetailedReportLine) actualResult.getReportLines().get("L10000");
+        assertNotNull(actualResult);
+        assertEquals(line.getTotalNumberOfTasks(), 1);
+        assertEquals(line.getDetailLines().get("L11000").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+    }
+
+    @Test
+    public void testGetDetailedClassificationReportWithReportLineItemDefinitions() {
+        WorkbasketImpl workbasket = new WorkbasketImpl();
+        workbasket.setName("workbasket");
+        workbasket.setKey("wb1");
+        List<Workbasket> workbaskets = Arrays.asList(workbasket);
+        List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
+            new ReportLineItemDefinition());
+
+        List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
+        DetailedMonitorQueryItem detailedMonitorQueryItem = new DetailedMonitorQueryItem();
+        detailedMonitorQueryItem.setKey("L10000");
+        detailedMonitorQueryItem.setAttachmentKey("L11000");
+        detailedMonitorQueryItem.setAgeInDays(0);
+        detailedMonitorQueryItem.setNumberOfTasks(1);
+        expectedResult.add(detailedMonitorQueryItem);
+        doReturn(expectedResult).when(taskMonitorMapperMock)
+            .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states);
+
+        DetailedClassificationReport actualResult = cut.getDetailedClassificationReport(workbaskets, states,
+            reportLineItemDefinitions);
+
+        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(any(),
+            any());
+        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
+            taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
+
+        DetailedReportLine line = (DetailedReportLine) actualResult.getReportLines().get("L10000");
+        assertNotNull(actualResult);
+        assertEquals(line.getTotalNumberOfTasks(), 1);
+        assertEquals(line.getDetailLines().get("L11000").getTotalNumberOfTasks(), 1);
+        assertEquals(line.getLineItems().get(0).getNumberOfTasks(), 1);
+        assertEquals(line.getDetailLines().get("L11000").getLineItems().get(0).getNumberOfTasks(), 1);
+        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getSumLine().getLineItems().get(0).getNumberOfTasks(), 1);
     }
 
     @Test
@@ -275,7 +348,7 @@ public class TaskMonitorServiceImplTest {
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getDetailLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
         assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }
 
@@ -310,8 +383,8 @@ public class TaskMonitorServiceImplTest {
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getDetailLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getDetailLines().get("Geschaeftsstelle A").getLineItems().get(0).getNumberOfTasks(),
+        assertEquals(actualResult.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getReportLines().get("Geschaeftsstelle A").getLineItems().get(0).getNumberOfTasks(),
             1);
         assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
     }

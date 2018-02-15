@@ -76,12 +76,12 @@ public class ProvideCategoryReportAccTest {
         Report report = taskMonitorService.getCategoryReport(workbaskets, states);
 
         assertNotNull(report);
-        assertEquals(33, report.getDetailLines().get(categories.get(0)).getTotalNumberOfTasks());
-        assertEquals(7, report.getDetailLines().get(categories.get(1)).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(categories.get(2)).getTotalNumberOfTasks());
-        assertEquals(0, report.getDetailLines().get(categories.get(0)).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(categories.get(1)).getLineItems().size());
-        assertEquals(0, report.getDetailLines().get(categories.get(2)).getLineItems().size());
+        assertEquals(33, report.getReportLines().get(categories.get(0)).getTotalNumberOfTasks());
+        assertEquals(7, report.getReportLines().get(categories.get(1)).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(categories.get(2)).getTotalNumberOfTasks());
+        assertEquals(0, report.getReportLines().get(categories.get(0)).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(categories.get(1)).getLineItems().size());
+        assertEquals(0, report.getReportLines().get(categories.get(2)).getLineItems().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
 
     }
@@ -112,9 +112,9 @@ public class ProvideCategoryReportAccTest {
 
         assertNotNull(report);
 
-        assertEquals(33, report.getDetailLines().get(categories.get(0)).getTotalNumberOfTasks());
-        assertEquals(7, report.getDetailLines().get(categories.get(1)).getTotalNumberOfTasks());
-        assertEquals(10, report.getDetailLines().get(categories.get(2)).getTotalNumberOfTasks());
+        assertEquals(33, report.getReportLines().get(categories.get(0)).getTotalNumberOfTasks());
+        assertEquals(7, report.getReportLines().get(categories.get(1)).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get(categories.get(2)).getTotalNumberOfTasks());
 
         assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
