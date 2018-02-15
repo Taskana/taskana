@@ -1,4 +1,4 @@
-package pro.taskana.model.mappings;
+package pro.taskana.mappings;
 
 import java.util.List;
 import java.util.Map;

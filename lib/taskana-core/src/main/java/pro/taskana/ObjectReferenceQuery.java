@@ -1,6 +1,6 @@
 package pro.taskana;
 
-import pro.taskana.model.ObjectReference;
+import pro.taskana.impl.ObjectReference;
 
 /**
  * ObjectReferenceQuery for generating dynamic sql.

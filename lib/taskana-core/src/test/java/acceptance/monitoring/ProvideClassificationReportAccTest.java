@@ -30,14 +30,14 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationImpl;
+import pro.taskana.impl.Report;
+import pro.taskana.impl.ReportLineItem;
+import pro.taskana.impl.ReportLineItemDefinition;
+import pro.taskana.impl.TaskState;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.model.Report;
-import pro.taskana.model.ReportLineItem;
-import pro.taskana.model.ReportLineItemDefinition;
-import pro.taskana.model.TaskState;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

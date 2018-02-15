@@ -7,7 +7,7 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.WorkbasketAuthorization;
+import pro.taskana.impl.WorkbasketAuthorization;
 
 /**
  * This service manages Workbaskets.

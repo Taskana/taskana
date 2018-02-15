@@ -1,4 +1,4 @@
-package pro.taskana.model.mappings;
+package pro.taskana.mappings;
 
 import java.util.List;
 
@@ -9,7 +9,8 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import pro.taskana.model.ObjectReference;
+
+import pro.taskana.impl.ObjectReference;
 /**
  * This class is the mybatis mapping of ObjectReference.
  */

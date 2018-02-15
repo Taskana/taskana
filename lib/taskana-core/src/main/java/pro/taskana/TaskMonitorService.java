@@ -3,9 +3,9 @@ package pro.taskana;
 import java.util.List;
 
 import pro.taskana.impl.CustomField;
-import pro.taskana.model.Report;
-import pro.taskana.model.ReportLineItemDefinition;
-import pro.taskana.model.TaskState;
+import pro.taskana.impl.Report;
+import pro.taskana.impl.ReportLineItemDefinition;
+import pro.taskana.impl.TaskState;
 
 /**
  * The Task Monitor Service manages operations on tasks regarding the monitoring.

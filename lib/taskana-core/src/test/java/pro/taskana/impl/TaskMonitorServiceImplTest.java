@@ -24,12 +24,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.model.MonitorQueryItem;
-import pro.taskana.model.Report;
-import pro.taskana.model.ReportLineItemDefinition;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.mappings.ObjectReferenceMapper;
-import pro.taskana.model.mappings.TaskMonitorMapper;
+import pro.taskana.mappings.ObjectReferenceMapper;
+import pro.taskana.mappings.TaskMonitorMapper;
 
 /**
  * Unit Test for TaskMonitorServiceImpl.

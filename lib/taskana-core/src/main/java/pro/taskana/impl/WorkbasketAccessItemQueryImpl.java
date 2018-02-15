@@ -22,8 +22,8 @@ import pro.taskana.impl.util.LoggerUtils;
  */
 public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryWorkbasketAccessItem";
-    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryWorkbasketAccessItems";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasketAccessItem";
+    private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbasketAccessItems";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
     private String[] accessIdIn;
     private String[] workbasketKeyIn;

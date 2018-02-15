@@ -1,4 +1,4 @@
-package pro.taskana.model;
+package pro.taskana.impl;
 
 /**
  * The MonitorQueryItem entity contains the number of tasks for a key (e.g. workbasketKey) and age in days.

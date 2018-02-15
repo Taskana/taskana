@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.ReportLineItemDefinition;
 
 /**
  * The DaysToWorkingDaysConverter provides a method to convert an age in days into an age in working days. Before the

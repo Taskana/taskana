@@ -15,7 +15,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.model.ObjectReference;
+import pro.taskana.impl.ObjectReference;
 
 @ApplicationScoped
 public class ExampleBootstrap {

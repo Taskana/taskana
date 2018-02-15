@@ -22,8 +22,8 @@ import pro.taskana.impl.util.LoggerUtils;
  */
 public class ClassificationQueryImpl implements ClassificationQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.model.mappings.QueryMapper.queryClassification";
-    private static final String LINK_TO_COUNTER = "pro.taskana.model.mappings.QueryMapper.countQueryClassifications";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryClassification";
+    private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryClassifications";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
     private String[] key;
