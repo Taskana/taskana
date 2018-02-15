@@ -10,6 +10,10 @@ import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -28,6 +32,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -204,10 +209,9 @@ public class ClassificationServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
         classificationService.createClassification(classification);
-        Instant today = Instant.now();
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .validInDomain(Boolean.TRUE)
-            .created(today)
+            .createdWithin(today())
             .list();
         Assert.assertEquals(1, list.size());
     }
@@ -301,7 +305,10 @@ public class ClassificationServiceImplIntExplicitTest {
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery().custom1In("custom2").list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().descriptionLike("DESC1").categoryIn("category1").list();
+        list = classificationService.createClassificationQuery()
+            .descriptionLike("DESC1")
+            .categoryIn("category1")
+            .list();
         Assert.assertEquals(2, list.size());
         connection.commit();
     }
@@ -409,7 +416,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
         list = classificationService.createClassificationQuery().validInDomain(true).list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().created(Instant.now()).list();
+        list = classificationService.createClassificationQuery().createdWithin(today()).list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().domainIn("domain1").validInDomain(false).list();
         Assert.assertEquals(0, list.size());
@@ -441,4 +448,11 @@ public class ClassificationServiceImplIntExplicitTest {
         counter++;
         return classification;
     }
+
+    private TimeInterval today() {
+        Instant begin = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant();
+        Instant end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
+        return new TimeInterval(begin, end);
+    }
+
 }

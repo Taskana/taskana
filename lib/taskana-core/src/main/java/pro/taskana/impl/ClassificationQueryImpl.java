@@ -1,6 +1,5 @@
 package pro.taskana.impl;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TimeInterval;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 
@@ -32,10 +32,10 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private String[] type;
     private String[] domain;
     private Boolean validInDomain;
-    private Instant[] created;
+    private TimeInterval[] createdIn;
     private String[] nameIn;
     private String[] nameLike;
-    private String description;
+    private String descriptionLike;
     private int[] priority;
     private String[] serviceLevelIn;
     private String[] serviceLevelLike;
@@ -99,8 +99,13 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery created(Instant... created) {
-        this.created = created;
+    public ClassificationQuery createdWithin(TimeInterval... createdIn) {
+        this.createdIn = createdIn;
+        for (TimeInterval ti : createdIn) {
+            if (!ti.isValid()) {
+                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+            }
+        }
         return this;
     }
 
@@ -118,7 +123,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery descriptionLike(String description) {
-        this.description = description;
+        this.descriptionLike = description;
         return this;
     }
 
@@ -313,248 +318,124 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         return key;
     }
 
-    public void setKey(String[] key) {
-        this.key = key;
-    }
-
     public String[] getParentClassificationKey() {
         return parentClassificationKey;
-    }
-
-    public void setParentClassificationKey(String[] parentClassificationKey) {
-        this.parentClassificationKey = parentClassificationKey;
     }
 
     public String[] getCategory() {
         return category;
     }
 
-    public void setCategory(String[] category) {
-        this.category = category;
-    }
-
     public String[] getType() {
         return type;
-    }
-
-    public void setType(String[] type) {
-        this.type = type;
     }
 
     public String[] getNameIn() {
         return nameIn;
     }
 
-    public void setNameIn(String[] nameIn) {
-        this.nameIn = nameIn;
-    }
-
     public String[] getNameLike() {
         return nameLike;
     }
 
-    public void setNameLike(String[] nameLike) {
-        this.nameLike = nameLike;
-    }
-
     public String getDescriptionLike() {
-        return description;
-    }
-
-    public void setDescriptionLike(String description) {
-        this.description = description;
+        return descriptionLike;
     }
 
     public int[] getPriority() {
         return priority;
     }
 
-    public void setPriority(int[] priority) {
-        this.priority = priority;
-    }
-
     public String[] getServiceLevelIn() {
         return serviceLevelIn;
-    }
-
-    public void setServiceLevelIn(String[] serviceLevel) {
-        this.serviceLevelIn = serviceLevel;
     }
 
     public String[] getServiceLevelLike() {
         return serviceLevelLike;
     }
 
-    public void setServiceLevelLike(String[] serviceLevelLike) {
-        this.serviceLevelLike = serviceLevelLike;
-    }
-
     public String[] getDomain() {
         return domain;
-    }
-
-    public void setDomain(String[] domain) {
-        this.domain = domain;
     }
 
     public Boolean getValidInDomain() {
         return validInDomain;
     }
 
-    public void setValidInDomain(Boolean validInDomain) {
-        this.validInDomain = validInDomain;
-    }
-
-    public Instant[] getCreated() {
-        return created;
-    }
-
-    public void setCreated(Instant[] created) {
-        this.created = created;
+    public TimeInterval[] getCreatedIn() {
+        return createdIn;
     }
 
     public String[] getApplicationEntryPointIn() {
         return applicationEntryPointIn;
     }
 
-    public void setApplicationEntryPointIn(String[] applicationEntryPoint) {
-        this.applicationEntryPointIn = applicationEntryPoint;
-    }
-
     public String[] getApplicationEntryPointLike() {
         return applicationEntryPointLike;
-    }
-
-    public void setApplicationEntryPointLike(String[] applicationEntryPoint) {
-        this.applicationEntryPointLike = applicationEntryPoint;
     }
 
     public String[] getCustom1In() {
         return custom1In;
     }
 
-    public void setCustom1In(String[] custom1In) {
-        this.custom1In = custom1In;
-    }
-
     public String[] getCustom1Like() {
         return custom1Like;
-    }
-
-    public void setCustom1Like(String[] custom1Like) {
-        this.custom1Like = custom1Like;
     }
 
     public String[] getCustom2In() {
         return custom2In;
     }
 
-    public void setCustom2In(String[] custom2In) {
-        this.custom2In = custom2In;
-    }
-
     public String[] getCustom2Like() {
         return custom2Like;
-    }
-
-    public void setCustom2Like(String[] custom2Like) {
-        this.custom2Like = custom2Like;
     }
 
     public String[] getCustom3In() {
         return custom3In;
     }
 
-    public void setCustom3In(String[] custom3In) {
-        this.custom3In = custom3In;
-    }
-
     public String[] getCustom3Like() {
         return custom3Like;
-    }
-
-    public void setCustom3Like(String[] custom3Like) {
-        this.custom3Like = custom3Like;
     }
 
     public String[] getCustom4In() {
         return custom4In;
     }
 
-    public void setCustom4In(String[] custom4In) {
-        this.custom4In = custom4In;
-    }
-
     public String[] getCustom4Like() {
         return custom4Like;
-    }
-
-    public void setCustom4Like(String[] custom4Like) {
-        this.custom4Like = custom4Like;
     }
 
     public String[] getCustom5In() {
         return custom5In;
     }
 
-    public void setCustom5In(String[] custom5In) {
-        this.custom5In = custom5In;
-    }
-
     public String[] getCustom5Like() {
         return custom5Like;
-    }
-
-    public void setCustom5Like(String[] custom5Like) {
-        this.custom5Like = custom5Like;
     }
 
     public String[] getCustom6In() {
         return custom6In;
     }
 
-    public void setCustom6In(String[] custom6In) {
-        this.custom6In = custom6In;
-    }
-
     public String[] getCustom6Like() {
         return custom6Like;
-    }
-
-    public void setCustom6Like(String[] custom6Like) {
-        this.custom6Like = custom6Like;
     }
 
     public String[] getCustom7In() {
         return custom7In;
     }
 
-    public void setCustom7In(String[] custom7In) {
-        this.custom7In = custom7In;
-    }
-
     public String[] getCustom7Like() {
         return custom7Like;
-    }
-
-    public void setCustom7Like(String[] custom7Like) {
-        this.custom7Like = custom7Like;
     }
 
     public String[] getCustom8In() {
         return custom8In;
     }
 
-    public void setCustom8In(String[] custom8In) {
-        this.custom8In = custom8In;
-    }
-
     public String[] getCustom8Like() {
         return custom8Like;
-    }
-
-    public void setCustom8Like(String[] custom8Like) {
-        this.custom8Like = custom8Like;
     }
 
     @Override
@@ -574,8 +455,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ClassificationQueryImpl [taskanaEngineImpl=");
-        builder.append(taskanaEngineImpl);
+        builder.append("ClassificationQueryImpl [key=");
+        builder.append(Arrays.toString(key));
         builder.append(", parentClassificationKey=");
         builder.append(Arrays.toString(parentClassificationKey));
         builder.append(", category=");
@@ -586,14 +467,14 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         builder.append(Arrays.toString(domain));
         builder.append(", validInDomain=");
         builder.append(validInDomain);
-        builder.append(", created=");
-        builder.append(Arrays.toString(created));
+        builder.append(", createdIn=");
+        builder.append(Arrays.toString(createdIn));
         builder.append(", nameIn=");
         builder.append(Arrays.toString(nameIn));
         builder.append(", nameLike=");
         builder.append(Arrays.toString(nameLike));
         builder.append(", descriptionLike=");
-        builder.append(description);
+        builder.append(descriptionLike);
         builder.append(", priority=");
         builder.append(Arrays.toString(priority));
         builder.append(", serviceLevelIn=");
@@ -639,4 +520,5 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         builder.append("]");
         return builder.toString();
     }
+
 }
