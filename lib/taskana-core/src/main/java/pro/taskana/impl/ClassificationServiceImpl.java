@@ -18,6 +18,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
@@ -323,7 +324,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                     throw new ClassificationInUseException("There are " + classificationTasks.size()
                         + " Tasks which belong to this classification or a child classification. Please complete them and try again.");
                 }
-            } catch (NotAuthorizedException e) {
+            } catch (NotAuthorizedToQueryWorkbasketException e) {
                 LOGGER.error(
                     "ClassificationQuery unexpectedly returned NotauthorizedException. Throwing SystemException ");
                 throw new SystemException("ClassificationQuery unexpectedly returned NotauthorizedException.");

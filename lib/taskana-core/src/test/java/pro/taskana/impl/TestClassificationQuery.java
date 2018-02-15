@@ -6,7 +6,6 @@ import java.util.List;
 
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationSummary;
-import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
  * Created by BV on 26.10.2017.
@@ -178,24 +177,24 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public List<ClassificationSummary> list() throws NotAuthorizedException {
+    public List<ClassificationSummary> list() {
         List<ClassificationSummary> returnedClassifications = new ArrayList<>();
         returnedClassifications.addAll(classifications);
         return returnedClassifications;
     }
 
     @Override
-    public List<ClassificationSummary> list(int offset, int limit) throws NotAuthorizedException {
+    public List<ClassificationSummary> list(int offset, int limit) {
         return null;
     }
 
     @Override
-    public ClassificationSummary single() throws NotAuthorizedException {
+    public ClassificationSummary single() {
         return null;
     }
 
     @Override
-    public long count() throws NotAuthorizedException {
+    public long count() {
         return 0;
     }
 }
