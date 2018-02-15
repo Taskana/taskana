@@ -2,18 +2,18 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 
-import { HttpExtensionService } from './http-extension.service';
+import { HttpClientInterceptor } from './http-client-interceptor.service';
 import { PermissionService } from './permission.service';
 
 describe('HttpExtensionService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports:[HttpClientModule, HttpModule],
-      providers: [HttpExtensionService, PermissionService]
+      providers: [HttpClientInterceptor, PermissionService]
     });
   });
 
-  it('should be created', inject([HttpExtensionService], (service: HttpExtensionService) => {
+  it('should be created', inject([HttpClientInterceptor], (service: HttpClientInterceptor) => {
     expect(service).toBeTruthy();
   }));
 });
