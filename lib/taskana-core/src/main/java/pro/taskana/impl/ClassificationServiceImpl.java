@@ -21,7 +21,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.mappings.ClassificationMapper;
+import pro.taskana.mappings.ClassificationMapper;
 
 /**
  * This is the implementation of ClassificationService.

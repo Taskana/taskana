@@ -16,7 +16,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.model.ObjectReference;
 
 /**
  * Test for ObjectReferenceQueryImpl.

@@ -9,13 +9,7 @@ import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.model.MonitorQueryItem;
-import pro.taskana.model.Report;
-import pro.taskana.model.ReportLine;
-import pro.taskana.model.ReportLineItem;
-import pro.taskana.model.ReportLineItemDefinition;
-import pro.taskana.model.TaskState;
-import pro.taskana.model.mappings.TaskMonitorMapper;
+import pro.taskana.mappings.TaskMonitorMapper;
 
 /**
  * This is the implementation of TaskMonitorService.

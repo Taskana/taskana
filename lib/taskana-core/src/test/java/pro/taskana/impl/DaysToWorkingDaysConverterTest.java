@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import pro.taskana.model.ReportLineItemDefinition;
-
 /**
  * Test for the DaysToWorkingDaysConverter.
  */
