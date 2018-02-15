@@ -25,6 +25,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.rest.resource.mapper.WorkbasketDefinitionMapper;
 import pro.taskana.rest.serialization.WorkbasketMixIn;
 import pro.taskana.sampledata.SampleDataGenerator;
 
@@ -109,4 +110,8 @@ public class RestApplication {
         return new ModelMapper();
     }
 
+    @Bean
+    public WorkbasketDefinitionMapper getWorkbasketDefinitionMapper() {
+        return new WorkbasketDefinitionMapper();
+    }
 }
