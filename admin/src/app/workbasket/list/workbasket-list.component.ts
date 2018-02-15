@@ -15,6 +15,7 @@ export class WorkbasketListComponent implements OnInit {
   newWorkbasket: WorkbasketSummary;
   selectedId: string = undefined;
   workbaskets : Array<WorkbasketSummary> = [];
+  requestInProgress: boolean =  false;
 
   private workBasketSummarySubscription: Subscription;
   private workbasketServiceSubscription: Subscription;
@@ -22,9 +23,10 @@ export class WorkbasketListComponent implements OnInit {
   constructor(private workbasketService: WorkbasketService) { }
 
   ngOnInit() {
-
+    this.requestInProgress = true;
     this.workBasketSummarySubscription = this.workbasketService.getWorkBasketsSummary().subscribe(resultList => {
       this.workbaskets = resultList;
+      this.requestInProgress = false;
     });
 
     this.workbasketServiceSubscription = this.workbasketService.getSelectedWorkBasket().subscribe( workbasketIdSelected => {

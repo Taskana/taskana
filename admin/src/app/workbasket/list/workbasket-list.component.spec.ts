@@ -9,6 +9,7 @@ import { HttpModule } from '@angular/http';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
+import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 
 @Component({
   selector: 'dummy-detail',
@@ -36,7 +37,7 @@ describe('WorkbasketListComponent', () => {
   
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WorkbasketListComponent, DummyDetailComponent],
+      declarations: [ WorkbasketListComponent, DummyDetailComponent, SpinnerComponent],
       
       imports:[
         AngularSvgIconModule,

@@ -26,6 +26,7 @@ import { WorkbasketDistributiontargetsComponent } from './workbasket-distributio
 import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component';
 import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component';
 import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 //Shared
 import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-detail.component';
@@ -64,7 +65,8 @@ const COMPONENTS =  [
                       WorkbasketDistributiontargetsComponent,
                       MasterAndDetailComponent,
                       WorkbasketInformationComponent,
-                      NoAccessComponent
+                      NoAccessComponent,
+                      SpinnerComponent
                     ];
 @NgModule({
   declarations: COMPONENTS,
