@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { WorkbasketSummary } from '../../model/workbasketSummary';
-import { WorkbasketService } from '../../services/workbasketservice.service'
+import { WorkbasketService, Direction } from '../../services/workbasketservice.service'
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -16,13 +16,16 @@ export class WorkbasketListComponent implements OnInit {
   selectedId: string = undefined;
   workbaskets : Array<WorkbasketSummary> = [];
 
+  sortBy: string = 'key';
+  sortDirection: Direction = Direction.ASC;
+  sortingFields : Map<string, string> = new Map([['name', 'Name'], ['key', 'Id'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
+
   private workBasketSummarySubscription: Subscription;
   private workbasketServiceSubscription: Subscription;
 
   constructor(private workbasketService: WorkbasketService) { }
 
   ngOnInit() {
-
     this.workBasketSummarySubscription = this.workbasketService.getWorkBasketsSummary().subscribe(resultList => {
       this.workbaskets = resultList;
     });
@@ -34,6 +37,16 @@ export class WorkbasketListComponent implements OnInit {
 
   selectWorkbasket(id:string){
     this.selectedId = id;
+  }
+
+  changeOrder(sortDirection: string) {
+    this.sortDirection = (sortDirection === Direction.ASC)? Direction.ASC: Direction.DESC;
+    this.performRequest();
+  }
+
+  changeSortBy(sortBy: string){
+    this.sortBy = sortBy;
+    this.performRequest();
   }
 
   onDelete(workbasket: WorkbasketSummary) {
@@ -63,7 +76,13 @@ export class WorkbasketListComponent implements OnInit {
     return new WorkbasketSummary("", "", "", "", "", "", "", "", "", "", "", "");
   }
 
-  ngOnDestroy(){
+  private performRequest(): void{
+    this.workbasketServiceSubscription.add(this.workbasketService.getWorkBasketsSummary(this.sortBy,this.sortDirection).subscribe(resultList => {
+      this.workbaskets = resultList;
+    }));
+  }
+
+  private ngOnDestroy(){
     this.workBasketSummarySubscription.unsubscribe();
     this.workbasketServiceSubscription.unsubscribe();
   }
