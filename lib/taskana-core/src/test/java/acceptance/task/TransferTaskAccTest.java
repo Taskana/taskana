@@ -126,7 +126,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskIdList.add("TKI:000000000000000000000000000000000004");
         taskIdList.add("TKI:000000000000000000000000000000000005");
 
-        BulkOperationResults<String, TaskanaException> results = taskService.transferBulk("USER_1_1", taskIdList);
+        BulkOperationResults<String, TaskanaException> results = taskService.transferTasks("USER_1_1", taskIdList);
         assertFalse(results.containsErrors());
 
         Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasketByKey("USER_1_1");
@@ -166,7 +166,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskIdList.add(null);   // InvalidArgument (added with ""), duplicate
         taskIdList.add("TKI:000000000000000000000000000000000099"); // TaskNotFound
 
-        BulkOperationResults<String, TaskanaException> results = taskService.transferBulk("USER_1_1", taskIdList);
+        BulkOperationResults<String, TaskanaException> results = taskService.transferTasks("USER_1_1", taskIdList);
         assertTrue(results.containsErrors());
         assertThat(results.getErrorMap().values().size(), equalTo(3));
         // react to result
