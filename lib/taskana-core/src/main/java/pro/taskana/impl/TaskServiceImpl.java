@@ -209,7 +209,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public BulkOperationResults<String, TaskanaException> completeTasks(List<String> taskIds)
-        throws InvalidArgumentException, NotAuthorizedException {
+        throws InvalidArgumentException {
         try {
             LOGGER.debug("entry to completeTasks(taskIds = {})", taskIds);
             taskanaEngineImpl.openConnection();

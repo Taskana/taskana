@@ -9,6 +9,10 @@ import static org.junit.Assert.fail;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -26,6 +30,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -183,11 +188,10 @@ public class ClassificationServiceImplIntAutoCommitTest {
         InvalidArgumentException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification = classificationService.createClassification(classification);
-        Instant today = Instant.now();
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .validInDomain(Boolean.TRUE)
-            .created(today)
+            .createdWithin(today())
             .list();
 
         Assert.assertEquals(1, list.size());
@@ -269,7 +273,10 @@ public class ClassificationServiceImplIntAutoCommitTest {
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery().custom1In("custom2").list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().descriptionLike("DESC1").categoryIn("category1").list();
+        list = classificationService.createClassificationQuery()
+            .descriptionLike("DESC1")
+            .categoryIn("category1")
+            .list();
         Assert.assertEquals(2, list.size());
     }
 
@@ -375,7 +382,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         list = classificationService.createClassificationQuery().validInDomain(true).list();
         Assert.assertEquals(listAll.size(), list.size());
 
-        list = classificationService.createClassificationQuery().created(Instant.now()).list();
+        list = classificationService.createClassificationQuery().createdWithin(today()).list();
         Assert.assertEquals(listAll.size(), list.size());
 
         list = classificationService.createClassificationQuery().domainIn("domain1").validInDomain(false).list();
@@ -389,6 +396,12 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @AfterClass
     public static void cleanUpClass() {
         FileUtils.deleteRecursive("~/data", true);
+    }
+
+    private TimeInterval today() {
+        Instant begin = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant();
+        Instant end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
+        return new TimeInterval(begin, end);
     }
 
     private Classification createDummyClassificationWithUniqueKey(String domain, String type) {
