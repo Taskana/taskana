@@ -1,6 +1,5 @@
 package pro.taskana.impl;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TimeInterval;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -38,10 +38,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] keyOrNameLike;
     private String[] domain;
     private WorkbasketType[] type;
-    private Instant createdAfter;
-    private Instant createdBefore;
-    private Instant modifiedAfter;
-    private Instant modifiedBefore;
+    private TimeInterval[] createdIn;
+    private TimeInterval[] modifiedIn;
     private String[] descriptionLike;
     private String[] ownerIn;
     private String[] ownerLike;
@@ -96,26 +94,24 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery createdAfter(Instant createdAfter) {
-        this.createdAfter = createdAfter;
+    public WorkbasketQuery createdWithin(TimeInterval... intervals) {
+        this.createdIn = intervals;
+        for (TimeInterval ti : intervals) {
+            if (!ti.isValid()) {
+                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+            }
+        }
         return this;
     }
 
     @Override
-    public WorkbasketQuery createdBefore(Instant createdBefore) {
-        this.createdBefore = createdBefore;
-        return this;
-    }
-
-    @Override
-    public WorkbasketQuery modifiedAfter(Instant modifiedAfter) {
-        this.modifiedAfter = modifiedAfter;
-        return this;
-    }
-
-    @Override
-    public WorkbasketQuery modifiedBefore(Instant modifiedBefore) {
-        this.modifiedBefore = modifiedBefore;
+    public WorkbasketQuery modifiedWithin(TimeInterval... intervals) {
+        this.modifiedIn = intervals;
+        for (TimeInterval ti : intervals) {
+            if (!ti.isValid()) {
+                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+            }
+        }
         return this;
     }
 
@@ -301,20 +297,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return type;
     }
 
-    public Instant getCreatedAfter() {
-        return createdAfter;
+    public TimeInterval[] getCreatedIn() {
+        return createdIn;
     }
 
-    public Instant getCreatedBefore() {
-        return createdBefore;
-    }
-
-    public Instant getModifiedAfter() {
-        return modifiedAfter;
-    }
-
-    public Instant getModifiedBefore() {
-        return modifiedBefore;
+    public TimeInterval[] getModifiedIn() {
+        return modifiedIn;
     }
 
     public String[] getDescriptionLike() {
@@ -368,14 +356,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(Arrays.toString(domain));
         builder.append(", type=");
         builder.append(Arrays.toString(type));
-        builder.append(", createdAfter=");
-        builder.append(createdAfter);
-        builder.append(", createdBefore=");
-        builder.append(createdBefore);
-        builder.append(", modifiedAfter=");
-        builder.append(modifiedAfter);
-        builder.append(", modifiedBefore=");
-        builder.append(modifiedBefore);
+        builder.append(", createdIn=");
+        builder.append(Arrays.toString(createdIn));
+        builder.append(", modifiedIn=");
+        builder.append(Arrays.toString(modifiedIn));
         builder.append(", descriptionLike=");
         builder.append(Arrays.toString(descriptionLike));
         builder.append(", ownerIn=");

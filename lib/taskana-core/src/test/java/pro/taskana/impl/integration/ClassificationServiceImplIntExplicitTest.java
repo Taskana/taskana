@@ -211,7 +211,7 @@ public class ClassificationServiceImplIntExplicitTest {
         Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
         classificationService.createClassification(classification);
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .validInDomain(Boolean.TRUE)
+            .validInDomainEquals(Boolean.TRUE)
             .createdWithin(today())
             .list();
         Assert.assertEquals(1, list.size());
@@ -231,7 +231,7 @@ public class ClassificationServiceImplIntExplicitTest {
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().validInDomain(true).list();
+        list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
         Assert.assertEquals(1, list.size());
         classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
         assertThat(classification.getDescription(), equalTo("description"));
@@ -340,10 +340,10 @@ public class ClassificationServiceImplIntExplicitTest {
             .parentClassificationKeyIn(classification.getKey())
             .list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().typeIn("type1").priority(Integer.decode("5")).list();
+        list = classificationService.createClassificationQuery().typeIn("type1").priorityIn(Integer.decode("5")).list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery()
-            .priority(Integer.decode("5"))
+            .priorityIn(Integer.decode("5"))
             .typeIn("type1")
             .parentClassificationKeyIn(classification1.getKey())
             .list();
@@ -415,11 +415,11 @@ public class ClassificationServiceImplIntExplicitTest {
         Assert.assertEquals(2, list.size());
         connection.commit();
 
-        list = classificationService.createClassificationQuery().validInDomain(true).list();
+        list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().createdWithin(today()).list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().domainIn("domain1").validInDomain(false).list();
+        list = classificationService.createClassificationQuery().domainIn("domain1").validInDomainEquals(false).list();
         Assert.assertEquals(0, list.size());
         list = classificationService.createClassificationQuery()
             .keyIn(classification1.getKey())

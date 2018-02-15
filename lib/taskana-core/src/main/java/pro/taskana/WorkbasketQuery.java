@@ -1,7 +1,5 @@
 package pro.taskana;
 
-import java.time.Instant;
-
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.impl.WorkbasketType;
@@ -84,40 +82,28 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
     WorkbasketQuery typeIn(WorkbasketType... type);
 
     /**
-     * Add your createdAfter-Date to your query.
+     * Add the time intervals within which the workbasket was created to your query. For each time interval, the
+     * database query will search for workbaskets whose created timestamp is after or at the interval's begin and before
+     * or at the interval's end. If more than one interval is specified, the query will connect them with the OR
+     * keyword. If either begin or end of an interval are null, these values will not be specified in the query.
      *
-     * @param createdAfter
-     *            as Instant
+     * @param intervals
+     *            - the TimeIntervals within which the workbasket was created
      * @return the query
      */
-    WorkbasketQuery createdAfter(Instant createdAfter);
+    WorkbasketQuery createdWithin(TimeInterval... intervals);
 
     /**
-     * Add your createdBefore-Date to your query.
+     * Add the time intervals within which the workbasket was modified to your query. For each time interval, the
+     * database query will search for workbaskets whose created timestamp is after or at the interval's begin and before
+     * or at the interval's end. If more than one interval is specified, the query will connect them with the OR
+     * keyword. If either begin or end of an interval are null, these values will not be specified in the query.
      *
-     * @param createdBefore
-     *            as Instant
+     * @param intervals
+     *            - the TimeIntervals within which the workbasket was created
      * @return the query
      */
-    WorkbasketQuery createdBefore(Instant createdBefore);
-
-    /**
-     * Add your modifiedAfter-Date to your query.
-     *
-     * @param modifiedAfter
-     *            as Instant
-     * @return the query
-     */
-    WorkbasketQuery modifiedAfter(Instant modifiedAfter);
-
-    /**
-     * Add your modifiedBefore-Date to your query.
-     *
-     * @param modifiedBefore
-     *            as Instant
-     * @return the query
-     */
-    WorkbasketQuery modifiedBefore(Instant modifiedBefore);
+    WorkbasketQuery modifiedWithin(TimeInterval... intervals);
 
     /**
      * Add your description to your query. It will be compared case-insensitively to the descriptions of workbaskets
