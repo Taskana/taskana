@@ -31,12 +31,10 @@ public class TaskImpl implements Task {
     private String note;
     private int priority;
     private TaskState state;
-    private String classificationKey;
-    private String classificationCategory;
+    // private String classificationKey;
+    // private String classificationCategory;
     private ClassificationSummary classificationSummary;
     private WorkbasketSummary workbasketSummary;
-    private String workbasketKey;
-    private String domain;
     private String businessProcessId;
     private String parentBusinessProcessId;
     private String owner;
@@ -179,25 +177,35 @@ public class TaskImpl implements Task {
 
     @Override
     public void setClassificationKey(String classificationKey) {
-        this.classificationKey = classificationKey;
+        if (this.classificationSummary == null) {
+            this.classificationSummary = new ClassificationSummaryImpl();
+        }
+
+        ((ClassificationSummaryImpl) this.classificationSummary).setKey(classificationKey);
     }
 
     public void setClassificationCategory(String classificationCategory) {
-        this.classificationCategory = classificationCategory;
+        if (this.classificationSummary == null) {
+            this.classificationSummary = new ClassificationSummaryImpl();
+        }
+        ((ClassificationSummaryImpl) this.classificationSummary).setCategory(classificationCategory);
     }
 
     @Override
     public String getClassificationCategory() {
-        return this.classificationCategory;
+        return this.classificationSummary == null ? null : this.classificationSummary.getCategory();
     }
 
     @Override
     public String getWorkbasketKey() {
-        return workbasketKey;
+        return workbasketSummary == null ? null : workbasketSummary.getKey();
     }
 
     public void setWorkbasketKey(String workbasketKey) {
-        this.workbasketKey = workbasketKey;
+        if (workbasketSummary == null) {
+            workbasketSummary = new WorkbasketSummaryImpl();
+        }
+        ((WorkbasketSummaryImpl) this.workbasketSummary).setKey(workbasketKey);
     }
 
     @Override
@@ -211,11 +219,14 @@ public class TaskImpl implements Task {
 
     @Override
     public String getDomain() {
-        return domain;
+        return workbasketSummary == null ? null : workbasketSummary.getDomain();
     }
 
     public void setDomain(String domain) {
-        this.domain = domain;
+        if (workbasketSummary == null) {
+            workbasketSummary = new WorkbasketSummaryImpl();
+        }
+        ((WorkbasketSummaryImpl) this.workbasketSummary).setDomain(domain);
     }
 
     @Override
@@ -419,10 +430,6 @@ public class TaskImpl implements Task {
         taskSummary.setClaimed(claimed);
         if (classificationSummary != null) {
             taskSummary.setClassificationSummary(classificationSummary);
-        } else {
-            ClassificationSummaryImpl aClassificationSummary = new ClassificationSummaryImpl();
-            aClassificationSummary.setKey(classificationKey);
-            taskSummary.setClassificationSummary(aClassificationSummary);
         }
         taskSummary.setCompleted(completed);
         taskSummary.setCreated(created);
@@ -436,7 +443,6 @@ public class TaskImpl implements Task {
         taskSummary.setCustom8(custom8);
         taskSummary.setCustom9(custom9);
         taskSummary.setCustom10(custom10);
-        taskSummary.setDomain(domain);
         taskSummary.setDue(due);
         taskSummary.setTaskId(id);
         taskSummary.setModified(modified);
@@ -464,7 +470,7 @@ public class TaskImpl implements Task {
     }
 
     public String getClassificationKey() {
-        return classificationKey;
+        return classificationSummary == null ? null : classificationSummary.getKey();
     }
 
     public void setClassificationSummary(ClassificationSummary classificationSummary) {
@@ -473,6 +479,10 @@ public class TaskImpl implements Task {
 
     public ClassificationSummaryImpl getClassificationSummaryImpl() {
         return (ClassificationSummaryImpl) classificationSummary;
+    }
+
+    public WorkbasketSummaryImpl getWorkbasketSummaryImpl() {
+        return (WorkbasketSummaryImpl) workbasketSummary;
     }
 
     public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
@@ -522,16 +532,10 @@ public class TaskImpl implements Task {
         builder.append(priority);
         builder.append(", state=");
         builder.append(state);
-        builder.append(", classificationKey=");
-        builder.append(classificationKey);
         builder.append(", classificationSummary=");
         builder.append(classificationSummary);
         builder.append(", workbasketSummary=");
         builder.append(workbasketSummary);
-        builder.append(", workbasketKey=");
-        builder.append(workbasketKey);
-        builder.append(", domain=");
-        builder.append(domain);
         builder.append(", businessProcessId=");
         builder.append(businessProcessId);
         builder.append(", parentBusinessProcessId=");

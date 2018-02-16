@@ -38,14 +38,6 @@ public interface Workbasket {
     String getDomain();
 
     /**
-     * Set the domain of the workbasket.
-     *
-     * @param domain
-     *            the domain of the workbasket
-     */
-    void setDomain(String domain);
-
-    /**
      * Returns the type of the workbasket.
      *
      * @return the type of the workbasket

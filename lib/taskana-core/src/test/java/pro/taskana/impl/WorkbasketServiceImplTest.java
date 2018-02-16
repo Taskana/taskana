@@ -86,14 +86,15 @@ public class WorkbasketServiceImplTest {
         Workbasket wb = createTestWorkbasket(wbId, "Key-1");
         WorkbasketAuthorization authorization = WorkbasketAuthorization.READ;
         doReturn(wb).when(workbasketMapperMock).findById(wbId);
-        doThrow(NotAuthorizedException.class).when(cutSpy).checkAuthorization(wb.getKey(), authorization);
+        doThrow(NotAuthorizedException.class).when(cutSpy).checkAuthorization(wb.getId(),
+            authorization);
 
         try {
             cutSpy.getWorkbasket(wbId);
         } catch (NotAuthorizedException ex) {
             verify(taskanaEngineImplMock, times(1)).openConnection();
             verify(workbasketMapperMock, times(1)).findById(wbId);
-            verify(cutSpy, times(1)).checkAuthorization(wb.getKey(), authorization);
+            verify(cutSpy, times(1)).checkAuthorization(wb.getId(), authorization);
             verify(taskanaEngineImplMock, times(1)).returnConnection();
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
@@ -127,13 +128,13 @@ public class WorkbasketServiceImplTest {
         Workbasket wb = createTestWorkbasket(wbId, "key-1");
         WorkbasketAuthorization authorization = WorkbasketAuthorization.READ;
         doReturn(wb).when(workbasketMapperMock).findById(wbId);
-        doNothing().when(cutSpy).checkAuthorization(wb.getKey(), authorization);
+        doNothing().when(cutSpy).checkAuthorization(wb.getId(), authorization);
 
         Workbasket actualWb = cutSpy.getWorkbasket(wbId);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(workbasketMapperMock, times(1)).findById(wbId);
-        verify(cutSpy, times(1)).checkAuthorization(wb.getKey(), authorization);
+        verify(cutSpy, times(1)).checkAuthorization(wb.getId(), authorization);
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
@@ -147,15 +148,15 @@ public class WorkbasketServiceImplTest {
         String wbKey = "Key-1";
         Workbasket wb = createTestWorkbasket("ID", wbKey);
         WorkbasketAuthorization authorization = WorkbasketAuthorization.READ;
-        doReturn(wb).when(workbasketMapperMock).findByKey(wbKey);
-        doThrow(NotAuthorizedException.class).when(cutSpy).checkAuthorization(wbKey, authorization);
+        doReturn(wb).when(workbasketMapperMock).findByKeyAndDomain(wbKey, "domain");
+        doThrow(NotAuthorizedException.class).when(cutSpy).checkAuthorization(wbKey, "domain", authorization);
 
         try {
-            cutSpy.getWorkbasketByKey(wbKey);
+            cutSpy.getWorkbasket(wbKey, "domain");
         } catch (NotAuthorizedException ex) {
             verify(taskanaEngineImplMock, times(1)).openConnection();
-            verify(workbasketMapperMock, times(1)).findByKey(wbKey);
-            verify(cutSpy, times(1)).checkAuthorization(wbKey, authorization);
+            verify(workbasketMapperMock, times(1)).findByKeyAndDomain(wbKey, "domain");
+            verify(cutSpy, times(1)).checkAuthorization(wbKey, "domain", authorization);
             verify(taskanaEngineImplMock, times(1)).returnConnection();
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
@@ -169,13 +170,13 @@ public class WorkbasketServiceImplTest {
     public void testGetWorkbasketByKey_AuthenticatedWithoutResult()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         String wbKey = "Key-1";
-        doReturn(null).when(workbasketMapperMock).findByKey(wbKey);
+        doReturn(null).when(workbasketMapperMock).findByKeyAndDomain(wbKey, "dummy");
 
         try {
-            cutSpy.getWorkbasketByKey(wbKey);
+            cutSpy.getWorkbasket(wbKey, "dummy");
         } catch (WorkbasketNotFoundException ex) {
             verify(taskanaEngineImplMock, times(1)).openConnection();
-            verify(workbasketMapperMock, times(1)).findByKey(wbKey);
+            verify(workbasketMapperMock, times(1)).findByKeyAndDomain(wbKey, "dummy");
             verify(taskanaEngineImplMock, times(1)).returnConnection();
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
@@ -189,13 +190,13 @@ public class WorkbasketServiceImplTest {
         String wbKey = "Key-1";
         Workbasket wb = createTestWorkbasket("ID-1", wbKey);
         WorkbasketAuthorization authorization = WorkbasketAuthorization.READ;
-        doNothing().when(cutSpy).checkAuthorization(wbKey, authorization);
-        doReturn(wb).when(workbasketMapperMock).findByKey(wbKey);
+        doNothing().when(cutSpy).checkAuthorization(wbKey, "test", authorization);
+        doReturn(wb).when(workbasketMapperMock).findByKeyAndDomain(wbKey, "test");
 
-        Workbasket actualWb = cutSpy.getWorkbasketByKey(wbKey);
+        Workbasket actualWb = cutSpy.getWorkbasket(wbKey, "test");
         verify(taskanaEngineImplMock, times(1)).openConnection();
-        verify(cutSpy, times(1)).checkAuthorization(wbKey, authorization);
-        verify(workbasketMapperMock, times(1)).findByKey(wbKey);
+        verify(cutSpy, times(1)).checkAuthorization(wbKey, "test", authorization);
+        verify(workbasketMapperMock, times(1)).findByKeyAndDomain(wbKey, "test");
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
@@ -475,7 +476,7 @@ public class WorkbasketServiceImplTest {
         doReturn(wb).when(cutSpy).getWorkbasket(wb.getId());
         doReturn(taskServiceMock).when(taskanaEngineImplMock).getTaskService();
         doReturn(taskQueryMock).when(taskServiceMock).createTaskQuery();
-        doReturn(taskQueryMock).when(taskQueryMock).workbasketKeyIn(wb.getKey());
+        doReturn(taskQueryMock).when(taskQueryMock).workbasketIdIn(wb.getId());
         doReturn(usages).when(taskQueryMock).list();
 
         try {
@@ -485,7 +486,7 @@ public class WorkbasketServiceImplTest {
             verify(cutSpy, times(1)).getWorkbasket(wb.getId());
             verify(taskanaEngineImplMock, times(1)).getTaskService();
             verify(taskServiceMock, times(1)).createTaskQuery();
-            verify(taskQueryMock, times(1)).workbasketKeyIn(wb.getKey());
+            verify(taskQueryMock, times(1)).workbasketIdIn(wb.getId());
             verify(taskQueryMock, times(1)).list();
             verify(taskanaEngineImplMock, times(1)).returnConnection();
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
@@ -502,7 +503,7 @@ public class WorkbasketServiceImplTest {
         doReturn(wb).when(cutSpy).getWorkbasket(wb.getId());
         doReturn(taskServiceMock).when(taskanaEngineImplMock).getTaskService();
         doReturn(taskQueryMock).when(taskServiceMock).createTaskQuery();
-        doReturn(taskQueryMock).when(taskQueryMock).workbasketKeyIn(wb.getKey());
+        doReturn(taskQueryMock).when(taskQueryMock).workbasketIdIn(wb.getId());
         doReturn(new ArrayList<>()).when(taskQueryMock).list();
 
         cutSpy.deleteWorkbasket(wb.getId());
@@ -511,7 +512,7 @@ public class WorkbasketServiceImplTest {
         verify(cutSpy, times(1)).getWorkbasket(wb.getId());
         verify(taskanaEngineImplMock, times(1)).getTaskService();
         verify(taskServiceMock, times(1)).createTaskQuery();
-        verify(taskQueryMock, times(1)).workbasketKeyIn(wb.getKey());
+        verify(taskQueryMock, times(1)).workbasketIdIn(wb.getId());
         verify(taskQueryMock, times(1)).list();
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsBySourceId(wb.getId());
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsByTargetId(wb.getId());

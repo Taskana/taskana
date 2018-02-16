@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
+import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -43,7 +44,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("key5")
+            .workbasketKeyDomainIn(new KeyDomain("key5", "DOMAIN_B"))
             .orderByModified(desc)
             .orderByDomain(null)
             .list();
@@ -66,7 +67,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("key5")
+            .workbasketKeyDomainIn(new KeyDomain("key5", "DOMAIN_B"))
             .orderByDomain(asc)
             .orderByName(asc)
             .orderByCreated(null)
@@ -98,7 +99,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("key5")
+            .workbasketKeyDomainIn(new KeyDomain("key5", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceSystem(SortDirection.DESCENDING)
             .orderByNote(null)
             .orderByDue(null)
@@ -124,7 +125,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("key5")
+            .workbasketKeyDomainIn(new KeyDomain("key5", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceSystemInstance(desc)
             .orderByParentBusinessProcessId(asc)
             .orderByPlanned(asc)
@@ -150,7 +151,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("key5")
+            .workbasketKeyDomainIn(new KeyDomain("key5", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceCompany(desc)
             .orderByClaimed(asc)
             .list();
@@ -178,7 +179,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .stateIn(TaskState.READY)
             .orderByWorkbasketKey(null)
-            .workbasketKeyIn("key5")
+            .workbasketIdIn("5")
             .orderByPriority(desc)
             .orderByPrimaryObjectReferenceValue(asc)
             .orderByCompleted(desc)
@@ -204,7 +205,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .stateIn(TaskState.READY)
-            .workbasketKeyIn("key5")
+            .workbasketIdIn("5")
             .orderByBusinessProcessId(asc)
             .orderByClassificationKey(null)
             .orderByPrimaryObjectReferenceType(SortDirection.DESCENDING)

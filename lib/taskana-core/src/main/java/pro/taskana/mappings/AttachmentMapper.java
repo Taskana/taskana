@@ -21,12 +21,12 @@ import pro.taskana.impl.persistence.MapTypeHandler;
  */
 public interface AttachmentMapper {
 
-    @Insert("INSERT INTO ATTACHMENT (ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES) "
-        + "VALUES (#{att.id}, #{att.taskId}, #{att.created}, #{att.modified}, #{att.classificationSummary.key}, #{att.objectReference.company}, #{att.objectReference.system}, #{att.objectReference.systemInstance}, "
+    @Insert("INSERT INTO ATTACHMENT (ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES) "
+        + "VALUES (#{att.id}, #{att.taskId}, #{att.created}, #{att.modified}, #{att.classificationSummary.key}, #{att.classificationSummary.id}, #{att.objectReference.company}, #{att.objectReference.system}, #{att.objectReference.systemInstance}, "
         + " #{att.objectReference.type}, #{att.objectReference.value}, #{att.channel}, #{att.received}, #{att.customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )")
     void insert(@Param("att") AttachmentImpl att);
 
-    @Select("SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
+    @Select("SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
         + "FROM ATTACHMENT "
         + "WHERE TASK_ID = #{taskId}")
     @Results(value = {
@@ -35,6 +35,7 @@ public interface AttachmentMapper {
         @Result(property = "created", column = "CREATED"),
         @Result(property = "modified", column = "MODIFIED"),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
+        @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
         @Result(property = "objectReference.company", column = "REF_COMPANY"),
         @Result(property = "objectReference.system", column = "REF_SYSTEM"),
         @Result(property = "objectReference.systemInstance", column = "REF_INSTANCE"),
@@ -47,7 +48,7 @@ public interface AttachmentMapper {
     })
     List<AttachmentImpl> findAttachmentsByTaskId(@Param("taskId") String taskId);
 
-    @Select("SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
+    @Select("SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
         + "FROM ATTACHMENT "
         + "WHERE ID = #{attachmentId}")
     @Results(value = {
@@ -56,6 +57,7 @@ public interface AttachmentMapper {
         @Result(property = "created", column = "CREATED"),
         @Result(property = "modified", column = "MODIFIED"),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
+        @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
         @Result(property = "objectReference.company", column = "REF_COMPANY"),
         @Result(property = "objectReference.system", column = "REF_SYSTEM"),
         @Result(property = "objectReference.systemInstance", column = "REF_INSTANCE"),
@@ -68,7 +70,7 @@ public interface AttachmentMapper {
     })
     AttachmentImpl getAttachment(@Param("attachmentId") String attachmentId);
 
-    @Select("<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, RECEIVED "
+    @Select("<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, RECEIVED "
         + "FROM ATTACHMENT "
         + "<where>"
         + "TASK_ID IN (<foreach collection='array' item='item' separator=',' >#{item}</foreach>)"
@@ -80,6 +82,7 @@ public interface AttachmentMapper {
         @Result(property = "created", column = "CREATED"),
         @Result(property = "modified", column = "MODIFIED"),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
+        @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
         @Result(property = "received", column = "RECEIVED"),
     })
     List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(String[] taskIds);
@@ -88,7 +91,7 @@ public interface AttachmentMapper {
     void deleteAttachment(@Param("attachmentId") String attachmentId);
 
     @Update("UPDATE ATTACHMENT SET TASK_ID = #{taskId}, CREATED = #{created}, MODIFIED = #{modified},"
-        + " CLASSIFICATION_KEY = #{classificationSummary.key}, REF_COMPANY = #{objectReference.company}, REF_SYSTEM = #{objectReference.system},"
+        + " CLASSIFICATION_KEY = #{classificationSummary.key}, CLASSIFICATION_ID = #{classificationSummary.id}, REF_COMPANY = #{objectReference.company}, REF_SYSTEM = #{objectReference.system},"
         + " REF_INSTANCE = #{objectReference.systemInstance}, REF_TYPE = #{objectReference.type}, REF_VALUE = #{objectReference.value},"
         + " CHANNEL = #{channel}, RECEIVED = #{received}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}"
         + " WHERE ID = #{id}")

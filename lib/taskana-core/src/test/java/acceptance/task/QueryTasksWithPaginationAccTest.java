@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -39,7 +40,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(0, 10);
         assertThat(results.size(), equalTo(10));
     }
@@ -52,7 +53,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(10, 10);
         assertThat(results.size(), equalTo(10));
     }
@@ -67,19 +68,19 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
 
         // both will be 0, working
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(-1, -3);
         assertThat(results.size(), equalTo(0));
 
         // limit will be 0
         results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(1, -3);
         assertThat(results.size(), equalTo(0));
 
         // offset will be 0
         results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(-1, 3);
         assertThat(results.size(), equalTo(3));
     }
@@ -96,7 +97,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         int pageNumber = 1;
         int pageSize = 4;
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(4));
 
@@ -104,7 +105,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         pageNumber = 3;
         pageSize = 1;
         results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(1));
 
@@ -112,7 +113,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         pageNumber = 0;
         pageSize = 100;
         results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(22));
 
@@ -120,7 +121,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         pageNumber = 2;
         pageSize = 10;
         results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(2));
     }
@@ -137,7 +138,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         int pageNumber = 1;
         int pageSize = 0;
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(0));
 
@@ -145,7 +146,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         pageNumber = 1;
         pageSize = -1;
         results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(0));
 
@@ -153,7 +154,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         pageNumber = -1;
         pageSize = 10;
         results = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(10));
     }
@@ -179,7 +180,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         int pageNumber = 5;
         int pageSize = 10;
         taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
     }
 
@@ -191,7 +192,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         long count = taskService.createTaskQuery()
-            .workbasketKeyIn("GPK_KSC")
+            .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .count();
         assertThat(count, equalTo(22L));
     }

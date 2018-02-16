@@ -33,13 +33,15 @@ public interface WorkbasketService {
      *
      * @param workbasketKey
      *            the Key of the Workbasket requested
+     * @param domain
+     *            the domain of the workbasket
      * @return the requested Workbasket
      * @throws WorkbasketNotFoundException
      *             If the Workbasket with workbasketId is not found
      * @throws NotAuthorizedException
      *             If the current user or group does not have the permissions for interactions.
      */
-    Workbasket getWorkbasketByKey(String workbasketKey)
+    Workbasket getWorkbasket(String workbasketKey, String domain)
         throws WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
@@ -80,13 +82,13 @@ public interface WorkbasketService {
     /**
      * Returns a new WorkbasketAccessItem which is not persisted.
      *
-     * @param workbasketKey
-     *            the workbasket key used to identify the referenced workbasket
+     * @param workbasketId
+     *            the workbasket id used to identify the referenced workbasket
      * @param accessId
      *            the group id or user id for which access is controlled
      * @return new WorkbasketAccessItem
      */
-    WorkbasketAccessItem newWorkbasketAccessItem(String workbasketKey, String accessId);
+    WorkbasketAccessItem newWorkbasketAccessItem(String workbasketId, String accessId);
 
     /**
      * Create and persist a new Workbasket Authorization with a Workbasket and a AccessId.
@@ -120,23 +122,39 @@ public interface WorkbasketService {
     /**
      * This method checks the authorization with the saved one for the actual User.
      *
-     * @param workbasketKey
-     *            the key of the workbasket we want to access
+     * @param workbasketId
+     *            the id of the workbasket we want to access
      * @param authorization
      *            the needed Authorization
      * @throws NotAuthorizedException
      *             if the current user has not the requested authorization for the specified workbasket
      */
-    void checkAuthorization(String workbasketKey, WorkbasketAuthorization authorization) throws NotAuthorizedException;
+    void checkAuthorization(String workbasketId, WorkbasketAuthorization authorization)
+        throws NotAuthorizedException;
+
+    /**
+     * This method checks the authorization with the saved one for the actual User.
+     *
+     * @param workbasketKey
+     *            the key of the workbasket we want to access
+     * @param domain
+     *            the domain of the workbasket we want to access
+     * @param authorization
+     *            the needed Authorization
+     * @throws NotAuthorizedException
+     *             if the current user has not the requested authorization for the specified workbasket
+     */
+    void checkAuthorization(String workbasketKey, String domain, WorkbasketAuthorization authorization)
+        throws NotAuthorizedException;
 
     /**
      * Get all authorizations for a Workbasket.
      *
-     * @param workbasketKey
-     *            the key of the Workbasket
+     * @param workbasketId
+     *            the id of the Workbasket
      * @return List of WorkbasketAccessItems for the Workbasket with workbasketKey
      */
-    List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketKey);
+    List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketId);
 
     /**
      * This method returns the workbaskets for which the current user has all permissions specified in the permissions
@@ -167,18 +185,20 @@ public interface WorkbasketService {
      *
      * @param key
      *            the workbasket key used to identify the workbasket
+     * @param domain
+     *            the domain of the new workbasket
      * @return new Workbasket
      */
-    Workbasket newWorkbasket(String key);
+    Workbasket newWorkbasket(String key, String domain);
 
     /**
      * Returns a set with all permissions of the current user at this workbasket.
      *
-     * @param workbasketKey
-     *            the key of the referenced workbasket
+     * @param workbasketId
+     *            the id of the referenced workbasket
      * @return a Set with all permissions
      */
-    List<WorkbasketAuthorization> getPermissionsForWorkbasket(String workbasketKey);
+    List<WorkbasketAuthorization> getPermissionsForWorkbasket(String workbasketId);
 
     /**
      * Returns the distribution targets for a given workbasket.
@@ -192,6 +212,22 @@ public interface WorkbasketService {
      *             if the workbasket doesn't exist
      */
     List<WorkbasketSummary> getDistributionTargets(String workbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException;
+
+    /**
+     * Returns the distribution targets for a given workbasket.
+     *
+     * @param workbasketKey
+     *            the key of the referenced workbasket
+     * @param domain
+     *            the domain of the referenced workbasket
+     * @return the distribution targets of the specified workbasket
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the specified workbasket
+     * @throws WorkbasketNotFoundException
+     *             if the workbasket doesn't exist
+     */
+    List<WorkbasketSummary> getDistributionTargets(String workbasketKey, String domain)
         throws NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
@@ -268,6 +304,22 @@ public interface WorkbasketService {
      *             if the workbasket doesn't exist
      */
     List<WorkbasketSummary> getDistributionSources(String workbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException;
+
+    /**
+     * Returns the distribution sources for a given workbasket.
+     *
+     * @param workbasketKey
+     *            the key of the referenced workbasket
+     * @param domain
+     *            the domain of the referenced workbasket
+     * @return the workbaskets that are distribution sources of the specified workbasket.
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the specified workbasket
+     * @throws WorkbasketNotFoundException
+     *             if the workbasket doesn't exist
+     */
+    List<WorkbasketSummary> getDistributionSources(String workbasketKey, String domain)
         throws NotAuthorizedException, WorkbasketNotFoundException;
 
 }

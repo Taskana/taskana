@@ -57,7 +57,8 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
     @Test
     public void testGetWorkbasketPermissions() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        List<WorkbasketAuthorization> permissions = workbasketService.getPermissionsForWorkbasket("USER_1_2");
+        List<WorkbasketAuthorization> permissions = workbasketService
+            .getPermissionsForWorkbasket("WBI:100000000000000000000000000000000007");
 
         Assert.assertEquals(4, permissions.size());
         Assert.assertTrue(permissions.contains(WorkbasketAuthorization.READ));
