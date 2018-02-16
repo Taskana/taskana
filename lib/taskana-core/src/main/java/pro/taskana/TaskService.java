@@ -15,7 +15,6 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.BulkOperationResults;
-import pro.taskana.impl.TaskState;
 
 /**
  * The Task Service manages all operations on tasks.
@@ -31,7 +30,7 @@ public interface TaskService {
      * @throws TaskNotFoundException
      *             if the task with taskId was not found
      * @throws InvalidStateException
-     *             if the state of the task with taskId is not {@link TaskState#READY}
+     *             if the state of the task with taskId is not READY
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by some else
      */
@@ -49,7 +48,7 @@ public interface TaskService {
      * @throws TaskNotFoundException
      *             if the task with taskId was not found
      * @throws InvalidStateException
-     *             if the state of the task with taskId is not {@link TaskState#READY}
+     *             if the state of the task with taskId is not READY
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by someone else
      */
@@ -198,38 +197,6 @@ public interface TaskService {
      * @return a {@link TaskQuery}
      */
     TaskQuery createTaskQuery();
-
-    /**
-     * Getting a list of all Task summaries which got matching workbasketIds and states.
-     *
-     * @param workbasketKey
-     *            the key of the workbasket where the tasks need to be in.
-     * @param taskState
-     *            which is required for the request,
-     * @return a filled/empty list of tasks with attributes which are matching given params.
-     * @throws WorkbasketNotFoundException
-     *             if the workbasketId can´t be resolved to a existing work basket.
-     * @throws NotAuthorizedException
-     *             if the current user got no rights for reading on this work basket.
-     * @throws ClassificationNotFoundException
-     *             if a single Classification can not be found for a task which is returned
-     */
-    List<TaskSummary> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException;
-
-    /**
-     * Getting a short summary of all tasks in a specific work basket.
-     *
-     * @param workbasketKey
-     *            Key of work basket where tasks are located.
-     * @return TaskSummaryList with all TaskSummaries of a work basket
-     * @throws WorkbasketNotFoundException
-     *             if a Work basket can´t be located.
-     * @throws NotAuthorizedException
-     *             if the current user got no rights for reading on this work basket.
-     */
-    List<TaskSummary> getTaskSummariesByWorkbasketKey(String workbasketKey)
-        throws WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
      * Returns a not persisted instance of {@link Task}.
