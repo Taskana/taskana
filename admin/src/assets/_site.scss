@@ -243,3 +243,7 @@ li > div.row > dl {
     -o-transition: opacity 300ms ease, visibility 300ms ease;
     transition: opacity 300ms ease, visibility 300ms ease;
 }
+
+taskana-spinner.centered-horizontally > div {
+    margin-top: calc(50vh - 250px);
+}

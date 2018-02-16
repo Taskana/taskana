@@ -15,6 +15,7 @@ export class WorkbasketListComponent implements OnInit {
   newWorkbasket: WorkbasketSummary;
   selectedId: string = undefined;
   workbaskets : Array<WorkbasketSummary> = [];
+  requestInProgress: boolean =  false;
 
   sortBy: string = 'key';
   sortDirection: Direction = Direction.ASC;
@@ -26,8 +27,10 @@ export class WorkbasketListComponent implements OnInit {
   constructor(private workbasketService: WorkbasketService) { }
 
   ngOnInit() {
+    this.requestInProgress = true;
     this.workBasketSummarySubscription = this.workbasketService.getWorkBasketsSummary().subscribe(resultList => {
       this.workbaskets = resultList;
+      this.requestInProgress = false;
     });
 
     this.workbasketServiceSubscription = this.workbasketService.getSelectedWorkBasket().subscribe( workbasketIdSelected => {
@@ -77,8 +80,11 @@ export class WorkbasketListComponent implements OnInit {
   }
 
   private performRequest(): void{
+    this.requestInProgress = true;
+    this.workbaskets = undefined;
     this.workbasketServiceSubscription.add(this.workbasketService.getWorkBasketsSummary(this.sortBy,this.sortDirection).subscribe(resultList => {
       this.workbaskets = resultList;
+      this.requestInProgress = false;
     }));
   }
 

@@ -4,6 +4,7 @@ import { NoAccessComponent } from '../noAccess/no-access.component';
 import { WorkbasketInformationComponent } from './information/workbasket-information.component';
 import { Workbasket } from 'app/model/workbasket';
 import { Observable } from 'rxjs/Observable';
+import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 
 import { WorkbasketService } from '../../services/workbasketservice.service';
 import { MasterAndDetailService } from '../../services/master-and-detail.service';
@@ -25,7 +26,7 @@ describe('WorkbasketDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[RouterTestingModule, FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [ WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent ],
+      declarations: [ WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent ],
       providers:[WorkbasketService, MasterAndDetailService, PermissionService]
     })
     .compileComponents();
