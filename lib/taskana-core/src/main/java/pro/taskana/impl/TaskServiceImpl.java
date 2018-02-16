@@ -209,7 +209,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public BulkOperationResults<String, TaskanaException> completeTasks(List<String> taskIds)
-        throws InvalidArgumentException, NotAuthorizedException {
+        throws InvalidArgumentException {
         try {
             LOGGER.debug("entry to completeTasks(taskIds = {})", taskIds);
             taskanaEngineImpl.openConnection();
@@ -294,6 +294,8 @@ public class TaskServiceImpl implements TaskService {
                 }
                 Classification classification = this.classificationService.getClassification(classificationKey,
                     workbasket.getDomain());
+                task.setClassificationKey(classificationKey);
+                task.setClassificationCategory(classification.getCategory());
                 task.setClassificationSummary(classification.asSummary());
                 task.setWorkbasketSummary(workbasket.asSummary());
                 validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");

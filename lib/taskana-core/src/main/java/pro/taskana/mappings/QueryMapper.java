@@ -27,7 +27,7 @@ public interface QueryMapper {
     String CLASSIFICATION_FINDBYID = "pro.taskana.mappings.ClassificationMapper.findById";
     String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.mappings.WorkbasketMapper.findSummaryByKey";
 
-    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
+    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.CLASSIFICATION_CATEGORY, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
         + "FROM TASK t "
         + "<where>"
         + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
@@ -47,6 +47,8 @@ public interface QueryMapper {
         + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR '>UPPER(t.WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
         + "<if test='classificationKeyIn != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKeyIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationKeyLike != null'>AND (<foreach item='item' collection='classificationKeyLike' separator=' OR '>UPPER(t.CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='classificationCategoryIn != null'>AND t.CLASSIFICATION_CATEGORY IN(<foreach item='item' collection='classificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='classificationCategoryLike != null'>AND (<foreach item='item' collection='classificationCategoryLike' separator=' OR '>UPPER(t.CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
         + "<if test='domainIn != null'>AND t.DOMAIN IN(<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR '>UPPER(t.DOMAIN) LIKE #{item}</foreach>)</if> "
         + "<if test='ownerIn != null'>AND t.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
@@ -105,6 +107,7 @@ public interface QueryMapper {
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY"),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
+        @Result(property = "classificationSummaryImpl.category", column = "CLASSIFICATION_CATEGORY"),
         @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
         @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
         @Result(property = "owner", column = "OWNER"),
@@ -136,7 +139,7 @@ public interface QueryMapper {
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
         + "<if test='validInDomain != null'>AND VALID_IN_DOMAIN = #{validInDomain}</if> "
-        + "<if test='created != null'>AND CREATED IN(<foreach item='item' collection='created' separator=',' >SUBSTRING(#{item}, 1, 10)</foreach>)</if> "
+        + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
         + "<if test='nameIn != null'>AND NAME IN(<foreach item='item' collection='nameIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='nameLike != null'>AND (<foreach item='item' collection='nameLike' separator=' OR '>NAME LIKE #{item}</foreach>)</if> "
         + "<if test='descriptionLike != null'>AND DESCRIPTION like #{descriptionLike}</if> "
@@ -298,6 +301,8 @@ public interface QueryMapper {
         + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR '>UPPER(t.WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
         + "<if test='classificationKeyIn != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKeyIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationKeyLike != null'>AND (<foreach item='item' collection='classificationKeyLike' separator=' OR '>UPPER(t.CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='classificationCategoryIn != null'>AND t.CLASSIFICATION_CATEGORY IN(<foreach item='item' collection='classificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='classificationCategoryLike != null'>AND (<foreach item='item' collection='classificationCategoryLike' separator=' OR '>UPPER(t.CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
         + "<if test='domainIn != null'>AND t.DOMAIN IN(<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR '>UPPER(t.DOMAIN) LIKE #{item}</foreach>)</if> "
         + "<if test='ownerIn != null'>AND t.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
@@ -340,6 +345,7 @@ public interface QueryMapper {
         + "<if test='custom10Like != null'>AND (<foreach item='item' collection='custom10Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
         + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         + "</where>"
+        + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
         + "</script>")
     Long countQueryTasks(TaskQueryImpl taskQuery);
 
@@ -351,7 +357,7 @@ public interface QueryMapper {
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
         + "<if test='validInDomain != null'>AND VALID_IN_DOMAIN = #{validInDomain}</if> "
-        + "<if test='created != null'>AND CREATED IN(<foreach item='item' collection='created' separator=',' >SUBSTRING(#{item}, 1, 10)</foreach>)</if> "
+        + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
         + "<if test='nameIn != null'>AND NAME IN(<foreach item='item' collection='nameIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='nameLike != null'>AND (<foreach item='item' collection='nameLike' separator=' OR '>NAME LIKE #{item}</foreach>)</if> "
         + "<if test='descriptionLike != null'>AND DESCRIPTION like #{descriptionLike}</if> "

@@ -415,4 +415,11 @@ public interface Task {
      * @return attachment which will be removed after updating OR null if there was no matching attachment
      */
     Attachment removeAttachment(String attachmentID);
+
+    /**
+     * Returns the category of the current classification.
+     *
+     * @return classificationCategory
+     */
+    String getClassificationCategory();
 }

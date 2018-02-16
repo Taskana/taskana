@@ -89,7 +89,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public ClassificationService getClassificationService() {
         SqlSession session = this.sessionManager;
-        return new ClassificationServiceImpl(this, session.getMapper(ClassificationMapper.class));
+        return new ClassificationServiceImpl(this, session.getMapper(ClassificationMapper.class),
+            session.getMapper(TaskMapper.class));
     }
 
     @Override

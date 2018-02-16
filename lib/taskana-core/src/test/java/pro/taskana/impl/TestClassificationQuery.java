@@ -1,11 +1,11 @@
 package pro.taskana.impl;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.TimeInterval;
 
 /**
  * Created by BV on 26.10.2017.
@@ -52,7 +52,7 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery created(Instant... created) {
+    public ClassificationQuery createdWithin(TimeInterval... created) {
         return this;
     }
 

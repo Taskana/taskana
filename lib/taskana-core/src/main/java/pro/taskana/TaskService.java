@@ -338,8 +338,7 @@ public interface TaskService {
      * @return the result of the operations with Id and Exception for each failed task completion.
      * @throws InvalidArgumentException
      *             If the taskId parameter is NULL.
-     * @throws NotAuthorizedException
      */
     BulkOperationResults<String, TaskanaException> completeTasks(List<String> taskIds)
-        throws InvalidArgumentException, NotAuthorizedException;
+        throws InvalidArgumentException;
 }

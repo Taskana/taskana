@@ -23,6 +23,7 @@ import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.ClassificationMapper;
+import pro.taskana.mappings.TaskMapper;
 
 /**
  * This is the implementation of ClassificationService.
@@ -32,12 +33,15 @@ public class ClassificationServiceImpl implements ClassificationService {
     private static final String ID_PREFIX_CLASSIFICATION = "CLI";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
     private ClassificationMapper classificationMapper;
+    private TaskMapper taskMapper;
     private TaskanaEngineImpl taskanaEngineImpl;
 
-    ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper) {
+    ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper,
+        TaskMapper taskMapper) {
         super();
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.classificationMapper = classificationMapper;
+        this.taskMapper = taskMapper;
     }
 
     @Override
@@ -145,7 +149,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public Classification updateClassification(Classification classification) {
+    public Classification updateClassification(Classification classification) throws NotAuthorizedException {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
         ClassificationImpl classificationImpl = null;
         try {
@@ -155,7 +159,21 @@ public class ClassificationServiceImpl implements ClassificationService {
 
             // UPDATE/INSERT classification
             try {
-                this.getClassification(classificationImpl.getKey(), classificationImpl.getDomain());
+                Classification oldClassification = this.getClassification(classificationImpl.getKey(),
+                    classificationImpl.getDomain());
+                // Update classification fields used by tasks
+                if (oldClassification.getCategory() != classificationImpl.getCategory()) {
+                    List<TaskSummary> taskSumamries = taskanaEngineImpl.getTaskService()
+                        .createTaskQuery()
+                        .classificationKeyIn(oldClassification.getKey())
+                        .classificationCategoryIn(oldClassification.getCategory())
+                        .list();
+                    if (!taskSumamries.isEmpty()) {
+                        List<String> taskIds = new ArrayList<>();
+                        taskSumamries.stream().forEach(ts -> taskIds.add(ts.getTaskId()));
+                        taskMapper.updateClassificationCategoryOnChange(taskIds, classificationImpl.getCategory());
+                    }
+                }
                 classificationMapper.update(classificationImpl);
                 LOGGER.debug("Method updateClassification() updated the classification {}.",
                     classificationImpl);

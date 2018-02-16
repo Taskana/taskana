@@ -1,7 +1,5 @@
 package pro.taskana;
 
-import java.time.Instant;
-
 /**
  * ClassificationQuery for generating dynamic sql.
  */
@@ -64,11 +62,11 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
     /**
      * Add your created-Dates to your query.
      *
-     * @param created
-     *            date (as instant) of classification creation.
+     * @param createdIn
+     *            the {@link TimeInterval} within which the searched-for classifications were created.
      * @return the query
      */
-    ClassificationQuery created(Instant... created);
+    ClassificationQuery createdWithin(TimeInterval... createdIn);
 
     /**
      * Add your name to your query.

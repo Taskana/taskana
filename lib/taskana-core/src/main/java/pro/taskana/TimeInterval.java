@@ -28,7 +28,11 @@ public class TimeInterval {
     }
 
     public boolean isValid() {
-        return begin != null || end != null;
+        boolean isValid = begin != null || end != null;
+        if (begin != null && end != null && begin.isAfter(end)) {
+            isValid = false;
+        }
+        return isValid;
     }
 
     public Instant getBegin() {

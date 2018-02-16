@@ -38,6 +38,8 @@ public class TaskQueryImpl implements TaskQuery {
     private TaskState[] states;
     private String[] classificationKeyIn;
     private String[] classificationKeyLike;
+    private String[] classificationCategoryIn;
+    private String[] classificationCategoryLike;
     private String[] workbasketKeyIn;
     private String[] workbasketKeyLike;
     private String[] domainIn;
@@ -212,6 +214,18 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery classificationKeyLike(String... classificationKeys) {
         this.classificationKeyLike = toUpperCopy(classificationKeys);
+        return this;
+    }
+
+    @Override
+    public TaskQuery classificationCategoryIn(String... classificationCategories) {
+        this.classificationCategoryIn = classificationCategories;
+        return this;
+    }
+
+    @Override
+    public TaskQuery classificationCategoryLike(String... classificationCategories) {
+        this.classificationCategoryLike = toUpperCopy(classificationCategories);
         return this;
     }
 
@@ -1021,6 +1035,10 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(classificationKeyIn));
         builder.append(", classificationKeyLike=");
         builder.append(Arrays.toString(classificationKeyLike));
+        builder.append(", classificationCategoryIn=");
+        builder.append(Arrays.toString(classificationCategoryIn));
+        builder.append(", classificationCategoryLike=");
+        builder.append(Arrays.toString(classificationCategoryLike));
         builder.append(", workbasketKeyIn=");
         builder.append(Arrays.toString(workbasketKeyIn));
         builder.append(", workbasketKeyLike=");
