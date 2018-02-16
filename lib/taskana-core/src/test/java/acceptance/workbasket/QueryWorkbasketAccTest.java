@@ -39,7 +39,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_B")
             .list();
-        Assert.assertEquals(3L, results.size());
+        Assert.assertEquals(4L, results.size());
     }
 
     @Test

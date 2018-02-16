@@ -35,10 +35,9 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         int before = workbasketService.getWorkbaskets().size();
-        Workbasket workbasket = workbasketService.newWorkbasket("key");
+        Workbasket workbasket = workbasketService.newWorkbasket("key", "novatec");
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setDomain("novatec");
         workbasket.setOrgLevel1("company");
         workbasketService.createWorkbasket(workbasket);
         Assert.assertEquals(before + 1, workbasketService.getWorkbaskets().size());
@@ -49,10 +48,9 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         throws WorkbasketNotFoundException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-        Workbasket workbasket = workbasketService.newWorkbasket(null);
+        Workbasket workbasket = workbasketService.newWorkbasket(null, "novatec");
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setDomain("novatec");
         workbasket.setOrgLevel1("company");
         try { // missing key
             workbasketService.createWorkbasket(workbasket);
@@ -60,9 +58,8 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         } catch (InvalidWorkbasketException e) {
         }
 
-        workbasket = workbasketService.newWorkbasket("key");
+        workbasket = workbasketService.newWorkbasket("key", "novatec");
         workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setDomain("novatec");
         workbasket.setOrgLevel1("company");
         try {  // missing name
             workbasketService.createWorkbasket(workbasket);
@@ -70,9 +67,8 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         } catch (InvalidWorkbasketException e) {
         }
 
-        workbasket = workbasketService.newWorkbasket("key");
+        workbasket = workbasketService.newWorkbasket("key", "novatec");
         workbasket.setName("Megabasket");
-        workbasket.setDomain("novatec");
         workbasket.setOrgLevel1("company");
         try {  // missing type
             workbasketService.createWorkbasket(workbasket);
@@ -80,7 +76,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         } catch (InvalidWorkbasketException e) {
         }
 
-        workbasket = workbasketService.newWorkbasket("key");
+        workbasket = workbasketService.newWorkbasket("key", null);
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setOrgLevel1("company");

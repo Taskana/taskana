@@ -103,11 +103,6 @@ public class WorkbasketImpl implements Workbasket {
     }
 
     @Override
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
-
-    @Override
     public WorkbasketType getType() {
         return type;
     }
@@ -195,6 +190,10 @@ public class WorkbasketImpl implements Workbasket {
     @Override
     public void setOrgLevel4(String orgLevel4) {
         this.orgLevel4 = orgLevel4;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     @Override

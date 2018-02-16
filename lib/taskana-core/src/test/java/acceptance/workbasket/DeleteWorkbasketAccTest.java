@@ -42,11 +42,11 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
     @Test
     public void testDeleteWorkbasket()
         throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
-        Workbasket wb = workbasketService.getWorkbasketByKey("TEAMLEAD_2");
+        Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
         workbasketService.deleteWorkbasket(wb.getId());
 
         try {
-            workbasketService.getWorkbasketByKey("TEAMLEAD_2");
+            workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
             fail("There should be no result for a deleted Workbasket.");
         } catch (WorkbasketNotFoundException e) {
             // Workbasket is deleted
@@ -57,14 +57,14 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
     @Test
     public void testDeleteWorkbasketAlsoAsDistributionTarget()
         throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
-        Workbasket wb = workbasketService.getWorkbasketByKey("GPK_KSC_1");
+        Workbasket wb = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
         int distTargets = workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001")
             .size();
 
         // WB deleted
         workbasketService.deleteWorkbasket(wb.getId());
         try {
-            workbasketService.getWorkbasketByKey("GPK_KSC_1");
+            workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
             fail("There should be no result for a deleted Workbasket.");
         } catch (WorkbasketNotFoundException e) {
             // Workbasket is deleted
@@ -106,7 +106,7 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
     @Test(expected = WorkbasketInUseException.class)
     public void testDeleteWorkbasketWhichIsUsed()
         throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
-        Workbasket wb = workbasketService.getWorkbasketByKey("USER_1_1");   // all rights, DOMAIN_A with Tasks
+        Workbasket wb = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");   // all rights, DOMAIN_A with Tasks
         workbasketService.deleteWorkbasket(wb.getId());
     }
 

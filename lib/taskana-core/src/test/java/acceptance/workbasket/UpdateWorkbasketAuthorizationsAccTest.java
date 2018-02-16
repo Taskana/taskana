@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.KeyDomain;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
@@ -44,7 +45,8 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     @Test
     public void testUpdateWorkbasketAccessItemSucceeds() throws InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("key1", "user1");
+        WorkbasketAccessItem accessItem = workbasketService
+            .newWorkbasketAccessItem("key1000000000000000000000000000000000000", "user1");
         accessItem.setPermAppend(true);
         accessItem.setPermCustom11(true);
         accessItem.setPermRead(true);
@@ -69,7 +71,8 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         InvalidWorkbasketException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("key1", "user1");
+        WorkbasketAccessItem accessItem = workbasketService
+            .newWorkbasketAccessItem("1000000000000000000000000000000000000000", "user1");
         accessItem.setPermAppend(true);
         accessItem.setPermCustom11(true);
         accessItem.setPermRead(true);
@@ -93,7 +96,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         Assert.assertEquals(true, accessItem.isPermCustom1());
         Assert.assertEquals(false, accessItem.isPermCustom2());
 
-        ((WorkbasketAccessItemImpl) accessItem).setWorkbasketKey("key2");
+        ((WorkbasketAccessItemImpl) accessItem).setWorkbasketId("2");
         try {
             workbasketService.updateWorkbasketAuthorization(accessItem);
             fail("InvalidArgumentException was expected because key was changed");
@@ -115,16 +118,17 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         String wbKey = "USER_2_1";
         String groupName = "group_2";
 
-        Task newTask = taskService.newTask(wbKey);
+        Task newTask = taskService.newTask(wbKey, "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         Task createdTask = taskService.createTask(newTask);
         List<TaskSummary> tasks = taskService.createTaskQuery()
-            .workbasketKeyIn(wbKey)
+            .workbasketKeyDomainIn(new KeyDomain(wbKey, "DOMAIN_A"))
             .list();
         Assert.assertEquals(1, tasks.size());
 
-        List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAuthorizations(wbKey);
+        List<WorkbasketAccessItem> accessItems = workbasketService
+            .getWorkbasketAuthorizations("WBI:100000000000000000000000000000000008");
         WorkbasketAccessItem theAccessItem = accessItems.stream()
             .filter(x -> groupName.equals(x.getAccessId()))
             .findFirst()
@@ -136,7 +140,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
         try {
             taskService.createTaskQuery()
-                .workbasketKeyIn(wbKey)
+                .workbasketKeyDomainIn(new KeyDomain(wbKey, "DOMAIN_A"))
                 .list();
             fail("NotAuthorizedToQueryWorkbasketException was expected ");
         } catch (NotAuthorizedToQueryWorkbasketException ignored) {

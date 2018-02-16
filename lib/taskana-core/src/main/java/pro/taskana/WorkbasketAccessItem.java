@@ -15,11 +15,11 @@ public interface WorkbasketAccessItem {
     String getId();
 
     /**
-     * Returns the key of the referenced workbasket.
+     * Returns the Id of the referenced workbasket.
      *
-     * @return the workbasket key
+     * @return the workbasket Id
      */
-    String getWorkbasketKey();
+    String getWorkbasketId();
 
     /**
      * Returns the group id or user id for which this WorkbasketAccessItem controls access permissions.

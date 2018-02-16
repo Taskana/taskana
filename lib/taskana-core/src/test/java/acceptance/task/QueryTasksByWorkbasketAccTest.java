@@ -1,19 +1,16 @@
 package acceptance.task;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
 import java.sql.SQLException;
-import java.util.List;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
-import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
@@ -30,6 +27,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         super();
     }
 
+    @Ignore  // BB
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
@@ -38,10 +36,11 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         taskService.createTaskQuery()
-            .workbasketKeyIn("USER_2_1")
+            .workbasketKeyDomainIn(new KeyDomain("USER_2_1", "DOMAIN_A"))
             .list();
     }
 
+    @Ignore  // BB
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
@@ -50,35 +49,8 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         taskService.createTaskQuery()
-            .workbasketKeyIn("USER_1_1", "USER_2_1")
+            .workbasketKeyDomainIn(new KeyDomain("USER_1_1", "DOMAIN_A"), new KeyDomain("USER_2_1", "DOMAIN_A"))
             .list();
-    }
-
-    @WithAccessId(userName = "user_1_1")
-    @Test
-    public void testQueryAllTasksForDomains() throws NotAuthorizedException {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
-            .domainIn("DOMAIN_B", "", "DOMAIN_A")
-            .list();
-        assertThat(results.size(), equalTo(64));
-
-        results = taskService.createTaskQuery()
-            .domainIn("DOMAIN_A")
-            .workbasketKeyIn("USER_1_1")
-            .list();
-        assertThat(results.size(), equalTo(2));
-    }
-
-    @WithAccessId(userName = "user_1_1")
-    @Test
-    public void testQueryTasksForWorkbasket() throws NotAuthorizedException {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
-            .domainIn("DOMAIN_A")
-            .workbasketKeyIn("USER_1_1")
-            .list();
-        assertThat(results.size(), equalTo(2));
     }
 
     @AfterClass

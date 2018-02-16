@@ -48,7 +48,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery()
             .accessIdIn("user_1_1", "group_1")
             .orderByAccessId(desc)
-            .orderByWorkbasketKey(desc);
+            .orderByWorkbasketId(desc);
         List<WorkbasketAccessItem> results = query.list();
         long count = query.count();
         Assert.assertEquals(10L, results.size());
@@ -62,7 +62,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
             .accessIdIn("user_1_1", "group_1")
-            .workbasketKeyIn("USER_1_1", "GPK_KSC_1")
+            .workbasketIdIn("WBI:100000000000000000000000000000000006", "WBI:100000000000000000000000000000000002")
             .list();
         Assert.assertEquals(3L, results.size());
     }
@@ -72,7 +72,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
-            .workbasketKeyIn("USER_1_1")
+            .workbasketIdIn("WBI:100000000000000000000000000000000006")
             .list();
         Assert.assertEquals(3L, results.size());
     }
@@ -82,8 +82,8 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
-            .workbasketKeyIn("USER_1_1")
-            .orderByWorkbasketKey(desc)
+            .workbasketIdIn("WBI:100000000000000000000000000000000006")
+            .orderByWorkbasketId(desc)
             .orderByAccessId(asc)
             .list();
         Assert.assertEquals(3L, results.size());
