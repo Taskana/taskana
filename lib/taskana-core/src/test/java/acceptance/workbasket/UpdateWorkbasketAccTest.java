@@ -39,13 +39,12 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         InvalidWorkbasketException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        Workbasket workbasket = workbasketService.getWorkbasketByKey("GPK_KSC");
+        Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
         Instant modified = workbasket.getModified();
 
         workbasket.setName("new name");
         workbasket.setDescription("new description");
         workbasket.setType(WorkbasketType.TOPIC);
-        workbasket.setDomain("DOMAIN_C");
         workbasket.setOrgLevel1("new level 1");
         workbasket.setOrgLevel2("new level 2");
         workbasket.setOrgLevel3("new level 3");
@@ -57,7 +56,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         workbasket.setDescription("new description");
         workbasketService.updateWorkbasket(workbasket);
 
-        Workbasket updatedWorkbasket = workbasketService.getWorkbasketByKey("GPK_KSC");
+        Workbasket updatedWorkbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
         Assert.assertEquals(workbasket.getId(), updatedWorkbasket.getId());
         Assert.assertEquals(workbasket.getCreated(), updatedWorkbasket.getCreated());
         Assert.assertNotEquals(modified, updatedWorkbasket.getModified());
@@ -74,7 +73,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         InvalidWorkbasketException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        Workbasket workbasket = workbasketService.getWorkbasketByKey("GPK_KSC");
+        Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
 
         workbasket.setName("new name");
         workbasketService.updateWorkbasket(workbasket);

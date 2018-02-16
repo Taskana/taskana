@@ -51,14 +51,14 @@ public class TestDataGenerator {
             runner.setStopOnError(true);
             runner.setLogWriter(this.logWriter);
             runner.setErrorLogWriter(this.errorLogWriter);
-            runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/task.sql")));
-            runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket.sql")));
-            runner.runScript(
-                new InputStreamReader(this.getClass().getResourceAsStream("/sql/distribution-targets.sql")));
             runner.runScript(
                 new InputStreamReader(this.getClass().getResourceAsStream("/sql/classification.sql")));
+            runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket.sql")));
+            runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/task.sql")));
             runner.runScript(
                 new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket-access-list.sql")));
+            runner.runScript(
+                new InputStreamReader(this.getClass().getResourceAsStream("/sql/distribution-targets.sql")));
             runner.runScript(
                 new InputStreamReader(this.getClass().getResourceAsStream("/sql/object-reference.sql")));
         } finally {

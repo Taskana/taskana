@@ -9,7 +9,7 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
     private String id;
-    private String workbasketKey;
+    private String workbasketId;
     private String accessId;
     private boolean permRead;
     private boolean permOpen;
@@ -51,12 +51,12 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
      * @see pro.taskana.impl.WorkbasketAccessItem#getWorkbasketKey()
      */
     @Override
-    public String getWorkbasketKey() {
-        return workbasketKey;
+    public String getWorkbasketId() {
+        return workbasketId;
     }
 
-    public void setWorkbasketKey(String workbasketKey) {
-        this.workbasketKey = workbasketKey;
+    public void setWorkbasketId(String workbasketId) {
+        this.workbasketId = workbasketId;
     }
 
     /*
@@ -387,8 +387,8 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         StringBuilder builder = new StringBuilder();
         builder.append("WorkbasketAccessItem [id=");
         builder.append(id);
-        builder.append(", workbasketKey=");
-        builder.append(workbasketKey);
+        builder.append(", workbasketId=");
+        builder.append(workbasketId);
         builder.append(", accessId=");
         builder.append(accessId);
         builder.append(", permRead=");

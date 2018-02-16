@@ -37,4 +37,17 @@ public class MinimalTaskSummary {
         this.taskState = taskState;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("MinimalTaskSummary [taskId=");
+        builder.append(taskId);
+        builder.append(", workbasketKey=");
+        builder.append(workbasketKey);
+        builder.append(", taskState=");
+        builder.append(taskState);
+        builder.append("]");
+        return builder.toString();
+    }
+
 }

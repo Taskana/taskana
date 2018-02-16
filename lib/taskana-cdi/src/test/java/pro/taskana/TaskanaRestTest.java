@@ -40,9 +40,8 @@ public class TaskanaRestTest {
     public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException,
         ClassificationNotFoundException, ClassificationAlreadyExistException, InvalidWorkbasketException,
         TaskAlreadyExistException, InvalidArgumentException {
-        Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket("key");
+        Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket("key", "cdiDomain");
         workbasket.setName("wb");
-        workbasket.setDomain("cdiDomain");
         workbasket.setType(WorkbasketType.PERSONAL);
         taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
         Classification classification = classificationService.newClassification("cdiDomain", "TEST", "t1");

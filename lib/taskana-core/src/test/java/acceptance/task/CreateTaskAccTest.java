@@ -47,7 +47,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask("USER_1_1");
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         Task createdTask = taskService.createTask(newTask);
@@ -79,7 +79,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         ConcurrencyException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask("USER_1_1");
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("L12010");
         newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
@@ -109,7 +109,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask("USER_1_1");
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("L12010");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
@@ -214,7 +214,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
     }
 
     private Task makeNewTask(TaskService taskService) throws ClassificationNotFoundException {
-        Task newTask = taskService.newTask("USER_1_1");
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("L12010");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setClassificationKey("L12010");
@@ -230,7 +230,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask("USER_1_1");
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setName("Test Name");
@@ -249,7 +249,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask("USER_1_1");
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setName("Test Name");
@@ -283,7 +283,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask("GPK_KSC");
+        Task newTask = taskService.newTask("GPK_KSC", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         taskService.createTask(newTask);
@@ -298,7 +298,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask("USER_1_1");
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         try {
             taskService.createTask(newTask);
@@ -308,7 +308,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         }
 
         // Exception
-        newTask = taskService.newTask("USER_1_1");
+        newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
         try {
@@ -319,7 +319,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         }
 
         // Exception
-        newTask = taskService.newTask("USER_1_1");
+        newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
         try {
@@ -330,7 +330,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         }
 
         // Exception
-        newTask = taskService.newTask("USER_1_1");
+        newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
         try {
@@ -341,7 +341,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         }
 
         // Exception
-        newTask = taskService.newTask("USER_1_1");
+        newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
         try {
@@ -352,7 +352,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         }
 
         // Exception
-        newTask = taskService.newTask("USER_1_1");
+        newTask = taskService.newTask("WBI:100000000000000000000000000000000006");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         try {
@@ -374,9 +374,9 @@ public class CreateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-        Workbasket workbasket = workbasketService.getWorkbasketByKey("USER_1_1");
+        Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
 
-        Task newTask = taskService.newTask("USER_1_1");
+        Task newTask = taskService.newTask("WBI:100000000000000000000000000000000006");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         Task createdTask = taskService.createTask(newTask);

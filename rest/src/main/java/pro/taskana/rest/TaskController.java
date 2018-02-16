@@ -71,13 +71,13 @@ public class TaskController {
         }
     }
 
-    @RequestMapping(value = "/workbasket/{workbasketKey}/state/{taskState}")
+    @RequestMapping(value = "/workbasket/{workbasketId}/state/{taskState}")
     public ResponseEntity<List<TaskSummary>> getTasksByWorkbasketIdAndState(
-        @PathVariable(value = "workbasketKey") String workbasketKey,
+        @PathVariable(value = "workbasketId") String workbasketId,
         @PathVariable(value = "taskState") TaskState taskState) {
         try {
             List<TaskSummary> taskList = taskService.createTaskQuery()
-                .workbasketKeyIn(workbasketKey)
+                .workbasketIdIn(workbasketId)
                 .stateIn(taskState)
                 .list();
             return ResponseEntity.status(HttpStatus.OK).body(taskList);
@@ -143,12 +143,12 @@ public class TaskController {
         }
     }
 
-    @RequestMapping(value = "/workbasket/{workbasketKey}", method = RequestMethod.GET)
+    @RequestMapping(value = "/workbasket/{workbasketId}", method = RequestMethod.GET)
     public ResponseEntity<List<TaskSummary>> getTasksummariesByWorkbasketId(
-        @PathVariable(value = "workbasketKey") String workbasketKey) {
+        @PathVariable(value = "workbasketId") String workbasketId) {
         List<TaskSummary> taskSummaries = null;
         try {
-            taskSummaries = taskService.createTaskQuery().workbasketKeyIn(workbasketKey).list();
+            taskSummaries = taskService.createTaskQuery().workbasketIdIn(workbasketId).list();
             return ResponseEntity.status(HttpStatus.OK).body(taskSummaries);
         } catch (NotAuthorizedToQueryWorkbasketException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

@@ -9,6 +9,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.KeyDomain;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskSummary;
@@ -35,15 +36,13 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] description;
     private String[] note;
     private int[] priority;
-    private TaskState[] states;
+    private KeyDomain[] workbasketKeyDomainIn;
+    private String[] workbasketIdIn;
+    private TaskState[] stateIn;
     private String[] classificationKeyIn;
     private String[] classificationKeyLike;
     private String[] classificationCategoryIn;
     private String[] classificationCategoryLike;
-    private String[] workbasketKeyIn;
-    private String[] workbasketKeyLike;
-    private String[] domainIn;
-    private String[] domainLike;
     private String[] ownerIn;
     private String[] ownerLike;
     private Boolean isRead;
@@ -200,8 +199,14 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskQuery stateIn(TaskState... states) {
-        this.states = states;
+    public TaskQuery workbasketKeyDomainIn(KeyDomain... workbasketIdentifiers) {
+        this.workbasketKeyDomainIn = workbasketIdentifiers;
+        return this;
+    }
+
+    @Override
+    public TaskQuery workbasketIdIn(String... workbasketIds) {
+        this.workbasketIdIn = workbasketIds;
         return this;
     }
 
@@ -226,30 +231,6 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery classificationCategoryLike(String... classificationCategories) {
         this.classificationCategoryLike = toUpperCopy(classificationCategories);
-        return this;
-    }
-
-    @Override
-    public TaskQuery workbasketKeyIn(String... workbasketKeys) {
-        this.workbasketKeyIn = workbasketKeys;
-        return this;
-    }
-
-    @Override
-    public TaskQuery workbasketKeyLike(String... workbasketKeys) {
-        this.workbasketKeyLike = toUpperCopy(workbasketKeys);
-        return this;
-    }
-
-    @Override
-    public TaskQuery domainIn(String... domain) {
-        this.domainIn = domain;
-        return this;
-    }
-
-    @Override
-    public TaskQuery domainLike(String... domains) {
-        this.domainLike = toUpperCopy(domains);
         return this;
     }
 
@@ -364,6 +345,12 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery businessProcessIdLike(String... businessProcessIds) {
         this.businessProcessIdLike = toUpperCopy(businessProcessIds);
+        return this;
+    }
+
+    @Override
+    public TaskQuery stateIn(TaskState... states) {
+        this.stateIn = states;
         return this;
     }
 
@@ -653,7 +640,7 @@ public class TaskQueryImpl implements TaskQuery {
         try {
             LOGGER.debug("entry to list(), this = {}", this);
             taskanaEngineImpl.openConnection();
-            checkOpenPermissionForWorkbasketKey();
+            checkOpenPermissionForSpecifiedWorkbaskets();
             List<TaskSummaryImpl> tasks = new ArrayList<>();
             tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
@@ -676,7 +663,7 @@ public class TaskQueryImpl implements TaskQuery {
         List<TaskSummary> result = new ArrayList<>();
         try {
             taskanaEngineImpl.openConnection();
-            checkOpenPermissionForWorkbasketKey();
+            checkOpenPermissionForSpecifiedWorkbaskets();
             RowBounds rowBounds = new RowBounds(offset, limit);
             List<TaskSummaryImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
@@ -707,7 +694,7 @@ public class TaskQueryImpl implements TaskQuery {
         TaskSummary result = null;
         try {
             taskanaEngineImpl.openConnection();
-            checkOpenPermissionForWorkbasketKey();
+            checkOpenPermissionForSpecifiedWorkbaskets();
             TaskSummaryImpl taskSummaryImpl = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             if (taskSummaryImpl == null) {
                 return null;
@@ -732,7 +719,7 @@ public class TaskQueryImpl implements TaskQuery {
         Long rowCount = null;
         try {
             taskanaEngineImpl.openConnection();
-            checkOpenPermissionForWorkbasketKey();
+            checkOpenPermissionForSpecifiedWorkbaskets();
             rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
@@ -741,11 +728,18 @@ public class TaskQueryImpl implements TaskQuery {
         }
     }
 
-    private void checkOpenPermissionForWorkbasketKey() {
+    private void checkOpenPermissionForSpecifiedWorkbaskets() {
         try {
-            if (this.workbasketKeyIn != null && this.workbasketKeyIn.length > 0) {
-                for (String wbKey : this.workbasketKeyIn) {
-                    taskanaEngineImpl.getWorkbasketService().checkAuthorization(wbKey, WorkbasketAuthorization.OPEN);
+            if (this.workbasketIdIn != null && this.workbasketIdIn.length > 0) {
+                for (String workbasketId : workbasketIdIn) {
+                    taskanaEngineImpl.getWorkbasketService().checkAuthorization(workbasketId,
+                        WorkbasketAuthorization.OPEN);
+                }
+            }
+            if (workbasketKeyDomainIn != null && workbasketKeyDomainIn.length > 0) {
+                for (KeyDomain keyDomain : workbasketKeyDomainIn) {
+                    taskanaEngineImpl.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
+                        keyDomain.getDomain(), WorkbasketAuthorization.OPEN);
                 }
             }
         } catch (NotAuthorizedException e) {
@@ -773,8 +767,8 @@ public class TaskQueryImpl implements TaskQuery {
         return priority;
     }
 
-    public TaskState[] getStates() {
-        return states;
+    public TaskState[] getStateIn() {
+        return stateIn;
     }
 
     public String[] getOwnerIn() {
@@ -981,20 +975,12 @@ public class TaskQueryImpl implements TaskQuery {
         return classificationKeyLike;
     }
 
-    public String[] getWorkbasketKeyIn() {
-        return workbasketKeyIn;
+    public KeyDomain[] getWorkbasketKeyDomainIn() {
+        return workbasketKeyDomainIn;
     }
 
-    public String[] getWorkbasketKeyLike() {
-        return workbasketKeyLike;
-    }
-
-    public String[] getDomainIn() {
-        return domainIn;
-    }
-
-    public String[] getDomainLike() {
-        return domainLike;
+    public String[] getWorkbasketIdIn() {
+        return workbasketIdIn;
     }
 
     private TaskQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
@@ -1029,8 +1015,12 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(note));
         builder.append(", priority=");
         builder.append(Arrays.toString(priority));
-        builder.append(", states=");
-        builder.append(Arrays.toString(states));
+        builder.append(", workbasketKeyDomainIn=");
+        builder.append(Arrays.toString(workbasketKeyDomainIn));
+        builder.append(", workbasketIdIn=");
+        builder.append(Arrays.toString(workbasketIdIn));
+        builder.append(", stateIn=");
+        builder.append(Arrays.toString(stateIn));
         builder.append(", classificationKeyIn=");
         builder.append(Arrays.toString(classificationKeyIn));
         builder.append(", classificationKeyLike=");
@@ -1039,14 +1029,6 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(classificationCategoryIn));
         builder.append(", classificationCategoryLike=");
         builder.append(Arrays.toString(classificationCategoryLike));
-        builder.append(", workbasketKeyIn=");
-        builder.append(Arrays.toString(workbasketKeyIn));
-        builder.append(", workbasketKeyLike=");
-        builder.append(Arrays.toString(workbasketKeyLike));
-        builder.append(", domainIn=");
-        builder.append(Arrays.toString(domainIn));
-        builder.append(", domainLike=");
-        builder.append(Arrays.toString(domainLike));
         builder.append(", ownerIn=");
         builder.append(Arrays.toString(ownerIn));
         builder.append(", ownerLike=");

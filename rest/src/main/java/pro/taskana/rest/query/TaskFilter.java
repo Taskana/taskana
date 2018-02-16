@@ -28,7 +28,7 @@ public class TaskFilter {
     private static final String DESCRIPTION = "description";
     private static final String NAME = "name";
     private static final String OWNER = "owner";
-    private static final String WORKBASKET_KEY = "workbasketKey";
+    private static final String WORKBASKET_ID = "workbasketId";
     private static final String CUSTOM = "custom";
     private static final String IS_TRANSFERRED = "isTransferred";
     private static final String IS_READ = "isRead";
@@ -81,9 +81,9 @@ public class TaskFilter {
             String[] classificationKeys = extractCommaSeperatedFields(params.get(CLASSIFICATION_KEY));
             taskQuery.classificationKeyIn(classificationKeys);
         }
-        if (params.containsKey(WORKBASKET_KEY)) {
-            String[] workbaskets = extractCommaSeperatedFields(params.get(WORKBASKET_KEY));
-            taskQuery.workbasketKeyIn(workbaskets);
+        if (params.containsKey(WORKBASKET_ID)) {
+            String[] workbaskets = extractCommaSeperatedFields(params.get(WORKBASKET_ID));
+            taskQuery.workbasketIdIn(workbaskets);
         }
         if (params.containsKey(OWNER)) {
             String[] owners = extractCommaSeperatedFields(params.get(OWNER));

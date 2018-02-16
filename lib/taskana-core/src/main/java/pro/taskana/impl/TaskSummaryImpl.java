@@ -27,7 +27,6 @@ public class TaskSummaryImpl implements TaskSummary {
     private TaskState state;
     private ClassificationSummary classificationSummary;
     private WorkbasketSummary workbasketSummary;
-    private String domain;
     private String businessProcessId;
     private String parentBusinessProcessId;
     private String owner;
@@ -236,11 +235,14 @@ public class TaskSummaryImpl implements TaskSummary {
      */
     @Override
     public String getDomain() {
-        return domain;
+        return workbasketSummary == null ? null : workbasketSummary.getDomain();
     }
 
     public void setDomain(String domain) {
-        this.domain = domain;
+        if (workbasketSummary == null) {
+            workbasketSummary = new WorkbasketSummaryImpl();
+        }
+        ((WorkbasketSummaryImpl) this.workbasketSummary).setDomain(domain);
     }
 
     /*
@@ -496,7 +498,6 @@ public class TaskSummaryImpl implements TaskSummary {
         result = prime * result + ((custom7 == null) ? 0 : custom7.hashCode());
         result = prime * result + ((custom8 == null) ? 0 : custom8.hashCode());
         result = prime * result + ((custom9 == null) ? 0 : custom9.hashCode());
-        result = prime * result + ((domain == null) ? 0 : domain.hashCode());
         result = prime * result + ((due == null) ? 0 : due.hashCode());
         result = prime * result + ((taskId == null) ? 0 : taskId.hashCode());
         result = prime * result + (isRead ? 1231 : 1237);
@@ -638,13 +639,6 @@ public class TaskSummaryImpl implements TaskSummary {
         } else if (!custom9.equals(other.custom9)) {
             return false;
         }
-        if (domain == null) {
-            if (other.domain != null) {
-                return false;
-            }
-        } else if (!domain.equals(other.domain)) {
-            return false;
-        }
         if (due == null) {
             if (other.due != null) {
                 return false;
@@ -759,8 +753,6 @@ public class TaskSummaryImpl implements TaskSummary {
         builder.append(classificationSummary);
         builder.append(", workbasketSummary=");
         builder.append(workbasketSummary);
-        builder.append(", domain=");
-        builder.append(domain);
         builder.append(", businessProcessId=");
         builder.append(businessProcessId);
         builder.append(", parentBusinessProcessId=");

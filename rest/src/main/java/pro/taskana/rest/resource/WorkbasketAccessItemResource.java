@@ -9,7 +9,7 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
     public String id;
 
     @NotNull
-    public String workbasketKey;
+    public String workbasketId;
 
     @NotNull
     public String accessId;
@@ -32,14 +32,14 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
     public boolean permCustom11;
     public boolean permCustom12;
 
-    public WorkbasketAccessItemResource(String id, String workbasketKey, String accessId, boolean permRead,
+    public WorkbasketAccessItemResource(String id, String workbasketId, String accessId, boolean permRead,
         boolean permOpen, boolean permAppend, boolean permTransfer, boolean permDistribute, boolean permCustom1,
         boolean permCustom2, boolean permCustom3, boolean permCustom4, boolean permCustom5, boolean permCustom6,
         boolean permCustom7, boolean permCustom8, boolean permCustom9, boolean permCustom10, boolean permCustom11,
         boolean permCustom12) {
         super();
         this.id = id;
-        this.workbasketKey = workbasketKey;
+        this.workbasketId = workbasketId;
         this.accessId = accessId;
         this.permRead = permRead;
         this.permOpen = permOpen;

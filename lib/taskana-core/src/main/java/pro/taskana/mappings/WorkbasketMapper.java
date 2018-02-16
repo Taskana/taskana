@@ -40,7 +40,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     WorkbasketImpl findById(@Param("id") String id);
 
-    @Select("SELECT ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1 ,CUSTOM_2 ,CUSTOM_3 ,CUSTOM_4 ,ORG_LEVEL_1 ,ORG_LEVEL_2 ,ORG_LEVEL_3 ,ORG_LEVEL_4 FROM WORKBASKET WHERE KEY = #{key}")
+    @Select("SELECT ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1 ,CUSTOM_2 ,CUSTOM_3 ,CUSTOM_4 ,ORG_LEVEL_1 ,ORG_LEVEL_2 ,ORG_LEVEL_3 ,ORG_LEVEL_4 FROM WORKBASKET WHERE KEY = #{key} and DOMAIN = #{domain}")
     @Results(value = {@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "created", column = "CREATED"),
@@ -58,7 +58,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
-    WorkbasketImpl findByKey(@Param("key") String key);
+    WorkbasketImpl findByKeyAndDomain(@Param("key") String key, @Param("domain") String domain);
 
     @Select("SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM WORKBASKET WHERE ID IN (SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id})")
     @Results(value = {
@@ -91,7 +91,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketSummaryImpl> findDistributionSources(@Param("id") String id);
 
-    @Select("SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4  FROM WORKBASKET WHERE key = #{key}")
+    @Select("SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4  FROM WORKBASKET WHERE ID = #{id}")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
@@ -104,7 +104,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
-    List<WorkbasketSummaryImpl> findSummaryByKey(@Param("key") String key);
+    List<WorkbasketSummaryImpl> findSummaryById(@Param("key") String id);
 
     @Select("SELECT * FROM WORKBASKET ORDER BY id")
     @Results(value = {

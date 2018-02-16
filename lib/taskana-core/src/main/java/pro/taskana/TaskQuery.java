@@ -110,42 +110,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     /**
      * Add your workbasket key to the query.
      *
-     * @param workbasketKeys
-     *            the workbasket keys as String
+     * @param workbasketIdentifiers
+     *            the key - domain combinations that identify workbaskets
      * @return the query
      */
-    TaskQuery workbasketKeyIn(String... workbasketKeys);
+    TaskQuery workbasketKeyDomainIn(KeyDomain... workbasketIdentifiers);
 
     /**
-     * Add your workbasketKey for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
+     * Add your workbasket key to the query.
      *
-     * @param workbasketKeys
-     *            the workbasket keys
+     * @param workbasketIds
+     *            the ids of workbaskets
      * @return the query
      */
-    TaskQuery workbasketKeyLike(String... workbasketKeys);
-
-    /**
-     * Add your domain to the query.
-     *
-     * @param domains
-     *            the domain as String
-     * @return the query
-     */
-    TaskQuery domainIn(String... domains);
-
-    /**
-     * Add your domains for pattern matching to your query. It will be compared in SQL with the LIKE operator. You may
-     * use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
-     *
-     * @param domains
-     *            the domains of the searched-for workbaskets
-     * @return the query
-     */
-    TaskQuery domainLike(String... domains);
+    TaskQuery workbasketIdIn(String... workbasketIds);
 
     /**
      * Add the owners to your query.

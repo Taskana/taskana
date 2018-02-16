@@ -163,8 +163,8 @@ public interface TaskService {
      *
      * @param taskId
      *            The id of the {@link Task} to be transferred
-     * @param workbasketKey
-     *            The key of the target work basket
+     * @param workbasketId
+     *            The Id of the target work basket
      * @return the transferred task
      * @throws TaskNotFoundException
      *             Thrown if the {@link Task} with taskId was not found.
@@ -175,7 +175,29 @@ public interface TaskService {
      * @throws InvalidWorkbasketException
      *             Thrown if either the source or the target workbasket has a missing required property
      */
-    Task transfer(String taskId, String workbasketKey)
+    Task transfer(String taskId, String workbasketId)
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException;
+
+    /**
+     * Transfer a task to another work basket. The transfer sets the transferred flag and resets the read flag.
+     *
+     * @param taskId
+     *            The id of the {@link Task} to be transferred
+     * @param workbasketKey
+     *            The key of the target work basket
+     * @param domain
+     *            The domain of the target work basket
+     * @return the transferred task
+     * @throws TaskNotFoundException
+     *             Thrown if the {@link Task} with taskId was not found.
+     * @throws WorkbasketNotFoundException
+     *             Thrown if the target work basket was not found.
+     * @throws NotAuthorizedException
+     *             Thrown if the current user is not authorized to transfer this {@link Task} to the target work basket
+     * @throws InvalidWorkbasketException
+     *             Thrown if either the source or the target workbasket has a missing required property
+     */
+    Task transfer(String taskId, String workbasketKey, String domain)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException;
 
     /**
@@ -201,11 +223,22 @@ public interface TaskService {
     /**
      * Returns a not persisted instance of {@link Task}.
      *
-     * @param workbasketKey
-     *            the key of the workbasket to which the task belongs
+     * @param workbasketId
+     *            the id of the workbasket to which the task belongs
      * @return an empty new Task
      */
-    Task newTask(String workbasketKey);
+    Task newTask(String workbasketId);
+
+    /**
+     * Returns a not persisted instance of {@link Task}.
+     *
+     * @param workbasketKey
+     *            the key of the workbasket to which the task belongs
+     * @param domain
+     *            the domain of the workbasket to which the task belongs
+     * @return an empty new Task
+     */
+    Task newTask(String workbasketKey, String domain);
 
     /**
      * Returns a not persisted instance of {@link Attachment}.
@@ -245,8 +278,8 @@ public interface TaskService {
      * Transfers a list of tasks to an other workbasket. Exceptions will be thrown if the caller got no permissions on
      * the target or it doesn´t exist. Other Exceptions will be stored and returned in the end.
      *
-     * @param destinationWorkbasketKey
-     *            target workbasket key
+     * @param destinationWorkbasketId
+     *            target workbasket id
      * @param taskIds
      *            source task which will be moved
      * @return Bulkresult with ID and Error in it for failed transactions.
@@ -257,7 +290,29 @@ public interface TaskService {
      * @throws WorkbasketNotFoundException
      *             if the target WB can´t be found.
      */
-    BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketKey, List<String> taskIds)
+    BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketId, List<String> taskIds)
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
+
+    /**
+     * Transfers a list of tasks to an other workbasket. Exceptions will be thrown if the caller got no permissions on
+     * the target or it doesn´t exist. Other Exceptions will be stored and returned in the end.
+     *
+     * @param destinationWorkbasketKey
+     *            target workbasket key
+     * @param destinationWorkbasketDomain
+     *            target workbasket domain
+     * @param taskIds
+     *            source task which will be moved
+     * @return Bulkresult with ID and Error in it for failed transactions.
+     * @throws NotAuthorizedException
+     *             if the caller hasn´t permissions on tarket WB.
+     * @throws InvalidArgumentException
+     *             if the method paramesters are EMPTY or NULL.
+     * @throws WorkbasketNotFoundException
+     *             if the target WB can´t be found.
+     */
+    BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketKey,
+        String destinationWorkbasketDomain, List<String> taskIds)
         throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
 
     /**

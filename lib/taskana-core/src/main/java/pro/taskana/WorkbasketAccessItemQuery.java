@@ -6,13 +6,13 @@ package pro.taskana;
 public interface WorkbasketAccessItemQuery extends BaseQuery<WorkbasketAccessItem> {
 
     /**
-     * Add your workbasket key to your query.
+     * Add your workbasket id to your query.
      *
-     * @param workbasketKey
-     *            the workbasket key
+     * @param workbasketId
+     *            the workbasket Id
      * @return the query
      */
-    WorkbasketAccessItemQuery workbasketKeyIn(String... workbasketKey);
+    WorkbasketAccessItemQuery workbasketIdIn(String... workbasketId);
 
     /**
      * Add your accessIds to your query.
@@ -24,14 +24,14 @@ public interface WorkbasketAccessItemQuery extends BaseQuery<WorkbasketAccessIte
     WorkbasketAccessItemQuery accessIdIn(String... accessId);
 
     /**
-     * Sort the query result by workbasket key.
+     * Sort the query result by workbasket id.
      *
      * @param sortDirection
      *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
      *            the result is sorted in ascending order
      * @return the query
      */
-    WorkbasketAccessItemQuery orderByWorkbasketKey(SortDirection sortDirection);
+    WorkbasketAccessItemQuery orderByWorkbasketId(SortDirection sortDirection);
 
     /**
      * Sort the query result by access Id.

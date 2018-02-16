@@ -270,11 +270,11 @@ public class ClassificationServiceImpl implements ClassificationService {
             try {
                 List<TaskSummary> classificationTasks = taskService.createTaskQuery()
                     .classificationKeyIn(classificationKey)
-                    .domainIn(domain)
                     .list();
-                if (!classificationTasks.isEmpty()) {
-                    throw new ClassificationInUseException("There are " + classificationTasks.size()
-                        + " Tasks which belong to this classification or a child classification. Please complete them and try again.");
+                if (classificationTasks.stream()
+                    .anyMatch(t -> domain.equals(t.getClassificationSummary().getDomain()))) {
+                    throw new ClassificationInUseException(
+                        "There are Tasks that belong to this classification or a child classification. Please complete them and try again.");
                 }
             } catch (NotAuthorizedToQueryWorkbasketException e) {
                 LOGGER.error(

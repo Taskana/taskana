@@ -26,7 +26,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbasketAccessItems";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
     private String[] accessIdIn;
-    private String[] workbasketKeyIn;
+    private String[] workbasketIdIn;
 
     private TaskanaEngineImpl taskanaEngineImpl;
     private List<String> orderBy;
@@ -37,8 +37,8 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     }
 
     @Override
-    public WorkbasketAccessItemQuery workbasketKeyIn(String... key) {
-        this.workbasketKeyIn = key;
+    public WorkbasketAccessItemQuery workbasketIdIn(String... id) {
+        this.workbasketIdIn = id;
         return this;
     }
 
@@ -50,8 +50,8 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     }
 
     @Override
-    public WorkbasketAccessItemQuery orderByWorkbasketKey(SortDirection sortDirection) {
-        return addOrderCriteria("WORKBASKET_KEY", sortDirection);
+    public WorkbasketAccessItemQuery orderByWorkbasketId(SortDirection sortDirection) {
+        return addOrderCriteria("WORKBASKET_ID", sortDirection);
     }
 
     @Override
@@ -149,8 +149,8 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         return accessIdIn;
     }
 
-    public String[] getWorkbasketKeyIn() {
-        return workbasketKeyIn;
+    public String[] getWorkbasketIdIn() {
+        return workbasketIdIn;
     }
 
     public List<String> getOrderBy() {
@@ -162,8 +162,8 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         StringBuilder builder = new StringBuilder();
         builder.append("WorkbasketAccessItemQueryImpl [accessIdIn=");
         builder.append(Arrays.toString(accessIdIn));
-        builder.append(", workbasketKeyIn=");
-        builder.append(Arrays.toString(workbasketKeyIn));
+        builder.append(", workbasketIdIn=");
+        builder.append(Arrays.toString(workbasketIdIn));
         builder.append(", orderBy=");
         builder.append(orderBy);
         builder.append("]");

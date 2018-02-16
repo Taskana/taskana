@@ -4,6 +4,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
+import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -134,48 +136,26 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForWorkbasketKey()
+    public void testQueryForWorkbasketKeyDomain()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
+        List<KeyDomain> workbasketIdentifiers = Arrays.asList(new KeyDomain("GPK_KSC", "DOMAIN_A"),
+            new KeyDomain("USER_1_2", "DOMAIN_A"));
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyLike("user%")
+            .workbasketKeyDomainIn(workbasketIdentifiers.toArray(new KeyDomain[0]))
             .list();
-        assertThat(results.size(), equalTo(22));
+        assertThat(results.size(), equalTo(42));
 
         String[] ids = results.stream()
-            .map(t -> t.getWorkbasketSummary().getKey())
+            .map(t -> t.getWorkbasketSummary().getId())
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .workbasketKeyIn(ids)
+            .workbasketIdIn(ids)
             .list();
-        assertThat(result2.size(), equalTo(22));
-    }
-
-    @WithAccessId(
-        userName = "teamlead_1",
-        groupNames = {"group_1"})
-    @Test
-    public void testQueryForDomain()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
-        TaskService taskService = taskanaEngine.getTaskService();
-
-        List<TaskSummary> results = taskService.createTaskQuery()
-            .domainLike("dom%b")
-            .list();
-        assertThat(results.size(), equalTo(4));
-
-        String[] ids = results.stream()
-            .map(TaskSummary::getDomain)
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
-
-        List<TaskSummary> result2 = taskService.createTaskQuery()
-            .domainIn(ids)
-            .list();
-        assertThat(result2.size(), equalTo(4));
+        assertThat(result2.size(), equalTo(42));
     }
 
     @WithAccessId(

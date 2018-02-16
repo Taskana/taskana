@@ -51,7 +51,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testTransferTask()
+    public void testTransferTaskToWorkbasketId()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
@@ -60,7 +60,29 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskService.claim(task.getId());
         taskService.setTaskRead(task.getId(), true);
 
-        taskService.transfer(task.getId(), "USER_1_1");
+        taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000006");
+
+        Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
+        assertNotNull(transferredTask);
+        assertTrue(transferredTask.isTransferred());
+        assertFalse(transferredTask.isRead());
+        assertEquals(TaskState.READY, transferredTask.getState());
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testTransferTaskToWorkbasketKeyDomain()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        InvalidStateException, InvalidOwnerException {
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
+        taskService.claim(task.getId());
+        taskService.setTaskRead(task.getId(), true);
+
+        taskService.transfer(task.getId(), "USER_1_1", "DOMAIN_A");
 
         Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
         assertNotNull(transferredTask);
@@ -80,7 +102,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         String domain1 = task.getDomain();
 
-        Task transferedTask = taskService.transfer(task.getId(), "GPK_B_KSC_1");
+        Task transferedTask = taskService.transfer(task.getId(), "GPK_B_KSC_1", "DOMAIN_B");
 
         assertNotNull(transferedTask);
         assertNotEquals(domain1, transferedTask.getDomain());
@@ -116,7 +138,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testBulkTransferTask()
+    public void testBulkTransferTaskToWorkbasketById()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
@@ -126,10 +148,11 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskIdList.add("TKI:000000000000000000000000000000000004");
         taskIdList.add("TKI:000000000000000000000000000000000005");
 
-        BulkOperationResults<String, TaskanaException> results = taskService.transferTasks("USER_1_1", taskIdList);
+        BulkOperationResults<String, TaskanaException> results = taskService
+            .transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
         assertFalse(results.containsErrors());
 
-        Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasketByKey("USER_1_1");
+        Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket("USER_1_1", "DOMAIN_A");
         Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000004");
         assertNotNull(transferredTask);
         assertTrue(transferredTask.isTransferred());
@@ -157,7 +180,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
-        Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasketByKey("USER_1_1");
+        Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket("USER_1_1", "DOMAIN_A");
         Instant before = Instant.now();
         ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000006"); // working
@@ -166,7 +189,8 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskIdList.add(null);   // InvalidArgument (added with ""), duplicate
         taskIdList.add("TKI:000000000000000000000000000000000099"); // TaskNotFound
 
-        BulkOperationResults<String, TaskanaException> results = taskService.transferTasks("USER_1_1", taskIdList);
+        BulkOperationResults<String, TaskanaException> results = taskService
+            .transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
         assertTrue(results.containsErrors());
         assertThat(results.getErrorMap().values().size(), equalTo(3));
         // react to result

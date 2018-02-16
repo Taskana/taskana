@@ -11,7 +11,7 @@ public class WorkbasketAccessItemMapper {
 
     public WorkbasketAccessItemResource toResource(WorkbasketAccessItem wbAccItem) {
         WorkbasketAccessItemResource resource = new WorkbasketAccessItemResource(wbAccItem.getId(),
-            wbAccItem.getWorkbasketKey(),
+            wbAccItem.getWorkbasketId(),
             wbAccItem.getAccessId(), wbAccItem.isPermRead(), wbAccItem.isPermOpen(), wbAccItem.isPermAppend(),
             wbAccItem.isPermTransfer(),
             wbAccItem.isPermDistribute(), wbAccItem.isPermCustom1(), wbAccItem.isPermCustom2(),
@@ -22,7 +22,7 @@ public class WorkbasketAccessItemMapper {
 
         // Add self-decription link to hateoas
         resource.add(
-            linkTo(methodOn(WorkbasketController.class).getWorkbasketAuthorizations(wbAccItem.getWorkbasketKey()))
+            linkTo(methodOn(WorkbasketController.class).getWorkbasketAuthorizations(wbAccItem.getWorkbasketId()))
                 .withSelfRel());
         return resource;
     }

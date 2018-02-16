@@ -80,12 +80,11 @@ public class WorkbasketServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
         int before = workBasketService.getWorkbaskets().size();
-        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket("key");
+        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket("key", "novatec");
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket.setId(id1);
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket);
         Assert.assertEquals(before + 1, workBasketService.getWorkbaskets().size());
         taskanaEngineImpl.closeConnection();
@@ -98,26 +97,23 @@ public class WorkbasketServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
         int before = workBasketService.getWorkbaskets().size();
-        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket("key0");
+        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket("key0", "novatec");
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
         workbasket0.setName("Superbasket");
         workbasket0.setType(WorkbasketType.GROUP);
-        workbasket0.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket0);
-        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket("key1");
+        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket("key1", "novatec");
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
         workbasket1.setName("Megabasket");
         workbasket1.setType(WorkbasketType.GROUP);
-        workbasket1.setDomain("novatec");
         workbasket1 = (WorkbasketImpl) workBasketService.createWorkbasket(workbasket1);
-        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket("key2");
+        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket("key2", "novatec");
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
         workbasket2.setName("Hyperbasket");
         workbasket2.setType(WorkbasketType.GROUP);
-        workbasket2.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket2);
         Assert.assertEquals(before + THREE, workBasketService.getWorkbaskets().size());
         connection.commit();
@@ -131,12 +127,11 @@ public class WorkbasketServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
-        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket("key0");
+        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket("key0", "novatec");
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket.setId(id0);
         workbasket.setName("Superbasket");
         workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setDomain("novatec");
         workbasket = (WorkbasketImpl) workBasketService.createWorkbasket(workbasket);
 
         createWorkbasketWithSecurity(workbasket, "Elena", true, true, true, true);
@@ -278,7 +273,7 @@ public class WorkbasketServiceImplIntExplicitTest {
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
         boolean permRead, boolean permAppend, boolean permTransfer) {
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
-            wb.getKey(), accessId);
+            wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
         accessItem.setPermAppend(permAppend);
@@ -287,9 +282,8 @@ public class WorkbasketServiceImplIntExplicitTest {
     }
 
     private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type) {
-        WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket(key);
+        WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket(key, domain);
         wb.setId(id);
-        wb.setDomain(domain);
         wb.setName(name);
         wb.setDescription("Description of a Workbasket...");
         wb.setType(type);

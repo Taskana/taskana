@@ -42,15 +42,13 @@ public interface QueryMapper {
         + "<if test='description != null'>AND (<foreach item='item' collection='description' separator=' OR '>t.DESCRIPTION LIKE #{item}</foreach>)</if> "
         + "<if test='note != null'>AND (<foreach item='item' collection='note' separator=' OR '>t.NOTE LIKE #{item}</foreach>)</if> "
         + "<if test='priority != null'>AND t.PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='states != null'>AND t.STATE IN(<foreach item='item' collection='states' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='workbasketKeyIn != null'>AND t.WORKBASKET_KEY IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR '>UPPER(t.WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='stateIn != null'>AND t.STATE IN(<foreach item='item' collection='stateIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketIdIn != null'>AND t.WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyDomainIn != null'>AND (<foreach item='item' collection='workbasketKeyDomainIn' separator=' OR '>(t.WORKBASKET_KEY = #{item.key} AND t.DOMAIN = #{item.domain})</foreach>)</if> "
         + "<if test='classificationKeyIn != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKeyIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationKeyLike != null'>AND (<foreach item='item' collection='classificationKeyLike' separator=' OR '>UPPER(t.CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
         + "<if test='classificationCategoryIn != null'>AND t.CLASSIFICATION_CATEGORY IN(<foreach item='item' collection='classificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationCategoryLike != null'>AND (<foreach item='item' collection='classificationCategoryLike' separator=' OR '>UPPER(t.CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
-        + "<if test='domainIn != null'>AND t.DOMAIN IN(<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR '>UPPER(t.DOMAIN) LIKE #{item}</foreach>)</if> "
         + "<if test='ownerIn != null'>AND t.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR '>UPPER(t.OWNER) LIKE #{item}</foreach>)</if> "
         + "<if test='isRead != null'>AND t.IS_READ = #{isRead}</if> "
@@ -104,9 +102,10 @@ public interface QueryMapper {
         @Result(property = "note", column = "NOTE"),
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
-        @Result(property = "domain", column = "DOMAIN"),
+        @Result(property = "workbasketSummaryImpl.domain", column = "DOMAIN"),
         @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY"),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
+        @Result(property = "classificationSummaryImpl.domain", column = "DOMAIN"),
         @Result(property = "classificationSummaryImpl.category", column = "CLASSIFICATION_CATEGORY"),
         @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
         @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
@@ -197,7 +196,7 @@ public interface QueryMapper {
 
     @Select("<script>"
         + "SELECT DISTINCT w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
-        + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.KEY = a.WORKBASKET_KEY</if> "
+        + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.ID = a.WORKBASKET_ID</if> "
         + "<where>"
         + "<if test='ownerIn != null'>AND w.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR ' >UPPER(w.OWNER) LIKE #{item}</foreach>)</if> "
@@ -267,18 +266,18 @@ public interface QueryMapper {
 
     @Select("<script>"
         + "SELECT "
-        + "ID, WORKBASKET_KEY, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, "
+        + "ID, WORKBASKET_ID, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, "
         + "PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
         + "from WORKBASKET_ACCESS_LIST "
         + "<where>"
-        + "<if test='workbasketKeyIn != null'>AND UPPER(WORKBASKET_KEY) IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketIdIn != null'>AND WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
         + "</script>")
     @Results({
         @Result(property = "id", column = "ID"),
-        @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
+        @Result(property = "workbasketId", column = "WORKBASKET_ID"),
         @Result(property = "accessId", column = "ACCESS_ID"),
         @Result(property = "permRead", column = "PERM_READ"),
         @Result(property = "permOpen", column = "PERM_OPEN"),
@@ -313,15 +312,13 @@ public interface QueryMapper {
         + "<if test='description != null'>AND (<foreach item='item' collection='description' separator=' OR '>t.DESCRIPTION LIKE #{item}</foreach>)</if> "
         + "<if test='note != null'>AND (<foreach item='item' collection='note' separator=' OR '>t.NOTE LIKE #{item}</foreach>)</if> "
         + "<if test='priority != null'>AND t.PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='states != null'>AND t.STATE IN(<foreach item='item' collection='states' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='workbasketKeyIn != null'>AND t.WORKBASKET_KEY IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR '>UPPER(t.WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='stateIn != null'>AND t.STATE IN(<foreach item='item' collection='stateIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketIdIn != null'>AND t.WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyDomainIn != null'>AND (<foreach item='item' collection='workbasketKeyDomainIn' separator=' OR '>(t.WORKBASKET_KEY = #{item.key} AND t.DOMAIN = #{item.domain})</foreach>)</if> "
         + "<if test='classificationKeyIn != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKeyIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationKeyLike != null'>AND (<foreach item='item' collection='classificationKeyLike' separator=' OR '>UPPER(t.CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
         + "<if test='classificationCategoryIn != null'>AND t.CLASSIFICATION_CATEGORY IN(<foreach item='item' collection='classificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationCategoryLike != null'>AND (<foreach item='item' collection='classificationCategoryLike' separator=' OR '>UPPER(t.CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
-        + "<if test='domainIn != null'>AND t.DOMAIN IN(<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR '>UPPER(t.DOMAIN) LIKE #{item}</foreach>)</if> "
         + "<if test='ownerIn != null'>AND t.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR '>UPPER(t.OWNER) LIKE #{item}</foreach>)</if> "
         + "<if test='isRead != null'>AND t.IS_READ = #{isRead}</if> "
@@ -416,7 +413,7 @@ public interface QueryMapper {
 
     @Select("<script>"
         + "SELECT COUNT(ID) from WORKBASKET w "
-        + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.KEY = a.WORKBASKET_KEY</if> "
+        + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.ID = a.WORKBASKET_ID</if> "
         + "<where>"
         + "<if test='ownerIn != null'>AND w.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR ' >UPPER(w.OWNER) LIKE #{item}</foreach>)</if> "
@@ -473,7 +470,7 @@ public interface QueryMapper {
 
     @Select("<script>SELECT COUNT(ID) from WORKBASKET_ACCESS_LIST "
         + "<where>"
-        + "<if test='workbasketKeyIn != null'>AND UPPER(WORKBASKET_KEY) IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketIdIn != null'>AND WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
         + "</where>"
         + "</script>")

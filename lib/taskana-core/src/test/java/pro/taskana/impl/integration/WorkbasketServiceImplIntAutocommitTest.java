@@ -95,12 +95,11 @@ public class WorkbasketServiceImplIntAutocommitTest {
     public void testInsertWorkbasket()
         throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketNotFoundException {
         int before = workBasketService.getWorkbaskets().size();
-        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket("key");
+        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket("key", "novatec");
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket.setId(id1);
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket);
         Assert.assertEquals(before + 1, workBasketService.getWorkbaskets().size());
     }
@@ -109,26 +108,23 @@ public class WorkbasketServiceImplIntAutocommitTest {
     public void testSelectAllWorkbaskets()
         throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketNotFoundException {
         int before = workBasketService.getWorkbaskets().size();
-        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket("key0");
+        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket("key0", "novatec");
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
         workbasket0.setName("Superbasket");
         workbasket0.setType(WorkbasketType.PERSONAL);
-        workbasket0.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket0);
-        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket("key1");
+        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket("key1", "novatec");
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket1.setId(id1);
         workbasket1.setName("Megabasket");
         workbasket1.setType(WorkbasketType.GROUP);
-        workbasket1.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket1);
-        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket("key2");
+        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket("key2", "novatec");
         String id2 = IdGenerator.generateWithPrefix("TWB");
         workbasket2.setId(id2);
         workbasket2.setName("Hyperbasket");
         workbasket2.setType(WorkbasketType.GROUP);
-        workbasket2.setDomain("novatec");
         workBasketService.createWorkbasket(workbasket2);
         Assert.assertEquals(before + THREE, workBasketService.getWorkbaskets().size());
     }
@@ -224,23 +220,27 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     @Test
     public void testInsertWorkbasketAccessUser() throws NotAuthorizedException {
-        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem("k1", "Arthur Dent");
+        WorkbasketAccessItem accessItem = workBasketService
+            .newWorkbasketAccessItem("k100000000000000000000000000000000000000", "Arthur Dent");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
         workBasketService.createWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals(1, workBasketService.getWorkbasketAuthorizations("k1").size());
+        Assert.assertEquals(1,
+            workBasketService.getWorkbasketAuthorizations("k100000000000000000000000000000000000000").size());
     }
 
     @Test
     public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException, InvalidArgumentException {
-        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem("k2",
+        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
+            "k200000000000000000000000000000000000000",
             "Zaphod Beeblebrox");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
         workBasketService.createWorkbasketAuthorization(accessItem);
 
-        Assert.assertEquals(1, workBasketService.getWorkbasketAuthorizations("k2").size());
+        Assert.assertEquals(1,
+            workBasketService.getWorkbasketAuthorizations("k200000000000000000000000000000000000000").size());
 
         accessItem.setPermAppend(true);
         workBasketService.updateWorkbasketAuthorization(accessItem);
@@ -259,12 +259,6 @@ public class WorkbasketServiceImplIntAutocommitTest {
         WorkbasketNotFoundException, InterruptedException {
 
         generateSampleDataForQuery();
-
-        Instant tomorrow = now.plus(Duration.ofDays(1L));
-        Instant yesterday = now.minus(Duration.ofDays(1L));
-        Instant tenDaysAgo = now.minus(Duration.ofDays(10L));
-        Instant twentyDaysAgo = now.minus(Duration.ofDays(20L));
-        Instant thirtyDaysAgo = now.minus(Duration.ofDays(30L));
 
         WorkbasketQuery query1 = workBasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketAuthorization.OPEN, "Bernd")
@@ -336,28 +330,26 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     private void generateSampleDataForQuery()
         throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException {
-        WorkbasketImpl basket1 = (WorkbasketImpl) workBasketService.newWorkbasket("k1");
-        basket1.setId("1");
+        WorkbasketImpl basket1 = (WorkbasketImpl) workBasketService.newWorkbasket("k1", "novatec");
+        basket1.setId("1000000000000000000000000000000000000000");
         basket1.setName("Basket1");
         basket1.setOwner("Eberhardt");
         basket1.setType(WorkbasketType.GROUP);
-        basket1.setDomain("novatec");
         basket1 = (WorkbasketImpl) workBasketService.createWorkbasket(basket1);
-        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(basket1.getKey(), "Bernd");
+        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(basket1.getId(), "Bernd");
         accessItem.setPermTransfer(true);
         accessItem.setPermCustom1(true);
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
         workBasketService.createWorkbasketAuthorization(accessItem);
 
-        WorkbasketImpl basket2 = (WorkbasketImpl) workBasketService.newWorkbasket("k2");
-        basket2.setId("2");
+        WorkbasketImpl basket2 = (WorkbasketImpl) workBasketService.newWorkbasket("k2", "consulting");
+        basket2.setId("2000000000000000000000000000000000000000");
         basket2.setName("Basket2");
         basket2.setOwner("Konstantin");
         basket2.setType(WorkbasketType.CLEARANCE);
-        basket2.setDomain("consulting");
         basket2 = (WorkbasketImpl) workBasketService.createWorkbasket(basket2);
-        WorkbasketAccessItem accessItem2 = workBasketService.newWorkbasketAccessItem(basket2.getKey(), "group2");
+        WorkbasketAccessItem accessItem2 = workBasketService.newWorkbasketAccessItem(basket2.getId(), "group2");
         accessItem2.setPermTransfer(true);
         accessItem2.setPermRead(true);
         accessItem2.setPermCustom4(true);
@@ -365,28 +357,26 @@ public class WorkbasketServiceImplIntAutocommitTest {
         accessItem2.setPermOpen(true);
         workBasketService.createWorkbasketAuthorization(accessItem2);
 
-        WorkbasketImpl basket3 = (WorkbasketImpl) workBasketService.newWorkbasket("k3");
-        basket3.setId("3");
+        WorkbasketImpl basket3 = (WorkbasketImpl) workBasketService.newWorkbasket("k3", "develop");
+        basket3.setId("3000000000000000000000000000000000000000");
         basket3.setName("Basket3");
         basket3.setOwner("Holger");
         basket3.setType(WorkbasketType.TOPIC);
-        basket3.setDomain("develop");
         basket3 = (WorkbasketImpl) workBasketService.createWorkbasket(basket3);
-        WorkbasketAccessItem accessItem3 = workBasketService.newWorkbasketAccessItem(basket3.getKey(), "group3");
+        WorkbasketAccessItem accessItem3 = workBasketService.newWorkbasketAccessItem(basket3.getId(), "group3");
         accessItem3.setPermOpen(true);
         accessItem3.setPermRead(true);
         accessItem3.setPermAppend(true);
         workBasketService.createWorkbasketAuthorization(accessItem3);
 
-        WorkbasketImpl basket4 = (WorkbasketImpl) workBasketService.newWorkbasket("k4");
-        basket4.setId("4");
+        WorkbasketImpl basket4 = (WorkbasketImpl) workBasketService.newWorkbasket("k4", "");
+        basket4.setId("4000000000000000000000000000000000000000");
         basket4.setName("Basket4");
         basket4.setOwner("Holger");
         basket4.setType(WorkbasketType.PERSONAL);
-        basket4.setDomain("");
         List<String> distTargets = new ArrayList<>(Arrays.asList(basket1.getId(), basket2.getId(), basket3.getId()));
         basket4 = (WorkbasketImpl) workBasketService.createWorkbasket(basket4);
-        WorkbasketAccessItem accessItem4 = workBasketService.newWorkbasketAccessItem(basket4.getKey(), "Bernd");
+        WorkbasketAccessItem accessItem4 = workBasketService.newWorkbasketAccessItem(basket4.getId(), "Bernd");
         accessItem4.setPermOpen(true);
         accessItem4.setPermRead(true);
         workBasketService.createWorkbasketAuthorization(accessItem4);
@@ -423,7 +413,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
         boolean permRead, boolean permAppend, boolean permTransfer) {
-        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(wb.getKey(), accessId);
+        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
         accessItem.setPermAppend(permAppend);
@@ -432,9 +422,8 @@ public class WorkbasketServiceImplIntAutocommitTest {
     }
 
     private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type) {
-        WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket(key);
+        WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket(key, domain);
         wb.setId(id);
-        wb.setDomain(domain);
         wb.setName(name);
         wb.setDescription("Description of a Workbasket...");
         wb.setType(type);

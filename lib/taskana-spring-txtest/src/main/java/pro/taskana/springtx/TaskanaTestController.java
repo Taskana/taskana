@@ -116,12 +116,12 @@ public class TaskanaTestController {
     }
 
     private Workbasket createWorkBasket(String key, String name) {
-        WorkbasketImpl workbasket = (WorkbasketImpl) taskanaEngine.getWorkbasketService().newWorkbasket(key);
+        WorkbasketImpl workbasket = (WorkbasketImpl) taskanaEngine.getWorkbasketService().newWorkbasket(key,
+            "generali");
         String id1 = IdGenerator.generateWithPrefix("TWB");
         workbasket.setId(id1);
         workbasket.setName(name);
         workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setDomain("generali");
         return workbasket;
     }
 }
