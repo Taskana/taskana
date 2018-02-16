@@ -27,8 +27,8 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskState;
 import pro.taskana.rest.query.TaskFilter;
 
@@ -76,12 +76,13 @@ public class TaskController {
         @PathVariable(value = "workbasketKey") String workbasketKey,
         @PathVariable(value = "taskState") TaskState taskState) {
         try {
-            List<TaskSummary> taskList = taskService.getTasksByWorkbasketKeyAndState(workbasketKey, taskState);
+            List<TaskSummary> taskList = taskService.createTaskQuery()
+                .workbasketKeyIn(workbasketKey)
+                .stateIn(taskState)
+                .list();
             return ResponseEntity.status(HttpStatus.OK).body(taskList);
-        } catch (WorkbasketNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (NotAuthorizedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (NotAuthorizedToQueryWorkbasketException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -147,8 +148,10 @@ public class TaskController {
         @PathVariable(value = "workbasketKey") String workbasketKey) {
         List<TaskSummary> taskSummaries = null;
         try {
-            taskSummaries = taskService.getTaskSummariesByWorkbasketKey(workbasketKey);
+            taskSummaries = taskService.createTaskQuery().workbasketKeyIn(workbasketKey).list();
             return ResponseEntity.status(HttpStatus.OK).body(taskSummaries);
+        } catch (NotAuthorizedToQueryWorkbasketException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (Exception ex) {
             if (taskSummaries == null) {
                 taskSummaries = Collections.emptyList();
