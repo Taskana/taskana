@@ -1,30 +1,31 @@
 <div class="container-scrollable" >
-  <app-no-access *ngIf="!hasPermission" ></app-no-access>
-  <div id ="workbasket-details" class="workbasket-details" *ngIf="workbasket">
-    <ul class="nav nav-tabs" role="tablist">
-        <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
-            <a (click) = "backClicked()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
-        </li>
-        <li role="presentation" class="active">
-            <a href="#work-baskets" aria-controls="work baskets" role="tab" data-toggle="tab" aria-expanded="true">Work baskets information</a>
-        </li>
-        <li role="presentation" class="inactive"> 
-            <a href="#authorizations" aria-controls="Authorizations" role="tab" data-toggle="tab" aria-expanded="true">Authorizations</a> 
-        </li>
-        <li role="presentation" class="inactive">
-            <a href="#distribution-targets" aria-controls="distribution targets" role="tab" data-toggle="tab" aria-expanded="true">Distribution targets</a>
-        </li>
-    </ul>                                 
-    <div class="tab-content detail-tab-content">
-        <div role="tabpanel" class="tab-pane active" id="work-baskets"> 
-            <workbasket-information [workbasket]="workbasket"></workbasket-information>
-        </div>                                     
-        <div role="tabpanel" class="tab-pane inactive" id="authorizations"> 
-            <!-- <app-workbasket-authorization [workbasket]="workbasket"></app-workbasket-authorization> -->
-        </div>
-        <div role="tabpanel" class="tab-pane inactive" id="distribution-targets"> 
-            <!-- <app-workbasket-distributiontargets [workbasket]="workbasket"></app-workbasket-distributiontargets>-->
+    <taskana-spinner [isRunning]="requestInProgress" class = "centered-horizontally"></taskana-spinner>
+    <app-no-access *ngIf="!hasPermission" ></app-no-access>
+    <div id ="workbasket-details" class="workbasket-details" *ngIf="workbasket">
+        <ul class="nav nav-tabs" role="tablist">
+            <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
+                <a (click) = "backClicked()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
+            </li>
+            <li role="presentation" class="active">
+                <a href="#work-baskets" aria-controls="work baskets" role="tab" data-toggle="tab" aria-expanded="true">Work baskets information</a>
+            </li>
+            <li role="presentation" class="inactive"> 
+                <a href="#authorizations" aria-controls="Authorizations" role="tab" data-toggle="tab" aria-expanded="true">Authorizations</a> 
+            </li>
+            <li role="presentation" class="inactive">
+                <a href="#distribution-targets" aria-controls="distribution targets" role="tab" data-toggle="tab" aria-expanded="true">Distribution targets</a>
+            </li>
+        </ul>                                 
+        <div class="tab-content detail-tab-content">
+            <div role="tabpanel" class="tab-pane active" id="work-baskets"> 
+                <workbasket-information [workbasket]="workbasket"></workbasket-information>
+            </div>                                     
+            <div role="tabpanel" class="tab-pane inactive" id="authorizations"> 
+                <!-- <app-workbasket-authorization [workbasket]="workbasket"></app-workbasket-authorization> -->
+            </div>
+            <div role="tabpanel" class="tab-pane inactive" id="distribution-targets"> 
+                <!-- <app-workbasket-distributiontargets [workbasket]="workbasket"></app-workbasket-distributiontargets>-->
+            </div>
         </div>
     </div>
-  </div>
 </div>

@@ -18,12 +18,13 @@ export class WorkbasketDetailsComponent implements OnInit {
   workbasketClone: Workbasket;
   showDetail: boolean =  false;
   hasPermission: boolean = true;
+  requestInProgress: boolean =  false;
 
-  workbasketSelectedSubscription: Subscription;
-  workbasketSubscription: Subscription;
-  routeSubscription: Subscription;
-  masterAndDetailSubscription: Subscription;
-  permissionSubscription: Subscription;
+  private workbasketSelectedSubscription: Subscription;
+  private workbasketSubscription: Subscription;
+  private routeSubscription: Subscription;
+  private masterAndDetailSubscription: Subscription;
+  private permissionSubscription: Subscription;
 
   constructor(private service: WorkbasketService,
               private route: ActivatedRoute,
@@ -31,12 +32,16 @@ export class WorkbasketDetailsComponent implements OnInit {
               private masterAndDetailService: MasterAndDetailService,
               private permissionService: PermissionService) { }
 
+  
+
   ngOnInit() {
     this.workbasketSelectedSubscription = this.service.getSelectedWorkBasket().subscribe( workbasketIdSelected => {
       this.workbasket = undefined;
+      this.requestInProgress = true;
       this.workbasketSubscription = this.service.getWorkBasket(workbasketIdSelected).subscribe( workbasket => {
         this.workbasket = workbasket;
         this.workbasketClone = { ...this.workbasket };
+        this.requestInProgress = false;
        });
     });
     
@@ -52,6 +57,9 @@ export class WorkbasketDetailsComponent implements OnInit {
 
     this.permissionSubscription = this.permissionService.hasPermission().subscribe( permission => {
       this.hasPermission = permission;
+      if(!this.hasPermission){
+        this.requestInProgress = false;
+      }
     })
 
   }
