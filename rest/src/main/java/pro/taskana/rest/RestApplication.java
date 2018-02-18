@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 import javax.annotation.PostConstruct;
 
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -22,11 +21,10 @@ import pro.taskana.ClassificationService;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.rest.resource.mapper.WorkbasketDefinitionMapper;
-import pro.taskana.rest.serialization.WorkbasketMixIn;
+import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 @SpringBootApplication
@@ -59,6 +57,16 @@ public class RestApplication {
     }
 
     @Bean
+    public WorkbasketSummaryMapper getWorkbasketSummaryMapper() {
+        return new WorkbasketSummaryMapper();
+    }
+
+    @Bean
+    public WorkbasketDefinitionMapper getWorkbasketDefinitionMapper() {
+        return new WorkbasketDefinitionMapper();
+    }
+
+    @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public TaskanaEngine getTaskanaEngine() throws SQLException {
         return getTaskanaEngineConfiguration().buildTaskanaEngine();
@@ -71,15 +79,6 @@ public class RestApplication {
         return taskanaEngineConfiguration;
     }
 
-    @PostConstruct
-    public void createSampleData() {
-        try {
-            new SampleDataGenerator(getTaskanaEngineConfiguration().createDefaultDataSource()).generateSampleData();
-        } catch (SQLException e) {
-            logger.error("Could not create sample data.", e);
-        }
-    }
-
     /**
      * Needed to override JSON De-/Serializer in Jackson.
      *
@@ -89,7 +88,7 @@ public class RestApplication {
     @Bean
     public Jackson2ObjectMapperBuilder jacksonBuilder(HandlerInstantiator handlerInstantiator) {
         Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
-        b.indentOutput(true).mixIn(Workbasket.class, WorkbasketMixIn.class);
+        b.indentOutput(true);
         b.handlerInstantiator(handlerInstantiator);
         return b;
     }
@@ -105,13 +104,13 @@ public class RestApplication {
         return new SpringHandlerInstantiator(context.getAutowireCapableBeanFactory());
     }
 
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
+    @PostConstruct
+    public void createSampleData() {
+        try {
+            new SampleDataGenerator(getTaskanaEngineConfiguration().createDefaultDataSource()).generateSampleData();
+        } catch (SQLException e) {
+            logger.error("Could not create sample data.", e);
+        }
     }
 
-    @Bean
-    public WorkbasketDefinitionMapper getWorkbasketDefinitionMapper() {
-        return new WorkbasketDefinitionMapper();
-    }
 }
