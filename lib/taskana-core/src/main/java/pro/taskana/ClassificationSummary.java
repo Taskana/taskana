@@ -47,4 +47,11 @@ public interface ClassificationSummary {
      * @return classificationName
      */
     String getName();
+
+    /**
+     * Gets the ID of the parent classification.
+     *
+     * @return parentId
+     */
+    String getParentId();
 }

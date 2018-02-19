@@ -50,7 +50,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setDescription("newDescription");
         classification.setIsValidInDomain(false);
         classification.setName(newName);
-        classification.setParentClassificationKey("T2000");
+        classification.setParentId("T2000");
         classification.setPriority(1000);
         classification.setServiceLevel("P2DT3H4M");
 
@@ -84,7 +84,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setDescription("newDescription");
         classification.setIsValidInDomain(false);
         classification.setName(newName);
-        classification.setParentClassificationKey("T2000");
+        classification.setParentId("T2000");
         classification.setPriority(1000);
         classification.setServiceLevel("P2DT3H4M");
 

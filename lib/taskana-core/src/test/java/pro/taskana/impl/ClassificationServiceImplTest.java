@@ -67,14 +67,14 @@ public class ClassificationServiceImplTest {
         List<Classification> classifications = new ArrayList<>();
 
         doReturn(classificationQueryImplMock).when(cutSpy).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).parentClassificationKeyIn("");
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).parentIdIn("");
         doReturn(classifications).when(classificationQueryImplMock).list();
 
         List<ClassificationSummary> actaulResults = cutSpy.getClassificationTree();
 
         verify(taskanaEngineImplMock, times(2)).openConnection();
         verify(cutSpy, times(1)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(1)).parentClassificationKeyIn("");
+        verify(classificationQueryImplMock, times(1)).parentIdIn("");
         verify(classificationQueryImplMock, times(1)).list();
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         assertThat(actaulResults, equalTo(classifications));
@@ -266,7 +266,7 @@ public class ClassificationServiceImplTest {
         classificationImpl.setServiceLevel("P2D");
         classificationImpl.setId("ID: 1");
         classificationImpl.setKey("ABC111");
-        classificationImpl.setParentClassificationKey("");
+        classificationImpl.setParentId("");
         return classificationImpl;
     }
 }

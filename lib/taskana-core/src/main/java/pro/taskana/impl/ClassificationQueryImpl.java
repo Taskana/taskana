@@ -27,7 +27,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
     private String[] key;
-    private String[] parentClassificationKey;
+    private String[] parentId;
     private String[] category;
     private String[] type;
     private String[] domain;
@@ -69,8 +69,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery parentClassificationKeyIn(String... parentClassificationKey) {
-        this.parentClassificationKey = parentClassificationKey;
+    public ClassificationQuery parentIdIn(String... parentId) {
+        this.parentId = parentId;
         return this;
     }
 
@@ -318,8 +318,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         return key;
     }
 
-    public String[] getParentClassificationKey() {
-        return parentClassificationKey;
+    public String[] getparentId() {
+        return parentId;
     }
 
     public String[] getCategory() {
@@ -457,8 +457,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         StringBuilder builder = new StringBuilder();
         builder.append("ClassificationQueryImpl [key=");
         builder.append(Arrays.toString(key));
-        builder.append(", parentClassificationKey=");
-        builder.append(Arrays.toString(parentClassificationKey));
+        builder.append(", parentId=");
+        builder.append(Arrays.toString(parentId));
         builder.append(", category=");
         builder.append(Arrays.toString(category));
         builder.append(", type=");
