@@ -8,7 +8,7 @@ import pro.taskana.impl.WorkbasketType;
 
 public class WorkbasketSummaryResource extends ResourceSupport {
 
-    public String id;
+    public String workbasketId;
 
     @NotNull
     public String key;
@@ -29,10 +29,10 @@ public class WorkbasketSummaryResource extends ResourceSupport {
     public String orgLevel3;
     public String orgLevel4;
 
-    public WorkbasketSummaryResource(String id, String key, String name, String description, String owner,
+    public WorkbasketSummaryResource(String workbasketId, String key, String name, String description, String owner,
         String domain, WorkbasketType type, String orgLevel1, String orgLevel2, String orgLevel3, String orgLevel4) {
         super();
-        this.id = id;
+        this.workbasketId = workbasketId;
         this.key = key;
         this.name = name;
         this.description = description;
