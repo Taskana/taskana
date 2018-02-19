@@ -36,19 +36,36 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] keyIn;
     private String[] keyLike;
     private String[] keyOrNameLike;
-    private String[] domain;
+    private String[] domainIn;
+    private String[] domainLike;
     private WorkbasketType[] type;
     private TimeInterval[] createdIn;
     private TimeInterval[] modifiedIn;
     private String[] descriptionLike;
     private String[] ownerIn;
     private String[] ownerLike;
+    private String[] custom1In;
+    private String[] custom1Like;
+    private String[] custom2In;
+    private String[] custom2Like;
+    private String[] custom3In;
+    private String[] custom3Like;
+    private String[] custom4In;
+    private String[] custom4Like;
+    private String[] orgLevel1In;
+    private String[] orgLevel1Like;
+    private String[] orgLevel2In;
+    private String[] orgLevel2Like;
+    private String[] orgLevel3In;
+    private String[] orgLevel3Like;
+    private String[] orgLevel4In;
+    private String[] orgLevel4Like;
     private TaskanaEngineImpl taskanaEngineImpl;
     private List<String> orderBy;
 
     WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-        orderBy = new ArrayList<>();
+        this.orderBy = new ArrayList<>();
     }
 
     @Override
@@ -58,14 +75,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery domainIn(String... domain) {
-        this.domain = domain;
-        return this;
-    }
-
-    @Override
-    public WorkbasketQuery typeIn(WorkbasketType... type) {
-        this.type = type;
+    public WorkbasketQuery keyLike(String... keys) {
+        this.keyLike = toUpperCopy(keys);
         return this;
     }
 
@@ -82,14 +93,26 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery keyLike(String... keys) {
-        this.keyLike = toUpperCopy(keys);
+    public WorkbasketQuery keyOrNameLike(String... keysOrNames) {
+        this.keyOrNameLike = toUpperCopy(keysOrNames);
         return this;
     }
 
     @Override
-    public WorkbasketQuery keyOrNameLike(String... keysOrNames) {
-        this.keyOrNameLike = toUpperCopy(keysOrNames);
+    public WorkbasketQuery domainIn(String... domain) {
+        this.domainIn = domain;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery domainLike(String... domain) {
+        this.domainLike = domain;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery typeIn(WorkbasketType... type) {
+        this.type = type;
         return this;
     }
 
@@ -134,6 +157,102 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
+    public WorkbasketQuery custom1In(String... custom1) {
+        this.custom1In = custom1;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery custom1Like(String... custom1) {
+        this.custom1Like = toUpperCopy(custom1);
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery custom2In(String... custom2) {
+        this.custom2In = custom2;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery custom2Like(String... custom2) {
+        this.custom2Like = toUpperCopy(custom2);
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery custom3In(String... custom3) {
+        this.custom3In = custom3;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery custom3Like(String... custom3) {
+        this.custom3Like = toUpperCopy(custom3);
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery custom4In(String... custom4) {
+        this.custom4In = custom4;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery custom4Like(String... custom4) {
+        this.custom4Like = toUpperCopy(custom4);
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery orgLevel1In(String... orgLevel1) {
+        this.orgLevel1In = orgLevel1;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery orgLevel1Like(String... orgLevel1) {
+        this.orgLevel1Like = toUpperCopy(orgLevel1);
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery orgLevel2In(String... orgLevel2) {
+        this.orgLevel2In = orgLevel2;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery orgLevel2Like(String... orgLevel2) {
+        this.orgLevel2Like = toUpperCopy(orgLevel2);
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery orgLevel3In(String... orgLevel3) {
+        this.orgLevel3In = orgLevel3;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery orgLevel3Like(String... orgLevel3) {
+        this.orgLevel3Like = toUpperCopy(orgLevel3);
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery orgLevel4In(String... orgLevel4) {
+        this.orgLevel4In = orgLevel4;
+        return this;
+    }
+
+    @Override
+    public WorkbasketQuery orgLevel4Like(String... orgLevel4) {
+        this.orgLevel4Like = toUpperCopy(orgLevel4);
+        return this;
+    }
+
+    @Override
     public WorkbasketQuery orderByName(SortDirection sortDirection) {
         return addOrderCriteria("NAME", sortDirection);
     }
@@ -141,6 +260,11 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     @Override
     public WorkbasketQuery orderByKey(SortDirection sortDirection) {
         return addOrderCriteria("KEY", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByDomain(SortDirection sortDirection) {
+        return addOrderCriteria("DOMAIN", sortDirection);
     }
 
     @Override
@@ -156,6 +280,46 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     @Override
     public WorkbasketQuery orderByType(SortDirection sortDirection) {
         return addOrderCriteria("TYPE", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByCustom1(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_1", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByCustom2(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_2", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByCustom3(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_3", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByCustom4(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_4", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByOrgLevel1(SortDirection sortDirection) {
+        return addOrderCriteria("ORG_LEVEL_1", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByOrgLevel2(SortDirection sortDirection) {
+        return addOrderCriteria("ORG_LEVEL_2", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByOrgLevel3(SortDirection sortDirection) {
+        return addOrderCriteria("ORG_LEVEL_3", sortDirection);
+    }
+
+    @Override
+    public WorkbasketQuery orderByOrgLevel4(SortDirection sortDirection) {
+        return addOrderCriteria("ORG_LEVEL_4", sortDirection);
     }
 
     @Override
@@ -289,10 +453,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return keyOrNameLike;
     }
 
-    public String[] getDomain() {
-        return domain;
-    }
-
     public WorkbasketType[] getType() {
         return type;
     }
@@ -311,6 +471,78 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     public String[] getOwnerIn() {
         return ownerIn;
+    }
+
+    public String[] getDomainIn() {
+        return domainIn;
+    }
+
+    public String[] getDomainLike() {
+        return domainLike;
+    }
+
+    public String[] getCustom1In() {
+        return custom1In;
+    }
+
+    public String[] getCustom1Like() {
+        return custom1Like;
+    }
+
+    public String[] getCustom2In() {
+        return custom2In;
+    }
+
+    public String[] getCustom2Like() {
+        return custom2Like;
+    }
+
+    public String[] getCustom3In() {
+        return custom3In;
+    }
+
+    public String[] getCustom3Like() {
+        return custom3Like;
+    }
+
+    public String[] getCustom4In() {
+        return custom4In;
+    }
+
+    public String[] getCustom4Like() {
+        return custom4Like;
+    }
+
+    public String[] getOrgLevel1In() {
+        return orgLevel1In;
+    }
+
+    public String[] getOrgLevel1Like() {
+        return orgLevel1Like;
+    }
+
+    public String[] getOrgLevel2In() {
+        return orgLevel2In;
+    }
+
+    public String[] getOrgLevel2Like() {
+        return orgLevel2Like;
+    }
+
+    public String[] getOrgLevel3In() {
+        return orgLevel3In;
+    }
+
+    public String[] getOrgLevel3Like() {
+        return orgLevel3Like;
+    }
+
+    public String[] getOrgLevel4In() {
+        return orgLevel4In;
+    }
+
+    public String[] getOrgLevel4Like() {
+        return orgLevel4Like;
     }
 
     public String[] getOwnerLike() {
@@ -352,8 +584,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(Arrays.toString(keyLike));
         builder.append(", keyOrNameLike=");
         builder.append(Arrays.toString(keyOrNameLike));
-        builder.append(", domain=");
-        builder.append(Arrays.toString(domain));
+        builder.append(", domainIn=");
+        builder.append(Arrays.toString(domainIn));
+        builder.append(", domainLike=");
+        builder.append(Arrays.toString(domainLike));
         builder.append(", type=");
         builder.append(Arrays.toString(type));
         builder.append(", createdIn=");
@@ -366,6 +600,38 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(Arrays.toString(ownerIn));
         builder.append(", ownerLike=");
         builder.append(Arrays.toString(ownerLike));
+        builder.append(", custom1In=");
+        builder.append(Arrays.toString(custom1In));
+        builder.append(", custom1Like=");
+        builder.append(Arrays.toString(custom1Like));
+        builder.append(", custom2In=");
+        builder.append(Arrays.toString(custom2In));
+        builder.append(", custom2Like=");
+        builder.append(Arrays.toString(custom2Like));
+        builder.append(", custom3In=");
+        builder.append(Arrays.toString(custom3In));
+        builder.append(", custom3Like=");
+        builder.append(Arrays.toString(custom3Like));
+        builder.append(", custom4In=");
+        builder.append(Arrays.toString(custom4In));
+        builder.append(", custom4Like=");
+        builder.append(Arrays.toString(custom4Like));
+        builder.append(", orgLevel1In=");
+        builder.append(Arrays.toString(orgLevel1In));
+        builder.append(", orgLevel1Like=");
+        builder.append(Arrays.toString(orgLevel1Like));
+        builder.append(", orgLevel2In=");
+        builder.append(Arrays.toString(orgLevel2In));
+        builder.append(", orgLevel2Like=");
+        builder.append(Arrays.toString(orgLevel2Like));
+        builder.append(", orgLevel3In=");
+        builder.append(Arrays.toString(orgLevel3In));
+        builder.append(", orgLevel3Like=");
+        builder.append(Arrays.toString(orgLevel3Like));
+        builder.append(", orgLevel4In=");
+        builder.append(Arrays.toString(orgLevel4In));
+        builder.append(", orgLevel4Like=");
+        builder.append(Arrays.toString(orgLevel4Like));
         builder.append(", orderBy=");
         builder.append(orderBy);
         builder.append("]");
