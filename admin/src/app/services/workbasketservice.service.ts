@@ -121,7 +121,9 @@ export class WorkbasketService {
     query += type?                `${this.TYPE}=${type}&`:'';
     query += requiredPermission?  `${this.REQUIREDPERMISSION}=${requiredPermission}&`:'';
 
-    
+    if(query.lastIndexOf('&') === query.length-1){
+      query = query.slice(0, query.lastIndexOf('&'))
+    }
     return query;
   }
 }
