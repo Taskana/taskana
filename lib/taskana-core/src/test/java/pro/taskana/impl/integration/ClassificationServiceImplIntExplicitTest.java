@@ -175,7 +175,7 @@ public class ClassificationServiceImplIntExplicitTest {
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "t1");
         classificationService.createClassification(classification1);
         Classification classification2 = this.createNewClassificationWithUniqueKey("", "t1");
-        classification2.setParentClassificationKey(classification0.getKey());
+        classification2.setParentId(classification0.getId());
         classificationService.createClassification(classification2);
 
         Assert.assertEquals(2 + 1, classificationService.getClassificationTree().size());
@@ -325,19 +325,19 @@ public class ClassificationServiceImplIntExplicitTest {
         classificationService.createClassification(classification);
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "type1");
         classification1.setPriority(Integer.decode("3"));
-        classification1.setParentClassificationKey(classification.getKey());
+        classification1.setParentId(classification.getId());
         classificationService.createClassification(classification1);
         Classification classification2 = this.createNewClassificationWithUniqueKey("", "type2");
         classification2.setPriority(Integer.decode("5"));
-        classification2.setParentClassificationKey(classification.getKey());
+        classification2.setParentId(classification.getId());
         classificationService.createClassification(classification2);
         Classification classification3 = this.createNewClassificationWithUniqueKey("", "type1");
         classification3.setPriority(Integer.decode("5"));
-        classification3.setParentClassificationKey(classification1.getKey());
+        classification3.setParentId(classification1.getId());
         classificationService.createClassification(classification3);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .parentClassificationKeyIn(classification.getKey())
+            .parentIdIn(classification.getId())
             .list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().typeIn("type1").priorityIn(Integer.decode("5")).list();
@@ -345,7 +345,7 @@ public class ClassificationServiceImplIntExplicitTest {
         list = classificationService.createClassificationQuery()
             .priorityIn(Integer.decode("5"))
             .typeIn("type1")
-            .parentClassificationKeyIn(classification1.getKey())
+            .parentIdIn(classification1.getId())
             .list();
         Assert.assertEquals(1, list.size());
         connection.commit();
@@ -403,11 +403,11 @@ public class ClassificationServiceImplIntExplicitTest {
 
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "type1");
         classification1 = classificationService.createClassification(classification1);
-        classification1.setParentClassificationKey(classification.getKey());
+        classification1.setParentId(classification.getId());
         classification1 = classificationService.updateClassification(classification1);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .parentClassificationKeyIn("")
+            .parentIdIn("")
             .list();
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery()
@@ -427,7 +427,7 @@ public class ClassificationServiceImplIntExplicitTest {
         Assert.assertEquals(1, list.size());
 
         list = classificationService.createClassificationQuery()
-            .parentClassificationKeyIn(classification.getKey())
+            .parentIdIn(classification.getId())
             .list();
         Assert.assertEquals(1, list.size());
         assertThat(list.get(0).getKey(), equalTo(classification1.getKey()));

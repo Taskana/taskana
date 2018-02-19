@@ -13,7 +13,7 @@ import pro.taskana.TimeInterval;
 public class TestClassificationQuery implements ClassificationQuery {
 
     private List<ClassificationSummaryImpl> classifications;
-    private String[] parentClassificationKey;
+    private String[] parentId;
     private String description;
 
     public TestClassificationQuery(List<ClassificationSummaryImpl> classifications) {
@@ -26,8 +26,8 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery parentClassificationKeyIn(String... parentClassificationKey) {
-        this.parentClassificationKey = parentClassificationKey;
+    public ClassificationQuery parentIdIn(String... parentId) {
+        this.parentId = parentId;
         return this;
     }
 

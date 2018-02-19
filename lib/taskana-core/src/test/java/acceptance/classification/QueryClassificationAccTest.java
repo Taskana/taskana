@@ -59,7 +59,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .typeIn("TASK", "DOCUMENT")
-            .parentClassificationKeyIn("")
+            .parentIdIn("")
             .list();
 
         assertNotNull(classifications);
@@ -110,7 +110,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .keyIn("A12", "A13")
             .categoryIn("EXTERN", "MANUAL")
-            .parentClassificationKeyIn("L10000")
+            .parentIdIn("CLI:100000000000000000000000000000000014")
             .list();
 
         assertNotNull(classifications);
@@ -119,7 +119,8 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         classifications = classificationService.createClassificationQuery()
             .keyIn("A12", "A13")
             .categoryIn("EXTERN", "MANUAL", "AUTOMATIC")
-            .parentClassificationKeyIn("L10000", "T2100", "T6310")
+            .parentIdIn("CLI:100000000000000000000000000000000014", "CLI:100000000000000000000000000000000010",
+                "CLI:100000000000000000000000000000000011")
             .domainIn("DOMAIN_A")
             .list();
         assertNotNull(classifications);
@@ -156,7 +157,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            .parentClassificationKeyIn("L11010")
+            .parentIdIn("CLI:100000000000000000000000000000000004")
             .custom2Like("TEXT_1", "TEXT_2")
             .list();
         // zwei tests

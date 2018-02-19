@@ -13,9 +13,9 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     private String type;
     private String domain;
     private String name;
+    private String parentId;
 
     ClassificationSummaryImpl() {
-
     }
 
     @Override
@@ -73,6 +73,15 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     }
 
     @Override
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -81,6 +90,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((key == null) ? 0 : key.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((parentId == null) ? 0 : parentId.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
@@ -132,6 +142,13 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         } else if (!name.equals(other.name)) {
             return false;
         }
+        if (parentId == null) {
+            if (other.parentId != null) {
+                return false;
+            }
+        } else if (!parentId.equals(other.parentId)) {
+            return false;
+        }
         if (type == null) {
             if (other.type != null) {
                 return false;
@@ -157,6 +174,8 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         builder.append(domain);
         builder.append(", name=");
         builder.append(name);
+        builder.append(", parentId=");
+        builder.append(parentId);
         builder.append("]");
         return builder.toString();
     }

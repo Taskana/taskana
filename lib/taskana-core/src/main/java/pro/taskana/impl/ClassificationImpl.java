@@ -13,7 +13,7 @@ public class ClassificationImpl implements Classification {
 
     private String id;
     private String key;
-    private String parentClassificationKey;
+    private String parentId;
     private String category;
     private String type;
     private String domain;
@@ -55,13 +55,13 @@ public class ClassificationImpl implements Classification {
     }
 
     @Override
-    public String getParentClassificationKey() {
-        return parentClassificationKey;
+    public String getParentId() {
+        return parentId;
     }
 
     @Override
-    public void setParentClassificationKey(String parentClassificationKey) {
-        this.parentClassificationKey = parentClassificationKey;
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 
     @Override
@@ -255,6 +255,7 @@ public class ClassificationImpl implements Classification {
         summary.setKey(this.key);
         summary.setName(this.name);
         summary.setType(this.type);
+        summary.setParentId(this.parentId);
         return summary;
     }
 
@@ -265,8 +266,8 @@ public class ClassificationImpl implements Classification {
         builder.append(id);
         builder.append(", key=");
         builder.append(key);
-        builder.append(", parentClassificationId=");
-        builder.append(parentClassificationKey);
+        builder.append(", parentId=");
+        builder.append(parentId);
         builder.append(", category=");
         builder.append(category);
         builder.append(", type=");
