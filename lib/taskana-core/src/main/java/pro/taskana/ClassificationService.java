@@ -1,7 +1,5 @@
 package pro.taskana;
 
-import java.util.List;
-
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -11,19 +9,6 @@ import pro.taskana.exceptions.NotAuthorizedException;
  * This class manages the classifications.
  */
 public interface ClassificationService {
-
-
-    /**
-     * Get all ClassificationSummaries with the given key. Returns also older and domain-specific versions of the
-     * classification.
-     *
-     * @param key
-     *            the key of the searched-for classifications
-     * @param domain
-     *            the domain of the searched-for classifications
-     * @return List with all versions of the Classification
-     */
-    List<ClassificationSummary> getAllClassifications(String key, String domain);
 
     /**
      * Get the Classification for key and domain. If there's no Classification in the given domain, return the
