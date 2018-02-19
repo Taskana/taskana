@@ -1,7 +1,10 @@
 package pro.taskana.impl;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +26,10 @@ public final class DaysToWorkingDaysConverter {
     private static DaysToWorkingDaysConverter instance;
     private static ArrayList<Integer> positiveDaysToWorkingDays;
     private static ArrayList<Integer> negativeDaysToWorkingDays;
-    private static LocalDate dateCreated;
+    private static Instant dateCreated;
 
     private DaysToWorkingDaysConverter(List<ReportLineItemDefinition> reportLineItemDefinitions,
-        LocalDate referenceDate) {
+        Instant referenceDate) {
         positiveDaysToWorkingDays = generatePositiveDaysToWorkingDays(reportLineItemDefinitions, referenceDate);
         negativeDaysToWorkingDays = generateNegativeDaysToWorkingDays(reportLineItemDefinitions, referenceDate);
         dateCreated = referenceDate;
@@ -41,7 +44,7 @@ public final class DaysToWorkingDaysConverter {
      * @return an instance of the DaysToWorkingDaysConverter
      */
     public static DaysToWorkingDaysConverter initialize(List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return initialize(reportLineItemDefinitions, LocalDate.now());
+        return initialize(reportLineItemDefinitions, Instant.now());
     }
 
     /**
@@ -51,11 +54,11 @@ public final class DaysToWorkingDaysConverter {
      * @param reportLineItemDefinitions
      *            a list of {@link ReportLineItemDefinition}s that determines the size of the table
      * @param referenceDate
-     *            a {@link LocalDate} that represents the current day of the table
+     *            a {@link Instant} that represents the current day of the table
      * @return an instance of the DaysToWorkingDaysConverter
      */
     public static DaysToWorkingDaysConverter initialize(List<ReportLineItemDefinition> reportLineItemDefinitions,
-        LocalDate referenceDate) {
+        Instant referenceDate) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialize DaysToWorkingDaysConverter with reportLineItemDefinitions: {}",
                 LoggerUtils.listToString(reportLineItemDefinitions));
@@ -65,7 +68,7 @@ public final class DaysToWorkingDaysConverter {
         if (instance == null
             || !positiveDaysToWorkingDays.contains(largesLowerLimit)
             || !negativeDaysToWorkingDays.contains(smallestUpperLimit)
-            || !dateCreated.isEqual(referenceDate)) {
+            || !dateCreated.truncatedTo(ChronoUnit.DAYS).equals(referenceDate.truncatedTo(ChronoUnit.DAYS))) {
 
             instance = new DaysToWorkingDaysConverter(reportLineItemDefinitions, referenceDate);
             LOGGER.debug("Create new converter for the values from {} until {} for the date: {}.", largesLowerLimit,
@@ -99,7 +102,7 @@ public final class DaysToWorkingDaysConverter {
     }
 
     private ArrayList<Integer> generateNegativeDaysToWorkingDays(
-        List<ReportLineItemDefinition> reportLineItemDefinitions, LocalDate referenceDate) {
+        List<ReportLineItemDefinition> reportLineItemDefinitions, Instant referenceDate) {
         int minUpperLimit = getSmallestUpperLimit(reportLineItemDefinitions);
         ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
         daysToWorkingDays.add(0);
@@ -116,7 +119,7 @@ public final class DaysToWorkingDaysConverter {
     }
 
     private ArrayList<Integer> generatePositiveDaysToWorkingDays(
-        List<ReportLineItemDefinition> reportLineItemDefinitions, LocalDate referenceDate) {
+        List<ReportLineItemDefinition> reportLineItemDefinitions, Instant referenceDate) {
         int maxLowerLimit = getLargestLowerLimit(reportLineItemDefinitions);
         ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
         daysToWorkingDays.add(0);
@@ -153,9 +156,11 @@ public final class DaysToWorkingDaysConverter {
         return greatestLowerLimit;
     }
 
-    private boolean isWorkingDay(int day, LocalDate referenceDate) {
-        if (referenceDate.plusDays(day).getDayOfWeek().equals(DayOfWeek.SATURDAY)
-            || referenceDate.plusDays(day).getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+    private boolean isWorkingDay(int day, Instant referenceDate) {
+        if (LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day).getDayOfWeek().equals(
+            DayOfWeek.SATURDAY)
+            || LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day).getDayOfWeek().equals(
+                DayOfWeek.SUNDAY)) {
             return false;
         }
         return true;
