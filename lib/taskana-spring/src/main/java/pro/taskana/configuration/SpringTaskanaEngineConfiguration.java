@@ -17,6 +17,19 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
 
     private static final Logger logger = LoggerFactory.getLogger(SpringTaskanaEngineConfiguration.class);
 
+    public SpringTaskanaEngineConfiguration() {
+        super(false);
+    }
+
+    public SpringTaskanaEngineConfiguration(boolean enableSecurity) {
+        super(enableSecurity);
+    }
+
+    public SpringTaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
+        boolean securityEnabled) throws SQLException {
+        super(dataSource, useManagedTransactions, securityEnabled);
+    }
+
     /**
      * This method creates the Spring-based TaskanaEngine without an sqlSessionFactory
      *
