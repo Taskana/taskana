@@ -13,8 +13,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +23,6 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.Classification;
-import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -163,25 +160,6 @@ public class ClassificationServiceImplTest {
         verify(classificationMapperMock, times(1)).update(any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
-    }
-
-    @Test
-    public void testGetAllClassificationWithId() {
-        Classification dummyClassification = createDummyClassification();
-        List<ClassificationSummary> classificationImpls = Arrays.asList(new ClassificationSummaryImpl(),
-            new ClassificationSummaryImpl());
-        doReturn(classificationImpls).when(classificationMapperMock)
-            .getAllClassificationsWithKey(dummyClassification.getKey(), dummyClassification.getDomain());
-
-        List<ClassificationSummary> actualResults = cutSpy.getAllClassifications(dummyClassification.getKey(),
-            dummyClassification.getDomain());
-
-        verify(taskanaEngineImplMock, times(1)).openConnection();
-        verify(classificationMapperMock, times(1)).getAllClassificationsWithKey(dummyClassification.getKey(),
-            dummyClassification.getDomain());
-        verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
-        assertThat(actualResults.size(), equalTo(classificationImpls.size()));
     }
 
     @Test

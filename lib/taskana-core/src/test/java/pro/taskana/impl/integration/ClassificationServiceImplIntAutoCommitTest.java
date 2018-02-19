@@ -142,8 +142,9 @@ public class ClassificationServiceImplIntAutoCommitTest {
         assertThat(actualClassification.getKey(), equalTo(key));
         assertThat(actualClassification.getDomain(), equalTo(domain + "_2"));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
-        List<ClassificationSummary> rootResults = classificationService.getAllClassifications(key, "");
-        assertThat(rootResults.size(), equalTo(1));
+        //verify that
+        Classification rootResults = classificationService.getClassification(key, "");
+        assertThat(rootResults, not(equalTo(null)));
 
         // invalid serviceLevel
         try {
