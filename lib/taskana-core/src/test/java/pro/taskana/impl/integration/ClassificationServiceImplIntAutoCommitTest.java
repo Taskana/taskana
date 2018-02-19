@@ -162,7 +162,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification1);
         Classification classification2 = this.createDummyClassificationWithUniqueKey("", "type1");
-        classification2.setParentClassificationKey(classification0.getKey());
+        classification2.setParentId(classification0.getId());
         classificationService.createClassification(classification2);
 
         Assert.assertEquals(2 + 1, classificationService.getClassificationTree().size());
@@ -289,20 +289,20 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classificationService.createClassification(classification);
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1.setPriority(Integer.decode("3"));
-        classification1.setParentClassificationKey(classification.getKey());
+        classification1.setParentId(classification.getKey());
         classificationService.createClassification(classification1);
         Classification classification2 = this.createDummyClassificationWithUniqueKey("", "type2");
         classification2.setPriority(Integer.decode("5"));
-        classification2.setParentClassificationKey(classification.getKey());
+        classification2.setParentId(classification.getKey());
         classificationService.createClassification(classification2);
 
         Classification classification3 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification3.setPriority(Integer.decode("5"));
-        classification3.setParentClassificationKey(classification1.getKey());
+        classification3.setParentId(classification1.getKey());
         classificationService.createClassification(classification3);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .parentClassificationKeyIn(classification.getKey())
+            .parentIdIn(classification.getKey())
             .list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().typeIn("type1").priorityIn(Integer.decode("5")).list();
@@ -310,7 +310,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         list = classificationService.createClassificationQuery()
             .priorityIn(Integer.decode("5"))
             .typeIn("type1")
-            .parentClassificationKeyIn(classification1.getKey())
+            .parentIdIn(classification1.getKey())
             .list();
         Assert.assertEquals(1, list.size());
     }
@@ -364,11 +364,11 @@ public class ClassificationServiceImplIntAutoCommitTest {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1 = classificationService.createClassification(classification1);
 
-        classification1.setParentClassificationKey(classification.getKey());
+        classification1.setParentId(classification.getKey());
         classification1 = classificationService.updateClassification(classification1);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .parentClassificationKeyIn("")
+            .parentIdIn("")
             .list();
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery()

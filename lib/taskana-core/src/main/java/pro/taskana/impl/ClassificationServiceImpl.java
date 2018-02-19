@@ -51,7 +51,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         try {
             taskanaEngineImpl.openConnection();
             rootClassificationSumamries = this.createClassificationQuery()
-                .parentClassificationKeyIn("")
+                .parentIdIn("")
                 .list();
             rootClassificationSumamries = this.populateChildClassifications(rootClassificationSumamries);
             return rootClassificationSumamries;
@@ -78,7 +78,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             List<ClassificationSummary> children = new ArrayList<>();
             for (ClassificationSummary classification : classificationSumamries) {
                 List<ClassificationSummary> childClassifications = this.createClassificationQuery()
-                    .parentClassificationKeyIn(classification.getKey())
+                    .parentIdIn(classification.getId())
                     .list();
                 children.addAll(populateChildClassifications(childClassifications));
             }
@@ -232,8 +232,8 @@ public class ClassificationServiceImpl implements ClassificationService {
             throw new IllegalStateException("Classification must contain a key");
         }
 
-        if (classification.getParentClassificationKey() == null) {
-            classification.setParentClassificationKey("");
+        if (classification.getParentId() == null) {
+            classification.setParentId("");
         }
 
         if (classification.getDomain() == null) {
@@ -318,7 +318,8 @@ public class ClassificationServiceImpl implements ClassificationService {
         throws ClassificationInUseException, ClassificationNotFoundException {
         try {
             taskanaEngineImpl.openConnection();
-            if (this.classificationMapper.findByKeyAndDomain(classificationKey, domain) == null) {
+            Classification classification = this.classificationMapper.findByKeyAndDomain(classificationKey, domain);
+            if (classification == null) {
                 throw new ClassificationNotFoundException(
                     "The classification " + classificationKey + "wasn't found in the domain " + domain);
             }
@@ -348,7 +349,8 @@ public class ClassificationServiceImpl implements ClassificationService {
                 throw new SystemException("ClassificationQuery unexpectedly returned NotauthorizedException.");
             }
 
-            List<String> childKeys = this.classificationMapper.getChildrenOfClassification(classificationKey, domain);
+            List<String> childKeys = this.classificationMapper
+                .getChildrenOfClassification(classification.getId());
             for (String key : childKeys) {
                 this.deleteClassification(key, domain);
             }

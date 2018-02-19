@@ -18,21 +18,19 @@ public interface Classification {
     String getKey();
 
     /**
-     * Used to get the ID of the parent classification. There will be no value if the current classification is a
-     * parent-classification.
+     * Used to get the ID of the parent classification.
      *
      * @return unique ID or null if parent itself.
      */
-    String getParentClassificationKey();
+    String getParentId();
 
     /**
-     * Set/Change a reference to the current parent classification via ID. If this field would be set to NULL the
-     * classification will become a parent-classification itself.
+     * Set/Change a reference to the current parent classification via ID. EMPTY if there is no parent.
      *
-     * @param parentClassificationKey
-     *            The key of the parent classification.
+     * @param parentId
+     *            The ID of the parent classification.
      */
-    void setParentClassificationKey(String parentClassificationKey);
+    void setParentId(String parentId);
 
     /**
      * @return category of this classification.

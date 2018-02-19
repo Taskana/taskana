@@ -130,11 +130,11 @@ public interface QueryMapper {
         @Result(property = "custom10", column = "CUSTOM_10")})
     List<TaskSummaryImpl> queryTasks(TaskQueryImpl taskQuery);
 
-    @Select("<script>SELECT ID, KEY, PARENT_CLASSIFICATION_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
+    @Select("<script>SELECT ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
         + "FROM CLASSIFICATION "
         + "<where>"
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='parentClassificationKey != null'>AND PARENT_CLASSIFICATION_KEY IN(<foreach item='item' collection='parentClassificationKey' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='parentId != null'>AND PARENT_ID IN(<foreach item='item' collection='parentId' separator=',' >#{item}</foreach>)</if> "
         + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
@@ -171,7 +171,8 @@ public interface QueryMapper {
         @Result(property = "category", column = "CATEGORY"),
         @Result(property = "type", column = "TYPE"),
         @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "name", column = "NAME")})
+        @Result(property = "name", column = "NAME"),
+        @Result(property = "parentId", column = "PARENT_ID")})
     List<ClassificationSummaryImpl> queryClassification(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
@@ -350,7 +351,7 @@ public interface QueryMapper {
     @Select("<script>SELECT COUNT(ID) FROM CLASSIFICATION "
         + "<where>"
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
-        + "<if test='parentClassificationKey != null'>AND PARENT_CLASSIFICATION_KEY IN(<foreach item='item' collection='parentClassificationKey' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='parentId != null'>AND PARENT_ID IN(<foreach item='item' collection='parentId' separator=',' >#{item}</foreach>)</if> "
         + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
