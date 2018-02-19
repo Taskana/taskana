@@ -1,6 +1,5 @@
 package acceptance.classification;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.h2.store.fs.FileUtils;
@@ -13,8 +12,6 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
  * Acceptance test for all "get classification" scenarios.
@@ -25,16 +22,20 @@ public class GetClassificationAccTest extends AbstractAccTest {
         super();
     }
 
+    @AfterClass
+    public static void cleanUpClass() {
+        FileUtils.deleteRecursive("~/data", true);
+    }
+
     @Test
-    public void testFindAllClassifications()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+    public void testFindAllClassifications() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
-        List<ClassificationSummary> classificationSummaryList = classificationService.getClassificationTree();
+        List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery().list();
         Assert.assertNotNull(classificationSummaryList);
     }
 
     @Test
-    public void testGetOneClassificationForDomain() throws SQLException, ClassificationNotFoundException {
+    public void testGetOneClassificationForDomain() throws ClassificationNotFoundException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T6310", "DOMAIN_A");
         Assert.assertNotNull(classification);
@@ -42,7 +43,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
 
     @Test
     public void testGetOneClassificationForDomainAndGetClassificationFromRootDomain()
-        throws SQLException, ClassificationNotFoundException {
+        throws ClassificationNotFoundException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("L10000", "DOMAIN_B");
         Assert.assertNotNull(classification);
@@ -51,16 +52,11 @@ public class GetClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetOneClassificationForRootDomain() throws SQLException, ClassificationNotFoundException {
+    public void testGetOneClassificationForRootDomain() throws ClassificationNotFoundException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("L10000", "");
         Assert.assertNotNull(classification);
         Assert.assertEquals("", classification.getDomain());
         Assert.assertEquals(999L, classification.getPriority());
-    }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/data", true);
     }
 }
