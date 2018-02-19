@@ -6,7 +6,6 @@ import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
@@ -16,7 +15,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
-import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import org.h2.store.fs.FileUtils;
@@ -51,13 +49,13 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 
 public class ClassificationServiceImplIntExplicitTest {
 
+    private static final String ID_PREFIX_CLASSIFICATION = "CLI";
     static int counter = 0;
     private DataSource dataSource;
     private ClassificationService classificationService;
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
-    private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
     @BeforeClass
     public static void resetDb() throws SQLException {
@@ -66,8 +64,13 @@ public class ClassificationServiceImplIntExplicitTest {
         cleaner.clearDb(ds, true);
     }
 
+    @AfterClass
+    public static void cleanUpClass() {
+        FileUtils.deleteRecursive("~/data", true);
+    }
+
     @Before
-    public void setup() throws FileNotFoundException, SQLException, LoginException {
+    public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -165,9 +168,7 @@ public class ClassificationServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testFindAllClassifications()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-        ClassificationNotFoundException {
+    public void testFindAllClassifications() throws SQLException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification0 = this.createNewClassificationWithUniqueKey("", "t1");
@@ -178,7 +179,7 @@ public class ClassificationServiceImplIntExplicitTest {
         classification2.setParentId(classification0.getId());
         classificationService.createClassification(classification2);
 
-        Assert.assertEquals(2 + 1, classificationService.getClassificationTree().size());
+        Assert.assertEquals(2 + 1, classificationService.createClassificationQuery().list().size());
         connection.commit();
     }
 
@@ -204,8 +205,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testInsertAndClassificationQuery()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-        ClassificationNotFoundException {
+        throws SQLException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
@@ -219,7 +219,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testUpdateAndClassificationQuery() throws NotAuthorizedException, SQLException,
-        ClassificationAlreadyExistException, ClassificationNotFoundException, InvalidArgumentException {
+        ClassificationAlreadyExistException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
@@ -241,15 +241,14 @@ public class ClassificationServiceImplIntExplicitTest {
             .list();
         Assert.assertEquals(1, list.size());
 
-        List<ClassificationSummary> allClassifications = classificationService.getClassificationTree();
+        List<ClassificationSummary> allClassifications = classificationService.createClassificationQuery().list();
         Assert.assertEquals(1, allClassifications.size());
         connection.commit();
     }
 
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-        ClassificationNotFoundException {
+        throws SQLException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("domain1", "t1");
@@ -275,8 +274,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperCustomAndCategory()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-        ClassificationNotFoundException {
+        throws SQLException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "t1");
@@ -316,8 +314,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
-        throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-        ClassificationNotFoundException {
+        throws SQLException, ClassificationAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "type1");
@@ -437,11 +434,6 @@ public class ClassificationServiceImplIntExplicitTest {
     @After
     public void cleanUp() {
         taskanaEngineImpl.setConnection(null);
-    }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/data", true);
     }
 
     private Classification createNewClassificationWithUniqueKey(String domain, String type) {

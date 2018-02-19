@@ -48,20 +48,24 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
  */
 public class ClassificationServiceImplIntAutoCommitTest {
 
+    private static final String ID_PREFIX_CLASSIFICATION = "CLI";
     static int counter = 0;
-
     private DataSource dataSource;
     private ClassificationService classificationService;
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
-    private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
     @BeforeClass
     public static void resetDb() throws SQLException {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);
+    }
+
+    @AfterClass
+    public static void cleanUpClass() {
+        FileUtils.deleteRecursive("~/data", true);
     }
 
     @Before
@@ -154,9 +158,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindAllClassifications()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        InvalidArgumentException {
+    public void testFindAllClassifications() throws ClassificationAlreadyExistException {
         Classification classification0 = this.createDummyClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification0);
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
@@ -165,7 +167,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classification2.setParentId(classification0.getId());
         classificationService.createClassification(classification2);
 
-        Assert.assertEquals(2 + 1, classificationService.getClassificationTree().size());
+        Assert.assertEquals(2 + 1, classificationService.createClassificationQuery().list().size());
     }
 
     @Test
@@ -215,14 +217,12 @@ public class ClassificationServiceImplIntAutoCommitTest {
             .list();
         Assert.assertEquals(1, list.size());
 
-        List<ClassificationSummary> allClassifications = classificationService.getClassificationTree();
+        List<ClassificationSummary> allClassifications = classificationService.createClassificationQuery().list();
         Assert.assertEquals(1, allClassifications.size());
     }
 
     @Test
-    public void testFindWithClassificationMapperDomainAndCategory()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        InvalidArgumentException {
+    public void testFindWithClassificationMapperDomainAndCategory() throws ClassificationAlreadyExistException {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("domain1", "type1");
         classification1.setCategory("category1");
         classificationService.createClassification(classification1);
@@ -243,9 +243,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindWithClassificationMapperCustomAndCategory()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        InvalidArgumentException {
+    public void testFindWithClassificationMapperCustomAndCategory() throws ClassificationAlreadyExistException {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1.setDescription("DESC1");
         classification1.setCategory("category1");
@@ -282,8 +280,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        NumberFormatException, InvalidArgumentException {
+        throws ClassificationAlreadyExistException, NumberFormatException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setPriority(Integer.decode("5"));
         classificationService.createClassification(classification);
@@ -317,8 +314,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperServiceLevelNameAndDescription()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        InvalidArgumentException {
+        throws ClassificationAlreadyExistException {
         int all = 0;
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setServiceLevel("P1D");
@@ -356,8 +352,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testDefaultSettingsWithClassificationMapper()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        InvalidArgumentException {
+        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification = classificationService.createClassification(classification);
 
@@ -391,11 +386,6 @@ public class ClassificationServiceImplIntAutoCommitTest {
         list = classificationService.createClassificationQuery()
             .list();
         Assert.assertEquals(2, list.size());
-    }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/data", true);
     }
 
     private TimeInterval today() {

@@ -12,12 +12,6 @@ import pro.taskana.exceptions.NotAuthorizedException;
  */
 public interface ClassificationService {
 
-    /**
-     * Get all available Classification summaries as a tree.
-     *
-     * @return The List of all Classification summaries
-     */
-    List<ClassificationSummary> getClassificationTree();
 
     /**
      * Get all ClassificationSummaries with the given key. Returns also older and domain-specific versions of the

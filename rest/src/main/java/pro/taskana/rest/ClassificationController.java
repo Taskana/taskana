@@ -29,7 +29,7 @@ public class ClassificationController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<ClassificationSummary>> getClassifications() {
         try {
-            List<ClassificationSummary> classificationTree = classificationService.getClassificationTree();
+            List<ClassificationSummary> classificationTree = classificationService.createClassificationQuery().list();
             return ResponseEntity.status(HttpStatus.OK).body(classificationTree);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
