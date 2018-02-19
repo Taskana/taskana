@@ -19,7 +19,7 @@ export class WorkbasketListComponent implements OnInit {
 
   sortBy: string = 'key';
   sortDirection: Direction = Direction.ASC;
-  sortingFields : Map<string, string> = new Map([['name', 'Name'], ['key', 'Id'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
+  sortingFields : Map<string, string> = new Map([['name', 'Name'], ['key', 'Key'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
 
   private workBasketSummarySubscription: Subscription;
   private workbasketServiceSubscription: Subscription;
