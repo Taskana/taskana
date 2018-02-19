@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,9 +58,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private String[] custom7Like;
     private String[] custom8In;
     private String[] custom8Like;
+    private List<String> orderBy;
 
     ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.orderBy = new ArrayList<>();
     }
 
     @Override
@@ -254,6 +257,86 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
+    public ClassificationQuery orderByKey(SortDirection sortDirection) {
+        return addOrderCriteria("KEY", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByParentId(SortDirection sortDirection) {
+        return addOrderCriteria("PARENT_ID", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByCategory(SortDirection sortDirection) {
+        return addOrderCriteria("CATEGORY", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByDomain(SortDirection sortDirection) {
+        return addOrderCriteria("DOMAIN", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByPriority(SortDirection sortDirection) {
+        return addOrderCriteria("PRIORITY", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByName(SortDirection sortDirection) {
+        return addOrderCriteria("NAME", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByServiceLevel(SortDirection sortDirection) {
+        return addOrderCriteria("SERVICE_LEVEL", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByApplicationEntryPoint(SortDirection sortDirection) {
+        return addOrderCriteria("APPLICATION_ENTRY_POINT", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom1(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_1", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom2(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_2", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom3(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_3", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom4(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_4", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom5(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_5", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom6(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_6", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom7(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_7", sortDirection);
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom8(SortDirection sortDirection) {
+        return addOrderCriteria("CUSTOM_8", sortDirection);
+    }
+
+    @Override
     public List<ClassificationSummary> list() {
         LOGGER.debug("entry to list(), this = {}", this);
         List<ClassificationSummary> result = null;
@@ -312,6 +395,15 @@ public class ClassificationQueryImpl implements ClassificationQuery {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", result);
         }
+    }
+
+    private ClassificationQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
+        String orderByDirection = " ASC";
+        if (sortDirection != null && SortDirection.DESCENDING.equals(sortDirection)) {
+            orderByDirection = " DESC";
+        }
+        orderBy.add(columnName + orderByDirection);
+        return this;
     }
 
     public String[] getKey() {

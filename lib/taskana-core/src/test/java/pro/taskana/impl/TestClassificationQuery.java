@@ -197,4 +197,84 @@ public class TestClassificationQuery implements ClassificationQuery {
     public long count() {
         return 0;
     }
+
+    @Override
+    public ClassificationQuery orderByKey(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByParentId(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByCategory(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByDomain(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByName(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByServiceLevel(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByPriority(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByApplicationEntryPoint(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom1(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom2(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom3(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom4(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom5(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom6(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom7(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByCustom8(SortDirection sortDirection) {
+        return this;
+    }
 }

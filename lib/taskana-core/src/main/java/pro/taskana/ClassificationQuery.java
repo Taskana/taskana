@@ -284,4 +284,164 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      * @return the query
      */
     ClassificationQuery custom8Like(String... custom8Like);
+
+    /**
+     * Sort the query result by key.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByKey(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by the parent classification ID.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByParentId(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by category.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByCategory(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by domain.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByDomain(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by name.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByName(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by service level.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByServiceLevel(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by priority.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByPriority(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by the application entry point name.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByApplicationEntryPoint(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 1.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByCustom1(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 2.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByCustom2(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 3.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByCustom3(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 4.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByCustom4(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 5.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByCustom5(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 6.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByCustom6(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 7.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByCustom7(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 8.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByCustom8(SortDirection sortDirection);
 }
