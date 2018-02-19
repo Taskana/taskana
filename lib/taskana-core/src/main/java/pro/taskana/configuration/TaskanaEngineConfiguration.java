@@ -30,7 +30,8 @@ public class TaskanaEngineConfiguration {
     protected boolean securityEnabled;
     protected boolean useManagedTransactions;
 
-    public TaskanaEngineConfiguration() {
+    public TaskanaEngineConfiguration(boolean enableSecurity) {
+        this.securityEnabled = enableSecurity;
     }
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions)

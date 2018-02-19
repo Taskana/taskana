@@ -36,7 +36,7 @@ public class DbSchemaCreator {
      * Run all db scripts.
      *
      * @throws SQLException
-     *             TODO
+     *             will be thrown if there will be some incorrect SQL statements invoked.
      */
     public void run() throws SQLException {
         Connection connection = dataSource.getConnection();
