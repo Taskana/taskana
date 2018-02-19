@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,6 +47,7 @@ import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskState;
+import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketType;
@@ -216,6 +218,58 @@ public class TaskServiceImplIntAutocommitTest {
             .list();
 
         Assert.assertEquals(0, results.size());
+    }
+
+    @Test
+    public void shouldReturnTaskSummaryListWithValues() throws Exception {
+        Workbasket dummyWorkbasket = workbasketService.newWorkbasket("Dummy-Key");
+        dummyWorkbasket.setName("Dummy-Basket");
+        dummyWorkbasket.setType(WorkbasketType.GROUP);
+        dummyWorkbasket.setDomain("novatec");
+        dummyWorkbasket = workbasketService.createWorkbasket(dummyWorkbasket);
+
+        Classification dummyClassification = classificationService.newClassification("novatec", "1", "t1");
+        dummyClassification.setName("Dummy-Classification");
+        classificationService.createClassification(dummyClassification);
+
+        TaskImpl dummyTask = (TaskImpl) taskServiceImpl.newTask(dummyWorkbasket.getKey());
+        dummyTask.setId(null);
+        dummyTask.setName("Dummy-Task");
+        dummyTask.setClassificationKey(dummyClassification.getKey());
+        dummyTask.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
+        dummyTask = (TaskImpl) taskServiceImpl.createTask(dummyTask);
+
+        List<TaskSummaryImpl> expectedTaskSumamries = new ArrayList<>();
+        TaskSummaryImpl taskSummary = (TaskSummaryImpl) taskServiceImpl.newTask(dummyTask.getWorkbasketKey())
+            .asSummary();
+        taskSummary.setTaskId(dummyTask.getId());
+        taskSummary.setName(dummyTask.getName());
+        expectedTaskSumamries.add(taskSummary);
+
+        List<TaskSummary> actualTaskSumamryResult = taskServiceImpl
+            .getTaskSummariesByWorkbasketKey(dummyWorkbasket.getKey());
+
+        assertThat(actualTaskSumamryResult.size(), equalTo(expectedTaskSumamries.size()));
+    }
+
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void shouldThrowWorkbasketNotFoundExceptionByNullParameter()
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        taskServiceImpl.getTaskSummariesByWorkbasketKey(null);
+    }
+
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void shouldThrowWorkbasketNotFoundExceptionByInvalidWorkbasketParameter()
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket("key");
+        wb.setName("wb");
+        wb.setType(WorkbasketType.GROUP);
+        wb.setDomain("novatec");
+        workbasketService.createWorkbasket(wb);
+        taskServiceImpl.getTaskSummariesByWorkbasketKey("1");
+        wb = (WorkbasketImpl) workbasketService.createWorkbasket(wb);
+        workbasketService.createWorkbasket(wb);
+        taskServiceImpl.getTaskSummariesByWorkbasketKey("1");
     }
 
     @Test

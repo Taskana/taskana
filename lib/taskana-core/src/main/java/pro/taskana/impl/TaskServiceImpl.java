@@ -494,6 +494,31 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskSummary> getTasksByWorkbasketKeyAndState(String workbasketKey, TaskState taskState)
+        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+        LOGGER.debug("entry to getTasksByWorkbasketKeyAndState(workbasketKey = {}, taskState = {})", workbasketKey,
+            taskState);
+        List<TaskSummary> results = new ArrayList<>();
+        try {
+            taskanaEngineImpl.openConnection();
+            workbasketService.checkAuthorization(workbasketKey, WorkbasketAuthorization.READ);
+            List<TaskSummaryImpl> tasks = taskMapper.findTasksByWorkbasketIdAndState(workbasketKey, taskState);
+            // postprocessing: augment each tasksummary by classificationSummary, workbasketSummary and
+            // list<attachmentsummary>
+            results = augmentTaskSummariesByContainedSummaries(tasks);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = results == null ? 0 : results.size();
+                LOGGER.debug(
+                    "exit from getTasksByWorkbasketIdAndState(workbasketId, taskState). Returning {} resulting Objects: {} ",
+                    numberOfResultObjects, LoggerUtils.listToString(results));
+            }
+        }
+        return (results == null) ? new ArrayList<>() : results;
+    }
+
+    @Override
     public Task updateTask(Task task)
         throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException, WorkbasketNotFoundException,
         ClassificationNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
@@ -571,6 +596,35 @@ public class TaskServiceImpl implements TaskService {
                 attachmentMapper.insert(attachmentImpl);
             }
         }
+    }
+
+    @Override
+    public List<TaskSummary> getTaskSummariesByWorkbasketKey(String workbasketKey)
+        throws WorkbasketNotFoundException, NotAuthorizedException {
+        LOGGER.debug("entry to getTaskSummariesByWorkbasketId(workbasketId = {}", workbasketKey);
+        List<TaskSummary> results = new ArrayList<>();
+        try {
+            taskanaEngineImpl.openConnection();
+            workbasketService.getWorkbasketByKey(workbasketKey);  // make sure that the workbasket exists
+            List<TaskSummaryImpl> taskSummaries = taskMapper.findTaskSummariesByWorkbasketKey(workbasketKey);
+            // postprocessing: augment each tasksummary by classificationSummary, workbasketSummary and
+            // list<attachmentsummary>
+            results = augmentTaskSummariesByContainedSummaries(taskSummaries);
+
+        } catch (WorkbasketNotFoundException | NotAuthorizedException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            LOGGER.error("Getting TASKSUMMARY failed internally.", ex);
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = results.size();
+                LOGGER.debug(
+                    "exit from getTaskSummariesByWorkbasketId(workbasketId). Returning {} resulting Objects: {} ",
+                    numberOfResultObjects, LoggerUtils.listToString(results));
+            }
+        }
+        return results;
     }
 
     List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries)
