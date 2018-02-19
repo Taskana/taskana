@@ -105,6 +105,14 @@ public interface Workbasket {
     String getOwner();
 
     /**
+     * Sets the owner-ID of the workbasket.
+     *
+     * @param owner
+     *            of the current workbasket
+     */
+    void setOwner(String owner);
+
+    /**
      * Return the value for the custom1 attribute.
      *
      * @return custom1
@@ -230,5 +238,4 @@ public interface Workbasket {
      * @return the WorkbasketSummary object for the current work basket
      */
     WorkbasketSummary asSummary();
-
 }

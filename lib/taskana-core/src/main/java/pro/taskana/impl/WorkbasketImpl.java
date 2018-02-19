@@ -92,6 +92,7 @@ public class WorkbasketImpl implements Workbasket {
         return owner;
     }
 
+    @Override
     public void setOwner(String owner) {
         this.owner = owner;
     }
