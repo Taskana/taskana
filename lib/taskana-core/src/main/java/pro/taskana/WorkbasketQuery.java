@@ -215,4 +215,264 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      */
     WorkbasketQuery orderByType(SortDirection sortDirection);
 
+    /**
+     * Sort the query result by domain.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByDomain(SortDirection sortDirection);
+
+    /**
+     * Add the domains for pattern matching to your query. It will be compared in SQL with the LIKE operator. You may
+     * use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param domain
+     *            the domains of workbaskets as Strings
+     * @return the query
+     */
+    WorkbasketQuery domainLike(String... domain);
+
+    /**
+     * Sort the query result by custom property 1.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByCustom1(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 2.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByCustom2(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 3.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByCustom3(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by custom property 4.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByCustom4(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by organization level 1.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByOrgLevel1(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by organization level 2.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByOrgLevel2(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by organization level 3.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByOrgLevel3(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by organization level 4.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    WorkbasketQuery orderByOrgLevel4(SortDirection sortDirection);
+
+    /**
+     * Add the 1st custom property to your query.
+     *
+     * @param custom1
+     *            the 1st custom property as String
+     * @return the query
+     */
+    WorkbasketQuery custom1In(String... custom1);
+
+    /**
+     * Add the 1st custom property for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param custom1
+     *            the 1st custom property of workbaskets as Strings
+     * @return the query
+     */
+    WorkbasketQuery custom1Like(String... custom1);
+
+    /**
+     * Add the 2nd custom property to your query.
+     *
+     * @param custom2
+     *            the 2nd custom property as String
+     * @return the query
+     */
+    WorkbasketQuery custom2In(String... custom2);
+
+    /**
+     * Add the 2nd custom property for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param custom2
+     *            the 2nd custom property of workbaskets as Strings
+     * @return the query
+     */
+    WorkbasketQuery custom2Like(String... custom2);
+
+    /**
+     * Add the 3rd custom property to your query.
+     *
+     * @param custom3
+     *            the 3rd custom property as String
+     * @return the query
+     */
+    WorkbasketQuery custom3In(String... custom3);
+
+    /**
+     * Add the 3rd custom property for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param custom3
+     *            the 3rd custom property of workbaskets as Strings
+     * @return the query
+     */
+    WorkbasketQuery custom3Like(String... custom3);
+
+    /**
+     * Add the 4th custom property to your query.
+     *
+     * @param custom4
+     *            the 4th custom property as String
+     * @return the query
+     */
+    WorkbasketQuery custom4In(String... custom4);
+
+    /**
+     * Add the 4th custom property for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param custom4
+     *            the 4th custom property of workbaskets as Strings
+     * @return the query
+     */
+    WorkbasketQuery custom4Like(String... custom4);
+
+    /**
+     * Add the 1st organization level to your query.
+     *
+     * @param orgLevel1
+     *            the 1st organization level as String
+     * @return the query
+     */
+    WorkbasketQuery orgLevel1In(String... orgLevel1);
+
+    /**
+     * Add the 1st organization level for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param orgLevel1
+     *            the 1st organization level as Strings
+     * @return the query
+     */
+    WorkbasketQuery orgLevel1Like(String... orgLevel1);
+
+    /**
+     * Add the 2nd organization level to your query.
+     *
+     * @param orgLevel2
+     *            the 2nd organization level as String
+     * @return the query
+     */
+    WorkbasketQuery orgLevel2In(String... orgLevel2);
+
+    /**
+     * Add the 2nd organization level for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param orgLevel2
+     *            the 2nd organization level as Strings
+     * @return the query
+     */
+    WorkbasketQuery orgLevel2Like(String... orgLevel2);
+
+    /**
+     * Add the 3rd organization level to your query.
+     *
+     * @param orgLevel3
+     *            the 3rd organization level as String
+     * @return the query
+     */
+    WorkbasketQuery orgLevel3In(String... orgLevel3);
+
+    /**
+     * Add the 3rd organization level for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param orgLevel3
+     *            the 3rd organization level as Strings
+     * @return the query
+     */
+    WorkbasketQuery orgLevel3Like(String... orgLevel3);
+
+    /**
+     * Add the 4th organization level to your query.
+     *
+     * @param orgLevel4
+     *            the 4th organization level as String
+     * @return the query
+     */
+    WorkbasketQuery orgLevel4In(String... orgLevel4);
+
+    /**
+     * Add the 4th organization level for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param orgLevel4
+     *            the 4th organization level as Strings
+     * @return the query
+     */
+    WorkbasketQuery orgLevel4Like(String... orgLevel4);
 }
