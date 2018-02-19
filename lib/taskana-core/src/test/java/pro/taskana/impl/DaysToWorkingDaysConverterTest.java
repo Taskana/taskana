@@ -3,7 +3,7 @@ package pro.taskana.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +17,11 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testInitializeForDifferentReportLineItemDefinitions() {
         DaysToWorkingDaysConverter instance1 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfReportLineItemDefinitions(), LocalDate.of(2018, 02, 03));
+            .initialize(getShortListOfReportLineItemDefinitions(), Instant.parse("2018-02-03T00:00:00.000Z"));
         DaysToWorkingDaysConverter instance2 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfReportLineItemDefinitions(), LocalDate.of(2018, 02, 03));
+            .initialize(getShortListOfReportLineItemDefinitions(), Instant.parse("2018-02-03T00:00:00.000Z"));
         DaysToWorkingDaysConverter instance3 = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), LocalDate.of(2018, 02, 03));
+            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-02-03T00:00:00.000Z"));
 
         assertEquals(instance1, instance2);
         assertNotEquals(instance1, instance3);
@@ -30,9 +30,9 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testInitializeForDifferentDates() {
         DaysToWorkingDaysConverter instance1 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfReportLineItemDefinitions(), LocalDate.of(2018, 02, 04));
+            .initialize(getShortListOfReportLineItemDefinitions(), Instant.parse("2018-02-04T00:00:00.000Z"));
         DaysToWorkingDaysConverter instance2 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfReportLineItemDefinitions(), LocalDate.of(2018, 02, 05));
+            .initialize(getShortListOfReportLineItemDefinitions(), Instant.parse("2018-02-05T00:00:00.000Z"));
 
         assertNotEquals(instance1, instance2);
     }
@@ -40,7 +40,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testConvertDaysToWorkingDays() {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), LocalDate.of(2018, 02, 06));
+            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-02-06T00:00:00.000Z"));
 
         assertEquals(16, instance.convertDaysToWorkingDays(16));
         assertEquals(11, instance.convertDaysToWorkingDays(15));
