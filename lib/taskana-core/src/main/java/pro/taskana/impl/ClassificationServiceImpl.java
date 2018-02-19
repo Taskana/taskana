@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
-import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -21,7 +20,6 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.ClassificationMapper;
 import pro.taskana.mappings.TaskMapper;
 
@@ -193,26 +191,6 @@ public class ClassificationServiceImpl implements ClassificationService {
 
         if (classification.getDomain() == null) {
             classification.setDomain("");
-        }
-    }
-
-    @Override
-    public List<ClassificationSummary> getAllClassifications(String key, String domain) {
-        LOGGER.debug("entry to getAllClassificationsWithKey(key = {}, domain = {})", key, domain);
-        List<ClassificationSummary> results = new ArrayList<>();
-        try {
-            taskanaEngineImpl.openConnection();
-            List<ClassificationSummaryImpl> classificationSummaries = classificationMapper
-                .getAllClassificationsWithKey(key, domain);
-            classificationSummaries.stream().forEach(c -> results.add(c));
-            return results;
-        } finally {
-            taskanaEngineImpl.returnConnection();
-            if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = results == null ? 0 : results.size();
-                LOGGER.debug("exit from getAllClassificationsWithKey(). Returning {} resulting Objects: {} ",
-                    numberOfResultObjects, LoggerUtils.listToString(results));
-            }
         }
     }
 

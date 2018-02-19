@@ -151,8 +151,8 @@ public class ClassificationServiceImplIntExplicitTest {
         assertThat(actualClassification.getKey(), equalTo(key));
         assertThat(actualClassification.getDomain(), equalTo(domain + "_2"));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
-        List<ClassificationSummary> rootResults = classificationService.getAllClassifications(key, "");
-        assertThat(rootResults.size(), equalTo(1));
+        Classification rootResult = classificationService.getClassification(key, "");
+        assertThat(rootResult, not(equalTo(null)));
 
         // invalid serviceLevel
         try {
