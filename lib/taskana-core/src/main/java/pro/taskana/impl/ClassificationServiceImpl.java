@@ -37,56 +37,11 @@ public class ClassificationServiceImpl implements ClassificationService {
     private TaskanaEngineImpl taskanaEngineImpl;
 
     ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper,
-        TaskMapper taskMapper) {
+                              TaskMapper taskMapper) {
         super();
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.classificationMapper = classificationMapper;
         this.taskMapper = taskMapper;
-    }
-
-    @Override
-    public List<ClassificationSummary> getClassificationTree() {
-        LOGGER.debug("entry to getClassificationTree()");
-        List<ClassificationSummary> rootClassificationSumamries = null;
-        try {
-            taskanaEngineImpl.openConnection();
-            rootClassificationSumamries = this.createClassificationQuery()
-                .parentIdIn("")
-                .list();
-            rootClassificationSumamries = this.populateChildClassifications(rootClassificationSumamries);
-            return rootClassificationSumamries;
-        } catch (NotAuthorizedException ex) {
-            LOGGER.debug("getClassificationTree() caught NotAuthorizedException. Throwing SystemException");
-            throw new SystemException(
-                "ClassificationService.getClassificationTree caught unexpected NotAuthorizedException");
-        } finally {
-            taskanaEngineImpl.returnConnection();
-            if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = rootClassificationSumamries == null ? 0
-                    : rootClassificationSumamries.size();
-                LOGGER.debug("exit from getClassificationTree(). Returning {} resulting Objects: {} ",
-                    numberOfResultObjects, LoggerUtils.listToString(rootClassificationSumamries));
-            }
-        }
-    }
-
-    private List<ClassificationSummary> populateChildClassifications(
-        List<ClassificationSummary> classificationSumamries)
-        throws NotAuthorizedException {
-        try {
-            taskanaEngineImpl.openConnection();
-            List<ClassificationSummary> children = new ArrayList<>();
-            for (ClassificationSummary classification : classificationSumamries) {
-                List<ClassificationSummary> childClassifications = this.createClassificationQuery()
-                    .parentIdIn(classification.getId())
-                    .list();
-                children.addAll(populateChildClassifications(childClassifications));
-            }
-            classificationSumamries.addAll(children);
-            return classificationSumamries;
-        } finally {
-            taskanaEngineImpl.returnConnection();
-        }
     }
 
     @Override

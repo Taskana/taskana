@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,7 +28,6 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.mappings.ClassificationMapper;
 
@@ -60,24 +58,6 @@ public class ClassificationServiceImplTest {
     public void setup() {
         doNothing().when(taskanaEngineImplMock).openConnection();
         doNothing().when(taskanaEngineImplMock).returnConnection();
-    }
-
-    @Test
-    public void testGetClassificationTree() throws NotAuthorizedException, InvalidArgumentException {
-        List<Classification> classifications = new ArrayList<>();
-
-        doReturn(classificationQueryImplMock).when(cutSpy).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).parentIdIn("");
-        doReturn(classifications).when(classificationQueryImplMock).list();
-
-        List<ClassificationSummary> actaulResults = cutSpy.getClassificationTree();
-
-        verify(taskanaEngineImplMock, times(2)).openConnection();
-        verify(cutSpy, times(1)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(1)).parentIdIn("");
-        verify(classificationQueryImplMock, times(1)).list();
-        verify(taskanaEngineImplMock, times(2)).returnConnection();
-        assertThat(actaulResults, equalTo(classifications));
     }
 
     @Test(expected = ClassificationAlreadyExistException.class)
