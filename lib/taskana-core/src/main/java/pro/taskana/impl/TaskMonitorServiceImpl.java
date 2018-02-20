@@ -27,19 +27,20 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states) {
-        return getWorkbasketLevelReport(workbaskets, states, null, false);
+    public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
+        List<String> categories) {
+        return getWorkbasketLevelReport(workbaskets, states, categories, null, false);
     }
 
     @Override
     public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getWorkbasketLevelReport(workbaskets, states, reportLineItemDefinitions, true);
+        List<String> categories, List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        return getWorkbasketLevelReport(workbaskets, states, categories, reportLineItemDefinitions, true);
     }
 
     @Override
     public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
+        List<String> categories, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                 "entry to getWorkbasketLevelReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {},"
@@ -52,7 +53,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
-                .getTaskCountOfWorkbasketsByWorkbasketsAndStates(workbaskets, states);
+                .getTaskCountOfWorkbasketsByWorkbasketsAndStates(workbaskets, states, categories);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -64,18 +65,18 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states) {
-        return getCategoryReport(workbaskets, states, null, false);
+    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories) {
+        return getCategoryReport(workbaskets, states, categories, null, false);
     }
 
     @Override
-    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
         List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getCategoryReport(workbaskets, states, reportLineItemDefinitions, true);
+        return getCategoryReport(workbaskets, states, categories, reportLineItemDefinitions, true);
     }
 
     @Override
-    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
         List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
@@ -89,7 +90,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
-                .getTaskCountOfCategoriesByWorkbasketsAndStates(workbaskets, states);
+                .getTaskCountOfCategoriesByWorkbasketsAndStates(workbaskets, states, categories);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -100,19 +101,20 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states) {
-        return getClassificationReport(workbaskets, states, null, false);
+    public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+        List<String> categories) {
+        return getClassificationReport(workbaskets, states, categories, null, false);
     }
 
     @Override
     public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getClassificationReport(workbaskets, states, reportLineItemDefinitions, true);
+        List<String> categories, List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        return getClassificationReport(workbaskets, states, categories, reportLineItemDefinitions, true);
     }
 
     @Override
     public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
+        List<String> categories, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                 "entry to getClassificationReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {},"
@@ -125,7 +127,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             ClassificationReport report = new ClassificationReport();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
-                .getTaskCountOfClassificationsByWorkbasketsAndStates(workbaskets, states);
+                .getTaskCountOfClassificationsByWorkbasketsAndStates(workbaskets, states, categories);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -137,19 +139,20 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets,
-        List<TaskState> states) {
-        return getDetailedClassificationReport(workbaskets, states, null, false);
+        List<TaskState> states, List<String> categories) {
+        return getDetailedClassificationReport(workbaskets, states, categories, null, false);
     }
 
     @Override
     public DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets,
-        List<TaskState> states, List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getDetailedClassificationReport(workbaskets, states, reportLineItemDefinitions, true);
+        List<TaskState> states, List<String> categories, List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        return getDetailedClassificationReport(workbaskets, states, categories, reportLineItemDefinitions, true);
     }
 
     @Override
     public DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets,
-        List<TaskState> states, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
+        List<TaskState> states, List<String> categories, List<ReportLineItemDefinition> reportLineItemDefinitions,
+        boolean inWorkingDays) {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
@@ -163,7 +166,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             DetailedClassificationReport report = new DetailedClassificationReport();
             List<DetailedMonitorQueryItem> detailedMonitorQueryItems = taskMonitorMapper
-                .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states);
+                .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states, categories);
             report.addDetailedMonitoringQueryItems(detailedMonitorQueryItems, reportLineItemDefinitions,
                 inWorkingDays);
             return report;
@@ -176,19 +179,20 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states,
-        CustomField customField) {
-        return getCustomFieldValueReport(workbaskets, states, customField, null, false);
+        List<String> categories, CustomField customField) {
+        return getCustomFieldValueReport(workbaskets, states, categories, customField, null, false);
     }
 
     @Override
     public Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states,
-        CustomField customField, List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getCustomFieldValueReport(workbaskets, states, customField, reportLineItemDefinitions, true);
+        List<String> categories, CustomField customField, List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        return getCustomFieldValueReport(workbaskets, states, categories, customField, reportLineItemDefinitions, true);
     }
 
     @Override
     public Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states,
-        CustomField customField, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
+        List<String> categories, CustomField customField, List<ReportLineItemDefinition> reportLineItemDefinitions,
+        boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                 "entry to getCustomFieldValueReport(workbaskets = {}, states = {}, customField = {}, "
@@ -201,7 +205,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
-                .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(workbaskets, states, customField);
+                .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(workbaskets, states, categories,
+                    customField);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 

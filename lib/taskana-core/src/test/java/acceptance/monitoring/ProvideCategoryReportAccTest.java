@@ -24,9 +24,11 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.Report;
+import pro.taskana.impl.ReportLineItem;
 import pro.taskana.impl.ReportLineItemDefinition;
 import pro.taskana.impl.TaskState;
 import pro.taskana.impl.TaskanaEngineImpl;
@@ -73,7 +75,7 @@ public class ProvideCategoryReportAccTest {
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        Report report = taskMonitorService.getCategoryReport(workbaskets, states);
+        Report report = taskMonitorService.getCategoryReport(workbaskets, states, categories);
 
         assertNotNull(report);
         assertEquals(33, report.getReportLines().get(categories.get(0)).getTotalNumberOfTasks());
@@ -98,7 +100,8 @@ public class ProvideCategoryReportAccTest {
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getCategoryReport(workbaskets, states, reportLineItemDefinitions);
+        Report report = taskMonitorService.getCategoryReport(workbaskets, states, categories,
+            reportLineItemDefinitions);
 
         int sumLineCount = report.getSumLine().getLineItems().get(0).getNumberOfTasks()
             + report.getSumLine().getLineItems().get(1).getNumberOfTasks()
@@ -130,6 +133,38 @@ public class ProvideCategoryReportAccTest {
 
     }
 
+    @WithAccessId(userName = "monitor_user_1")
+    @Test
+    public void testEachItemOfCategoryReportWithCategoryFilter()
+        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
+        List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getCategoryReport(workbaskets, states, categories,
+            reportLineItemDefinitions);
+
+        List<ReportLineItem> line1 = report.getReportLines().get("AUTOMATIC").getLineItems();
+        assertEquals(2, line1.get(0).getNumberOfTasks());
+        assertEquals(1, line1.get(1).getNumberOfTasks());
+        assertEquals(0, line1.get(2).getNumberOfTasks());
+        assertEquals(1, line1.get(3).getNumberOfTasks());
+        assertEquals(3, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("MANUAL").getLineItems();
+        assertEquals(2, line2.get(0).getNumberOfTasks());
+        assertEquals(2, line2.get(1).getNumberOfTasks());
+        assertEquals(2, line2.get(2).getNumberOfTasks());
+        assertEquals(0, line2.get(3).getNumberOfTasks());
+        assertEquals(4, line2.get(4).getNumberOfTasks());
+
+        assertEquals(2, report.getReportLines().size());
+    }
+
     private List<Workbasket> getListOfWorkbaskets() throws WorkbasketNotFoundException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -156,6 +191,16 @@ public class ProvideCategoryReportAccTest {
         reportLineItemDefinitions.add(new ReportLineItemDefinition(2, 5));
         reportLineItemDefinitions.add(new ReportLineItemDefinition(6, 10));
         reportLineItemDefinitions.add(new ReportLineItemDefinition(11, Integer.MAX_VALUE));
+        return reportLineItemDefinitions;
+    }
+
+    private List<ReportLineItemDefinition> getShortListOfReportLineItemDefinitions() {
+        List<ReportLineItemDefinition> reportLineItemDefinitions = new ArrayList<>();
+        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -6));
+        reportLineItemDefinitions.add(new ReportLineItemDefinition(-5, -1));
+        reportLineItemDefinitions.add(new ReportLineItemDefinition(0));
+        reportLineItemDefinitions.add(new ReportLineItemDefinition(1, 5));
+        reportLineItemDefinitions.add(new ReportLineItemDefinition(6, Integer.MAX_VALUE));
         return reportLineItemDefinitions;
     }
 
