@@ -11,12 +11,21 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { MapValuesPipe } from '../../pipes/map-values.pipe';
+import { FilterModel } from '../../shared/filter/filter.component';
 
 @Component({
   selector: 'dummy-detail',
   template: 'dummydetail'
 })
 export class DummyDetailComponent {
+
+}
+
+@Component({
+  selector: 'taskana-filter',
+  template: ''
+})
+export class FilterComponent {
 
 }
 
@@ -38,7 +47,7 @@ describe('WorkbasketListComponent', () => {
   
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WorkbasketListComponent, DummyDetailComponent, MapValuesPipe, SpinnerComponent],
+      declarations: [ WorkbasketListComponent, DummyDetailComponent, MapValuesPipe, SpinnerComponent, FilterComponent],
       imports:[
         AngularSvgIconModule,
         HttpModule,
@@ -76,23 +85,25 @@ describe('WorkbasketListComponent', () => {
     })
   });
 
-  it('should have wb-action-toolbar, wb-search-bar, wb-list-container and wb-pagination created in the html',() => {
+  it('should have wb-action-toolbar, wb-search-bar, wb-list-container, wb-pagination, collapsedMenufilterWb and taskana-filter created in the html',() => {
     expect(debugElement.querySelector('#wb-action-toolbar')).toBeDefined();
     expect(debugElement.querySelector('#wb-search-bar')).toBeDefined();
     expect(debugElement.querySelector('#wb-pagination')).toBeDefined();
     expect(debugElement.querySelector('#wb-list-container')).toBeDefined();
-    expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(4);
+    expect(debugElement.querySelector('#collapsedMenufilterWb')).toBeDefined();
+    expect(debugElement.querySelector('taskana-filter')).toBeDefined();
+    expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
   });
 
   it('should have two workbasketsummary rows created with the second one selected.',() => {
-    expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(4);
-    expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class')).toBe('list-group-item');
-    expect(debugElement.querySelectorAll('#wb-list-container > li')[3].getAttribute('class')).toBe('list-group-item active');
+    expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
+    expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class')).toBe('list-group-item');
+    expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class')).toBe('list-group-item active');
   });
 
   it('should have two workbasketsummary rows created with two different icons: user and users',() => {
-    expect(debugElement.querySelectorAll('#wb-list-container > li')[2].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
-    expect(debugElement.querySelectorAll('#wb-list-container > li')[3].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
+    expect(debugElement.querySelectorAll('#wb-list-container > li')[1].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
+    expect(debugElement.querySelectorAll('#wb-list-container > li')[2].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
   });
 
   it('should have rendered sort by: name, id, description, owner and type',  () => {
@@ -104,24 +115,12 @@ describe('WorkbasketListComponent', () => {
     
   });
 
-  it('should have changed sort direction and perform a request after clicking sort direction buttons', fakeAsync( () => {
-    debugElement.querySelector('#sort-by-direction-desc').click();
-    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('key', Direction.DESC);
-    debugElement.querySelector('#sort-by-direction-asc').click();
-    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('key', Direction.ASC);
-  }));
+  it('should have performRequest after performFilter is triggered', fakeAsync( () => {
+    let type='PERSONAL', name = 'someName', description = 'someDescription', owner = 'someOwner'
+    let filter = new FilterModel(type, name, description, owner);
+    component.performFilter(filter);
+    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('key', 'asc', undefined, name, description, undefined, owner, type );
 
-  it('should have changed sortBy field and perform a request after clicking on to any sort by rows', fakeAsync( () => {
-    debugElement.querySelector('#sort-by-key').click();
-    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('key', jasmine.any(String));
-    debugElement.querySelector('#sort-by-name').click();
-    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('name', jasmine.any(String));
-    debugElement.querySelector('#sort-by-description').click();
-    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('description', jasmine.any(String));
-    debugElement.querySelector('#sort-by-owner').click();
-    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('owner', jasmine.any(String));
-    debugElement.querySelector('#sort-by-type').click();
-    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('type', jasmine.any(String));
   }));
 
 });

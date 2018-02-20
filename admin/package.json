@@ -9,7 +9,7 @@
     "build:prod": "ng build --environment=prod --no-progress",
     "test": "./node_modules/.bin/karma start --single-run --browsers Firefox",
     "test-phantom": "./node_modules/.bin/karma start --single-run --browsers PhantomJS",
-    "test:watch": "./node_modules/.bin/karma start --browsers Firefox",
+    "test:watch": "./node_modules/.bin/karma start --browsers Chrome",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
