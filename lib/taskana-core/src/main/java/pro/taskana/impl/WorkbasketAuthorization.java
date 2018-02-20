@@ -9,7 +9,6 @@ public enum WorkbasketAuthorization {
     APPEND,
     TRANSFER,
     DISTRIBUTE,
-    DELETE,
     CUSTOM_1,
     CUSTOM_2,
     CUSTOM_3,

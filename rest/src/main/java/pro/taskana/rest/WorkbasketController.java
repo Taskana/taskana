@@ -63,14 +63,11 @@ public class WorkbasketController {
 
         List<WorkbasketSummary> workbasketsSummary;
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
-
         try {
-
             addSortingToQuery(query, sortBy, order);
             addAttributeFilter(query, name, nameLike, descLike, owner, ownerLike, type);
             addAuthorizationFilter(query, requiredPermission);
             workbasketsSummary = query.list();
-
         } catch (InvalidArgumentException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (InvalidRequestException e) {
@@ -95,7 +92,7 @@ public class WorkbasketController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> createWorkbasket(@RequestBody Workbasket workbasket) {
+    public ResponseEntity<Workbasket> createWorkbasket(@RequestBody Workbasket workbasket) {
         Workbasket createdWorkbasket;
         try {
             createdWorkbasket = workbasketService.createWorkbasket(workbasket);
@@ -106,7 +103,7 @@ public class WorkbasketController {
     }
 
     @RequestMapping(value = "/{workbasketkey}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateWorkbasket(@PathVariable(value = "workbasketkey") String workbasketKey,
+    public ResponseEntity<Workbasket> updateWorkbasket(@PathVariable(value = "workbasketkey") String workbasketKey,
         @RequestBody Workbasket workbasket) {
         try {
             Workbasket updatedWorkbasket = workbasketService.updateWorkbasket(workbasket);
@@ -121,26 +118,50 @@ public class WorkbasketController {
     }
 
     @RequestMapping(value = "/{workbasketkey}/authorizations", method = RequestMethod.GET)
-    public List<WorkbasketAccessItem> getWorkbasketAuthorizations(
+    public ResponseEntity<List<WorkbasketAccessItem>> getWorkbasketAuthorizations(
         @PathVariable(value = "workbasketkey") String workbasketKey) {
-        return workbasketService.getWorkbasketAuthorizations(workbasketKey);
+        List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAuthorizations(workbasketKey);
+        return new ResponseEntity<>(wbAuthorizations, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/authorizations", method = RequestMethod.POST)
-    public WorkbasketAccessItem createWorkbasketAuthorization(@RequestBody WorkbasketAccessItem workbasketAccessItem) {
-        return workbasketService.createWorkbasketAuthorization(workbasketAccessItem);
+    public ResponseEntity<WorkbasketAccessItem> createWorkbasketAuthorization(
+        @RequestBody WorkbasketAccessItem workbasketAccessItem) {
+        workbasketAccessItem = workbasketService.createWorkbasketAuthorization(workbasketAccessItem);
+        return new ResponseEntity<>(workbasketAccessItem, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/authorizations/{authid}", method = RequestMethod.PUT)
-    public WorkbasketAccessItem updateWorkbasketAuthorization(@PathVariable(value = "authid") String authId,
+    public ResponseEntity<WorkbasketAccessItem> updateWorkbasketAuthorization(
+        @PathVariable(value = "authid") String authId,
         @RequestBody WorkbasketAccessItem workbasketAccessItem) throws InvalidArgumentException {
-        return workbasketService.updateWorkbasketAuthorization(workbasketAccessItem);
+        workbasketAccessItem = workbasketService.updateWorkbasketAuthorization(workbasketAccessItem);
+        return new ResponseEntity<>(workbasketAccessItem, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/authorizations/{authid}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteWorkbasketAuthorization(@PathVariable(value = "authid") String authId) {
         workbasketService.deleteWorkbasketAuthorization(authId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @RequestMapping(value = "/{workbasketId}/distributiontargets", method = RequestMethod.GET)
+    public ResponseEntity<List<WorkbasketSummaryResource>> getDistributionTargetsForWorkbasketId(
+        @PathVariable(value = "workbasketId") String workbasketId) {
+
+        ResponseEntity<List<WorkbasketSummaryResource>> result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        List<WorkbasketSummary> distributionTargets = null;
+        try {
+            distributionTargets = workbasketService.getDistributionTargets(workbasketId);
+            result = new ResponseEntity<>(distributionTargets.stream()
+                .map(workbasket -> workbasketSummaryMapper.toResource(workbasket))
+                .collect(Collectors.toList()), HttpStatus.OK);
+        } catch (WorkbasketNotFoundException e) {
+            result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NotAuthorizedException e) {
+            result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        return result;
     }
 
     private void addAuthorizationFilter(WorkbasketQuery query, String requiredPermission)
@@ -166,9 +187,6 @@ public class WorkbasketController {
                         break;
                     case "DISTRIBUTE":
                         query.callerHasPermission(WorkbasketAuthorization.DISTRIBUTE);
-                        break;
-                    case "DELETE":
-                        query.callerHasPermission(WorkbasketAuthorization.DELETE);
                         break;
                     case "CUSTOM_1":
                         query.callerHasPermission(WorkbasketAuthorization.CUSTOM_1);
