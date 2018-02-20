@@ -2,7 +2,7 @@
     <ul id = "wb-list-container" class="list-group footer-space"> 
         <li id="wb-action-toolbar" class="list-group-item"> 
             <div class="row"> 
-                <div class="col-xs-9 mod-col-9">
+                <div class="col-xs-9">
                     <button type="button" data-toggle="tooltip" title="Add" class="btn btn-default">
                         <span class="glyphicon glyphicon-plus green" aria-hidden="true"></span>
                     </button>
@@ -18,68 +18,48 @@
                     <button type="button" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     </button>
-                </div>                                         
-                <div class="clearfix btn-group"> 
-                    <button class="btn btn-default collapsed" type="button" id="collapsedMenuSearchWb" data-toggle="collapse" data-target="#wb-search-bar" aria-expanded="false"> 
-                        <span class="glyphicon glyphicon-filter blue wb-search-toggle"></span> 
-                    </button>
                 </div>
-                <div class="dropdown clearfix btn-group"> 
-                    <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                        <span class="glyphicon {{sortDirection === 'asc'? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes' }} blue"
-                            data-toggle= "tooltip" title="{{sortDirection === 'asc'? 'A-Z' : 'Z-A' }}"></span> 
-                    </button>         
-                    <ul class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown"> 
-                        <li>
-                            <div class="col-xs-6">
-                                <h5>Sort By</h5>
-                            </div>
-                            <button  id="sort-by-direction-asc" type="button" (click)="changeOrder('asc')" data-toggle="tooltip" title="A-Z" class="btn btn-default {{sortDirection === 'asc'? 'selected' : '' }}">
-                                    <span class="glyphicon glyphicon-sort-by-attributes-alt blue" aria-hidden="true"></span>
-                            </button>
-                            <button id= "sort-by-direction-desc" type="button" (click)="changeOrder('desc')" data-toggle="tooltip" title="Z-A" class="btn btn-default {{sortDirection === 'desc'? 'selected' : '' }}" >
-                                <span class="glyphicon glyphicon-sort-by-attributes blue" aria-hidden="true"></span>
-                            </button>
-                        </li>                                                 
-                        <li role="separator" class="divider"></li>
-                        <li id="sort-by-{{sortingField.key}}"(click)="changeSortBy(sortingField.key)"  *ngFor="let sortingField of sortingFields | mapValues">
-                            <a>
-                                <label>
-                                    <span class="glyphicon {{sortBy === sortingField.key? 'glyphicon-check': 'glyphicon-unchecked'}} blue" aria-hidden="true"></span>
-                                    {{sortingField.value}}
-                                </label>
-                            </a>
-                        </li>
-                    </ul>
+                <div class = "pull-right margin-right">
+                    <div class="dropdown clearfix btn-group"> 
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+                            <span class="glyphicon {{sortDirection === 'asc'? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes' }} blue"
+                                data-toggle= "tooltip" title="{{sortDirection === 'asc'? 'A-Z' : 'Z-A' }}"></span> 
+                        </button>         
+                        <ul class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown"> 
+                            <li>
+                                <div class="col-xs-6">
+                                    <h5>Sort By</h5>
+                                </div>
+                                <button  id="sort-by-direction-asc" type="button" (click)="changeOrder('asc')" data-toggle="tooltip" title="A-Z" class="btn btn-default {{sortDirection === 'asc'? 'selected' : '' }}">
+                                        <span class="glyphicon glyphicon-sort-by-attributes-alt blue" aria-hidden="true"></span>
+                                </button>
+                                <button id= "sort-by-direction-desc" type="button" (click)="changeOrder('desc')" data-toggle="tooltip" title="Z-A" class="btn btn-default {{sortDirection === 'desc'? 'selected' : '' }}" >
+                                    <span class="glyphicon glyphicon-sort-by-attributes blue" aria-hidden="true"></span>
+                                </button>
+                            </li>                                                 
+                            <li role="separator" class="divider"></li>
+                            <li id="sort-by-{{sortingField.key}}"(click)="changeSortBy(sortingField.key)"  *ngFor="let sortingField of sortingFields | mapValues">
+                                <a>
+                                    <label>
+                                        <span class="glyphicon {{sortBy === sortingField.key? 'glyphicon-check': 'glyphicon-unchecked'}} blue" aria-hidden="true"></span>
+                                        {{sortingField.value}}
+                                    </label>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="clearfix btn-group"> 
+                        <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" data-toggle="collapse" data-target="#wb-filter-bar" aria-expanded="false"> 
+                            <span class="glyphicon glyphicon-filter blue wb-filter-toggle"></span> 
+                        </button>
+                    </div>
                 </div>
             </div>
+            <div class = "row">
+                <taskana-filter target="wb-filter-bar" (performFilter)="performFilter($event)"></taskana-filter>  
+            </div>
         </li>
-        <taskana-spinner [isRunning]="requestInProgress" class = "centered-horizontally"></taskana-spinner>
-        <li type="text" id="wb-search-bar" class="list-group-seach collapse">
-            <div class="row"> 
-                <dl class="pull-left padding-left-5"> 
-                    <dt class="dropdown"> <button class="btn btn-default" type="button" id="dropdownMenuSearch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                        <svg-icon class="small blue" src="./assets/icons/user.svg"></svg-icon>
-                        </button> <ul class="dropdown-menu dropdown-menu-users" role="menu">
-                            <li>
-                                <button type="button" placeholder="individual" class="btn btn-default btn-users-list" data-toggle="tooltip" title="individual">
-                                    <svg-icon class="small blue" src="./assets/icons/user.svg"></svg-icon>
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" placeholder="multiple" data-toggle="tooltip" title="multiple" class="btn btn-default btn-users-list">
-                                    <svg-icon class="small blue" src="./assets/icons/users.svg"></svg-icon>
-                                </button>            
-                            </li>
-                        </ul></dt> 
-                </dl>                                         
-                <dl class="col-xs-10">
-                    <dt><input type="text" class="form-control" id="wb-display-name-search" placeholder="Filter by name"> </dt>
-                    <dt><input type="text" class="form-control" id="wb-display-description-search" placeholder="Filter by description"> </dt>
-                    <dt><input type="text" class="form-control" id="wb-display-task-owner-search" placeholder="Filter by Task owner"> </dt>
-                </dl>                                         
-            </div>                                     
-        </li>                                 
+        <taskana-spinner [isRunning]="requestInProgress" class = "centered-horizontally"></taskana-spinner>                          
         <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId" type="text" (click) ="selectWorkbasket(workbasket.workbasketId)"  [routerLink]="[ {outlets: { detail: [workbasket.workbasketId] } }]">
             <div class="row">
                 <dl class="col-xs-1">
