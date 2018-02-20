@@ -17,8 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pro.taskana.Classification;
-import pro.taskana.ClassificationService;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
@@ -29,7 +27,6 @@ import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.Report;
 import pro.taskana.impl.ReportLineItem;
 import pro.taskana.impl.ReportLineItemDefinition;
@@ -76,22 +73,22 @@ public class ProvideClassificationReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
-        List<Classification> classifications = getListOfClassifications();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
 
-        Report report = taskMonitorService.getClassificationReport(workbaskets, states);
+        Report report = taskMonitorService.getClassificationReport(workbaskets, states, categories);
 
         assertNotNull(report);
-        assertEquals(10, report.getReportLines().get(classifications.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(classifications.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(7, report.getReportLines().get(classifications.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(classifications.get(3).getKey()).getTotalNumberOfTasks());
-        assertEquals(13, report.getReportLines().get(classifications.get(4).getKey()).getTotalNumberOfTasks());
-        assertEquals(0, report.getReportLines().get(classifications.get(0).getKey()).getLineItems().size());
-        assertEquals(0, report.getReportLines().get(classifications.get(1).getKey()).getLineItems().size());
-        assertEquals(0, report.getReportLines().get(classifications.get(2).getKey()).getLineItems().size());
-        assertEquals(0, report.getReportLines().get(classifications.get(3).getKey()).getLineItems().size());
-        assertEquals(0, report.getReportLines().get(classifications.get(4).getKey()).getLineItems().size());
+        assertEquals(10, report.getReportLines().get("L10000").getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get("L20000").getTotalNumberOfTasks());
+        assertEquals(7, report.getReportLines().get("L30000").getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get("L40000").getTotalNumberOfTasks());
+        assertEquals(13, report.getReportLines().get("L50000").getTotalNumberOfTasks());
+        assertEquals(0, report.getReportLines().get("L10000").getLineItems().size());
+        assertEquals(0, report.getReportLines().get("L20000").getLineItems().size());
+        assertEquals(0, report.getReportLines().get("L30000").getLineItems().size());
+        assertEquals(0, report.getReportLines().get("L40000").getLineItems().size());
+        assertEquals(0, report.getReportLines().get("L50000").getLineItems().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
@@ -104,10 +101,11 @@ public class ProvideClassificationReportAccTest {
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<Classification> classifications = getListOfClassifications();
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getClassificationReport(workbaskets, states, reportLineItemDefinitions);
+        Report report = taskMonitorService.getClassificationReport(workbaskets, states, categories,
+            reportLineItemDefinitions);
 
         int sumLineCount = report.getSumLine().getLineItems().get(0).getNumberOfTasks()
             + report.getSumLine().getLineItems().get(1).getNumberOfTasks()
@@ -121,11 +119,11 @@ public class ProvideClassificationReportAccTest {
 
         assertNotNull(report);
 
-        assertEquals(10, report.getReportLines().get(classifications.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(classifications.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(7, report.getReportLines().get(classifications.get(2).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(classifications.get(3).getKey()).getTotalNumberOfTasks());
-        assertEquals(13, report.getReportLines().get(classifications.get(4).getKey()).getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get("L10000").getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get("L20000").getTotalNumberOfTasks());
+        assertEquals(7, report.getReportLines().get("L30000").getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get("L40000").getTotalNumberOfTasks());
+        assertEquals(13, report.getReportLines().get("L50000").getTotalNumberOfTasks());
 
         assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
@@ -149,45 +147,78 @@ public class ProvideClassificationReportAccTest {
 
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<Classification> classifications = getListOfClassifications();
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getClassificationReport(workbaskets, states, reportLineItemDefinitions);
+        Report report = taskMonitorService.getClassificationReport(workbaskets, states, categories,
+            reportLineItemDefinitions);
 
-        List<ReportLineItem> line1 = report.getReportLines().get(classifications.get(0).getKey()).getLineItems();
+        List<ReportLineItem> line1 = report.getReportLines().get("L10000").getLineItems();
         assertEquals(7, line1.get(0).getNumberOfTasks());
         assertEquals(2, line1.get(1).getNumberOfTasks());
         assertEquals(1, line1.get(2).getNumberOfTasks());
         assertEquals(0, line1.get(3).getNumberOfTasks());
         assertEquals(0, line1.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line2 = report.getReportLines().get(classifications.get(1).getKey()).getLineItems();
+        List<ReportLineItem> line2 = report.getReportLines().get("L20000").getLineItems();
         assertEquals(5, line2.get(0).getNumberOfTasks());
         assertEquals(3, line2.get(1).getNumberOfTasks());
         assertEquals(1, line2.get(2).getNumberOfTasks());
         assertEquals(1, line2.get(3).getNumberOfTasks());
         assertEquals(0, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getReportLines().get(classifications.get(2).getKey()).getLineItems();
+        List<ReportLineItem> line3 = report.getReportLines().get("L30000").getLineItems();
         assertEquals(2, line3.get(0).getNumberOfTasks());
         assertEquals(1, line3.get(1).getNumberOfTasks());
         assertEquals(0, line3.get(2).getNumberOfTasks());
         assertEquals(1, line3.get(3).getNumberOfTasks());
         assertEquals(3, line3.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line4 = report.getReportLines().get(classifications.get(3).getKey()).getLineItems();
+        List<ReportLineItem> line4 = report.getReportLines().get("L40000").getLineItems();
         assertEquals(2, line4.get(0).getNumberOfTasks());
         assertEquals(2, line4.get(1).getNumberOfTasks());
         assertEquals(2, line4.get(2).getNumberOfTasks());
         assertEquals(0, line4.get(3).getNumberOfTasks());
         assertEquals(4, line4.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line5 = report.getReportLines().get(classifications.get(4).getKey()).getLineItems();
+        List<ReportLineItem> line5 = report.getReportLines().get("L50000").getLineItems();
         assertEquals(3, line5.get(0).getNumberOfTasks());
         assertEquals(3, line5.get(1).getNumberOfTasks());
         assertEquals(0, line5.get(2).getNumberOfTasks());
         assertEquals(5, line5.get(3).getNumberOfTasks());
         assertEquals(2, line5.get(4).getNumberOfTasks());
+    }
+
+    @WithAccessId(userName = "monitor_user_1")
+    @Test
+    public void testEachItemOfClassificationReportWithCategoryFilter()
+        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
+        List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getClassificationReport(workbaskets, states, categories,
+            reportLineItemDefinitions);
+
+        List<ReportLineItem> line1 = report.getReportLines().get("L30000").getLineItems();
+        assertEquals(2, line1.get(0).getNumberOfTasks());
+        assertEquals(1, line1.get(1).getNumberOfTasks());
+        assertEquals(0, line1.get(2).getNumberOfTasks());
+        assertEquals(1, line1.get(3).getNumberOfTasks());
+        assertEquals(3, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("L40000").getLineItems();
+        assertEquals(2, line2.get(0).getNumberOfTasks());
+        assertEquals(2, line2.get(1).getNumberOfTasks());
+        assertEquals(2, line2.get(2).getNumberOfTasks());
+        assertEquals(0, line2.get(3).getNumberOfTasks());
+        assertEquals(4, line2.get(4).getNumberOfTasks());
+
+        assertEquals(2, report.getReportLines().size());
     }
 
     private List<Workbasket> getListOfWorkbaskets() throws WorkbasketNotFoundException, NotAuthorizedException {
@@ -203,16 +234,6 @@ public class ProvideClassificationReportAccTest {
             .getWorkbasket("WBI:000000000000000000000000000000000004");
 
         return Arrays.asList(workbasket1, workbasket2, workbasket3, workbasket4);
-    }
-
-    private List<Classification> getListOfClassifications() throws ClassificationNotFoundException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-        ClassificationImpl c1 = (ClassificationImpl) classificationService.getClassification("L10000", "DOMAIN_A");
-        ClassificationImpl c2 = (ClassificationImpl) classificationService.getClassification("L20000", "DOMAIN_A");
-        ClassificationImpl c3 = (ClassificationImpl) classificationService.getClassification("L30000", "DOMAIN_A");
-        ClassificationImpl c4 = (ClassificationImpl) classificationService.getClassification("L40000", "DOMAIN_A");
-        ClassificationImpl c5 = (ClassificationImpl) classificationService.getClassification("L50000", "DOMAIN_A");
-        return Arrays.asList(c1, c2, c3, c4, c5);
     }
 
     private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {
