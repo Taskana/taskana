@@ -26,6 +26,7 @@ import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-deta
 import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component';
 import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { FilterComponent } from './shared/filter/filter.component';
 
 //Shared
 import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-detail.component';
@@ -56,7 +57,7 @@ const MODULES =     [
                     HttpClientModule
                     ];
 
-const COMPONENTS =  [  
+const DECLARATIONS =  [  
                       AppComponent,
                       WorkbasketListComponent,
                       CategorieslistComponent,
@@ -70,10 +71,12 @@ const COMPONENTS =  [
                       WorkbasketInformationComponent,
                       NoAccessComponent,
                       SpinnerComponent,
+                      FilterComponent,
                       MapValuesPipe
                     ];
+
 @NgModule({
-  declarations: COMPONENTS,
+  declarations: DECLARATIONS,
   imports: MODULES,
   providers: [
     WorkbasketService,
