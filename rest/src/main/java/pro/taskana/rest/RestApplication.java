@@ -24,7 +24,9 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
+import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketDefinitionMapper;
+import pro.taskana.rest.resource.mapper.WorkbasketMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 import pro.taskana.sampledata.SampleDataGenerator;
 
@@ -60,6 +62,16 @@ public class RestApplication {
     @Bean
     public WorkbasketSummaryMapper getWorkbasketSummaryMapper() {
         return new WorkbasketSummaryMapper();
+    }
+
+    @Bean
+    public WorkbasketMapper getWorkbasketMapper() {
+        return new WorkbasketMapper();
+    }
+
+    @Bean
+    public WorkbasketAccessItemMapper getWorkbasketAccessItemMapper() {
+        return new WorkbasketAccessItemMapper();
     }
 
     @Bean
