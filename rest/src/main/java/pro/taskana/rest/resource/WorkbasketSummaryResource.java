@@ -44,5 +44,4 @@ public class WorkbasketSummaryResource extends ResourceSupport {
         this.orgLevel3 = orgLevel3;
         this.orgLevel4 = orgLevel4;
     }
-
 }
