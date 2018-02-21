@@ -5,6 +5,9 @@ import { WorkbasketInformationComponent } from './information/workbasket-informa
 import { Workbasket } from 'app/model/workbasket';
 import { Observable } from 'rxjs/Observable';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
+import { ICONTYPES, IconTypeComponent } from '../../shared/type-icon/icon-type.component';
+import { MapValuesPipe } from '../../pipes/map-values.pipe';
+import { RemoveNoneTypePipe } from '../../pipes/remove-none-type';
 
 import { WorkbasketService } from '../../services/workbasketservice.service';
 import { MasterAndDetailService } from '../../services/master-and-detail.service';
@@ -26,7 +29,7 @@ describe('WorkbasketDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[RouterTestingModule, FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [ WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent ],
+      declarations: [ WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe ],
       providers:[WorkbasketService, MasterAndDetailService, PermissionService]
     })
     .compileComponents();

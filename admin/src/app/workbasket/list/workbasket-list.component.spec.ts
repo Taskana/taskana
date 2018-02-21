@@ -10,8 +10,11 @@ import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
-import { MapValuesPipe } from '../../pipes/map-values.pipe';
 import { FilterModel } from '../../shared/filter/filter.component';
+import { IconTypeComponent } from '../../shared/type-icon/icon-type.component';
+import { RemoveNoneTypePipe } from '../../pipes/remove-none-type';
+import { MapValuesPipe } from '../../pipes/map-values.pipe';
+
 
 @Component({
   selector: 'dummy-detail',
@@ -30,7 +33,7 @@ export class FilterComponent {
 }
 
 const  workbasketSummary: WorkbasketSummary[] = [ new WorkbasketSummary("1", "key1", "NAME1", "description 1", "owner 1", "", "", "PERSONAL", "", "", "", ""),
-                                                  new WorkbasketSummary("2", "key2", "NAME2", "description 2", "owner 2", "", "", "MULTIPLE", "", "", "", "")
+                                                  new WorkbasketSummary("2", "key2", "NAME2", "description 2", "owner 2", "", "", "GROUP", "", "", "", "")
                                                 ];
 
 
@@ -47,7 +50,7 @@ describe('WorkbasketListComponent', () => {
   
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WorkbasketListComponent, DummyDetailComponent, MapValuesPipe, SpinnerComponent, FilterComponent],
+      declarations: [ WorkbasketListComponent, DummyDetailComponent, MapValuesPipe, SpinnerComponent, FilterComponent, RemoveNoneTypePipe, IconTypeComponent],
       imports:[
         AngularSvgIconModule,
         HttpModule,

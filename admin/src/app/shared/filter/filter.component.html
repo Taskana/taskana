@@ -1,23 +1,15 @@
 <div type="text" id="{{target}}" class="list-group-seach collapse">
 	<div class="row"> 
 		<div class="dropdown col-xs-2">
-			<button class="btn btn-default {{!filter.type? 'glyphicon glyphicon-asterisk blue' : '' }}" type="button" id="dropdownMenufilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-				<svg-icon *ngIf="filter.type" class="small blue" src="./assets/icons/{{(filter.type === 'PERSONAL')? 'user.svg': (filter.type === 'GROUP')? 'users.svg' :''}}"></svg-icon>
+			<button class="btn btn-default" type="button" id="dropdownMenufilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+				<taskana-icon-type [type] ="filter.type" class="vertical-align"></taskana-icon-type>
+
 			</button> 
 			<ul class="dropdown-menu dropdown-menu-users" role="menu">
-				<li>
-					<button type="button" (click)="selectType(-1)" placeholder="individual" class="btn btn-default glyphicon glyphicon-asterisk btn-users-list blue" data-toggle="tooltip" title="all">
+				<li *ngFor ="let type of allTypes | mapValues">
+					<button type="button" (click)="selectType(type.key)" class="btn btn-default btn-users-list" data-toggle="tooltip" [title]="type.value">
+						<taskana-icon-type class="vertical-align" [type] ='type.key'></taskana-icon-type>
 					</button>
-				</li>
-				<li>
-					<button type="button" (click)="selectType(0)" placeholder="individual" class="btn btn-default btn-users-list" data-toggle="tooltip" title="individual">
-							<svg-icon  class="small blue" src="./assets/icons/user.svg"></svg-icon>
-					</button>
-				</li>
-				<li>
-					<button type="button" (click)="selectType(1)" placeholder="group" data-toggle="tooltip" title="group" class="btn btn-default btn-users-list">
-							<svg-icon class="small blue" src="./assets/icons/users.svg"></svg-icon>
-					</button>            
 				</li>
 			</ul>
 		</div>
@@ -28,7 +20,7 @@
 			<input type="text" [(ngModel)]= "filter.key" (keyup.enter)="search()" class="form-control" id="wb-display-key-filter" placeholder="Filter key">
 		</div>
 		<button (click)="clear()" type="button"
-				class="btn btn-default glyphicon glyphicon-remove-circle blue pull-right margin-right" data-toggle="tooltip" title="Clear">
+				class="btn btn-default glyphicon glyphicon-ban-circle blue pull-right margin-right" data-toggle="tooltip" title="Clear">
 		</button>
 	</div>
 	<div class="row"> 
@@ -47,5 +39,5 @@
 		<button (click)="search()" type="button"
 				class="btn btn-default glyphicon glyphicon-search blue pull-right margin-right" data-toggle="tooltip" title="Search">
 		</button>
-</div>                                
+	</div>                                
 </div>  
