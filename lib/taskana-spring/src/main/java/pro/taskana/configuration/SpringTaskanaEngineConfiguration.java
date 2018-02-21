@@ -18,7 +18,7 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
     private static final Logger logger = LoggerFactory.getLogger(SpringTaskanaEngineConfiguration.class);
 
     public SpringTaskanaEngineConfiguration() {
-        super(false);
+        super(true);
     }
 
     public SpringTaskanaEngineConfiguration(boolean enableSecurity) {

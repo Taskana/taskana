@@ -23,5 +23,4 @@ public class SpringTaskanaEngineImpl extends TaskanaEngineImpl {
         this.transactionFactory = new SpringManagedTransactionFactory();
         this.sessionManager = createSqlSessionManager();
     }
-
 }
