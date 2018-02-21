@@ -613,7 +613,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             // delete workbasket and sub-tables
             distributionTargetMapper.deleteAllDistributionTargetsBySourceId(wb.getId());
             distributionTargetMapper.deleteAllDistributionTargetsByTargetId(wb.getId());
-            workbasketAccessMapper.deleteAllForWorkbasketkey(wb.getKey());
+            workbasketAccessMapper.deleteAllForWorkbasketId(wb.getId());
             workbasketMapper.delete(workbasketId);
         } finally {
             taskanaEngine.returnConnection();

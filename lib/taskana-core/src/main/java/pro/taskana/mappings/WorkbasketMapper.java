@@ -123,7 +123,7 @@ public interface WorkbasketMapper {
 
     @Select("<script>SELECT W.ID, W.KEY, W.NAME, W.DESCRIPTION, W.OWNER, W.DOMAIN, W.TYPE, W.ORG_LEVEL_1, W.ORG_LEVEL_2,  W.ORG_LEVEL_3, W.ORG_LEVEL_4 FROM WORKBASKET AS W "
         + "INNER JOIN WORKBASKET_ACCESS_LIST AS ACL "
-        + "ON (W.KEY = ACL.WORKBASKET_KEY AND ACL.ACCESS_ID = #{accessId}) "
+        + "ON (W.ID = ACL.WORKBASKET_ID AND ACL.ACCESS_ID = #{accessId}) "
         + "WHERE <foreach collection='authorizations' item='authorization' separator=' AND '>"
         + "<if test=\"authorization.name() == 'OPEN'\">PERM_OPEN</if>"
         + "<if test=\"authorization.name() == 'READ'\">PERM_READ</if>"
