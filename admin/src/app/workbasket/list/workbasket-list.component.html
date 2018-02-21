@@ -63,7 +63,9 @@
         <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId" type="text" (click) ="selectWorkbasket(workbasket.workbasketId)"  [routerLink]="[ {outlets: { detail: [workbasket.workbasketId] } }]">
             <div class="row">
                 <dl class="col-xs-1">
-                    <dt><svg-icon class="{{workbasket.workbasketId === selectedId? 'white': 'blue' }} small" src="./assets/icons/{{workbasket.type === 'PERSONAL'? 'user.svg': 'users.svg'}}"></svg-icon></dt>
+                    <dt>
+                        <taskana-icon-type class="vertical-align" [type] ="workbasket.type" [selected] = "workbasket.workbasketId === selectedId" ></taskana-icon-type>
+                    </dt>
                 </dl>
                 <dl class="col-xs-10">
                     <dt>{{workbasket.name}}  ({{workbasket.key}}) </dt>

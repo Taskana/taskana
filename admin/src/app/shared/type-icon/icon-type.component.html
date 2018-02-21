@@ -1,0 +1,2 @@
+<svg-icon *ngIf="type !== 'NONE'"  class="{{selected? 'white': 'blue' }} small" src="./assets/icons/{{type === 'PERSONAL'? 'user.svg': type === 'GROUP'? 'users.svg' : type === 'TOPIC'? 'topic.svg' : 'clearance.svg'}}"></svg-icon>
+<div *ngIf="type === 'NONE'" class = "glyphicon glyphicon-asterisk blue"></div>

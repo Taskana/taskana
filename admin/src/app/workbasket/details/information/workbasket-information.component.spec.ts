@@ -6,28 +6,29 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { Workbasket } from 'app/model/workbasket';
+import { ICONTYPES, IconTypeComponent } from '../../../shared/type-icon/icon-type.component';
+import { MapValuesPipe } from '../../../pipes/map-values.pipe';
+import { RemoveNoneTypePipe } from '../../../pipes/remove-none-type';
+
 
 
 describe('InformationComponent', () => {
   let component: WorkbasketInformationComponent;
   let fixture: ComponentFixture<WorkbasketInformationComponent>;
   let debugElement;
-
+  
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WorkbasketInformationComponent ],
+      declarations: [ WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe],
       imports:[FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
       providers:[WorkbasketService]
 
     })
     .compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(WorkbasketInformationComponent);
     component = fixture.componentInstance;
     debugElement = fixture.debugElement.nativeElement;
-  });
+  }));
 
   afterEach(() =>{
     document.body.removeChild(debugElement);
@@ -49,13 +50,13 @@ describe('InformationComponent', () => {
     
   }));
 
-  it('selectType should set workbasket.type to personal with 0 and multiple in other case', () => {
+  it('selectType should set workbasket.type to personal with 0 and group in other case', () => {
     component.workbasket = new Workbasket(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
     expect(component.workbasket.type).toEqual(null);
-    component.selectType(0);
+    component.selectType(ICONTYPES.PERSONAL);
     expect(component.workbasket.type).toEqual('PERSONAL');
-    component.selectType(1);
-    expect(component.workbasket.type).toEqual('MULTIPLE');
+    component.selectType(ICONTYPES.GROUP);
+    expect(component.workbasket.type).toEqual('GROUP');
   });
 
 });

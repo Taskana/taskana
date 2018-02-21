@@ -20,14 +20,16 @@
                 <label for="wb-type" class="control-label">Type</label>                                                         
                 <div class="dropdown clearfix btn-group"> 
                     <button   class="btn btn-default" type="button" id="dropdownMenu24" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                        <svg-icon class="small blue" src="./assets/icons/{{workbasket.type === 'PERSONAL'? 'user.svg': 'users.svg'}}"></svg-icon>
-                        {{workbasket.type === 'PERSONAL'? 'Individual': 'Multiple'}}
+                        <taskana-icon-type class="vertical-align" [type] ='workbasket.type'></taskana-icon-type>
+                        {{allTypes.get(workbasket.type)}}
                         <span class="caret"></span>
                     </button>                                                             
                     <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu1"> 
                         <li>
-                            <a (click)="selectType(0)"> <svg-icon class="small blue" src="./assets/icons/user.svg"></svg-icon> Individual </a>
-                            <a (click)="selectType(1)"> <svg-icon class="small blue" src="./assets/icons/users.svg"></svg-icon> Multiple </a>
+                            <a  *ngFor="let type of allTypes | mapValues | removeNoneType" (click)="selectType(type.key)">
+                                <taskana-icon-type class="vertical-align" [type] ='type.key'></taskana-icon-type>
+                                {{type.value}}
+                            </a>
                         </li>                                                                 
                     </ul>                                                             
                 </div>

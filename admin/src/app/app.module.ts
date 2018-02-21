@@ -27,6 +27,7 @@ import { WorkbasketInformationComponent } from './workbasket/details/information
 import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { FilterComponent } from './shared/filter/filter.component';
+import { IconTypeComponent } from './shared/type-icon/icon-type.component';
 
 //Shared
 import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-detail.component';
@@ -44,7 +45,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
  * Pipes
  */
 import { MapValuesPipe } from './pipes/map-values.pipe';
-
+import { RemoveNoneTypePipe } from './pipes/remove-none-type';
 
 const MODULES =     [
                     BrowserModule,
@@ -72,7 +73,9 @@ const DECLARATIONS =  [
                       NoAccessComponent,
                       SpinnerComponent,
                       FilterComponent,
-                      MapValuesPipe
+                      IconTypeComponent,
+                      MapValuesPipe,
+                      RemoveNoneTypePipe
                     ];
 
 @NgModule({
