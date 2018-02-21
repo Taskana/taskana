@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { IconTypeComponent, ICONTYPES } from '../type-icon/icon-type.component'
 
 export class FilterModel {
   type:string;
@@ -22,8 +23,10 @@ export class FilterModel {
 })
 export class FilterComponent{
 
-  constructor() { }
-
+  constructor() { 
+    this.allTypes = IconTypeComponent.allTypes;
+  }
+  allTypes: Map<string, string>;
   filter: FilterModel = new FilterModel();
 
   @Input()
@@ -32,8 +35,8 @@ export class FilterComponent{
   @Output()
   performFilter = new EventEmitter<FilterModel>();
   
-  selectType(type: number){
-    this.filter.type = type === 0 ? 'PERSONAL': type === 1? 'GROUP': '';
+  selectType(type: ICONTYPES){
+    this.filter.type = type;
   }
 
   clear(){

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { Workbasket } from '../../../model/workbasket';
 import { WorkbasketService } from '../../../services/workbasketservice.service';
+import { IconTypeComponent, ICONTYPES } from '../../../shared/type-icon/icon-type.component';
 
 @Component({
   selector: 'workbasket-information',
@@ -11,13 +12,15 @@ export class WorkbasketInformationComponent implements OnInit {
 
   @Input()
   workbasket: Workbasket;
-
-  constructor(private service: WorkbasketService) { }
+  allTypes: Map<string, string>;
+  constructor(private service: WorkbasketService) { 
+    this.allTypes = IconTypeComponent.allTypes;
+  }
 
   ngOnInit() {
   }
 
-  selectType(type: number){
-    this.workbasket.type = type === 0 ? 'PERSONAL': 'MULTIPLE';
+  selectType(type: ICONTYPES){
+    this.workbasket.type = type;
   }
 }
