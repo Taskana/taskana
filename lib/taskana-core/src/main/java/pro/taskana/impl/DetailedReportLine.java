@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The DetailedReportLine extends the ReportLine.
+ * The DetailedReportLine extends the {@link ReportLine}. In contrast to the ReportLine there is an additional list of
+ * ReportLines for the classifications of the attachments of the tasks.
  */
 public class DetailedReportLine extends ReportLine {
 

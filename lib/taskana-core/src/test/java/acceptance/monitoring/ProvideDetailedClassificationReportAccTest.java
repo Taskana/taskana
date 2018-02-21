@@ -76,9 +76,10 @@ public class ProvideDetailedClassificationReportAccTest {
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
+        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
 
         DetailedClassificationReport report = taskMonitorService.getDetailedClassificationReport(workbaskets, states,
-            categories);
+            categories, domains);
 
         assertNotNull(report);
 
@@ -129,10 +130,11 @@ public class ProvideDetailedClassificationReportAccTest {
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
+        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
         DetailedClassificationReport report = taskMonitorService.getDetailedClassificationReport(workbaskets, states,
-            categories, reportLineItemDefinitions);
+            categories, domains, reportLineItemDefinitions);
 
         assertNotNull(report);
 
@@ -164,11 +166,11 @@ public class ProvideDetailedClassificationReportAccTest {
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-
+        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
         DetailedClassificationReport report = taskMonitorService.getDetailedClassificationReport(workbaskets, states,
-            categories, reportLineItemDefinitions);
+            categories, domains, reportLineItemDefinitions);
 
         DetailedReportLine line1 = (DetailedReportLine) report.getReportLines().get("L10000");
         assertEquals(7, line1.getLineItems().get(0).getNumberOfTasks());
@@ -279,10 +281,11 @@ public class ProvideDetailedClassificationReportAccTest {
         List<Workbasket> workbaskets = getListOfWorkbaskets();
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
         DetailedClassificationReport report = taskMonitorService.getDetailedClassificationReport(workbaskets, states,
-            categories, reportLineItemDefinitions);
+            categories, domains, reportLineItemDefinitions);
 
         DetailedReportLine line1 = (DetailedReportLine) report.getReportLines().get("L30000");
         assertEquals(2, line1.getLineItems().get(0).getNumberOfTasks());
@@ -327,6 +330,114 @@ public class ProvideDetailedClassificationReportAccTest {
         assertEquals(4, detailedLine2WithoutAttachment.getLineItems().get(4).getNumberOfTasks());
 
         assertEquals(2, report.getReportLines().size());
+    }
+
+    @WithAccessId(userName = "monitor_user_1")
+    @Test
+    public void testEachItemOfClassificationReportWithDomainFilter()
+        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
+        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        DetailedClassificationReport report = taskMonitorService.getDetailedClassificationReport(workbaskets, states,
+            categories, domains, reportLineItemDefinitions);
+
+        DetailedReportLine line1 = (DetailedReportLine) report.getReportLines().get("L10000");
+        assertEquals(5, line1.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(2, line1.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(1, line1.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(0, line1.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(0, line1.getLineItems().get(4).getNumberOfTasks());
+
+        ReportLine detailedLine1 = line1.getDetailLines().get("L11000");
+        assertEquals(1, detailedLine1.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(0, detailedLine1.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(1, detailedLine1.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(0, detailedLine1.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(0, detailedLine1.getLineItems().get(4).getNumberOfTasks());
+
+        ReportLine detailedLineNoAttachment1 = line1.getDetailLines().get("N/A");
+        assertEquals(4, detailedLineNoAttachment1.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(2, detailedLineNoAttachment1.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment1.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment1.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment1.getLineItems().get(4).getNumberOfTasks());
+
+        DetailedReportLine line2 = (DetailedReportLine) report.getReportLines().get("L20000");
+        assertEquals(3, line2.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(1, line2.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(1, line2.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(1, line2.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(0, line2.getLineItems().get(4).getNumberOfTasks());
+
+        ReportLine detailedLine2 = line2.getDetailLines().get("L22000");
+        assertEquals(1, detailedLine2.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(0, detailedLine2.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(1, detailedLine2.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(1, detailedLine2.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(0, detailedLine2.getLineItems().get(4).getNumberOfTasks());
+
+        ReportLine detailedLineNoAttachment2 = line2.getDetailLines().get("N/A");
+        assertEquals(2, detailedLineNoAttachment2.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(1, detailedLineNoAttachment2.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment2.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment2.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment2.getLineItems().get(4).getNumberOfTasks());
+
+        DetailedReportLine line3 = (DetailedReportLine) report.getReportLines().get("L30000");
+        assertEquals(1, line3.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(0, line3.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, line3.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(1, line3.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(1, line3.getLineItems().get(4).getNumberOfTasks());
+
+        ReportLine detailedLine3 = line3.getDetailLines().get("L33000");
+        assertEquals(0, detailedLine3.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(0, detailedLine3.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, detailedLine3.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(1, detailedLine3.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(1, detailedLine3.getLineItems().get(4).getNumberOfTasks());
+
+        ReportLine detailedLineNoAttachment3 = line3.getDetailLines().get("N/A");
+        assertEquals(1, detailedLineNoAttachment3.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment3.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment3.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment3.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment3.getLineItems().get(4).getNumberOfTasks());
+
+        DetailedReportLine line4 = (DetailedReportLine) report.getReportLines().get("L40000");
+        assertEquals(2, line4.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(0, line4.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, line4.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(0, line4.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(3, line4.getLineItems().get(4).getNumberOfTasks());
+
+        ReportLine detailedLineNoAttachment4 = line4.getDetailLines().get("N/A");
+        assertEquals(2, detailedLineNoAttachment4.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment4.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment4.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment4.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(3, detailedLineNoAttachment4.getLineItems().get(4).getNumberOfTasks());
+
+        DetailedReportLine line5 = (DetailedReportLine) report.getReportLines().get("L50000");
+        assertEquals(0, line5.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(1, line5.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, line5.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(3, line5.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(0, line5.getLineItems().get(4).getNumberOfTasks());
+
+        ReportLine detailedLineNoAttachment5 = line5.getDetailLines().get("N/A");
+        assertEquals(0, detailedLineNoAttachment5.getLineItems().get(0).getNumberOfTasks());
+        assertEquals(1, detailedLineNoAttachment5.getLineItems().get(1).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment5.getLineItems().get(2).getNumberOfTasks());
+        assertEquals(3, detailedLineNoAttachment5.getLineItems().get(3).getNumberOfTasks());
+        assertEquals(0, detailedLineNoAttachment5.getLineItems().get(4).getNumberOfTasks());
     }
 
     private List<Workbasket> getListOfWorkbaskets() throws WorkbasketNotFoundException, NotAuthorizedException {

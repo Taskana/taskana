@@ -69,6 +69,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
+        List<String> domains = Arrays.asList("DOMAIN_A");
 
         List<MonitorQueryItem> expectedResult = new ArrayList<>();
         MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -76,12 +77,13 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbasketsByWorkbasketsAndStates(
-            workbaskets, states, categories);
+            workbaskets, states, categories, domains);
 
-        Report actualResult = cut.getWorkbasketLevelReport(workbaskets, states, categories);
+        Report actualResult = cut.getWorkbasketLevelReport(workbaskets, states, categories, domains);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbasketsByWorkbasketsAndStates(any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbasketsByWorkbasketsAndStates(any(), any(), any(),
+            any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
@@ -99,7 +101,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
-
+        List<String> domains = Arrays.asList("DOMAIN_A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -110,12 +112,14 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbasketsByWorkbasketsAndStates(
-            workbaskets, states, categories);
+            workbaskets, states, categories, domains);
 
-        Report actualResult = cut.getWorkbasketLevelReport(workbaskets, states, categories, reportLineItemDefinitions);
+        Report actualResult = cut.getWorkbasketLevelReport(workbaskets, states, categories, domains,
+            reportLineItemDefinitions);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbasketsByWorkbasketsAndStates(any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbasketsByWorkbasketsAndStates(any(), any(), any(),
+            any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
@@ -135,6 +139,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
+        List<String> domains = Arrays.asList("DOMAIN_A");
 
         List<MonitorQueryItem> expectedResult = new ArrayList<>();
         MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -142,12 +147,13 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategoriesByWorkbasketsAndStates(
-            workbaskets, states, categories);
+            workbaskets, states, categories, domains);
 
-        Report actualResult = cut.getCategoryReport(workbaskets, states, categories);
+        Report actualResult = cut.getCategoryReport(workbaskets, states, categories, domains);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategoriesByWorkbasketsAndStates(any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategoriesByWorkbasketsAndStates(any(), any(), any(),
+            any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
@@ -165,7 +171,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
-
+        List<String> domains = Arrays.asList("DOMAIN_A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -176,12 +182,14 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategoriesByWorkbasketsAndStates(
-            workbaskets, states, categories);
+            workbaskets, states, categories, domains);
 
-        Report actualResult = cut.getCategoryReport(workbaskets, states, categories, reportLineItemDefinitions);
+        Report actualResult = cut.getCategoryReport(workbaskets, states, categories, domains,
+            reportLineItemDefinitions);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategoriesByWorkbasketsAndStates(any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategoriesByWorkbasketsAndStates(any(), any(), any(),
+            any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
@@ -200,6 +208,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
+        List<String> domains = Arrays.asList("DOMAIN_A");
 
         List<MonitorQueryItem> expectedResult = new ArrayList<>();
         MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -207,12 +216,12 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfClassificationsByWorkbasketsAndStates(
-            workbaskets, states, categories);
+            workbaskets, states, categories, domains);
 
-        ClassificationReport actualResult = cut.getClassificationReport(workbaskets, states, categories);
+        ClassificationReport actualResult = cut.getClassificationReport(workbaskets, states, categories, domains);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassificationsByWorkbasketsAndStates(any(), any(),
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassificationsByWorkbasketsAndStates(any(), any(), any(),
             any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
@@ -231,6 +240,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
+        List<String> domains = Arrays.asList("DOMAIN_A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -241,13 +251,13 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfClassificationsByWorkbasketsAndStates(
-            workbaskets, states, categories);
+            workbaskets, states, categories, domains);
 
-        ClassificationReport actualResult = cut.getClassificationReport(workbaskets, states, categories,
+        ClassificationReport actualResult = cut.getClassificationReport(workbaskets, states, categories, domains,
             reportLineItemDefinitions);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassificationsByWorkbasketsAndStates(any(), any(),
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassificationsByWorkbasketsAndStates(any(), any(), any(),
             any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
@@ -267,6 +277,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
+        List<String> domains = Arrays.asList("DOMAIN_A");
 
         List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
         DetailedMonitorQueryItem detailedMonitorQueryItem = new DetailedMonitorQueryItem();
@@ -275,14 +286,14 @@ public class TaskMonitorServiceImplTest {
         detailedMonitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(detailedMonitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock)
-            .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states, categories);
+            .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states, categories, domains);
 
         DetailedClassificationReport actualResult = cut.getDetailedClassificationReport(workbaskets, states,
-            categories);
+            categories, domains);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(any(),
-            any(), any());
+            any(), any(), any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
@@ -302,6 +313,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
+        List<String> domains = Arrays.asList("DOMAIN_A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -313,14 +325,14 @@ public class TaskMonitorServiceImplTest {
         detailedMonitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(detailedMonitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock)
-            .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states, categories);
+            .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states, categories, domains);
 
         DetailedClassificationReport actualResult = cut.getDetailedClassificationReport(workbaskets, states, categories,
-            reportLineItemDefinitions);
+            domains, reportLineItemDefinitions);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(any(),
-            any(), any());
+            any(), any(), any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
@@ -343,6 +355,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
+        List<String> domains = Arrays.asList("DOMAIN_A");
 
         List<MonitorQueryItem> expectedResult = new ArrayList<>();
         MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -351,13 +364,14 @@ public class TaskMonitorServiceImplTest {
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock)
             .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(
-                workbaskets, states, categories, CustomField.CUSTOM_1);
+                workbaskets, states, categories, domains, CustomField.CUSTOM_1);
 
-        Report actualResult = cut.getCustomFieldValueReport(workbaskets, states, categories, CustomField.CUSTOM_1);
+        Report actualResult = cut.getCustomFieldValueReport(workbaskets, states, categories, domains,
+            CustomField.CUSTOM_1);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMonitorMapperMock, times(1))
-            .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(any(), any(), any(), any());
+            .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(any(), any(), any(), any(), any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
@@ -375,6 +389,7 @@ public class TaskMonitorServiceImplTest {
         List<Workbasket> workbaskets = Arrays.asList(workbasket);
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
+        List<String> domains = Arrays.asList("DOMAIN_A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -386,14 +401,14 @@ public class TaskMonitorServiceImplTest {
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock)
             .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(
-                workbaskets, states, categories, CustomField.CUSTOM_1);
+                workbaskets, states, categories, domains, CustomField.CUSTOM_1);
 
-        Report actualResult = cut.getCustomFieldValueReport(workbaskets, states, categories, CustomField.CUSTOM_1,
-            reportLineItemDefinitions);
+        Report actualResult = cut.getCustomFieldValueReport(workbaskets, states, categories, domains,
+            CustomField.CUSTOM_1, reportLineItemDefinitions);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
         verify(taskMonitorMapperMock, times(1))
-            .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(any(), any(), any(), any());
+            .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(any(), any(), any(), any(), any());
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineConfigurationMock, taskanaEngineMock, taskanaEngineImpl,
             taskMonitorMapperMock, objectReferenceMapperMock, workbasketServiceMock);
