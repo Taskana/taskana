@@ -124,36 +124,47 @@ public class WorkbasketController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody Workbasket workbasket) {
-        Workbasket createdWorkbasket;
+    public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource) {
         try {
-            createdWorkbasket = workbasketService.createWorkbasket(workbasket);
-            return new ResponseEntity<>(workbasketMapper.toResource(createdWorkbasket), HttpStatus.CREATED);
+            Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
+            workbasket = workbasketService.createWorkbasket(workbasket);
+            return new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.CREATED);
         } catch (InvalidWorkbasketException e) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
 
-    @RequestMapping(value = "/{workbasketKey}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{workbasketId}", method = RequestMethod.PUT)
     public ResponseEntity<WorkbasketResource> updateWorkbasket(
-        @PathVariable(value = "workbasketKey") String workbasketKey,
-        @RequestBody Workbasket workbasket) {
+        @PathVariable(value = "workbasketId") String workbasketId,
+        @RequestBody WorkbasketResource workbasketResource) {
+        ResponseEntity<WorkbasketResource> result;
         try {
-            Workbasket updatedWorkbasket = workbasketService.updateWorkbasket(workbasket);
-            return new ResponseEntity<>(workbasketMapper.toResource(updatedWorkbasket), HttpStatus.OK);
+            if (workbasketId.equals(workbasketResource.workbasketId)) {
+                Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
+                workbasket = workbasketService.updateWorkbasket(workbasket);
+                result = ResponseEntity.ok(workbasketMapper.toResource(workbasket));
+            } else {
+                throw new InvalidWorkbasketException(
+                    "Target-WB-ID('" + workbasketId
+                        + "') is not identical with the WB-ID of to object which should be updated. ID=('"
+                        + workbasketResource.getId() + "')");
+            }
         } catch (InvalidWorkbasketException e) {
-            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+            result = new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } catch (WorkbasketNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotAuthorizedException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        return result;
     }
 
-    @RequestMapping(value = "/{workbasketKey}/authorizations", method = RequestMethod.GET)
+    @RequestMapping(value = "/{workbasketId}/authorizations", method = RequestMethod.GET)
     public ResponseEntity<List<WorkbasketAccessItemResource>> getWorkbasketAuthorizations(
-        @PathVariable(value = "workbasketKey") String workbasketKey) {
-        List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAuthorizations(workbasketKey);
+        @PathVariable(value = "workbasketId") String workbasketId) {
+        List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAuthorizations(workbasketId);
         return new ResponseEntity<>(wbAuthorizations.stream()
             .map(accItem -> workbasketAccessItemMapper.toResource(accItem))
             .collect(Collectors.toList()), HttpStatus.OK);
@@ -161,7 +172,8 @@ public class WorkbasketController {
 
     @RequestMapping(value = "/authorizations", method = RequestMethod.POST)
     public ResponseEntity<WorkbasketAccessItemResource> createWorkbasketAuthorization(
-        @RequestBody WorkbasketAccessItem workbasketAccessItem) {
+        @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) {
+        WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper.toModel(workbasketAccessItemResource);
         workbasketAccessItem = workbasketService.createWorkbasketAuthorization(workbasketAccessItem);
         return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
     }
@@ -169,7 +181,8 @@ public class WorkbasketController {
     @RequestMapping(value = "/authorizations/{authId}", method = RequestMethod.PUT)
     public ResponseEntity<WorkbasketAccessItemResource> updateWorkbasketAuthorization(
         @PathVariable(value = "authId") String authId,
-        @RequestBody WorkbasketAccessItem workbasketAccessItem) throws InvalidArgumentException {
+        @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) throws InvalidArgumentException {
+        WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper.toModel(workbasketAccessItemResource);
         workbasketAccessItem = workbasketService.updateWorkbasketAuthorization(workbasketAccessItem);
         return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
     }
