@@ -92,7 +92,7 @@ export class WorkbasketListComponent implements OnInit {
 		this.workbaskets = undefined;
 		this.workbasketServiceSubscription.add(this.workbasketService.getWorkBasketsSummary(this.sortBy, this.sortDirection, undefined,
 			this.filterBy.name, this.filterBy.description, undefined, this.filterBy.owner,
-			this.filterBy.type).subscribe(resultList => {
+			this.filterBy.type, undefined, this.filterBy.key).subscribe(resultList => {
 				this.workbaskets = resultList;
 				this.requestInProgress = false;
 			}));
