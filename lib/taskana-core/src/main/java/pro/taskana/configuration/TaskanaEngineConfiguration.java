@@ -12,7 +12,8 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.impl.TaskanaEngineImpl;
 
 /**
- * This central class creates the TaskanaEngine and holds all the information about DB and Security.
+ * This central class creates the TaskanaEngine and holds all the information about DB and Security.<br>
+ * Security is enabled by default.
  */
 public class TaskanaEngineConfiguration {
 
@@ -27,7 +28,7 @@ public class TaskanaEngineConfiguration {
 
     // global switch to enable JAAS based authentication and Taskana
     // authorizations
-    protected boolean securityEnabled;
+    protected boolean securityEnabled = true;
     protected boolean useManagedTransactions;
 
     public TaskanaEngineConfiguration(boolean enableSecurity) {
