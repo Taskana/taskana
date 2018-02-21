@@ -28,7 +28,11 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.impl.WorkbasketType;
+import pro.taskana.rest.resource.WorkbasketAccessItemResource;
+import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
+import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
+import pro.taskana.rest.resource.mapper.WorkbasketMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 
 @RestController
@@ -49,12 +53,20 @@ public class WorkbasketController {
     @Autowired
     private WorkbasketSummaryMapper workbasketSummaryMapper;
 
+    @Autowired
+    private WorkbasketMapper workbasketMapper;
+
+    @Autowired
+    private WorkbasketAccessItemMapper workbasketAccessItemMapper;
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<WorkbasketSummaryResource>> getWorkbaskets(
         @RequestParam(value = "sortBy", defaultValue = "name", required = false) String sortBy,
         @RequestParam(value = "order", defaultValue = "asc", required = false) String order,
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "nameLike", required = false) String nameLike,
+        @RequestParam(value = "key", required = false) String key,
+        @RequestParam(value = "keyLike", required = false) String keyLike,
         @RequestParam(value = "descLike", required = false) String descLike,
         @RequestParam(value = "owner", required = false) String owner,
         @RequestParam(value = "ownerLike", required = false) String ownerLike,
@@ -65,7 +77,7 @@ public class WorkbasketController {
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         try {
             addSortingToQuery(query, sortBy, order);
-            addAttributeFilter(query, name, nameLike, descLike, owner, ownerLike, type);
+            addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
             addAuthorizationFilter(query, requiredPermission);
             workbasketsSummary = query.list();
         } catch (InvalidArgumentException e) {
@@ -79,11 +91,11 @@ public class WorkbasketController {
             .collect(Collectors.toList()), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{workbasketid}")
-    public ResponseEntity<Workbasket> getWorkbasket(@PathVariable(value = "workbasketid") String workbasketId) {
+    @RequestMapping(value = "/{workbasketId}")
+    public ResponseEntity<WorkbasketResource> getWorkbasket(@PathVariable(value = "workbasketId") String workbasketId) {
         try {
             Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
-            return new ResponseEntity<>(workbasket, HttpStatus.OK);
+            return new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.OK);
         } catch (WorkbasketNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotAuthorizedException e) {
@@ -92,22 +104,23 @@ public class WorkbasketController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Workbasket> createWorkbasket(@RequestBody Workbasket workbasket) {
+    public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody Workbasket workbasket) {
         Workbasket createdWorkbasket;
         try {
             createdWorkbasket = workbasketService.createWorkbasket(workbasket);
-            return new ResponseEntity<>(createdWorkbasket, HttpStatus.CREATED);
+            return new ResponseEntity<>(workbasketMapper.toResource(createdWorkbasket), HttpStatus.CREATED);
         } catch (InvalidWorkbasketException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
-    @RequestMapping(value = "/{workbasketkey}", method = RequestMethod.PUT)
-    public ResponseEntity<Workbasket> updateWorkbasket(@PathVariable(value = "workbasketkey") String workbasketKey,
+    @RequestMapping(value = "/{workbasketKey}", method = RequestMethod.PUT)
+    public ResponseEntity<WorkbasketResource> updateWorkbasket(
+        @PathVariable(value = "workbasketKey") String workbasketKey,
         @RequestBody Workbasket workbasket) {
         try {
             Workbasket updatedWorkbasket = workbasketService.updateWorkbasket(workbasket);
-            return new ResponseEntity<>(updatedWorkbasket, HttpStatus.OK);
+            return new ResponseEntity<>(workbasketMapper.toResource(updatedWorkbasket), HttpStatus.OK);
         } catch (InvalidWorkbasketException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (WorkbasketNotFoundException e) {
@@ -117,30 +130,32 @@ public class WorkbasketController {
         }
     }
 
-    @RequestMapping(value = "/{workbasketkey}/authorizations", method = RequestMethod.GET)
-    public ResponseEntity<List<WorkbasketAccessItem>> getWorkbasketAuthorizations(
-        @PathVariable(value = "workbasketkey") String workbasketKey) {
+    @RequestMapping(value = "/{workbasketKey}/authorizations", method = RequestMethod.GET)
+    public ResponseEntity<List<WorkbasketAccessItemResource>> getWorkbasketAuthorizations(
+        @PathVariable(value = "workbasketKey") String workbasketKey) {
         List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAuthorizations(workbasketKey);
-        return new ResponseEntity<>(wbAuthorizations, HttpStatus.OK);
+        return new ResponseEntity<>(wbAuthorizations.stream()
+            .map(accItem -> workbasketAccessItemMapper.toResource(accItem))
+            .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/authorizations", method = RequestMethod.POST)
-    public ResponseEntity<WorkbasketAccessItem> createWorkbasketAuthorization(
+    public ResponseEntity<WorkbasketAccessItemResource> createWorkbasketAuthorization(
         @RequestBody WorkbasketAccessItem workbasketAccessItem) {
         workbasketAccessItem = workbasketService.createWorkbasketAuthorization(workbasketAccessItem);
-        return new ResponseEntity<>(workbasketAccessItem, HttpStatus.OK);
+        return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/authorizations/{authid}", method = RequestMethod.PUT)
-    public ResponseEntity<WorkbasketAccessItem> updateWorkbasketAuthorization(
-        @PathVariable(value = "authid") String authId,
+    @RequestMapping(value = "/authorizations/{authId}", method = RequestMethod.PUT)
+    public ResponseEntity<WorkbasketAccessItemResource> updateWorkbasketAuthorization(
+        @PathVariable(value = "authId") String authId,
         @RequestBody WorkbasketAccessItem workbasketAccessItem) throws InvalidArgumentException {
         workbasketAccessItem = workbasketService.updateWorkbasketAuthorization(workbasketAccessItem);
-        return new ResponseEntity<>(workbasketAccessItem, HttpStatus.OK);
+        return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/authorizations/{authid}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteWorkbasketAuthorization(@PathVariable(value = "authid") String authId) {
+    @RequestMapping(value = "/authorizations/{authId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteWorkbasketAuthorization(@PathVariable(value = "authId") String authId) {
         workbasketService.deleteWorkbasketAuthorization(authId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -257,12 +272,17 @@ public class WorkbasketController {
 
     private void addAttributeFilter(WorkbasketQuery query,
         String name, String nameLike,
+        String key, String keyLike,
         String descLike, String owner,
         String ownerLike, String type) throws InvalidArgumentException {
         if (name != null)
             query.nameIn(name);
         if (nameLike != null)
             query.nameLike(LIKE + nameLike + LIKE);
+        if (key != null)
+            query.keyIn(key);
+        if (keyLike != null)
+            query.keyLike(LIKE + keyLike + LIKE);
         if (owner != null)
             query.ownerIn(owner);
         if (ownerLike != null)
@@ -273,14 +293,17 @@ public class WorkbasketController {
             switch (type) {
                 case "PERSONAL":
                     query.typeIn(WorkbasketType.PERSONAL);
+                    break;
                 case "GROUP":
                     query.typeIn(WorkbasketType.GROUP);
+                    break;
                 case "CLEARANCE":
                     query.typeIn(WorkbasketType.CLEARANCE);
+                    break;
                 case "TOPIC":
                     query.typeIn(WorkbasketType.TOPIC);
+                    break;
             }
         }
     }
-
 }
