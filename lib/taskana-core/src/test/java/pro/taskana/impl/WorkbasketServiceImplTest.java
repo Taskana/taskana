@@ -516,7 +516,7 @@ public class WorkbasketServiceImplTest {
         verify(taskQueryMock, times(1)).list();
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsBySourceId(wb.getId());
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsByTargetId(wb.getId());
-        verify(workbasketAccessMapperMock, times(1)).deleteAllForWorkbasketkey(wb.getKey());
+        verify(workbasketAccessMapperMock, times(1)).deleteAllForWorkbasketId(wb.getId());
         verify(workbasketMapperMock, times(1)).delete(wb.getId());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,

@@ -37,7 +37,8 @@ public class WorkbasketResource extends ResourceSupport {
     public String orgLevel3;
     public String orgLevel4;
 
-    public WorkbasketResource(String workbasketId, String key, String name, String domain, WorkbasketType type, Instant created,
+    public WorkbasketResource(String workbasketId, String key, String name, String domain, WorkbasketType type,
+        Instant created,
         Instant modified, String description, String owner, String custom1, String custom2, String custom3,
         String custom4, String orgLevel1, String orgLevel2, String orgLevel3, String orgLevel4) {
         super();
