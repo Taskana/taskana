@@ -6,7 +6,7 @@ import org.springframework.hateoas.ResourceSupport;
 
 public class WorkbasketAccessItemResource extends ResourceSupport {
 
-    public String id;
+    public String accessItemId;
 
     @NotNull
     public String workbasketId;
@@ -32,13 +32,13 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
     public boolean permCustom11;
     public boolean permCustom12;
 
-    public WorkbasketAccessItemResource(String id, String workbasketId, String accessId, boolean permRead,
+    public WorkbasketAccessItemResource(String accessItemId, String workbasketId, String accessId, boolean permRead,
         boolean permOpen, boolean permAppend, boolean permTransfer, boolean permDistribute, boolean permCustom1,
         boolean permCustom2, boolean permCustom3, boolean permCustom4, boolean permCustom5, boolean permCustom6,
         boolean permCustom7, boolean permCustom8, boolean permCustom9, boolean permCustom10, boolean permCustom11,
         boolean permCustom12) {
         super();
-        this.id = id;
+        this.accessItemId = accessItemId;
         this.workbasketId = workbasketId;
         this.accessId = accessId;
         this.permRead = permRead;
