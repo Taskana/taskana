@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class WorkbasketDetailsComponent implements OnInit {
 
-
+  selectedId: number = -1;
   workbasket: Workbasket;
   workbasketClone: Workbasket;
   showDetail: boolean =  false;
@@ -46,8 +46,10 @@ export class WorkbasketDetailsComponent implements OnInit {
     });
     
     this.routeSubscription = this.route.params.subscribe(params => {
-      if( params['id'] && params['id'] !== '') {
-        this.service.selectWorkBasket( params['id']);
+      let id = params['id'];
+      if( id && id !== '') {
+        this.selectedId = id;
+        this.service.selectWorkBasket(id);
       }
     });
     
