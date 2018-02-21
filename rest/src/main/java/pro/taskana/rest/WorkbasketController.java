@@ -25,6 +25,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.impl.WorkbasketType;
@@ -72,7 +73,7 @@ public class WorkbasketController {
         @RequestParam(value = "ownerLike", required = false) String ownerLike,
         @RequestParam(value = "type", required = false) String type,
         @RequestParam(value = "requiredPermission", required = false) String requiredPermission) {
-
+        ResponseEntity<List<WorkbasketSummaryResource>> result;
         List<WorkbasketSummary> workbasketsSummary;
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         try {
@@ -80,27 +81,46 @@ public class WorkbasketController {
             addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
             addAuthorizationFilter(query, requiredPermission);
             workbasketsSummary = query.list();
+            result = new ResponseEntity<>(workbasketsSummary.stream()
+                .map(workbasket -> workbasketSummaryMapper.toResource(workbasket))
+                .collect(Collectors.toList()), HttpStatus.OK);
         } catch (InvalidArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            result = new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } catch (InvalidRequestException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(workbasketsSummary.stream()
-            .map(workbasket -> workbasketSummaryMapper.toResource(workbasket))
-            .collect(Collectors.toList()), HttpStatus.OK);
+        return result;
     }
 
-    @RequestMapping(value = "/{workbasketId}")
+    @RequestMapping(value = "/{workbasketId}", method = RequestMethod.GET)
     public ResponseEntity<WorkbasketResource> getWorkbasket(@PathVariable(value = "workbasketId") String workbasketId) {
+        ResponseEntity<WorkbasketResource> result;
         try {
             Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
-            return new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.OK);
+            result = new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.OK);
         } catch (WorkbasketNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotAuthorizedException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+        return result;
+    }
+
+    @RequestMapping(value = "/{workbasketId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteWorkbasket(@PathVariable(value = "workbasketId") String workbasketId) {
+        ResponseEntity<?> result = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        try {
+            workbasketService.deleteWorkbasket(workbasketId);
+        } catch (WorkbasketNotFoundException e) {
+            result = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (NotAuthorizedException e) {
+            result = ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (WorkbasketInUseException e) {
+            result = ResponseEntity.status(HttpStatus.LOCKED).build();
+        } catch (InvalidArgumentException e) {
+            result = ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
+        }
+        return result;
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -110,7 +130,7 @@ public class WorkbasketController {
             createdWorkbasket = workbasketService.createWorkbasket(workbasket);
             return new ResponseEntity<>(workbasketMapper.toResource(createdWorkbasket), HttpStatus.CREATED);
         } catch (InvalidWorkbasketException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
 
@@ -122,11 +142,11 @@ public class WorkbasketController {
             Workbasket updatedWorkbasket = workbasketService.updateWorkbasket(workbasket);
             return new ResponseEntity<>(workbasketMapper.toResource(updatedWorkbasket), HttpStatus.OK);
         } catch (InvalidWorkbasketException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } catch (WorkbasketNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotAuthorizedException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 
