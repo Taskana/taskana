@@ -199,6 +199,22 @@ public class WorkbasketController {
         return result;
     }
 
+    @RequestMapping(value = "/{workbasketId}/distributiontargets", method = RequestMethod.PUT)
+    public ResponseEntity<?> setDistributionTargets(
+        @PathVariable(value = "workbasketId") String sourceWorkbasketId,
+        @RequestBody List<String> targetWorkbasketIds) {
+        ResponseEntity<?> result;
+        try {
+            workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);
+            result = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (WorkbasketNotFoundException e) {
+            result = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (NotAuthorizedException e) {
+            result = ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return result;
+    }
+
     private void addAuthorizationFilter(WorkbasketQuery query, String requiredPermission)
         throws InvalidArgumentException {
         if (requiredPermission == null) {
