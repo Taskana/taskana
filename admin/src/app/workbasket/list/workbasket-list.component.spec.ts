@@ -116,10 +116,10 @@ describe('WorkbasketListComponent', () => {
   });
 
   it('should have performRequest after performFilter is triggered', fakeAsync( () => {
-    let type='PERSONAL', name = 'someName', description = 'someDescription', owner = 'someOwner'
-    let filter = new FilterModel(type, name, description, owner);
+    let type='PERSONAL', name = 'someName', description = 'someDescription', owner = 'someOwner', key = 'someKey';
+    let filter = new FilterModel(type, name, description, owner, key );
     component.performFilter(filter);
-    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('key', 'asc', undefined, name, description, undefined, owner, type );
+    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith('key', 'asc', undefined, name, description, undefined, owner, type, undefined, key );
 
   }));
 

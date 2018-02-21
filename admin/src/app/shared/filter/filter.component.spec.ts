@@ -49,12 +49,13 @@ describe('FilterComponent', () => {
 	});
 
 	it('should be able to clear all fields after pressing clear button', () => {
-		component.filter =  new FilterModel('a','a','a','a');
+		component.filter =  new FilterModel('a','a','a','a','a');
 		debugElement.querySelector('[title="Clear"]').click();
 		expect(component.filter.name).toBe('');
 		expect(component.filter.description).toBe('');
 		expect(component.filter.owner).toBe('');
 		expect(component.filter.type).toBe('');
+		expect(component.filter.key).toBe('');
 	});
 
 	it('should be able to select a type and return it based on a number', () => {
