@@ -25,6 +25,7 @@ public interface TaskMonitorMapper {
         + "WHERE WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
         + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
         + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+        + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "AND DUE IS NOT NULL "
         + "<if test=\"_databaseId == 'db2'\">GROUP BY WORKBASKET_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
@@ -36,7 +37,8 @@ public interface TaskMonitorMapper {
     List<MonitorQueryItem> getTaskCountOfWorkbasketsByWorkbasketsAndStates(
         @Param("workbaskets") List<Workbasket> workbaskets,
         @Param("states") List<TaskState> states,
-        @Param("categories") List<String> categories);
+        @Param("categories") List<String> categories,
+        @Param("domains") List<String> domains);
 
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_CATEGORY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
@@ -45,6 +47,7 @@ public interface TaskMonitorMapper {
         + "WHERE WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
         + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
         + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+        + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "AND DUE IS NOT NULL "
         + "<if test=\"_databaseId == 'db2'\">GROUP BY CLASSIFICATION_CATEGORY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY CLASSIFICATION_CATEGORY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
@@ -56,7 +59,8 @@ public interface TaskMonitorMapper {
     List<MonitorQueryItem> getTaskCountOfCategoriesByWorkbasketsAndStates(
         @Param("workbaskets") List<Workbasket> workbaskets,
         @Param("states") List<TaskState> states,
-        @Param("categories") List<String> categories);
+        @Param("categories") List<String> categories,
+        @Param("domains") List<String> domains);
 
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
@@ -65,6 +69,7 @@ public interface TaskMonitorMapper {
         + "WHERE WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
         + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
         + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+        + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "AND DUE IS NOT NULL "
         + "<if test=\"_databaseId == 'db2'\">GROUP BY CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
@@ -76,7 +81,8 @@ public interface TaskMonitorMapper {
     List<MonitorQueryItem> getTaskCountOfClassificationsByWorkbasketsAndStates(
         @Param("workbaskets") List<Workbasket> workbaskets,
         @Param("states") List<TaskState> states,
-        @Param("categories") List<String> categories);
+        @Param("categories") List<String> categories,
+        @Param("domains") List<String> domains);
 
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
@@ -85,6 +91,7 @@ public interface TaskMonitorMapper {
         + "WHERE T.WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
         + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
         + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+        + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "AND DUE IS NOT NULL "
         + "<if test=\"_databaseId == 'db2'\">GROUP BY T.CLASSIFICATION_KEY, A.CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY T.CLASSIFICATION_KEY, A.CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
@@ -97,7 +104,8 @@ public interface TaskMonitorMapper {
     List<DetailedMonitorQueryItem> getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(
         @Param("workbaskets") List<Workbasket> workbaskets,
         @Param("states") List<TaskState> states,
-        @Param("categories") List<String> categories);
+        @Param("categories") List<String> categories,
+        @Param("domains") List<String> domains);
 
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT ${customField} as CUSTOM_FIELD, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
@@ -106,6 +114,7 @@ public interface TaskMonitorMapper {
         + "WHERE WORKBASKET_KEY IN (<foreach collection='workbaskets' item='workbasket' separator=','>#{workbasket.key}</foreach>) "
         + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
         + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+        + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "AND DUE IS NOT NULL "
         + "AND ${customField} IS NOT NULL "
         + "<if test=\"_databaseId == 'db2'\">GROUP BY ${customField}, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
@@ -119,6 +128,7 @@ public interface TaskMonitorMapper {
         @Param("workbaskets") List<Workbasket> workbaskets,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
+        @Param("domains") List<String> domains,
         @Param("customField") CustomField customField);
 
 }

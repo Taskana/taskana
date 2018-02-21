@@ -3,7 +3,9 @@ package pro.taskana.impl;
 import java.util.List;
 
 /**
- * The DetailedClassificationReport extends the ClassificationReport. The additional addDetailedMonitoringQueryItems
+ * The DetailedClassificationReport extends the {@link ClassificationReport}. In contrast to the ClassificationReport
+ * there are DetailedReportLines instead of ReportLines. That means each ReportLine contains an additional list of
+ * ReportLines for the classifications of the attachments of the tasks. The additional addDetailedMonitoringQueryItems
  * method allows to add {@link DetailedMonitorQueryItem}s to the DetailedClassificationReport.
  */
 public class DetailedClassificationReport extends ClassificationReport {
