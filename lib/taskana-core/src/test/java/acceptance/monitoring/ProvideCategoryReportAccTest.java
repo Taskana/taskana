@@ -15,6 +15,8 @@ import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
@@ -36,6 +38,7 @@ public class ProvideCategoryReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProvideCategoryReportAccTest.class);
 
     @BeforeClass
     public static void setupTest() throws Exception {
@@ -57,7 +60,6 @@ public class ProvideCategoryReportAccTest {
 
     @Test
     public void testGetTotalNumbersOfTasksOfCategoryReport() {
-
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -65,6 +67,10 @@ public class ProvideCategoryReportAccTest {
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report));
+        }
 
         assertNotNull(report);
         assertEquals(33, report.getReportLines().get(categories.get(0)).getTotalNumberOfTasks());
@@ -78,7 +84,6 @@ public class ProvideCategoryReportAccTest {
 
     @Test
     public void testGetCategoryReportWithReportLineItemDefinitions() {
-
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -89,6 +94,10 @@ public class ProvideCategoryReportAccTest {
 
         Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
             reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
 
         int sumLineCount = report.getSumLine().getLineItems().get(0).getNumberOfTasks()
             + report.getSumLine().getLineItems().get(1).getNumberOfTasks()
@@ -120,8 +129,85 @@ public class ProvideCategoryReportAccTest {
     }
 
     @Test
-    public void testEachItemOfCategoryReportWithCategoryFilter() {
+    public void testEachItemOfCategoryReport() {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
+        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
+        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
+            reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
+
+        List<ReportLineItem> line1 = report.getReportLines().get("EXTERN").getLineItems();
+        assertEquals(15, line1.get(0).getNumberOfTasks());
+        assertEquals(8, line1.get(1).getNumberOfTasks());
+        assertEquals(2, line1.get(2).getNumberOfTasks());
+        assertEquals(6, line1.get(3).getNumberOfTasks());
+        assertEquals(2, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("AUTOMATIC").getLineItems();
+        assertEquals(2, line2.get(0).getNumberOfTasks());
+        assertEquals(1, line2.get(1).getNumberOfTasks());
+        assertEquals(0, line2.get(2).getNumberOfTasks());
+        assertEquals(1, line2.get(3).getNumberOfTasks());
+        assertEquals(3, line2.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line3 = report.getReportLines().get("MANUAL").getLineItems();
+        assertEquals(2, line3.get(0).getNumberOfTasks());
+        assertEquals(2, line3.get(1).getNumberOfTasks());
+        assertEquals(2, line3.get(2).getNumberOfTasks());
+        assertEquals(0, line3.get(3).getNumberOfTasks());
+        assertEquals(4, line3.get(4).getNumberOfTasks());
+    }
+
+    @Test
+    public void testEachItemOfCategoryReportNotInWorkingDays() {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
+        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
+        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
+        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
+            reportLineItemDefinitions, false);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
+
+        List<ReportLineItem> line1 = report.getReportLines().get("EXTERN").getLineItems();
+        assertEquals(23, line1.get(0).getNumberOfTasks());
+        assertEquals(0, line1.get(1).getNumberOfTasks());
+        assertEquals(2, line1.get(2).getNumberOfTasks());
+        assertEquals(0, line1.get(3).getNumberOfTasks());
+        assertEquals(8, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("AUTOMATIC").getLineItems();
+        assertEquals(3, line2.get(0).getNumberOfTasks());
+        assertEquals(0, line2.get(1).getNumberOfTasks());
+        assertEquals(0, line2.get(2).getNumberOfTasks());
+        assertEquals(0, line2.get(3).getNumberOfTasks());
+        assertEquals(4, line2.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line3 = report.getReportLines().get("MANUAL").getLineItems();
+        assertEquals(4, line3.get(0).getNumberOfTasks());
+        assertEquals(0, line3.get(1).getNumberOfTasks());
+        assertEquals(2, line3.get(2).getNumberOfTasks());
+        assertEquals(0, line3.get(3).getNumberOfTasks());
+        assertEquals(4, line3.get(4).getNumberOfTasks());
+    }
+
+    @Test
+    public void testEachItemOfCategoryReportWithCategoryFilter() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -132,6 +218,10 @@ public class ProvideCategoryReportAccTest {
 
         Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
             reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
 
         List<ReportLineItem> line1 = report.getReportLines().get("AUTOMATIC").getLineItems();
         assertEquals(2, line1.get(0).getNumberOfTasks());
@@ -152,7 +242,6 @@ public class ProvideCategoryReportAccTest {
 
     @Test
     public void testEachItemOfCategoryReportWithDomainFilter() {
-
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -163,6 +252,10 @@ public class ProvideCategoryReportAccTest {
 
         Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
             reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
 
         List<ReportLineItem> line1 = report.getReportLines().get("EXTERN").getLineItems();
         assertEquals(8, line1.get(0).getNumberOfTasks());
@@ -216,6 +309,75 @@ public class ProvideCategoryReportAccTest {
         reportLineItemDefinitions.add(new ReportLineItemDefinition(1, 5));
         reportLineItemDefinitions.add(new ReportLineItemDefinition(6, Integer.MAX_VALUE));
         return reportLineItemDefinitions;
+    }
+
+    private String reportToString(Report report) {
+        return reportToString(report, null);
+    }
+
+    private String reportToString(Report report, List<ReportLineItemDefinition> reportLineItemDefinitions) {
+        String formatColumWidth = "| %-7s ";
+        String formatFirstColumn = "| %-36s  %-4s ";
+        String formatFirstColumnFirstLine = "| %-29s %12s ";
+        String formatFirstColumnSumLine = "| %-36s  %-5s";
+        int reportWidth = reportLineItemDefinitions == null ? 46 : reportLineItemDefinitions.size() * 10 + 46;
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n");
+        for (int i = 0; i < reportWidth; i++) {
+            builder.append("-");
+        }
+        builder.append("\n");
+        builder.append(String.format(formatFirstColumnFirstLine, "Categories", "Total"));
+        if (reportLineItemDefinitions != null) {
+            for (ReportLineItemDefinition def : reportLineItemDefinitions) {
+                if (def.getLowerAgeLimit() == Integer.MIN_VALUE) {
+                    builder.append(String.format(formatColumWidth, "< " + def.getUpperAgeLimit()));
+                } else if (def.getUpperAgeLimit() == Integer.MAX_VALUE) {
+                    builder.append(String.format(formatColumWidth, "> " + def.getLowerAgeLimit()));
+                } else if (def.getLowerAgeLimit() == def.getUpperAgeLimit()) {
+                    if (def.getLowerAgeLimit() == 0) {
+                        builder.append(String.format(formatColumWidth, "today"));
+                    } else {
+                        builder.append(String.format(formatColumWidth, def.getLowerAgeLimit()));
+                    }
+                } else {
+                    builder.append(
+                        String.format(formatColumWidth, def.getLowerAgeLimit() + ".." + def.getUpperAgeLimit()));
+                }
+            }
+        }
+        builder.append("|\n");
+
+        for (int i = 0; i < reportWidth; i++) {
+            builder.append("-");
+        }
+        builder.append("\n");
+
+        for (String rl : report.getReportLines().keySet()) {
+            builder
+                .append(String.format(formatFirstColumn, rl, report.getReportLines().get(rl).getTotalNumberOfTasks()));
+            if (reportLineItemDefinitions != null) {
+                for (ReportLineItem reportLineItem : report.getReportLines().get(rl).getLineItems()) {
+                    builder.append(String.format(formatColumWidth, reportLineItem.getNumberOfTasks()));
+                }
+            }
+            builder.append("|\n");
+            for (int i = 0; i < reportWidth; i++) {
+                builder.append("-");
+            }
+            builder.append("\n");
+        }
+        builder.append(String.format(formatFirstColumnSumLine, "Total", report.getSumLine().getTotalNumberOfTasks()));
+        for (ReportLineItem sumLine : report.getSumLine().getLineItems()) {
+            builder.append(String.format(formatColumWidth, sumLine.getNumberOfTasks()));
+        }
+        builder.append("|\n");
+        for (int i = 0; i < reportWidth; i++) {
+            builder.append("-");
+        }
+        builder.append("\n");
+        return builder.toString();
     }
 
     @AfterClass
