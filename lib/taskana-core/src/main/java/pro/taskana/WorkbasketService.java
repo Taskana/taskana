@@ -45,13 +45,6 @@ public interface WorkbasketService {
         throws WorkbasketNotFoundException, NotAuthorizedException;
 
     /**
-     * Get all available Workbaskets without checking any permission.
-     *
-     * @return a list containing all Workbasket Summaries
-     */
-    List<WorkbasketSummary> getWorkbaskets();
-
-    /**
      * Create a new Workbasket.
      *
      * @param workbasket

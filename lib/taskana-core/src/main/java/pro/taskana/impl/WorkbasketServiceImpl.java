@@ -125,27 +125,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public List<WorkbasketSummary> getWorkbaskets() {
-        LOGGER.debug("entry to getWorkbaskets()");
-        List<WorkbasketSummary> workbaskets = new ArrayList<>();
-        try {
-            taskanaEngine.openConnection();
-            List<WorkbasketSummaryImpl> workbasketImpls = workbasketMapper.findAll();
-            for (WorkbasketSummaryImpl workbasketSummaryImpl : workbasketImpls) {
-                workbaskets.add(workbasketSummaryImpl);
-            }
-            return workbaskets;
-        } finally {
-            taskanaEngine.returnConnection();
-            if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = workbaskets.size();
-                LOGGER.debug("exit from getWorkbaskets(). Returning {} resulting Objects: {} ", numberOfResultObjects,
-                    LoggerUtils.listToString(workbaskets));
-            }
-        }
-    }
-
-    @Override
     public Workbasket createWorkbasket(Workbasket newWorkbasket)
         throws InvalidWorkbasketException {
         LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
