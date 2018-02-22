@@ -96,8 +96,11 @@ public interface WorkbasketService {
      * @param workbasketAccessItem
      *            the new workbasketAccessItem
      * @return the created WorkbasketAccessItem
+     * @throws InvalidArgumentException
+     *             when the preconditions doesn´t match the required ones.
      */
-    WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem);
+    WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
+        throws InvalidArgumentException;
 
     /**
      * This method updates an Workbasket Authorization.
@@ -155,6 +158,20 @@ public interface WorkbasketService {
      * @return List of WorkbasketAccessItems for the Workbasket with workbasketKey
      */
     List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketId);
+
+    /**
+     * Setting up the new WorkbasketAccessItems for a Workbasket. Already stored values will be completely replaced by
+     * the current ones.
+     *
+     * @param workbasketId
+     *            ID of the access-target workbasket.
+     * @param wbAccessItems
+     *            List of WorkbasketAccessItems which does replace all current stored ones.
+     * @throws InvalidArgumentException
+     *             will be thrown when the parameter is NULL or member doesn´t match the preconditions
+     */
+    void setWorkbasketAuthorizations(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
+        throws InvalidArgumentException;
 
     /**
      * This method returns the workbaskets for which the current user has all permissions specified in the permissions
@@ -321,5 +338,4 @@ public interface WorkbasketService {
      */
     List<WorkbasketSummary> getDistributionSources(String workbasketKey, String domain)
         throws NotAuthorizedException, WorkbasketNotFoundException;
-
 }
