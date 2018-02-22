@@ -19,8 +19,8 @@ public interface TaskMonitorService {
      * workbasket as well as the total number of all tasks. The tasks of the report are filtered by workbaskets, states,
      * categories and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids to filter by workbaskets
      * @param states
      *            a list of states to filter by states
      * @param categories
@@ -29,7 +29,7 @@ public interface TaskMonitorService {
      *            a list of domains to filter by domains
      * @return the report
      */
-    Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains);
 
     /**
@@ -40,8 +40,8 @@ public interface TaskMonitorService {
      * tasks in this report. The tasks of the report are filtered by workbaskets, states, categories and domains. Task
      * with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -56,7 +56,7 @@ public interface TaskMonitorService {
      *            should represent a single day, lowerLimit and upperLimit have to be equal.
      * @return the report
      */
-    Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
+    Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions);
 
     /**
@@ -67,8 +67,8 @@ public interface TaskMonitorService {
      * clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets, states,
      * categories and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -86,7 +86,7 @@ public interface TaskMonitorService {
      *            working days
      * @return the report
      */
-    Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
+    Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions,
         boolean inWorkingDays);
 
@@ -95,8 +95,8 @@ public interface TaskMonitorService {
      * category as well as the total number of all tasks. The tasks of the report are filtered by workbaskets, states,
      * categories and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids to filter by workbaskets
      * @param states
      *            a list of states to filter by states
      * @param categories
@@ -105,7 +105,7 @@ public interface TaskMonitorService {
      *            a list of domains to filter by domains
      * @return the report
      */
-    Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains);
 
     /**
@@ -116,8 +116,8 @@ public interface TaskMonitorService {
      * report are filtered by workbaskets, states, categories and domains. Task with Timestamp DUE = null are not
      * considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -132,7 +132,7 @@ public interface TaskMonitorService {
      *            should represent a single day, lowerLimit and upperLimit have to be equal.
      * @return the report
      */
-    Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions);
 
     /**
@@ -143,8 +143,8 @@ public interface TaskMonitorService {
      * The tasks of the report are filtered by workbaskets, states, categories and domains. Task with Timestamp DUE =
      * null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -162,7 +162,7 @@ public interface TaskMonitorService {
      *            working days
      * @return the report
      */
-    Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays);
 
     /**
@@ -170,8 +170,8 @@ public interface TaskMonitorService {
      * the respective classification as well as the total number of all tasks. The tasks of the report are filtered by
      * workbaskets, states, categories and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids to filter by workbaskets
      * @param states
      *            a list of states to filter by states
      * @param categories
@@ -180,7 +180,7 @@ public interface TaskMonitorService {
      *            a list of domains to filter by domains
      * @return the ClassificationReport
      */
-    ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains);
 
     /**
@@ -191,8 +191,8 @@ public interface TaskMonitorService {
      * tasks in this report. The tasks of the report are filtered by workbaskets, states, categories and domains. Task
      * with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -207,7 +207,7 @@ public interface TaskMonitorService {
      *            should represent a single day, lowerLimit and upperLimit have to be equal.
      * @return the ClassificationReport
      */
-    ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions);
 
     /**
@@ -218,8 +218,8 @@ public interface TaskMonitorService {
      * clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets, states,
      * categories and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -237,7 +237,7 @@ public interface TaskMonitorService {
      *            working days
      * @return the ClassificationReport
      */
-    ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions,
         boolean inWorkingDays);
 
@@ -247,8 +247,8 @@ public interface TaskMonitorService {
      * ReportLines for the classifications of the attachments of the tasks. The tasks of the report are filtered by
      * workbaskets, states, categories and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids to filter by workbaskets
      * @param states
      *            a list of states to filter by states
      * @param categories
@@ -257,7 +257,7 @@ public interface TaskMonitorService {
      *            a list of domains to filter by domains
      * @return the DetailedClassificationReport
      */
-    DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains);
 
     /**
@@ -269,8 +269,8 @@ public interface TaskMonitorService {
      * all tasks in this report. The tasks of the report are filtered by workbaskets, states, categories and domains.
      * Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -285,7 +285,7 @@ public interface TaskMonitorService {
      *            should represent a single day, lowerLimit and upperLimit have to be equal.
      * @return the DetailedClassificationReport
      */
-    DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions);
 
     /**
@@ -297,8 +297,8 @@ public interface TaskMonitorService {
      * different clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets,
      * states, categories and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -316,7 +316,7 @@ public interface TaskMonitorService {
      *            working days
      * @return the DetailedClassificationReport
      */
-    DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions,
         boolean inWorkingDays);
 
@@ -325,8 +325,8 @@ public interface TaskMonitorService {
      * numbers of tasks of the respective custom field as well as the total number of all tasks. The tasks of the report
      * are filtered by workbaskets, states, categories and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids to filter by workbaskets
      * @param states
      *            a list of states to filter by states
      * @param categories
@@ -337,7 +337,7 @@ public interface TaskMonitorService {
      *            a custom field whose values should be listed in the report
      * @return the report
      */
-    Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField);
 
     /**
@@ -348,8 +348,8 @@ public interface TaskMonitorService {
      * total number of all tasks in this report. The tasks of the report are filtered by workbaskets, states, categories
      * and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -366,7 +366,7 @@ public interface TaskMonitorService {
      *            should represent a single day, lowerLimit and upperLimit have to be equal.
      * @return the report
      */
-    Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<ReportLineItemDefinition> reportLineItemDefinitions);
 
     /**
@@ -377,8 +377,8 @@ public interface TaskMonitorService {
      * different clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets,
      * states, categories and domains. Task with Timestamp DUE = null are not considered.
      *
-     * @param workbaskets
-     *            a list of workbaskets objects to filter by workbaskets
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets
      * @param states
      *            a list of states objects to filter by states
      * @param categories
@@ -398,7 +398,7 @@ public interface TaskMonitorService {
      *            working days
      * @return the report
      */
-    Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<ReportLineItemDefinition> reportLineItemDefinitions,
         boolean inWorkingDays);
 }
