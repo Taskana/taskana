@@ -59,4 +59,5 @@ public class WorkbasketAccessItemMapper {
         wbAccItemModel.setPermCustom12(wbAccItemRecource.permCustom12);
         return wbAccItemModel;
     }
+    
 }

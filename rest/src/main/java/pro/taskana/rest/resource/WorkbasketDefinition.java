@@ -1,44 +1,30 @@
 package pro.taskana.rest.resource;
 
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketAccessItem;
-
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.hateoas.ResourceSupport;
 
 /**
  * this class represents a workbasket including its distro targets and authorisations.
  */
-public class WorkbasketDefinition {
+public class WorkbasketDefinition extends ResourceSupport {
 
-    private final Workbasket workbasket;
-    private final Set<String> distributionTargets;
-    private final List<WorkbasketAccessItem> authorizations;
+    public Set<String> distributionTargets;
+    public List<WorkbasketAccessItemResource> authorizations;
+    public WorkbasketResource workbasketResource;
 
-    public WorkbasketDefinition(Workbasket workbasket, Set<String> distributionTargets,
-        List<WorkbasketAccessItem> authorizations) {
-        this.workbasket = workbasket;
+    public WorkbasketDefinition() {
+        // necessary for de-serializing
+    }
+
+    public WorkbasketDefinition(WorkbasketResource workbasketResource,
+        Set<String> distributionTargets,
+        List<WorkbasketAccessItemResource> authorizations) {
+        super();
+        this.workbasketResource = workbasketResource;
         this.distributionTargets = distributionTargets;
         this.authorizations = authorizations;
     }
 
-    public Workbasket getWorkbasket() {
-        return workbasket;
-    }
-
-    public Set<String> getDistributionTargets() {
-        return distributionTargets;
-    }
-
-    public List<WorkbasketAccessItem> getAuthorizations() {
-        return authorizations;
-    }
-
-    @Override public String toString() {
-        return "WorkbasketDefinition{" +
-            "workbasket=" + workbasket +
-            ", distributionTargets=" + distributionTargets +
-            ", authorizations=" + authorizations +
-            '}';
-    }
 }
