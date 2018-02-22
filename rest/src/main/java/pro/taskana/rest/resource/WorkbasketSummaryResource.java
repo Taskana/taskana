@@ -29,6 +29,9 @@ public class WorkbasketSummaryResource extends ResourceSupport {
     public String orgLevel3;
     public String orgLevel4;
 
+    public WorkbasketSummaryResource() {
+    }
+
     public WorkbasketSummaryResource(String workbasketId, String key, String name, String description, String owner,
         String domain, WorkbasketType type, String orgLevel1, String orgLevel2, String orgLevel3, String orgLevel4) {
         super();

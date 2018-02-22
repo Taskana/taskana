@@ -1,10 +1,11 @@
 package pro.taskana.rest.resource;
 
-import java.time.Instant;
+import java.sql.Timestamp;
 
 import org.springframework.hateoas.ResourceSupport;
 
 public class ClassificationResource extends ResourceSupport {
+
     public String classificationId;
     public String key;
     public String parentId;
@@ -12,7 +13,7 @@ public class ClassificationResource extends ResourceSupport {
     public String type;
     public String domain;
     public boolean isValidInDomain;
-    public Instant created;
+    public Timestamp created;
     public String name;
     public String description;
     public int priority;
@@ -27,11 +28,15 @@ public class ClassificationResource extends ResourceSupport {
     public String custom7;
     public String custom8;
 
-    public ClassificationResource(String classificationId, String key, String parentId, String category, String type, String domain,
-                                  boolean isValidInDomain, Instant created, String name, String description,
-                                  int priority, String serviceLevel, String applicationEntryPoint, String custom1,
-                                  String custom2, String custom3, String custom4, String custom5, String custom6,
-                                  String custom7, String custom8) {
+    public ClassificationResource() {
+    }
+
+    public ClassificationResource(String classificationId, String key, String parentId, String category, String type,
+        String domain,
+        boolean isValidInDomain, Timestamp created, String name, String description,
+        int priority, String serviceLevel, String applicationEntryPoint, String custom1,
+        String custom2, String custom3, String custom4, String custom5, String custom6,
+        String custom7, String custom8) {
         super();
         this.classificationId = classificationId;
         this.key = key;

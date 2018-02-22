@@ -1,6 +1,6 @@
 package pro.taskana.rest.resource;
 
-import java.time.Instant;
+import java.sql.Timestamp;
 
 import javax.validation.constraints.NotNull;
 
@@ -24,8 +24,8 @@ public class WorkbasketResource extends ResourceSupport {
     @NotNull
     public WorkbasketType type;
 
-    public Instant created;
-    public Instant modified;
+    public Timestamp created;
+    public Timestamp modified;
     public String description;
     public String owner;
     public String custom1;
@@ -37,9 +37,12 @@ public class WorkbasketResource extends ResourceSupport {
     public String orgLevel3;
     public String orgLevel4;
 
+    public WorkbasketResource() {
+    }
+
     public WorkbasketResource(String workbasketId, String key, String name, String domain, WorkbasketType type,
-        Instant created,
-        Instant modified, String description, String owner, String custom1, String custom2, String custom3,
+        Timestamp created,
+        Timestamp modified, String description, String owner, String custom1, String custom2, String custom3,
         String custom4, String orgLevel1, String orgLevel2, String orgLevel3, String orgLevel4) {
         super();
         this.workbasketId = workbasketId;
