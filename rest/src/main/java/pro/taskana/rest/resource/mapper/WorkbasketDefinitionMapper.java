@@ -1,7 +1,12 @@
 package pro.taskana.rest.resource.mapper;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
@@ -10,11 +15,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.WorkbasketDefinition;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-@Service
+@Component
 public class WorkbasketDefinitionMapper {
 
     @Autowired

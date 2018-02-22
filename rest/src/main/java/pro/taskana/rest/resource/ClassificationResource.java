@@ -27,6 +27,7 @@ public class ClassificationResource extends ResourceSupport {
     public String custom8;
 
     public ClassificationResource() {
+        // necessary for deserializing
     }
 
     public ClassificationResource(String classificationId, String key, String parentId, String category, String type,
