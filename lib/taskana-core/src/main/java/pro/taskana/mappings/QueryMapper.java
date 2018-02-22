@@ -199,7 +199,8 @@ public interface QueryMapper {
 
     @Select("<script>"
         + "SELECT DISTINCT w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
-        + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.ID = a.WORKBASKET_ID</if> "
+        // + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.ID = a.WORKBASKET_ID</if> "
+        + "LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.ID = a.WORKBASKET_ID "
         + "<where>"
         + "<if test='ownerIn != null'>AND w.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR ' >UPPER(w.OWNER) LIKE #{item}</foreach>)</if> "
@@ -233,7 +234,6 @@ public interface QueryMapper {
         + "<if test='orgLevel4Like != null'>AND (<foreach item='item' collection='orgLevel4Like' separator=' OR ' >UPPER(w.ORG_LEVEL_4) LIKE #{item}</foreach>)</if> "
         + "<if test='authorization != null'>AND "
         + "<if test=\"authorization.name().equals('OPEN')\">PERM_OPEN</if> "
-        + "<if test=\"authorization.name().equals('READ')\">PERM_READ</if>"
         + "<if test=\"authorization.name().equals('APPEND')\">PERM_APPEND</if>"
         + "<if test=\"authorization.name().equals('TRANSFER')\">PERM_TRANSFER</if>"
         + "<if test=\"authorization.name().equals('DISTRIBUTE')\">PERM_DISTRIBUTE</if>"
@@ -250,6 +250,7 @@ public interface QueryMapper {
         + "<if test=\"authorization.name().equals('CUSTOM_11')\">PERM_CUSTOM_11</if>"
         + "<if test=\"authorization.name().equals('CUSTOM_12')\">PERM_CUSTOM_12</if> = 1 "
         + "</if>"
+        + "AND a.PERM_READ = 1"
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
         + "</script>")
@@ -419,7 +420,8 @@ public interface QueryMapper {
 
     @Select("<script>"
         + "SELECT COUNT(ID) from WORKBASKET w "
-        + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.ID = a.WORKBASKET_ID</if> "
+        // + "<if test='accessId != null'>LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.ID = a.WORKBASKET_ID</if> "
+        + "LEFT OUTER JOIN WORKBASKET_ACCESS_LIST a on w.ID = a.WORKBASKET_ID "
         + "<where>"
         + "<if test='ownerIn != null'>AND w.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR ' >UPPER(w.OWNER) LIKE #{item}</foreach>)</if> "
@@ -453,7 +455,6 @@ public interface QueryMapper {
         + "<if test='orgLevel4Like != null'>AND (<foreach item='item' collection='orgLevel4Like' separator=' OR ' >UPPER(w.ORG_LEVEL_4) LIKE #{item}</foreach>)</if> "
         + "<if test='authorization != null'>AND "
         + "<if test=\"authorization.name().equals('OPEN')\">PERM_OPEN</if> "
-        + "<if test=\"authorization.name().equals('READ')\">PERM_READ</if>"
         + "<if test=\"authorization.name().equals('APPEND')\">PERM_APPEND</if>"
         + "<if test=\"authorization.name().equals('TRANSFER')\">PERM_TRANSFER</if>"
         + "<if test=\"authorization.name().equals('DISTRIBUTE')\">PERM_DISTRIBUTE</if>"
@@ -470,6 +471,7 @@ public interface QueryMapper {
         + "<if test=\"authorization.name().equals('CUSTOM_11')\">PERM_CUSTOM_11</if>"
         + "<if test=\"authorization.name().equals('CUSTOM_12')\">PERM_CUSTOM_12</if> = 1 "
         + "</if>"
+        + "AND PERM_READ = 1"
         + "</where>"
         + "</script>")
     Long countQueryWorkbaskets(WorkbasketQueryImpl workbasketQuery);

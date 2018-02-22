@@ -75,29 +75,12 @@ public class WorkbasketServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testInsertWorkbasket()
-        throws NotAuthorizedException, SQLException, InvalidWorkbasketException, WorkbasketNotFoundException {
-        Connection connection = dataSource.getConnection();
-        taskanaEngineImpl.setConnection(connection);
-        workBasketService = taskanaEngine.getWorkbasketService();
-        int before = workBasketService.getWorkbaskets().size();
-        WorkbasketImpl workbasket = (WorkbasketImpl) workBasketService.newWorkbasket("key", "novatec");
-        String id1 = IdGenerator.generateWithPrefix("TWB");
-        workbasket.setId(id1);
-        workbasket.setName("Megabasket");
-        workbasket.setType(WorkbasketType.GROUP);
-        workBasketService.createWorkbasket(workbasket);
-        Assert.assertEquals(before + 1, workBasketService.getWorkbaskets().size());
-        taskanaEngineImpl.closeConnection();
-    }
-
-    @Test
     public void testSelectAllWorkbaskets()
         throws NotAuthorizedException, SQLException, InvalidWorkbasketException, WorkbasketNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
-        int before = workBasketService.getWorkbaskets().size();
+        int before = workBasketService.createWorkbasketQuery().list().size();
         WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket("key0", "novatec");
         String id0 = IdGenerator.generateWithPrefix("TWB");
         workbasket0.setId(id0);
@@ -116,7 +99,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         workbasket2.setName("Hyperbasket");
         workbasket2.setType(WorkbasketType.GROUP);
         workBasketService.createWorkbasket(workbasket2);
-        Assert.assertEquals(before + THREE, workBasketService.getWorkbaskets().size());
+        Assert.assertEquals(before + THREE, workBasketService.createWorkbasketQuery().list().size());
         connection.commit();
         taskanaEngineImpl.closeConnection();
     }
