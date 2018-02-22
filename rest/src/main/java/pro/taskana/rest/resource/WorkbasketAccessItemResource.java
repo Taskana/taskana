@@ -32,6 +32,9 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
     public boolean permCustom11;
     public boolean permCustom12;
 
+    public WorkbasketAccessItemResource() {
+    }
+
     public WorkbasketAccessItemResource(String accessItemId, String workbasketId, String accessId, boolean permRead,
         boolean permOpen, boolean permAppend, boolean permTransfer, boolean permDistribute, boolean permCustom1,
         boolean permCustom2, boolean permCustom3, boolean permCustom4, boolean permCustom5, boolean permCustom6,
