@@ -3,7 +3,7 @@ INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('2', '2', 'Max',          true, true,
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('3', '3', 'Simone',       true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('4', '4', 'user_1_1', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
 
--- KSC authorizations (                    ID,                                                                             WB_KEY,    ACCESS_ID, READ, OPEN, APPEND, TRANSFER, DISTRIBUTE, C1, .., C12)
+-- KSC authorizations (                    ID,                                                                             WB_ID,    ACCESS_ID, READ, OPEN, APPEND, TRANSFER, DISTRIBUTE, C1, .., C12)
 -- PPKs
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000001', 'WBI:100000000000000000000000000000000004', 'teamlead_1', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000002', 'WBI:100000000000000000000000000000000005', 'teamlead_2', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
