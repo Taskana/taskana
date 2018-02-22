@@ -42,9 +42,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JaasAuthenticationProvider jaasAuthProvider() {
         JaasAuthenticationProvider authenticationProvider = new JaasAuthenticationProvider();
-        authenticationProvider.setAuthorityGranters(new AuthorityGranter[] { new SampleRoleGranter() });
+        authenticationProvider.setAuthorityGranters(new AuthorityGranter[] {new SampleRoleGranter()});
         authenticationProvider.setCallbackHandlers(new JaasAuthenticationCallbackHandler[] {
-            new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler() });
+            new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()});
         authenticationProvider.setLoginContextName("taskana");
         authenticationProvider.setLoginConfig(new ClassPathResource("pss_jaas.config"));
         return authenticationProvider;

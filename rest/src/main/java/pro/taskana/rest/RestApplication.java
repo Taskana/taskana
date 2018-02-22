@@ -17,6 +17,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
@@ -28,11 +30,6 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.rest.resource.mapper.ClassificationMapper;
-import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
-import pro.taskana.rest.resource.mapper.WorkbasketDefinitionMapper;
-import pro.taskana.rest.resource.mapper.WorkbasketMapper;
-import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 @SpringBootApplication
@@ -80,31 +77,6 @@ public class RestApplication {
     }
 
     @Bean
-    public WorkbasketSummaryMapper getWorkbasketSummaryMapper() {
-        return new WorkbasketSummaryMapper();
-    }
-
-    @Bean
-    public WorkbasketMapper getWorkbasketMapper() {
-        return new WorkbasketMapper();
-    }
-
-    @Bean
-    public WorkbasketAccessItemMapper getWorkbasketAccessItemMapper() {
-        return new WorkbasketAccessItemMapper();
-    }
-
-    @Bean
-    public WorkbasketDefinitionMapper getWorkbasketDefinitionMapper() {
-        return new WorkbasketDefinitionMapper();
-    }
-
-    @Bean
-    public ClassificationMapper getClassificationMapper() {
-        return new ClassificationMapper();
-    }
-
-    @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) throws SQLException {
         return taskanaEngineConfiguration.buildTaskanaEngine();
@@ -144,6 +116,11 @@ public class RestApplication {
     @Bean
     public HandlerInstantiator handlerInstantiator(ApplicationContext context) {
         return new SpringHandlerInstantiator(context.getAutowireCapableBeanFactory());
+    }
+
+    @Bean
+    public PlatformTransactionManager txManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 
 }

@@ -3,10 +3,13 @@ package pro.taskana.rest.resource.mapper;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import org.springframework.stereotype.Component;
+
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 
+@Component
 public class WorkbasketSummaryMapper {
 
     public WorkbasketSummaryResource toResource(WorkbasketSummary summary) {

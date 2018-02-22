@@ -6,6 +6,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
@@ -13,6 +14,7 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketResource;
 
+@Component
 public class WorkbasketMapper {
 
     @Autowired
