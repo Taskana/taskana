@@ -1,9 +1,22 @@
 package pro.taskana.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -28,6 +41,7 @@ import pro.taskana.exceptions.ConnectionNotSetException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.UnsupportedDatabaseException;
 import pro.taskana.impl.persistence.MapTypeHandler;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.ClassificationMapper;
 import pro.taskana.mappings.DistributionTargetMapper;
@@ -52,6 +66,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected SqlSessionFactory sessionFactory;
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
+    protected Map<TaskanaRole, Set<String>> roleMap = new HashMap<>();
 
     public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         return new TaskanaEngineImpl(taskanaEngineConfiguration);
@@ -61,6 +76,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();
+        initRoles(taskanaEngineConfiguration.getPropertiesFileName(),
+            taskanaEngineConfiguration.getPropertiesSeparator());
     }
 
     @Override
@@ -272,6 +289,82 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             this.transactionFactory = new ManagedTransactionFactory();
         } else {
             this.transactionFactory = new JdbcTransactionFactory();
+        }
+    }
+
+    protected void initRoles(String propertiesFilename, String propertiesSeparator) {
+        String propertiesFile = propertiesFilename == null ? taskanaEngineConfiguration.getPropertiesFileName()
+            : propertiesFilename;
+        String separator = propertiesSeparator == null ? taskanaEngineConfiguration.getPropertiesSeparator()
+            : propertiesSeparator;
+        if (taskanaEngineConfiguration.isSecurityEnabled()) {
+            // is the filename fully qualified or relative?
+            boolean loadFromClasspath = true;
+            File f = new File(propertiesFile);
+            if (f.exists() && !f.isDirectory()) {
+                loadFromClasspath = false;
+            }
+
+            Properties props = new Properties();
+            List<String> validPropertyNames = Arrays.asList(TaskanaRole.USER.getPropertyName(),
+                TaskanaRole.BUSINESS_ADMIN.getPropertyName(), TaskanaRole.ADMIN.getPropertyName());
+            try {
+                if (loadFromClasspath) {
+
+                    InputStream inputStream = this.getClass().getResourceAsStream(propertiesFile);
+                    if (inputStream == null) {
+                        LOGGER.error("properties file {} was not found on classpath.", propertiesFile);
+                        ensureRoleMapIsFullyInitialized();
+                        return;
+                    } else {
+                        props.load(new InputStreamReader(inputStream));
+                    }
+                } else {
+                    props.load(new FileInputStream(propertiesFile));
+                }
+                for (Object obj : props.keySet()) {
+                    String propertyName = ((String) obj);
+                    if (validPropertyNames.contains(propertyName.toLowerCase().trim())) {
+                        String propertyValue = props.getProperty(propertyName);
+                        Set<String> roleMemberSet = new HashSet<>();
+                        StringTokenizer st = new StringTokenizer(propertyValue, separator);
+                        while (st.hasMoreTokens()) {
+                            String token = st.nextToken().toLowerCase().trim();
+                            roleMemberSet.add(token);
+                        }
+                        TaskanaRole key = TaskanaRole.fromProperyName(propertyName);
+                        if (key != null) {
+                            roleMap.put(key, roleMemberSet);
+                        } else {
+                            LOGGER.error("internal System error when processing properties file {}.", propertiesFile);
+                            throw new SystemException(
+                                "internal System error when processing properties file " + propertiesFile);
+                        }
+                    }
+                }
+                ensureRoleMapIsFullyInitialized();
+
+                roleMap.forEach(
+                    (k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, LoggerUtils.setToString(v)));
+
+            } catch (IOException e) {
+                LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);
+                throw new SystemException("internal System error when processing properties file " + propertiesFile);
+            }
+        }
+    }
+
+    private void ensureRoleMapIsFullyInitialized() {
+        // make sure that roleMap does not return null for any role
+        if (!roleMap.containsKey(TaskanaRole.ADMIN)) {
+            roleMap.put(TaskanaRole.ADMIN, new HashSet<>());
+        }
+        if (!roleMap.containsKey(TaskanaRole.BUSINESS_ADMIN)) {
+            roleMap.put(TaskanaRole.BUSINESS_ADMIN, new HashSet<>());
+        }
+
+        if (!roleMap.containsKey(TaskanaRole.USER)) {
+            roleMap.put(TaskanaRole.USER, new HashSet<>());
         }
     }
 

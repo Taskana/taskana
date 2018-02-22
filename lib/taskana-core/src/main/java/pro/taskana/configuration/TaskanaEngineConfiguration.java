@@ -23,8 +23,13 @@ public class TaskanaEngineConfiguration {
     private static final String USER_PASSWORD = "sa";
     private static final String JDBC_H2_MEM_TASKANA = "jdbc:h2:mem:taskana;IGNORECASE=TRUE";
     private static final String H2_DRIVER = "org.h2.Driver";
+    private static final String TASKANA_ROLES_PROPERTIES = "/taskanaroles.properties";
+    private static final String TASKANA_PROPERTIES_SEPARATOR = "|";
+
     protected DataSource dataSource;
     protected DbSchemaCreator dbScriptRunner;
+    protected String propertiesFileName = TASKANA_ROLES_PROPERTIES;
+    protected String propertiesSeparator = TASKANA_PROPERTIES_SEPARATOR;
 
     // global switch to enable JAAS based authentication and Taskana
     // authorizations
@@ -42,7 +47,21 @@ public class TaskanaEngineConfiguration {
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
         boolean securityEnabled) throws SQLException {
+        this(dataSource, useManagedTransactions, securityEnabled, null, null);
+    }
+
+    public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
+        boolean securityEnabled, String propertiesFileName, String propertiesSeparator) throws SQLException {
         this.useManagedTransactions = useManagedTransactions;
+        this.securityEnabled = securityEnabled;
+
+        if (propertiesFileName != null) {
+            this.propertiesFileName = propertiesFileName;
+        }
+
+        if (propertiesSeparator != null) {
+            this.propertiesSeparator = propertiesSeparator;
+        }
 
         if (dataSource != null) {
             this.dataSource = dataSource;
@@ -53,7 +72,6 @@ public class TaskanaEngineConfiguration {
         dbScriptRunner = new DbSchemaCreator(this.dataSource);
         dbScriptRunner.run();
 
-        this.securityEnabled = securityEnabled;
     }
 
     public static DataSource createDefaultDataSource() {
@@ -98,6 +116,22 @@ public class TaskanaEngineConfiguration {
 
     public boolean getUseManagedTransactions() {
         return this.useManagedTransactions;
+    }
+
+    public String getPropertiesFileName() {
+        return this.propertiesFileName;
+    }
+
+    public void setPropertiesFileName(String propertiesFileName) {
+        this.propertiesFileName = propertiesFileName;
+    }
+
+    public String getPropertiesSeparator() {
+        return this.propertiesSeparator;
+    }
+
+    public void setPropertiesSeparator(String propertiesSeparator) {
+        this.propertiesSeparator = propertiesSeparator;
     }
 
     /**
