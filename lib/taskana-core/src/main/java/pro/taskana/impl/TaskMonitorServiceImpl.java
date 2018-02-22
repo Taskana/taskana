@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.Workbasket;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.TaskMonitorMapper;
 
@@ -27,26 +26,27 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains) {
-        return getWorkbasketLevelReport(workbaskets, states, categories, domains, null, false);
+        return getWorkbasketLevelReport(workbasketIds, states, categories, domains, null, false);
     }
 
     @Override
-    public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getWorkbasketLevelReport(workbaskets, states, categories, domains, reportLineItemDefinitions, true);
+        return getWorkbasketLevelReport(workbasketIds, states, categories, domains, reportLineItemDefinitions, true);
     }
 
     @Override
-    public Report getWorkbasketLevelReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions,
         boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "entry to getWorkbasketLevelReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {},"
-                    + " inWorkingDays = {})",
-                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
+                "entry to getWorkbasketLevelReport(workbasketIds = {}, states = {}, categories = {}, domains = {}, "
+                    + "reportLineItemDefinitions = {}, inWorkingDays = {})",
+                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
                 LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
@@ -54,7 +54,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
-                .getTaskCountOfWorkbasketsByWorkbasketsAndStates(workbaskets, states, categories, domains);
+                .getTaskCountOfWorkbasketsByWorkbasketsAndStates(workbasketIds, states, categories, domains);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -66,25 +66,26 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    public Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains) {
-        return getCategoryReport(workbaskets, states, categories, domains, null, false);
+        return getCategoryReport(workbasketIds, states, categories, domains, null, false);
     }
 
     @Override
-    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    public Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getCategoryReport(workbaskets, states, categories, domains, reportLineItemDefinitions, true);
+        return getCategoryReport(workbasketIds, states, categories, domains, reportLineItemDefinitions, true);
     }
 
     @Override
-    public Report getCategoryReport(List<Workbasket> workbaskets, List<TaskState> states, List<String> categories,
+    public Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "entry to getCategoryReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {},"
-                    + " inWorkingDays = {})",
-                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
+                "entry to getCategoryReport(workbasketIds = {}, states = {}, categories = {}, domains = {}, "
+                    + "reportLineItemDefinitions = {}, inWorkingDays = {})",
+                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
                 LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
@@ -92,7 +93,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
-                .getTaskCountOfCategoriesByWorkbasketsAndStates(workbaskets, states, categories, domains);
+                .getTaskCountOfCategoriesByWorkbasketsAndStates(workbasketIds, states, categories, domains);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -103,26 +104,27 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains) {
-        return getClassificationReport(workbaskets, states, categories, domains, null, false);
+        return getClassificationReport(workbasketIds, states, categories, domains, null, false);
     }
 
     @Override
-    public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getClassificationReport(workbaskets, states, categories, domains, reportLineItemDefinitions, true);
+        return getClassificationReport(workbasketIds, states, categories, domains, reportLineItemDefinitions, true);
     }
 
     @Override
-    public ClassificationReport getClassificationReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions,
         boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "entry to getClassificationReport(workbaskets = {}, states = {}, reportLineItemDefinitions = {},"
-                    + " inWorkingDays = {})",
-                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
+                "entry to getClassificationReport(workbasketIds = {}, states = {}, categories = {}, domains = {}, "
+                    + "reportLineItemDefinitions = {}, inWorkingDays = {})",
+                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
                 LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
@@ -130,7 +132,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             ClassificationReport report = new ClassificationReport();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
-                .getTaskCountOfClassificationsByWorkbasketsAndStates(workbaskets, states, categories, domains);
+                .getTaskCountOfClassificationsByWorkbasketsAndStates(workbasketIds, states, categories, domains);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -141,30 +143,31 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets,
+    public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
         List<TaskState> states, List<String> categories, List<String> domains) {
-        return getDetailedClassificationReport(workbaskets, states, categories, domains, null, false);
+        return getDetailedClassificationReport(workbasketIds, states, categories, domains, null, false);
     }
 
     @Override
-    public DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets,
+    public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
         List<TaskState> states, List<String> categories, List<String> domains,
         List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getDetailedClassificationReport(workbaskets, states, categories, domains, reportLineItemDefinitions,
+        return getDetailedClassificationReport(workbasketIds, states, categories, domains, reportLineItemDefinitions,
             true);
     }
 
     @Override
-    public DetailedClassificationReport getDetailedClassificationReport(List<Workbasket> workbaskets,
+    public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
         List<TaskState> states, List<String> categories, List<String> domains,
         List<ReportLineItemDefinition> reportLineItemDefinitions,
         boolean inWorkingDays) {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "entry to getDetailedClassificationReport(workbaskets = {}, states = {}, customField = {}, "
-                    + "reportLineItemDefinitions = {}, inWorkingDays = {})",
-                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states),
+                "entry to getDetailedClassificationReport(workbasketIds = {}, states = {}, categories = {},"
+                    + " domains = {}, reportLineItemDefinitions = {}, inWorkingDays = {})",
+                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
                 LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
@@ -172,7 +175,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             DetailedClassificationReport report = new DetailedClassificationReport();
             List<DetailedMonitorQueryItem> detailedMonitorQueryItems = taskMonitorMapper
-                .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbaskets, states, categories, domains);
+                .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbasketIds, states, categories,
+                    domains);
             report.addDetailedMonitoringQueryItems(detailedMonitorQueryItems, reportLineItemDefinitions,
                 inWorkingDays);
             return report;
@@ -184,29 +188,30 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField) {
-        return getCustomFieldValueReport(workbaskets, states, categories, domains, customField, null, false);
+        return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField, null, false);
     }
 
     @Override
-    public Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField,
         List<ReportLineItemDefinition> reportLineItemDefinitions) {
-        return getCustomFieldValueReport(workbaskets, states, categories, domains, customField,
+        return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField,
             reportLineItemDefinitions, true);
     }
 
     @Override
-    public Report getCustomFieldValueReport(List<Workbasket> workbaskets, List<TaskState> states,
+    public Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField,
         List<ReportLineItemDefinition> reportLineItemDefinitions,
         boolean inWorkingDays) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "entry to getCustomFieldValueReport(workbaskets = {}, states = {}, customField = {}, "
-                    + "reportLineItemDefinitions = {}, inWorkingDays = {})",
-                LoggerUtils.listToString(workbaskets), LoggerUtils.listToString(states), customField,
+                "entry to getCustomFieldValueReport(workbasketIds = {}, states = {}, categories = {}, domains = {},"
+                    + " customField = {}, reportLineItemDefinitions = {}, inWorkingDays = {})",
+                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
                 LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
@@ -214,7 +219,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
-                .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(workbaskets, states, categories,
+                .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(workbasketIds, states, categories,
                     domains, customField);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;

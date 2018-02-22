@@ -15,34 +15,24 @@ import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.CustomField;
 import pro.taskana.impl.Report;
 import pro.taskana.impl.ReportLineItem;
 import pro.taskana.impl.ReportLineItemDefinition;
 import pro.taskana.impl.TaskState;
 import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.security.JAASRunner;
-import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "classification report" scenarios.
  */
-@RunWith(JAASRunner.class)
 public class ProvideCustomFieldValueReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -66,14 +56,12 @@ public class ProvideCustomFieldValueReportAccTest {
         testDataGenerator.generateMonitoringTestData(dataSource);
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1()
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
@@ -83,7 +71,7 @@ public class ProvideCustomFieldValueReportAccTest {
         String customFieldValue2 = "Geschaeftsstelle B";
         String customFieldValue3 = "Geschaeftsstelle C";
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
             customField);
 
         assertNotNull(report);
@@ -97,14 +85,12 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2()
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
@@ -113,7 +99,7 @@ public class ProvideCustomFieldValueReportAccTest {
         String customFieldValue1 = "Vollkasko";
         String customFieldValue2 = "Teilkasko";
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
             customField);
         assertNotNull(report);
         assertEquals(21, report.getReportLines().get(customFieldValue1).getTotalNumberOfTasks());
@@ -126,14 +112,12 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetCustomFieldValueReportWithReportLineItemDefinitions()
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+    public void testGetCustomFieldValueReportWithReportLineItemDefinitions() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
@@ -144,7 +128,7 @@ public class ProvideCustomFieldValueReportAccTest {
         String customFieldValue2 = "Geschaeftsstelle B";
         String customFieldValue3 = "Geschaeftsstelle C";
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
             customField, reportLineItemDefinitions);
 
         assertNotNull(report);
@@ -167,14 +151,12 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetCustomFieldValueReportWithReportLineItemDefinitionsNotInWorkingDays()
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+    public void testGetCustomFieldValueReportWithReportLineItemDefinitionsNotInWorkingDays() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
@@ -185,7 +167,7 @@ public class ProvideCustomFieldValueReportAccTest {
         String customFieldValue2 = "Geschaeftsstelle B";
         String customFieldValue3 = "Geschaeftsstelle C";
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
             customField, reportLineItemDefinitions, false);
 
         assertNotNull(report);
@@ -208,14 +190,12 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testEachItemOfCustomFieldValueReport()
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+    public void testEachItemOfCustomFieldValueReport() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
@@ -226,7 +206,7 @@ public class ProvideCustomFieldValueReportAccTest {
         String customFieldValue2 = "Geschaeftsstelle B";
         String customFieldValue3 = "Geschaeftsstelle C";
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
             customField, reportLineItemDefinitions);
 
         List<ReportLineItem> line1 = report.getReportLines().get(customFieldValue1).getLineItems();
@@ -251,14 +231,12 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(6, line3.get(4).getNumberOfTasks());
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithCategoryFilter()
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+    public void testEachItemOfCustomFieldValueReportWithCategoryFilter() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
@@ -269,7 +247,7 @@ public class ProvideCustomFieldValueReportAccTest {
         String customFieldValue2 = "Geschaeftsstelle B";
         String customFieldValue3 = "Geschaeftsstelle C";
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
             customField, reportLineItemDefinitions);
 
         List<ReportLineItem> line1 = report.getReportLines().get(customFieldValue1).getLineItems();
@@ -294,14 +272,12 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(4, line3.get(4).getNumberOfTasks());
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithDomainFilter()
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+    public void testEachItemOfCustomFieldValueReportWithDomainFilter() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A");
@@ -312,7 +288,7 @@ public class ProvideCustomFieldValueReportAccTest {
         String customFieldValue2 = "Geschaeftsstelle B";
         String customFieldValue3 = "Geschaeftsstelle C";
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
             customField, reportLineItemDefinitions);
 
         List<ReportLineItem> line1 = report.getReportLines().get(customFieldValue1).getLineItems();
@@ -337,19 +313,12 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(3, line3.get(4).getNumberOfTasks());
     }
 
-    private List<Workbasket> getListOfWorkbaskets() throws WorkbasketNotFoundException, NotAuthorizedException {
-        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-        WorkbasketImpl workbasket1 = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000001");
-        WorkbasketImpl workbasket2 = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000002");
-        WorkbasketImpl workbasket3 = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000003");
-        WorkbasketImpl workbasket4 = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000004");
-
-        return Arrays.asList(workbasket1, workbasket2, workbasket3, workbasket4);
+    private List<String> generateWorkbasketIds(int amount, int startAt) {
+        List<String> workbasketIds = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            workbasketIds.add(String.format("WBI:%036d", startAt + i));
+        }
+        return workbasketIds;
     }
 
     private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {
