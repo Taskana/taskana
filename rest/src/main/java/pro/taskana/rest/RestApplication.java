@@ -14,7 +14,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
@@ -37,7 +36,6 @@ import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 @SpringBootApplication
-@PropertySource("classpath:datasource.properties")
 @EnableTransactionManagement
 public class RestApplication {
 
@@ -58,9 +56,6 @@ public class RestApplication {
     @Primary
     public DataSource dataSource(DataSourceProperties properties) {
         DataSource dataSource = properties.initializeDataSourceBuilder().build();
-        // if TaskanaEngineImpl runs with SpringManagedTransactionFactory, then
-        // there is no need to wrap the dataSource into TransactionAwareDataSourceProxy ...
-        // return new TransactionAwareDataSourceProxy(dataSource);
         return dataSource;
     }
 
