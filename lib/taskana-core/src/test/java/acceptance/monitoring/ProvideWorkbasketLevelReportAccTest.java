@@ -15,13 +15,10 @@ import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -32,16 +29,12 @@ import pro.taskana.impl.ReportLineItem;
 import pro.taskana.impl.ReportLineItemDefinition;
 import pro.taskana.impl.TaskState;
 import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.security.JAASRunner;
-import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "workbasket level report" scenarios.
  */
-@RunWith(JAASRunner.class)
 public class ProvideWorkbasketLevelReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -65,42 +58,40 @@ public class ProvideWorkbasketLevelReportAccTest {
         testDataGenerator.generateMonitoringTestData(dataSource);
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetTotalNumbersOfTasksOfWorkbasketLevelReport()
-        throws WorkbasketNotFoundException, NotAuthorizedException {
+    public void testGetTotalNumbersOfTasksOfWorkbasketLevelReport() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states, categories, domains);
+        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains);
 
         assertNotNull(report);
-        assertEquals(20, report.getReportLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(20, report.getReportLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
+        assertEquals(20,
+            report.getReportLines().get("WBI:000000000000000000000000000000000001").getTotalNumberOfTasks());
+        assertEquals(20,
+            report.getReportLines().get("WBI:000000000000000000000000000000000002").getTotalNumberOfTasks());
+        assertEquals(10,
+            report.getReportLines().get("WBI:000000000000000000000000000000000003").getTotalNumberOfTasks());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
-
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetWorkbasketLevelReportWithReportLineItemDefinitions()
-        throws WorkbasketNotFoundException, NotAuthorizedException {
+    public void testGetWorkbasketLevelReportWithReportLineItemDefinitions() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
             reportLineItemDefinitions);
 
         int sumLineCount = report.getSumLine().getLineItems().get(0).getNumberOfTasks()
@@ -115,9 +106,12 @@ public class ProvideWorkbasketLevelReportAccTest {
 
         assertNotNull(report);
 
-        assertEquals(20, report.getReportLines().get(workbaskets.get(0).getKey()).getTotalNumberOfTasks());
-        assertEquals(20, report.getReportLines().get(workbaskets.get(1).getKey()).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(workbaskets.get(2).getKey()).getTotalNumberOfTasks());
+        assertEquals(20,
+            report.getReportLines().get("WBI:000000000000000000000000000000000001").getTotalNumberOfTasks());
+        assertEquals(20,
+            report.getReportLines().get("WBI:000000000000000000000000000000000002").getTotalNumberOfTasks());
+        assertEquals(10,
+            report.getReportLines().get("WBI:000000000000000000000000000000000003").getTotalNumberOfTasks());
 
         assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
@@ -130,60 +124,58 @@ public class ProvideWorkbasketLevelReportAccTest {
         assertEquals(5, report.getSumLine().getLineItems().get(8).getNumberOfTasks());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
         assertEquals(50, sumLineCount);
-
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testGetWorkbasketLevelReportIfWorkbasketContainsNoTask()
-        throws WorkbasketNotFoundException, NotAuthorizedException {
+    public void testGetWorkbasketLevelReportIfWorkbasketContainsNoTask() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
-        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-        List<Workbasket> workbaskets = new ArrayList<>();
-        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000004");
-        workbaskets.add(workbasket);
+        List<String> workbasketIds = generateWorkbasketIds(1, 4);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states, categories, domains);
+        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains);
 
         assertNotNull(report);
         assertEquals(0, report.getSumLine().getTotalNumberOfTasks());
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
     public void testEachItemOfWorkbasketLevelReportWithCategoryFilter()
         throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
             reportLineItemDefinitions);
 
-        List<ReportLineItem> line1 = report.getReportLines().get(workbaskets.get(0).getKey()).getLineItems();
+        List<ReportLineItem> line1 = report.getReportLines()
+            .get("WBI:000000000000000000000000000000000001")
+            .getLineItems();
         assertEquals(3, line1.get(0).getNumberOfTasks());
         assertEquals(1, line1.get(1).getNumberOfTasks());
         assertEquals(1, line1.get(2).getNumberOfTasks());
         assertEquals(1, line1.get(3).getNumberOfTasks());
         assertEquals(2, line1.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line2 = report.getReportLines().get(workbaskets.get(1).getKey()).getLineItems();
+        List<ReportLineItem> line2 = report.getReportLines()
+            .get("WBI:000000000000000000000000000000000002")
+            .getLineItems();
         assertEquals(1, line2.get(0).getNumberOfTasks());
         assertEquals(1, line2.get(1).getNumberOfTasks());
         assertEquals(1, line2.get(2).getNumberOfTasks());
         assertEquals(0, line2.get(3).getNumberOfTasks());
         assertEquals(1, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getReportLines().get(workbaskets.get(2).getKey()).getLineItems();
+        List<ReportLineItem> line3 = report.getReportLines()
+            .get("WBI:000000000000000000000000000000000003")
+            .getLineItems();
         assertEquals(0, line3.get(0).getNumberOfTasks());
         assertEquals(1, line3.get(1).getNumberOfTasks());
         assertEquals(0, line3.get(2).getNumberOfTasks());
@@ -193,37 +185,41 @@ public class ProvideWorkbasketLevelReportAccTest {
         assertEquals(3, report.getReportLines().size());
     }
 
-    @WithAccessId(userName = "monitor_user_1")
     @Test
-    public void testEachItemOfWorkbasketLevelReportWithDomainFilter()
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+    public void testEachItemOfWorkbasketLevelReportWithDomainFilter() {
 
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<Workbasket> workbaskets = getListOfWorkbaskets();
+        List<String> workbasketIds = generateWorkbasketIds(3, 1);
         List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbaskets, states, categories, domains,
+        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
             reportLineItemDefinitions);
 
-        List<ReportLineItem> line1 = report.getReportLines().get(workbaskets.get(0).getKey()).getLineItems();
+        List<ReportLineItem> line1 = report.getReportLines()
+            .get("WBI:000000000000000000000000000000000001")
+            .getLineItems();
         assertEquals(8, line1.get(0).getNumberOfTasks());
         assertEquals(1, line1.get(1).getNumberOfTasks());
         assertEquals(0, line1.get(2).getNumberOfTasks());
         assertEquals(1, line1.get(3).getNumberOfTasks());
         assertEquals(2, line1.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line2 = report.getReportLines().get(workbaskets.get(1).getKey()).getLineItems();
+        List<ReportLineItem> line2 = report.getReportLines()
+            .get("WBI:000000000000000000000000000000000002")
+            .getLineItems();
         assertEquals(2, line2.get(0).getNumberOfTasks());
         assertEquals(2, line2.get(1).getNumberOfTasks());
         assertEquals(2, line2.get(2).getNumberOfTasks());
         assertEquals(4, line2.get(3).getNumberOfTasks());
         assertEquals(0, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getReportLines().get(workbaskets.get(2).getKey()).getLineItems();
+        List<ReportLineItem> line3 = report.getReportLines()
+            .get("WBI:000000000000000000000000000000000003")
+            .getLineItems();
         assertEquals(1, line3.get(0).getNumberOfTasks());
         assertEquals(1, line3.get(1).getNumberOfTasks());
         assertEquals(0, line3.get(2).getNumberOfTasks());
@@ -231,19 +227,12 @@ public class ProvideWorkbasketLevelReportAccTest {
         assertEquals(2, line3.get(4).getNumberOfTasks());
     }
 
-    private List<Workbasket> getListOfWorkbaskets() throws WorkbasketNotFoundException, NotAuthorizedException {
-        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-        WorkbasketImpl workbasket1 = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000001");
-        WorkbasketImpl workbasket2 = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000002");
-        WorkbasketImpl workbasket3 = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000003");
-        WorkbasketImpl workbasket4 = (WorkbasketImpl) workbasketService
-            .getWorkbasket("WBI:000000000000000000000000000000000004");
-
-        return Arrays.asList(workbasket1, workbasket2, workbasket3, workbasket4);
+    private List<String> generateWorkbasketIds(int amount, int startAt) {
+        List<String> workbasketIds = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            workbasketIds.add(String.format("WBI:%036d", startAt + i));
+        }
+        return workbasketIds;
     }
 
     private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {
