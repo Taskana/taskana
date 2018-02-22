@@ -54,6 +54,7 @@ public class ClassificationDefinitionController {
             }
             return new ResponseEntity<>(export, HttpStatus.OK);
         } catch (ClassificationNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -64,15 +65,18 @@ public class ClassificationDefinitionController {
         @RequestBody List<ClassificationResource> classificationResources) {
         try {
             Map<String, String> systemIds = classificationService.createClassificationQuery().list().stream()
-                .collect(Collectors.toMap(i -> i.getKey() + i.getDomain(), ClassificationSummary::getId));
+                .collect(Collectors.toMap(i -> i.getKey() + "|||" + i.getDomain(), ClassificationSummary::getId));
 
             for (ClassificationResource classificationResource : classificationResources) {
                 Classification classification = classificationMapper.toModel(classificationResource);
-                if (systemIds.containsKey(classificationResource.key + classificationResource.domain))
+                if (systemIds.containsKey(classificationResource.key + "|||" + classificationResource.domain))
                     classificationService.updateClassification(classification);
                 else
                     classificationService.createClassification(classification);
             }
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (ClassificationNotFoundException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -83,7 +87,5 @@ public class ClassificationDefinitionController {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

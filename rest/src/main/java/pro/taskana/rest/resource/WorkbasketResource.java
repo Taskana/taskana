@@ -36,6 +36,7 @@ public class WorkbasketResource extends ResourceSupport {
     public String orgLevel4;
 
     public WorkbasketResource() {
+        //necessary for de-serializing
     }
 
     public WorkbasketResource(String workbasketId, String key, String name, String domain, WorkbasketType type,
