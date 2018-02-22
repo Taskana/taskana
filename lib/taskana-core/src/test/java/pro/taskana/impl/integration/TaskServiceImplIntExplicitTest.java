@@ -540,7 +540,7 @@ public class TaskServiceImplIntExplicitTest {
         return task;
     }
 
-    private void generateSampleAccessItems() {
+    private void generateSampleAccessItems() throws InvalidArgumentException {
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
         accessItem.setPermAppend(true);
         accessItem.setPermRead(true);
@@ -554,7 +554,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
-        boolean permRead, boolean permAppend, boolean permTransfer) {
+        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException {
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);

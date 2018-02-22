@@ -1,5 +1,10 @@
 package acceptance.workbasket;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
@@ -26,6 +31,7 @@ import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
+import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -126,6 +132,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             .workbasketKeyDomainIn(new KeyDomain(wbKey, "DOMAIN_A"))
             .list();
         Assert.assertEquals(1, tasks.size());
+        assertThat(createdTask, not(equalTo(null)));
 
         List<WorkbasketAccessItem> accessItems = workbasketService
             .getWorkbasketAuthorizations("WBI:100000000000000000000000000000000008");
@@ -146,7 +153,86 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         } catch (NotAuthorizedToQueryWorkbasketException ignored) {
             // nothing to do
         }
+    }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testUpdatedAccessItemList() throws InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        final String wbId = "WBI:100000000000000000000000000000000004";
+        List<WorkbasketAccessItem> accessItems = workbasketService
+            .getWorkbasketAuthorizations(wbId);
+        int countBefore = accessItems.size();
+
+        // update some values
+        WorkbasketAccessItem item0 = accessItems.get(0);
+        item0.setPermAppend(false);
+        item0.setPermOpen(false);
+        item0.setPermTransfer(false);
+        final String updateId0 = item0.getId();
+        WorkbasketAccessItem item1 = accessItems.get(1);
+        item1.setPermAppend(false);
+        item1.setPermOpen(false);
+        item1.setPermTransfer(false);
+        final String updateId1 = item1.getId();
+
+        workbasketService.setWorkbasketAuthorizations(wbId, accessItems);
+
+        List<WorkbasketAccessItem> updatedAccessItems = workbasketService
+            .getWorkbasketAuthorizations(wbId);
+        int countAfter = updatedAccessItems.size();
+        assertThat(countAfter, equalTo(countBefore));
+
+        item0 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId0)).findFirst().get();
+        assertFalse(item0.isPermAppend());
+        assertFalse(item0.isPermOpen());
+        assertFalse(item0.isPermTransfer());
+
+        item1 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId1)).findFirst().get();
+        assertFalse(item1.isPermAppend());
+        assertFalse(item1.isPermOpen());
+        assertFalse(item1.isPermTransfer());
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testInsertAccessItemList() throws InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        final String wbId = "WBI:100000000000000000000000000000000004";
+        List<WorkbasketAccessItem> accessItems = workbasketService
+            .getWorkbasketAuthorizations(wbId);
+        int countBefore = accessItems.size();
+
+        // update some values
+        WorkbasketAccessItem item0 = accessItems.get(0);
+        item0.setPermAppend(false);
+        item0.setPermOpen(false);
+        item0.setPermTransfer(false);
+        final String updateId0 = item0.getId();
+        // insert new entry
+        WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, CurrentUserContext.getUserid());
+        newItem.setPermRead(true);
+        newItem.setPermOpen(true);
+        newItem.setPermCustom12(true);
+        accessItems.add(newItem);
+
+        workbasketService.setWorkbasketAuthorizations(wbId, accessItems);
+
+        List<WorkbasketAccessItem> updatedAccessItems = workbasketService
+            .getWorkbasketAuthorizations(wbId);
+        int countAfter = updatedAccessItems.size();
+        assertTrue((countBefore + 1) == countAfter);
+
+        item0 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId0)).findFirst().get();
+        assertFalse(item0.isPermAppend());
+        assertFalse(item0.isPermOpen());
+        assertFalse(item0.isPermTransfer());
+        assertFalse(item0.isPermAppend());
+        assertFalse(item0.isPermTransfer());
     }
 
     @AfterClass

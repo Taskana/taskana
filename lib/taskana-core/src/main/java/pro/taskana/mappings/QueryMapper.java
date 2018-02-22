@@ -273,6 +273,7 @@ public interface QueryMapper {
         + "PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
         + "from WORKBASKET_ACCESS_LIST "
         + "<where>"
+        + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='workbasketIdIn != null'>AND WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
         + "</where>"

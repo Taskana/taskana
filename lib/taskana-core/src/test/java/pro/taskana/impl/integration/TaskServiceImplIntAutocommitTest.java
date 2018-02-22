@@ -401,7 +401,7 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
-        boolean permRead, boolean permAppend, boolean permTransfer) {
+        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException {
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);

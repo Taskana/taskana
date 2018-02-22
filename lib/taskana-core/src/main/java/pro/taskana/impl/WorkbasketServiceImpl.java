@@ -200,12 +200,19 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem) {
+    public WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
+        throws InvalidArgumentException {
         LOGGER.debug("entry to createWorkbasketAuthorization(workbasketAccessItem = {})", workbasketAccessItem);
         WorkbasketAccessItemImpl accessItem = (WorkbasketAccessItemImpl) workbasketAccessItem;
         try {
             taskanaEngine.openConnection();
             accessItem.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
+            if (workbasketAccessItem.getId() == null || workbasketAccessItem.getAccessId() == null
+                || workbasketAccessItem.getWorkbasketId() == null) {
+                throw new InvalidArgumentException(
+                    "Checking the preconditions of the current WorkbasketAccessItem failed. WorkbasketAccessItem="
+                        + workbasketAccessItem.toString());
+            }
             workbasketAccessMapper.insert(accessItem);
             LOGGER.debug("Method createWorkbasketAuthorization() created workbaskteAccessItem {}",
                 accessItem);
@@ -218,12 +225,51 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public void deleteWorkbasketAuthorization(String id) {
-        LOGGER.debug("entry to deleteWorkbasketAuthorization(id = {})", id);
+    public void setWorkbasketAuthorizations(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
+        throws InvalidArgumentException {
+        List<WorkbasketAccessItemImpl> newItems = new ArrayList<>();
+        try {
+            LOGGER.debug("entry to setWorkbasketAuthorizations(workbasketAccessItems = {})", wbAccessItems.toString());
+            taskanaEngine.openConnection();
+            // Check pre-conditions and set ID
+            if (!wbAccessItems.isEmpty()) {
+                for (WorkbasketAccessItem workbasketAccessItem : wbAccessItems) {
+                    WorkbasketAccessItemImpl wbAccessItemImpl = (WorkbasketAccessItemImpl) workbasketAccessItem;
+                    if (wbAccessItemImpl.getWorkbasketId() == null) {
+                        throw new InvalidArgumentException(
+                            "Checking the preconditions of the current WorkbasketAccessItem failed - WBID is NULL. WorkbasketAccessItem="
+                                + workbasketAccessItem.toString());
+                    } else if (!wbAccessItemImpl.getWorkbasketId().equals(workbasketId)) {
+                        throw new InvalidArgumentException(
+                            "Checking the preconditions of the current WorkbasketAccessItem failed - the WBID does not match. Target-WBID='"
+                                + workbasketId + "' WorkbasketAccessItem="
+                                + workbasketAccessItem.toString());
+                    }
+                    if (wbAccessItemImpl.getId() == null || wbAccessItemImpl.getId().isEmpty()) {
+                        wbAccessItemImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
+                    }
+                    newItems.add(wbAccessItemImpl);
+                }
+
+                // delete all current ones
+                workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(workbasketId);
+
+                // add all
+                newItems.stream().forEach(item -> workbasketAccessMapper.insert(item));
+            }
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from setWorkbasketAuthorizations(workbasketAccessItems = {})", wbAccessItems.toString());
+        }
+    }
+
+    @Override
+    public void deleteWorkbasketAuthorization(String accessItemId) {
+        LOGGER.debug("entry to deleteWorkbasketAuthorization(id = {})", accessItemId);
         try {
             taskanaEngine.openConnection();
-            workbasketAccessMapper.delete(id);
-            LOGGER.debug("Method deleteWorkbasketAuthorization() deleted workbasketAccessItem wit Id {}", id);
+            workbasketAccessMapper.delete(accessItemId);
+            LOGGER.debug("Method deleteWorkbasketAuthorization() deleted workbasketAccessItem wit Id {}", accessItemId);
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from deleteWorkbasketAuthorization(id).");
@@ -613,7 +659,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             // delete workbasket and sub-tables
             distributionTargetMapper.deleteAllDistributionTargetsBySourceId(wb.getId());
             distributionTargetMapper.deleteAllDistributionTargetsByTargetId(wb.getId());
-            workbasketAccessMapper.deleteAllForWorkbasketId(wb.getId());
+            workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(wb.getId());
             workbasketMapper.delete(workbasketId);
         } finally {
             taskanaEngine.returnConnection();

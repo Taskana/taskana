@@ -132,7 +132,8 @@ public class WorkbasketServiceImplIntAutocommitTest {
     @WithAccessId(userName = "Elena")
     @Test
     public void testSelectWorkbasket()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        InvalidArgumentException {
         String id = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket = createTestWorkbasket(id, "key0", "novatec", "Superbasket", WorkbasketType.GROUP);
         workbasket = workBasketService.createWorkbasket(workbasket);
@@ -150,7 +151,8 @@ public class WorkbasketServiceImplIntAutocommitTest {
     @WithAccessId(userName = "Elena")
     @Test
     public void testSelectWorkbasketWithDistribution()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        InvalidArgumentException {
         String id = IdGenerator.generateWithPrefix("TWB");
         Workbasket wbDist1 = createTestWorkbasket(id, "key0", "novatec", "Superbasket", WorkbasketType.GROUP);
         wbDist1 = workBasketService.createWorkbasket(wbDist1);
@@ -191,7 +193,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         workbasket2 = workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
         List<String> distTargets = new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
-        Thread.sleep(20L);
+        Thread.sleep(SLEEP_TIME);
         workBasketService.setDistributionTargets(workbasket2.getId(), distTargets);
 
         String id3 = IdGenerator.generateWithPrefix("TWB");
@@ -201,7 +203,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
 
         List<String> newDistTargets = new ArrayList<>(Arrays.asList(workbasket3.getId()));
-        Thread.sleep(20L);
+        Thread.sleep(SLEEP_TIME);
         workBasketService.setDistributionTargets(workbasket2.getId(), newDistTargets);
 
         Workbasket foundBasket = workBasketService.getWorkbasket(workbasket2.getId());
@@ -219,7 +221,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
     }
 
     @Test
-    public void testInsertWorkbasketAccessUser() throws NotAuthorizedException {
+    public void testInsertWorkbasketAccessUser() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketAccessItem accessItem = workBasketService
             .newWorkbasketAccessItem("k100000000000000000000000000000000000000", "Arthur Dent");
         accessItem.setPermOpen(true);
@@ -298,7 +300,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
             assertTrue("Basket1".equals(name) || "Basket2".equals(name) || "Basket3".equals(name));
         }
 
-        Thread.sleep(20L);
+        Thread.sleep(SLEEP_TIME);
         WorkbasketQuery query5 = workBasketService.createWorkbasketQuery()
             .modifiedWithin(
                 new TimeInterval(Instant.now().minus(Duration.ofDays(31)), Instant.now().minus(Duration.ofDays(14))));
@@ -329,7 +331,8 @@ public class WorkbasketServiceImplIntAutocommitTest {
     }
 
     private void generateSampleDataForQuery()
-        throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException {
+        throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException,
+        InvalidArgumentException {
         WorkbasketImpl basket1 = (WorkbasketImpl) workBasketService.newWorkbasket("k1", "novatec");
         basket1.setId("1000000000000000000000000000000000000000");
         basket1.setName("Basket1");
@@ -412,7 +415,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
-        boolean permRead, boolean permAppend, boolean permTransfer) {
+        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException {
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
