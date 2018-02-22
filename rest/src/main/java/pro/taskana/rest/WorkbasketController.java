@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -188,19 +190,46 @@ public class WorkbasketController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketAccessItemResource> createWorkbasketAuthorization(
         @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) {
-        WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper.toModel(workbasketAccessItemResource);
-        workbasketAccessItem = workbasketService.createWorkbasketAuthorization(workbasketAccessItem);
-        return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
+        try {
+            WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper
+                .toModel(workbasketAccessItemResource);
+            workbasketAccessItem = workbasketService.createWorkbasketAuthorization(workbasketAccessItem);
+            return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
+        } catch (InvalidArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
     }
 
     @PutMapping(path = "/authorizations/{authId}")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketAccessItemResource> updateWorkbasketAuthorization(
         @PathVariable(value = "authId") String authId,
-        @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) throws InvalidArgumentException {
-        WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper.toModel(workbasketAccessItemResource);
-        workbasketAccessItem = workbasketService.updateWorkbasketAuthorization(workbasketAccessItem);
-        return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
+        @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) {
+        try {
+            WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper
+                .toModel(workbasketAccessItemResource);
+            workbasketAccessItem = workbasketService.updateWorkbasketAuthorization(workbasketAccessItem);
+            return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
+        } catch (InvalidArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
+    }
+
+    @RequestMapping(value = "/{workbasketId}/authorizations/", method = RequestMethod.PUT)
+    public ResponseEntity<?> setWorkbasketAuthorizations(@PathVariable(value = "workbasketId") String workbasketId,
+        @RequestBody List<WorkbasketAccessItemResource> workbasketAccessResourceItems) {
+        try {
+            if (workbasketAccessResourceItems == null) {
+                throw new InvalidArgumentException("Can´t create something with NULL body-value.");
+            }
+            List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
+            workbasketAccessResourceItems.stream()
+                .forEach(item -> wbAccessItems.add(workbasketAccessItemMapper.toModel(item)));
+            workbasketService.setWorkbasketAuthorizations(workbasketId, wbAccessItems);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (InvalidArgumentException | NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
     }
 
     @DeleteMapping(path = "/authorizations/{authId}")

@@ -26,6 +26,7 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -123,7 +124,8 @@ public class WorkbasketServiceImplIntExplicitTest {
     @WithAccessId(userName = "Elena")
     @Test
     public void testSelectWorkbasket()
-        throws WorkbasketNotFoundException, NotAuthorizedException, SQLException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, SQLException, InvalidWorkbasketException,
+        InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
@@ -143,7 +145,8 @@ public class WorkbasketServiceImplIntExplicitTest {
     @WithAccessId(userName = "Elena")
     @Test(expected = NotAuthorizedException.class)
     public void testGetWorkbasketFail()
-        throws WorkbasketNotFoundException, SQLException, InvalidWorkbasketException, NotAuthorizedException {
+        throws WorkbasketNotFoundException, SQLException, InvalidWorkbasketException, NotAuthorizedException,
+        InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
@@ -159,7 +162,8 @@ public class WorkbasketServiceImplIntExplicitTest {
     @WithAccessId(userName = "Elena")
     @Test
     public void testSelectWorkbasketWithDistribution()
-        throws WorkbasketNotFoundException, NotAuthorizedException, SQLException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, SQLException, InvalidWorkbasketException,
+        InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
@@ -210,7 +214,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
 
         List<String> distTargets = new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
-        Thread.sleep(20L);
+        Thread.sleep(SLEEP_TIME);
         workBasketService.setDistributionTargets(workbasket2.getId(), distTargets);
 
         String id3 = IdGenerator.generateWithPrefix("TWB");
@@ -220,7 +224,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
 
         List<String> newDistTargets = new ArrayList<>(Arrays.asList(workbasket3.getId()));
-        Thread.sleep(20L);
+        Thread.sleep(SLEEP_TIME);
         workBasketService.setDistributionTargets(workbasket2.getId(), newDistTargets);
 
         Workbasket foundBasket = workBasketService.getWorkbasket(workbasket2.getId());
@@ -238,7 +242,7 @@ public class WorkbasketServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testInsertWorkbasketAccessUser() throws NotAuthorizedException, SQLException {
+    public void testInsertWorkbasketAccessUser() throws NotAuthorizedException, SQLException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
@@ -254,7 +258,7 @@ public class WorkbasketServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException, SQLException {
+    public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException, SQLException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
@@ -271,7 +275,7 @@ public class WorkbasketServiceImplIntExplicitTest {
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
-        boolean permRead, boolean permAppend, boolean permTransfer) {
+        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException {
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
             wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);

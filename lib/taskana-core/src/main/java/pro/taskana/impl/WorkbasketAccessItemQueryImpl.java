@@ -27,6 +27,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
     private String[] accessIdIn;
     private String[] workbasketIdIn;
+    private String[] idIn;
 
     private TaskanaEngineImpl taskanaEngineImpl;
     private List<String> orderBy;
@@ -34,6 +35,12 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     WorkbasketAccessItemQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         orderBy = new ArrayList<>();
+    }
+
+    @Override
+    public WorkbasketAccessItemQuery idIn(String... ids) {
+        this.idIn = ids;
+        return this;
     }
 
     @Override
@@ -47,6 +54,11 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         this.accessIdIn = accessId;
         WorkbasketQueryImpl.lowercaseAccessIds(this.accessIdIn);
         return this;
+    }
+
+    @Override
+    public WorkbasketAccessItemQuery orderById(SortDirection sortDirection) {
+        return addOrderCriteria("ID", sortDirection);
     }
 
     @Override
@@ -145,6 +157,10 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         return this;
     }
 
+    public String[] getIdIn() {
+        return this.idIn;
+    }
+
     public String[] getAccessIdIn() {
         return accessIdIn;
     }
@@ -160,7 +176,9 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("WorkbasketAccessItemQueryImpl [accessIdIn=");
+        builder.append("WorkbasketAccessItemQueryImpl [idIn=");
+        builder.append(Arrays.toString(idIn));
+        builder.append(", accessIdIn=");
         builder.append(Arrays.toString(accessIdIn));
         builder.append(", workbasketIdIn=");
         builder.append(Arrays.toString(workbasketIdIn));

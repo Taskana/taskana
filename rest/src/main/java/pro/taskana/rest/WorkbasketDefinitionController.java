@@ -23,6 +23,7 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -73,24 +74,27 @@ public class WorkbasketDefinitionController {
     }
 
     /**
-     * This method imports a <b>list of {@link WorkbasketDefinition}</b>.
-     * This does not exactly match the REST norm, but we want to have an option to import all settings at once.
-     * When a logical equal (key and domain are equal) workbasket already exists an update will be executed.
-     * Otherwise a new workbasket will be created.
+     * This method imports a <b>list of {@link WorkbasketDefinition}</b>. This does not exactly match the REST norm, but
+     * we want to have an option to import all settings at once. When a logical equal (key and domain are equal)
+     * workbasket already exists an update will be executed. Otherwise a new workbasket will be created.
      *
-     * @param definitions the list of workbasket definitions which will be imported to the current system.
-     * @return Return answer is determined by the status code:
-     * 200 - all good
-     * 400 - list state error (referring to non existing id's)
-     * 401 - not authorized
+     * @param definitions
+     *            the list of workbasket definitions which will be imported to the current system.
+     * @return Return answer is determined by the status code: 200 - all good 400 - list state error (referring to non
+     *         existing id's) 401 - not authorized
+     * @throws InvalidArgumentException
+     *             When the pre-conditions of a workbasket doesn´t match.
      */
     @PostMapping(path = "/import")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<String> importWorkbaskets(@RequestBody List<WorkbasketDefinition> definitions) {
+    public ResponseEntity<String> importWorkbaskets(@RequestBody List<WorkbasketDefinition> definitions)
+        throws InvalidArgumentException {
         try {
             // key: logical ID
             // value: system ID (in database)
-            Map<String, String> systemIds = workbasketService.createWorkbasketQuery().list().stream()
+            Map<String, String> systemIds = workbasketService.createWorkbasketQuery()
+                .list()
+                .stream()
                 .collect(Collectors.toMap(this::logicalId, WorkbasketSummary::getId));
 
             // key: old system ID
@@ -105,18 +109,15 @@ public class WorkbasketDefinitionController {
                     String oldId = res.workbasketId;
                     res.workbasketId = systemIds.get(logicalId(res));
                     workbasket = workbasketService.updateWorkbasket(
-                        workbasketMapper.toModel(res)
-                    );
+                        workbasketMapper.toModel(res));
                     res.workbasketId = oldId;
                 } else {
                     workbasket = workbasketService.createWorkbasket(
-                        workbasketMapper.toModel(res)
-                    );
+                        workbasketMapper.toModel(res));
                 }
                 for (WorkbasketAccessItemResource authorization : definition.authorizations) {
                     workbasketService.createWorkbasketAuthorization(
-                        workbasketAccessItemMapper.toModel(authorization)
-                    );
+                        workbasketAccessItemMapper.toModel(authorization));
                 }
                 idConversion.put(definition.workbasketResource.workbasketId, workbasket.getId());
             }
@@ -132,15 +133,13 @@ public class WorkbasketDefinitionController {
                         throw new WorkbasketNotFoundException(
                             String.format(
                                 "invalid import state: Workbasket '%s' does not exist in the given import list",
-                                oldId)
-                        );
+                                oldId));
                     }
                 }
 
                 workbasketService.setDistributionTargets(
                     // no verification necessary since the workbasket was already imported in step 1.
-                    idConversion.get(definition.workbasketResource.workbasketId), distributionTargets
-                );
+                    idConversion.get(definition.workbasketResource.workbasketId), distributionTargets);
             }
 
             return new ResponseEntity<>(HttpStatus.OK);
