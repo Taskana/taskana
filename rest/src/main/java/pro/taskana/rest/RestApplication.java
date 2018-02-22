@@ -2,18 +2,23 @@ package pro.taskana.rest;
 
 import java.sql.SQLException;
 
-import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
 
@@ -22,6 +27,7 @@ import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketService;
+import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
@@ -31,6 +37,8 @@ import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 @SpringBootApplication
+@PropertySource("classpath:datasource.properties")
+@EnableTransactionManagement
 public class RestApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(RestApplication.class);
@@ -40,23 +48,40 @@ public class RestApplication {
     }
 
     @Bean
-    public ClassificationService getClassificationService() throws Exception {
-        return getTaskanaEngine().getClassificationService();
+    @Primary
+    @ConfigurationProperties(prefix = "datasource")
+    public DataSourceProperties dataSourceProperties() {
+        return new DataSourceProperties();
     }
 
     @Bean
-    public TaskService getTaskService() throws Exception {
-        return getTaskanaEngine().getTaskService();
+    @Primary
+    public DataSource dataSource(DataSourceProperties properties) {
+        DataSource dataSource = properties.initializeDataSourceBuilder().build();
+        // if TaskanaEngineImpl runs with SpringManagedTransactionFactory, then
+        // there is no need to wrap the dataSource into TransactionAwareDataSourceProxy ...
+        // return new TransactionAwareDataSourceProxy(dataSource);
+        return dataSource;
     }
 
     @Bean
-    public TaskMonitorService getTaskMonitorService() throws Exception {
-        return getTaskanaEngine().getTaskMonitorService();
+    public ClassificationService getClassificationService(TaskanaEngine taskanaEngine) {
+        return taskanaEngine.getClassificationService();
     }
 
     @Bean
-    public WorkbasketService getWorkbasketService() throws Exception {
-        return getTaskanaEngine().getWorkbasketService();
+    public TaskService getTaskService(TaskanaEngine taskanaEngine) {
+        return taskanaEngine.getTaskService();
+    }
+
+    @Bean
+    public TaskMonitorService getTaskMonitorService(TaskanaEngine taskanaEngine) {
+        return taskanaEngine.getTaskMonitorService();
+    }
+
+    @Bean
+    public WorkbasketService getWorkbasketService(TaskanaEngine taskanaEngine) {
+        return taskanaEngine.getWorkbasketService();
     }
 
     @Bean
@@ -86,14 +111,18 @@ public class RestApplication {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public TaskanaEngine getTaskanaEngine() throws SQLException {
-        return getTaskanaEngineConfiguration().buildTaskanaEngine();
+    public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) throws SQLException {
+        return taskanaEngineConfiguration.buildTaskanaEngine();
     }
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public TaskanaEngineConfiguration getTaskanaEngineConfiguration() throws SQLException {
-        TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, true);
+    public TaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) throws SQLException {
+        TaskanaEngineConfiguration taskanaEngineConfiguration =
+            new SpringTaskanaEngineConfiguration(dataSource, true, true);
+
+        new SampleDataGenerator(dataSource).generateSampleData();
+
         return taskanaEngineConfiguration;
     }
 
@@ -120,15 +149,6 @@ public class RestApplication {
     @Bean
     public HandlerInstantiator handlerInstantiator(ApplicationContext context) {
         return new SpringHandlerInstantiator(context.getAutowireCapableBeanFactory());
-    }
-
-    @PostConstruct
-    public void createSampleData() {
-        try {
-            new SampleDataGenerator(getTaskanaEngineConfiguration().createDefaultDataSource()).generateSampleData();
-        } catch (SQLException e) {
-            logger.error("Could not create sample data.", e);
-        }
     }
 
 }
