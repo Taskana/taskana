@@ -71,4 +71,15 @@ public final class LoggerUtils {
             return builder.toString();
         }
     }
+
+    public static <T> String setToString(Set<T> set) {
+        if (set == null || set.isEmpty()) {
+            return "[]";
+        }
+
+        StringBuilder result = new StringBuilder("[");
+        set.forEach(e -> result.append("(").append(e).append(") ,"));
+        result.append("]");
+        return result.toString();
+    }
 }
