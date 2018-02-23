@@ -2,8 +2,8 @@ package pro.taskana.rest.resource.mapper;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-import static pro.taskana.rest.util.TimeConverter.convertToInstantFromTimestamp;
-import static pro.taskana.rest.util.TimeConverter.convertToTimestampFromInstant;
+
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,8 +20,8 @@ public class WorkbasketMapper {
 
     public WorkbasketResource toResource(Workbasket wb) {
         WorkbasketResource resource = new WorkbasketResource(wb.getId(), wb.getKey(), wb.getName(), wb.getDomain(),
-            wb.getType(), convertToTimestampFromInstant(wb.getCreated()),
-            convertToTimestampFromInstant(wb.getModified()), wb.getDescription(), wb.getOwner(), wb.getCustom1(),
+            wb.getType(), wb.getCreated().toString(), wb.getModified().toString(), wb.getDescription(), wb.getOwner(),
+            wb.getCustom1(),
             wb.getCustom2(), wb.getCustom3(),
             wb.getCustom4(),
             wb.getOrgLevel1(), wb.getOrgLevel2(), wb.getOrgLevel3(), wb.getOrgLevel4());
@@ -36,8 +36,8 @@ public class WorkbasketMapper {
         wbModel.setId(wbResource.workbasketId);
         wbModel.setName(wbResource.name);
         wbModel.setType(wbResource.type);
-        wbModel.setCreated(convertToInstantFromTimestamp(wbResource.created));
-        wbModel.setModified(convertToInstantFromTimestamp(wbResource.modified));
+        wbModel.setCreated(Instant.parse(wbResource.created));
+        wbModel.setModified(Instant.parse(wbResource.modified));
         wbModel.setDescription(wbResource.description);
         wbModel.setOwner(wbResource.owner);
         wbModel.setCustom1(wbResource.custom1);
