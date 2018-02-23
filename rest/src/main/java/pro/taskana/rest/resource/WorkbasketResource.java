@@ -1,7 +1,5 @@
 package pro.taskana.rest.resource;
 
-import java.sql.Timestamp;
-
 import javax.validation.constraints.NotNull;
 
 import org.springframework.hateoas.ResourceSupport;
@@ -24,8 +22,8 @@ public class WorkbasketResource extends ResourceSupport {
     @NotNull
     public WorkbasketType type;
 
-    public Timestamp created;
-    public Timestamp modified;
+    public String created;      // ISO-8601
+    public String modified;     // ISO-8601
     public String description;
     public String owner;
     public String custom1;
@@ -41,8 +39,8 @@ public class WorkbasketResource extends ResourceSupport {
     }
 
     public WorkbasketResource(String workbasketId, String key, String name, String domain, WorkbasketType type,
-        Timestamp created,
-        Timestamp modified, String description, String owner, String custom1, String custom2, String custom3,
+        String created,
+        String modified, String description, String owner, String custom1, String custom2, String custom3,
         String custom4, String orgLevel1, String orgLevel2, String orgLevel3, String orgLevel4) {
         super();
         this.workbasketId = workbasketId;
