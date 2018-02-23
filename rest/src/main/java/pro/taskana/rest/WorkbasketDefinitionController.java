@@ -79,7 +79,10 @@ public class WorkbasketDefinitionController {
      * Otherwise a new workbasket will be created.
      *
      * @param definitions the list of workbasket definitions which will be imported to the current system.
-     * @return TODO: what should we return?
+     * @return Return answer is determined by the status code:
+     * 200 - all good
+     * 400 - list state error (referring to non existing id's)
+     * 401 - not authorized
      */
     @PostMapping(path = "/import")
     @Transactional(rollbackFor = Exception.class)
@@ -146,7 +149,6 @@ public class WorkbasketDefinitionController {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (InvalidWorkbasketException e) {
-            // TODO: which status code?
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (NotAuthorizedException e) {
