@@ -1,7 +1,5 @@
 package pro.taskana.rest.resource.mapper;
 
-import static pro.taskana.rest.util.TimeConverter.convertToTimestampFromInstant;
-
 import pro.taskana.Classification;
 import pro.taskana.rest.resource.ClassificationResource;
 
@@ -16,7 +14,7 @@ public class ClassificationMapper {
             classification.getType(),
             classification.getDomain(),
             classification.getIsValidInDomain(),
-            convertToTimestampFromInstant(classification.getCreated()),
+            classification.getCreated().toString(),
             classification.getName(),
             classification.getDescription(),
             classification.getPriority(),
@@ -31,4 +29,5 @@ public class ClassificationMapper {
             classification.getCustom7(),
             classification.getCustom8());
     }
+
 }
