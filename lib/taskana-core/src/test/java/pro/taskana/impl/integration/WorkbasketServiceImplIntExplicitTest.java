@@ -73,7 +73,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         cleaner.clearDb(dataSource, false);
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testSelectWorkbasket()
         throws WorkbasketNotFoundException, NotAuthorizedException, SQLException, InvalidWorkbasketException,
@@ -111,7 +111,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testSelectWorkbasketWithDistribution()
         throws WorkbasketNotFoundException, NotAuthorizedException, SQLException, InvalidWorkbasketException,
@@ -144,7 +144,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testUpdateWorkbasket() throws Exception {
         Connection connection = dataSource.getConnection();
@@ -193,6 +193,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         connection.commit();
     }
 
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testInsertWorkbasketAccessUser() throws NotAuthorizedException, SQLException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
@@ -209,6 +210,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         connection.commit();
     }
 
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException, SQLException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
@@ -227,7 +229,8 @@ public class WorkbasketServiceImplIntExplicitTest {
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
-        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException {
+        boolean permRead, boolean permAppend, boolean permTransfer)
+        throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
             wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
@@ -237,7 +240,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         workBasketService.createWorkbasketAuthorization(accessItem);
     }
 
-    private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type) {
+    private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type)
+        throws NotAuthorizedException {
         WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket(key, domain);
         wb.setId(id);
         wb.setName(name);

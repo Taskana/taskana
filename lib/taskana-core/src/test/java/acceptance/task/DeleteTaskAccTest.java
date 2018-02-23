@@ -18,6 +18,7 @@ import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidStateException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.impl.BulkOperationResults;
@@ -37,8 +38,20 @@ public class DeleteTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
+    @Test(expected = NotAuthorizedException.class)
+    public void testDeleteSingleTaskNotAuthorized()
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        taskService.deleteTask("TKI:000000000000000000000000000000000037");
+        fail("NotAuthorizedException should have been thrown");
+    }
+
+    @WithAccessId(
+        userName = "user_1_2",
+        groupNames = {"group_1", "admin"})
     @Test(expected = TaskNotFoundException.class)
-    public void testDeleteSingleTask() throws TaskNotFoundException, InvalidStateException {
+    public void testDeleteSingleTask() throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000036");
@@ -50,10 +63,10 @@ public class DeleteTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_2",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "admin"})
     @Test(expected = InvalidStateException.class)
     public void testThrowsExceptionIfTaskIsNotCompleted()
-        throws TaskNotFoundException, InvalidStateException, SQLException {
+        throws TaskNotFoundException, InvalidStateException, SQLException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000029");
 
@@ -62,9 +75,10 @@ public class DeleteTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_2",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "admin"})
     @Test(expected = TaskNotFoundException.class)
-    public void testForceDeleteTaskIfNotCompleted() throws SQLException, TaskNotFoundException, InvalidStateException {
+    public void testForceDeleteTaskIfNotCompleted()
+        throws SQLException, TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000027");
         try {

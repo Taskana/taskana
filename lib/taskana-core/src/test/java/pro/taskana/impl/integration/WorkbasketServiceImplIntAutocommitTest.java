@@ -86,7 +86,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         now = Instant.now();
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testSelectWorkbasket()
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
@@ -105,7 +105,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         workBasketService.getWorkbasket("fail");
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testSelectWorkbasketWithDistribution()
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
@@ -132,7 +132,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testUpdateWorkbasket() throws Exception {
         String id0 = IdGenerator.generateWithPrefix("TWB");
@@ -177,6 +177,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
             workBasketService.getWorkbasket(id3).getModified());
     }
 
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testInsertWorkbasketAccessUser() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketAccessItem accessItem = workBasketService
@@ -189,6 +190,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
             workBasketService.getWorkbasketAuthorizations("k100000000000000000000000000000000000000").size());
     }
 
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
@@ -238,7 +240,8 @@ public class WorkbasketServiceImplIntAutocommitTest {
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
-        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException {
+        boolean permRead, boolean permAppend, boolean permTransfer)
+        throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
@@ -247,7 +250,8 @@ public class WorkbasketServiceImplIntAutocommitTest {
         workBasketService.createWorkbasketAuthorization(accessItem);
     }
 
-    private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type) {
+    private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type)
+        throws NotAuthorizedException {
         WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket(key, domain);
         wb.setId(id);
         wb.setName(name);

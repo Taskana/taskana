@@ -324,8 +324,10 @@ public interface TaskService {
      *             If the given Id does not refer to an existing task.
      * @throws InvalidStateException
      *             If the state of the referenced task is not Completed.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role ADMIN
      */
-    void deleteTask(String taskId) throws TaskNotFoundException, InvalidStateException;
+    void deleteTask(String taskId) throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
     /**
      * Deletes the task with the given Id.
@@ -338,8 +340,11 @@ public interface TaskService {
      *             If the given Id does not refer to an existing task.
      * @throws InvalidStateException
      *             If the state of the referenced task is not Completed and forceDelet is false.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role ADMIN
      */
-    void deleteTask(String taskId, boolean forceDelete) throws TaskNotFoundException, InvalidStateException;
+    void deleteTask(String taskId, boolean forceDelete)
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
     /**
      * Deletes a list of tasks.

@@ -29,11 +29,11 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     private String[] workbasketIdIn;
     private String[] idIn;
 
-    private TaskanaEngineImpl taskanaEngineImpl;
+    private TaskanaEngineImpl taskanaEngine;
     private List<String> orderBy;
 
     WorkbasketAccessItemQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         orderBy = new ArrayList<>();
     }
 
@@ -76,13 +76,13 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         LOGGER.debug("entry to list(), this = {}", this);
         List<WorkbasketAccessItem> result = new ArrayList<>();
         try {
-            taskanaEngineImpl.openConnection();
-            List<WorkbasketAccessItemImpl> foundAccessItms = taskanaEngineImpl.getSqlSession()
+            taskanaEngine.openConnection();
+            List<WorkbasketAccessItemImpl> foundAccessItms = taskanaEngine.getSqlSession()
                 .selectList(LINK_TO_MAPPER, this);
             result.addAll(foundAccessItms);
             return result;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -96,9 +96,9 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<WorkbasketAccessItem> result = new ArrayList<>();
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            List<WorkbasketAccessItemImpl> foundAccessItms = taskanaEngineImpl.getSqlSession()
+            List<WorkbasketAccessItemImpl> foundAccessItms = taskanaEngine.getSqlSession()
                 .selectList(LINK_TO_MAPPER, this, rowBounds);
             result.addAll(foundAccessItms);
             return result;
@@ -111,7 +111,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
             }
             throw e;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -125,11 +125,11 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         LOGGER.debug("entry to single(), this = {}", this);
         WorkbasketAccessItem accessItm = null;
         try {
-            taskanaEngineImpl.openConnection();
-            accessItm = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            taskanaEngine.openConnection();
+            accessItm = taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             return accessItm;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", accessItm);
         }
     }
@@ -139,11 +139,11 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {
-            taskanaEngineImpl.openConnection();
-            rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            taskanaEngine.openConnection();
+            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
     }

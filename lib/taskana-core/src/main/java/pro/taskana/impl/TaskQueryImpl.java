@@ -28,7 +28,7 @@ public class TaskQueryImpl implements TaskQuery {
     private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryTasks";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryTasks";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
-    private TaskanaEngineImpl taskanaEngineImpl;
+    private TaskanaEngineImpl taskanaEngine;
     private TaskServiceImpl taskService;
     private String[] nameIn;
     private String[] nameLike;
@@ -93,8 +93,8 @@ public class TaskQueryImpl implements TaskQuery {
     private List<String> orderBy;
 
     TaskQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-        this.taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
+        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+        this.taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
         this.orderBy = new ArrayList<>();
     }
 
@@ -655,7 +655,7 @@ public class TaskQueryImpl implements TaskQuery {
 
     @Override
     public ObjectReferenceQuery createObjectReferenceQuery() {
-        return new ObjectReferenceQueryImpl(taskanaEngineImpl);
+        return new ObjectReferenceQueryImpl(taskanaEngine);
     }
 
     @Override
@@ -663,16 +663,16 @@ public class TaskQueryImpl implements TaskQuery {
         List<TaskSummary> result = new ArrayList<>();
         try {
             LOGGER.debug("entry to list(), this = {}", this);
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             checkOpenPermissionForSpecifiedWorkbaskets();
             List<TaskSummaryImpl> tasks = new ArrayList<>();
-            tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            tasks = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
         } catch (NotAuthorizedException e) {
             throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -686,10 +686,10 @@ public class TaskQueryImpl implements TaskQuery {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<TaskSummary> result = new ArrayList<>();
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             checkOpenPermissionForSpecifiedWorkbaskets();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            List<TaskSummaryImpl> tasks = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            List<TaskSummaryImpl> tasks = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
         } catch (PersistenceException e) {
@@ -703,7 +703,7 @@ public class TaskQueryImpl implements TaskQuery {
         } catch (NotAuthorizedException e) {
             throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -717,9 +717,9 @@ public class TaskQueryImpl implements TaskQuery {
         LOGGER.debug("entry to single(), this = {}", this);
         TaskSummary result = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             checkOpenPermissionForSpecifiedWorkbaskets();
-            TaskSummaryImpl taskSummaryImpl = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            TaskSummaryImpl taskSummaryImpl = taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             if (taskSummaryImpl == null) {
                 return null;
             }
@@ -732,7 +732,7 @@ public class TaskQueryImpl implements TaskQuery {
         } catch (NotAuthorizedException e) {
             throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", result);
         }
     }
@@ -742,27 +742,31 @@ public class TaskQueryImpl implements TaskQuery {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             checkOpenPermissionForSpecifiedWorkbaskets();
-            rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
     }
 
     private void checkOpenPermissionForSpecifiedWorkbaskets() {
+        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
+            LOGGER.debug("Skipping permissions check since user is in role ADMIN.");
+            return;
+        }
         try {
             if (this.workbasketIdIn != null && this.workbasketIdIn.length > 0) {
                 for (String workbasketId : workbasketIdIn) {
-                    taskanaEngineImpl.getWorkbasketService().checkAuthorization(workbasketId,
+                    taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId,
                         WorkbasketAuthorization.OPEN);
                 }
             }
             if (workbasketKeyDomainIn != null && workbasketKeyDomainIn.length > 0) {
                 for (KeyDomain keyDomain : workbasketKeyDomainIn) {
-                    taskanaEngineImpl.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
+                    taskanaEngine.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
                         keyDomain.getDomain(), WorkbasketAuthorization.OPEN);
                 }
             }
@@ -772,7 +776,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     public TaskanaEngineImpl getTaskanaEngine() {
-        return taskanaEngineImpl;
+        return taskanaEngine;
     }
 
     public String[] getTaskIds() {

@@ -47,9 +47,9 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testUpdateWorkbasketAccessItemSucceeds() throws InvalidArgumentException {
+    public void testUpdateWorkbasketAccessItemSucceeds() throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItem accessItem = workbasketService
             .newWorkbasketAccessItem("key1000000000000000000000000000000000000", "user1");
@@ -71,7 +71,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "businessadmin"})
     @Test
     public void testUpdateWorkbasketAccessItemRejected()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -113,7 +113,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = {"group_2"})
+        groupNames = {"group_2", "businessadmin"})
     @Test
     public void testUpdatedAccessItemLeadsToNotAuthorizedException()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -236,8 +236,11 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         assertFalse(item0.isPermTransfer());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"businessadmin"})
     @Test
-    public void testDeleteAccessItemsForAccessId() {
+    public void testDeleteAccessItemsForAccessId() throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String accessId = "group_1";
         final long accessIdCountBefore = workbasketService

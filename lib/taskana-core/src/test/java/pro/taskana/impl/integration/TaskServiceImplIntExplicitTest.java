@@ -101,7 +101,7 @@ public class TaskServiceImplIntExplicitTest {
         cleaner.clearDb(dataSource, false);
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
@@ -136,7 +136,7 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testCreateTask()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
@@ -167,6 +167,7 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testCreateTaskInTaskanaWithDefaultDb()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
@@ -205,7 +206,7 @@ public class TaskServiceImplIntExplicitTest {
         te.setConnection(null);
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testCreateTaskWithPlannedAndName() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
@@ -272,7 +273,7 @@ public class TaskServiceImplIntExplicitTest {
         Assert.assertFalse(resultTask.getName().equals(resultTask2.getName()));
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test(expected = WorkbasketNotFoundException.class)
     public void createTaskShouldThrowWorkbasketNotFoundException()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException,
@@ -288,7 +289,7 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.createTask(test);
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test(expected = ClassificationNotFoundException.class)
     public void createManualTaskShouldThrowClassificationNotFoundException()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException,
@@ -316,7 +317,7 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.createTask(task);
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"DummyGroup"})
+    @WithAccessId(userName = "Elena", groupNames = {"DummyGroup", "businessadmin"})
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
@@ -360,7 +361,7 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    @WithAccessId(userName = "Elena")
+    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void shouldTransferTaskToOtherWorkbasket()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -438,7 +439,7 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
     }
 
-    @WithAccessId(userName = "User")
+    @WithAccessId(userName = "User", groupNames = {"businessadmin"})
     @Test
     public void shouldNotTransferByFailingSecurity() throws WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException, SQLException,
@@ -540,7 +541,7 @@ public class TaskServiceImplIntExplicitTest {
         return task;
     }
 
-    private void generateSampleAccessItems() throws InvalidArgumentException {
+    private void generateSampleAccessItems() throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
         accessItem.setPermAppend(true);
         accessItem.setPermRead(true);
@@ -554,7 +555,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
-        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException {
+        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);

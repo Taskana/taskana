@@ -126,8 +126,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public Workbasket createWorkbasket(Workbasket newWorkbasket)
-        throws InvalidWorkbasketException {
+        throws InvalidWorkbasketException, NotAuthorizedException {
         LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         Workbasket result = null;
         WorkbasketImpl workbasket = (WorkbasketImpl) newWorkbasket;
         try {
@@ -154,6 +155,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public Workbasket updateWorkbasket(Workbasket workbasketToUpdate)
         throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
         LOGGER.debug("entry to updateWorkbasket(workbasket)", workbasketToUpdate);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
         Workbasket result = null;
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketToUpdate;
@@ -180,8 +182,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
         LOGGER.debug("entry to createWorkbasketAuthorization(workbasketAccessItem = {})", workbasketAccessItem);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         WorkbasketAccessItemImpl accessItem = (WorkbasketAccessItemImpl) workbasketAccessItem;
         try {
             taskanaEngine.openConnection();
@@ -243,8 +246,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public void deleteWorkbasketAuthorization(String accessItemId) {
+    public void deleteWorkbasketAuthorization(String accessItemId) throws NotAuthorizedException {
         LOGGER.debug("entry to deleteWorkbasketAuthorization(id = {})", accessItemId);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
             taskanaEngine.openConnection();
             workbasketAccessMapper.delete(accessItemId);
@@ -282,8 +286,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public WorkbasketAccessItem updateWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
         LOGGER.debug("entry to updateWorkbasketAuthorization(workbasketAccessItem = {}", workbasketAccessItem);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         WorkbasketAccessItemImpl accessItem = (WorkbasketAccessItemImpl) workbasketAccessItem;
         try {
             taskanaEngine.openConnection();
@@ -526,6 +531,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 sourceWorkbasketId,
                 LoggerUtils.listToString(targetWorkbasketIds));
         }
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
             taskanaEngine.openConnection();
             // check existence of source workbasket
@@ -561,6 +567,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         throws NotAuthorizedException, WorkbasketNotFoundException {
         LOGGER.debug("entry to addDistributionTarget(sourceWorkbasketId = {}, targetWorkbasketId = {})",
             sourceWorkbasketId, targetWorkbasketId);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
             taskanaEngine.openConnection();
             // check existence of source workbasket
@@ -594,6 +601,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         throws NotAuthorizedException {
         LOGGER.debug("entry to removeDistributionTarget(sourceWorkbasketId = {}, targetWorkbasketId = {})",
             sourceWorkbasketId, targetWorkbasketId);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
             taskanaEngine.openConnection();
             // don't check existence of source / target workbasket to enable cleanup even if the db is corrupted
@@ -630,6 +638,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public void deleteWorkbasket(String workbasketId)
         throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException {
         LOGGER.debug("entry to deleteWorkbasket(workbasketId = {})", workbasketId);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
             taskanaEngine.openConnection();
             if (workbasketId == null || workbasketId.isEmpty()) {
@@ -659,7 +668,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() {
+    public WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws NotAuthorizedException {
+        taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
         return new WorkbasketAccessItemQueryImpl(this.taskanaEngine);
     }
 
@@ -671,6 +681,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         if (workbasketAuthorization == null) {
             throw new SystemException("checkAuthorization was called with an invalid parameter combination");
         }
+        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
+            LOGGER.debug("Skipping permissions check since user is in role ADMIN.");
+            return;
+        }
+
         boolean isAuthorized = false;
         try {
             taskanaEngine.openConnection();

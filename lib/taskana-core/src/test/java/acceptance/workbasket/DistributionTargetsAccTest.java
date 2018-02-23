@@ -2,6 +2,7 @@ package acceptance.workbasket;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = {"teamlead_1", "group_1", "group_2"})
+        groupNames = {"teamlead_1", "group_1", "group_2", "businessadmin"})
     @Test
     public void testDistributionTargetCallsWithNonExistingWorkbaskets()
         throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -124,7 +125,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(
-        userName = "user_3_1")
+        userName = "user_3_1", groupNames = {"businessadmin"})
     @Test
     public void testDistributionTargetCallsFailWithNotAuthorizedException()
         throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -167,7 +168,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_2_2",
-        groupNames = {"group_1", "group_2"})
+        groupNames = {"group_1", "group_2", "businessadmin"})
     @Test
     public void testAddAndRemoveDistributionTargets()
         throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
@@ -199,6 +200,24 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_2_2",
         groupNames = {"group_1", "group_2"})
+    @Test(expected = NotAuthorizedException.class)
+    public void testAddDistributionTargetsFailsNotAuthorized()
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
+
+        List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
+        assertEquals(4, distributionTargets.size());
+
+        // add a new distribution target
+        Workbasket newTarget = workbasketService.getWorkbasket("GPK_B_KSC_2", "DOMAIN_B");
+        workbasketService.addDistributionTarget(workbasket.getId(), newTarget.getId());
+        fail("NotAuthorizedException should have been thrown");
+    }
+
+    @WithAccessId(
+        userName = "user_2_2",
+        groupNames = {"group_1", "group_2", "businessadmin"})
     @Test
     public void testSetDistributionTargets()
         throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {

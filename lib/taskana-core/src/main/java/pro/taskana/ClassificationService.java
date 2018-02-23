@@ -47,9 +47,11 @@ public interface ClassificationService {
      *             if there are Task existing, which refer to this classification.
      * @throws ClassificationNotFoundException
      *             if for an domain no classification specification is found.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
     void deleteClassification(String classificationKey, String domain)
-        throws ClassificationInUseException, ClassificationNotFoundException;
+        throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException;
 
     /**
      * Persists a new classification after adding default values. <br >
@@ -60,9 +62,11 @@ public interface ClassificationService {
      * @return classification which is persisted with unique ID.
      * @throws ClassificationAlreadyExistException
      *             when the classification does already exists at the given domain.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
     Classification createClassification(Classification classification)
-        throws ClassificationAlreadyExistException;
+        throws ClassificationAlreadyExistException, NotAuthorizedException;
 
     /**
      * Update a Classification.

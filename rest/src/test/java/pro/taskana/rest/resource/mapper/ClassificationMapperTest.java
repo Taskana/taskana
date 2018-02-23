@@ -12,6 +12,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.rest.RestApplication;
 import pro.taskana.rest.resource.ClassificationResource;
@@ -21,12 +22,14 @@ import pro.taskana.rest.resource.ClassificationResource;
 @WebAppConfiguration
 public class ClassificationMapperTest {
 
-    @Autowired ClassificationMapper classificationMapper;
-    @Autowired ClassificationService classificationService;
+    @Autowired
+    ClassificationMapper classificationMapper;
+    @Autowired
+    ClassificationService classificationService;
 
     @Test
     public void classificationToResource() {
-        //given
+        // given
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("DOMAIN_A",
             "1", "A");
         classification.setId("1");
@@ -47,15 +50,15 @@ public class ClassificationMapperTest {
         classification.setServiceLevel("P1D");
         classification.setDescription("Test");
         classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
-        //when
+        // when
         ClassificationResource classificationResource = classificationMapper.toResource(classification);
-        //then
+        // then
         testEquality(classification, classificationResource);
     }
 
     @Test
-    public void resourceToClassification() {
-        //given
+    public void resourceToClassification() throws NotAuthorizedException {
+        // given
         ClassificationResource classificationResource = new ClassificationResource();
         classificationResource.setClassificationId("1");
         classificationResource.setKey("12");
@@ -79,9 +82,9 @@ public class ClassificationMapperTest {
         classificationResource.setApplicationEntryPoint("12");
         classificationResource.setServiceLevel("P1D");
         classificationResource.setDescription("Test");
-        //when
+        // when
         ClassificationImpl classification = (ClassificationImpl) classificationMapper.toModel(classificationResource);
-        //then
+        // then
         testEquality(classification, classificationResource);
     }
 

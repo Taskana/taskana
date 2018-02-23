@@ -52,9 +52,11 @@ public interface WorkbasketService {
      * @return the created and persisted Workbasket
      * @throws InvalidWorkbasketException
      *             If a required property of the Workbasket is not set.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
     Workbasket createWorkbasket(Workbasket workbasket)
-        throws InvalidWorkbasketException;
+        throws InvalidWorkbasketException, NotAuthorizedException;
 
     /**
      * Update a Workbasket.
@@ -91,9 +93,11 @@ public interface WorkbasketService {
      * @return the created WorkbasketAccessItem
      * @throws InvalidArgumentException
      *             when the preconditions doesn´t match the required ones.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
     WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * This method updates an Workbasket Authorization.
@@ -103,17 +107,21 @@ public interface WorkbasketService {
      * @return the updated entity
      * @throws InvalidArgumentException
      *             if accessid or workbasketkey is changed in the workbasketAccessItem
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
     WorkbasketAccessItem updateWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Deletes a specific authorization.
      *
      * @param id
      *            the id of the WorbasketAccessItem to be deleted
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
-    void deleteWorkbasketAuthorization(String id);
+    void deleteWorkbasketAuthorization(String id) throws NotAuthorizedException;
 
     /**
      * This method checks the authorization with the saved one for the actual User.
@@ -187,8 +195,10 @@ public interface WorkbasketService {
      * This method provides a query builder for querying the database.
      *
      * @return a {@link WorkbasketAccessItemQuery}
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
-    WorkbasketAccessItemQuery createWorkbasketAccessItemQuery();
+    WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws NotAuthorizedException;
 
     /**
      * Returns a new workbasket which is not persisted.

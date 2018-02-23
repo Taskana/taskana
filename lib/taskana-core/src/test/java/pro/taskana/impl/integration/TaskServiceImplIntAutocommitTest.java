@@ -280,7 +280,7 @@ public class TaskServiceImplIntAutocommitTest {
         taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
     }
 
-    @WithAccessId(userName = "User")
+    @WithAccessId(userName = "User", groupNames = {"businessadmin"})
     @Test
     public void shouldNotTransferByFailingSecurity() throws WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException, SQLException,
@@ -401,7 +401,7 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
-        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException {
+        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);

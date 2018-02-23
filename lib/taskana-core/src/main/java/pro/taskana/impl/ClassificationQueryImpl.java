@@ -26,7 +26,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryClassification";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryClassifications";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
-    private TaskanaEngineImpl taskanaEngineImpl;
+    private TaskanaEngineImpl taskanaEngine;
     private String[] key;
     private String[] parentId;
     private String[] category;
@@ -61,7 +61,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private List<String> orderBy;
 
     ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.orderBy = new ArrayList<>();
     }
 
@@ -341,11 +341,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         LOGGER.debug("entry to list(), this = {}", this);
         List<ClassificationSummary> result = null;
         try {
-            taskanaEngineImpl.openConnection();
-            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            taskanaEngine.openConnection();
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
             return result;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -359,9 +359,9 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<ClassificationSummary> result = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             return result;
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
@@ -374,7 +374,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
             }
             throw e;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -388,11 +388,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         LOGGER.debug("entry to single(), this = {}", this);
         ClassificationSummary result = null;
         try {
-            taskanaEngineImpl.openConnection();
-            result = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            taskanaEngine.openConnection();
+            result = taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             return result;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", result);
         }
     }
@@ -535,11 +535,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {
-            taskanaEngineImpl.openConnection();
-            rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            taskanaEngine.openConnection();
+            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
     }
