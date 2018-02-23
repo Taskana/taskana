@@ -61,7 +61,7 @@ public class TaskanaConfig {
 
     @Bean
     public SpringTaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) {
-        SpringTaskanaEngineConfiguration taskanaEngineConfiguration = new SpringTaskanaEngineConfiguration();
+        SpringTaskanaEngineConfiguration taskanaEngineConfiguration = new SpringTaskanaEngineConfiguration(false);
         taskanaEngineConfiguration.setDataSource(dataSource);
         return taskanaEngineConfiguration;
     }

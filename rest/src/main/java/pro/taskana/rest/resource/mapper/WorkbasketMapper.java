@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketResource;
@@ -34,7 +35,7 @@ public class WorkbasketMapper {
         return resource;
     }
 
-    public Workbasket toModel(WorkbasketResource wbResource) {
+    public Workbasket toModel(WorkbasketResource wbResource) throws NotAuthorizedException {
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket(wbResource.key, wbResource.domain);
         BeanUtils.copyProperties(wbResource, workbasket);
 

@@ -9,12 +9,14 @@ import org.springframework.stereotype.Component;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.impl.ClassificationImpl;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 
 @Component
 public class ClassificationMapper {
 
-    @Autowired ClassificationService classificationService;
+    @Autowired
+    ClassificationService classificationService;
 
     public ClassificationResource toResource(Classification classification) {
         ClassificationResource resource = new ClassificationResource();
@@ -25,7 +27,7 @@ public class ClassificationMapper {
         return resource;
     }
 
-    public Classification toModel(ClassificationResource classificationResource) {
+    public Classification toModel(ClassificationResource classificationResource) throws NotAuthorizedException {
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification(
             classificationResource.domain, classificationResource.key, classificationResource.type);
         BeanUtils.copyProperties(classificationResource, classification);

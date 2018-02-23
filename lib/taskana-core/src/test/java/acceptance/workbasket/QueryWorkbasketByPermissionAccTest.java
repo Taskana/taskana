@@ -1,5 +1,7 @@
 package acceptance.workbasket;
 
+import static org.junit.Assert.fail;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -34,6 +36,9 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         super();
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUser()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -45,6 +50,21 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         Assert.assertEquals("USER_1_1", results.get(0).getKey());
     }
 
+    @WithAccessId(
+        userName = "dummy")
+    @Test(expected = NotAuthorizedException.class)
+    public void testQueryAllTransferTargetsForUserNotAuthorized()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        workbasketService.createWorkbasketQuery()
+            .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1")
+            .list();
+        fail("NotAuthorizedException was expected");
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroup()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -55,6 +75,9 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         Assert.assertEquals(7, results.size());
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupSortedByNameAscending()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException,
@@ -68,6 +91,9 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         Assert.assertEquals("GPK_KSC_1", results.get(0).getKey());
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupSortedByNameDescending()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException,

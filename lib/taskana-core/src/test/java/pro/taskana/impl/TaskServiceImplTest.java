@@ -80,9 +80,6 @@ public class TaskServiceImplTest {
     private TaskanaEngineImpl taskanaEngineMock;
 
     @Mock
-    private TaskanaEngineImpl taskanaEngineImpl;
-
-    @Mock
     private TaskMapper taskMapperMock;
 
     @Mock
@@ -116,8 +113,8 @@ public class TaskServiceImplTest {
         } catch (NotAuthorizedException e) {
             e.printStackTrace();
         }
-        Mockito.doNothing().when(taskanaEngineImpl).openConnection();
-        Mockito.doNothing().when(taskanaEngineImpl).returnConnection();
+        Mockito.doNothing().when(taskanaEngineMock).openConnection();
+        Mockito.doNothing().when(taskanaEngineMock).returnConnection();
     }
 
     @Test
@@ -144,16 +141,16 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.createTask(expectedTask);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).checkAuthorization(any(), any());
         verify(workbasketServiceMock, times(1)).getWorkbasket(any(), any());
         verify(classificationServiceImplMock, times(1)).getClassification(any(), any());
         verify(taskanaEngineMock, times(1)).getConfiguration();
         verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).insert(expectedTask);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock,
             classificationServiceImplMock);
 
@@ -221,7 +218,7 @@ public class TaskServiceImplTest {
         doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
         Task actualTask = cutSpy.createTask(expectedTask);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).getWorkbasket(wb.getKey(), wb.getDomain());
         verify(workbasketServiceMock, times(1)).checkAuthorization(wb.getId(),
             WorkbasketAuthorization.APPEND);
@@ -230,9 +227,9 @@ public class TaskServiceImplTest {
         verify(taskanaEngineMock, times(1)).getConfiguration();
         verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).insert(expectedTask);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock,
             classificationServiceImplMock);
         assertNull(actualTask.getOwner());
@@ -274,7 +271,7 @@ public class TaskServiceImplTest {
         Task actualTask = cutSpy.createTask(expectedTask);
         expectedTask.getPrimaryObjRef().setId(actualTask.getPrimaryObjRef().getId());   // get only new ID
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).getWorkbasket(expectedTask.getWorkbasketKey(),
             expectedTask.getDomain());
         verify(workbasketServiceMock, times(1)).checkAuthorization(expectedTask.getWorkbasketSummary().getId(),
@@ -284,9 +281,9 @@ public class TaskServiceImplTest {
         verify(taskanaEngineMock, times(1)).getConfiguration();
         verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).insert(expectedTask);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskanaEngineMock, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock,
             classificationServiceImplMock);
         assertNull(actualTask.getOwner());
@@ -344,7 +341,7 @@ public class TaskServiceImplTest {
 
         cutSpy.createTask(task2);
 
-        verify(taskanaEngineImpl, times(2)).openConnection();
+        verify(taskanaEngineMock, times(2)).openConnection();
         verify(workbasketServiceMock, times(2)).getWorkbasket(any());
         verify(workbasketServiceMock, times(2)).checkAuthorization(any(), any());
         verify(classificationServiceImplMock, times(2)).getClassification(any(), any());
@@ -352,9 +349,9 @@ public class TaskServiceImplTest {
         verify(taskanaEngineConfigurationMock, times(2)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).insert(task);
         verify(taskMapperMock, times(1)).insert(task2);
-        verify(taskanaEngineImpl, times(2)).returnConnection();
+        verify(taskanaEngineMock, times(2)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskanaEngineMock, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock,
             classificationServiceImplMock);
 
@@ -384,11 +381,11 @@ public class TaskServiceImplTest {
         try {
             cutSpy.createTask(task);
         } catch (TaskAlreadyExistException ex) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskanaEngineMock, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock,
                 classificationServiceImplMock);
             throw ex;
@@ -412,14 +409,14 @@ public class TaskServiceImplTest {
         try {
             cutSpy.createTask(task);
         } catch (NotAuthorizedException e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(workbasketServiceMock, times(1)).getWorkbasket(task.getWorkbasketSummary().getId());
             verify(workbasketServiceMock, times(1)).checkAuthorization(task.getWorkbasketSummary().getId(),
                 WorkbasketAuthorization.APPEND);
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock,
                 classificationServiceImplMock);
             throw e;
@@ -438,13 +435,13 @@ public class TaskServiceImplTest {
         try {
             cutSpy.createTask(task);
         } catch (WorkbasketNotFoundException e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(workbasketServiceMock, times(1)).getWorkbasket(task.getWorkbasketKey(),
                 task.getWorkbasketSummary().getDomain());
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock,
                 classificationServiceImplMock);
             throw e;
@@ -460,7 +457,7 @@ public class TaskServiceImplTest {
         cutSpy.claim(expectedTask.getId());
         verify(cutSpy, times(1)).claim(expectedTask.getId(), false);
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
     }
 
@@ -476,12 +473,12 @@ public class TaskServiceImplTest {
 
         Task acturalTask = cutSpy.claim(expectedTask.getId(), true);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(expectedTask.getId());
         verify(taskMapperMock, times(1)).update(any());
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
 
         assertThat(acturalTask.getState(), equalTo(TaskState.CLAIMED));
@@ -500,12 +497,12 @@ public class TaskServiceImplTest {
         try {
             cut.claim("1", true);
         } catch (Exception e) {
-            verify(taskanaEngineImpl, times(2)).openConnection();
+            verify(taskanaEngineMock, times(2)).openConnection();
             verify(taskMapperMock, times(1)).findById(any());
-            verify(taskanaEngineImpl, times(2)).returnConnection();
+            verify(taskanaEngineMock, times(2)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -521,12 +518,12 @@ public class TaskServiceImplTest {
         try {
             cutSpy.claim("1", true);
         } catch (Exception e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(task.getId());
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -543,12 +540,12 @@ public class TaskServiceImplTest {
         try {
             cutSpy.claim("1");
         } catch (Exception e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(task.getId());
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -566,11 +563,11 @@ public class TaskServiceImplTest {
         try {
             cutSpy.cancelClaim(expectedTask.getId());
         } catch (InvalidStateException e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(expectedTask.getId());
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -591,11 +588,11 @@ public class TaskServiceImplTest {
         try {
             cutSpy.cancelClaim(expectedTask.getId());
         } catch (InvalidOwnerException e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(expectedTask.getId());
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -610,7 +607,7 @@ public class TaskServiceImplTest {
         cutSpy.cancelClaim(expectedTask.getId());
         verify(cutSpy, times(1)).cancelClaim(expectedTask.getId(), false);
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
     }
 
@@ -630,12 +627,12 @@ public class TaskServiceImplTest {
 
         Task acturalTask = cutSpy.cancelClaim(expectedTask.getId(), true);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(expectedTask.getId());
         verify(taskMapperMock, times(1)).update(any());
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
 
         assertThat(acturalTask.getState(), equalTo(TaskState.READY));
@@ -660,12 +657,12 @@ public class TaskServiceImplTest {
 
         Task acturalTask = cutSpy.cancelClaim(expectedTask.getId(), true);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(expectedTask.getId());
         verify(taskMapperMock, times(1)).update(any());
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
 
         assertThat(acturalTask.getState(), equalTo(TaskState.READY));
@@ -703,7 +700,7 @@ public class TaskServiceImplTest {
 
         Task actualTask = cut.completeTask(task.getId());
 
-        verify(taskanaEngineImpl, times(2)).openConnection();
+        verify(taskanaEngineMock, times(2)).openConnection();
         verify(taskMapperMock, times(1)).findById(task.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(task.getId());
         verify(classificationServiceImplMock, times(1)).createClassificationQuery();
@@ -711,9 +708,9 @@ public class TaskServiceImplTest {
         verify(classificationQueryImplMock, times(1)).keyIn(any());
         verify(classificationQueryImplMock, times(1)).list();
         verify(taskMapperMock, times(1)).update(any());
-        verify(taskanaEngineImpl, times(2)).returnConnection();
+        verify(taskanaEngineMock, times(2)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
 
         assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
@@ -740,12 +737,12 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.completeTask(task.getId(), isForced);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(taskMapperMock, times(1)).update(task);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
 
         assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
@@ -768,12 +765,12 @@ public class TaskServiceImplTest {
         try {
             cutSpy.completeTask(task.getId(), isForced);
         } catch (InvalidStateException e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(task.getId());
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -794,12 +791,12 @@ public class TaskServiceImplTest {
         try {
             cutSpy.completeTask(task.getId(), isForced);
         } catch (InvalidOwnerException e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(task.getId());
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -815,12 +812,12 @@ public class TaskServiceImplTest {
         try {
             cutSpy.completeTask(taskId, isForced);
         } catch (InvalidOwnerException e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(taskId);
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -844,12 +841,12 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.completeTask(task.getId(), isForced);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(taskMapperMock, times(1)).update(task);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
 
         assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
@@ -880,13 +877,13 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.completeTask(task.getId(), isForced);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(cutSpy, times(1)).claim(task.getId(), isForced);
         verify(taskMapperMock, times(1)).update(claimedTask);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
         assertThat(actualTask.getState(), equalTo(TaskState.COMPLETED));
         assertThat(actualTask.getCreated(), not(equalTo(claimedTask.getModified())));
@@ -918,16 +915,16 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getId());
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasket.getId(),
             WorkbasketAuthorization.APPEND);
         verify(workbasketServiceMock, times(1)).checkAuthorization(sourceWorkbasket.getId(),
             WorkbasketAuthorization.TRANSFER);
         verify(workbasketServiceMock, times(1)).getWorkbasket(destinationWorkbasket.getId());
         verify(taskMapperMock, times(1)).update(any());
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
 
         assertThat(actualTask.isRead(), equalTo(false));
@@ -954,15 +951,15 @@ public class TaskServiceImplTest {
         // doNothing().when(workbasketServiceMock).checkAuthorizationById(any(), WorkbasketAuthorization.TRANSFER);
         Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getId());
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(workbasketServiceMock, times(2)).checkAuthorization(any(), any());
         verify(workbasketServiceMock, times(1)).getWorkbasket(destinationWorkbasket.getId());
         verify(taskanaEngineMock, times(0)).getConfiguration();
         verify(taskanaEngineConfigurationMock, times(0)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).update(any());
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
 
         assertThat(actualTask.isRead(), equalTo(false));
@@ -986,13 +983,13 @@ public class TaskServiceImplTest {
         try {
             cutSpy.transfer(task.getId(), destinationWorkbasketId);
         } catch (Exception e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasketId,
                 WorkbasketAuthorization.APPEND);
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -1010,11 +1007,11 @@ public class TaskServiceImplTest {
         try {
             cutSpy.transfer(task.getId(), "2");
         } catch (Exception e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -1035,13 +1032,13 @@ public class TaskServiceImplTest {
         try {
             cutSpy.transfer(task.getId(), destinationWorkbasketId);
         } catch (Exception e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasketId,
                 WorkbasketAuthorization.APPEND);
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -1064,15 +1061,15 @@ public class TaskServiceImplTest {
         try {
             cutSpy.transfer(task.getId(), destinationWorkbasketId);
         } catch (Exception e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasketId,
                 WorkbasketAuthorization.APPEND);
             verify(workbasketServiceMock, times(1)).checkAuthorization(task.getWorkbasketSummary().getId(),
                 WorkbasketAuthorization.TRANSFER);
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -1090,11 +1087,11 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.setTaskRead("1", true);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(taskMapperMock, times(1)).update(task);
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
         assertThat(actualTask.getModified(), not(equalTo(null)));
         assertThat(actualTask.isRead(), equalTo(true));
@@ -1111,11 +1108,10 @@ public class TaskServiceImplTest {
         try {
             cutSpy.setTaskRead("1", true);
         } catch (Exception e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl,
                 taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
@@ -1142,16 +1138,16 @@ public class TaskServiceImplTest {
             .list();
         Task actualTask = cut.getTask(expectedTask.getId());
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(taskMapperMock, times(1)).findById(expectedTask.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(expectedTask.getId());
         verify(classificationServiceImplMock, times(1)).createClassificationQuery();
         verify(classificationQueryImplMock, times(1)).domainIn(any());
         verify(classificationQueryImplMock, times(1)).keyIn(any());
         verify(classificationQueryImplMock, times(1)).list();
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
         assertThat(actualTask, equalTo(expectedTask));
     }
@@ -1165,12 +1161,12 @@ public class TaskServiceImplTest {
         try {
             cut.getTask(task.getId());
         } catch (Exception e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(taskMapperMock, times(1)).findById(task.getId());
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
-                taskanaEngineImpl, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
+                taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
                 classificationQueryImplMock);
             throw e;
         }
@@ -1197,10 +1193,10 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.updateTask(task);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(attachmentMapperMock, times(1)).insert(((AttachmentImpl) attachment));
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         assertThat(actualTask.getAttachments().size(), equalTo(1));
     }
 
@@ -1226,10 +1222,10 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.updateTask(task);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(attachmentMapperMock, times(1)).insert(((AttachmentImpl) attachment));
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         assertThat(actualTask.getAttachments().size(), equalTo(1));
     }
 
@@ -1259,10 +1255,10 @@ public class TaskServiceImplTest {
         try {
             cutSpy.updateTask(task);
         } catch (AttachmentPersistenceException e) {
-            verify(taskanaEngineImpl, times(1)).openConnection();
+            verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(task.getId());
             verify(attachmentMapperMock, times(1)).insert(((AttachmentImpl) attachment));
-            verify(taskanaEngineImpl, times(1)).returnConnection();
+            verify(taskanaEngineMock, times(1)).returnConnection();
             throw e;
         }
     }
@@ -1293,10 +1289,10 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.updateTask(task);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(attachmentMapperMock, times(1)).update(((AttachmentImpl) attachmentToUpdate));
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         assertThat(actualTask.getAttachments().size(), equalTo(1));
         assertThat(actualTask.getAttachments().get(0).getChannel(), equalTo(channelUpdate));
     }
@@ -1323,10 +1319,10 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.updateTask(task);
 
-        verify(taskanaEngineImpl, times(1)).openConnection();
+        verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
         verify(attachmentMapperMock, times(1)).deleteAttachment(attachment.getId());
-        verify(taskanaEngineImpl, times(1)).returnConnection();
+        verify(taskanaEngineMock, times(1)).returnConnection();
         assertThat(actualTask.getAttachments().size(), equalTo(0));
     }
 

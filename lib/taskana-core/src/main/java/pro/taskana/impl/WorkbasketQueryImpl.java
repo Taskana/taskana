@@ -15,6 +15,7 @@ import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.security.CurrentUserContext;
@@ -60,11 +61,11 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] orgLevel3Like;
     private String[] orgLevel4In;
     private String[] orgLevel4Like;
-    private TaskanaEngineImpl taskanaEngineImpl;
+    private TaskanaEngineImpl taskanaEngine;
     private List<String> orderBy;
 
     WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.orderBy = new ArrayList<>();
     }
 
@@ -324,7 +325,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     @Override
     public WorkbasketQuery accessIdsHavePermission(WorkbasketAuthorization permission, String... accessIds)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
+        taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
         // Checking pre-conditions
         if (permission == null) {
             throw new InvalidArgumentException("Permission can´t be null.");
@@ -352,12 +354,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         LOGGER.debug("entry to list(), this = {}", this);
         List<WorkbasketSummary> workbaskets = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             addAccessIdsOfCallerToQuery();
-            workbaskets = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            workbaskets = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
             return workbaskets;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = workbaskets == null ? 0 : workbaskets.size();
                 LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -371,10 +373,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<WorkbasketSummary> workbaskets = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
             addAccessIdsOfCallerToQuery();
-            workbaskets = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            workbaskets = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             return workbaskets;
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
@@ -387,7 +389,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             }
             throw e;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = workbaskets == null ? 0 : workbaskets.size();
                 LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -401,12 +403,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         LOGGER.debug("entry to single(), this = {}", this);
         WorkbasketSummary workbasket = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             addAccessIdsOfCallerToQuery();
-            workbasket = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            workbasket = taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             return workbasket;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", workbasket);
         }
     }
@@ -544,12 +546,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             addAccessIdsOfCallerToQuery();
-            rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
     }

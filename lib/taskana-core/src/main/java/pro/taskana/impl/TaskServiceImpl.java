@@ -54,8 +54,7 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
     private static final String MUST_NOT_BE_EMPTY = " must not be empty";
-    private TaskanaEngine taskanaEngine;
-    private TaskanaEngineImpl taskanaEngineImpl;
+    private TaskanaEngineImpl taskanaEngine;
     private WorkbasketService workbasketService;
     private ClassificationServiceImpl classificationService;
     private TaskMapper taskMapper;
@@ -64,12 +63,11 @@ public class TaskServiceImpl implements TaskService {
     TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
         AttachmentMapper attachmentMapper) {
         super();
-        this.taskanaEngine = taskanaEngine;
-        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.taskMapper = taskMapper;
-        this.workbasketService = taskanaEngineImpl.getWorkbasketService();
+        this.workbasketService = taskanaEngine.getWorkbasketService();
         this.attachmentMapper = attachmentMapper;
-        this.classificationService = (ClassificationServiceImpl) taskanaEngineImpl.getClassificationService();
+        this.classificationService = (ClassificationServiceImpl) taskanaEngine.getClassificationService();
     }
 
     @Override
@@ -85,7 +83,7 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("entry to claim(id = {}, forceClaim = {}, userId = {})", taskId, forceClaim, userId);
         TaskImpl task = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
             TaskState state = task.getState();
             if (state == TaskState.COMPLETED) {
@@ -109,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.update(task);
             LOGGER.debug("Method claim() claimed task '{}' for user '{}'.", taskId, userId);
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from claim()");
         }
         return task;
@@ -128,7 +126,7 @@ public class TaskServiceImpl implements TaskService {
             forceUnclaim);
         TaskImpl task = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
             TaskState state = task.getState();
             if (state == TaskState.COMPLETED) {
@@ -152,7 +150,7 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.update(task);
             LOGGER.debug("Method cancelClaim() unclaimed task '{}' for user '{}'.", taskId, userId);
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from cancelClaim(taskId = {}) with userId = {}, forceFlag = {}", taskId, userId,
                 forceUnclaim);
         }
@@ -171,7 +169,7 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("entry to completeTask(id = {}, isForced {})", taskId, isForced);
         TaskImpl task = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             task = (TaskImpl) this.getTask(taskId);
 
             // check pre-conditions for non-forced invocation
@@ -201,7 +199,7 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.update(task);
             LOGGER.debug("Method completeTask() completed Task '{}'.", taskId);
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from completeTask()");
         }
         return task;
@@ -212,7 +210,7 @@ public class TaskServiceImpl implements TaskService {
         throws InvalidArgumentException {
         try {
             LOGGER.debug("entry to completeTasks(taskIds = {})", taskIds);
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
 
             // Check pre-conditions with throwing Exceptions
             if (taskIds == null) {
@@ -268,7 +266,7 @@ public class TaskServiceImpl implements TaskService {
             }
             return bulkLog;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from to completeTasks(taskIds = {})", taskIds);
         }
     }
@@ -279,7 +277,7 @@ public class TaskServiceImpl implements TaskService {
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         LOGGER.debug("entry to createTask(task = {})", taskToCreate);
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             TaskImpl task = (TaskImpl) taskToCreate;
             if (task.getId() != "" && task.getId() != null) {
                 throw new TaskAlreadyExistException(taskToCreate.getId());
@@ -314,7 +312,7 @@ public class TaskServiceImpl implements TaskService {
             }
             return task;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from createTask(task = {})");
         }
     }
@@ -324,7 +322,7 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("entry to getTaskById(id = {})", id);
         TaskImpl resultTask = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
 
             resultTask = taskMapper.findById(id);
             if (resultTask != null) {
@@ -356,7 +354,7 @@ public class TaskServiceImpl implements TaskService {
                 throw new TaskNotFoundException(id);
             }
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from getTaskById(). Returning result {} ", resultTask);
         }
     }
@@ -367,7 +365,7 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketId = {})", taskId, destinationWorkbasketId);
         TaskImpl task = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
@@ -391,7 +389,7 @@ public class TaskServiceImpl implements TaskService {
                 destinationWorkbasketId);
             return task;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from transfer(). Returning result {} ", task);
         }
     }
@@ -403,7 +401,7 @@ public class TaskServiceImpl implements TaskService {
             destinationWorkbasketKey, domain);
         TaskImpl task = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
@@ -427,7 +425,7 @@ public class TaskServiceImpl implements TaskService {
                 destinationWorkbasket.getId());
             return task;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from transfer(). Returning result {} ", task);
         }
     }
@@ -436,7 +434,7 @@ public class TaskServiceImpl implements TaskService {
     public BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketId,
         List<String> taskIds) throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             LOGGER.debug("entry to transferBulk(targetWbId = {}, taskIds = {})", destinationWorkbasketId, taskIds);
             // Check pre-conditions with trowing Exceptions
             if (destinationWorkbasketId == null || taskIds == null) {
@@ -448,7 +446,7 @@ public class TaskServiceImpl implements TaskService {
             return transferTasks(taskIds, destinationWorkbasket);
         } finally {
             LOGGER.debug("exit from transferBulk(targetWbKey = {}, taskIds = {})", destinationWorkbasketId, taskIds);
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
         }
     }
 
@@ -457,7 +455,7 @@ public class TaskServiceImpl implements TaskService {
         String destinationWorkbasketDomain, List<String> taskIds)
         throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             LOGGER.debug("entry to transferBulk(targetWbKey = {}, domain = {}, taskIds = {})", destinationWorkbasketKey,
                 destinationWorkbasketDomain, taskIds);
             // Check pre-conditions with trowing Exceptions
@@ -472,7 +470,7 @@ public class TaskServiceImpl implements TaskService {
         } finally {
             LOGGER.debug("exit from transferBulk(targetWbKey = {}, taskIds = {})", destinationWorkbasketKey,
                 destinationWorkbasketDomain, taskIds);
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
         }
     }
 
@@ -545,7 +543,7 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("entry to setTaskRead(taskId = {}, isRead = {})", taskId, isRead);
         Task result = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             TaskImpl task = (TaskImpl) getTask(taskId);
             task.setRead(true);
             task.setModified(Instant.now());
@@ -554,7 +552,7 @@ public class TaskServiceImpl implements TaskService {
             LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", result, isRead);
             return result;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from setTaskRead(taskId, isRead). Returning result {} ", result);
         }
     }
@@ -574,7 +572,7 @@ public class TaskServiceImpl implements TaskService {
         TaskImpl newTaskImpl = (TaskImpl) task;
         TaskImpl oldTaskImpl = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
             standardUpdateActions(oldTaskImpl, newTaskImpl);
             handleAttachmentsOnTaskUpdate(oldTaskImpl, newTaskImpl);
@@ -584,7 +582,7 @@ public class TaskServiceImpl implements TaskService {
             LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
 
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from claim()");
         }
         return task;
@@ -914,16 +912,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(String taskId) throws TaskNotFoundException, InvalidStateException {
+    public void deleteTask(String taskId) throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         deleteTask(taskId, false);
     }
 
     @Override
-    public void deleteTask(String taskId, boolean forceDelete) throws TaskNotFoundException, InvalidStateException {
+    public void deleteTask(String taskId, boolean forceDelete)
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         LOGGER.debug("entry to deleteTask(taskId = {} , forceDelete = {} )", taskId, forceDelete);
+        taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN);
         TaskImpl task = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
 
             // reset read flag and set transferred flag
@@ -936,7 +936,7 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.delete(taskId);
             LOGGER.debug("Method deleteTask() deleted Task {}", taskId);
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from deleteTask(). ");
         }
     }
@@ -948,7 +948,7 @@ public class TaskServiceImpl implements TaskService {
             LOGGER.debug("entry to deleteTasks(tasks = {})", LoggerUtils.listToString(taskIds));
         }
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             if (taskIds == null) {
                 throw new InvalidArgumentException("TaskIds can´t be NULL as parameter for deleteTasks().");
             }
@@ -985,7 +985,7 @@ public class TaskServiceImpl implements TaskService {
             return bulkLog;
         } finally {
             LOGGER.debug("exit from deleteTasks()");
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
         }
     }
 

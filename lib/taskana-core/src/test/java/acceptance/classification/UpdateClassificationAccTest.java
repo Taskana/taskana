@@ -33,6 +33,9 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         super();
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testUpdateClassification()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
@@ -67,6 +70,43 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         assertThat(updatedClassification.getApplicationEntryPoint(), equalTo(newEntryPoint));
     }
 
+    @Test(expected = NotAuthorizedException.class)
+    public void testUpdateClassificationFails()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
+        String newName = "updated Name";
+        String newEntryPoint = "updated EntryPoint";
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
+
+        classification.setApplicationEntryPoint(newEntryPoint);
+        classification.setCategory("PROCESS");
+        classification.setCustom1("newCustom1");
+        classification.setCustom2("newCustom2");
+        classification.setCustom3("newCustom3");
+        classification.setCustom4("newCustom4");
+        classification.setCustom5("newCustom5");
+        classification.setCustom6("newCustom6");
+        classification.setCustom7("newCustom7");
+        classification.setCustom8("newCustom8");
+        classification.setDescription("newDescription");
+        classification.setIsValidInDomain(false);
+        classification.setName(newName);
+        classification.setParentId("T2000");
+        classification.setPriority(1000);
+        classification.setServiceLevel("P2DT3H4M");
+
+        classificationService.updateClassification(classification);
+
+        // Get and check the new value
+        Classification updatedClassification = classificationService.getClassification("T2100", "DOMAIN_A");
+        assertNotNull(updatedClassification);
+        assertThat(updatedClassification.getName(), equalTo(newName));
+        assertThat(updatedClassification.getApplicationEntryPoint(), equalTo(newEntryPoint));
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testUpdateUnpersistedClassification()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException {
@@ -111,7 +151,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1", "group_2"})
+        groupNames = {"group_1", "businessadmin"})
     @Test
     public void testUpdateTaskOnClassificationKeyCategoryChange()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException {

@@ -39,8 +39,8 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
         assertTrue(users.contains("user_1_2"));
 
         Set<String> admins = roleMap.get(TaskanaRole.ADMIN);
-        assertTrue(admins.contains("teamlead_1"));
-        assertTrue(admins.contains("teamlead_2"));
+        assertTrue(admins.contains("name=konrad,organisation=novatec"));
+        assertTrue(admins.contains("admin"));
 
         Set<String> businessAdmins = roleMap.get(TaskanaRole.BUSINESS_ADMIN);
         assertTrue(businessAdmins.contains("max"));

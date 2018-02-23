@@ -1,5 +1,7 @@
 package acceptance.workbasket;
 
+import static org.junit.Assert.fail;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "query access items for workbaskets" scenarios.
@@ -31,6 +34,9 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         super();
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsForAccessIds()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -41,6 +47,21 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         Assert.assertEquals(8L, results.size());
     }
 
+    @WithAccessId(
+        userName = "dummy")
+    @Test(expected = NotAuthorizedException.class)
+    public void testQueryAccessItemsForAccessIdsNotAuthorized()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
+            .accessIdIn("user_1_1", "group_1")
+            .list();
+        fail("NotAuthorizedException was expected");
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsForAccessIdsOrderedAscending()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -56,6 +77,9 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         Assert.assertEquals("WAI:100000000000000000000000000000000003", results.get(0).getId());
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsForAccessIdsAndWorkbasketKey()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -67,6 +91,9 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         Assert.assertEquals(3L, results.size());
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsByWorkbasketKey()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -77,6 +104,9 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         Assert.assertEquals(3L, results.size());
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsByWorkbasketKeyOrderedDescending()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {

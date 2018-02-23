@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.impl.WorkbasketType;
 
@@ -148,9 +149,11 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      * @return the current query object.
      * @throws InvalidArgumentException
      *             when permission OR the accessIds are NULL.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
     WorkbasketQuery accessIdsHavePermission(WorkbasketAuthorization permission, String... accessIds)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Setting up the permissions for the accessIds of the CurrentUserContext. READ permissions need to be granted,too

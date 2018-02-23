@@ -24,7 +24,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryObjectReferences";
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceQueryImpl.class);
 
-    private TaskanaEngineImpl taskanaEngineImpl;
+    private TaskanaEngineImpl taskanaEngine;
     private String[] company;
     private String[] system;
     private String[] systemInstance;
@@ -32,7 +32,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     private String[] value;
 
     ObjectReferenceQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
     }
 
     @Override
@@ -70,11 +70,11 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         LOGGER.debug("entry to list(), this = {}", this);
         List<ObjectReference> result = null;
         try {
-            taskanaEngineImpl.openConnection();
-            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            taskanaEngine.openConnection();
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
             return result;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -88,9 +88,9 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<ObjectReference> result = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            result = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             return result;
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
@@ -103,7 +103,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
             }
             throw e;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
@@ -117,11 +117,11 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         LOGGER.debug("entry to single(), this = {}", this);
         ObjectReference result = null;
         try {
-            taskanaEngineImpl.openConnection();
-            result = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            taskanaEngine.openConnection();
+            result = taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             return result;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", result);
         }
     }
@@ -171,11 +171,11 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         LOGGER.debug("entry to count(), this = {}", this);
         Long rowCount = null;
         try {
-            taskanaEngineImpl.openConnection();
-            rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            taskanaEngine.openConnection();
+            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
     }
@@ -184,7 +184,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("ObjectReferenceQueryImpl [taskanaEngineImpl=");
-        builder.append(taskanaEngineImpl);
+        builder.append(taskanaEngine);
         builder.append(", company=");
         builder.append(Arrays.toString(company));
         builder.append(", system=");

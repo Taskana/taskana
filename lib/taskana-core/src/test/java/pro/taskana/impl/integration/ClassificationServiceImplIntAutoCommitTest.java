@@ -71,7 +71,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Before
     public void setup() throws FileNotFoundException, SQLException, LoginException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -159,7 +159,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindAllClassifications() throws ClassificationAlreadyExistException {
+    public void testFindAllClassifications() throws ClassificationAlreadyExistException, NotAuthorizedException {
         Classification classification0 = this.createDummyClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification0);
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
@@ -223,7 +223,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindWithClassificationMapperDomainAndCategory() throws ClassificationAlreadyExistException {
+    public void testFindWithClassificationMapperDomainAndCategory()
+        throws ClassificationAlreadyExistException, NotAuthorizedException {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("domain1", "type1");
         classification1.setCategory("category1");
         classificationService.createClassification(classification1);
@@ -244,7 +245,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindWithClassificationMapperCustomAndCategory() throws ClassificationAlreadyExistException {
+    public void testFindWithClassificationMapperCustomAndCategory()
+        throws ClassificationAlreadyExistException, NotAuthorizedException {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1.setDescription("DESC1");
         classification1.setCategory("category1");
@@ -281,7 +283,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
-        throws ClassificationAlreadyExistException, NumberFormatException {
+        throws ClassificationAlreadyExistException, NumberFormatException, NotAuthorizedException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setPriority(Integer.decode("5"));
         classificationService.createClassification(classification);
@@ -315,7 +317,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperServiceLevelNameAndDescription()
-        throws ClassificationAlreadyExistException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException {
         int all = 0;
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setServiceLevel("P1D");
@@ -395,7 +397,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
         return new TimeInterval(begin, end);
     }
 
-    private Classification createDummyClassificationWithUniqueKey(String domain, String type) {
+    private Classification createDummyClassificationWithUniqueKey(String domain, String type)
+        throws NotAuthorizedException {
         Classification classification = classificationService.newClassification("TEST" + counter, domain, type);
         counter++;
         return classification;

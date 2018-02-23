@@ -134,7 +134,8 @@ public class WorkbasketController {
 
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource) {
+    public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource)
+        throws NotAuthorizedException {
         try {
             Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
             workbasket = workbasketService.createWorkbasket(workbasket);
@@ -189,7 +190,7 @@ public class WorkbasketController {
     @PostMapping(path = "/authorizations")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketAccessItemResource> createWorkbasketAuthorization(
-        @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) {
+        @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) throws NotAuthorizedException {
         try {
             WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper
                 .toModel(workbasketAccessItemResource);
@@ -210,7 +211,7 @@ public class WorkbasketController {
                 .toModel(workbasketAccessItemResource);
             workbasketAccessItem = workbasketService.updateWorkbasketAuthorization(workbasketAccessItem);
             return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
-        } catch (InvalidArgumentException e) {
+        } catch (InvalidArgumentException | NotAuthorizedException e) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
@@ -234,7 +235,8 @@ public class WorkbasketController {
 
     @DeleteMapping(path = "/authorizations/{authId}")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> deleteWorkbasketAuthorization(@PathVariable(value = "authId") String authId) {
+    public ResponseEntity<?> deleteWorkbasketAuthorization(@PathVariable(value = "authId") String authId)
+        throws NotAuthorizedException {
         workbasketService.deleteWorkbasketAuthorization(authId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

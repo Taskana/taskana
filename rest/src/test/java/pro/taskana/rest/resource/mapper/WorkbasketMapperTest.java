@@ -12,6 +12,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketType;
 import pro.taskana.rest.RestApplication;
@@ -22,12 +23,14 @@ import pro.taskana.rest.resource.WorkbasketResource;
 @WebAppConfiguration
 public class WorkbasketMapperTest {
 
-    @Autowired WorkbasketService workbasketService;
-    @Autowired WorkbasketMapper workbasketMapper;
+    @Autowired
+    WorkbasketService workbasketService;
+    @Autowired
+    WorkbasketMapper workbasketMapper;
 
     @Test
     public void workbasketToResource() {
-        //given
+        // given
         Workbasket workbasket = workbasketService.newWorkbasket("1", "DOMAIN_A");
         ((WorkbasketImpl) workbasket).setId("ID");
         workbasket.setType(WorkbasketType.PERSONAL);
@@ -44,15 +47,15 @@ public class WorkbasketMapperTest {
         workbasket.setOwner("Lars");
         ((WorkbasketImpl) workbasket).setCreated(Instant.parse("2010-01-01T12:00:00Z"));
         ((WorkbasketImpl) workbasket).setModified(Instant.parse("2010-01-01T12:00:00Z"));
-        //when
+        // when
         WorkbasketResource workbasketResource = workbasketMapper.toResource(workbasket);
-        //then
+        // then
         testEquality(workbasket, workbasketResource);
     }
 
     @Test
-    public void resourceToWorkbasket() {
-        //given
+    public void resourceToWorkbasket() throws NotAuthorizedException {
+        // given
         WorkbasketResource workbasketResource = new WorkbasketResource();
         workbasketResource.setWorkbasketId("1");
         workbasketResource.setCreated("2010-01-01T12:00:00Z");
@@ -71,9 +74,9 @@ public class WorkbasketMapperTest {
         workbasketResource.setOrgLevel4("Org4");
         workbasketResource.setOwner("Lars");
         workbasketResource.setType(WorkbasketType.PERSONAL);
-        //when
+        // when
         Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
-        //then
+        // then
         testEquality(workbasket, workbasketResource);
     }
 

@@ -115,7 +115,7 @@ public class TaskanaTestController {
         return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM GESCHBUCH.TEST", Integer.class);
     }
 
-    private Workbasket createWorkBasket(String key, String name) {
+    private Workbasket createWorkBasket(String key, String name) throws NotAuthorizedException {
         WorkbasketImpl workbasket = (WorkbasketImpl) taskanaEngine.getWorkbasketService().newWorkbasket(key,
             "generali");
         String id1 = IdGenerator.generateWithPrefix("TWB");
