@@ -142,7 +142,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         assertThat(actualClassification.getKey(), equalTo(key));
         assertThat(actualClassification.getDomain(), equalTo(domain + "_2"));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
-        //verify that
+        // verify that
         Classification rootResults = classificationService.getClassification(key, "");
         assertThat(rootResults, not(equalTo(null)));
 
@@ -396,7 +396,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     private Classification createDummyClassificationWithUniqueKey(String domain, String type) {
-        Classification classification = classificationService.newClassification(domain, "TEST" + counter, type);
+        Classification classification = classificationService.newClassification("TEST" + counter, domain, type);
         counter++;
         return classification;
     }

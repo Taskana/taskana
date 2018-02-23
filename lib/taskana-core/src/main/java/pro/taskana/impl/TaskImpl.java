@@ -31,8 +31,6 @@ public class TaskImpl implements Task {
     private String note;
     private int priority;
     private TaskState state;
-    // private String classificationKey;
-    // private String classificationCategory;
     private ClassificationSummary classificationSummary;
     private WorkbasketSummary workbasketSummary;
     private String businessProcessId;

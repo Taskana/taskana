@@ -25,6 +25,17 @@ public interface ClassificationService {
     Classification getClassification(String key, String domain) throws ClassificationNotFoundException;
 
     /**
+     * Get the Classification by id.
+     *
+     * @param id
+     *            the id of the searched-for classifications
+     * @return the classification identified by id
+     * @throws ClassificationNotFoundException
+     *             if no classification is found that matches the id.
+     */
+    Classification getClassification(String id) throws ClassificationNotFoundException;
+
+    /**
      * Delete a classification with all child classifications.
      *
      * @param classificationKey
@@ -78,13 +89,13 @@ public interface ClassificationService {
      * Creating a new {@link Classification} with unchangeable default values. It will be only generated and is not
      * persisted until CREATE-call.
      *
-     * @param domain
-     *            the domain of the new classification
      * @param key
      *            the key of the classification
+     * @param domain
+     *            the domain of the new classification
      * @param type
      *            the type of the new classification
      * @return classification to specify
      */
-    Classification newClassification(String domain, String key, String type);
+    Classification newClassification(String key, String domain, String type);
 }

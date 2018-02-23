@@ -118,7 +118,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setId("1"); // set id manually for authorization tests
 
         workbasket.setType(WorkbasketType.GROUP);
-        Classification classification = classificationService.newClassification("novatec", "TEST", "type1");
+        Classification classification = classificationService.newClassification("TEST", "novatec", "type1");
         taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
         taskanaEngineImpl.getClassificationService().createClassification(classification);
         connection.commit();
@@ -189,7 +189,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setName("workbasket99");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket = workBasketServiceImpl.createWorkbasket(workbasket);
-        Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
+        Classification classification = classificationService.newClassification("TEST", "novatec", "t1");
         classification = classificationServiceImpl.createClassification(classification);
 
         Task task = taskServiceImpl.newTask(workbasket.getId());
@@ -215,7 +215,7 @@ public class TaskServiceImplIntExplicitTest {
 
         generateSampleAccessItems();
 
-        Classification classification = classificationService.newClassification("novatec", "TEST1", "t1");
+        Classification classification = classificationService.newClassification("TEST1", "novatec", "t1");
         classification.setCategory("MANUAL");
         classification.setName("classification name");
         classification.setServiceLevel("P1D");
@@ -305,8 +305,8 @@ public class TaskServiceImplIntExplicitTest {
         wb = workbasketService.createWorkbasket(wb);
         this.createWorkbasketWithSecurity(wb, CurrentUserContext.getUserid(), true, true,
             true, false);
-        Classification classification = classificationService.newClassification(wb.getDomain(),
-            UUID.randomUUID().toString(), "t1"); // not persisted,
+        Classification classification = classificationService.newClassification(
+            UUID.randomUUID().toString(), wb.getDomain(), "t1"); // not persisted,
         // not found.
         classification.setName("not persisted - so not found.");
 
@@ -328,7 +328,7 @@ public class TaskServiceImplIntExplicitTest {
 
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("k1", "novatec");
         workbasket.setName("workbasket");
-        Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
+        Classification classification = classificationService.newClassification("TEST", "novatec", "t1");
         classificationService.createClassification(classification);
         workbasket.setId("1"); // set id manually for authorization tests
         workbasket.setType(WorkbasketType.GROUP);
@@ -399,7 +399,7 @@ public class TaskServiceImplIntExplicitTest {
         createWorkbasketWithSecurity(destinationWB, destinationWB.getOwner(), false, true, true, true);
 
         // Classification required for Task
-        classification = (ClassificationImpl) classificationService.newClassification("domain", "KEY", "t1");
+        classification = (ClassificationImpl) classificationService.newClassification("KEY", "domain", "t1");
         classification.setCategory("Test Classification");
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
@@ -455,8 +455,8 @@ public class TaskServiceImplIntExplicitTest {
         classificationService = taskanaEngine.getClassificationService();
         workbasketService = taskanaEngine.getWorkbasketService();
 
-        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("test-domain",
-            "KEY", "t1");
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification(
+            "KEY", "test-domain", "t1");
         classification.setCategory("Test Classification");
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
@@ -532,7 +532,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setType(WorkbasketType.GROUP);
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
 
-        Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
+        Classification classification = classificationService.newClassification("TEST", "novatec", "t1");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = taskServiceImpl.newTask(workbasket.getId());

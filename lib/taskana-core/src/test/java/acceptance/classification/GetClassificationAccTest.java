@@ -30,7 +30,8 @@ public class GetClassificationAccTest extends AbstractAccTest {
     @Test
     public void testFindAllClassifications() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
-        List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery().list();
+        List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
+            .list();
         Assert.assertNotNull(classificationSummaryList);
     }
 
@@ -39,6 +40,22 @@ public class GetClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T6310", "DOMAIN_A");
         Assert.assertNotNull(classification);
+    }
+
+    @Test
+    public void testGetOneClassificationById() throws ClassificationNotFoundException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        Classification classification = classificationService
+            .getClassification("CLI:100000000000000000000000000000000011");
+        Assert.assertNotNull(classification);
+    }
+
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testGetOneClassificationByIdFails() throws ClassificationNotFoundException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        Classification classification = classificationService
+            .getClassification("CLI:100000000470000000000000000000000011");
+        Assert.fail("ClassificationNotFoundException was expected");
     }
 
     @Test

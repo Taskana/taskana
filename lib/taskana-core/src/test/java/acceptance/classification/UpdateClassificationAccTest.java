@@ -69,7 +69,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
         ClassificationService classificationService = taskanaEngine.getClassificationService();
-        Classification classification = classificationService.newClassification("OTHER_DOMAIN", "NO REGISTERED KEY",
+        Classification classification = classificationService.newClassification("NO REGISTERED KEY", "OTHER_DOMAIN",
             "DOCUMENT");
         classification.setApplicationEntryPoint(newEntryPoint);
         classification.setCategory("PROCESS");

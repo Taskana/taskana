@@ -35,7 +35,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     private TaskanaEngineImpl taskanaEngineImpl;
 
     ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper,
-                              TaskMapper taskMapper) {
+        TaskMapper taskMapper) {
         super();
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         this.classificationMapper = classificationMapper;
@@ -195,6 +195,28 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
+    public Classification getClassification(String id) throws ClassificationNotFoundException {
+        if (id == null) {
+            throw new ClassificationNotFoundException(
+                "Classification for id " + id + " was not found.");
+        }
+        LOGGER.debug("entry to getClassification(id = {})", id);
+        Classification result = null;
+        try {
+            taskanaEngineImpl.openConnection();
+            result = classificationMapper.findById(id);
+            if (result == null) {
+                LOGGER.error("Classification for id {} was not found. Throwing ClassificationNotFoundException", id);
+                throw new ClassificationNotFoundException("Classification for id " + id + " was not found");
+            }
+            return result;
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getClassification(). Returning result {} ", result);
+        }
+    }
+
+    @Override
     public Classification getClassification(String key, String domain) throws ClassificationNotFoundException {
         if (key == null) {
             throw new ClassificationNotFoundException(
@@ -208,6 +230,9 @@ public class ClassificationServiceImpl implements ClassificationService {
             if (result == null) {
                 result = classificationMapper.findByKeyAndDomain(key, "");
                 if (result == null) {
+                    LOGGER.error(
+                        "Classification for key {} and domain {} was not found. Throwing ClassificationNotFoundException",
+                        key, domain);
                     throw new ClassificationNotFoundException("Classification for key " + key + " was not found");
                 }
             }
@@ -224,7 +249,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public Classification newClassification(String domain, String key, String type) {
+    public Classification newClassification(String key, String domain, String type) {
         ClassificationImpl classification = new ClassificationImpl();
         classification.setKey(key);
         classification.setDomain(domain);
