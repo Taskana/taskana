@@ -59,7 +59,7 @@ public class ClassificationServiceImplTest {
 
     @Test(expected = ClassificationAlreadyExistException.class)
     public void testCreateClassificationAlreadyExisting()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException {
         Classification classification = createDummyClassification();
         doReturn(classification).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
@@ -71,6 +71,7 @@ public class ClassificationServiceImplTest {
             verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
                 classification.getDomain());
             verify(taskanaEngineImplMock, times(1)).returnConnection();
+            verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
             verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
             throw e;
         }
@@ -78,7 +79,8 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationInOwnDomainButExistingInRoot()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException, InterruptedException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, InterruptedException,
+        NotAuthorizedException {
         Instant beforeTimestamp = Instant.now();
         Thread.sleep(10L);
         Classification classification = createDummyClassification();
@@ -96,6 +98,7 @@ public class ClassificationServiceImplTest {
         verify(classificationMapperMock, times(1)).findByKeyAndDomain(key, "");
         verify(classificationMapperMock, times(1)).insert(any());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
         Thread.sleep(15);
         assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
@@ -107,7 +110,7 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
-        throws ClassificationAlreadyExistException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException {
         Classification classification = createDummyClassification();
         String domain = classification.getDomain();
         String key = classification.getKey();
@@ -122,6 +125,7 @@ public class ClassificationServiceImplTest {
         verify(classificationMapperMock, times(2)).findByKeyAndDomain(key, "");
         verify(classificationMapperMock, times(2)).insert(any());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
         assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
         assertThat(classification.getDomain(), equalTo(domain));
@@ -130,7 +134,7 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationIntoRootDomain()
-        throws ClassificationAlreadyExistException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException {
         ClassificationImpl classification = (ClassificationImpl) createDummyClassification();
         classification.setDomain("");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -143,6 +147,7 @@ public class ClassificationServiceImplTest {
             classification.getDomain());
         verify(classificationMapperMock, times(1)).insert(classification);
         verify(taskanaEngineImplMock, times(1)).returnConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
         assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
     }
@@ -158,6 +163,7 @@ public class ClassificationServiceImplTest {
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(cutSpy, times(2)).getClassification(classification.getKey(), classification.getDomain());
         verify(classificationMapperMock, times(1)).update(any());
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
     }

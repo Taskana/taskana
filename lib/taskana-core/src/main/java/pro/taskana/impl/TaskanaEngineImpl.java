@@ -38,6 +38,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.AutocommitFailedException;
 import pro.taskana.exceptions.ConnectionNotSetException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.UnsupportedDatabaseException;
 import pro.taskana.impl.persistence.MapTypeHandler;
@@ -51,6 +52,7 @@ import pro.taskana.mappings.TaskMapper;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.mappings.WorkbasketAccessMapper;
 import pro.taskana.mappings.WorkbasketMapper;
+import pro.taskana.security.CurrentUserContext;
 
 /**
  * This is the implementation of TaskanaEngine.
@@ -231,6 +233,47 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
+     * Checks whether current user is member of any of the specified roles.
+     *
+     * @param roles
+     *            The roles that are checked for membership of the current user
+     * @throws NotAuthorizedException
+     *             If the current user is not member of any specified role
+     */
+    void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
+        if (isUserInRole(roles)) {
+            return;
+        } else {
+            throw new NotAuthorizedException("current user is not member of role(s) " + Arrays.toString(roles));
+        }
+    }
+
+    /**
+     * check whether the current user is member of one of the roles specified.
+     *
+     * @param roles
+     *            The roles that are checked for membership of the current user
+     * @return true if the current user is a member of at least one of the specified groups
+     */
+    boolean isUserInRole(TaskanaRole... roles) {
+        if (!getConfiguration().isSecurityEnabled()) {
+            return true;
+        } else {
+            List<String> accessIds = CurrentUserContext.getAccessIds();
+            Set<String> rolesMembers = new HashSet<>();
+            for (TaskanaRole role : roles) {
+                rolesMembers.addAll(roleMap.get(role));
+            }
+            for (String accessId : accessIds) {
+                if (rolesMembers.contains(accessId)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /**
      * This method creates the sqlSessionManager of myBatis. It integrates all the SQL mappers and sets the databaseId
      * attribute.
      *
@@ -332,7 +375,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
                             String token = st.nextToken().toLowerCase().trim();
                             roleMemberSet.add(token);
                         }
-                        TaskanaRole key = TaskanaRole.fromProperyName(propertyName);
+                        TaskanaRole key = TaskanaRole.fromPropertyName(propertyName);
                         if (key != null) {
                             roleMap.put(key, roleMemberSet);
                         } else {

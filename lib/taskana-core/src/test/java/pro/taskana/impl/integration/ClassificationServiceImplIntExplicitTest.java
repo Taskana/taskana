@@ -72,7 +72,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Before
     public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -83,7 +83,8 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testInsertClassification()
-        throws SQLException, ClassificationNotFoundException, ClassificationAlreadyExistException {
+        throws SQLException, ClassificationNotFoundException, ClassificationAlreadyExistException,
+        NotAuthorizedException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
@@ -168,7 +169,8 @@ public class ClassificationServiceImplIntExplicitTest {
     }
 
     @Test
-    public void testFindAllClassifications() throws SQLException, ClassificationAlreadyExistException {
+    public void testFindAllClassifications()
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification0 = this.createNewClassificationWithUniqueKey("", "t1");
@@ -205,7 +207,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testInsertAndClassificationQuery()
-        throws SQLException, ClassificationAlreadyExistException {
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
@@ -248,7 +250,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
-        throws SQLException, ClassificationAlreadyExistException {
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("domain1", "t1");
@@ -274,7 +276,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperCustomAndCategory()
-        throws SQLException, ClassificationAlreadyExistException {
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "t1");
@@ -314,7 +316,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
-        throws SQLException, ClassificationAlreadyExistException {
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "type1");
@@ -436,7 +438,8 @@ public class ClassificationServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(null);
     }
 
-    private Classification createNewClassificationWithUniqueKey(String domain, String type) {
+    private Classification createNewClassificationWithUniqueKey(String domain, String type)
+        throws NotAuthorizedException {
         Classification classification = classificationService.newClassification("TEST" + counter, domain, type);
         counter++;
         return classification;

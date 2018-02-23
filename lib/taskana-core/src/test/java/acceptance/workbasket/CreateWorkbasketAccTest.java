@@ -33,7 +33,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_2",
-        groupNames = {"group_1"})
+        groupNames = {"businessadmin"})
     @Test
     public void testCreateWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -60,6 +60,25 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         assertEquals(createdWorkbasket, createdWorkbasket2);
     }
 
+    @WithAccessId(
+        userName = "dummy")
+    @Test(expected = NotAuthorizedException.class)
+    public void testCreateWorkbasketNotAuthorized()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+        InvalidWorkbasketException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+        Workbasket workbasket = workbasketService.newWorkbasket("key3", "novatec");
+        workbasket.setName("Megabasket");
+        workbasket.setType(WorkbasketType.GROUP);
+        workbasket.setOrgLevel1("company");
+        workbasketService.createWorkbasket(workbasket);
+        fail("NotAuthorizedException should have been thrown");
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testCreateWorkbasketWithMissingRequiredField()
         throws WorkbasketNotFoundException, NotAuthorizedException {

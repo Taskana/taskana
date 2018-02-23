@@ -6,7 +6,6 @@ import java.time.Instant;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,7 +32,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "businessadmin"})
     @Test
     public void testUpdateWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -64,16 +63,15 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         Assert.assertEquals(WorkbasketType.TOPIC, updatedWorkbasket.getType());
     }
 
-    @Ignore
     @WithAccessId(
-        userName = "teamlead_1",
+        userName = "user_1_1",
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testCheckAuthorizationToUpdateWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         InvalidWorkbasketException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+        Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
 
         workbasket.setName("new name");
         workbasketService.updateWorkbasket(workbasket);

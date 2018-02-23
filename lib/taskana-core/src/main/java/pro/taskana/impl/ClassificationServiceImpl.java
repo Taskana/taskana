@@ -32,24 +32,25 @@ public class ClassificationServiceImpl implements ClassificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
     private ClassificationMapper classificationMapper;
     private TaskMapper taskMapper;
-    private TaskanaEngineImpl taskanaEngineImpl;
+    private TaskanaEngineImpl taskanaEngine;
 
     ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper,
         TaskMapper taskMapper) {
         super();
-        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.classificationMapper = classificationMapper;
         this.taskMapper = taskMapper;
     }
 
     @Override
     public Classification createClassification(Classification classification)
-        throws ClassificationAlreadyExistException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException {
         LOGGER.debug("entry to createClassification(classification = {})", classification);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         ClassificationImpl classificationImpl;
         final boolean isClassificationExisting;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             isClassificationExisting = doesClassificationExist(classification.getKey(), classification.getDomain());
 
             if (isClassificationExisting) {
@@ -63,7 +64,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
             addClassificationToRootDomain(classificationImpl);
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from createClassification()");
         }
         return classificationImpl;
@@ -104,9 +105,10 @@ public class ClassificationServiceImpl implements ClassificationService {
     @Override
     public Classification updateClassification(Classification classification) throws NotAuthorizedException {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         ClassificationImpl classificationImpl = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             classificationImpl = (ClassificationImpl) classification;
             this.initDefaultClassificationValues(classificationImpl);
 
@@ -116,7 +118,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                     classificationImpl.getDomain());
                 // Update classification fields used by tasks
                 if (oldClassification.getCategory() != classificationImpl.getCategory()) {
-                    List<TaskSummary> taskSumamries = taskanaEngineImpl.getTaskService()
+                    List<TaskSummary> taskSumamries = taskanaEngine.getTaskService()
                         .createTaskQuery()
                         .classificationKeyIn(oldClassification.getKey())
                         .classificationCategoryIn(oldClassification.getCategory())
@@ -150,7 +152,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                 throw new SystemException("updateClassification didn't find new classification after update");
             }
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from updateClassification().");
         }
     }
@@ -203,7 +205,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         LOGGER.debug("entry to getClassification(id = {})", id);
         Classification result = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             result = classificationMapper.findById(id);
             if (result == null) {
                 LOGGER.error("Classification for id {} was not found. Throwing ClassificationNotFoundException", id);
@@ -211,13 +213,14 @@ public class ClassificationServiceImpl implements ClassificationService {
             }
             return result;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from getClassification(). Returning result {} ", result);
         }
     }
 
     @Override
     public Classification getClassification(String key, String domain) throws ClassificationNotFoundException {
+        LOGGER.debug("entry to getClassification(key = {}, domain = {})", key, domain);
         if (key == null) {
             throw new ClassificationNotFoundException(
                 "Classification for key " + key + " and domain " + domain + " was not found.");
@@ -225,7 +228,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         LOGGER.debug("entry to getClassification(key = {}, domain = {})", key, domain);
         Classification result = null;
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             result = classificationMapper.findByKeyAndDomain(key, domain);
             if (result == null) {
                 result = classificationMapper.findByKeyAndDomain(key, "");
@@ -238,14 +241,14 @@ public class ClassificationServiceImpl implements ClassificationService {
             }
             return result;
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
             LOGGER.debug("exit from getClassification(). Returning result {} ", result);
         }
     }
 
     @Override
     public ClassificationQuery createClassificationQuery() {
-        return new ClassificationQueryImpl(taskanaEngineImpl);
+        return new ClassificationQueryImpl(taskanaEngine);
     }
 
     @Override
@@ -273,9 +276,11 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public void deleteClassification(String classificationKey, String domain)
-        throws ClassificationInUseException, ClassificationNotFoundException {
+        throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException {
+        LOGGER.debug("entry to deleteClassification(key = {}, domain = {})", classificationKey, domain);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
-            taskanaEngineImpl.openConnection();
+            taskanaEngine.openConnection();
             Classification classification = this.classificationMapper.findByKeyAndDomain(classificationKey, domain);
             if (classification == null) {
                 throw new ClassificationNotFoundException(
@@ -291,7 +296,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                 }
             }
 
-            TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
+            TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
             try {
                 List<TaskSummary> classificationTasks = taskService.createTaskQuery()
                     .classificationKeyIn(classificationKey)
@@ -315,7 +320,8 @@ public class ClassificationServiceImpl implements ClassificationService {
 
             this.classificationMapper.deleteClassificationInDomain(classificationKey, domain);
         } finally {
-            taskanaEngineImpl.returnConnection();
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from deleteClassification()");
         }
     }
 }

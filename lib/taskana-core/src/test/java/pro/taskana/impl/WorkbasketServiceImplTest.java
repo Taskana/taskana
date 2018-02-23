@@ -218,6 +218,7 @@ public class WorkbasketServiceImplTest {
         } catch (InvalidWorkbasketException ex) {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
+            verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -234,6 +235,7 @@ public class WorkbasketServiceImplTest {
         } catch (InvalidWorkbasketException ex) {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
+            verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -251,6 +253,7 @@ public class WorkbasketServiceImplTest {
         } catch (InvalidWorkbasketException ex) {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
+            verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -267,6 +270,7 @@ public class WorkbasketServiceImplTest {
         } catch (InvalidWorkbasketException ex) {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
+            verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -284,6 +288,7 @@ public class WorkbasketServiceImplTest {
         } catch (InvalidWorkbasketException ex) {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
+            verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -301,6 +306,7 @@ public class WorkbasketServiceImplTest {
         } catch (InvalidWorkbasketException ex) {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
+            verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -330,6 +336,8 @@ public class WorkbasketServiceImplTest {
         verify(workbasketMapperMock, times(2)).findById(expectedWb.getId());
         verify(workbasketMapperMock, times(1)).update(any());
         verify(taskanaEngineImplMock, times(5)).returnConnection();
+        verify(taskanaEngineImplMock, times(2)).checkRoleMembership(any());
+        verify(taskanaEngineImplMock, times(2)).isUserInRole(any());
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsBySourceId(any());
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
@@ -364,6 +372,8 @@ public class WorkbasketServiceImplTest {
         verify(workbasketMapperMock, times(3)).findById(any());
         verify(workbasketMapperMock, times(1)).update(any());
         verify(taskanaEngineImplMock, times(5)).returnConnection();
+        verify(taskanaEngineImplMock, times(4)).checkRoleMembership(any());
+        verify(taskanaEngineImplMock, times(1)).isUserInRole(any());
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
             taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -392,6 +402,7 @@ public class WorkbasketServiceImplTest {
             verify(workbasketMapperMock, times(2)).findById(any());
             verify(cutSpy, times(1)).getWorkbasket(any());
             verify(taskanaEngineImplMock, times(3)).returnConnection();
+            verify(taskanaEngineImplMock, times(2)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -432,6 +443,7 @@ public class WorkbasketServiceImplTest {
         } catch (InvalidArgumentException e) {
             verify(taskanaEngineImplMock, times(1)).openConnection();
             verify(taskanaEngineImplMock, times(1)).returnConnection();
+            verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -444,6 +456,7 @@ public class WorkbasketServiceImplTest {
         } catch (InvalidArgumentException e) {
             verify(taskanaEngineImplMock, times(2)).openConnection();
             verify(taskanaEngineImplMock, times(2)).returnConnection();
+            verify(taskanaEngineImplMock, times(2)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -461,6 +474,7 @@ public class WorkbasketServiceImplTest {
             verify(taskanaEngineImplMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getWorkbasket(workbasketId);
             verify(taskanaEngineImplMock, times(1)).returnConnection();
+            verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -519,6 +533,7 @@ public class WorkbasketServiceImplTest {
         verify(workbasketAccessMapperMock, times(1)).deleteAllAccessItemsForWorkbasketId(wb.getId());
         verify(workbasketMapperMock, times(1)).delete(wb.getId());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
             taskanaEngineImplMock, taskanaEngineConfigurationMock);

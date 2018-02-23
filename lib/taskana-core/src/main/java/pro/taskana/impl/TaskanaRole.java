@@ -14,7 +14,7 @@ public enum TaskanaRole {
         this.propertyName = propertyName;
     }
 
-    public static TaskanaRole fromProperyName(String name) {
+    public static TaskanaRole fromPropertyName(String name) {
         if (USER.propertyName.equalsIgnoreCase(name)) {
             return TaskanaRole.USER;
         } else if (BUSINESS_ADMIN.propertyName.equalsIgnoreCase(name)) {

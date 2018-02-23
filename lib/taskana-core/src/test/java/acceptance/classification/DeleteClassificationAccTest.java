@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 
@@ -34,6 +35,9 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         classificationService = taskanaEngine.getClassificationService();
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testDeleteClassificationInDomain()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
@@ -47,6 +51,16 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
+    @Test(expected = NotAuthorizedException.class)
+    public void testDeleteClassificationInDomainUserIsNotAuthorized()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        classificationService.deleteClassification("L140101", "DOMAIN_A");
+        fail("NotAuthorizedException should have been thrown");
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
     @Test(expected = ClassificationInUseException.class)
     public void testThrowExeptionIfDeleteClassificationWithExistingTasks()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
@@ -55,13 +69,16 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1", "group_2"})
+        groupNames = {"group_1", "businessadmin"})
     @Test(expected = ClassificationInUseException.class)
     public void testThrowExeptionIfDeleteMasterClassificationWithExistingTasks()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
         classificationService.deleteClassification("L1050", "");
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test
     public void testDeleteMasterClassification()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
@@ -78,8 +95,7 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
-
+        groupNames = {"group_1", "businessadmin"})
     @Test
     public void testThrowExceptionWhenChildClassificationIsInUseAndRollback()
         throws ClassificationInUseException, NotAuthorizedException, ClassificationNotFoundException {
@@ -106,15 +122,21 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         assertNotEquals(rollbackMaster.getDomain(), rollbackA.getDomain());
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test(expected = ClassificationNotFoundException.class)
     public void testThrowClassificationNotFoundIfClassificationNotExists()
-        throws ClassificationNotFoundException, ClassificationInUseException {
+        throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
         classificationService.deleteClassification("not existing classification key", "");
     }
 
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
     @Test(expected = ClassificationNotFoundException.class)
     public void testThrowClassificationNotFoundIfClassificationNotExistsInDomain()
-        throws ClassificationNotFoundException, ClassificationInUseException {
+        throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
         classificationService.deleteClassification("L10000", "DOMAIN_B");
     }
 
