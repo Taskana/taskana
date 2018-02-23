@@ -437,7 +437,7 @@ public class ClassificationServiceImplIntExplicitTest {
     }
 
     private Classification createNewClassificationWithUniqueKey(String domain, String type) {
-        Classification classification = classificationService.newClassification(domain, "TEST" + counter, type);
+        Classification classification = classificationService.newClassification("TEST" + counter, domain, type);
         counter++;
         return classification;
     }

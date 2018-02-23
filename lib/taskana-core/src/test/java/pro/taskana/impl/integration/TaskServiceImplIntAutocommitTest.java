@@ -104,7 +104,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
+        Classification classification = classificationService.newClassification("TEST", "novatec", "t1");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = taskServiceImpl.newTask(wb.getId());
@@ -131,7 +131,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setType(WorkbasketType.GROUP);
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
 
-        Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
+        Classification classification = classificationService.newClassification("TEST", "novatec", "t1");
         classification = taskanaEngine.getClassificationService()
             .createClassification(classification);
         classification = taskanaEngine.getClassificationService().getClassification(
@@ -166,7 +166,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
         te.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = te.getClassificationService().newClassification("novatec", "TEST", "t1");
+        Classification classification = te.getClassificationService().newClassification("TEST", "novatec", "t1");
         te.getClassificationService().createClassification(classification);
 
         Task task = taskServiceImpl.newTask(wb.getId());
@@ -187,7 +187,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
+        Classification classification = classificationService.newClassification("TEST", "novatec", "t1");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = taskServiceImpl.newTask(wb.getKey(), wb.getDomain());
@@ -246,7 +246,7 @@ public class TaskServiceImplIntAutocommitTest {
         destinationWB = workbasketService.createWorkbasket(wb);
 
         // Classification required for Task
-        classification = (ClassificationImpl) classificationService.newClassification("domain", "KEY", "t1");
+        classification = (ClassificationImpl) classificationService.newClassification("KEY", "domain", "t1");
         classification.setCategory("Test Classification");
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
@@ -297,8 +297,8 @@ public class TaskServiceImplIntAutocommitTest {
         classificationService = taskanaEngine.getClassificationService();
         workbasketService = taskanaEngine.getWorkbasketService();
 
-        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("test-domain",
-            "KEY", "t1");
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("KEY",
+            "test-domain", "t1");
         classification.setCategory("Test Classification");
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
@@ -376,7 +376,7 @@ public class TaskServiceImplIntAutocommitTest {
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = classificationService.newClassification("novatec", "TEST", "t1");
+        Classification classification = classificationService.newClassification("TEST", "novatec", "t1");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = taskServiceImpl.newTask(wb.getId());
