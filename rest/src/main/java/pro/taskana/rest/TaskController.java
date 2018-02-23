@@ -3,16 +3,18 @@ package pro.taskana.rest;
 import java.util.Collections;
 import java.util.List;
 
-import javax.security.auth.login.LoginException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
-import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
@@ -44,9 +45,10 @@ public class TaskController {
     @Autowired
     private TaskFilter taskLogic;
 
-    @RequestMapping
+    @GetMapping
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<TaskSummary>> getTasks(@RequestParam MultiValueMap<String, String> params)
-        throws LoginException, InvalidArgumentException {
+        throws InvalidArgumentException {
         try {
             if (params.keySet().size() == 0) {
                 // get all
@@ -54,27 +56,29 @@ public class TaskController {
             }
             return ResponseEntity.status(HttpStatus.OK).body(taskLogic.inspectPrams(params));
         } catch (NotAuthorizedException e) {
-            logger.error("Somthing went wrong whith the Authorisation, while getting all Tasks.", e);
+            logger.error("Something went wrong with the Authorisation, while getting all Tasks.", e);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
-    @RequestMapping(value = "/{taskId}")
-    public ResponseEntity<Task> getTask(@PathVariable(value = "taskId") String taskId)
-        throws ClassificationNotFoundException {
+    @GetMapping(path = "/{taskId}")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    public ResponseEntity<Task> getTask(@PathVariable String taskId) {
         try {
             Task task = taskService.getTask(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (TaskNotFoundException e) {
             logger.error("The searched Task couldn´t be found or does not exist.", e);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @RequestMapping(value = "/workbasket/{workbasketId}/state/{taskState}")
-    public ResponseEntity<List<TaskSummary>> getTasksByWorkbasketIdAndState(
-        @PathVariable(value = "workbasketId") String workbasketId,
-        @PathVariable(value = "taskState") TaskState taskState) {
+    @GetMapping(path = "/workbasket/{workbasketId}/state/{taskState}")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    public ResponseEntity<List<TaskSummary>> getTasksByWorkbasketIdAndState(@PathVariable String workbasketId,
+        @PathVariable TaskState taskState) {
         try {
             List<TaskSummary> taskList = taskService.createTaskQuery()
                 .workbasketIdIn(workbasketId)
@@ -82,15 +86,17 @@ public class TaskController {
                 .list();
             return ResponseEntity.status(HttpStatus.OK).body(taskList);
         } catch (NotAuthorizedToQueryWorkbasketException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (Exception e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/claim")
-    public ResponseEntity<Task> claimTask(@PathVariable String taskId, @RequestBody String userName)
-        throws ClassificationNotFoundException {
+    @PostMapping(path = "/{taskId}/claim")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<Task> claimTask(@PathVariable String taskId, @RequestBody String userName) {
         // TODO verify user
         try {
             taskService.claim(taskId);
@@ -98,64 +104,72 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
             logger.error("The given Task coundn´t be found/claimd or does not Exist.", e);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (InvalidStateException e) {
+        } catch (InvalidStateException | InvalidOwnerException e) {
             logger.error("The given Task could not be claimed. Reason: {}", e);
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (InvalidOwnerException e) {
-            logger.error("The given Task could not be claimed. Reason: {}", e);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/complete")
-    public ResponseEntity<Task> completeTask(@PathVariable String taskId) throws ClassificationNotFoundException {
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<Task> completeTask(@PathVariable String taskId) {
         try {
             taskService.completeTask(taskId, true);
             Task updatedTask = taskService.getTask(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (InvalidStateException | InvalidOwnerException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
     }
 
     @RequestMapping(method = RequestMethod.POST)
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         try {
             Task createdTask = taskService.createTask(task);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         } catch (Exception e) {
             logger.error("Something went wrong: ", e);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/transfer/{workbasketKey}")
+    @RequestMapping(path = "/{taskId}/transfer/{workbasketKey}")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Task> transferTask(@PathVariable String taskId, @PathVariable String workbasketKey) {
         try {
             Task updatedTask = taskService.transfer(taskId, workbasketKey);
             return ResponseEntity.status(HttpStatus.CREATED).body(updatedTask);
         } catch (Exception e) {
             logger.error("Something went wrong: ", e);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @RequestMapping(value = "/workbasket/{workbasketId}", method = RequestMethod.GET)
-    public ResponseEntity<List<TaskSummary>> getTasksummariesByWorkbasketId(
-        @PathVariable(value = "workbasketId") String workbasketId) {
+    @GetMapping(path = "/workbasket/{workbasketId}")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    public ResponseEntity<List<TaskSummary>> getTasksummariesByWorkbasketId(@PathVariable String workbasketId) {
         List<TaskSummary> taskSummaries = null;
         try {
             taskSummaries = taskService.createTaskQuery().workbasketIdIn(workbasketId).list();
             return ResponseEntity.status(HttpStatus.OK).body(taskSummaries);
         } catch (NotAuthorizedToQueryWorkbasketException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (Exception ex) {
             if (taskSummaries == null) {
                 taskSummaries = Collections.emptyList();
             }
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

@@ -8,10 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +27,6 @@ import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketInUseException;
@@ -60,7 +64,8 @@ public class WorkbasketController {
     @Autowired
     private WorkbasketAccessItemMapper workbasketAccessItemMapper;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<WorkbasketSummaryResource>> getWorkbaskets(
         @RequestParam(value = "sortBy", defaultValue = "name", required = false) String sortBy,
         @RequestParam(value = "order", defaultValue = "asc", required = false) String order,
@@ -76,65 +81,70 @@ public class WorkbasketController {
         ResponseEntity<List<WorkbasketSummaryResource>> result;
         List<WorkbasketSummary> workbasketsSummary;
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
-        try {
-            addSortingToQuery(query, sortBy, order);
-            addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
-            addAuthorizationFilter(query, requiredPermission);
-            workbasketsSummary = query.list();
-            result = new ResponseEntity<>(workbasketsSummary.stream()
-                .map(workbasket -> workbasketSummaryMapper.toResource(workbasket))
-                .collect(Collectors.toList()), HttpStatus.OK);
-        } catch (InvalidArgumentException e) {
-            result = new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-        } catch (InvalidRequestException e) {
-            result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        addSortingToQuery(query, sortBy, order);
+        addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
+        addAuthorizationFilter(query, requiredPermission);
+        workbasketsSummary = query.list();
+        result = new ResponseEntity<>(workbasketsSummary.stream()
+            .map(workbasket -> workbasketSummaryMapper.toResource(workbasket))
+            .collect(Collectors.toList()), HttpStatus.OK);
         return result;
     }
 
-    @RequestMapping(value = "/{workbasketId}", method = RequestMethod.GET)
+    @GetMapping(path = "/{workbasketId}")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketResource> getWorkbasket(@PathVariable(value = "workbasketId") String workbasketId) {
         ResponseEntity<WorkbasketResource> result;
         try {
             Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
             result = new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.OK);
         } catch (WorkbasketNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotAuthorizedException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         return result;
     }
 
-    @RequestMapping(value = "/{workbasketId}", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/{workbasketId}")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> deleteWorkbasket(@PathVariable(value = "workbasketId") String workbasketId) {
         ResponseEntity<?> result = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         try {
             workbasketService.deleteWorkbasket(workbasketId);
         } catch (WorkbasketNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (NotAuthorizedException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (WorkbasketInUseException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = ResponseEntity.status(HttpStatus.LOCKED).build();
         } catch (InvalidArgumentException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
         return result;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource) {
         try {
             Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
             workbasket = workbasketService.createWorkbasket(workbasket);
             return new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.CREATED);
         } catch (InvalidWorkbasketException e) {
-            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @RequestMapping(value = "/{workbasketId}", method = RequestMethod.PUT)
+    @PutMapping(path = "/{workbasketId}")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketResource> updateWorkbasket(
         @PathVariable(value = "workbasketId") String workbasketId,
         @RequestBody WorkbasketResource workbasketResource) {
@@ -151,17 +161,21 @@ public class WorkbasketController {
                         + workbasketResource.getId() + "')");
             }
         } catch (InvalidWorkbasketException e) {
-            result = new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (WorkbasketNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotAuthorizedException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         return result;
     }
 
-    @RequestMapping(value = "/{workbasketId}/authorizations", method = RequestMethod.GET)
+    @GetMapping(path = "/{workbasketId}/authorizations")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<WorkbasketAccessItemResource>> getWorkbasketAuthorizations(
         @PathVariable(value = "workbasketId") String workbasketId) {
         List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAuthorizations(workbasketId);
@@ -170,7 +184,8 @@ public class WorkbasketController {
             .collect(Collectors.toList()), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/authorizations", method = RequestMethod.POST)
+    @PostMapping(path = "/authorizations")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketAccessItemResource> createWorkbasketAuthorization(
         @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) {
         WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper.toModel(workbasketAccessItemResource);
@@ -178,7 +193,8 @@ public class WorkbasketController {
         return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/authorizations/{authId}", method = RequestMethod.PUT)
+    @PutMapping(path = "/authorizations/{authId}")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketAccessItemResource> updateWorkbasketAuthorization(
         @PathVariable(value = "authId") String authId,
         @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) throws InvalidArgumentException {
@@ -187,18 +203,20 @@ public class WorkbasketController {
         return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/authorizations/{authId}", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/authorizations/{authId}")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> deleteWorkbasketAuthorization(@PathVariable(value = "authId") String authId) {
         workbasketService.deleteWorkbasketAuthorization(authId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @RequestMapping(value = "/{workbasketId}/distributiontargets", method = RequestMethod.GET)
+    @GetMapping(path = "/{workbasketId}/distributiontargets")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<WorkbasketSummaryResource>> getDistributionTargetsForWorkbasketId(
         @PathVariable(value = "workbasketId") String workbasketId) {
 
-        ResponseEntity<List<WorkbasketSummaryResource>> result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        List<WorkbasketSummary> distributionTargets = null;
+        ResponseEntity<List<WorkbasketSummaryResource>> result;
+        List<WorkbasketSummary> distributionTargets;
         try {
             distributionTargets = workbasketService.getDistributionTargets(workbasketId);
             result = new ResponseEntity<>(distributionTargets.stream()
@@ -212,7 +230,8 @@ public class WorkbasketController {
         return result;
     }
 
-    @RequestMapping(value = "/{workbasketId}/distributiontargets", method = RequestMethod.PUT)
+    @PutMapping(path = "/{workbasketId}/distributiontargets")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> setDistributionTargets(
         @PathVariable(value = "workbasketId") String sourceWorkbasketId,
         @RequestBody List<String> targetWorkbasketIds) {
@@ -228,8 +247,7 @@ public class WorkbasketController {
         return result;
     }
 
-    private void addAuthorizationFilter(WorkbasketQuery query, String requiredPermission)
-        throws InvalidArgumentException {
+    private void addAuthorizationFilter(WorkbasketQuery query, String requiredPermission) {
         if (requiredPermission == null) {
             return;
         }
@@ -295,24 +313,29 @@ public class WorkbasketController {
         }
     }
 
-    private void addSortingToQuery(WorkbasketQuery query, String sortBy, String order)
-        throws InvalidRequestException, InvalidArgumentException {
+    private void addSortingToQuery(WorkbasketQuery query, String sortBy, String order) {
         BaseQuery.SortDirection sortDirection = getSortDirection(order);
 
-        if (sortBy.equals(NAME)) {
-            query.orderByName(sortDirection);
-        } else if (sortBy.equals(KEY)) {
-            query.orderByKey(sortDirection);
-        } else if (sortBy.equals(DESCRIPTION)) {
-            query.orderByDescription(sortDirection);
-        } else if (sortBy.equals(OWNER)) {
-            query.orderByOwner(sortDirection);
-        } else if (sortBy.equals(TYPE)) {
-            query.orderByType(sortDirection);
+        switch (sortBy) {
+            case NAME:
+                query.orderByName(sortDirection);
+                break;
+            case KEY:
+                query.orderByKey(sortDirection);
+                break;
+            case DESCRIPTION:
+                query.orderByDescription(sortDirection);
+                break;
+            case OWNER:
+                query.orderByOwner(sortDirection);
+                break;
+            case TYPE:
+                query.orderByType(sortDirection);
+                break;
         }
     }
 
-    private BaseQuery.SortDirection getSortDirection(String order) throws InvalidRequestException {
+    private BaseQuery.SortDirection getSortDirection(String order) {
         if (order.equals(DESC)) {
             return BaseQuery.SortDirection.DESCENDING;
         }
@@ -323,7 +346,7 @@ public class WorkbasketController {
         String name, String nameLike,
         String key, String keyLike,
         String descLike, String owner,
-        String ownerLike, String type) throws InvalidArgumentException {
+        String ownerLike, String type) {
         if (name != null)
             query.nameIn(name);
         if (nameLike != null)
