@@ -4,10 +4,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.util.Map;
 
+import org.apache.ibatis.session.SqlSession;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -28,6 +31,10 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskState;
 import pro.taskana.security.CurrentUserContext;
+import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.TaskanaEngineProxyForTest;
+import pro.taskana.mappings.AttachmentMapper;
+import pro.taskana.mappings.TaskMapper;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -77,6 +84,68 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
+    public void testCreateSimpleTaskWithCustomAttributes()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setClassificationKey("T2100");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        Map<String, String> customAttributesForCreate = createSimpleCustomProperties(13);
+        newTask.setCustomAttributes(customAttributesForCreate);
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask);
+        assertEquals("T-Vertragstermin VERA", createdTask.getName());
+        assertEquals("1234567", createdTask.getPrimaryObjRef().getValue());
+        assertNotNull(createdTask.getCreated());
+        assertNotNull(createdTask.getModified());
+        assertNotNull(createdTask.getBusinessProcessId());
+        assertEquals(null, createdTask.getClaimed());
+        assertEquals(null, createdTask.getCompleted());
+        assertEquals(createdTask.getCreated(), createdTask.getModified());
+        assertEquals(createdTask.getCreated(), createdTask.getPlanned());
+        assertEquals(TaskState.READY, createdTask.getState());
+        assertEquals(null, createdTask.getParentBusinessProcessId());
+        assertEquals(2, createdTask.getPriority());
+        assertEquals(false, createdTask.isRead());
+        assertEquals(false, createdTask.isTransferred());
+        // verify that the database content is as expected
+        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest((TaskanaEngineImpl) taskanaEngine);
+        try {
+            SqlSession session = engineProxy.getSqlSession();
+            TaskMapper mapper = session.getMapper(TaskMapper.class);
+            engineProxy.openConnection();
+            String customProperties = mapper.getCustomAttributesAsString(createdTask.getId());
+            assertTrue(customProperties.contains("\"Property_13\":\"Property Value of Property_13\""));
+            assertTrue(customProperties.contains("\"Property_12\":\"Property Value of Property_12\""));
+            assertTrue(customProperties.contains("\"Property_11\":\"Property Value of Property_11\""));
+            assertTrue(customProperties.contains("\"Property_10\":\"Property Value of Property_10\""));
+            assertTrue(customProperties.contains("\"Property_9\":\"Property Value of Property_9\""));
+            assertTrue(customProperties.contains("\"Property_8\":\"Property Value of Property_8\""));
+            assertTrue(customProperties.contains("\"Property_7\":\"Property Value of Property_7\""));
+            assertTrue(customProperties.contains("\"Property_6\":\"Property Value of Property_6\""));
+            assertTrue(customProperties.contains("\"Property_5\":\"Property Value of Property_5\""));
+            assertTrue(customProperties.contains("\"Property_4\":\"Property Value of Property_4\""));
+            assertTrue(customProperties.contains("\"Property_3\":\"Property Value of Property_3\""));
+            assertTrue(customProperties.contains("\"Property_2\":\"Property Value of Property_2\""));
+            assertTrue(customProperties.contains("\"Property_1\":\"Property Value of Property_1\""));
+        } finally {
+            engineProxy.returnConnection();
+        }
+        // verify that the map is correctly retrieved from the database
+        Task retrievedTask = taskService.getTask(createdTask.getId());
+        Map<String, String> customAttributesFromDb = retrievedTask.getCustomAttributes();
+        assertNotNull(customAttributesFromDb);
+        assertTrue(customAttributesFromDb.equals(customAttributesForCreate));
+
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
     public void testCreateExternalTaskWithAttachment()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
@@ -85,14 +154,35 @@ public class CreateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("L12010");
+        Map<String, String> customAttributesForCreate = createSimpleCustomProperties(27);
         newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
-            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+            "E-MAIL", "2018-01-15", customAttributesForCreate));
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         Task createdTask = taskService.createTask(newTask);
         assertNotNull(createdTask.getId());
         assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
+
+        // verify that the database content is as expected
+        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest((TaskanaEngineImpl) taskanaEngine);
+        try {
+            SqlSession session = engineProxy.getSqlSession();
+            AttachmentMapper mapper = session.getMapper(AttachmentMapper.class);
+            engineProxy.openConnection();
+            String customProperties = mapper.getCustomAttributesAsString(createdTask.getAttachments().get(0).getId());
+            assertTrue(customProperties.contains("\"Property_26\":\"Property Value of Property_26\""));
+            assertTrue(customProperties.contains("\"Property_25\":\"Property Value of Property_25\""));
+            assertTrue(customProperties.contains("\"Property_21\":\"Property Value of Property_21\""));
+            assertTrue(customProperties.contains("\"Property_19\":\"Property Value of Property_19\""));
+            assertTrue(customProperties.contains("\"Property_16\":\"Property Value of Property_16\""));
+            assertTrue(customProperties.contains("\"Property_12\":\"Property Value of Property_12\""));
+            assertTrue(customProperties.contains("\"Property_11\":\"Property Value of Property_11\""));
+            assertTrue(customProperties.contains("\"Property_7\":\"Property Value of Property_7\""));
+            assertTrue(customProperties.contains("\"Property_6\":\"Property Value of Property_6\""));
+        } finally {
+            engineProxy.returnConnection();
+        }
 
         Task readTask = taskService.getTask(createdTask.getId());
         assertNotNull(readTask);
@@ -104,6 +194,10 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals(readTask.getAttachments().get(0).getCreated(), readTask.getAttachments().get(0).getModified());
         assertNotNull(readTask.getAttachments().get(0).getClassificationSummary());
         assertNotNull(readTask.getAttachments().get(0).getObjectReference());
+        // verify that the map is correctly retrieved from the database
+        Map<String, String> customAttributesFromDb = readTask.getAttachments().get(0).getCustomAttributes();
+        assertNotNull(customAttributesFromDb);
+        assertTrue(customAttributesFromDb.equals(customAttributesForCreate));
     }
 
     @WithAccessId(

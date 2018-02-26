@@ -220,7 +220,15 @@ public interface Task {
      *
      * @return customAttributes as {@link Map}
      */
-    Map<String, Object> getCustomAttributes();
+    Map<String, String> getCustomAttributes();
+
+    /**
+     * Sets a collection of customAttributes.
+     *
+     * @param customAttributes
+     *            a {@link Map} that contains the custom attributes
+     */
+    void setCustomAttributes(Map<String, String> customAttributes);
 
     /**
      * Return the value for the 1. customAttribute.
