@@ -1,6 +1,8 @@
 package pro.taskana.configuration;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -35,6 +37,9 @@ public class TaskanaEngineConfiguration {
     // authorizations
     protected boolean securityEnabled = true;
     protected boolean useManagedTransactions;
+
+    private boolean germanPublicHolidaysEnabled;
+    private List<LocalDate> customHolidays;
 
     public TaskanaEngineConfiguration(boolean enableSecurity) {
         this.securityEnabled = enableSecurity;
@@ -132,6 +137,22 @@ public class TaskanaEngineConfiguration {
 
     public void setPropertiesSeparator(String propertiesSeparator) {
         this.propertiesSeparator = propertiesSeparator;
+    }
+
+    public boolean isGermanPublicHolidaysEnabled() {
+        return this.germanPublicHolidaysEnabled;
+    }
+
+    public void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
+        this.germanPublicHolidaysEnabled = germanPublicHolidaysEnabled;
+    }
+
+    public List<LocalDate> getCustomHolidays() {
+        return customHolidays;
+    }
+
+    public void setCustomHolidays(List<LocalDate> customHolidays) {
+        this.customHolidays = customHolidays;
     }
 
     /**

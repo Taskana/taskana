@@ -54,6 +54,7 @@ public class ProvideDetailedClassificationReportAccTest {
         cleaner.clearDb(dataSource, true);
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
+        taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         ((TaskanaEngineImpl) taskanaEngine).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         cleaner.clearDb(dataSource, false);
