@@ -27,6 +27,7 @@ public class TaskImpl implements Task {
     private Instant planned;
     private Instant due;
     private String name;
+    private String creator;
     private String description;
     private String note;
     private int priority;
@@ -128,6 +129,15 @@ public class TaskImpl implements Task {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    @Override
+    public String getCreator() {
+        return creator;
     }
 
     @Override
@@ -445,6 +455,7 @@ public class TaskImpl implements Task {
         taskSummary.setTaskId(id);
         taskSummary.setModified(modified);
         taskSummary.setName(name);
+        taskSummary.setCreator(creator);
         taskSummary.setNote(note);
         taskSummary.setOwner(owner);
         taskSummary.setParentBusinessProcessId(parentBusinessProcessId);
@@ -522,6 +533,8 @@ public class TaskImpl implements Task {
         builder.append(due);
         builder.append(", name=");
         builder.append(name);
+        builder.append(", creator=");
+        builder.append(creator);
         builder.append(", description=");
         builder.append(description);
         builder.append(", note=");

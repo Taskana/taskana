@@ -1,7 +1,9 @@
 package acceptance.task;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
@@ -25,6 +27,7 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskState;
+import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -53,6 +56,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
+        assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
         assertEquals("T-Vertragstermin VERA", createdTask.getName());
         assertEquals("1234567", createdTask.getPrimaryObjRef().getValue());
         assertNotNull(createdTask.getCreated());
@@ -88,9 +92,11 @@ public class CreateTaskAccTest extends AbstractAccTest {
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         Task createdTask = taskService.createTask(newTask);
         assertNotNull(createdTask.getId());
+        assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
 
         Task readTask = taskService.getTask(createdTask.getId());
         assertNotNull(readTask);
+        assertThat(readTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
         assertNotNull(readTask.getAttachments());
         assertEquals(1, readTask.getAttachments().size());
         assertNotNull(readTask.getAttachments().get(0).getCreated());
@@ -123,10 +129,11 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask.getId());
+        assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
 
         Task readTask = taskService.getTask(createdTask.getId());
-
         assertNotNull(readTask);
+        assertThat(readTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
         assertNotNull(readTask.getAttachments());
         assertEquals(2, readTask.getAttachments().size());
         assertNotNull(readTask.getAttachments().get(1).getCreated());
@@ -237,6 +244,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
+        assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
         assertEquals("Test Name", createdTask.getName());
     }
 
@@ -256,6 +264,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
+        assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
         assertEquals(2, createdTask.getPriority());  // priority is 22 in DOMAIN_B, task is created in DOMAIN_A
     }
 
@@ -382,6 +391,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
+        assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
         assertNotNull(createdTask.getDomain());
         assertEquals(workbasket.getDomain(), createdTask.getDomain());
     }
