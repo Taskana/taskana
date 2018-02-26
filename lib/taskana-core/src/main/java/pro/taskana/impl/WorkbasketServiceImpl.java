@@ -256,6 +256,18 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
+    public void deleteWorkbasketAuthorizationForAccessId(String accessId) {
+        LOGGER.debug("entry to deleteWorkbasketAuthorizationByAccessId(accessId = {})", accessId);
+        try {
+            taskanaEngine.openConnection();
+            workbasketAccessMapper.deleteAccessItemsForAccessId(accessId);
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from deleteWorkbasketAuthorizationByAccessId(accessId={}).", accessId);
+        }
+    }
+
+    @Override
     public void checkAuthorization(String workbasketId,
         WorkbasketAuthorization workbasketAuthorization) throws NotAuthorizedException {
         checkAuthorization(null, null, workbasketId, workbasketAuthorization);

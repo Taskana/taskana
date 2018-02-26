@@ -331,4 +331,12 @@ public interface WorkbasketService {
      */
     List<WorkbasketSummary> getDistributionSources(String workbasketKey, String domain)
         throws NotAuthorizedException, WorkbasketNotFoundException;
+
+    /**
+     * Deletes all WorkbasketAccessItems using the given AccessId of a user.
+     *
+     * @param accessId
+     *            of a taskana-user.
+     */
+    void deleteWorkbasketAuthorizationForAccessId(String accessId);
 }
