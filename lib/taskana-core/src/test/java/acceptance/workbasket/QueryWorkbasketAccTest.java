@@ -18,6 +18,7 @@ import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.WorkbasketType;
 import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "query workbasket by permission" scenarios.
@@ -32,6 +33,9 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         super();
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByDomain()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -39,9 +43,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_B")
             .list();
-        Assert.assertEquals(4L, results.size());
+        Assert.assertEquals(1L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByDomainAndType()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -53,6 +60,9 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         Assert.assertEquals(6L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByName()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -64,6 +74,9 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         Assert.assertEquals("GPK_KSC", results.get(0).getKey());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByNameStartsWith()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -71,9 +84,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Gruppenpostkorb KSC%")
             .list();
-        Assert.assertEquals(6L, results.size());
+        Assert.assertEquals(3L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByNameContains()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -81,9 +97,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Teamlead%", "%Gruppenpostkorb KSC%")
             .list();
-        Assert.assertEquals(8L, results.size());
+        Assert.assertEquals(5L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByNameContainsCaseInsensitive()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -94,18 +113,24 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         Assert.assertEquals(2L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByDescription()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .descriptionLike("%consectetur%", "%gruppen%")
+            .descriptionLike("%ppk%", "%gruppen%")
             .orderByType(desc)
             .orderByDescription(asc)
             .list();
-        Assert.assertEquals(11L, results.size());
+        Assert.assertEquals(9L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByOwnerLike()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -114,9 +139,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .ownerLike("%an%", "%te%")
             .orderByOwner(asc)
             .list();
-        Assert.assertEquals(3L, results.size());
+        Assert.assertEquals(1L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByKey()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -127,26 +155,35 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         Assert.assertEquals(1L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByMultipleKeys()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .keyIn("GPK_KSC_1", "GPK_KSC_2")
+            .keyIn("GPK_KSC_1", "GPK_KSC")
             .list();
         Assert.assertEquals(2L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByMultipleKeysWithUnknownKey()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .keyIn("GPK_KSC_1", "GPK_Ksc_2", "GPK_KSC_3")
+            .keyIn("GPK_KSC_1", "GPK_Ksc", "GPK_KSC_3")
             .list();
         Assert.assertEquals(2L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByKeyContains()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -154,9 +191,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyLike("%KSC%")
             .list();
-        Assert.assertEquals(6L, results.size());
+        Assert.assertEquals(3L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByKeyContainsIgnoreCase()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -164,9 +204,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyLike("%kSc%")
             .list();
-        Assert.assertEquals(6L, results.size());
+        Assert.assertEquals(3L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByKeyOrNameContainsIgnoreCase()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -174,14 +217,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyOrNameLike("%kSc%")
             .list();
-        Assert.assertEquals(12L, results.size());
+        Assert.assertEquals(9L, results.size());
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/data", true);
-    }
-
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByNameStartsWithSortedByNameAscending()
         throws SQLException, NotAuthorizedException, InvalidRequestException, InvalidArgumentException {
@@ -190,7 +231,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .nameLike("%Gruppenpostkorb KSC%")
             .orderByName(asc)
             .list();
-        Assert.assertEquals(6L, results.size());
+        Assert.assertEquals(3L, results.size());
         Assert.assertEquals("GPK_KSC", results.get(0).getKey());
 
         // check sort order is correct
@@ -205,6 +246,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
 
     }
 
+    @WithAccessId(
+        userName = "max")
     @Test
     public void testQueryWorkbasketByNameStartsWithSortedByNameDescending()
         throws SQLException, NotAuthorizedException, InvalidRequestException, InvalidArgumentException {
@@ -225,6 +268,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         }
     }
 
+    @WithAccessId(
+        userName = "max")
     @Test
     public void testQueryWorkbasketByNameStartsWithSortedByKeyAscending()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, InvalidRequestException {
@@ -245,6 +290,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         }
     }
 
+    @WithAccessId(
+        userName = "max")
     @Test
     public void testQueryWorkbasketByNameStartsWithSortedByKeyDescending()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, InvalidRequestException {
@@ -265,6 +312,9 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         }
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByCreated()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -272,9 +322,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .createdWithin(todaysInterval())
             .list();
-        Assert.assertEquals(26L, results.size());
+        Assert.assertEquals(8L, results.size());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByModified()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -282,7 +335,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .modifiedWithin(todaysInterval())
             .list();
-        Assert.assertEquals(26L, results.size());
+        Assert.assertEquals(8L, results.size());
+    }
+
+    @AfterClass
+    public static void cleanUpClass() {
+        FileUtils.deleteRecursive("~/data", true);
     }
 
 }

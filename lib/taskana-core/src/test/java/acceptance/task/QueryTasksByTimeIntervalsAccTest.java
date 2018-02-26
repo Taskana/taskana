@@ -38,7 +38,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testCreatedWithin2Intervals()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -71,7 +71,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testCreatedBefore()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -101,7 +101,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testCreatedAfter()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -130,7 +130,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testClaimedWithin2Intervals()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -163,7 +163,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testCompletedWithin()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -192,7 +192,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testModifiedWithin()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -221,7 +221,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testPlannedWithin()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -250,7 +250,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testDueWithin()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {

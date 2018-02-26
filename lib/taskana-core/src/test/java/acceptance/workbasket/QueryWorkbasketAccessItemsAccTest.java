@@ -38,7 +38,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
             .accessIdIn("user_1_1", "group_1")
             .list();
-        Assert.assertEquals(10L, results.size());
+        Assert.assertEquals(8L, results.size());
     }
 
     @Test
@@ -51,7 +51,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
             .orderByWorkbasketId(desc);
         List<WorkbasketAccessItem> results = query.list();
         long count = query.count();
-        Assert.assertEquals(10L, results.size());
+        Assert.assertEquals(8L, results.size());
         Assert.assertEquals(results.size(), count);
         Assert.assertEquals("WAI:100000000000000000000000000000000003", results.get(0).getId());
     }

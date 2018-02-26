@@ -41,8 +41,8 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1")
             .list();
-        Assert.assertEquals(2, results.size());
-        Assert.assertEquals("USER_1_1", results.get(1).getKey());
+        Assert.assertEquals(1, results.size());
+        Assert.assertEquals("USER_1_1", results.get(0).getKey());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
             .list();
-        Assert.assertEquals(9, results.size());
+        Assert.assertEquals(7, results.size());
     }
 
     @Test
@@ -64,8 +64,8 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
             .orderByName(asc)
             .list();
-        Assert.assertEquals(9, results.size());
-        Assert.assertEquals("key4", results.get(0).getKey());
+        Assert.assertEquals(7, results.size());
+        Assert.assertEquals("GPK_KSC_1", results.get(0).getKey());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .orderByName(desc)
             .orderByKey(asc)
             .list();
-        Assert.assertEquals(9, results.size());
+        Assert.assertEquals(7, results.size());
         Assert.assertEquals("USER_2_2", results.get(0).getKey());
     }
 
@@ -92,7 +92,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .callerHasPermission(WorkbasketAuthorization.APPEND)
             .list();
-        Assert.assertEquals(9, results.size());
+        Assert.assertEquals(7, results.size());
     }
 
     @WithAccessId(userName = "user_1_1")
@@ -103,7 +103,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .callerHasPermission(WorkbasketAuthorization.READ)
             .list();
-        Assert.assertEquals(2, results.size());
+        Assert.assertEquals(1, results.size());
     }
 
     @AfterClass

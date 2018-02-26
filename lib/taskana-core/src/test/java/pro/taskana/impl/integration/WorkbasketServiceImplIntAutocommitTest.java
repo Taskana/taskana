@@ -1,7 +1,5 @@
 package pro.taskana.impl.integration;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -26,13 +24,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.TimeInterval;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -42,7 +38,6 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
-import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketType;
 import pro.taskana.impl.configuration.DBCleaner;
@@ -89,31 +84,6 @@ public class WorkbasketServiceImplIntAutocommitTest {
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource, false);
         now = Instant.now();
-    }
-
-    @Test
-    public void testSelectAllWorkbaskets()
-        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketNotFoundException {
-        int before = workBasketService.createWorkbasketQuery().list().size();
-        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket("key0", "novatec");
-        String id0 = IdGenerator.generateWithPrefix("TWB");
-        workbasket0.setId(id0);
-        workbasket0.setName("Superbasket");
-        workbasket0.setType(WorkbasketType.PERSONAL);
-        workBasketService.createWorkbasket(workbasket0);
-        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket("key1", "novatec");
-        String id1 = IdGenerator.generateWithPrefix("TWB");
-        workbasket1.setId(id1);
-        workbasket1.setName("Megabasket");
-        workbasket1.setType(WorkbasketType.GROUP);
-        workBasketService.createWorkbasket(workbasket1);
-        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket("key2", "novatec");
-        String id2 = IdGenerator.generateWithPrefix("TWB");
-        workbasket2.setId(id2);
-        workbasket2.setName("Hyperbasket");
-        workbasket2.setType(WorkbasketType.GROUP);
-        workBasketService.createWorkbasket(workbasket2);
-        Assert.assertEquals(before + THREE, workBasketService.createWorkbasketQuery().list().size());
     }
 
     @WithAccessId(userName = "Elena")
@@ -239,140 +209,6 @@ public class WorkbasketServiceImplIntAutocommitTest {
         } else {
             Assert.assertEquals("Zaphod Beeblebrox", accessItem.getAccessId());
         }
-    }
-
-    @WithAccessId(userName = "Bernd", groupNames = {"group1", "group2", "group3", "group4"})
-    @Test
-    public void testWorkbasketQuery()
-        throws NotAuthorizedException, InvalidArgumentException, InvalidWorkbasketException,
-        WorkbasketNotFoundException, InterruptedException {
-
-        generateSampleDataForQuery();
-
-        WorkbasketQuery query1 = workBasketService.createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketAuthorization.OPEN, "Bernd")
-            .nameIn("Basket4");
-        List<WorkbasketSummary> result1 = query1.list();
-
-        Assert.assertEquals(1, result1.size());
-        String workbasketId = result1.get(0).getId();
-        Workbasket workBasket = workBasketService.getWorkbasket(workbasketId);
-        Assert.assertEquals(THREE, workBasketService.getDistributionTargets(workBasket.getId()).size());
-
-        WorkbasketQuery query2 = workBasketService.createWorkbasketQuery().accessIdsHavePermission(
-            WorkbasketAuthorization.OPEN, "Bernd",
-            "Konstantin");
-        List<WorkbasketSummary> result2 = query2.list();
-        Assert.assertEquals(2, result2.size());
-
-        WorkbasketQuery query3 = workBasketService.createWorkbasketQuery().accessIdsHavePermission(
-            WorkbasketAuthorization.CUSTOM_5,
-            "Bernd", "Konstantin");
-        List<WorkbasketSummary> result3 = query3.list();
-        Assert.assertEquals(0, result3.size());
-
-        WorkbasketQuery query4 = workBasketService.createWorkbasketQuery().accessIdsHavePermission(
-            WorkbasketAuthorization.CUSTOM_1,
-            "Bernd");
-        List<WorkbasketSummary> result4 = query4.list();
-        Assert.assertEquals(1, result4.size());
-
-        WorkbasketQuery query0 = workBasketService.createWorkbasketQuery()
-            .createdWithin(today())
-            .nameIn("Basket1", "Basket2", "Basket3");
-        List<WorkbasketSummary> result0 = query0.list();
-        assertTrue(result0.size() == THREE);
-        for (WorkbasketSummary workbasket : result0) {
-            String name = workbasket.getName();
-            assertTrue("Basket1".equals(name) || "Basket2".equals(name) || "Basket3".equals(name));
-        }
-
-        Thread.sleep(SLEEP_TIME);
-        WorkbasketQuery query5 = workBasketService.createWorkbasketQuery()
-            .modifiedWithin(
-                new TimeInterval(Instant.now().minus(Duration.ofDays(31)), Instant.now().minus(Duration.ofDays(14))));
-        List<WorkbasketSummary> result5 = query5.list();
-        assertTrue(result5.size() == 3);
-        for (WorkbasketSummary workbasket : result5) {
-            String name = workbasket.getName();
-            assertTrue(
-                "Basket1".equals(name) || "Basket2".equals(name) || "Basket3".equals(name) || "Basket4".equals(name));
-        }
-
-        WorkbasketQuery query6 = workBasketService.createWorkbasketQuery()
-            .modifiedWithin(new TimeInterval(now.minus(Duration.ofDays(21L)), null))
-            .domainIn("novatec", "consulting")
-            .orderByName(SortDirection.ASCENDING);
-        List<WorkbasketSummary> result6 = query6.list();
-        assertTrue(result6.size() == 2);
-        assertTrue("Basket1".equals(result6.get(0).getName()));
-
-        WorkbasketQuery query7 = workBasketService.createWorkbasketQuery()
-            .typeIn(WorkbasketType.GROUP, WorkbasketType.CLEARANCE);
-        List<WorkbasketSummary> result7 = query7.list();
-        assertTrue(result7.size() == 2);
-        for (WorkbasketSummary workbasket : result7) {
-            String name = workbasket.getName();
-            assertTrue("Basket1".equals(name) || "Basket2".equals(name));
-        }
-    }
-
-    private void generateSampleDataForQuery()
-        throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException,
-        InvalidArgumentException {
-        WorkbasketImpl basket1 = (WorkbasketImpl) workBasketService.newWorkbasket("k1", "novatec");
-        basket1.setId("1000000000000000000000000000000000000000");
-        basket1.setName("Basket1");
-        basket1.setOwner("Eberhardt");
-        basket1.setType(WorkbasketType.GROUP);
-        basket1 = (WorkbasketImpl) workBasketService.createWorkbasket(basket1);
-        WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(basket1.getId(), "Bernd");
-        accessItem.setPermTransfer(true);
-        accessItem.setPermCustom1(true);
-        accessItem.setPermOpen(true);
-        accessItem.setPermRead(true);
-        workBasketService.createWorkbasketAuthorization(accessItem);
-
-        WorkbasketImpl basket2 = (WorkbasketImpl) workBasketService.newWorkbasket("k2", "consulting");
-        basket2.setId("2000000000000000000000000000000000000000");
-        basket2.setName("Basket2");
-        basket2.setOwner("Konstantin");
-        basket2.setType(WorkbasketType.CLEARANCE);
-        basket2 = (WorkbasketImpl) workBasketService.createWorkbasket(basket2);
-        WorkbasketAccessItem accessItem2 = workBasketService.newWorkbasketAccessItem(basket2.getId(), "group2");
-        accessItem2.setPermTransfer(true);
-        accessItem2.setPermRead(true);
-        accessItem2.setPermCustom4(true);
-        accessItem2.setPermCustom1(true);
-        accessItem2.setPermOpen(true);
-        workBasketService.createWorkbasketAuthorization(accessItem2);
-
-        WorkbasketImpl basket3 = (WorkbasketImpl) workBasketService.newWorkbasket("k3", "develop");
-        basket3.setId("3000000000000000000000000000000000000000");
-        basket3.setName("Basket3");
-        basket3.setOwner("Holger");
-        basket3.setType(WorkbasketType.TOPIC);
-        basket3 = (WorkbasketImpl) workBasketService.createWorkbasket(basket3);
-        WorkbasketAccessItem accessItem3 = workBasketService.newWorkbasketAccessItem(basket3.getId(), "group3");
-        accessItem3.setPermOpen(true);
-        accessItem3.setPermRead(true);
-        accessItem3.setPermAppend(true);
-        workBasketService.createWorkbasketAuthorization(accessItem3);
-
-        WorkbasketImpl basket4 = (WorkbasketImpl) workBasketService.newWorkbasket("k4", "");
-        basket4.setId("4000000000000000000000000000000000000000");
-        basket4.setName("Basket4");
-        basket4.setOwner("Holger");
-        basket4.setType(WorkbasketType.PERSONAL);
-        List<String> distTargets = new ArrayList<>(Arrays.asList(basket1.getId(), basket2.getId(), basket3.getId()));
-        basket4 = (WorkbasketImpl) workBasketService.createWorkbasket(basket4);
-        WorkbasketAccessItem accessItem4 = workBasketService.newWorkbasketAccessItem(basket4.getId(), "Bernd");
-        accessItem4.setPermOpen(true);
-        accessItem4.setPermRead(true);
-        workBasketService.createWorkbasketAuthorization(accessItem4);
-        workBasketService.setDistributionTargets(basket4.getId(), distTargets);
-
-        updateModifiedTimestamps(basket1, basket2, basket3, basket4);
     }
 
     private void updateModifiedTimestamps(Workbasket basket2, Workbasket basket3, Workbasket basket4,

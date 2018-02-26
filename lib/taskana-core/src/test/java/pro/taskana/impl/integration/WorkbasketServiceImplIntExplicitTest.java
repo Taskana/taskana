@@ -48,7 +48,6 @@ import pro.taskana.security.WithAccessId;
 public class WorkbasketServiceImplIntExplicitTest {
 
     private static final int SLEEP_TIME = 100;
-    private static final int THREE = 3;
     static int counter = 0;
     private DataSource dataSource;
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -72,36 +71,6 @@ public class WorkbasketServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource, false);
-    }
-
-    @Test
-    public void testSelectAllWorkbaskets()
-        throws NotAuthorizedException, SQLException, InvalidWorkbasketException, WorkbasketNotFoundException {
-        Connection connection = dataSource.getConnection();
-        taskanaEngineImpl.setConnection(connection);
-        workBasketService = taskanaEngine.getWorkbasketService();
-        int before = workBasketService.createWorkbasketQuery().list().size();
-        WorkbasketImpl workbasket0 = (WorkbasketImpl) workBasketService.newWorkbasket("key0", "novatec");
-        String id0 = IdGenerator.generateWithPrefix("TWB");
-        workbasket0.setId(id0);
-        workbasket0.setName("Superbasket");
-        workbasket0.setType(WorkbasketType.GROUP);
-        workBasketService.createWorkbasket(workbasket0);
-        WorkbasketImpl workbasket1 = (WorkbasketImpl) workBasketService.newWorkbasket("key1", "novatec");
-        String id1 = IdGenerator.generateWithPrefix("TWB");
-        workbasket1.setId(id1);
-        workbasket1.setName("Megabasket");
-        workbasket1.setType(WorkbasketType.GROUP);
-        workbasket1 = (WorkbasketImpl) workBasketService.createWorkbasket(workbasket1);
-        WorkbasketImpl workbasket2 = (WorkbasketImpl) workBasketService.newWorkbasket("key2", "novatec");
-        String id2 = IdGenerator.generateWithPrefix("TWB");
-        workbasket2.setId(id2);
-        workbasket2.setName("Hyperbasket");
-        workbasket2.setType(WorkbasketType.GROUP);
-        workBasketService.createWorkbasket(workbasket2);
-        Assert.assertEquals(before + THREE, workBasketService.createWorkbasketQuery().list().size());
-        connection.commit();
-        taskanaEngineImpl.closeConnection();
     }
 
     @WithAccessId(userName = "Elena")

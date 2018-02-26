@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
@@ -17,10 +18,13 @@ import pro.taskana.ClassificationService;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "delete classification" scenarios.
  */
+@RunWith(JAASRunner.class)
 public class DeleteClassificationAccTest extends AbstractAccTest {
 
     private ClassificationService classificationService;
@@ -40,12 +44,18 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         assertEquals("", classification.getDomain());
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "group_2"})
     @Test(expected = ClassificationInUseException.class)
     public void testThrowExeptionIfDeleteClassificationWithExistingTasks()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
         classificationService.deleteClassification("L1050", "DOMAIN_A");
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "group_2"})
     @Test(expected = ClassificationInUseException.class)
     public void testThrowExeptionIfDeleteMasterClassificationWithExistingTasks()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
@@ -65,6 +75,10 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         }
         assertTrue(classificationNotFound);
     }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
 
     @Test
     public void testThrowExceptionWhenChildClassificationIsInUseAndRollback()
