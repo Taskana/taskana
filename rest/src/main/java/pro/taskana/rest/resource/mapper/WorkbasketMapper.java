@@ -5,6 +5,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.time.Instant;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +22,12 @@ public class WorkbasketMapper {
     private WorkbasketService workbasketService;
 
     public WorkbasketResource toResource(Workbasket wb) {
-        WorkbasketResource resource = new WorkbasketResource(wb.getId(), wb.getKey(), wb.getName(), wb.getDomain(),
-            wb.getType(), wb.getCreated().toString(), wb.getModified().toString(), wb.getDescription(), wb.getOwner(),
-            wb.getCustom1(),
-            wb.getCustom2(), wb.getCustom3(),
-            wb.getCustom4(),
-            wb.getOrgLevel1(), wb.getOrgLevel2(), wb.getOrgLevel3(), wb.getOrgLevel4());
+        WorkbasketResource resource = new WorkbasketResource();
+        BeanUtils.copyProperties(wb, resource);
+        //need to be set by hand, since name or type is different
+        resource.setWorkbasketId(wb.getId());
+        resource.setModified(wb.getModified().toString());
+        resource.setCreated(wb.getCreated().toString());
 
         // Add self-decription link to hateoas
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
@@ -34,22 +35,12 @@ public class WorkbasketMapper {
     }
 
     public Workbasket toModel(WorkbasketResource wbResource) {
-        WorkbasketImpl wbModel = (WorkbasketImpl) workbasketService.newWorkbasket(wbResource.key, wbResource.domain);
-        wbModel.setId(wbResource.workbasketId);
-        wbModel.setName(wbResource.name);
-        wbModel.setType(wbResource.type);
-        wbModel.setCreated(Instant.parse(wbResource.created));
-        wbModel.setModified(Instant.parse(wbResource.modified));
-        wbModel.setDescription(wbResource.description);
-        wbModel.setOwner(wbResource.owner);
-        wbModel.setCustom1(wbResource.custom1);
-        wbModel.setCustom2(wbResource.custom2);
-        wbModel.setCustom3(wbResource.custom3);
-        wbModel.setCustom4(wbResource.custom4);
-        wbModel.setOrgLevel1(wbResource.orgLevel1);
-        wbModel.setOrgLevel2(wbResource.orgLevel2);
-        wbModel.setOrgLevel3(wbResource.orgLevel3);
-        wbModel.setOrgLevel4(wbResource.orgLevel4);
-        return wbModel;
+        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket(wbResource.key, wbResource.domain);
+        BeanUtils.copyProperties(wbResource, workbasket);
+
+        workbasket.setId(wbResource.workbasketId);
+        workbasket.setModified(Instant.parse(wbResource.modified));
+        workbasket.setCreated(Instant.parse(wbResource.created));
+        return workbasket;
     }
 }
