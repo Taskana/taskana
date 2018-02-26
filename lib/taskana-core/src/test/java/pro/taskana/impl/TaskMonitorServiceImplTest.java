@@ -21,6 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.mappings.TaskMonitorMapper;
 
 /**
@@ -36,6 +37,9 @@ public class TaskMonitorServiceImplTest {
     private TaskanaEngineImpl taskanaEngineImplMock;
 
     @Mock
+    private TaskanaEngineConfiguration taskanaEngineConfiguration;
+
+    @Mock
     private TaskMonitorMapper taskMonitorMapperMock;
 
     @Before
@@ -43,6 +47,9 @@ public class TaskMonitorServiceImplTest {
         MockitoAnnotations.initMocks(this);
         Mockito.doNothing().when(taskanaEngineImplMock).openConnection();
         Mockito.doNothing().when(taskanaEngineImplMock).returnConnection();
+        doReturn(taskanaEngineConfiguration).when(taskanaEngineImplMock).getConfiguration();
+        doReturn(true).when(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
+        doReturn(null).when(taskanaEngineConfiguration).getCustomHolidays();
     }
 
     @Test
@@ -63,10 +70,13 @@ public class TaskMonitorServiceImplTest {
         Report actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbasketsByWorkbasketsAndStates(any(), any(), any(),
             any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
         assertEquals(
@@ -96,10 +106,13 @@ public class TaskMonitorServiceImplTest {
             reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbasketsByWorkbasketsAndStates(any(), any(), any(),
             any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
         assertEquals(
@@ -132,10 +145,13 @@ public class TaskMonitorServiceImplTest {
         Report actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategoriesByWorkbasketsAndStates(any(), any(), any(),
             any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
         assertEquals(actualResult.getReportLines().get("EXTERN").getTotalNumberOfTasks(), 1);
@@ -164,10 +180,13 @@ public class TaskMonitorServiceImplTest {
             reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategoriesByWorkbasketsAndStates(any(), any(), any(),
             any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
         assertEquals(actualResult.getReportLines().get("EXTERN").getTotalNumberOfTasks(), 1);
@@ -193,10 +212,13 @@ public class TaskMonitorServiceImplTest {
         ClassificationReport actualResult = cut.getClassificationReport(workbasketIds, states, categories, domains);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassificationsByWorkbasketsAndStates(any(), any(), any(),
             any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
         assertEquals(
@@ -226,10 +248,13 @@ public class TaskMonitorServiceImplTest {
             reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassificationsByWorkbasketsAndStates(any(), any(), any(),
             any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
         assertEquals(
@@ -262,10 +287,13 @@ public class TaskMonitorServiceImplTest {
             categories, domains);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(any(),
             any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         DetailedReportLine line = (DetailedReportLine) actualResult.getReportLines()
             .get("CLI:000000000000000000000000000000000001");
@@ -295,14 +323,16 @@ public class TaskMonitorServiceImplTest {
             .getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(workbasketIds, states, categories, domains);
 
         DetailedClassificationReport actualResult = cut.getDetailedClassificationReport(workbasketIds, states,
-            categories,
-            domains, reportLineItemDefinitions);
+            categories, domains, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(any(),
             any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         DetailedReportLine line = (DetailedReportLine) actualResult.getReportLines()
             .get("CLI:000000000000000000000000000000000001");
@@ -339,10 +369,13 @@ public class TaskMonitorServiceImplTest {
             CustomField.CUSTOM_1);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1))
             .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
         assertEquals(actualResult.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
@@ -372,10 +405,13 @@ public class TaskMonitorServiceImplTest {
             CustomField.CUSTOM_1, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1))
             .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
         assertEquals(actualResult.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
