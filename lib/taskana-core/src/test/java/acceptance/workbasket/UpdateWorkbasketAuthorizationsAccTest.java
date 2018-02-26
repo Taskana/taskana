@@ -122,14 +122,15 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         String wbKey = "USER_2_1";
+        String wbDomain = "DOMAIN_A";
         String groupName = "group_2";
 
-        Task newTask = taskService.newTask(wbKey, "DOMAIN_A");
+        Task newTask = taskService.newTask(wbKey, wbDomain);
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         Task createdTask = taskService.createTask(newTask);
         List<TaskSummary> tasks = taskService.createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain(wbKey, "DOMAIN_A"))
+            .workbasketKeyDomainIn(new KeyDomain(wbKey, wbDomain))
             .list();
         Assert.assertEquals(1, tasks.size());
         assertThat(createdTask, not(equalTo(null)));
@@ -147,7 +148,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
         try {
             taskService.createTaskQuery()
-                .workbasketKeyDomainIn(new KeyDomain(wbKey, "DOMAIN_A"))
+                .workbasketKeyDomainIn(new KeyDomain(wbKey, wbDomain))
                 .list();
             fail("NotAuthorizedToQueryWorkbasketException was expected ");
         } catch (NotAuthorizedToQueryWorkbasketException ignored) {
@@ -235,9 +236,34 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         assertFalse(item0.isPermTransfer());
     }
 
+    @Test
+    public void testDeleteAccessItemsForAccessId() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        final String accessId = "group_1";
+        final long accessIdCountBefore = workbasketService
+            .createWorkbasketAccessItemQuery()
+            .accessIdIn(accessId)
+            .count();
+
+        workbasketService.deleteWorkbasketAuthorizationForAccessId(accessId);
+
+        final long accessIdCountAfter = workbasketService
+            .createWorkbasketAccessItemQuery()
+            .accessIdIn(accessId)
+            .count();
+        assertTrue(accessIdCountBefore > accessIdCountAfter);
+    }
+
+    @Test
+    public void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        workbasketService.deleteWorkbasketAuthorizationForAccessId("");
+        workbasketService.deleteWorkbasketAuthorizationForAccessId(null);
+        workbasketService.deleteWorkbasketAuthorizationForAccessId("123UNUSED456");
+    }
+
     @AfterClass
     public static void cleanUpClass() {
         FileUtils.deleteRecursive("~/data", true);
     }
-
 }
