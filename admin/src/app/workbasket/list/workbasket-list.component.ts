@@ -1,9 +1,10 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { WorkbasketSummary } from '../../model/workbasketSummary';
-import { WorkbasketService, Direction } from '../../services/workbasketservice.service'
+import { WorkbasketService, Direction } from '../../services/workbasket.service'
 import { Subscription } from 'rxjs/Subscription';
 import { FilterModel } from '../../shared/filter/filter.component'
 import { filter } from 'rxjs/operator/filter';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
 	selector: 'workbasket-list',
@@ -26,8 +27,9 @@ export class WorkbasketListComponent implements OnInit {
 
 	private workBasketSummarySubscription: Subscription;
 	private workbasketServiceSubscription: Subscription;
+	private workbasketServiceSavedSubscription: Subscription;
 
-	constructor(private workbasketService: WorkbasketService) { }
+	constructor(private workbasketService: WorkbasketService, private router: Router, private route: ActivatedRoute) { }
 
 	ngOnInit() {
 		this.requestInProgress = true;
@@ -39,10 +41,20 @@ export class WorkbasketListComponent implements OnInit {
 		this.workbasketServiceSubscription = this.workbasketService.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
 			this.selectedId = workbasketIdSelected;
 		});
+
+		this.workbasketServiceSavedSubscription = this.workbasketService.workbasketSavedTriggered().subscribe(value => {
+			this.performRequest();
+		});
 	}
 
 	selectWorkbasket(id: string) {
 		this.selectedId = id;
+		if(!this.selectedId) {
+			this.router.navigate(['/workbaskets']);
+			return 
+		}
+		this.router.navigate([{outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
+		
 	}
 
 	changeOrder(sortDirection: string) {
@@ -61,19 +73,11 @@ export class WorkbasketListComponent implements OnInit {
 	}
 
 	onDelete(workbasket: WorkbasketSummary) {
-		this.workbasketService.deleteWorkbasket(workbasket.workbasketId).subscribe(result => {
-			var index = this.workbaskets.indexOf(workbasket);
-			if (index > -1) {
-				this.workbaskets.splice(index, 1);
-			}
-		});
+
 	}
 
 	onAdd() {
-		this.workbasketService.createWorkbasket(this.newWorkbasket).subscribe(result => {
-			this.workbaskets.push(result);
-			this.onClear();
-		});
+
 	}
 
 	onClear() {
@@ -81,6 +85,7 @@ export class WorkbasketListComponent implements OnInit {
 		this.newWorkbasket.name = "";
 		this.newWorkbasket.description = "";
 		this.newWorkbasket.owner = "";
+		this.newWorkbasket.key = "";
 	}
 
 	getEmptyObject() {
@@ -90,17 +95,27 @@ export class WorkbasketListComponent implements OnInit {
 	private performRequest(): void {
 		this.requestInProgress = true;
 		this.workbaskets = undefined;
-		this.workbasketServiceSubscription.add(this.workbasketService.getWorkBasketsSummary(this.sortBy, this.sortDirection, undefined,
+		this.workbasketServiceSubscription.add(this.workbasketService.getWorkBasketsSummary(true, this.sortBy, this.sortDirection, undefined,
 			this.filterBy.name, this.filterBy.description, undefined, this.filterBy.owner,
 			this.filterBy.type, undefined, this.filterBy.key).subscribe(resultList => {
 				this.workbaskets = resultList;
 				this.requestInProgress = false;
+				this.unSelectWorkbasket();
 			}));
+	}
+
+
+	private unSelectWorkbasket() : void{
+		if (!this.workbaskets.find( wb => wb.workbasketId === this.selectedId)){
+			this.selectWorkbasket(undefined);
+		}
 	}
 
 	private ngOnDestroy() {
 		this.workBasketSummarySubscription.unsubscribe();
 		this.workbasketServiceSubscription.unsubscribe();
+		this.workbasketServiceSavedSubscription.unsubscribe();
+		
 	}
 
 }

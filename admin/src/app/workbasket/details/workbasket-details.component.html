@@ -1,13 +1,13 @@
 <div class="container-scrollable" >
     <taskana-spinner [isRunning]="requestInProgress" class = "centered-horizontally"></taskana-spinner>
-    <app-no-access *ngIf="!hasPermission || !workbasket && selectedId" ></app-no-access>
-    <div id ="workbasket-details" class="workbasket-details" *ngIf="workbasket">
+    <app-no-access *ngIf="!requestInProgress && (!hasPermission || !workbasket && selectedId)" ></app-no-access>
+    <div id ="workbasket-details" class="workbasket-details" *ngIf="workbasket && !requestInProgress">
         <ul class="nav nav-tabs" role="tablist">
             <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
                 <a (click) = "backClicked()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
             </li>
             <li role="presentation" class="active">
-                <a href="#work-baskets" aria-controls="work baskets" role="tab" data-toggle="tab" aria-expanded="true">Work baskets information</a>
+                <a href="#work-baskets" aria-controls="work baskets" role="tab" data-toggle="tab" aria-expanded="true">Information</a>
             </li>
             <li role="presentation" class="inactive"> 
                 <a href="#authorizations" aria-controls="Authorizations" role="tab" data-toggle="tab" aria-expanded="true">Authorizations</a> 
@@ -28,4 +28,5 @@
             </div>
         </div>
     </div>
+    <taskana-alert></taskana-alert>
 </div>

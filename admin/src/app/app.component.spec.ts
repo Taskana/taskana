@@ -36,20 +36,20 @@ describe('AppComponent', () => {
     document.body.removeChild(debugElement);
   }));
 
-  it('should create the app', async(() => {
+  it('should create the app', (() => {
     expect(app).toBeTruthy();
   }));
 
-  it(`should have as title 'Taskana administration'`, async(() => {
+  it(`should have as title 'Taskana administration'`, (() => {
     expect(app.title).toEqual('Taskana administration');
   }));
 
-  it('should render title in a <a> tag', async(() => {
+  it('should render title in a <a> tag', (() => {
     fixture.detectChanges();
     expect(debugElement.querySelector('ul p a').textContent).toContain('Taskana administration');
   }));
 
-  it('should call Router.navigateByUrl("categories") and workbasketRoute should be false', async (inject([Router], (router: Router) => {
+  it('should call Router.navigateByUrl("categories") and workbasketRoute should be false', (inject([Router], (router: Router) => {
     
     expect(app.workbasketsRoute).toBe(true);
     fixture.detectChanges();
