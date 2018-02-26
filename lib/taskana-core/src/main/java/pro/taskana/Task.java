@@ -20,6 +20,13 @@ public interface Task {
     String getId();
 
     /**
+     * Gets the UserId of the task-creator.
+     *
+     * @return creator
+     */
+    String getCreator();
+
+    /**
      * Returns the time when the task was {@link TaskState#READY}.
      *
      * @return created as exact {@link Instant}

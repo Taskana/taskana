@@ -22,6 +22,7 @@ public class TaskSummaryImpl implements TaskSummary {
     private Instant planned;
     private Instant due;
     private String name;
+    private String creator;
     private String note;
     private int priority;
     private TaskState state;
@@ -47,7 +48,6 @@ public class TaskSummaryImpl implements TaskSummary {
     private String custom10;
 
     TaskSummaryImpl() {
-
     }
 
     /*
@@ -152,6 +152,19 @@ public class TaskSummaryImpl implements TaskSummary {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see pro.taskana.impl.TaskSummary#getCreator()
+     */
+    @Override
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     /*
@@ -504,6 +517,7 @@ public class TaskSummaryImpl implements TaskSummary {
         result = prime * result + (isTransferred ? 1231 : 1237);
         result = prime * result + ((modified == null) ? 0 : modified.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((creator == null) ? 0 : creator.hashCode());
         result = prime * result + ((note == null) ? 0 : note.hashCode());
         result = prime * result + ((owner == null) ? 0 : owner.hashCode());
         result = prime * result + ((parentBusinessProcessId == null) ? 0 : parentBusinessProcessId.hashCode());
@@ -673,6 +687,13 @@ public class TaskSummaryImpl implements TaskSummary {
         } else if (!name.equals(other.name)) {
             return false;
         }
+        if (creator == null) {
+            if (other.creator != null) {
+                return false;
+            }
+        } else if (!creator.equals(other.creator)) {
+            return false;
+        }
         if (note == null) {
             if (other.note != null) {
                 return false;
@@ -743,7 +764,9 @@ public class TaskSummaryImpl implements TaskSummary {
         builder.append(due);
         builder.append(", name=");
         builder.append(name);
-        builder.append(", note=");
+        builder.append(", creator=");
+        builder.append(name);
+        builder.append(", creator=");
         builder.append(note);
         builder.append(", priority=");
         builder.append(priority);

@@ -32,6 +32,8 @@ public class TaskQueryImpl implements TaskQuery {
     private TaskServiceImpl taskService;
     private String[] nameIn;
     private String[] nameLike;
+    private String[] creatorIn;
+    private String[] creatorLike;
     private String[] taskIds;
     private String[] description;
     private String[] note;
@@ -111,6 +113,18 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery nameLike(String... names) {
         this.nameLike = toUpperCopy(names);
+        return this;
+    }
+
+    @Override
+    public TaskQuery creatorIn(String... creators) {
+        this.creatorIn = creators;
+        return this;
+    }
+
+    @Override
+    public TaskQuery creatorLike(String... creators) {
+        this.creatorLike = toUpperCopy(creators);
         return this;
     }
 
@@ -505,6 +519,11 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
+    public TaskQuery orderByCreator(SortDirection sortDirection) {
+        return addOrderCriteria("CREATOR", sortDirection);
+    }
+
+    @Override
     public TaskQuery orderByOwner(SortDirection sortDirection) {
         return addOrderCriteria("OWNER", sortDirection);
     }
@@ -547,6 +566,11 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery orderByWorkbasketKey(SortDirection sortDirection) {
         return addOrderCriteria("WORKBASKET_KEY", sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByWorkbasketId(SortDirection sortDirection) {
+        return addOrderCriteria("WORKBASKET_ID", sortDirection);
     }
 
     @Override
@@ -757,6 +781,14 @@ public class TaskQueryImpl implements TaskQuery {
 
     public String[] getNameIn() {
         return nameIn;
+    }
+
+    public String[] getCreatorIn() {
+        return creatorIn;
+    }
+
+    public String[] getCreatorLike() {
+        return creatorLike;
     }
 
     public String[] getDescription() {
@@ -1007,6 +1039,10 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(nameIn));
         builder.append(", nameLike=");
         builder.append(Arrays.toString(nameLike));
+        builder.append(", creatorIn=");
+        builder.append(Arrays.toString(creatorIn));
+        builder.append(", creatorLike=");
+        builder.append(Arrays.toString(creatorLike));
         builder.append(", taskIds=");
         builder.append(Arrays.toString(taskIds));
         builder.append(", description=");
