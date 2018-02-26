@@ -8,16 +8,21 @@ import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { ICONTYPES, IconTypeComponent } from '../../shared/type-icon/icon-type.component';
 import { MapValuesPipe } from '../../pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from '../../pipes/remove-none-type';
+import { AlertComponent } from '../../shared/alert/alert.component';
+import { GeneralMessageModalComponent } from '../../shared/general-message-modal/general-message-modal.component';
+import { Links } from 'app/model/links';
 
-import { WorkbasketService } from '../../services/workbasketservice.service';
+import { WorkbasketService } from '../../services/workbasket.service';
 import { MasterAndDetailService } from '../../services/master-and-detail.service';
 import { PermissionService } from '../../services/permission.service';
+import { AlertService } from '../../services/alert.service';
 
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { WorkbasketSummary } from '../../model/workbasketSummary';
 
 describe('WorkbasketDetailsComponent', () => {
   let component: WorkbasketDetailsComponent;
@@ -29,8 +34,8 @@ describe('WorkbasketDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[RouterTestingModule, FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [ WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe ],
-      providers:[WorkbasketService, MasterAndDetailService, PermissionService]
+      declarations: [ WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent ],
+      providers:[WorkbasketService, MasterAndDetailService, PermissionService, AlertService]
     })
     .compileComponents();
   }));
@@ -44,6 +49,7 @@ describe('WorkbasketDetailsComponent', () => {
     workbasketService = TestBed.get(WorkbasketService);
     spyOn(masterAndDetailService, 'getShowDetail').and.returnValue(Observable.of(true));
     spyOn(workbasketService,'getSelectedWorkBasket').and.returnValue(Observable.of('id1'));
+    spyOn(workbasketService,'getWorkBasketsSummary').and.returnValue(Observable.of(new Array<WorkbasketSummary>(new WorkbasketSummary('id1','','','','','','','','','','','',new Array<Links>( new Links('self', 'someurl'))))));
     spyOn(workbasketService,'getWorkBasket').and.returnValue(Observable.of(new Workbasket('id1',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)));
   });
 
@@ -74,18 +80,11 @@ describe('WorkbasketDetailsComponent', () => {
 
   it('should show back button with classes "visible-xs visible-sm hidden" when showDetail property is true', () => {
     
-    component.workbasket = new Workbasket(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+    component.workbasket = new Workbasket('id1',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
     component.ngOnInit();
     fixture.detectChanges();
     expect(debugElement.querySelector('.visible-xs.visible-sm.hidden > a').textContent).toBe('Back');
   
   });
 
-  it('should create a copy of workbasket when workbasket is selected', () => {
-    expect(component.workbasketClone).toBeUndefined();
-    component.ngOnInit();
-    fixture.detectChanges();
-    expect(component.workbasket.id).toEqual(component.workbasketClone.id);
-  });
-  
 });

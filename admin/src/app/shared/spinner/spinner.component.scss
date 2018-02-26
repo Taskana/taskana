@@ -18,7 +18,7 @@
   margin: 0 auto;
   width: 15%;
   height: 15%;
-  background-color: #337ab7;
+  background-color: #33b784;
   border-radius: 100%;
   -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
           animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
@@ -119,4 +119,14 @@
     -webkit-transform: scale(1);
             transform: scale(1);
   }
+}
+
+.floating {
+    position: absolute;
+    left: 45%;
+    top: auto;
+    z-index: 10;
+}
+.spinner-centered {
+  margin-top: calc(50vh - 100px);
 }

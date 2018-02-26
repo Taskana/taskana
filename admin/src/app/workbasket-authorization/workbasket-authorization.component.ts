@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { WorkbasketService } from '../services/workbasketservice.service';
+import { WorkbasketService } from '../services/workbasket.service';
 import { WorkbasketAuthorization } from '../model/workbasket-authorization';
 import { WorkbasketSummary } from '../model/workbasketSummary';
 

@@ -25,8 +25,8 @@
                             <span class="glyphicon {{sortDirection === 'asc'? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes' }} blue"
                                 data-toggle= "tooltip" title="{{sortDirection === 'asc'? 'A-Z' : 'Z-A' }}"></span> 
                         </button>         
-                        <ul class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown"> 
-                            <li>
+                        <div class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown"> 
+                            <div>
                                 <div class="col-xs-6">
                                     <h5>Sort By</h5>
                                 </div>
@@ -36,8 +36,8 @@
                                 <button id= "sort-by-direction-desc" type="button" (click)="changeOrder('desc')" data-toggle="tooltip" title="Z-A" class="btn btn-default {{sortDirection === 'desc'? 'selected' : '' }}" >
                                     <span class="glyphicon glyphicon-sort-by-attributes blue" aria-hidden="true"></span>
                                 </button>
-                            </li>                                                 
-                            <li role="separator" class="divider"></li>
+                            </div>                                                 
+                            <div role="separator" class="divider"></div>
                             <li id="sort-by-{{sortingField.key}}"(click)="changeSortBy(sortingField.key)"  *ngFor="let sortingField of sortingFields | mapValues">
                                 <a>
                                     <label>
@@ -46,7 +46,7 @@
                                     </label>
                                 </a>
                             </li>
-                        </ul>
+                        </div>
                     </div>
                     <div class="clearfix btn-group"> 
                         <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" data-toggle="collapse" data-target="#wb-filter-bar" aria-expanded="false"> 
@@ -60,7 +60,7 @@
             </div>
         </li>
         <taskana-spinner [isRunning]="requestInProgress" class = "centered-horizontally"></taskana-spinner>                          
-        <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId" type="text" (click) ="selectWorkbasket(workbasket.workbasketId)"  [routerLink]="[ {outlets: { detail: [workbasket.workbasketId] } }]">
+        <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId" type="text" (click) ="selectWorkbasket(workbasket.workbasketId)">
             <div class="row">
                 <dl class="col-xs-1">
                     <dt>

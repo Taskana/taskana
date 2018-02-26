@@ -1,0 +1,19 @@
+<div class="modal fade" #generalModal tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="generalModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="generalModalLabel">{{title}}</h4>
+      </div>
+      <div *ngIf="error" class="modal-body">
+        <div class="alert alert-danger" role="alert">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <span class="sr-only">Error:</span>
+        	{{message}}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-danger" data-dismiss="modal" (click)="removeMessage()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
