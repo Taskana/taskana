@@ -19,6 +19,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "query classifications with pagination" scenarios.
@@ -30,6 +31,9 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         super();
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testGetFirstPageOfWorkbasketQueryWithOffset()
         throws NotAuthorizedException {
@@ -40,6 +44,9 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         assertThat(results.size(), equalTo(5));
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testGetSecondPageOfWorkbasketQueryWithOffset()
         throws NotAuthorizedException {
@@ -47,9 +54,12 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .list(5, 5);
-        assertThat(results.size(), equalTo(5));
+        assertThat(results.size(), equalTo(3));
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testListOffsetAndLimitOutOfBounds() throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -73,6 +83,9 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         assertThat(results.size(), equalTo(3));
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testPaginationWithPages() throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -99,10 +112,10 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-        assertThat(results.size(), equalTo(13));
+        assertThat(results.size(), equalTo(8));
 
         // Getting last results on multiple pages
-        pageNumber = 2;
+        pageNumber = 1;
         pageSize = 5;
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -110,6 +123,9 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         assertThat(results.size(), equalTo(3));
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testPaginationNullAndNegativeLimitsIgnoring()
         throws NotAuthorizedException {
@@ -137,7 +153,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-        assertThat(results.size(), equalTo(10));
+        assertThat(results.size(), equalTo(8));
     }
 
     /**
@@ -160,6 +176,9 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
             .listPage(pageNumber, pageSize);
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test
     public void testCountOfWorkbasketQuery()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -167,7 +186,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         long count = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .count();
-        assertThat(count, equalTo(13L));
+        assertThat(count, equalTo(9L));
     }
 
     @AfterClass

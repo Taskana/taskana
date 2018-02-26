@@ -39,7 +39,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testQueryForOwnerLike()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -62,7 +62,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testQueryForParentBusinessProcessId()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -86,7 +86,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testQueryForName()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -110,7 +110,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testQueryForClassificationKey()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
@@ -119,7 +119,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .classificationKeyLike("L10%")
             .list();
-        assertThat(results.size(), equalTo(64));
+        assertThat(results.size(), equalTo(65));
 
         String[] ids = results.stream()
             .map(t -> t.getClassificationSummary().getKey())
@@ -129,7 +129,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .classificationKeyIn(ids)
             .list();
-        assertThat(result2.size(), equalTo(64));
+        assertThat(result2.size(), equalTo(65));
     }
 
     @WithAccessId(
