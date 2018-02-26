@@ -1,3 +1,5 @@
+import {Links} from './links';
+
 export class WorkbasketSummary {
     constructor(
         public workbasketId: string,
@@ -11,5 +13,6 @@ export class WorkbasketSummary {
         public orgLevel1: string,
         public orgLevel2: string,
         public orgLevel3: string,
-        public orgLevel4: string){}
+        public orgLevel4: string,
+        public links: Array<Links> = undefined){}
 }

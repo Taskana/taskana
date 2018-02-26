@@ -1,8 +1,10 @@
+<taskana-spinner [isRunning]="requestInProgress" [isModal]= "modalSpinner" class = "centered-horizontally floating"></taskana-spinner>
+<taskana-general-message-modal  *ngIf="modalErrorMessage" [message]="modalErrorMessage" [title]="modalTitle" error = "true" ></taskana-general-message-modal>
 <div id = "wb-information" class="panel panel-default">
     <div class="panel-heading">
         <div class="btn-group pull-right">
-            <button type="button" class="btn btn-default btn-primary">Save</button>
-            <button type="button" class="btn btn-default">Cancel</button>
+            <button type="button" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
+            <button type="button" (click)="onClear()" class="btn btn-default">Undo changes</button>
         </div>
         <h4 class="panel-header">{{workbasket.name}}</h4> 
     </div>

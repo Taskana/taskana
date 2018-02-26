@@ -109,8 +109,8 @@
 }
 
 .footer-space {
-    max-height: calc(100vh - 160px);
-    height: calc(100vh - 160px);
+    max-height: calc(100vh - 140px);
+    height: calc(100vh - 140px);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -243,11 +243,6 @@ li > div.row > dl {
     -o-transition: opacity 300ms ease, visibility 300ms ease;
     transition: opacity 300ms ease, visibility 300ms ease;
 }
-
-taskana-spinner.centered-horizontally > div {
-    margin-top: calc(50vh - 250px);
-}
-
 .vertical-align{
     vertical-align: middle;
 }

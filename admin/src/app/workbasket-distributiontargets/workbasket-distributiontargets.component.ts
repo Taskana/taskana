@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { WorkbasketSummary } from '../model/workbasketSummary';
-import { WorkbasketService } from '../services/workbasketservice.service'
+import { WorkbasketService } from '../services/workbasket.service'
 import { Observable } from 'rxjs/Observable';
 
 @Component({

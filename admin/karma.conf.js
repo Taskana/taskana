@@ -32,6 +32,7 @@ module.exports = function (config) {
     },
     angularCli: {
       environment: 'dev'
+      //codeCoverage: true
     },
     reporters: config.angularCli && config.angularCli.codeCoverage
       ? ['progress', 'coverage-istanbul']

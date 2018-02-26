@@ -1,42 +1,62 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ElementRef } from '@angular/core';
+import { ViewChild } from '@angular/core';
+declare var $: any;
 
 @Component({
-  selector: 'taskana-spinner',
-  templateUrl: './spinner.component.html',
-  styleUrls: ['./spinner.component.scss']
+    selector: 'taskana-spinner',
+    templateUrl: './spinner.component.html',
+    styleUrls: ['./spinner.component.scss']
 })
-export class SpinnerComponent {  
-  private currentTimeout: any;
-  
-  isDelayedRunning: boolean = false;
+export class SpinnerComponent {
+    private currentTimeout: any;
 
-  @Input()
-   delay: number = 300;
+    isDelayedRunning: boolean = false;
 
-  @Input()
-  set isRunning(value: boolean) {
-      if (!value) {
-          this.cancelTimeout();
-          this.isDelayedRunning = false;
-          return;
-      }
+    @Input()
+    delay: number = 300;
 
-      if (this.currentTimeout) {
-          return;
-      }
+    @Input()
+    set isRunning(value: boolean) {
+        if (!value) {
+            this.cancelTimeout();
+            if (this.isModal) { this.closeModal(); }
+            this.isDelayedRunning = false;
+            return;
+        }
 
-      this.currentTimeout = setTimeout(() => {
-          this.isDelayedRunning = value;
-          this.cancelTimeout();
-      }, this.delay);
-  }
+        if (this.currentTimeout) {
+            return;
+        }
+        this.runSpinner(value);
 
-  private cancelTimeout(): void {
-      clearTimeout(this.currentTimeout);
-      this.currentTimeout = undefined;
-  }
+    }
 
-  ngOnDestroy(): any {
-      this.cancelTimeout();
-  }
+    @Input()
+    isModal: boolean = false;
+
+    @ViewChild('spinnerModal')
+    private modal;
+
+    private runSpinner(value) {
+        this.currentTimeout = setTimeout(() => {
+            if (this.isModal) { $(this.modal.nativeElement).modal('toggle'); }
+            this.isDelayedRunning = value;
+            this.cancelTimeout();
+        }, this.delay);
+    }
+    private closeModal() {
+        if (this.isDelayedRunning) {
+            $(this.modal.nativeElement).modal('toggle');
+        }
+    }
+
+
+    private cancelTimeout(): void {
+        clearTimeout(this.currentTimeout);
+        this.currentTimeout = undefined;
+    }
+
+    ngOnDestroy(): any {
+        this.cancelTimeout();
+    }
 }

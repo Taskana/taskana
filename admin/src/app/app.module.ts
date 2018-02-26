@@ -10,6 +10,7 @@ import { AlertModule } from 'ngx-bootstrap';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TreeModule } from 'angular-tree-component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /**
  * Components
@@ -28,6 +29,8 @@ import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { FilterComponent } from './shared/filter/filter.component';
 import { IconTypeComponent } from './shared/type-icon/icon-type.component';
+import { AlertComponent } from './shared/alert/alert.component';
+import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component';
 
 //Shared
 import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-detail.component';
@@ -35,11 +38,12 @@ import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-det
 /**
  * Services
  */
-import { WorkbasketService } from './services/workbasketservice.service';
+import { WorkbasketService } from './services/workbasket.service';
 import { MasterAndDetailService } from './services/master-and-detail.service';
 import { HttpClientInterceptor } from './services/http-client-interceptor.service';
 import { PermissionService } from './services/permission.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AlertService } from './services/alert.service';
 
 /**
  * Pipes
@@ -55,7 +59,8 @@ const MODULES =     [
                     AppRoutingModule,
                     AlertModule.forRoot(),
                     AngularSvgIconModule,
-                    HttpClientModule
+                    HttpClientModule,
+                    BrowserAnimationsModule
                     ];
 
 const DECLARATIONS =  [  
@@ -74,6 +79,8 @@ const DECLARATIONS =  [
                       SpinnerComponent,
                       FilterComponent,
                       IconTypeComponent,
+                      AlertComponent,
+                      GeneralMessageModalComponent,
                       MapValuesPipe,
                       RemoveNoneTypePipe
                     ];
@@ -90,7 +97,7 @@ const DECLARATIONS =  [
       useClass: HttpClientInterceptor,
       multi: true
     },
-    
+    AlertService
   ],
   bootstrap: [AppComponent]
 })
