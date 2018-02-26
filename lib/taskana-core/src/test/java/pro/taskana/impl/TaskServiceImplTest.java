@@ -139,6 +139,8 @@ public class TaskServiceImplTest {
             classificationServiceImplMock)
             .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
         expectedTask.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
+        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
+        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
 
         Task actualTask = cutSpy.createTask(expectedTask);
 
@@ -146,6 +148,8 @@ public class TaskServiceImplTest {
         verify(workbasketServiceMock, times(1)).checkAuthorization(any(), any());
         verify(workbasketServiceMock, times(1)).getWorkbasket(any(), any());
         verify(classificationServiceImplMock, times(1)).getClassification(any(), any());
+        verify(taskanaEngineMock, times(1)).getConfiguration();
+        verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).insert(expectedTask);
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
@@ -160,6 +164,32 @@ public class TaskServiceImplTest {
         assertThat(actualTask.getWorkbasketKey(), equalTo(expectedTask.getWorkbasketKey()));
         assertThat(actualTask.getName(), equalTo(expectedTask.getName()));
         assertThat(actualTask.getState(), equalTo(TaskState.READY));
+    }
+
+    @Test(expected = SystemException.class)
+    public void testCreateTaskWithSecurityButNoUserId()
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
+        ClassificationNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException,
+        InvalidArgumentException {
+        TaskServiceImpl cutSpy = Mockito.spy(cut);
+        Classification dummyClassification = createDummyClassification();
+        TaskImpl expectedTask = createUnitTestTask("", "DUMMYTASK", "k1", dummyClassification);
+        WorkbasketImpl wb = new WorkbasketImpl();
+        wb.setId("1");
+        wb.setKey("k1");
+        wb.setName("workbasket");
+        wb.setDomain(dummyClassification.getDomain());
+        doThrow(TaskNotFoundException.class).when(cutSpy).getTask(expectedTask.getId());
+        doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getKey(), wb.getDomain());
+        doNothing().when(taskMapperMock).insert(expectedTask);
+        doReturn(dummyClassification).when(
+            classificationServiceImplMock)
+            .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
+        expectedTask.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
+        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
+        doReturn(true).when(taskanaEngineConfigurationMock).isSecurityEnabled();
+
+        cutSpy.createTask(expectedTask);
     }
 
     @Test
@@ -187,6 +217,8 @@ public class TaskServiceImplTest {
             classificationServiceImplMock)
             .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
         doNothing().when(taskMapperMock).insert(expectedTask);
+        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
+        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
         Task actualTask = cutSpy.createTask(expectedTask);
 
         verify(taskanaEngineImpl, times(1)).openConnection();
@@ -195,6 +227,8 @@ public class TaskServiceImplTest {
             WorkbasketAuthorization.APPEND);
         verify(classificationServiceImplMock, times(1)).getClassification(classification.getKey(),
             classification.getDomain());
+        verify(taskanaEngineMock, times(1)).getConfiguration();
+        verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).insert(expectedTask);
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
@@ -234,6 +268,8 @@ public class TaskServiceImplTest {
         doNothing().when(taskMapperMock).insert(expectedTask);
         doNothing().when(objectReferenceMapperMock).insert(expectedObjectReference);
         doReturn(null).when(objectReferenceMapperMock).findByObjectReference(expectedTask.getPrimaryObjRef());
+        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
+        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
 
         Task actualTask = cutSpy.createTask(expectedTask);
         expectedTask.getPrimaryObjRef().setId(actualTask.getPrimaryObjRef().getId());   // get only new ID
@@ -245,6 +281,8 @@ public class TaskServiceImplTest {
             WorkbasketAuthorization.APPEND);
         verify(classificationServiceImplMock, times(1)).getClassification(classification.getKey(),
             wb.getDomain());
+        verify(taskanaEngineMock, times(1)).getConfiguration();
+        verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).insert(expectedTask);
         verify(taskanaEngineImpl, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
@@ -290,6 +328,8 @@ public class TaskServiceImplTest {
         doReturn(expectedObjectReference).when(objectReferenceMapperMock)
             .findByObjectReference(expectedObjectReference);
         doNothing().when(taskMapperMock).insert(task);
+        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
+        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
 
         cutSpy.createTask(task);
 
@@ -308,6 +348,8 @@ public class TaskServiceImplTest {
         verify(workbasketServiceMock, times(2)).getWorkbasket(any());
         verify(workbasketServiceMock, times(2)).checkAuthorization(any(), any());
         verify(classificationServiceImplMock, times(2)).getClassification(any(), any());
+        verify(taskanaEngineMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfigurationMock, times(2)).isSecurityEnabled();
         verify(taskMapperMock, times(1)).insert(task);
         verify(taskMapperMock, times(1)).insert(task2);
         verify(taskanaEngineImpl, times(2)).returnConnection();

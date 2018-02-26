@@ -28,6 +28,26 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery nameLike(String... names);
 
     /**
+     * Add the UserIds of the creator to your query.
+     *
+     * @param creators
+     *            of the queried tasks
+     * @return the query
+     */
+    TaskQuery creatorIn(String... creators);
+
+    /**
+     * Add the UserIds of the creator for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param creators
+     *            of the queried tasks
+     * @return the query
+     */
+    TaskQuery creatorLike(String... creators);
+
+    /**
      * Add your description for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
      * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
      * keyword.
@@ -682,6 +702,16 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery orderByName(SortDirection sortDirection);
 
     /**
+     * This method sorts the query result according to creators name.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    TaskQuery orderByCreator(SortDirection sortDirection);
+
+    /**
      * This method sorts the query result according to the note.
      *
      * @param sortDirection
@@ -909,4 +939,14 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      * @return the taskQuery
      */
     TaskQuery idIn(String... taskIds);
+
+    /**
+     * This method sorts the query result according to the workbasket-Id of the tasks.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    TaskQuery orderByWorkbasketId(SortDirection sortDirection);
 }

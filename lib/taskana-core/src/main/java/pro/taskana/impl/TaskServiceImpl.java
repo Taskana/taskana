@@ -599,6 +599,15 @@ public class TaskServiceImpl implements TaskService {
         task.setRead(false);
         task.setTransferred(false);
 
+        String creator = CurrentUserContext.getUserid();
+        if (taskanaEngine.getConfiguration().isSecurityEnabled()) {
+            if (creator == null) {
+                throw new SystemException(
+                    "TaskanaSecurity is enabled, but the current UserId is NULL while creating a Task.");
+            }
+        }
+        task.setCreator(creator);
+
         if (task.getPlanned() == null) {
             task.setPlanned(now);
         }

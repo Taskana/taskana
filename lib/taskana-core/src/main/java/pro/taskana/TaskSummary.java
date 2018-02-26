@@ -18,6 +18,13 @@ public interface TaskSummary {
     String getTaskId();
 
     /**
+     * Gets the name of the task-creator.
+     *
+     * @return creator
+     */
+    String getCreator();
+
+    /**
      * Gets the time when the task was created.
      *
      * @return the created Instant

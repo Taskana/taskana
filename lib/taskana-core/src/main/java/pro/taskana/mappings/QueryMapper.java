@@ -27,7 +27,7 @@ public interface QueryMapper {
     String CLASSIFICATION_FINDBYID = "pro.taskana.mappings.ClassificationMapper.findById";
     String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.mappings.WorkbasketMapper.findSummaryByKey";
 
-    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.CLASSIFICATION_CATEGORY, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
+    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.CREATOR, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.CLASSIFICATION_CATEGORY, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
         + "FROM TASK t "
         + "<where>"
         + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
@@ -39,6 +39,8 @@ public interface QueryMapper {
         + "<if test='dueIn !=null'> AND ( <foreach item='item' collection='dueIn' separator=' OR ' > ( <if test='item.begin!=null'> t.DUE &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.DUE &lt;=#{item.end} </if>)</foreach>)</if> "
         + "<if test='nameIn != null'>AND t.NAME IN(<foreach item='item' collection='nameIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='nameLike != null'>AND (<foreach item='item' collection='nameLike' separator=' OR '>UPPER(t.NAME) LIKE #{item}</foreach>)</if> "
+        + "<if test='creatorIn != null'>AND t.CREATOR IN(<foreach item='item' collection='creatorIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='creatorLike != null'>AND (<foreach item='item' collection='creatorLike' separator=' OR '>UPPER(t.CREATOR) LIKE #{item}</foreach>)</if> "
         + "<if test='description != null'>AND (<foreach item='item' collection='description' separator=' OR '>t.DESCRIPTION LIKE #{item}</foreach>)</if> "
         + "<if test='note != null'>AND (<foreach item='item' collection='note' separator=' OR '>t.NOTE LIKE #{item}</foreach>)</if> "
         + "<if test='priority != null'>AND t.PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
@@ -99,6 +101,7 @@ public interface QueryMapper {
         @Result(property = "planned", column = "PLANNED"),
         @Result(property = "due", column = "DUE"),
         @Result(property = "name", column = "NAME"),
+        @Result(property = "creator", column = "CREATOR"),
         @Result(property = "note", column = "NOTE"),
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
@@ -309,6 +312,8 @@ public interface QueryMapper {
         + "<if test='dueIn !=null'> AND ( <foreach item='item' collection='dueIn' separator=' OR ' > ( <if test='item.begin!=null'> t.DUE &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.DUE &lt;=#{item.end} </if>)</foreach>)</if> "
         + "<if test='nameIn != null'>AND t.NAME IN(<foreach item='item' collection='nameIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='nameLike != null'>AND (<foreach item='item' collection='nameLike' separator=' OR '>UPPER(t.NAME) LIKE #{item}</foreach>)</if> "
+        + "<if test='creatorIn != null'>AND t.CREATOR IN(<foreach item='item' collection='creatorIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='creatorLike != null'>AND (<foreach item='item' collection='creatorLike' separator=' OR '>UPPER(t.CREATOR) LIKE #{item}</foreach>)</if> "
         + "<if test='description != null'>AND (<foreach item='item' collection='description' separator=' OR '>t.DESCRIPTION LIKE #{item}</foreach>)</if> "
         + "<if test='note != null'>AND (<foreach item='item' collection='note' separator=' OR '>t.NOTE LIKE #{item}</foreach>)</if> "
         + "<if test='priority != null'>AND t.PRIORITY IN(<foreach item='item' collection='priority' separator=',' >#{item}</foreach>)</if> "
