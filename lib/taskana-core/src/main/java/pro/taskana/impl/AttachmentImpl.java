@@ -24,7 +24,7 @@ public class AttachmentImpl implements Attachment {
     private ObjectReference objectReference;
     private String channel;
     private Instant received;
-    private Map<String, Object> customAttributes = Collections.emptyMap();
+    private Map<String, String> customAttributes = Collections.emptyMap();
 
     AttachmentImpl() {
     }
@@ -116,12 +116,12 @@ public class AttachmentImpl implements Attachment {
     }
 
     @Override
-    public Map<String, Object> getCustomAttributes() {
+    public Map<String, String> getCustomAttributes() {
         return customAttributes;
     }
 
     @Override
-    public void setCustomAttributes(Map<String, Object> customAttributes) {
+    public void setCustomAttributes(Map<String, String> customAttributes) {
         this.customAttributes = customAttributes;
     }
 

@@ -68,8 +68,8 @@ public abstract class AbstractAccTest {
         return objectReference;
     }
 
-    protected Map<String, Object> createSimpleCustomProperties(int propertiesCount) {
-        HashMap<String, Object> properties = new HashMap<>();
+    protected Map<String, String> createSimpleCustomProperties(int propertiesCount) {
+        HashMap<String, String> properties = new HashMap<>();
         for (int i = 1; i <= propertiesCount; i++) {
             properties.put("Property_" + i, "Property Value of Property_" + i);
         }
@@ -77,7 +77,7 @@ public abstract class AbstractAccTest {
     }
 
     protected Attachment createAttachment(String classificationKey, ObjectReference objRef,
-        String channel, String receivedDate, Map<String, Object> customAttributes)
+        String channel, String receivedDate, Map<String, String> customAttributes)
         throws ClassificationNotFoundException, NotAuthorizedException {
         Attachment attachment = taskanaEngine.getTaskService().newAttachment();
 

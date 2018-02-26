@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.type.ClobTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.impl.MinimalTaskSummary;
@@ -63,7 +64,7 @@ public interface TaskMapper {
         @Result(property = "primaryObjRef.value", column = "POR_VALUE"),
         @Result(property = "isRead", column = "IS_READ"),
         @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.BLOB,
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
             javaType = Map.class, typeHandler = MapTypeHandler.class),
         @Result(property = "custom1", column = "CUSTOM_1"),
         @Result(property = "custom2", column = "CUSTOM_2"),
@@ -83,7 +84,7 @@ public interface TaskMapper {
         + "VALUES(#{id}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{creator}, #{description}, #{note}, #{priority}, #{state}, #{classificationSummary.category}, "
         + "#{classificationSummary.key}, #{classificationSummary.id}, #{workbasketSummary.id}, #{workbasketSummary.key}, #{workbasketSummary.domain}, #{businessProcessId}, "
         + "#{parentBusinessProcessId}, #{owner}, #{primaryObjRef.company}, #{primaryObjRef.system}, #{primaryObjRef.systemInstance}, #{primaryObjRef.type}, #{primaryObjRef.value}, "
-        + "#{isRead}, #{isTransferred}, #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, "
+        + "#{isRead}, #{isTransferred}, #{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, "
         + "#{custom1}, #{custom2}, #{custom3}, #{custom4}, #{custom5}, #{custom6}, #{custom7}, #{custom8}, #{custom9}, #{custom10})")
     @Options(keyProperty = "id", keyColumn = "ID")
     void insert(TaskImpl task);
@@ -93,7 +94,7 @@ public interface TaskMapper {
         + "WORKBASKET_ID = #{workbasketSummary.id}, WORKBASKET_KEY = #{workbasketSummary.key}, DOMAIN = #{workbasketSummary.domain}, "
         + "BUSINESS_PROCESS_ID = #{businessProcessId}, PARENT_BUSINESS_PROCESS_ID = #{parentBusinessProcessId}, OWNER = #{owner}, POR_COMPANY = #{primaryObjRef.company}, POR_SYSTEM = #{primaryObjRef.system}, "
         + "POR_INSTANCE = #{primaryObjRef.systemInstance}, POR_TYPE = #{primaryObjRef.type}, POR_VALUE = #{primaryObjRef.value}, IS_READ = #{isRead}, IS_TRANSFERRED = #{isTransferred}, "
-        + "CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=BLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, CUSTOM_1 = #{custom1}, CUSTOM_2 = #{custom2}, "
+        + "CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, CUSTOM_1 = #{custom1}, CUSTOM_2 = #{custom2}, "
         + "CUSTOM_3 = #{custom3}, CUSTOM_4 = #{custom4}, CUSTOM_5 = #{custom5}, CUSTOM_6 = #{custom6}, CUSTOM_7 = #{custom7}, CUSTOM_8 = #{custom8}, CUSTOM_9 = #{custom9}, CUSTOM_10 = #{custom10} "
         + "WHERE ID = #{id}")
     void update(TaskImpl task);
@@ -223,4 +224,12 @@ public interface TaskMapper {
         + "</script>")
     void updateClassificationCategoryOnChange(@Param("taskIds") List<String> taskIds,
         @Param("newCategory") String newCategory);
+
+    @Select("select CUSTOM_ATTRIBUTES from task where id = #{taskId}")
+    @Results(value = {
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
+            javaType = String.class, typeHandler = ClobTypeHandler.class)
+    })
+    String getCustomAttributesAsString(@Param("taskId") String taskId);
+
 }
