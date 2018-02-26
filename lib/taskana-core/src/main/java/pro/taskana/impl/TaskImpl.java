@@ -41,7 +41,7 @@ public class TaskImpl implements Task {
     private boolean isRead;
     private boolean isTransferred;
     // All objects have to be serializable
-    private Map<String, Object> customAttributes = Collections.emptyMap();
+    private Map<String, String> customAttributes = Collections.emptyMap();
     private List<Attachment> attachments = new ArrayList<>();
     private String custom1;
     private String custom2;
@@ -294,11 +294,12 @@ public class TaskImpl implements Task {
     }
 
     @Override
-    public Map<String, Object> getCustomAttributes() {
+    public Map<String, String> getCustomAttributes() {
         return customAttributes;
     }
 
-    public void setCustomAttributes(Map<String, Object> customAttributes) {
+    @Override
+    public void setCustomAttributes(Map<String, String> customAttributes) {
         this.customAttributes = customAttributes;
     }
 

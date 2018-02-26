@@ -103,7 +103,7 @@ public interface Attachment {
      *
      * @return customAttributes as {@link Map}
      */
-    Map<String, Object> getCustomAttributes();
+    Map<String, String> getCustomAttributes();
 
     /**
      * Sets the custom attribute Map of the attachment.
@@ -111,7 +111,8 @@ public interface Attachment {
      * @param customAttributes
      *            a {@link Map} that contains the custom attributes of the attachment as key, value pairs
      */
-    void setCustomAttributes(Map<String, Object> customAttributes);
+    void setCustomAttributes(Map<String, String> customAttributes);
+
     /**
      * Return a summary of the current Attachment.
      *
