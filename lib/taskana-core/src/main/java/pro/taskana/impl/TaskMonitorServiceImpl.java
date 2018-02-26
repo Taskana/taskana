@@ -52,6 +52,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         try {
             taskanaEngineImpl.openConnection();
 
+            configureDaysToWorkingDaysConverter();
+
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
                 .getTaskCountOfWorkbasketsByWorkbasketsAndStates(workbasketIds, states, categories, domains);
@@ -61,7 +63,6 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from getWorkbasketLevelReport().");
-
         }
     }
 
@@ -90,6 +91,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         }
         try {
             taskanaEngineImpl.openConnection();
+
+            configureDaysToWorkingDaysConverter();
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
@@ -129,6 +132,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         }
         try {
             taskanaEngineImpl.openConnection();
+
+            configureDaysToWorkingDaysConverter();
 
             ClassificationReport report = new ClassificationReport();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
@@ -172,6 +177,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         }
         try {
             taskanaEngineImpl.openConnection();
+
+            configureDaysToWorkingDaysConverter();
 
             DetailedClassificationReport report = new DetailedClassificationReport();
             List<DetailedMonitorQueryItem> detailedMonitorQueryItems = taskMonitorMapper
@@ -217,6 +224,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         try {
             taskanaEngineImpl.openConnection();
 
+            configureDaysToWorkingDaysConverter();
+
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper
                 .getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(workbasketIds, states, categories,
@@ -228,6 +237,12 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from getCustomFieldValueReport().");
         }
+    }
+
+    private void configureDaysToWorkingDaysConverter() {
+        DaysToWorkingDaysConverter.setCustomHolidays(taskanaEngineImpl.getConfiguration().getCustomHolidays());
+        DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(
+            this.taskanaEngineImpl.getConfiguration().isGermanPublicHolidaysEnabled());
     }
 
 }

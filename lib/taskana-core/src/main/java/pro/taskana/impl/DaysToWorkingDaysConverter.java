@@ -2,6 +2,7 @@ package pro.taskana.impl;
 
 import java.time.DayOfWeek;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -27,12 +28,16 @@ public final class DaysToWorkingDaysConverter {
     private static ArrayList<Integer> positiveDaysToWorkingDays;
     private static ArrayList<Integer> negativeDaysToWorkingDays;
     private static Instant dateCreated;
+    private static LocalDate easterSunday;
+    private static boolean germanHolidaysEnabled;
+    private static List<LocalDate> customHolidays;
 
     private DaysToWorkingDaysConverter(List<ReportLineItemDefinition> reportLineItemDefinitions,
         Instant referenceDate) {
+        easterSunday = getEasterSunday(LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).getYear());
+        dateCreated = referenceDate;
         positiveDaysToWorkingDays = generatePositiveDaysToWorkingDays(reportLineItemDefinitions, referenceDate);
         negativeDaysToWorkingDays = generateNegativeDaysToWorkingDays(reportLineItemDefinitions, referenceDate);
-        dateCreated = referenceDate;
     }
 
     /**
@@ -160,10 +165,77 @@ public final class DaysToWorkingDaysConverter {
         if (LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day).getDayOfWeek().equals(
             DayOfWeek.SATURDAY)
             || LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day).getDayOfWeek().equals(
-                DayOfWeek.SUNDAY)) {
+                DayOfWeek.SUNDAY)
+            || isHoliday(LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day).toLocalDate())) {
             return false;
         }
         return true;
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        if (germanHolidaysEnabled) {
+            // Fix and movable holidays that are valid throughout Germany: New years day, Labour Day, Day of German
+            // Unity, Christmas, Good Friday, Easter Monday, Ascension Day, Whit Monday.
+            if (date.getDayOfMonth() == 1 && date.getMonthValue() == 1
+                || date.getDayOfMonth() == 1 && date.getMonthValue() == 5
+                || date.getDayOfMonth() == 3 && date.getMonthValue() == 10
+                || date.getDayOfMonth() == 25 && date.getMonthValue() == 12
+                || date.getDayOfMonth() == 26 && date.getMonthValue() == 12
+                || easterSunday.minusDays(2).equals(date)
+                || easterSunday.plusDays(1).equals(date)
+                || easterSunday.plusDays(39).equals(date)
+                || easterSunday.plusDays(50).equals(date)) {
+                return true;
+            }
+        }
+        if (customHolidays != null) {
+            // Custom holidays that can be configured in the TaskanaEngineConfiguration
+            for (LocalDate customHoliday : customHolidays) {
+                if (date.equals(customHoliday)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public LocalDate getEasterSunday(int year) {
+        // Formula to compute Easter Sunday by Gauss.
+        int a = year % 19;
+        int b = year % 4;
+        int c = year % 7;
+        int k = year / 100;
+        int p = (13 + 8 * k) / 25;
+        int q = k / 4;
+        int m = (15 - p + k - q) % 30;
+        int n = (4 + k - q) % 7;
+        int d = (19 * a + m) % 30;
+
+        int e = (2 * b + 4 * c + 6 * d + n) % 7;
+
+        if (d == 29 && e == 6) {
+            return LocalDate.of(year, 3, 15).plusDays(d + e);
+        }
+        if (d == 28 && e == 6 && (11 * m + 11) % 30 < 19) {
+            return LocalDate.of(year, 3, 15).plusDays(d + e);
+        }
+        return LocalDate.of(year, 3, 22).plusDays(d + e);
+    }
+
+    public static void setCustomHolidays(List<LocalDate> holidays) {
+        customHolidays = holidays;
+    }
+
+    public List<LocalDate> getCustomHolidays() {
+        return customHolidays;
+    }
+
+    public static void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
+        germanHolidaysEnabled = germanPublicHolidaysEnabled;
+    }
+
+    public boolean isGermanPublicHolidayEnabled() {
+        return germanHolidaysEnabled;
     }
 
 }
