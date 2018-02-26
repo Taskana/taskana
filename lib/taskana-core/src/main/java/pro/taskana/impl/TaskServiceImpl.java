@@ -709,7 +709,8 @@ public class TaskServiceImpl implements TaskService {
                 .orElse(null);
             if (aClassification == null) {
                 LOGGER.error("Could not find a Classification for task ");
-                throw new SystemException("Could not find a Classification for task ");
+                throw new SystemException(
+                    "Could not find a Classification for task (key=" + taskClassKey + ",domain=" + taskDomain + ")");
             }
         }
         return aClassification;

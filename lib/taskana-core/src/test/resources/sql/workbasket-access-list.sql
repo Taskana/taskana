@@ -1,8 +1,3 @@
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('1', '1', 'Elena',        true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false);
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('2', '2', 'Max',          true, true, true, true, true, true,  true,  true,  true,  false, false, false, false, false, false, false, false);
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('3', '3', 'Simone',       true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('4', '4', 'user_1_1', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-
 -- KSC authorizations (                    ID,                                                                             WB_ID,    ACCESS_ID, READ, OPEN, APPEND, TRANSFER, DISTRIBUTE, C1, .., C12)
 -- PPKs
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000001', 'WBI:100000000000000000000000000000000004', 'teamlead_1', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
@@ -36,8 +31,8 @@ INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:10000000000000000000000000000000
 -- Access to other domains
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000023', 'WBI:100000000000000000000000000000000012',    'group_1', true, false, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000024', 'WBI:100000000000000000000000000000000013',    'group_2', true, false, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
-
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000025', '5',        'group_1',   true, true,  true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000025', 'WBI:100000000000000000000000000000000014',    'group_2', true, true, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000026', 'WBI:100000000000000000000000000000000015',    'group_2', true, true, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
 
 -- Access to workbaskets for sorting test
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('900', '900', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);

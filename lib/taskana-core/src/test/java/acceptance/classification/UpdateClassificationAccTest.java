@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
@@ -19,10 +20,13 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.impl.TaskImpl;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "update classification" scenarios.
  */
+@RunWith(JAASRunner.class)
 public class UpdateClassificationAccTest extends AbstractAccTest {
 
     public UpdateClassificationAccTest() {
@@ -105,6 +109,9 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         assertThat(persistedClassification.getApplicationEntryPoint(), equalTo(newEntryPoint));
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "group_2"})
     @Test
     public void testUpdateTaskOnClassificationKeyCategoryChange()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException {

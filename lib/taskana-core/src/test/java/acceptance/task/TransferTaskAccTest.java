@@ -184,7 +184,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         Instant before = Instant.now();
         ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000006"); // working
-        taskIdList.add("TKI:000000000000000000000000000000000002"); // NotAuthorized
+        taskIdList.add("TKI:000000000000000000000000000000000041"); // NotAuthorized
         taskIdList.add("");     // InvalidArgument
         taskIdList.add(null);   // InvalidArgument (added with ""), duplicate
         taskIdList.add("TKI:000000000000000000000000000000000099"); // TaskNotFound
@@ -219,7 +219,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         transferredTask = taskService.getTask("TKI:000000000000000000000000000000000002");
         assertNotNull(transferredTask);
         assertFalse(transferredTask.isTransferred());
-        assertEquals("GPK_B_KSC", transferredTask.getWorkbasketKey());
+        assertEquals("USER_1_1", transferredTask.getWorkbasketKey());
     }
 
     @AfterClass

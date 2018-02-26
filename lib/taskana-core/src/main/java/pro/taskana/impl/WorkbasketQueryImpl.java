@@ -343,24 +343,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     @Override
     public WorkbasketQuery callerHasPermission(WorkbasketAuthorization permission) throws InvalidArgumentException {
-        String[] accessIds;
-        // Check pre-conditions
-        if (permission == null) {
-            throw new InvalidArgumentException("Permission cannot be null.");
-        }
-        List<String> ucAccessIds = CurrentUserContext.getAccessIds();
-        if (ucAccessIds != null && !ucAccessIds.isEmpty()) {
-            accessIds = new String[ucAccessIds.size()];
-            accessIds = ucAccessIds.toArray(accessIds);
-        } else {
-            throw new InvalidArgumentException("CurrentUserContext need to have at least one accessId.");
-        }
-
-        // set up permissions and ids
         this.authorization = permission;
-        this.accessId = accessIds;
-        lowercaseAccessIds(this.accessId);
-
         return this;
     }
 
@@ -370,6 +353,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         List<WorkbasketSummary> workbaskets = null;
         try {
             taskanaEngineImpl.openConnection();
+            addAccessIdsOfCallerToQuery();
             workbaskets = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this);
             return workbaskets;
         } finally {
@@ -389,6 +373,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         try {
             taskanaEngineImpl.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
+            addAccessIdsOfCallerToQuery();
             workbaskets = taskanaEngineImpl.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             return workbaskets;
         } catch (Exception e) {
@@ -417,6 +402,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         WorkbasketSummary workbasket = null;
         try {
             taskanaEngineImpl.openConnection();
+            addAccessIdsOfCallerToQuery();
             workbasket = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             return workbasket;
         } finally {
@@ -559,6 +545,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         Long rowCount = null;
         try {
             taskanaEngineImpl.openConnection();
+            addAccessIdsOfCallerToQuery();
             rowCount = taskanaEngineImpl.getSqlSession().selectOne(LINK_TO_COUNTER, this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
@@ -636,6 +623,20 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(orderBy);
         builder.append("]");
         return builder.toString();
+    }
+
+    private void addAccessIdsOfCallerToQuery() {
+        // might already be set by accessIdsHavePermission
+        if (this.accessId == null) {
+            String[] accessIds = new String[0];
+            List<String> ucAccessIds = CurrentUserContext.getAccessIds();
+            if (ucAccessIds != null && !ucAccessIds.isEmpty()) {
+                accessIds = new String[ucAccessIds.size()];
+                accessIds = ucAccessIds.toArray(accessIds);
+            }
+            this.accessId = accessIds;
+            lowercaseAccessIds(this.accessId);
+        }
     }
 
     static void lowercaseAccessIds(String[] accessIdArray) {
