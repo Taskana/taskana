@@ -11,6 +11,7 @@ import pro.taskana.Attachment;
 import pro.taskana.AttachmentSummary;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
+import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.WorkbasketSummary;
 

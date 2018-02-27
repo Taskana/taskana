@@ -20,9 +20,11 @@ import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
+import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.AttachmentPersistenceException;
@@ -295,7 +297,7 @@ public class TaskServiceImpl implements TaskService {
 
                 task.setWorkbasketSummary(workbasket.asSummary());
                 workbasketService.checkAuthorization(task.getWorkbasketSummary().getId(),
-                    WorkbasketAuthorization.APPEND);
+                    WorkbasketPermission.APPEND);
                 String classificationKey = task.getClassificationKey();
                 if (classificationKey == null || classificationKey.length() == 0) {
                     throw new InvalidArgumentException("classificationKey of task must not be empty");
@@ -369,9 +371,9 @@ public class TaskServiceImpl implements TaskService {
             task = (TaskImpl) getTask(taskId);
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
-            workbasketService.checkAuthorization(destinationWorkbasketId, WorkbasketAuthorization.APPEND);
+            workbasketService.checkAuthorization(destinationWorkbasketId, WorkbasketPermission.APPEND);
             workbasketService.checkAuthorization(task.getWorkbasketSummary().getId(),
-                WorkbasketAuthorization.TRANSFER);
+                WorkbasketPermission.TRANSFER);
 
             Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketId);
 
@@ -405,9 +407,9 @@ public class TaskServiceImpl implements TaskService {
             task = (TaskImpl) getTask(taskId);
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
-            workbasketService.checkAuthorization(destinationWorkbasketKey, domain, WorkbasketAuthorization.APPEND);
+            workbasketService.checkAuthorization(destinationWorkbasketKey, domain, WorkbasketPermission.APPEND);
             workbasketService.checkAuthorization(task.getWorkbasketSummary().getId(),
-                WorkbasketAuthorization.TRANSFER);
+                WorkbasketPermission.TRANSFER);
 
             Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketKey, domain);
 
@@ -497,7 +499,7 @@ public class TaskServiceImpl implements TaskService {
         Set<String> workbasketKeys = new HashSet<>();
         taskSummaries.stream().forEach(t -> workbasketKeys.add(t.getWorkbasketKey()));
         List<WorkbasketSummary> sourceWorkbaskets = workbasketService.createWorkbasketQuery()
-            .callerHasPermission(WorkbasketAuthorization.TRANSFER)
+            .callerHasPermission(WorkbasketPermission.TRANSFER)
             .keyIn(workbasketKeys.toArray(new String[0]))
             .list();
         taskIdIterator = taskIds.iterator();

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
@@ -30,7 +31,6 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.impl.TaskState;
 import pro.taskana.rest.query.TaskFilter;
 
 @RestController

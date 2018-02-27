@@ -14,6 +14,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemQuery;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
@@ -68,7 +69,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                     workbasketId);
                 throw new WorkbasketNotFoundException(workbasketId);
             }
-            this.checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
+            this.checkAuthorization(workbasketId, WorkbasketPermission.READ);
             return result;
         } finally {
             taskanaEngine.returnConnection();
@@ -90,7 +91,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                     workbasketKey);
                 throw new WorkbasketNotFoundException(workbasketKey);
             }
-            this.checkAuthorization(workbasketKey, domain, WorkbasketAuthorization.READ);
+            this.checkAuthorization(workbasketKey, domain, WorkbasketPermission.READ);
             return result;
         } finally {
             taskanaEngine.returnConnection();
@@ -99,7 +100,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public List<WorkbasketSummary> getWorkbaskets(List<WorkbasketAuthorization> permissions) {
+    public List<WorkbasketSummary> getWorkbaskets(List<WorkbasketPermission> permissions) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getWorkbaskets(permissions = {})", LoggerUtils.listToString(permissions));
         }
@@ -181,9 +182,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
+    public WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
         throws InvalidArgumentException, NotAuthorizedException {
-        LOGGER.debug("entry to createWorkbasketAuthorization(workbasketAccessItem = {})", workbasketAccessItem);
+        LOGGER.debug("entry to createWorkbasketAccessItemn(workbasketAccessItem = {})", workbasketAccessItem);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         WorkbasketAccessItemImpl accessItem = (WorkbasketAccessItemImpl) workbasketAccessItem;
         try {
@@ -196,22 +197,22 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                         + workbasketAccessItem.toString());
             }
             workbasketAccessMapper.insert(accessItem);
-            LOGGER.debug("Method createWorkbasketAuthorization() created workbaskteAccessItem {}",
+            LOGGER.debug("Method createWorkbasketAccessItem() created workbaskteAccessItem {}",
                 accessItem);
             return accessItem;
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from createWorkbasketAuthorization(workbasketAccessItem). Returning result {}",
+            LOGGER.debug("exit from createWorkbasketAccessItem(workbasketAccessItem). Returning result {}",
                 accessItem);
         }
     }
 
     @Override
-    public void setWorkbasketAuthorizations(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
+    public void setWorkbasketAccessItems(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
         throws InvalidArgumentException {
         List<WorkbasketAccessItemImpl> newItems = new ArrayList<>();
         try {
-            LOGGER.debug("entry to setWorkbasketAuthorizations(workbasketAccessItems = {})", wbAccessItems.toString());
+            LOGGER.debug("entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems.toString());
             taskanaEngine.openConnection();
             // Check pre-conditions and set ID
             if (!wbAccessItems.isEmpty()) {
@@ -241,59 +242,59 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             }
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from setWorkbasketAuthorizations(workbasketAccessItems = {})", wbAccessItems.toString());
+            LOGGER.debug("exit from setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems.toString());
         }
     }
 
     @Override
-    public void deleteWorkbasketAuthorization(String accessItemId) throws NotAuthorizedException {
-        LOGGER.debug("entry to deleteWorkbasketAuthorization(id = {})", accessItemId);
+    public void deleteWorkbasketAccessItem(String accessItemId) throws NotAuthorizedException {
+        LOGGER.debug("entry to deleteWorkbasketAccessItem(id = {})", accessItemId);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
             taskanaEngine.openConnection();
             workbasketAccessMapper.delete(accessItemId);
-            LOGGER.debug("Method deleteWorkbasketAuthorization() deleted workbasketAccessItem wit Id {}", accessItemId);
+            LOGGER.debug("Method deleteWorkbasketAccessItem() deleted workbasketAccessItem wit Id {}", accessItemId);
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from deleteWorkbasketAuthorization(id).");
+            LOGGER.debug("exit from deleteWorkbasketAccessItem(id).");
         }
     }
 
     @Override
-    public void deleteWorkbasketAuthorizationForAccessId(String accessId) {
-        LOGGER.debug("entry to deleteWorkbasketAuthorizationByAccessId(accessId = {})", accessId);
+    public void deleteWorkbasketAccessItemsForAccessId(String accessId) {
+        LOGGER.debug("entry to deleteWorkbasketAccessItemsForAccessId(accessId = {})", accessId);
         try {
             taskanaEngine.openConnection();
             workbasketAccessMapper.deleteAccessItemsForAccessId(accessId);
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from deleteWorkbasketAuthorizationByAccessId(accessId={}).", accessId);
+            LOGGER.debug("exit from deleteWorkbasketAccessItemsForAccessId(accessId={}).", accessId);
         }
     }
 
     @Override
     public void checkAuthorization(String workbasketId,
-        WorkbasketAuthorization workbasketAuthorization) throws NotAuthorizedException, WorkbasketNotFoundException {
+        WorkbasketPermission workbasketPermission) throws NotAuthorizedException, WorkbasketNotFoundException {
         if (workbasketMapper.findById(workbasketId) == null) {
             throw new WorkbasketNotFoundException(workbasketId);
         }
-        checkAuthorization(null, null, workbasketId, workbasketAuthorization);
+        checkAuthorization(null, null, workbasketId, workbasketPermission);
     }
 
     @Override
     public void checkAuthorization(String workbasketKey, String domain,
-        WorkbasketAuthorization workbasketAuthorization)
+        WorkbasketPermission workbasketPermission)
         throws NotAuthorizedException, WorkbasketNotFoundException {
         if (workbasketMapper.findByKeyAndDomain(workbasketKey, domain) == null) {
             throw new WorkbasketNotFoundException(workbasketKey + " - " + domain);
         }
-        checkAuthorization(workbasketKey, domain, null, workbasketAuthorization);
+        checkAuthorization(workbasketKey, domain, null, workbasketPermission);
     }
 
     @Override
-    public WorkbasketAccessItem updateWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
+    public WorkbasketAccessItem updateWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
         throws InvalidArgumentException, NotAuthorizedException {
-        LOGGER.debug("entry to updateWorkbasketAuthorization(workbasketAccessItem = {}", workbasketAccessItem);
+        LOGGER.debug("entry to updateWorkbasketAccessItem(workbasketAccessItem = {}", workbasketAccessItem);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         WorkbasketAccessItemImpl accessItem = (WorkbasketAccessItemImpl) workbasketAccessItem;
         try {
@@ -304,23 +305,23 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 || (originalItem.getWorkbasketId() != null
                     && !originalItem.getWorkbasketId().equals(accessItem.getWorkbasketId()))) {
                 throw new InvalidArgumentException(
-                    "AccessId and WorkbasketId must not be changed in updateWorkbasketAuthorization calls");
+                    "AccessId and WorkbasketId must not be changed in updateWorkbasketAccessItem calls");
             }
 
             workbasketAccessMapper.update(accessItem);
-            LOGGER.debug("Method updateWorkbasketAuthorization() updated workbasketAccessItem {}",
+            LOGGER.debug("Method updateWorkbasketAccessItem() updated workbasketAccessItem {}",
                 accessItem);
             return accessItem;
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from updateWorkbasketAuthorization(workbasketAccessItem). Returning {}",
+            LOGGER.debug("exit from updateWorkbasketAccessItem(workbasketAccessItem). Returning {}",
                 accessItem);
         }
     }
 
     @Override
-    public List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketId) {
-        LOGGER.debug("entry to getWorkbasketAuthorizations(workbasketId = {})", workbasketId);
+    public List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId) {
+        LOGGER.debug("entry to getWorkbasketAccessItems(workbasketId = {})", workbasketId);
         List<WorkbasketAccessItem> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
@@ -331,15 +332,15 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from getWorkbasketAuthorizations(workbasketId). Returning {} resulting Objects: {} ",
+                LOGGER.debug("exit from getWorkbasketAccessItems(workbasketId). Returning {} resulting Objects: {} ",
                     numberOfResultObjects, LoggerUtils.listToString(result));
             }
         }
     }
 
     @Override
-    public List<WorkbasketAuthorization> getPermissionsForWorkbasket(String workbasketId) {
-        List<WorkbasketAuthorization> permissions = new ArrayList<>();
+    public List<WorkbasketPermission> getPermissionsForWorkbasket(String workbasketId) {
+        List<WorkbasketPermission> permissions = new ArrayList<>();
         WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketAndAccessId(workbasketId,
             CurrentUserContext.getAccessIds());
         this.addWorkbasketAccessItemValuesToPermissionSet(wbAcc, permissions);
@@ -370,57 +371,57 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     private void addWorkbasketAccessItemValuesToPermissionSet(WorkbasketAccessItem workbasketAccessItem,
-        List<WorkbasketAuthorization> permissions) {
+        List<WorkbasketPermission> permissions) {
         if (workbasketAccessItem.isPermOpen()) {
-            permissions.add(WorkbasketAuthorization.OPEN);
+            permissions.add(WorkbasketPermission.OPEN);
         }
         if (workbasketAccessItem.isPermRead()) {
-            permissions.add(WorkbasketAuthorization.READ);
+            permissions.add(WorkbasketPermission.READ);
         }
         if (workbasketAccessItem.isPermAppend()) {
-            permissions.add(WorkbasketAuthorization.APPEND);
+            permissions.add(WorkbasketPermission.APPEND);
         }
         if (workbasketAccessItem.isPermTransfer()) {
-            permissions.add(WorkbasketAuthorization.TRANSFER);
+            permissions.add(WorkbasketPermission.TRANSFER);
         }
         if (workbasketAccessItem.isPermDistribute()) {
-            permissions.add(WorkbasketAuthorization.DISTRIBUTE);
+            permissions.add(WorkbasketPermission.DISTRIBUTE);
         }
         if (workbasketAccessItem.isPermCustom1()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_1);
+            permissions.add(WorkbasketPermission.CUSTOM_1);
         }
         if (workbasketAccessItem.isPermCustom2()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_2);
+            permissions.add(WorkbasketPermission.CUSTOM_2);
         }
         if (workbasketAccessItem.isPermCustom3()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_3);
+            permissions.add(WorkbasketPermission.CUSTOM_3);
         }
         if (workbasketAccessItem.isPermCustom4()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_4);
+            permissions.add(WorkbasketPermission.CUSTOM_4);
         }
         if (workbasketAccessItem.isPermCustom5()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_5);
+            permissions.add(WorkbasketPermission.CUSTOM_5);
         }
         if (workbasketAccessItem.isPermCustom6()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_6);
+            permissions.add(WorkbasketPermission.CUSTOM_6);
         }
         if (workbasketAccessItem.isPermCustom7()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_7);
+            permissions.add(WorkbasketPermission.CUSTOM_7);
         }
         if (workbasketAccessItem.isPermCustom8()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_8);
+            permissions.add(WorkbasketPermission.CUSTOM_8);
         }
         if (workbasketAccessItem.isPermCustom9()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_9);
+            permissions.add(WorkbasketPermission.CUSTOM_9);
         }
         if (workbasketAccessItem.isPermCustom10()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_10);
+            permissions.add(WorkbasketPermission.CUSTOM_10);
         }
         if (workbasketAccessItem.isPermCustom11()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_11);
+            permissions.add(WorkbasketPermission.CUSTOM_11);
         }
         if (workbasketAccessItem.isPermCustom12()) {
-            permissions.add(WorkbasketAuthorization.CUSTOM_12);
+            permissions.add(WorkbasketPermission.CUSTOM_12);
         }
     }
 
@@ -441,7 +442,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
             // check that source workbasket exists
             getWorkbasket(workbasketId);
-            checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
+            checkAuthorization(workbasketId, WorkbasketPermission.READ);
             List<WorkbasketSummaryImpl> distributionTargets = workbasketMapper
                 .findByDistributionTargets(workbasketId);
             result.addAll(distributionTargets);
@@ -465,7 +466,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
             // check that source workbasket exists
             Workbasket workbasket = getWorkbasket(workbasketKey, domain);
-            checkAuthorization(workbasket.getId(), WorkbasketAuthorization.READ);
+            checkAuthorization(workbasket.getId(), WorkbasketPermission.READ);
             List<WorkbasketSummaryImpl> distributionTargets = workbasketMapper
                 .findByDistributionTargets(workbasket.getId());
             result.addAll(distributionTargets);
@@ -490,7 +491,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
             // check that source workbasket exists
             getWorkbasket(workbasketId);
-            checkAuthorization(workbasketId, WorkbasketAuthorization.READ);
+            checkAuthorization(workbasketId, WorkbasketPermission.READ);
             List<WorkbasketSummaryImpl> distributionSources = workbasketMapper
                 .findDistributionSources(workbasketId);
             result.addAll(distributionSources);
@@ -514,7 +515,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
             // check that source workbasket exists
             Workbasket workbasket = getWorkbasket(workbasketKey, domain);
-            checkAuthorization(workbasket.getId(), WorkbasketAuthorization.READ);
+            checkAuthorization(workbasket.getId(), WorkbasketPermission.READ);
             List<WorkbasketSummaryImpl> distributionSources = workbasketMapper
                 .findDistributionSources(workbasket.getId());
             result.addAll(distributionSources);
@@ -542,7 +543,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
             // check existence of source workbasket
             WorkbasketImpl sourceWorkbasket = (WorkbasketImpl) getWorkbasket(sourceWorkbasketId);
-            checkAuthorization(sourceWorkbasketId, WorkbasketAuthorization.READ);
+            checkAuthorization(sourceWorkbasketId, WorkbasketPermission.READ);
             distributionTargetMapper.deleteAllDistributionTargetsBySourceId(sourceWorkbasketId);
 
             sourceWorkbasket.setModified(Instant.now());
@@ -580,7 +581,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             WorkbasketImpl sourceWorkbasket = (WorkbasketImpl) getWorkbasket(sourceWorkbasketId);
             // check esistence of target workbasket
             getWorkbasket(targetWorkbasketId);
-            checkAuthorization(sourceWorkbasketId, WorkbasketAuthorization.READ);
+            checkAuthorization(sourceWorkbasketId, WorkbasketPermission.READ);
             // check whether the target is already set as target
             int numOfDistTargets = distributionTargetMapper.getNumberOfDistributionTargets(sourceWorkbasketId,
                 targetWorkbasketId);
@@ -611,7 +612,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         try {
             taskanaEngine.openConnection();
             // don't check existence of source / target workbasket to enable cleanup even if the db is corrupted
-            checkAuthorization(sourceWorkbasketId, WorkbasketAuthorization.READ);
+            checkAuthorization(sourceWorkbasketId, WorkbasketPermission.READ);
             // check whether the target is set as target
             int numberOfDistTargets = distributionTargetMapper.getNumberOfDistributionTargets(sourceWorkbasketId,
                 targetWorkbasketId);
@@ -680,11 +681,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     private void checkAuthorization(String workbasketKey, String domain, String workbasketId,
-        WorkbasketAuthorization workbasketAuthorization)
+        WorkbasketPermission workbasketPermission)
         throws NotAuthorizedException {
-        LOGGER.debug("entry to checkAuthorization(workbasketId = {}, workbasketAuthorization = {})", workbasketKey,
-            workbasketAuthorization);
-        if (workbasketAuthorization == null) {
+        LOGGER.debug("entry to checkAuthorization(workbasketId = {}, workbasketPermission = {})", workbasketKey,
+            workbasketPermission);
+        if (workbasketPermission == null) {
             throw new SystemException("checkAuthorization was called with an invalid parameter combination");
         }
         if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
@@ -705,25 +706,25 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             List<String> accessIds = CurrentUserContext.getAccessIds();
             LOGGER.debug("checkAuthorization: Verifying that {} has the permission {} on workbasket {}",
                 CurrentUserContext.getUserid(),
-                workbasketAuthorization.name(), workbasketKey);
+                workbasketPermission.name(), workbasketKey);
 
             List<WorkbasketAccessItemImpl> accessItems;
 
             if (workbasketKey != null) {
                 accessItems = workbasketAccessMapper
                     .findByWorkbasketAccessByWorkbasketKeyDomainAndAuthorization(workbasketKey, domain, accessIds,
-                        workbasketAuthorization.name());
+                        workbasketPermission.name());
             } else if (workbasketId != null) {
                 accessItems = workbasketAccessMapper
                     .findByWorkbasketAndAccessIdAndAuthorizationsById(workbasketId, accessIds,
-                        workbasketAuthorization.name());
+                        workbasketPermission.name());
             } else {
                 throw new SystemException(
                     "checkAuthorizationImpl was called with both workbasketKey and workbasketId set to null");
             }
 
             if (accessItems.isEmpty()) {
-                throw new NotAuthorizedException("Not authorized. Authorization '" + workbasketAuthorization.name()
+                throw new NotAuthorizedException("Not authorized. Permission '" + workbasketPermission.name()
                     + "' on workbasket '" + workbasketKey + "' is needed.");
             }
 

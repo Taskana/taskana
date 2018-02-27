@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import pro.taskana.impl.ObjectReference;
-import pro.taskana.impl.TaskState;
 
 /**
  * task-Interface to specify attribute interactions.

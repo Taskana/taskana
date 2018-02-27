@@ -2,7 +2,6 @@ package pro.taskana;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.impl.WorkbasketType;
 
 /**
@@ -152,7 +151,7 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      * @throws NotAuthorizedException
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
-    WorkbasketQuery accessIdsHavePermission(WorkbasketAuthorization permission, String... accessIds)
+    WorkbasketQuery accessIdsHavePermission(WorkbasketPermission permission, String... accessIds)
         throws InvalidArgumentException, NotAuthorizedException;
 
     /**
@@ -166,7 +165,7 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      * @throws InvalidArgumentException
      *             when permission OR accessIds of the userContext are NULL.
      */
-    WorkbasketQuery callerHasPermission(WorkbasketAuthorization permission) throws InvalidArgumentException;
+    WorkbasketQuery callerHasPermission(WorkbasketPermission permission) throws InvalidArgumentException;
 
     /**
      * Sort the query result by name.

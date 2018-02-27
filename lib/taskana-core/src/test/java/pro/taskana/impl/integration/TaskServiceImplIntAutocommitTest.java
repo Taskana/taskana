@@ -25,6 +25,7 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.KeyDomain;
 import pro.taskana.Task;
+import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
@@ -46,7 +47,6 @@ import pro.taskana.impl.JunitHelper;
 import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
-import pro.taskana.impl.TaskState;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketType;
@@ -407,7 +407,7 @@ public class TaskServiceImplIntAutocommitTest {
         accessItem.setPermRead(permRead);
         accessItem.setPermAppend(permAppend);
         accessItem.setPermTransfer(permTransfer);
-        workbasketService.createWorkbasketAuthorization(accessItem);
+        workbasketService.createWorkbasketAccessItem(accessItem);
     }
 
     @AfterClass

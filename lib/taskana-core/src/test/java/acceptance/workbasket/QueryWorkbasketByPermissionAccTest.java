@@ -13,13 +13,13 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
-import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -44,7 +44,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
             .list();
         Assert.assertEquals(1, results.size());
         Assert.assertEquals("USER_1_1", results.get(0).getKey());
@@ -57,7 +57,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
             .list();
         fail("NotAuthorizedException was expected");
     }
@@ -70,7 +70,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
             .list();
         Assert.assertEquals(7, results.size());
     }
@@ -84,7 +84,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         InvalidRequestException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
             .orderByName(asc)
             .list();
         Assert.assertEquals(7, results.size());
@@ -100,7 +100,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         InvalidRequestException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketAuthorization.APPEND, "user_1_1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
             .orderByName(desc)
             .orderByKey(asc)
             .list();
@@ -116,7 +116,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .callerHasPermission(WorkbasketAuthorization.APPEND)
+            .callerHasPermission(WorkbasketPermission.APPEND)
             .list();
         Assert.assertEquals(7, results.size());
     }
@@ -127,7 +127,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-            .callerHasPermission(WorkbasketAuthorization.READ)
+            .callerHasPermission(WorkbasketPermission.READ)
             .list();
         Assert.assertEquals(1, results.size());
     }

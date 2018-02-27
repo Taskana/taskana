@@ -16,10 +16,10 @@ import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
+import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.TaskState;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

@@ -7,7 +7,6 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.WorkbasketAuthorization;
 
 /**
  * This service manages Workbaskets.
@@ -86,83 +85,83 @@ public interface WorkbasketService {
     WorkbasketAccessItem newWorkbasketAccessItem(String workbasketId, String accessId);
 
     /**
-     * Create and persist a new Workbasket Authorization with a Workbasket and a AccessId.
+     * Create and persist a new {@link WorkbasketAccessItem} with a WorkbasketId, an accessId and permissions.
      *
      * @param workbasketAccessItem
      *            the new workbasketAccessItem
      * @return the created WorkbasketAccessItem
      * @throws InvalidArgumentException
-     *             when the preconditions doesn´t match the required ones.
+     *             when the preconditions dont match the required ones.
      * @throws NotAuthorizedException
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
-    WorkbasketAccessItem createWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
+    WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
         throws InvalidArgumentException, NotAuthorizedException;
 
     /**
-     * This method updates an Workbasket Authorization.
+     * This method updates a {@link WorkbasketAccessItem}.
      *
      * @param workbasketAccessItem
-     *            the Authorization
+     *            the {@link WorkbasketAccessItem}
      * @return the updated entity
      * @throws InvalidArgumentException
-     *             if accessid or workbasketkey is changed in the workbasketAccessItem
+     *             if accessid or workbasketId is changed in the workbasketAccessItem
      * @throws NotAuthorizedException
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
-    WorkbasketAccessItem updateWorkbasketAuthorization(WorkbasketAccessItem workbasketAccessItem)
+    WorkbasketAccessItem updateWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
         throws InvalidArgumentException, NotAuthorizedException;
 
     /**
-     * Deletes a specific authorization.
+     * Deletes a specific {@link WorkbasketAccessItem}.
      *
      * @param id
      *            the id of the WorbasketAccessItem to be deleted
      * @throws NotAuthorizedException
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
-    void deleteWorkbasketAuthorization(String id) throws NotAuthorizedException;
+    void deleteWorkbasketAccessItem(String id) throws NotAuthorizedException;
 
     /**
-     * This method checks the authorization with the saved one for the actual User.
+     * This method checks the authorization for the actual User.
      *
      * @param workbasketId
      *            the id of the workbasket we want to access
-     * @param authorization
-     *            the needed Authorization
+     * @param permission
+     *            the needed {@link WorkbasketPermission}
      * @throws NotAuthorizedException
      *             if the current user has not the requested authorization for the specified workbasket
      * @throws WorkbasketNotFoundException
-     *             if the workbasket can´t be found foor the given ID.
+     *             if the workbasket cannot be found for the given ID.
      */
-    void checkAuthorization(String workbasketId, WorkbasketAuthorization authorization)
+    void checkAuthorization(String workbasketId, WorkbasketPermission permission)
         throws NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
-     * This method checks the authorization with the saved one for the actual User.
+     * This method checks the authorization for the actual User.
      *
      * @param workbasketKey
      *            the key of the workbasket we want to access
      * @param domain
      *            the domain of the workbasket we want to access
-     * @param authorization
-     *            the needed Authorization
+     * @param permission
+     *            the needed {@link WorkbasketPermission}
      * @throws NotAuthorizedException
-     *             if the current user has not the requested authorization for the specified workbasket
+     *             if the current user has not the requested permission for the specified workbasket
      * @throws WorkbasketNotFoundException
      *             if no workbasket can be found for the given key+domain values.
      */
-    void checkAuthorization(String workbasketKey, String domain, WorkbasketAuthorization authorization)
+    void checkAuthorization(String workbasketKey, String domain, WorkbasketPermission permission)
         throws NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
-     * Get all authorizations for a Workbasket.
+     * Get all {@link WorkbasketAccessItem s} for a Workbasket.
      *
      * @param workbasketId
      *            the id of the Workbasket
      * @return List of WorkbasketAccessItems for the Workbasket with workbasketKey
      */
-    List<WorkbasketAccessItem> getWorkbasketAuthorizations(String workbasketId);
+    List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId);
 
     /**
      * Setting up the new WorkbasketAccessItems for a Workbasket. Already stored values will be completely replaced by
@@ -175,7 +174,7 @@ public interface WorkbasketService {
      * @throws InvalidArgumentException
      *             will be thrown when the parameter is NULL or member doesn´t match the preconditions
      */
-    void setWorkbasketAuthorizations(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
+    void setWorkbasketAccessItems(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
         throws InvalidArgumentException;
 
     /**
@@ -186,7 +185,7 @@ public interface WorkbasketService {
      *            a List of WorkbasketAuthorization enums
      * @return the summaries of all Workbaskets for which the current user has the specified authorizations
      */
-    List<WorkbasketSummary> getWorkbaskets(List<WorkbasketAuthorization> permission);
+    List<WorkbasketSummary> getWorkbaskets(List<WorkbasketPermission> permission);
 
     /**
      * This method provides a query builder for querying the database.
@@ -222,7 +221,7 @@ public interface WorkbasketService {
      *            the id of the referenced workbasket
      * @return a Set with all permissions
      */
-    List<WorkbasketAuthorization> getPermissionsForWorkbasket(String workbasketId);
+    List<WorkbasketPermission> getPermissionsForWorkbasket(String workbasketId);
 
     /**
      * Returns the distribution targets for a given workbasket.
@@ -354,5 +353,5 @@ public interface WorkbasketService {
      * @param accessId
      *            of a taskana-user.
      */
-    void deleteWorkbasketAuthorizationForAccessId(String accessId);
+    void deleteWorkbasketAccessItemsForAccessId(String accessId);
 }

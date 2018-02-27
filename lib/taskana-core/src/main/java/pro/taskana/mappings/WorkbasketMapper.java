@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import pro.taskana.impl.WorkbasketAuthorization;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 
@@ -124,24 +124,24 @@ public interface WorkbasketMapper {
     @Select("<script>SELECT W.ID, W.KEY, W.NAME, W.DESCRIPTION, W.OWNER, W.DOMAIN, W.TYPE, W.ORG_LEVEL_1, W.ORG_LEVEL_2,  W.ORG_LEVEL_3, W.ORG_LEVEL_4 FROM WORKBASKET AS W "
         + "INNER JOIN WORKBASKET_ACCESS_LIST AS ACL "
         + "ON (W.ID = ACL.WORKBASKET_ID AND ACL.ACCESS_ID = #{accessId}) "
-        + "WHERE <foreach collection='authorizations' item='authorization' separator=' AND '>"
-        + "<if test=\"authorization.name() == 'OPEN'\">PERM_OPEN</if>"
-        + "<if test=\"authorization.name() == 'READ'\">PERM_READ</if>"
-        + "<if test=\"authorization.name() == 'APPEND'\">PERM_APPEND</if>"
-        + "<if test=\"authorization.name() == 'TRANSFER'\">PERM_TRANSFER</if>"
-        + "<if test=\"authorization.name() == 'DISTRIBUTE'\">PERM_DISTRIBUTE</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_1'\">PERM_CUSTOM_1</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_2'\">PERM_CUSTOM_2</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_3'\">PERM_CUSTOM_3</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_4'\">PERM_CUSTOM_4</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_5'\">PERM_CUSTOM_5</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_6'\">PERM_CUSTOM_6</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_7'\">PERM_CUSTOM_7</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_8'\">PERM_CUSTOM_8</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_9'\">PERM_CUSTOM_9</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_10'\">PERM_CUSTOM_10</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_11'\">PERM_CUSTOM_11</if>"
-        + "<if test=\"authorization.name() == 'CUSTOM_12'\">PERM_CUSTOM_12</if> = 1 </foreach> "
+        + "WHERE <foreach collection='permissions' item='permission' separator=' AND '>"
+        + "<if test=\"permission.name() == 'OPEN'\">PERM_OPEN</if>"
+        + "<if test=\"permission.name() == 'READ'\">PERM_READ</if>"
+        + "<if test=\"permission.name() == 'APPEND'\">PERM_APPEND</if>"
+        + "<if test=\"permission.name() == 'TRANSFER'\">PERM_TRANSFER</if>"
+        + "<if test=\"permission.name() == 'DISTRIBUTE'\">PERM_DISTRIBUTE</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_1'\">PERM_CUSTOM_1</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_2'\">PERM_CUSTOM_2</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_3'\">PERM_CUSTOM_3</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_4'\">PERM_CUSTOM_4</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_5'\">PERM_CUSTOM_5</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_6'\">PERM_CUSTOM_6</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_7'\">PERM_CUSTOM_7</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_8'\">PERM_CUSTOM_8</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_9'\">PERM_CUSTOM_9</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_10'\">PERM_CUSTOM_10</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_11'\">PERM_CUSTOM_11</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_12'\">PERM_CUSTOM_12</if> = 1 </foreach> "
         + "ORDER BY id</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
@@ -156,7 +156,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
-    List<WorkbasketSummaryImpl> findByPermission(@Param("authorizations") List<WorkbasketAuthorization> authorizations,
+    List<WorkbasketSummaryImpl> findByPermission(@Param("permissions") List<WorkbasketPermission> permissions,
         @Param("accessId") String accessId);
 
     @Insert("INSERT INTO WORKBASKET (ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4) VALUES (#{workbasket.id}, #{workbasket.key}, #{workbasket.created}, #{workbasket.modified}, #{workbasket.name}, #{workbasket.domain}, #{workbasket.type}, #{workbasket.description}, #{workbasket.owner}, #{workbasket.custom1}, #{workbasket.custom2}, #{workbasket.custom3}, #{workbasket.custom4}, #{workbasket.orgLevel1}, #{workbasket.orgLevel2}, #{workbasket.orgLevel3}, #{workbasket.orgLevel4})")

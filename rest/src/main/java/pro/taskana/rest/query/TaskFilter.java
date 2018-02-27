@@ -10,10 +10,10 @@ import org.springframework.util.MultiValueMap;
 
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
+import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.TaskState;
 
 @Component
 public class TaskFilter {

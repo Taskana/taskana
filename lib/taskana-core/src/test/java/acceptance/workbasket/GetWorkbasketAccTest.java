@@ -11,12 +11,12 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.impl.WorkbasketType;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -57,14 +57,14 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
     @Test
     public void testGetWorkbasketPermissions() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        List<WorkbasketAuthorization> permissions = workbasketService
+        List<WorkbasketPermission> permissions = workbasketService
             .getPermissionsForWorkbasket("WBI:100000000000000000000000000000000007");
 
         Assert.assertEquals(4, permissions.size());
-        Assert.assertTrue(permissions.contains(WorkbasketAuthorization.READ));
-        Assert.assertTrue(permissions.contains(WorkbasketAuthorization.OPEN));
-        Assert.assertTrue(permissions.contains(WorkbasketAuthorization.TRANSFER));
-        Assert.assertTrue(permissions.contains(WorkbasketAuthorization.APPEND));
+        Assert.assertTrue(permissions.contains(WorkbasketPermission.READ));
+        Assert.assertTrue(permissions.contains(WorkbasketPermission.OPEN));
+        Assert.assertTrue(permissions.contains(WorkbasketPermission.TRANSFER));
+        Assert.assertTrue(permissions.contains(WorkbasketPermission.APPEND));
     }
 
     @Test(expected = WorkbasketNotFoundException.class)

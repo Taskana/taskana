@@ -7,7 +7,6 @@ import pro.taskana.impl.CustomField;
 import pro.taskana.impl.DetailedClassificationReport;
 import pro.taskana.impl.Report;
 import pro.taskana.impl.ReportLineItemDefinition;
-import pro.taskana.impl.TaskState;
 
 /**
  * The Task Monitor Service manages operations on tasks regarding the monitoring.

@@ -12,9 +12,11 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.KeyDomain;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
+import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TimeInterval;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
@@ -763,7 +765,7 @@ public class TaskQueryImpl implements TaskQuery {
                 for (String workbasketId : workbasketIdIn) {
                     try {
                         taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId,
-                            WorkbasketAuthorization.OPEN);
+                            WorkbasketPermission.OPEN);
                     } catch (WorkbasketNotFoundException e) {
                         LOGGER.warn("The workbasket with the ID '" + workbasketId + "' does not exist.", e);
                     }
@@ -773,7 +775,7 @@ public class TaskQueryImpl implements TaskQuery {
                 for (KeyDomain keyDomain : workbasketKeyDomainIn) {
                     try {
                         taskanaEngine.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
-                            keyDomain.getDomain(), WorkbasketAuthorization.OPEN);
+                            keyDomain.getDomain(), WorkbasketPermission.OPEN);
                     } catch (WorkbasketNotFoundException e) {
                         LOGGER.warn("The workbasket with the KEY '" + keyDomain.getKey() + "' and DOMAIN '"
                             + keyDomain.getDomain() + "'does not exist.", e);

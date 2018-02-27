@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskMonitorService;
+import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.TaskMonitorMapper;

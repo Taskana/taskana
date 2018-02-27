@@ -1,5 +1,7 @@
 package pro.taskana.impl;
 
+import pro.taskana.TaskState;
+
 /**
  * A convenience class to represent pairs of task id and task state.
  */

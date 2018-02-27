@@ -115,7 +115,7 @@ public class WorkbasketDefinitionController {
                         workbasketMapper.toModel(res));
                 }
                 for (WorkbasketAccessItemResource authorization : definition.authorizations) {
-                    workbasketService.createWorkbasketAuthorization(
+                    workbasketService.createWorkbasketAccessItem(
                         workbasketAccessItemMapper.toModel(authorization));
                 }
                 idConversion.put(definition.workbasketResource.workbasketId, workbasket.getId());
