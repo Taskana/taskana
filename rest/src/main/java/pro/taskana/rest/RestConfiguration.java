@@ -35,7 +35,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
 @EnableTransactionManagement
 public class RestConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger(RestApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestApplication.class);
 
     @Bean
     @Primary
@@ -80,8 +80,8 @@ public class RestConfiguration {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public TaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) throws SQLException {
-        TaskanaEngineConfiguration taskanaEngineConfiguration =
-            new SpringTaskanaEngineConfiguration(dataSource, true, true);
+        TaskanaEngineConfiguration taskanaEngineConfiguration = new SpringTaskanaEngineConfiguration(dataSource, true,
+            true);
 
         new SampleDataGenerator(dataSource).generateSampleData();
 

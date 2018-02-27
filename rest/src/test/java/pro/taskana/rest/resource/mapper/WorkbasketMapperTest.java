@@ -29,7 +29,7 @@ public class WorkbasketMapperTest {
     WorkbasketMapper workbasketMapper;
 
     @Test
-    public void workbasketToResource() {
+    public void workbasketToResource() throws NotAuthorizedException {
         // given
         Workbasket workbasket = workbasketService.newWorkbasket("1", "DOMAIN_A");
         ((WorkbasketImpl) workbasket).setId("ID");
