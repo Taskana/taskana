@@ -186,7 +186,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .validInDomainEquals(Boolean.TRUE)
             .priorityIn(1, 2, 3)
             .list();
-        assertEquals(23, list.size());
+        assertEquals(15, list.size());
 
     }
 

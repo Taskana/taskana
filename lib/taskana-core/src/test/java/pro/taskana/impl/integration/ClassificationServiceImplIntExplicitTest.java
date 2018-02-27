@@ -210,7 +210,7 @@ public class ClassificationServiceImplIntExplicitTest {
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
+        Classification classification = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "t1");
         classificationService.createClassification(classification);
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .validInDomainEquals(Boolean.TRUE)
@@ -224,7 +224,7 @@ public class ClassificationServiceImplIntExplicitTest {
         ClassificationAlreadyExistException, ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey("", "t1");
+        Classification classification = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "t1");
         classification.setDescription("");
         classification = classificationService.createClassification(classification);
         classification.setDescription("description");
@@ -232,7 +232,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
         Assert.assertEquals(1, list.size());
         classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
@@ -241,10 +241,10 @@ public class ClassificationServiceImplIntExplicitTest {
         classification = classificationService.updateClassification(classification);
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(2, list.size());
 
         List<ClassificationSummary> allClassifications = classificationService.createClassificationQuery().list();
-        Assert.assertEquals(1, allClassifications.size());
+        Assert.assertEquals(2, allClassifications.size());
         connection.commit();
     }
 
@@ -397,10 +397,10 @@ public class ClassificationServiceImplIntExplicitTest {
         ClassificationAlreadyExistException, ClassificationNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey("", "type1");
+        Classification classification = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
         classification = classificationService.createClassification(classification);
 
-        Classification classification1 = this.createNewClassificationWithUniqueKey("", "type1");
+        Classification classification1 = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
         classification1 = classificationService.createClassification(classification1);
         classification1.setParentId(classification.getId());
         classification1 = classificationService.updateClassification(classification1);
@@ -408,22 +408,22 @@ public class ClassificationServiceImplIntExplicitTest {
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .parentIdIn("")
             .list();
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(3, list.size());
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(2, list.size());
+        Assert.assertEquals(4, list.size());
         connection.commit();
 
         list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().createdWithin(today()).list();
-        Assert.assertEquals(2, list.size());
+        Assert.assertEquals(4, list.size());
         list = classificationService.createClassificationQuery().domainIn("domain1").validInDomainEquals(false).list();
         Assert.assertEquals(0, list.size());
         list = classificationService.createClassificationQuery()
             .keyIn(classification1.getKey())
             .list();
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(2, list.size());
 
         list = classificationService.createClassificationQuery()
             .parentIdIn(classification.getId())

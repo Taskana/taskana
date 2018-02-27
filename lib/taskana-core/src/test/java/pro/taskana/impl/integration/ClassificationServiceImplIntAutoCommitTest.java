@@ -189,7 +189,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     public void testInsertAndClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         InvalidArgumentException {
-        Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
+        Classification classification = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
         classification = classificationService.createClassification(classification);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
@@ -203,7 +203,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testUpdateAndClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
-        Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
+        Classification classification = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
         classification = classificationService.createClassification(classification);
         classification.setDescription("description");
         classification = classificationService.updateClassification(classification);
@@ -216,10 +216,10 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classification = classificationService.updateClassification(classification);
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(2, list.size());
 
         List<ClassificationSummary> allClassifications = classificationService.createClassificationQuery().list();
-        Assert.assertEquals(1, allClassifications.size());
+        Assert.assertEquals(2, allClassifications.size());
     }
 
     @Test
@@ -356,10 +356,10 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testDefaultSettingsWithClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
-        Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
+        Classification classification = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
         classification = classificationService.createClassification(classification);
 
-        Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
+        Classification classification1 = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
         classification1 = classificationService.createClassification(classification1);
 
         classification1.setParentId(classification.getKey());
@@ -368,27 +368,27 @@ public class ClassificationServiceImplIntAutoCommitTest {
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .parentIdIn("")
             .list();
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(3, list.size());
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(2, list.size());
+        Assert.assertEquals(4, list.size());
 
         List<ClassificationSummary> listAll = classificationService.createClassificationQuery().list();
         list = classificationService.createClassificationQuery().list();
         Assert.assertEquals(listAll.size(), list.size());
 
         list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
-        Assert.assertEquals(listAll.size(), list.size());
+        Assert.assertEquals(2, list.size());
 
         list = classificationService.createClassificationQuery().createdWithin(today()).list();
-        Assert.assertEquals(listAll.size(), list.size());
+        Assert.assertEquals(4, list.size());
 
         list = classificationService.createClassificationQuery().domainIn("domain1").validInDomainEquals(false).list();
         Assert.assertEquals(0, list.size());
 
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(2, list.size());
+        Assert.assertEquals(4, list.size());
     }
 
     private TimeInterval today() {
