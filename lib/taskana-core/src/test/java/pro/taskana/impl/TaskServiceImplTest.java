@@ -104,7 +104,7 @@ public class TaskServiceImplTest {
     private SqlSession sqlSessionMock;
 
     @Before
-    public void setup() {
+    public void setup() throws WorkbasketNotFoundException {
         MockitoAnnotations.initMocks(this);
         doReturn(workbasketServiceMock).when(taskanaEngineMock).getWorkbasketService();
         doReturn(classificationServiceImplMock).when(taskanaEngineMock).getClassificationService();

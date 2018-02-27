@@ -118,11 +118,11 @@ public class TransferTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000001");
 
-        taskService.transfer(task.getId(), "TEAMLEAD_2");
+        taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
     }
 
     @WithAccessId(
-        userName = "USER_1_1",
+        userName = "user_1_1",
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testThrowsExceptionIfTransferWithNoAppendAuthorization()
@@ -131,7 +131,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000002");
 
-        taskService.transfer(task.getId(), "USER_1_1");
+        taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000008");
     }
 
     @WithAccessId(

@@ -19,7 +19,7 @@ INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:10000000000000000000000000000000
 -- cross team tranfers
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000015', 'WBI:100000000000000000000000000000000006',    'group_2', true, false, true,  false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000016', 'WBI:100000000000000000000000000000000007',    'group_2', true, false, true,  false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
-INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000017', 'WBI:100000000000000000000000000000000008',    'group_1', true, false, true,  false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
+INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000017', 'WBI:100000000000000000000000000000000008',    'group_1', true, false, false,  false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000018', 'WBI:100000000000000000000000000000000009',    'group_1', true, false, true,  false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
 -- Team GPK access
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000019', 'WBI:100000000000000000000000000000000002',    'group_1', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
