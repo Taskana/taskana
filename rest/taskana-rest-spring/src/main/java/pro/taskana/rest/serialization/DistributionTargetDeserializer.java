@@ -21,13 +21,13 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 
 /**
- * This class deserializes the string list to real workbaskets
+ * This class deserializes the string list to real workbaskets.
  */
 public class DistributionTargetDeserializer extends StdDeserializer<List<Workbasket>> {
 
     private static final long serialVersionUID = 4226950057149602129L;
 
-    private static final Logger logger = LoggerFactory.getLogger(DistributionTargetDeserializer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DistributionTargetDeserializer.class);
 
     @Autowired
     private WorkbasketService workbasketService;
@@ -50,9 +50,9 @@ public class DistributionTargetDeserializer extends StdDeserializer<List<Workbas
             try {
                 distributionTargets.add(workbasketService.getWorkbasket(id));
             } catch (WorkbasketNotFoundException e) {
-                logger.error("The workbasket with the id '" + id + "' is not found in database.");
+                LOGGER.error("The workbasket with the id '" + id + "' is not found in database.");
             } catch (NotAuthorizedException e) {
-                logger.error(
+                LOGGER.error(
                     "The user misses some required permissions for the workbasket with ID '" + id
                         + "'. Exception = {}.",
                     e);
