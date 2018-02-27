@@ -273,14 +273,20 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public void checkAuthorization(String workbasketId,
-        WorkbasketAuthorization workbasketAuthorization) throws NotAuthorizedException {
+        WorkbasketAuthorization workbasketAuthorization) throws NotAuthorizedException, WorkbasketNotFoundException {
+        if (workbasketMapper.findById(workbasketId) == null) {
+            throw new WorkbasketNotFoundException(workbasketId);
+        }
         checkAuthorization(null, null, workbasketId, workbasketAuthorization);
     }
 
     @Override
     public void checkAuthorization(String workbasketKey, String domain,
         WorkbasketAuthorization workbasketAuthorization)
-        throws NotAuthorizedException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
+        if (workbasketMapper.findByKeyAndDomain(workbasketKey, domain) == null) {
+            throw new WorkbasketNotFoundException(workbasketKey + " - " + domain);
+        }
         checkAuthorization(workbasketKey, domain, null, workbasketAuthorization);
     }
 
@@ -598,7 +604,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public void removeDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
-        throws NotAuthorizedException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         LOGGER.debug("entry to removeDistributionTarget(sourceWorkbasketId = {}, targetWorkbasketId = {})",
             sourceWorkbasketId, targetWorkbasketId);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);

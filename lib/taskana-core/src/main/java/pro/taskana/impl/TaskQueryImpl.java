@@ -18,6 +18,7 @@ import pro.taskana.TimeInterval;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.LoggerUtils;
 
 /**
@@ -760,14 +761,23 @@ public class TaskQueryImpl implements TaskQuery {
         try {
             if (this.workbasketIdIn != null && this.workbasketIdIn.length > 0) {
                 for (String workbasketId : workbasketIdIn) {
-                    taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId,
-                        WorkbasketAuthorization.OPEN);
+                    try {
+                        taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId,
+                            WorkbasketAuthorization.OPEN);
+                    } catch (WorkbasketNotFoundException e) {
+                        LOGGER.warn("The workbasket with the ID '" + workbasketId + "' does not exist.", e);
+                    }
                 }
             }
             if (workbasketKeyDomainIn != null && workbasketKeyDomainIn.length > 0) {
                 for (KeyDomain keyDomain : workbasketKeyDomainIn) {
-                    taskanaEngine.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
-                        keyDomain.getDomain(), WorkbasketAuthorization.OPEN);
+                    try {
+                        taskanaEngine.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
+                            keyDomain.getDomain(), WorkbasketAuthorization.OPEN);
+                    } catch (WorkbasketNotFoundException e) {
+                        LOGGER.warn("The workbasket with the KEY '" + keyDomain.getKey() + "' and DOMAIN '"
+                            + keyDomain.getDomain() + "'does not exist.", e);
+                    }
                 }
             }
         } catch (NotAuthorizedException e) {
