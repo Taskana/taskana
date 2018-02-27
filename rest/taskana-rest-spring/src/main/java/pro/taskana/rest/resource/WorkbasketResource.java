@@ -6,6 +6,9 @@ import org.springframework.hateoas.ResourceSupport;
 
 import pro.taskana.impl.WorkbasketType;
 
+/**
+ * TODO.
+ */
 public class WorkbasketResource extends ResourceSupport {
 
     public String workbasketId;

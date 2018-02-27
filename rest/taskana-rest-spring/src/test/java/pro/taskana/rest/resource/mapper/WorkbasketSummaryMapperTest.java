@@ -14,6 +14,9 @@ import pro.taskana.impl.WorkbasketType;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 
+/**
+ * TODO.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RestConfiguration.class})
 @WebAppConfiguration

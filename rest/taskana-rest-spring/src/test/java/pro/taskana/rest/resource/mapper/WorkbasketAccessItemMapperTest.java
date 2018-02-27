@@ -14,6 +14,9 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
+/**
+ * TODO.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RestConfiguration.class})
 @WebAppConfiguration

@@ -28,6 +28,9 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
 
+/**
+ * TODO.
+ */
 @RestController
 @RequestMapping(path = "/v1/classificationdefinitions", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class ClassificationDefinitionController {
@@ -69,10 +72,12 @@ public class ClassificationDefinitionController {
 
             for (ClassificationResource classificationResource : classificationResources) {
                 Classification classification = classificationMapper.toModel(classificationResource);
-                if (systemIds.containsKey(classificationResource.key + "|||" + classificationResource.domain))
+                if (systemIds.containsKey(classificationResource.key + "|||" + classificationResource.domain)) {
                     classificationService.updateClassification(classification);
-                else
+
+                } else {
                     classificationService.createClassification(classification);
+                }
             }
 
             return new ResponseEntity<>(HttpStatus.OK);

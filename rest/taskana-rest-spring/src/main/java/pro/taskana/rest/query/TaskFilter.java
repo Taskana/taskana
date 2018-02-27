@@ -15,6 +15,9 @@ import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
+/**
+ * TODO.
+ */
 @Component
 public class TaskFilter {
 
@@ -131,18 +134,14 @@ public class TaskFilter {
 
     private String[] extractCommaSeperatedFields(List<String> list) {
         List<String> values = new ArrayList<>();
-        list.stream().forEach(item -> {
-            Arrays.asList(item.split(COMMA)).stream().forEach(subItem -> {
-                values.add(subItem);
-            });
-        });
+        list.forEach(item -> values.addAll(Arrays.asList(item.split(COMMA))));
         return values.toArray(new String[0]);
     }
 
     private TaskState[] extractStates(MultiValueMap<String, String> params) {
         List<TaskState> states = new ArrayList<>();
-        params.get(STATE).stream().forEach(item -> {
-            Arrays.asList(item.split(COMMA)).stream().forEach(state -> {
+        params.get(STATE).forEach(item -> {
+            Arrays.asList(item.split(COMMA)).forEach(state -> {
                 switch (state) {
                     case READY:
                         states.add(TaskState.READY);
@@ -153,6 +152,8 @@ public class TaskFilter {
                     case CLAIMED:
                         states.add(TaskState.CLAIMED);
                         break;
+                    default:
+                        throw new RuntimeException("should never occur");
                 }
             });
         });

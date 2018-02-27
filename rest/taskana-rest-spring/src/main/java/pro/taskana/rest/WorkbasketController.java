@@ -41,6 +41,9 @@ import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 
+/**
+ * TODO.
+ */
 @RestController
 @RequestMapping(path = "/v1/workbaskets", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class WorkbasketController {
@@ -343,6 +346,8 @@ public class WorkbasketController {
                     case "CUSTOM_12":
                         query.callerHasPermission(WorkbasketPermission.CUSTOM_12);
                         break;
+                    default:
+                        throw new RuntimeException("should never occur");
                 }
             } catch (InvalidArgumentException e) {
                 e.printStackTrace();
@@ -369,6 +374,8 @@ public class WorkbasketController {
             case TYPE:
                 query.orderByType(sortDirection);
                 break;
+            default:
+                throw new RuntimeException("should never occur");
         }
     }
 
@@ -384,20 +391,27 @@ public class WorkbasketController {
         String key, String keyLike,
         String descLike, String owner,
         String ownerLike, String type) {
-        if (name != null)
+        if (name != null) {
             query.nameIn(name);
-        if (nameLike != null)
+        }
+        if (nameLike != null) {
             query.nameLike(LIKE + nameLike + LIKE);
-        if (key != null)
+        }
+        if (key != null) {
             query.keyIn(key);
-        if (keyLike != null)
+        }
+        if (keyLike != null) {
             query.keyLike(LIKE + keyLike + LIKE);
-        if (owner != null)
+        }
+        if (owner != null) {
             query.ownerIn(owner);
-        if (ownerLike != null)
+        }
+        if (ownerLike != null) {
             query.ownerLike(LIKE + ownerLike + LIKE);
-        if (descLike != null)
+        }
+        if (descLike != null) {
             query.descriptionLike(LIKE + descLike + LIKE);
+        }
         if (type != null) {
             switch (type) {
                 case "PERSONAL":
@@ -412,6 +426,8 @@ public class WorkbasketController {
                 case "TOPIC":
                     query.typeIn(WorkbasketType.TOPIC);
                     break;
+                    default:
+                        throw new RuntimeException("should never occur");
             }
         }
     }

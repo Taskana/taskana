@@ -11,28 +11,28 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import pro.taskana.Workbasket;
 
 /**
- * This class serializes the distribution targets to an string array with ids
+ * This class serializes the distribution targets to an string array with ids.
  */
 public class DistributionTargetSerializer extends StdSerializer<List<Workbasket>> {
 
-	private static final long serialVersionUID = -4655804943794734821L;
+    private static final long serialVersionUID = -4655804943794734821L;
 
-	public DistributionTargetSerializer() {
-		this(null);
-	}
+    public DistributionTargetSerializer() {
+        this(null);
+    }
 
-	public DistributionTargetSerializer(Class<List<Workbasket>> t) {
-		super(t);
-	}
+    public DistributionTargetSerializer(Class<List<Workbasket>> t) {
+        super(t);
+    }
 
-	@Override
-	public void serialize(List<Workbasket> workbaskets, JsonGenerator gen, SerializerProvider provider)
-			throws IOException {
-		List<String> ids = new ArrayList<>();
+    @Override
+    public void serialize(List<Workbasket> workbaskets, JsonGenerator gen, SerializerProvider provider)
+        throws IOException {
+        List<String> ids = new ArrayList<>();
 
-		for (Workbasket item : workbaskets) {
-			ids.add(item.getId());
-		}
-		gen.writeObject(ids);
-	}
+        for (Workbasket item : workbaskets) {
+            ids.add(item.getId());
+        }
+        gen.writeObject(ids);
+    }
 }
