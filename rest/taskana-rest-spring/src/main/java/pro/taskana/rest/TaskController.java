@@ -33,11 +33,14 @@ import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.rest.query.TaskFilter;
 
+/**
+ * TODO.
+ */
 @RestController
 @RequestMapping(path = "/v1/tasks", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class TaskController {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskController.class);
 
     @Autowired
     private TaskService taskService;
@@ -56,7 +59,7 @@ public class TaskController {
             }
             return ResponseEntity.status(HttpStatus.OK).body(taskLogic.inspectPrams(params));
         } catch (NotAuthorizedException e) {
-            logger.error("Something went wrong with the Authorisation, while getting all Tasks.", e);
+            LOGGER.error("Something went wrong with the Authorisation, while getting all Tasks.", e);
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -69,7 +72,7 @@ public class TaskController {
             Task task = taskService.getTask(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (TaskNotFoundException e) {
-            logger.error("The searched Task couldn´t be found or does not exist.", e);
+            LOGGER.error("The searched Task couldn´t be found or does not exist.", e);
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -103,11 +106,11 @@ public class TaskController {
             Task updatedTask = taskService.getTask(taskId);
             return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
         } catch (TaskNotFoundException e) {
-            logger.error("The given Task coundn´t be found/claimd or does not Exist.", e);
+            LOGGER.error("The given Task coundn´t be found/claimd or does not Exist.", e);
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (InvalidStateException | InvalidOwnerException e) {
-            logger.error("The given Task could not be claimed. Reason: {}", e);
+            LOGGER.error("The given Task could not be claimed. Reason: {}", e);
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -136,7 +139,7 @@ public class TaskController {
             Task createdTask = taskService.createTask(task);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         } catch (Exception e) {
-            logger.error("Something went wrong: ", e);
+            LOGGER.error("Something went wrong: ", e);
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -149,7 +152,7 @@ public class TaskController {
             Task updatedTask = taskService.transfer(taskId, workbasketKey);
             return ResponseEntity.status(HttpStatus.CREATED).body(updatedTask);
         } catch (Exception e) {
-            logger.error("Something went wrong: ", e);
+            LOGGER.error("Something went wrong: ", e);
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

@@ -9,12 +9,12 @@ import pro.taskana.Workbasket;
 
 /**
  * This class is used to override the distributiontargets with non standard
- * serialization classes
+ * serialization classes.
  */
 public abstract class WorkbasketMixIn {
 
-	@JsonSerialize(using = DistributionTargetSerializer.class)
-	@JsonDeserialize(using = DistributionTargetDeserializer.class)
-	abstract List<Workbasket> getDistributionTargets();
+    @JsonSerialize(using = DistributionTargetSerializer.class)
+    @JsonDeserialize(using = DistributionTargetDeserializer.class)
+    abstract List<Workbasket> getDistributionTargets();
 
 }

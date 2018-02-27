@@ -2,6 +2,9 @@ package pro.taskana.rest.resource;
 
 import org.springframework.hateoas.ResourceSupport;
 
+/**
+ * TODO.
+ */
 public class ClassificationResource extends ResourceSupport {
 
     public String classificationId;
