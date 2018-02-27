@@ -3,23 +3,23 @@ import { Links } from './links';
 export class Workbasket {
     constructor(
         public workbasketId: string,
-        public created: string,
-        public key: string,
-        public domain: string,
-        public type: string,
-        public modified: string,
-        public name: string,
-        public description: string,        
-        public owner: string,
-        public custom1: string,
-        public custom2: string,
-        public custom3: string,
-        public custom4: string,
-        public orgLevel1: string,
-        public orgLevel2: string,
-        public orgLevel3: string,
-        public orgLevel4: string, 
-        public links: Array<Links>){}
+        public created: string = undefined,
+        public key: string = undefined,
+        public domain: string = undefined,
+        public type: string = undefined,
+        public modified: string = undefined,
+        public name: string = undefined,
+        public description: string = undefined,
+        public owner: string = undefined,
+        public custom1: string = undefined,
+        public custom2: string = undefined,
+        public custom3: string = undefined,
+        public custom4: string = undefined,
+        public orgLevel1: string = undefined,
+        public orgLevel2: string = undefined,
+        public orgLevel3: string = undefined,
+        public orgLevel4: string = undefined, 
+        public links: Array<Links> = undefined){}
 
         public static equals(org: Workbasket, comp: Workbasket): boolean {
             if (org.workbasketId !== comp.workbasketId) { return false; }

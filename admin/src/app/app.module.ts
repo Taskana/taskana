@@ -21,10 +21,10 @@ import { CategorieslistComponent } from './categorieslist/categorieslist.compone
 import { CategoriestreeComponent } from './categoriestree/categoriestree.component';
 import { CategoryeditorComponent } from './categoryeditor/categoryeditor.component';
 import { CategoriesadministrationComponent } from './categoriesadministration/categoriesadministration.component';
-import { WorkbasketAuthorizationComponent } from './workbasket-authorization/workbasket-authorization.component';
 import { WorkbasketDistributiontargetsComponent } from './workbasket-distributiontargets/workbasket-distributiontargets.component';
 import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component';
 import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component';
+import { AuthorizationsComponent } from './workbasket/details/authorizations/authorizations.component';
 import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { FilterComponent } from './shared/filter/filter.component';
@@ -70,7 +70,7 @@ const DECLARATIONS =  [
                       CategoriestreeComponent,
                       CategoryeditorComponent,
                       CategoriesadministrationComponent,
-                      WorkbasketAuthorizationComponent,
+                      AuthorizationsComponent,
                       WorkbasketDetailsComponent,
                       WorkbasketDistributiontargetsComponent,
                       MasterAndDetailComponent,

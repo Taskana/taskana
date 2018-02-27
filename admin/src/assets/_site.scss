@@ -91,6 +91,14 @@
     }
 }
 
+.brown {
+    color: #f0ad4e;
+    & svg {
+        fill: #f0ad4e;
+    }
+}
+
+
 /*
  *Remove bootstrap cols padding for master and detail component
 */
