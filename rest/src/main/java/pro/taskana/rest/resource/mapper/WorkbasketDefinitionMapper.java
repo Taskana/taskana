@@ -48,7 +48,7 @@ public class WorkbasketDefinitionMapper {
     public WorkbasketDefinition toResource(Workbasket basket)
         throws NotAuthorizedException, WorkbasketNotFoundException {
         List<WorkbasketAccessItemResource> authorizations = new ArrayList<>();
-        workbasketService.getWorkbasketAuthorizations(
+        workbasketService.getWorkbasketAccessItems(
             basket.getKey())
             .stream()
             .forEach(t -> {

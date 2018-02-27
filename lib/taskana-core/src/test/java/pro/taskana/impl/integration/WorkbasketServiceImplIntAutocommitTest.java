@@ -184,10 +184,10 @@ public class WorkbasketServiceImplIntAutocommitTest {
             .newWorkbasketAccessItem("k100000000000000000000000000000000000000", "Arthur Dent");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
-        workBasketService.createWorkbasketAuthorization(accessItem);
+        workBasketService.createWorkbasketAccessItem(accessItem);
 
         Assert.assertEquals(1,
-            workBasketService.getWorkbasketAuthorizations("k100000000000000000000000000000000000000").size());
+            workBasketService.getWorkbasketAccessItems("k100000000000000000000000000000000000000").size());
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
@@ -198,13 +198,13 @@ public class WorkbasketServiceImplIntAutocommitTest {
             "Zaphod Beeblebrox");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
-        workBasketService.createWorkbasketAuthorization(accessItem);
+        workBasketService.createWorkbasketAccessItem(accessItem);
 
         Assert.assertEquals(1,
-            workBasketService.getWorkbasketAuthorizations("k200000000000000000000000000000000000000").size());
+            workBasketService.getWorkbasketAccessItems("k200000000000000000000000000000000000000").size());
 
         accessItem.setPermAppend(true);
-        workBasketService.updateWorkbasketAuthorization(accessItem);
+        workBasketService.updateWorkbasketAccessItem(accessItem);
 
         if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
             Assert.assertEquals("zaphod beeblebrox", accessItem.getAccessId());
@@ -247,7 +247,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         accessItem.setPermRead(permRead);
         accessItem.setPermAppend(permAppend);
         accessItem.setPermTransfer(permTransfer);
-        workBasketService.createWorkbasketAuthorization(accessItem);
+        workBasketService.createWorkbasketAccessItem(accessItem);
     }
 
     private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type)

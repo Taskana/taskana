@@ -29,6 +29,7 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.KeyDomain;
 import pro.taskana.Task;
+import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
@@ -51,7 +52,6 @@ import pro.taskana.impl.JunitHelper;
 import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
-import pro.taskana.impl.TaskState;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketServiceImpl;
@@ -154,7 +154,7 @@ public class TaskServiceImplIntExplicitTest {
         accessItem.setPermAppend(true);
         accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
-        workbasketService.createWorkbasketAuthorization(accessItem);
+        workbasketService.createWorkbasketAccessItem(accessItem);
 
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
@@ -241,7 +241,7 @@ public class TaskServiceImplIntExplicitTest {
         accessItem.setPermAppend(true);
         accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
-        workbasketService.createWorkbasketAuthorization(accessItem);
+        workbasketService.createWorkbasketAccessItem(accessItem);
 
         Task test = taskServiceImpl.newTask(wb.getId());
         test.setPrimaryObjRef(objectReference);
@@ -546,12 +546,12 @@ public class TaskServiceImplIntExplicitTest {
         accessItem.setPermAppend(true);
         accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
-        workbasketService.createWorkbasketAuthorization(accessItem);
+        workbasketService.createWorkbasketAccessItem(accessItem);
 
         WorkbasketAccessItem accessItem2 = workbasketService.newWorkbasketAccessItem("2", "DummyGroup");
         accessItem.setPermRead(true);
         accessItem2.setPermOpen(true);
-        workbasketService.createWorkbasketAuthorization(accessItem2);
+        workbasketService.createWorkbasketAccessItem(accessItem2);
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
@@ -561,7 +561,7 @@ public class TaskServiceImplIntExplicitTest {
         accessItem.setPermRead(permRead);
         accessItem.setPermAppend(permAppend);
         accessItem.setPermTransfer(permTransfer);
-        workbasketService.createWorkbasketAuthorization(accessItem);
+        workbasketService.createWorkbasketAccessItem(accessItem);
     }
 
     @After

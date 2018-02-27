@@ -15,9 +15,9 @@ import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.ClobTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
+import pro.taskana.TaskState;
 import pro.taskana.impl.MinimalTaskSummary;
 import pro.taskana.impl.TaskImpl;
-import pro.taskana.impl.TaskState;
 import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;

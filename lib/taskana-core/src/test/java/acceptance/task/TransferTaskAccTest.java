@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.TaskState;
 import pro.taskana.Workbasket;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -33,7 +34,6 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.BulkOperationResults;
-import pro.taskana.impl.TaskState;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

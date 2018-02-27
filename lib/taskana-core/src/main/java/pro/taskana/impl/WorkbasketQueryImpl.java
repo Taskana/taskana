@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TimeInterval;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -31,7 +32,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbaskets";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
     private String[] accessId;
-    private WorkbasketAuthorization authorization;
+    private WorkbasketPermission permission;
     private String[] nameIn;
     private String[] nameLike;
     private String[] keyIn;
@@ -324,7 +325,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery accessIdsHavePermission(WorkbasketAuthorization permission, String... accessIds)
+    public WorkbasketQuery accessIdsHavePermission(WorkbasketPermission permission, String... accessIds)
         throws InvalidArgumentException, NotAuthorizedException {
         taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
         // Checking pre-conditions
@@ -336,7 +337,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         }
 
         // set up permissions and ids
-        this.authorization = permission;
+        this.permission = permission;
         this.accessId = accessIds;
         lowercaseAccessIds(this.accessId);
 
@@ -344,8 +345,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery callerHasPermission(WorkbasketAuthorization permission) throws InvalidArgumentException {
-        this.authorization = permission;
+    public WorkbasketQuery callerHasPermission(WorkbasketPermission permission) throws InvalidArgumentException {
+        this.permission = permission;
         return this;
     }
 
@@ -417,8 +418,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return accessId;
     }
 
-    public WorkbasketAuthorization getAuthorization() {
-        return authorization;
+    public WorkbasketPermission getPermission() {
+        return permission;
     }
 
     public String[] getNameIn() {
@@ -561,8 +562,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         StringBuilder builder = new StringBuilder();
         builder.append("WorkbasketQueryImpl [accessId=");
         builder.append(Arrays.toString(accessId));
-        builder.append(", authorization=");
-        builder.append(authorization);
+        builder.append(", permission=");
+        builder.append(permission);
         builder.append(", nameIn=");
         builder.append(Arrays.toString(nameIn));
         builder.append(", nameLike=");

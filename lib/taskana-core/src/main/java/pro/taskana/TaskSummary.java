@@ -3,7 +3,6 @@ package pro.taskana;
 import java.time.Instant;
 
 import pro.taskana.impl.ObjectReference;
-import pro.taskana.impl.TaskState;
 
 /**
  * Interface for TaskSummary. This is a specific short model-object which only contains the most important information.

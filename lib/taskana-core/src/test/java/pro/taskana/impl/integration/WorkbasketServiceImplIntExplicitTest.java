@@ -204,9 +204,9 @@ public class WorkbasketServiceImplIntExplicitTest {
             "Arthur Dent");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
-        workBasketService.createWorkbasketAuthorization(accessItem);
+        workBasketService.createWorkbasketAccessItem(accessItem);
 
-        Assert.assertEquals(1, workBasketService.getWorkbasketAuthorizations("Key1").size());
+        Assert.assertEquals(1, workBasketService.getWorkbasketAccessItems("Key1").size());
         connection.commit();
     }
 
@@ -221,9 +221,9 @@ public class WorkbasketServiceImplIntExplicitTest {
             "Zaphod Beeblebrox");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
-        workBasketService.createWorkbasketAuthorization(accessItem);
+        workBasketService.createWorkbasketAccessItem(accessItem);
 
-        Assert.assertEquals(1, workBasketService.getWorkbasketAuthorizations("key2").size());
+        Assert.assertEquals(1, workBasketService.getWorkbasketAccessItems("key2").size());
         Assert.assertEquals("zaphod beeblebrox", accessItem.getAccessId());
         connection.commit();
     }
@@ -237,7 +237,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         accessItem.setPermRead(permRead);
         accessItem.setPermAppend(permAppend);
         accessItem.setPermTransfer(permTransfer);
-        workBasketService.createWorkbasketAuthorization(accessItem);
+        workBasketService.createWorkbasketAccessItem(accessItem);
     }
 
     private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type)

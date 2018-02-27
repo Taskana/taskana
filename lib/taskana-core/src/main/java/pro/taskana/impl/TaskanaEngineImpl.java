@@ -356,14 +356,17 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
                     InputStream inputStream = this.getClass().getResourceAsStream(propertiesFile);
                     if (inputStream == null) {
-                        LOGGER.error("properties file {} was not found on classpath.", propertiesFile);
+                        LOGGER.error("properties file {} for Role configuration was not found on classpath.",
+                            propertiesFile);
                         ensureRoleMapIsFullyInitialized();
                         return;
                     } else {
                         props.load(new InputStreamReader(inputStream));
+                        LOGGER.debug("Role properties were loaded from file {} from classpath.", propertiesFile);
                     }
                 } else {
                     props.load(new FileInputStream(propertiesFile));
+                    LOGGER.debug("Role properties were loaded from file {}.", propertiesFile);
                 }
                 for (Object obj : props.keySet()) {
                     String propertyName = ((String) obj);

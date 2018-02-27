@@ -48,7 +48,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         workbasket = workbasketService.createWorkbasket(workbasket);
         WorkbasketAccessItem wbai = workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user_1_2");
         wbai.setPermRead(true);
-        workbasketService.createWorkbasketAuthorization(wbai);
+        workbasketService.createWorkbasketAccessItem(wbai);
 
         int after = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
         assertEquals(before + 1, after);
