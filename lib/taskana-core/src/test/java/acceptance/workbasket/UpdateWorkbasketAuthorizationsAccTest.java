@@ -56,11 +56,11 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         accessItem.setPermAppend(true);
         accessItem.setPermCustom11(true);
         accessItem.setPermRead(true);
-        accessItem = workbasketService.createWorkbasketAuthorization(accessItem);
+        accessItem = workbasketService.createWorkbasketAccessItem(accessItem);
 
         accessItem.setPermCustom1(true);
         accessItem.setPermAppend(false);
-        WorkbasketAccessItem updatedItem = workbasketService.updateWorkbasketAuthorization(accessItem);
+        WorkbasketAccessItem updatedItem = workbasketService.updateWorkbasketAccessItem(accessItem);
 
         Assert.assertEquals(false, updatedItem.isPermAppend());
         Assert.assertEquals(true, updatedItem.isPermRead());
@@ -82,20 +82,20 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         accessItem.setPermAppend(true);
         accessItem.setPermCustom11(true);
         accessItem.setPermRead(true);
-        accessItem = workbasketService.createWorkbasketAuthorization(accessItem);
+        accessItem = workbasketService.createWorkbasketAccessItem(accessItem);
 
         accessItem.setPermCustom1(true);
         accessItem.setPermAppend(false);
         ((WorkbasketAccessItemImpl) accessItem).setAccessId("willi");
         try {
-            workbasketService.updateWorkbasketAuthorization(accessItem);
+            workbasketService.updateWorkbasketAccessItem(accessItem);
             fail("InvalidArgumentException was expected because access id was changed");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
 
         ((WorkbasketAccessItemImpl) accessItem).setAccessId("user1");
-        accessItem = workbasketService.updateWorkbasketAuthorization(accessItem);
+        accessItem = workbasketService.updateWorkbasketAccessItem(accessItem);
         Assert.assertEquals(false, accessItem.isPermAppend());
         Assert.assertEquals(true, accessItem.isPermRead());
         Assert.assertEquals(true, accessItem.isPermCustom11());
@@ -104,7 +104,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
         ((WorkbasketAccessItemImpl) accessItem).setWorkbasketId("2");
         try {
-            workbasketService.updateWorkbasketAuthorization(accessItem);
+            workbasketService.updateWorkbasketAccessItem(accessItem);
             fail("InvalidArgumentException was expected because key was changed");
         } catch (InvalidArgumentException ex) {
             // nothing to do
@@ -136,7 +136,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         assertThat(createdTask, not(equalTo(null)));
 
         List<WorkbasketAccessItem> accessItems = workbasketService
-            .getWorkbasketAuthorizations("WBI:100000000000000000000000000000000008");
+            .getWorkbasketAccessItems("WBI:100000000000000000000000000000000008");
         WorkbasketAccessItem theAccessItem = accessItems.stream()
             .filter(x -> groupName.equals(x.getAccessId()))
             .findFirst()
@@ -144,7 +144,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
         Assert.assertTrue(theAccessItem != null);
         theAccessItem.setPermOpen(false);
-        workbasketService.updateWorkbasketAuthorization(theAccessItem);
+        workbasketService.updateWorkbasketAccessItem(theAccessItem);
 
         try {
             taskService.createTaskQuery()
@@ -164,7 +164,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000004";
         List<WorkbasketAccessItem> accessItems = workbasketService
-            .getWorkbasketAuthorizations(wbId);
+            .getWorkbasketAccessItems(wbId);
         int countBefore = accessItems.size();
 
         // update some values
@@ -179,10 +179,10 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         item1.setPermTransfer(false);
         final String updateId1 = item1.getId();
 
-        workbasketService.setWorkbasketAuthorizations(wbId, accessItems);
+        workbasketService.setWorkbasketAccessItems(wbId, accessItems);
 
         List<WorkbasketAccessItem> updatedAccessItems = workbasketService
-            .getWorkbasketAuthorizations(wbId);
+            .getWorkbasketAccessItems(wbId);
         int countAfter = updatedAccessItems.size();
         assertThat(countAfter, equalTo(countBefore));
 
@@ -205,7 +205,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000004";
         List<WorkbasketAccessItem> accessItems = workbasketService
-            .getWorkbasketAuthorizations(wbId);
+            .getWorkbasketAccessItems(wbId);
         int countBefore = accessItems.size();
 
         // update some values
@@ -221,10 +221,10 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         newItem.setPermCustom12(true);
         accessItems.add(newItem);
 
-        workbasketService.setWorkbasketAuthorizations(wbId, accessItems);
+        workbasketService.setWorkbasketAccessItems(wbId, accessItems);
 
         List<WorkbasketAccessItem> updatedAccessItems = workbasketService
-            .getWorkbasketAuthorizations(wbId);
+            .getWorkbasketAccessItems(wbId);
         int countAfter = updatedAccessItems.size();
         assertTrue((countBefore + 1) == countAfter);
 
@@ -248,7 +248,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             .accessIdIn(accessId)
             .count();
 
-        workbasketService.deleteWorkbasketAuthorizationForAccessId(accessId);
+        workbasketService.deleteWorkbasketAccessItemsForAccessId(accessId);
 
         final long accessIdCountAfter = workbasketService
             .createWorkbasketAccessItemQuery()
@@ -260,9 +260,9 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     @Test
     public void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        workbasketService.deleteWorkbasketAuthorizationForAccessId("");
-        workbasketService.deleteWorkbasketAuthorizationForAccessId(null);
-        workbasketService.deleteWorkbasketAuthorizationForAccessId("123UNUSED456");
+        workbasketService.deleteWorkbasketAccessItemsForAccessId("");
+        workbasketService.deleteWorkbasketAccessItemsForAccessId(null);
+        workbasketService.deleteWorkbasketAccessItemsForAccessId("123UNUSED456");
     }
 
     @AfterClass

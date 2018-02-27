@@ -39,7 +39,9 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.TaskState;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.AttachmentPersistenceException;
@@ -221,7 +223,7 @@ public class TaskServiceImplTest {
         verify(taskanaEngineMock, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).getWorkbasket(wb.getKey(), wb.getDomain());
         verify(workbasketServiceMock, times(1)).checkAuthorization(wb.getId(),
-            WorkbasketAuthorization.APPEND);
+            WorkbasketPermission.APPEND);
         verify(classificationServiceImplMock, times(1)).getClassification(classification.getKey(),
             classification.getDomain());
         verify(taskanaEngineMock, times(1)).getConfiguration();
@@ -275,7 +277,7 @@ public class TaskServiceImplTest {
         verify(workbasketServiceMock, times(1)).getWorkbasket(expectedTask.getWorkbasketKey(),
             expectedTask.getDomain());
         verify(workbasketServiceMock, times(1)).checkAuthorization(expectedTask.getWorkbasketSummary().getId(),
-            WorkbasketAuthorization.APPEND);
+            WorkbasketPermission.APPEND);
         verify(classificationServiceImplMock, times(1)).getClassification(classification.getKey(),
             wb.getDomain());
         verify(taskanaEngineMock, times(1)).getConfiguration();
@@ -405,14 +407,14 @@ public class TaskServiceImplTest {
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(task.getId());
         doThrow(NotAuthorizedException.class).when(workbasketServiceMock).checkAuthorization(
             task.getWorkbasketSummary().getId(),
-            WorkbasketAuthorization.APPEND);
+            WorkbasketPermission.APPEND);
         try {
             cutSpy.createTask(task);
         } catch (NotAuthorizedException e) {
             verify(taskanaEngineMock, times(1)).openConnection();
             verify(workbasketServiceMock, times(1)).getWorkbasket(task.getWorkbasketSummary().getId());
             verify(workbasketServiceMock, times(1)).checkAuthorization(task.getWorkbasketSummary().getId(),
-                WorkbasketAuthorization.APPEND);
+                WorkbasketPermission.APPEND);
             verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
@@ -909,17 +911,17 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(taskMapperMock).update(any());
         doNothing().when(workbasketServiceMock).checkAuthorization(destinationWorkbasket.getId(),
-            WorkbasketAuthorization.APPEND);
+            WorkbasketPermission.APPEND);
         doNothing().when(workbasketServiceMock).checkAuthorization(sourceWorkbasket.getId(),
-            WorkbasketAuthorization.TRANSFER);
+            WorkbasketPermission.TRANSFER);
 
         Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getId());
 
         verify(taskanaEngineMock, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasket.getId(),
-            WorkbasketAuthorization.APPEND);
+            WorkbasketPermission.APPEND);
         verify(workbasketServiceMock, times(1)).checkAuthorization(sourceWorkbasket.getId(),
-            WorkbasketAuthorization.TRANSFER);
+            WorkbasketPermission.TRANSFER);
         verify(workbasketServiceMock, times(1)).getWorkbasket(destinationWorkbasket.getId());
         verify(taskMapperMock, times(1)).update(any());
         verify(taskanaEngineMock, times(1)).returnConnection();
@@ -977,7 +979,7 @@ public class TaskServiceImplTest {
         Task task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         doThrow(WorkbasketNotFoundException.class).when(workbasketServiceMock)
-            .checkAuthorization(destinationWorkbasketId, WorkbasketAuthorization.APPEND);
+            .checkAuthorization(destinationWorkbasketId, WorkbasketPermission.APPEND);
         doReturn(task).when(cutSpy).getTask(task.getId());
 
         try {
@@ -985,7 +987,7 @@ public class TaskServiceImplTest {
         } catch (Exception e) {
             verify(taskanaEngineMock, times(1)).openConnection();
             verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasketId,
-                WorkbasketAuthorization.APPEND);
+                WorkbasketPermission.APPEND);
             verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
@@ -1027,14 +1029,14 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
         doThrow(NotAuthorizedException.class).when(workbasketServiceMock).checkAuthorization(
             destinationWorkbasketId,
-            WorkbasketAuthorization.APPEND);
+            WorkbasketPermission.APPEND);
 
         try {
             cutSpy.transfer(task.getId(), destinationWorkbasketId);
         } catch (Exception e) {
             verify(taskanaEngineMock, times(1)).openConnection();
             verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasketId,
-                WorkbasketAuthorization.APPEND);
+                WorkbasketPermission.APPEND);
             verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,
@@ -1053,19 +1055,19 @@ public class TaskServiceImplTest {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(workbasketServiceMock).checkAuthorization(destinationWorkbasketId,
-            WorkbasketAuthorization.APPEND);
+            WorkbasketPermission.APPEND);
         doThrow(NotAuthorizedException.class).when(workbasketServiceMock).checkAuthorization(
             task.getWorkbasketSummary().getId(),
-            WorkbasketAuthorization.TRANSFER);
+            WorkbasketPermission.TRANSFER);
 
         try {
             cutSpy.transfer(task.getId(), destinationWorkbasketId);
         } catch (Exception e) {
             verify(taskanaEngineMock, times(1)).openConnection();
             verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasketId,
-                WorkbasketAuthorization.APPEND);
+                WorkbasketPermission.APPEND);
             verify(workbasketServiceMock, times(1)).checkAuthorization(task.getWorkbasketSummary().getId(),
-                WorkbasketAuthorization.TRANSFER);
+                WorkbasketPermission.TRANSFER);
             verify(taskanaEngineMock, times(1)).returnConnection();
             verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock,
                 taskanaEngineMock,

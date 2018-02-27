@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.BaseQuery;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
@@ -32,7 +33,6 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.WorkbasketAuthorization;
 import pro.taskana.impl.WorkbasketType;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 import pro.taskana.rest.resource.WorkbasketResource;
@@ -176,11 +176,11 @@ public class WorkbasketController {
         return result;
     }
 
-    @GetMapping(path = "/{workbasketId}/authorizations")
+    @GetMapping(path = "/{workbasketId}/workbasketAccessItems")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<WorkbasketAccessItemResource>> getWorkbasketAuthorizations(
+    public ResponseEntity<List<WorkbasketAccessItemResource>> getWorkbasketAccessItems(
         @PathVariable(value = "workbasketId") String workbasketId) {
-        List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAuthorizations(workbasketId);
+        List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAccessItems(workbasketId);
         List<WorkbasketAccessItemResource> result = new ArrayList<>();
         wbAuthorizations.stream()
             .forEach(accItem -> {
@@ -193,37 +193,37 @@ public class WorkbasketController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/authorizations")
+    @PostMapping(path = "/workbasketAccessItems")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<WorkbasketAccessItemResource> createWorkbasketAuthorization(
+    public ResponseEntity<WorkbasketAccessItemResource> createWorkbasketAccessItem(
         @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) throws NotAuthorizedException {
         try {
             WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper
                 .toModel(workbasketAccessItemResource);
-            workbasketAccessItem = workbasketService.createWorkbasketAuthorization(workbasketAccessItem);
+            workbasketAccessItem = workbasketService.createWorkbasketAccessItem(workbasketAccessItem);
             return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
         } catch (InvalidArgumentException e) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
 
-    @PutMapping(path = "/authorizations/{authId}")
+    @PutMapping(path = "/workbasketAccessItems/{workbasketAccessItemId}")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<WorkbasketAccessItemResource> updateWorkbasketAuthorization(
+    public ResponseEntity<WorkbasketAccessItemResource> updateWorkbasketAccessItem(
         @PathVariable(value = "authId") String authId,
         @RequestBody WorkbasketAccessItemResource workbasketAccessItemResource) {
         try {
             WorkbasketAccessItem workbasketAccessItem = workbasketAccessItemMapper
                 .toModel(workbasketAccessItemResource);
-            workbasketAccessItem = workbasketService.updateWorkbasketAuthorization(workbasketAccessItem);
+            workbasketAccessItem = workbasketService.updateWorkbasketAccessItem(workbasketAccessItem);
             return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
         } catch (InvalidArgumentException | NotAuthorizedException e) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
 
-    @PutMapping(value = "/{workbasketId}/authorizations/")
-    public ResponseEntity<?> setWorkbasketAuthorizations(@PathVariable(value = "workbasketId") String workbasketId,
+    @PutMapping(value = "/{workbasketId}/workbasketAccessItems/")
+    public ResponseEntity<?> setWorkbasketAccessItems(@PathVariable(value = "workbasketId") String workbasketId,
         @RequestBody List<WorkbasketAccessItemResource> workbasketAccessResourceItems) {
         try {
             if (workbasketAccessResourceItems == null) {
@@ -232,18 +232,18 @@ public class WorkbasketController {
             List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
             workbasketAccessResourceItems.stream()
                 .forEach(item -> wbAccessItems.add(workbasketAccessItemMapper.toModel(item)));
-            workbasketService.setWorkbasketAuthorizations(workbasketId, wbAccessItems);
+            workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (InvalidArgumentException | NullPointerException e) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
 
-    @DeleteMapping(path = "/authorizations/{authId}")
+    @DeleteMapping(path = "/workbasketAccessItems/{workbasketAccessItemId}")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> deleteWorkbasketAuthorization(@PathVariable(value = "authId") String authId)
+    public ResponseEntity<?> deleteWorkbasketAccessItem(@PathVariable(value = "authId") String authId)
         throws NotAuthorizedException {
-        workbasketService.deleteWorkbasketAuthorization(authId);
+        workbasketService.deleteWorkbasketAccessItem(authId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -293,55 +293,55 @@ public class WorkbasketController {
             try {
                 switch (authorization.trim()) {
                     case "READ":
-                        query.callerHasPermission(WorkbasketAuthorization.READ);
+                        query.callerHasPermission(WorkbasketPermission.READ);
                         break;
                     case "OPEN":
-                        query.callerHasPermission(WorkbasketAuthorization.OPEN);
+                        query.callerHasPermission(WorkbasketPermission.OPEN);
                         break;
                     case "APPEND":
-                        query.callerHasPermission(WorkbasketAuthorization.APPEND);
+                        query.callerHasPermission(WorkbasketPermission.APPEND);
                         break;
                     case "TRANSFER":
-                        query.callerHasPermission(WorkbasketAuthorization.TRANSFER);
+                        query.callerHasPermission(WorkbasketPermission.TRANSFER);
                         break;
                     case "DISTRIBUTE":
-                        query.callerHasPermission(WorkbasketAuthorization.DISTRIBUTE);
+                        query.callerHasPermission(WorkbasketPermission.DISTRIBUTE);
                         break;
                     case "CUSTOM_1":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_1);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_1);
                         break;
                     case "CUSTOM_2":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_2);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_2);
                         break;
                     case "CUSTOM_3":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_3);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_3);
                         break;
                     case "CUSTOM_4":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_4);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_4);
                         break;
                     case "CUSTOM_5":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_5);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_5);
                         break;
                     case "CUSTOM_6":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_6);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_6);
                         break;
                     case "CUSTOM_7":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_7);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_7);
                         break;
                     case "CUSTOM_8":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_8);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_8);
                         break;
                     case "CUSTOM_9":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_9);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_9);
                         break;
                     case "CUSTOM_10":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_10);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_10);
                         break;
                     case "CUSTOM_11":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_11);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_11);
                         break;
                     case "CUSTOM_12":
-                        query.callerHasPermission(WorkbasketAuthorization.CUSTOM_12);
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_12);
                         break;
                 }
             } catch (InvalidArgumentException e) {

@@ -43,21 +43,21 @@ public class WorkbasketAccessItemMapper {
     WorkbasketAccessItemResource addLinks(WorkbasketAccessItemResource resource, WorkbasketAccessItem wbAccItem)
         throws NotAuthorizedException {
         resource.add(
-            linkTo(methodOn(WorkbasketController.class).getWorkbasketAuthorizations(wbAccItem.getWorkbasketId()))
-                .withRel("getWorkbasketAuthorizations"));
+            linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wbAccItem.getWorkbasketId()))
+                .withRel("getWorkbasketAccessItems"));
         resource.add(
-            linkTo(methodOn(WorkbasketController.class).createWorkbasketAuthorization(resource))
-                .withRel("createWorkbasketAuthorization"));
+            linkTo(methodOn(WorkbasketController.class).createWorkbasketAccessItem(resource))
+                .withRel("createWorkbasketAccessItem"));
         resource.add(
-            linkTo(methodOn(WorkbasketController.class).updateWorkbasketAuthorization(wbAccItem.getId(), resource))
-                .withRel("updateWorkbasketAuthorization"));
+            linkTo(methodOn(WorkbasketController.class).updateWorkbasketAccessItem(wbAccItem.getId(), resource))
+                .withRel("updateWorkbasketAccessItem"));
         resource.add(
-            linkTo(methodOn(WorkbasketController.class).setWorkbasketAuthorizations(wbAccItem.getWorkbasketId(),
+            linkTo(methodOn(WorkbasketController.class).setWorkbasketAccessItems(wbAccItem.getWorkbasketId(),
                 Arrays.asList(resource)))
-                    .withRel("setWorkbasketAuthorizations"));
+                    .withRel("setWorkbasketAccessItems"));
         resource.add(
-            linkTo(methodOn(WorkbasketController.class).deleteWorkbasketAuthorization(wbAccItem.getId()))
-                .withRel("deleteWorkbasketAuthorization"));
+            linkTo(methodOn(WorkbasketController.class).deleteWorkbasketAccessItem(wbAccItem.getId()))
+                .withRel("deleteWorkbasketAccessItem"));
         return resource;
     }
 }

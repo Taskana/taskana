@@ -31,6 +31,7 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
@@ -84,7 +85,7 @@ public class WorkbasketServiceImplTest {
         throws WorkbasketNotFoundException, NotAuthorizedException {
         String wbId = "ID-1";
         Workbasket wb = createTestWorkbasket(wbId, "Key-1");
-        WorkbasketAuthorization authorization = WorkbasketAuthorization.READ;
+        WorkbasketPermission authorization = WorkbasketPermission.READ;
         doReturn(wb).when(workbasketMapperMock).findById(wbId);
         doThrow(NotAuthorizedException.class).when(cutSpy).checkAuthorization(wb.getId(),
             authorization);
@@ -126,7 +127,7 @@ public class WorkbasketServiceImplTest {
     public void testGetWorkbasketById() throws NotAuthorizedException, WorkbasketNotFoundException {
         String wbId = "ID-1";
         Workbasket wb = createTestWorkbasket(wbId, "key-1");
-        WorkbasketAuthorization authorization = WorkbasketAuthorization.READ;
+        WorkbasketPermission authorization = WorkbasketPermission.READ;
         doReturn(wb).when(workbasketMapperMock).findById(wbId);
         doNothing().when(cutSpy).checkAuthorization(wb.getId(), authorization);
 
@@ -147,7 +148,7 @@ public class WorkbasketServiceImplTest {
         throws WorkbasketNotFoundException, NotAuthorizedException {
         String wbKey = "Key-1";
         Workbasket wb = createTestWorkbasket("ID", wbKey);
-        WorkbasketAuthorization authorization = WorkbasketAuthorization.READ;
+        WorkbasketPermission authorization = WorkbasketPermission.READ;
         doReturn(wb).when(workbasketMapperMock).findByKeyAndDomain(wbKey, "domain");
         doThrow(NotAuthorizedException.class).when(cutSpy).checkAuthorization(wbKey, "domain", authorization);
 
@@ -189,7 +190,7 @@ public class WorkbasketServiceImplTest {
     public void testGetWorkbasketByKey() throws NotAuthorizedException, WorkbasketNotFoundException {
         String wbKey = "Key-1";
         Workbasket wb = createTestWorkbasket("ID-1", wbKey);
-        WorkbasketAuthorization authorization = WorkbasketAuthorization.READ;
+        WorkbasketPermission authorization = WorkbasketPermission.READ;
         doNothing().when(cutSpy).checkAuthorization(wbKey, "test", authorization);
         doReturn(wb).when(workbasketMapperMock).findByKeyAndDomain(wbKey, "test");
 

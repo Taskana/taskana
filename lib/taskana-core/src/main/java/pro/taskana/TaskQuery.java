@@ -1,7 +1,5 @@
 package pro.taskana;
 
-import pro.taskana.impl.TaskState;
-
 /**
  * TaskQuery for generating dynamic sql.
  */

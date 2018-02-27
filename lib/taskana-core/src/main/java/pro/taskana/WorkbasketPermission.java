@@ -1,9 +1,9 @@
-package pro.taskana.impl;
+package pro.taskana;
 
 /**
  * This enum contains all permission values for the workbaskets.
  */
-public enum WorkbasketAuthorization {
+public enum WorkbasketPermission {
     READ,
     OPEN,
     APPEND,
