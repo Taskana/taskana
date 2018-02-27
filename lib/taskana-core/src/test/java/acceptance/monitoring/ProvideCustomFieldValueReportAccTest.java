@@ -25,6 +25,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.Report;
 import pro.taskana.impl.ReportLineItem;
 import pro.taskana.impl.ReportLineItemDefinition;
@@ -61,7 +62,7 @@ public class ProvideCustomFieldValueReportAccTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1() {
+    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -93,7 +94,7 @@ public class ProvideCustomFieldValueReportAccTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2() {
+    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -124,7 +125,7 @@ public class ProvideCustomFieldValueReportAccTest {
     }
 
     @Test
-    public void testGetCustomFieldValueReportWithReportLineItemDefinitions() {
+    public void testGetCustomFieldValueReportWithReportLineItemDefinitions() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -166,7 +167,7 @@ public class ProvideCustomFieldValueReportAccTest {
     }
 
     @Test
-    public void testEachItemOfCustomFieldValueReport() {
+    public void testEachItemOfCustomFieldValueReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -210,7 +211,7 @@ public class ProvideCustomFieldValueReportAccTest {
     }
 
     @Test
-    public void testEachItemOfCustomFieldValueReportNotInWorkingDays() {
+    public void testEachItemOfCustomFieldValueReportNotInWorkingDays() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -254,7 +255,7 @@ public class ProvideCustomFieldValueReportAccTest {
     }
 
     @Test
-    public void testEachItemOfCustomFieldValueReportWithCategoryFilter() {
+    public void testEachItemOfCustomFieldValueReportWithCategoryFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -298,7 +299,7 @@ public class ProvideCustomFieldValueReportAccTest {
     }
 
     @Test
-    public void testEachItemOfCustomFieldValueReportWithDomainFilter() {
+    public void testEachItemOfCustomFieldValueReportWithDomainFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
