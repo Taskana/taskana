@@ -87,8 +87,7 @@ public class WorkbasketDefinitionController {
      */
     @PostMapping(path = "/import")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<String> importWorkbaskets(@RequestBody List<WorkbasketDefinition> definitions)
-        throws InvalidArgumentException {
+    public ResponseEntity<String> importWorkbaskets(@RequestBody List<WorkbasketDefinition> definitions) {
         try {
             // key: logical ID
             // value: system ID (in database)
@@ -141,9 +140,7 @@ public class WorkbasketDefinitionController {
                     // no verification necessary since the workbasket was already imported in step 1.
                     idConversion.get(definition.workbasketResource.workbasketId), distributionTargets);
             }
-
             return new ResponseEntity<>(HttpStatus.OK);
-
         } catch (WorkbasketNotFoundException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -153,6 +150,9 @@ public class WorkbasketDefinitionController {
         } catch (NotAuthorizedException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (InvalidArgumentException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
 

@@ -16,12 +16,16 @@ public class WorkbasketSummaryMapper {
     public WorkbasketSummaryResource toResource(WorkbasketSummary summary) {
         WorkbasketSummaryResource resource = new WorkbasketSummaryResource();
         BeanUtils.copyProperties(summary, resource);
-        //named different so needs to be set by hand
+        // named different so needs to be set by hand
         resource.setWorkbasketId(summary.getId());
 
-        // Add self reference
-        resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(summary.getId())).withSelfRel());
-        return resource;
+        return addLinks(resource, summary);
     }
 
+    private WorkbasketSummaryResource addLinks(WorkbasketSummaryResource resource, WorkbasketSummary summary) {
+        resource.add(linkTo(WorkbasketController.class).slash(summary.getId()).withSelfRel());
+        resource.add(linkTo(methodOn(WorkbasketController.class).getDistributionTargetsForWorkbasketId(summary.getId()))
+            .withRel("getDistributionTargetsForWorkbasketId"));
+        return resource;
+    }
 }

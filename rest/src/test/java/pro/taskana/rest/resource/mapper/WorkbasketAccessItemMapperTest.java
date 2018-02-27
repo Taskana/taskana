@@ -10,6 +10,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.RestApplication;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
@@ -18,12 +19,14 @@ import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 @WebAppConfiguration
 public class WorkbasketAccessItemMapperTest {
 
-    @Autowired WorkbasketAccessItemMapper workbasketAccessItemMapper;
-    @Autowired WorkbasketService workbasketService;
+    @Autowired
+    WorkbasketAccessItemMapper workbasketAccessItemMapper;
+    @Autowired
+    WorkbasketService workbasketService;
 
     @Test
-    public void workBasketAccessItemToResourcePropertiesEqual() {
-        //given
+    public void workBasketAccessItemToResourcePropertiesEqual() throws NotAuthorizedException {
+        // given
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "2");
         accessItem.setPermDistribute(false);
         accessItem.setPermOpen(true);
@@ -42,16 +45,16 @@ public class WorkbasketAccessItemMapperTest {
         accessItem.setPermCustom10(true);
         accessItem.setPermCustom11(true);
         accessItem.setPermCustom12(true);
-        //when
+        // when
         WorkbasketAccessItemResource resource = workbasketAccessItemMapper.toResource(
             accessItem);
-        //then
+        // then
         testEquality(accessItem, resource);
     }
 
     @Test
     public void workBasketAccessItemToModelPropertiesEqual() {
-        //given
+        // given
         WorkbasketAccessItemResource resource = new WorkbasketAccessItemResource();
         resource.setAccessId("10");
         resource.setAccessItemId("120");
@@ -73,9 +76,9 @@ public class WorkbasketAccessItemMapperTest {
         resource.setPermCustom10(false);
         resource.setPermCustom11(true);
         resource.setPermCustom12(false);
-        //when
+        // when
         WorkbasketAccessItem accessItem = workbasketAccessItemMapper.toModel(resource);
-        //then
+        // then
         testEquality(accessItem, resource);
     }
 

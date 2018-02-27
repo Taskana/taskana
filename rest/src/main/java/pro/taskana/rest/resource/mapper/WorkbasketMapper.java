@@ -22,17 +22,15 @@ public class WorkbasketMapper {
     @Autowired
     private WorkbasketService workbasketService;
 
-    public WorkbasketResource toResource(Workbasket wb) {
+    public WorkbasketResource toResource(Workbasket wb) throws NotAuthorizedException {
         WorkbasketResource resource = new WorkbasketResource();
         BeanUtils.copyProperties(wb, resource);
-        //need to be set by hand, since name or type is different
+        // need to be set by hand, since name or type is different
         resource.setWorkbasketId(wb.getId());
         resource.setModified(wb.getModified().toString());
         resource.setCreated(wb.getCreated().toString());
 
-        // Add self-decription link to hateoas
-        resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
-        return resource;
+        return addLinks(resource, wb);
     }
 
     public Workbasket toModel(WorkbasketResource wbResource) throws NotAuthorizedException {
@@ -43,5 +41,18 @@ public class WorkbasketMapper {
         workbasket.setModified(Instant.parse(wbResource.modified));
         workbasket.setCreated(Instant.parse(wbResource.created));
         return workbasket;
+    }
+
+    private WorkbasketResource addLinks(WorkbasketResource resource, Workbasket wb) throws NotAuthorizedException {
+        resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
+        resource
+            .add(linkTo(methodOn(WorkbasketController.class).createWorkbasket(resource)).withRel("createWorkbasket"));
+        resource
+            .add(linkTo(methodOn(WorkbasketController.class).updateWorkbasket(wb.getId(), resource))
+                .withRel("updateWorkbasket"));
+        resource
+            .add(linkTo(methodOn(WorkbasketController.class).deleteWorkbasket(wb.getId()))
+                .withRel("deleteWorkbasket"));
+        return resource;
     }
 }

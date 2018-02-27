@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -182,9 +181,16 @@ public class WorkbasketController {
     public ResponseEntity<List<WorkbasketAccessItemResource>> getWorkbasketAuthorizations(
         @PathVariable(value = "workbasketId") String workbasketId) {
         List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAuthorizations(workbasketId);
-        return new ResponseEntity<>(wbAuthorizations.stream()
-            .map(accItem -> workbasketAccessItemMapper.toResource(accItem))
-            .collect(Collectors.toList()), HttpStatus.OK);
+        List<WorkbasketAccessItemResource> result = new ArrayList<>();
+        wbAuthorizations.stream()
+            .forEach(accItem -> {
+                try {
+                    result.add(workbasketAccessItemMapper.toResource(accItem));
+                } catch (NotAuthorizedException e) {
+                    e.printStackTrace();
+                }
+            });
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(path = "/authorizations")
@@ -216,7 +222,7 @@ public class WorkbasketController {
         }
     }
 
-    @RequestMapping(value = "/{workbasketId}/authorizations/", method = RequestMethod.PUT)
+    @PutMapping(value = "/{workbasketId}/authorizations/")
     public ResponseEntity<?> setWorkbasketAuthorizations(@PathVariable(value = "workbasketId") String workbasketId,
         @RequestBody List<WorkbasketAccessItemResource> workbasketAccessResourceItems) {
         try {
@@ -263,7 +269,7 @@ public class WorkbasketController {
 
     @PutMapping(path = "/{workbasketId}/distributiontargets")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> setDistributionTargets(
+    public ResponseEntity<?> setDistributionTargetsForWorkbasketId(
         @PathVariable(value = "workbasketId") String sourceWorkbasketId,
         @RequestBody List<String> targetWorkbasketIds) {
         ResponseEntity<?> result;
