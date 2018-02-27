@@ -132,9 +132,11 @@ public interface WorkbasketService {
      *            the needed Authorization
      * @throws NotAuthorizedException
      *             if the current user has not the requested authorization for the specified workbasket
+     * @throws WorkbasketNotFoundException
+     *             if the workbasket can´t be found foor the given ID.
      */
     void checkAuthorization(String workbasketId, WorkbasketAuthorization authorization)
-        throws NotAuthorizedException;
+        throws NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
      * This method checks the authorization with the saved one for the actual User.
@@ -147,9 +149,11 @@ public interface WorkbasketService {
      *            the needed Authorization
      * @throws NotAuthorizedException
      *             if the current user has not the requested authorization for the specified workbasket
+     * @throws WorkbasketNotFoundException
+     *             if no workbasket can be found for the given key+domain values.
      */
     void checkAuthorization(String workbasketKey, String domain, WorkbasketAuthorization authorization)
-        throws NotAuthorizedException;
+        throws NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
      * Get all authorizations for a Workbasket.
@@ -291,9 +295,11 @@ public interface WorkbasketService {
      *            The id of the target workbasket
      * @throws NotAuthorizedException
      *             If the current user doesn't have READ permission for the source workbasket
+     * @throws WorkbasketNotFoundException
+     *             if the source workbasket can´t be found by ID.
      */
     void removeDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
-        throws NotAuthorizedException;
+        throws NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
      * Deletes the workbasket by the given ID of it.

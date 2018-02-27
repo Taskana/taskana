@@ -163,7 +163,7 @@ public interface TaskService {
      *
      * @param taskId
      *            The id of the {@link Task} to be transferred
-     * @param workbasketId
+     * @param destinationWorkbasketId
      *            The Id of the target work basket
      * @return the transferred task
      * @throws TaskNotFoundException
@@ -175,7 +175,7 @@ public interface TaskService {
      * @throws InvalidWorkbasketException
      *             Thrown if either the source or the target workbasket has a missing required property
      */
-    Task transfer(String taskId, String workbasketId)
+    Task transfer(String taskId, String destinationWorkbasketId)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException;
 
     /**
