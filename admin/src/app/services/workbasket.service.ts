@@ -95,7 +95,7 @@ export class WorkbasketService {
 		return this.httpClient.delete(environment.taskanaRestUrl + '/v1/workbaskets/' + id, this.httpOptions);
 	}
 	// GET
-	getAllWorkBasketAuthorizations(id: String): Observable<WorkbasketAuthorization[]> {
+	getWorkBasketAuthorizations(id: String): Observable<WorkbasketAuthorization[]> {
 		return this.httpClient.get<WorkbasketAuthorization[]>(environment.taskanaRestUrl + '/v1/workbaskets/' + id + '/authorizations', this.httpOptions);
 	}
 	// POST
@@ -104,11 +104,11 @@ export class WorkbasketService {
 	}
 	// PUT
 	updateWorkBasketAuthorization(workbasketAuthorization: WorkbasketAuthorization): Observable<WorkbasketAuthorization> {
-		return this.httpClient.put<WorkbasketAuthorization>(environment.taskanaRestUrl + '/v1/workbaskets/authorizations/' + workbasketAuthorization.id, workbasketAuthorization, this.httpOptions)
+		return this.httpClient.put<WorkbasketAuthorization>(environment.taskanaRestUrl + '/v1/workbaskets/authorizations/' + workbasketAuthorization.accessId, workbasketAuthorization, this.httpOptions)
 	}
 	// DELETE
 	deleteWorkBasketAuthorization(workbasketAuthorization: WorkbasketAuthorization) {
-		return this.httpClient.delete(environment.taskanaRestUrl + '/v1/workbaskets/authorizations/' + workbasketAuthorization.id, this.httpOptions);
+		return this.httpClient.delete(environment.taskanaRestUrl + '/v1/workbaskets/authorizations/' + workbasketAuthorization.accessId, this.httpOptions);
 	}
 
 	//#endregion 

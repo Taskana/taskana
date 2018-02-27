@@ -1,0 +1,15 @@
+td > input[type="checkbox"] {
+    margin-top: 0px;
+}
+.panel-body {
+    overflow-x: auto;
+}
+.text-width{
+    min-width: 150px;
+}
+
+td {
+    &.has-changes {
+        border-bottom: 1px solid #f0ad4e;;
+    }
+}
