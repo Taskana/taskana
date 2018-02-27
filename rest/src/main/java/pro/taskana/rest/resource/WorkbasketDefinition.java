@@ -26,5 +26,4 @@ public class WorkbasketDefinition extends ResourceSupport {
         this.distributionTargets = distributionTargets;
         this.authorizations = authorizations;
     }
-
 }

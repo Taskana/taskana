@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
-import pro.taskana.ClassificationService;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
@@ -48,9 +47,6 @@ public class TaskFilter {
 
     @Autowired
     private TaskService taskService;
-
-    @Autowired
-    private ClassificationService classificationService;
 
     public List<TaskSummary> getAll() throws NotAuthorizedException {
         return taskService.createTaskQuery().list();
