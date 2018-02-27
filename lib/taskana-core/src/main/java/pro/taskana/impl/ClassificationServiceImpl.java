@@ -62,7 +62,9 @@ public class ClassificationServiceImpl implements ClassificationService {
             classificationMapper.insert(classificationImpl);
             LOGGER.debug("Method createClassification created classification {}.", classification);
 
-            addClassificationToRootDomain(classificationImpl);
+            if (!classification.getDomain().isEmpty()) {
+                addClassificationToRootDomain(classificationImpl);
+            }
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from createClassification()");
@@ -75,8 +77,10 @@ public class ClassificationServiceImpl implements ClassificationService {
             boolean doesExist = true;
             String idBackup = classificationImpl.getId();
             String domainBackup = classificationImpl.getDomain();
+            boolean isValidInDomainBackup = classificationImpl.getIsValidInDomain();
             classificationImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
             classificationImpl.setDomain("");
+            classificationImpl.setIsValidInDomain(false);
             try {
                 this.getClassification(classificationImpl.getKey(), classificationImpl.getDomain());
                 throw new ClassificationAlreadyExistException(classificationImpl);
@@ -98,6 +102,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                 }
                 classificationImpl.setId(idBackup);
                 classificationImpl.setDomain(domainBackup);
+                classificationImpl.setIsValidInDomain(isValidInDomainBackup);
             }
         }
     }
@@ -193,6 +198,10 @@ public class ClassificationServiceImpl implements ClassificationService {
 
         if (classification.getDomain() == null) {
             classification.setDomain("");
+        }
+
+        if (classification.getDomain().isEmpty()) {
+            classification.setIsValidInDomain(false);
         }
     }
 
