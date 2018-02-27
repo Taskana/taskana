@@ -2,6 +2,8 @@ package pro.taskana.impl;
 
 import java.util.List;
 
+import pro.taskana.exceptions.InvalidArgumentException;
+
 /**
  * The DetailedClassificationReport extends the {@link ClassificationReport}. In contrast to the ClassificationReport
  * there are DetailedReportLines instead of ReportLines. That means each ReportLine contains an additional list of
@@ -24,12 +26,15 @@ public class DetailedClassificationReport extends ClassificationReport {
      * @param inWorkingDays
      *            a boolean parameter that specifies whether the age of the tasks should be counted in days or in
      *            working days.
+     * @throws InvalidArgumentException
+     *             thrown if reportLineItemDefinitions is null and inWorkingDays is true
      */
     public void addDetailedMonitoringQueryItems(List<DetailedMonitorQueryItem> detailedMonitorQueryItems,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
+        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        throws InvalidArgumentException {
 
         DaysToWorkingDaysConverter instance = null;
-        if (reportLineItemDefinitions != null && inWorkingDays) {
+        if (inWorkingDays) {
             instance = DaysToWorkingDaysConverter.initialize(reportLineItemDefinitions);
         }
 

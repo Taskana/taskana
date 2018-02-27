@@ -11,6 +11,7 @@ import pro.taskana.CustomField;
 import pro.taskana.TaskState;
 import pro.taskana.impl.DetailedMonitorQueryItem;
 import pro.taskana.impl.MonitorQueryItem;
+import pro.taskana.impl.SelectedItem;
 
 /**
  * This class is the mybatis mapping of task monitoring.
@@ -33,8 +34,7 @@ public interface TaskMonitorMapper {
         @Result(column = "WORKBASKET_KEY", property = "key"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
         @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
-    List<MonitorQueryItem> getTaskCountOfWorkbasketsByWorkbasketsAndStates(
-        @Param("workbasketIds") List<String> workbasketIds,
+    List<MonitorQueryItem> getTaskCountOfWorkbaskets(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains);
@@ -55,8 +55,7 @@ public interface TaskMonitorMapper {
         @Result(column = "CLASSIFICATION_CATEGORY", property = "key"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
         @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
-    List<MonitorQueryItem> getTaskCountOfCategoriesByWorkbasketsAndStates(
-        @Param("workbasketIds") List<String> workbasketIds,
+    List<MonitorQueryItem> getTaskCountOfCategories(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains);
@@ -77,8 +76,7 @@ public interface TaskMonitorMapper {
         @Result(column = "CLASSIFICATION_KEY", property = "key"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
         @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
-    List<MonitorQueryItem> getTaskCountOfClassificationsByWorkbasketsAndStates(
-        @Param("workbasketIds") List<String> workbasketIds,
+    List<MonitorQueryItem> getTaskCountOfClassifications(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains);
@@ -100,7 +98,7 @@ public interface TaskMonitorMapper {
         @Result(column = "ATTACHMENT_CLASSIFICATION_KEY", property = "attachmentKey"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
         @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
-    List<DetailedMonitorQueryItem> getTaskCountOfDetailedClassificationsByWorkbasketsAndStates(
+    List<DetailedMonitorQueryItem> getTaskCountOfDetailedClassifications(
         @Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
@@ -123,11 +121,35 @@ public interface TaskMonitorMapper {
         @Result(column = "CUSTOM_FIELD", property = "key"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
         @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
-    List<MonitorQueryItem> getTaskCountOfCustomFieldValuesByWorkbasketsAndStatesAndCustomField(
-        @Param("workbasketIds") List<String> workbasketIds,
+    List<MonitorQueryItem> getTaskCountOfCustomFieldValues(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains,
         @Param("customField") CustomField customField);
+
+    @Select("<script>"
+        + "SELECT ID FROM TASK "
+        + "WHERE WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
+        + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
+        + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+        + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
+        + "AND DUE IS NOT NULL AND ( "
+        + "<foreach collection='selectedItems' item='selectedItem' separator=' OR '>"
+        + "#{selectedItem.key} = CLASSIFICATION_CATEGORY AND "
+        + "<if test=\"_databaseId == 'db2'\">"
+        + "#{selectedItem.upperAgeLimit} >= (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) AND "
+        + "#{selectedItem.lowerAgeLimit} &lt;= (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) "
+        + "</if> "
+        + "<if test=\"_databaseId == 'h2'\">"
+        + "#{selectedItem.upperAgeLimit} >= DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) AND "
+        + "#{selectedItem.lowerAgeLimit} &lt;= DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) "
+        + "</if> "
+        + "</foreach> ) "
+        + "</script>")
+    List<String> getTaskIdsOfCategoriesBySelectedItems(@Param("workbasketIds") List<String> workbasketIds,
+        @Param("states") List<TaskState> states,
+        @Param("categories") List<String> categories,
+        @Param("domains") List<String> domains,
+        @Param("selectedItems") List<SelectedItem> selectedItems);
 
 }

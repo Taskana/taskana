@@ -12,6 +12,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.util.LoggerUtils;
 
 /**
@@ -47,8 +48,11 @@ public final class DaysToWorkingDaysConverter {
      * @param reportLineItemDefinitions
      *            a list of {@link ReportLineItemDefinition}s that determines the size of the table
      * @return an instance of the DaysToWorkingDaysConverter
+     * @throws InvalidArgumentException
+     *             thrown if reportLineItemDefinitions is null
      */
-    public static DaysToWorkingDaysConverter initialize(List<ReportLineItemDefinition> reportLineItemDefinitions) {
+    public static DaysToWorkingDaysConverter initialize(List<ReportLineItemDefinition> reportLineItemDefinitions)
+        throws InvalidArgumentException {
         return initialize(reportLineItemDefinitions, Instant.now());
     }
 
@@ -61,12 +65,20 @@ public final class DaysToWorkingDaysConverter {
      * @param referenceDate
      *            a {@link Instant} that represents the current day of the table
      * @return an instance of the DaysToWorkingDaysConverter
+     * @throws InvalidArgumentException
+     *             thrown if reportLineItemDefinitions or referenceDate is null
      */
     public static DaysToWorkingDaysConverter initialize(List<ReportLineItemDefinition> reportLineItemDefinitions,
-        Instant referenceDate) {
+        Instant referenceDate) throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialize DaysToWorkingDaysConverter with reportLineItemDefinitions: {}",
                 LoggerUtils.listToString(reportLineItemDefinitions));
+        }
+        if (reportLineItemDefinitions == null) {
+            throw new InvalidArgumentException("ReportLineItemDefinitions can´t be used as NULL-Parameter");
+        }
+        if (referenceDate == null) {
+            throw new InvalidArgumentException("ReferenceDate can´t be used as NULL-Parameter");
         }
         int largesLowerLimit = getLargestLowerLimit(reportLineItemDefinitions);
         int smallestUpperLimit = getSmallestUpperLimit(reportLineItemDefinitions);
@@ -93,17 +105,48 @@ public final class DaysToWorkingDaysConverter {
      */
     public int convertDaysToWorkingDays(int ageInDays) {
 
-        int minWorkingDay = -(negativeDaysToWorkingDays.size() - 1);
-        int maxWorkingDay = positiveDaysToWorkingDays.size() - 1;
+        int minDay = -(negativeDaysToWorkingDays.size() - 1);
+        int maxDay = positiveDaysToWorkingDays.size() - 1;
 
-        if (ageInDays >= minWorkingDay && ageInDays <= 0) {
+        if (ageInDays >= minDay && ageInDays <= 0) {
             return negativeDaysToWorkingDays.get(-ageInDays);
         }
-        if (ageInDays > 0 && ageInDays <= maxWorkingDay) {
+        if (ageInDays > 0 && ageInDays <= maxDay) {
             return positiveDaysToWorkingDays.get(ageInDays);
         }
 
         return ageInDays;
+    }
+
+    /**
+     * Converts an integer, that represents the age in working days, to the age in days by using the table that was
+     * created by initialization. If the age in working days is beyond the limits of the table, the integer will be
+     * returned unchanged.
+     *
+     * @param ageInWorkingDays
+     *            represents the age in working days
+     * @return the age in days
+     */
+    public int convertWorkingDaysToDays(int ageInWorkingDays) {
+
+        int minWorkingDay = negativeDaysToWorkingDays.get(negativeDaysToWorkingDays.size() - 1);
+        int maxWorkingDay = positiveDaysToWorkingDays.get(positiveDaysToWorkingDays.size() - 1);
+
+        int ageInDays = 0;
+        if (ageInWorkingDays >= minWorkingDay && ageInWorkingDays < 0) {
+            while (negativeDaysToWorkingDays.get(ageInDays) > ageInWorkingDays) {
+                ageInDays++;
+            }
+            return -ageInDays;
+        }
+        if (ageInWorkingDays > 0 && ageInWorkingDays <= maxWorkingDay) {
+            while (positiveDaysToWorkingDays.get(ageInDays) < ageInWorkingDays) {
+                ageInDays++;
+            }
+            return ageInDays;
+        }
+
+        return ageInWorkingDays;
     }
 
     private ArrayList<Integer> generateNegativeDaysToWorkingDays(
@@ -199,6 +242,13 @@ public final class DaysToWorkingDaysConverter {
         return false;
     }
 
+    /**
+     * Computes the date of Easter Sunday for a given year.
+     *
+     * @param year
+     *            for which the date of Easter Sunday should be calculated
+     * @return the date of Easter Sunday for the given year
+     */
     public LocalDate getEasterSunday(int year) {
         // Formula to compute Easter Sunday by Gauss.
         int a = year % 19;
