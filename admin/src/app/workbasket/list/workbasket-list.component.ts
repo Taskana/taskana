@@ -88,10 +88,6 @@ export class WorkbasketListComponent implements OnInit {
 		this.newWorkbasket.key = "";
 	}
 
-	getEmptyObject() {
-		return new WorkbasketSummary("", "", "", "", "", "", "", "", "", "", "", "");
-	}
-
 	private performRequest(): void {
 		this.requestInProgress = true;
 		this.workbaskets = undefined;

@@ -1,8 +1,11 @@
 .nav.nav-tabs { 
     & > li {
-        & > a{
+        & > a {
             min-height: 56px;
             padding-top: 17px;
+            &.has-changes{
+                border-bottom: solid #f0ad4e;
+            }
         }
         
         &:first-child > a{

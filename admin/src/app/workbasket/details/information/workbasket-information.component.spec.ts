@@ -56,8 +56,8 @@ describe('InformationComponent', () => {
 	}));
 
 	it('selectType should set workbasket.type to personal with 0 and group in other case', () => {
-		component.workbasket = new Workbasket(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-		expect(component.workbasket.type).toEqual(null);
+		component.workbasket = new Workbasket('id1');
+		expect(component.workbasket.type).toEqual(undefined);
 		component.selectType(ICONTYPES.PERSONAL);
 		expect(component.workbasket.type).toEqual('PERSONAL');
 		component.selectType(ICONTYPES.GROUP);

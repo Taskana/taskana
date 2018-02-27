@@ -1,0 +1,171 @@
+<taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
+<taskana-general-message-modal *ngIf="modalErrorMessage" [message]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
+<div *ngIf="workbasket" id="wb-information" class="panel panel-default">
+	<div class="panel-heading">
+		<div class="btn-group pull-right">
+			<button type="button" (click)="clear()" class="btn btn-default">Undo changes</button>
+		</div>
+		<h4 class="panel-header">{{workbasket.name}}</h4>
+	</div>
+	<div class="panel-body">
+		<table class="table table-striped table-center">
+			<thead>
+				<tr>
+					<th></th>
+					<th class="text-align">AccessID</th>
+					<th>Read</th>
+					<th>Open</th>
+					<th>Append</th>
+					<th>Transfer</th>
+					<th>Distribute</th>
+					<th>Custom1</th>
+					<th>Custom2</th>
+					<th>Custom3</th>
+					<th>Custom4</th>
+					<th>Custom5</th>
+					<th>Custom6</th>
+					<th>Custom7</th>
+					<th>Custom8</th>
+					<th>Custom9</th>
+					<th>Custom10</th>
+					<th>Custom11</th>
+					<th>Custom12</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<span class="input-group-btn">
+							<button type="button" (click)="addAuthorization()" class="btn btn-default">
+								<svg-icon class="green small" src="./assets/icons/wb-add.svg"></svg-icon>
+							</button>
+						</span>
+					</td>
+					<td class="text-align">
+						<div class="input-group">
+							<input type="text" class="form-control" id="au-add-work-basket" [(ngModel)]="newAuthorization.accessId" placeholder="Add authorization">
+						</div>
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permRead">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permOpen">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permAppend">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permTransfer">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permDistribute">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom1">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom2">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom3">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom4">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom5">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom6">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom7">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom8">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom9">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom10">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom11">
+					</td>
+					<td>
+						<input type="checkbox" [(ngModel)]="newAuthorization.permCustom12">
+					</td>
+				</tr>
+				<tr *ngFor="let authorization of authorizations; let index = index;">
+					<td>
+						<button type="button" *ngIf="!authorizationState[index]" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+						<button type="button" *ngIf="authorizationState[index]" (click)="save(index)" data-toggle="tooltip" title="Save" class="btn btn-default brown">
+							<span class="glyphicon glyphicon-floppy-remove" aria-hidden="true"></span>
+						</button>
+					</td>
+					<td class="text-align text-width">
+						<div class="input-group  {{(authorizationsClone[index].accessId !== authorization.accessId)? 'has-warning': ''}}">
+							<input type="text" class="form-control"
+							  (change)="checkAuthorizationState(index);" [(ngModel)]="authorization.accessId">
+						</div>
+					</td>
+					<td class ="{{(authorizationsClone[index].permRead !== authorization.permRead)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permRead">
+					</td>
+					<td class ="{{(authorizationsClone[index].permOpen !== authorization.permOpen)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permOpen">
+					</td>
+					<td class ="{{(authorizationsClone[index].permAppend !== authorization.permAppend)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permAppend">
+					</td>
+					<td class ="{{(authorizationsClone[index].permTransfer !== authorization.permTransfer)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permTransfer">
+					</td>
+					<td class ="{{(authorizationsClone[index].permDistribute !== authorization.permDistribute)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permDistribute">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom1 !== authorization.permCustom1)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom1">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom2 !== authorization.permCustom2)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom2">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom3 !== authorization.permCustom3)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom3">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom4 !== authorization.permCustom4)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom4">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom5 !== authorization.permCustom5)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom5">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom6 !== authorization.permCustom6)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom6">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom7 !== authorization.permCustom7)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom7">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom8 !== authorization.permCustom8)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom8">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom9 !== authorization.permCustom9)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom9">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom10 !== authorization.permCustom10)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom10">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom11 !== authorization.permCustom11)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom11">
+					</td>
+					<td class ="{{(authorizationsClone[index].permCustom12 !== authorization.permCustom12)? 'has-changes': ''}}">
+						<input type="checkbox" (change)="checkAuthorizationState(index)" [(ngModel)]="authorization.permCustom12">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
