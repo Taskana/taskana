@@ -24,6 +24,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.Report;
 import pro.taskana.impl.ReportLineItem;
 import pro.taskana.impl.ReportLineItemDefinition;
@@ -60,7 +61,7 @@ public class ProvideClassificationReportAccTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfTasksOfClassificationReport() {
+    public void testGetTotalNumbersOfTasksOfClassificationReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -89,7 +90,7 @@ public class ProvideClassificationReportAccTest {
     }
 
     @Test
-    public void testGetClassificationReportWithReportLineItemDefinitions() {
+    public void testGetClassificationReportWithReportLineItemDefinitions() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -137,7 +138,7 @@ public class ProvideClassificationReportAccTest {
     }
 
     @Test
-    public void testEachItemOfClassificationReport() {
+    public void testEachItemOfClassificationReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -190,7 +191,7 @@ public class ProvideClassificationReportAccTest {
     }
 
     @Test
-    public void testEachItemOfClassificationReportNotInWorkingDays() {
+    public void testEachItemOfClassificationReportNotInWorkingDays() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -243,7 +244,7 @@ public class ProvideClassificationReportAccTest {
     }
 
     @Test
-    public void testEachItemOfClassificationReportWithCategoryFilter() {
+    public void testEachItemOfClassificationReportWithCategoryFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);
@@ -277,7 +278,7 @@ public class ProvideClassificationReportAccTest {
     }
 
     @Test
-    public void testEachItemOfClassificationReportWithDomainFilter() {
+    public void testEachItemOfClassificationReportWithDomainFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = generateWorkbasketIds(3, 1);

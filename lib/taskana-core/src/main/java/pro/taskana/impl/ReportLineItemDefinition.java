@@ -5,7 +5,8 @@ package pro.taskana.impl;
  * sections. Days in past are represented as negative values and days in the future are represented as positive values.
  * To avoid tasks are counted multiple times or not be listed in the report, these reportLineItemDefinitions should not
  * overlap and should not have gaps. If the ReportLineDefinition should represent a single day, lowerAgeLimit and
- * upperAgeLimit have to be equal.
+ * upperAgeLimit have to be equal. The outer cluster of a report should have open ends. These open ends are represented
+ * with Integer.MIN_VALUE and Integer.MAX_VALUE.
  */
 public class ReportLineItemDefinition {
 

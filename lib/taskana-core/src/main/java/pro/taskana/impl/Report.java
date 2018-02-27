@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import pro.taskana.exceptions.InvalidArgumentException;
+
 /**
  * A Report represents a table that consists of {@link ReportLine} objects. The detailLines are the rows of the table
  * that contains the total number of all tasks and could be optionally subdivided into different sections. The sumLine
@@ -46,11 +48,14 @@ public class Report {
      * @param inWorkingDays
      *            a boolean parameter that specifies whether the age of the tasks should be counted in days or in
      *            working days.
+     * @throws InvalidArgumentException
+     *             thrown if reportLineItemDefinitions is null and inWorkingDays is true
      */
     public void addMonitoringQueryItems(List<MonitorQueryItem> monitorQueryItems,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays) {
+        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = null;
-        if (reportLineItemDefinitions != null && inWorkingDays) {
+        if (inWorkingDays) {
             instance = DaysToWorkingDaysConverter.initialize(reportLineItemDefinitions);
         }
 
