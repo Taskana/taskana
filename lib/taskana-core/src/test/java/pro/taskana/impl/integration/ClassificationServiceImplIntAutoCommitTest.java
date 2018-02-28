@@ -34,6 +34,7 @@ import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
@@ -173,7 +174,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testModifiedClassification()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
+        ConcurrencyException {
         String description = "TEST SOMETHING";
         Classification classification = this.createDummyClassificationWithUniqueKey("domain1", "type1");
         classification.setDescription("");
@@ -202,7 +204,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testUpdateAndClassificationMapper()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
+        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
+        ConcurrencyException {
         Classification classification = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
         classification = classificationService.createClassification(classification);
         classification.setDescription("description");
@@ -355,7 +358,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testDefaultSettingsWithClassificationMapper()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException {
+        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
+        ConcurrencyException {
         Classification classification = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
         classification = classificationService.createClassification(classification);
 

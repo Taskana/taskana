@@ -31,6 +31,7 @@ public class ClassificationMapper {
         // need to be set by hand, because they are named different, or have different types
         resource.setClassificationId(classification.getId());
         resource.setCreated(classification.getCreated().toString());
+        resource.setModified(classification.getModified().toString());
         return addLinks(resource, classification);
     }
 
@@ -41,6 +42,7 @@ public class ClassificationMapper {
 
         classification.setId(classificationResource.getClassificationId());
         classification.setCreated(Instant.parse(classificationResource.getCreated()));
+        classification.setModified(Instant.parse(classificationResource.getModified()));
         return classification;
     }
 

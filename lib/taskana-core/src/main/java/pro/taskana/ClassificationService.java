@@ -3,6 +3,7 @@ package pro.taskana;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
@@ -78,9 +79,11 @@ public interface ClassificationService {
      *             when the classification does not exist already.
      * @throws NotAuthorizedException
      *             when a user got no permissions for WB content tasks.
+     * @throws ConcurrencyException
+     *             when the Classification was modified meanwhile and is not latest anymore.
      */
     Classification updateClassification(Classification classification)
-        throws ClassificationNotFoundException, NotAuthorizedException;
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException;
 
     /**
      * This method provides a query builder for quering the database.

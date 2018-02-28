@@ -277,4 +277,9 @@ public class TestClassificationQuery implements ClassificationQuery {
     public ClassificationQuery orderByCustom8(SortDirection sortDirection) {
         return this;
     }
+
+    @Override
+    public ClassificationQuery modifiedWithin(TimeInterval... modifiedIn) {
+        return this;
+    }
 }

@@ -34,6 +34,7 @@ import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
@@ -188,7 +189,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testModifiedClassification()
         throws SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        NotAuthorizedException {
+        NotAuthorizedException, ConcurrencyException {
 
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
@@ -221,7 +222,7 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testUpdateAndClassificationQuery() throws NotAuthorizedException, SQLException,
-        ClassificationAlreadyExistException, ClassificationNotFoundException {
+        ClassificationAlreadyExistException, ClassificationNotFoundException, ConcurrencyException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "t1");
@@ -394,7 +395,8 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testDefaultSettingsWithClassificationQuery() throws NotAuthorizedException, SQLException,
-        ClassificationAlreadyExistException, ClassificationNotFoundException, InvalidArgumentException {
+        ClassificationAlreadyExistException, ClassificationNotFoundException, InvalidArgumentException,
+        ConcurrencyException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");

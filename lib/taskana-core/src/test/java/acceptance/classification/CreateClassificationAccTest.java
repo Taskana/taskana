@@ -49,6 +49,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         classification = classificationService.getClassification(classification.getId());
         assertNotNull(classification);
         assertNotNull(classification.getCreated());
+        assertNotNull(classification.getModified());
         assertNotNull(classification.getId());
         assertThat(classification.getIsValidInDomain(), equalTo(false));
     }
@@ -67,6 +68,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         // Check returning one is the "original"
         assertNotNull(classification.getId());
         assertNotNull(classification.getCreated());
+        assertNotNull(classification.getModified());
         assertThat(classification.getIsValidInDomain(), equalTo(true));
         assertThat(classification.getDomain(), equalTo("Dummy-Domain"));
 
@@ -78,6 +80,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         classification = classificationService.getClassification(classification.getId());
         assertNotNull(classification);
         assertNotNull(classification.getCreated());
+        assertNotNull(classification.getModified());
         assertNotNull(classification.getId());
         assertThat(classification.getIsValidInDomain(), equalTo(true));
 
@@ -85,6 +88,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         classification = classificationService.getClassification(classification.getKey(), "");
         assertNotNull(classification);
         assertNotNull(classification.getCreated());
+        assertNotNull(classification.getModified());
         assertNotNull(classification.getId());
         assertThat(classification.getIsValidInDomain(), equalTo(false));
     }
@@ -123,6 +127,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         assertThat(classification.getParentId(), equalTo(""));
         assertThat(classification.getIsValidInDomain(), equalTo(false));
         assertNotNull(classification.getCreated());
+        assertNotNull(classification.getModified());
     }
 
     @WithAccessId(
