@@ -90,6 +90,9 @@ public class ClassificationController {
         } catch (NotAuthorizedException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (ClassificationNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 

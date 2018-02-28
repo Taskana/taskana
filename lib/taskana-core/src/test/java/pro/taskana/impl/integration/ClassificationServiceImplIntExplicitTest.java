@@ -171,7 +171,8 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindAllClassifications()
-        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
+        ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification0 = this.createNewClassificationWithUniqueKey("", "t1");
@@ -208,7 +209,8 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testInsertAndClassificationQuery()
-        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
+        ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "t1");
@@ -251,7 +253,8 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
-        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
+        ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("domain1", "t1");
@@ -277,7 +280,8 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperCustomAndCategory()
-        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
+        ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "t1");
@@ -317,7 +321,8 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
-        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException {
+        throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
+        ClassificationNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "type1");

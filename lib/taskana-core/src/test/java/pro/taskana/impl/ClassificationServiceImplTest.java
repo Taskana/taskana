@@ -78,6 +78,30 @@ public class ClassificationServiceImplTest {
         }
     }
 
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testCreateClassificationParentNotExisting()
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException {
+        Classification classification = createDummyClassification();
+        classification.setParentId("NOT EXISTING ID");
+        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
+            classification.getDomain());
+        doReturn(null).when(classificationMapperMock).findById(classification.getParentId());
+
+        try {
+            cutSpy.createClassification(classification);
+        } catch (ClassificationNotFoundException e) {
+            verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
+            verify(taskanaEngineImplMock, times(2)).openConnection();
+            verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
+                classification.getDomain());
+            verify(cutSpy, times(1)).getClassification(classification.getParentId());
+            verify(classificationMapperMock, times(1)).findById(classification.getParentId());
+            verify(taskanaEngineImplMock, times(2)).returnConnection();
+            verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
+            throw e;
+        }
+    }
+
     @Test
     public void testCreateClassificationInOwnDomainButExistingInRoot()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, InterruptedException,
@@ -111,7 +135,7 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
-        throws ClassificationAlreadyExistException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
         Classification classification = createDummyClassification();
         String domain = classification.getDomain();
         String key = classification.getKey();
@@ -135,7 +159,7 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationIntoRootDomain()
-        throws ClassificationAlreadyExistException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
         ClassificationImpl classification = (ClassificationImpl) createDummyClassification();
         classification.setDomain("");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -166,11 +190,42 @@ public class ClassificationServiceImplTest {
         classification = cutSpy.updateClassification(classification);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
-        verify(cutSpy, times(2)).getClassification(classification.getKey(), classification.getDomain());
+        verify(cutSpy, times(1)).getClassification(classification.getKey(), classification.getDomain());
         verify(classificationMapperMock, times(1)).update(any());
         verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
+    }
+
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testUpdateClassificationParentNotExisting()
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
+        ConcurrencyException {
+        Instant now = Instant.now();
+        ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
+        oldClassification.setParentId("SOME ID");
+        oldClassification.setCreated(now);
+        oldClassification.setModified(now);
+        Classification classification = createDummyClassification();
+        classification.setParentId("DIFFERENT ID - FOR CHECKING PARENT");
+        ((ClassificationImpl) classification).setCreated(oldClassification.getCreated());
+        ((ClassificationImpl) classification).setModified(oldClassification.getModified());
+        doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
+        doReturn(null).when(classificationMapperMock).findById(classification.getParentId());
+
+        try {
+            cutSpy.updateClassification(classification);
+        } catch (ClassificationNotFoundException e) {
+            verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
+            verify(taskanaEngineImplMock, times(2)).openConnection();
+            verify(cutSpy, times(1)).getClassification(classification.getKey(),
+                classification.getDomain());
+            verify(cutSpy, times(1)).getClassification(classification.getParentId());
+            verify(classificationMapperMock, times(1)).findById(classification.getParentId());
+            verify(taskanaEngineImplMock, times(2)).returnConnection();
+            verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
+            throw e;
+        }
     }
 
     @Test

@@ -46,7 +46,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public Classification createClassification(Classification classification)
-        throws ClassificationAlreadyExistException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
         LOGGER.debug("entry to createClassification(classification = {})", classification);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         ClassificationImpl classificationImpl;
@@ -54,7 +54,6 @@ public class ClassificationServiceImpl implements ClassificationService {
         try {
             taskanaEngine.openConnection();
             isClassificationExisting = doesClassificationExist(classification.getKey(), classification.getDomain());
-
             if (isClassificationExisting) {
                 throw new ClassificationAlreadyExistException(classification);
             }
@@ -63,8 +62,11 @@ public class ClassificationServiceImpl implements ClassificationService {
             classificationImpl.setModified(classificationImpl.getCreated());
             this.initDefaultClassificationValues(classificationImpl);
 
+            if (classificationImpl.getParentId() != null && !classificationImpl.getParentId().isEmpty()) {
+                this.getClassification(classificationImpl.getParentId());
+            }
             classificationMapper.insert(classificationImpl);
-            LOGGER.debug("Method createClassification created classification {}.", classification);
+            LOGGER.debug("Method createClassification created classification {}.", classificationImpl);
 
             if (!classification.getDomain().isEmpty()) {
                 addClassificationToRootDomain(classificationImpl);
@@ -113,59 +115,49 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public Classification updateClassification(Classification classification)
-        throws NotAuthorizedException, ConcurrencyException {
+        throws NotAuthorizedException, ConcurrencyException, ClassificationNotFoundException {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         ClassificationImpl classificationImpl = null;
         try {
             taskanaEngine.openConnection();
             classificationImpl = (ClassificationImpl) classification;
-            // UPDATE/INSERT classification
-            try {
-                Classification oldClassification = this.getClassification(classificationImpl.getKey(),
-                    classificationImpl.getDomain());
-                if (!oldClassification.getModified().equals(classificationImpl.getModified())) {
-                    throw new ConcurrencyException(
-                        "The current Classification has been modified while editing. The values can not be updated. Classification="
-                            + classificationImpl.toString());
+
+            // Check if current object is based on the newest (by modified)
+            Classification oldClassification = this.getClassification(classificationImpl.getKey(),
+                classificationImpl.getDomain());
+            if (!oldClassification.getModified().equals(classificationImpl.getModified())) {
+                throw new ConcurrencyException(
+                    "The current Classification has been modified while editing. The values can not be updated. Classification="
+                        + classificationImpl.toString());
+            }
+            classificationImpl.setModified(Instant.now());
+            this.initDefaultClassificationValues(classificationImpl);
+
+            // Update classification fields used by tasks
+            if (oldClassification.getCategory() != classificationImpl.getCategory()) {
+                List<TaskSummary> taskSumamries = taskanaEngine.getTaskService()
+                    .createTaskQuery()
+                    .classificationKeyIn(oldClassification.getKey())
+                    .classificationCategoryIn(oldClassification.getCategory())
+                    .list();
+                if (!taskSumamries.isEmpty()) {
+                    List<String> taskIds = new ArrayList<>();
+                    taskSumamries.stream().forEach(ts -> taskIds.add(ts.getTaskId()));
+                    taskMapper.updateClassificationCategoryOnChange(taskIds, classificationImpl.getCategory());
                 }
-                classificationImpl.setModified(Instant.now());
-                this.initDefaultClassificationValues(classificationImpl);
-                // Update classification fields used by tasks
-                if (oldClassification.getCategory() != classificationImpl.getCategory()) {
-                    List<TaskSummary> taskSumamries = taskanaEngine.getTaskService()
-                        .createTaskQuery()
-                        .classificationKeyIn(oldClassification.getKey())
-                        .classificationCategoryIn(oldClassification.getCategory())
-                        .list();
-                    if (!taskSumamries.isEmpty()) {
-                        List<String> taskIds = new ArrayList<>();
-                        taskSumamries.stream().forEach(ts -> taskIds.add(ts.getTaskId()));
-                        taskMapper.updateClassificationCategoryOnChange(taskIds, classificationImpl.getCategory());
-                    }
-                }
-                classificationMapper.update(classificationImpl);
-                LOGGER.debug("Method updateClassification() updated the classification {}.",
-                    classificationImpl);
-            } catch (ClassificationNotFoundException e) {
-                classificationImpl.setCreated(classification.getModified());
-                classificationMapper.insert(classificationImpl);
-                LOGGER.debug(
-                    "Method updateClassification() inserted a unpersisted classification which was wanted to be updated {}.",
-                    classificationImpl);
             }
 
-            // CHECK if classification does exist now
-            try {
-                Classification updatedClassification = this.getClassification(classificationImpl.getKey(),
-                    classificationImpl.getDomain());
-                return updatedClassification;
-            } catch (ClassificationNotFoundException e) {
-                LOGGER.debug(
-                    "Throwing SystemException because updateClassification didn't find new classification {} after update",
-                    classification);
-                throw new SystemException("updateClassification didn't find new classification after update");
+            // Check if parentId changed and object does exist
+            if (!oldClassification.getParentId().equals(classificationImpl.getParentId())) {
+                if (classificationImpl.getParentId() != null && !classificationImpl.getParentId().isEmpty()) {
+                    this.getClassification(classificationImpl.getParentId());
+                }
             }
+            classificationMapper.update(classificationImpl);
+            LOGGER.debug("Method updateClassification() updated the classification {}.",
+                classificationImpl);
+            return classification;
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from updateClassification().");
