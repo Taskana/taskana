@@ -82,17 +82,19 @@ public class WorkbasketController {
         @RequestParam(value = "ownerLike", required = false) String ownerLike,
         @RequestParam(value = "type", required = false) String type,
         @RequestParam(value = "requiredPermission", required = false) String requiredPermission) {
-        ResponseEntity<List<WorkbasketSummaryResource>> result;
-        List<WorkbasketSummary> workbasketsSummary;
-        WorkbasketQuery query = workbasketService.createWorkbasketQuery();
-        addSortingToQuery(query, sortBy, order);
-        addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
-        addAuthorizationFilter(query, requiredPermission);
-        workbasketsSummary = query.list();
-        result = new ResponseEntity<>(workbasketsSummary.stream()
-            .map(workbasket -> workbasketSummaryMapper.toResource(workbasket))
-            .collect(Collectors.toList()), HttpStatus.OK);
-        return result;
+        try {
+            List<WorkbasketSummary> workbasketsSummary;
+            WorkbasketQuery query = workbasketService.createWorkbasketQuery();
+            addSortingToQuery(query, sortBy, order);
+            addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
+            addAuthorizationFilter(query, requiredPermission);
+            workbasketsSummary = query.list();
+            return new ResponseEntity<>(workbasketsSummary.stream()
+                .map(workbasket -> workbasketSummaryMapper.toResource(workbasket))
+                .collect(Collectors.toList()), HttpStatus.OK);
+        } catch (InvalidArgumentException ex) {
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
     }
 
     @GetMapping(path = "/{workbasketId}")
@@ -185,7 +187,7 @@ public class WorkbasketController {
         @PathVariable(value = "workbasketId") String workbasketId) {
         List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAccessItems(workbasketId);
         List<WorkbasketAccessItemResource> result = new ArrayList<>();
-        wbAuthorizations.stream()
+        wbAuthorizations
             .forEach(accItem -> {
                 try {
                     result.add(workbasketAccessItemMapper.toResource(accItem));
@@ -233,8 +235,7 @@ public class WorkbasketController {
                 throw new InvalidArgumentException("Can´t create something with NULL body-value.");
             }
             List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
-            workbasketAccessResourceItems.stream()
-                .forEach(item -> wbAccessItems.add(workbasketAccessItemMapper.toModel(item)));
+            workbasketAccessResourceItems.forEach(item -> wbAccessItems.add(workbasketAccessItemMapper.toModel(item)));
             workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (InvalidArgumentException | NullPointerException e) {
@@ -287,75 +288,72 @@ public class WorkbasketController {
         return result;
     }
 
-    private void addAuthorizationFilter(WorkbasketQuery query, String requiredPermission) {
+    private void addAuthorizationFilter(WorkbasketQuery query, String requiredPermission)
+        throws InvalidArgumentException {
         if (requiredPermission == null) {
             return;
         }
 
         for (String authorization : Arrays.asList(requiredPermission.split(","))) {
-            try {
-                switch (authorization.trim()) {
-                    case "READ":
-                        query.callerHasPermission(WorkbasketPermission.READ);
-                        break;
-                    case "OPEN":
-                        query.callerHasPermission(WorkbasketPermission.OPEN);
-                        break;
-                    case "APPEND":
-                        query.callerHasPermission(WorkbasketPermission.APPEND);
-                        break;
-                    case "TRANSFER":
-                        query.callerHasPermission(WorkbasketPermission.TRANSFER);
-                        break;
-                    case "DISTRIBUTE":
-                        query.callerHasPermission(WorkbasketPermission.DISTRIBUTE);
-                        break;
-                    case "CUSTOM_1":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_1);
-                        break;
-                    case "CUSTOM_2":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_2);
-                        break;
-                    case "CUSTOM_3":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_3);
-                        break;
-                    case "CUSTOM_4":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_4);
-                        break;
-                    case "CUSTOM_5":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_5);
-                        break;
-                    case "CUSTOM_6":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_6);
-                        break;
-                    case "CUSTOM_7":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_7);
-                        break;
-                    case "CUSTOM_8":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_8);
-                        break;
-                    case "CUSTOM_9":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_9);
-                        break;
-                    case "CUSTOM_10":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_10);
-                        break;
-                    case "CUSTOM_11":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_11);
-                        break;
-                    case "CUSTOM_12":
-                        query.callerHasPermission(WorkbasketPermission.CUSTOM_12);
-                        break;
-                    default:
-                        throw new RuntimeException("should never occur");
-                }
-            } catch (InvalidArgumentException e) {
-                e.printStackTrace();
+            switch (authorization.trim()) {
+                case "READ":
+                    query.callerHasPermission(WorkbasketPermission.READ);
+                    break;
+                case "OPEN":
+                    query.callerHasPermission(WorkbasketPermission.OPEN);
+                    break;
+                case "APPEND":
+                    query.callerHasPermission(WorkbasketPermission.APPEND);
+                    break;
+                case "TRANSFER":
+                    query.callerHasPermission(WorkbasketPermission.TRANSFER);
+                    break;
+                case "DISTRIBUTE":
+                    query.callerHasPermission(WorkbasketPermission.DISTRIBUTE);
+                    break;
+                case "CUSTOM_1":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_1);
+                    break;
+                case "CUSTOM_2":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_2);
+                    break;
+                case "CUSTOM_3":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_3);
+                    break;
+                case "CUSTOM_4":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_4);
+                    break;
+                case "CUSTOM_5":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_5);
+                    break;
+                case "CUSTOM_6":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_6);
+                    break;
+                case "CUSTOM_7":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_7);
+                    break;
+                case "CUSTOM_8":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_8);
+                    break;
+                case "CUSTOM_9":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_9);
+                    break;
+                case "CUSTOM_10":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_10);
+                    break;
+                case "CUSTOM_11":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_11);
+                    break;
+                case "CUSTOM_12":
+                    query.callerHasPermission(WorkbasketPermission.CUSTOM_12);
+                    break;
+                default:
+                    throw new InvalidArgumentException("Unknown authorization '" + authorization + "'");
             }
         }
     }
 
-    private void addSortingToQuery(WorkbasketQuery query, String sortBy, String order) {
+    private void addSortingToQuery(WorkbasketQuery query, String sortBy, String order) throws IllegalArgumentException {
         BaseQuery.SortDirection sortDirection = getSortDirection(order);
 
         switch (sortBy) {
@@ -375,7 +373,7 @@ public class WorkbasketController {
                 query.orderByType(sortDirection);
                 break;
             default:
-                throw new RuntimeException("should never occur");
+                throw new IllegalArgumentException("Unknown order '" + sortBy + "'");
         }
     }
 
@@ -390,7 +388,7 @@ public class WorkbasketController {
         String name, String nameLike,
         String key, String keyLike,
         String descLike, String owner,
-        String ownerLike, String type) {
+        String ownerLike, String type) throws InvalidArgumentException {
         if (name != null) {
             query.nameIn(name);
         }
@@ -426,8 +424,8 @@ public class WorkbasketController {
                 case "TOPIC":
                     query.typeIn(WorkbasketType.TOPIC);
                     break;
-                    default:
-                        throw new RuntimeException("should never occur");
+                default:
+                    throw new InvalidArgumentException("Unknown Workbaskettype '" + type + "'");
             }
         }
     }

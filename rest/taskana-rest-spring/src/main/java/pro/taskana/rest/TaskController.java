@@ -50,8 +50,7 @@ public class TaskController {
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<TaskSummary>> getTasks(@RequestParam MultiValueMap<String, String> params)
-        throws InvalidArgumentException {
+    public ResponseEntity<List<TaskSummary>> getTasks(@RequestParam MultiValueMap<String, String> params) {
         try {
             if (params.keySet().size() == 0) {
                 // get all
@@ -62,6 +61,9 @@ public class TaskController {
             LOGGER.error("Something went wrong with the Authorisation, while getting all Tasks.", e);
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (InvalidArgumentException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
     }
 
