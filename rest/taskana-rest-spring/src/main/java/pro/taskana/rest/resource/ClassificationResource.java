@@ -15,6 +15,7 @@ public class ClassificationResource extends ResourceSupport {
     public String domain;
     public Boolean isValidInDomain;
     public String created;      // ISO-8601
+    public String modified;      // ISO-8601
     public String name;
     public String description;
     public int priority;
@@ -91,6 +92,14 @@ public class ClassificationResource extends ResourceSupport {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    public String getModified() {
+        return modified;
+    }
+
+    public void setModified(String modified) {
+        this.modified = modified;
     }
 
     public String getName() {

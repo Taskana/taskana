@@ -34,6 +34,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private String[] domain;
     private Boolean validInDomain;
     private TimeInterval[] createdIn;
+    private TimeInterval[] modifiedIn;
     private String[] nameIn;
     private String[] nameLike;
     private String descriptionLike;
@@ -105,6 +106,17 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     public ClassificationQuery createdWithin(TimeInterval... createdIn) {
         this.createdIn = createdIn;
         for (TimeInterval ti : createdIn) {
+            if (!ti.isValid()) {
+                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery modifiedWithin(TimeInterval... modifiedIn) {
+        this.modifiedIn = modifiedIn;
+        for (TimeInterval ti : modifiedIn) {
             if (!ti.isValid()) {
                 throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
             }
@@ -458,6 +470,10 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         return createdIn;
     }
 
+    public TimeInterval[] getModifiedIn() {
+        return modifiedIn;
+    }
+
     public String[] getApplicationEntryPointIn() {
         return applicationEntryPointIn;
     }
@@ -561,6 +577,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         builder.append(validInDomain);
         builder.append(", createdIn=");
         builder.append(Arrays.toString(createdIn));
+        builder.append(", modifiedIn=");
+        builder.append(Arrays.toString(modifiedIn));
         builder.append(", nameIn=");
         builder.append(Arrays.toString(nameIn));
         builder.append(", nameLike=");

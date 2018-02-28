@@ -16,6 +16,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.SystemException;
@@ -57,6 +58,8 @@ public class ClassificationServiceImpl implements ClassificationService {
                 throw new ClassificationAlreadyExistException(classification);
             }
             classificationImpl = (ClassificationImpl) classification;
+            classificationImpl.setCreated(Instant.now());
+            classificationImpl.setModified(classificationImpl.getCreated());
             this.initDefaultClassificationValues(classificationImpl);
 
             classificationMapper.insert(classificationImpl);
@@ -108,19 +111,25 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     @Override
-    public Classification updateClassification(Classification classification) throws NotAuthorizedException {
+    public Classification updateClassification(Classification classification)
+        throws NotAuthorizedException, ConcurrencyException {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         ClassificationImpl classificationImpl = null;
         try {
             taskanaEngine.openConnection();
             classificationImpl = (ClassificationImpl) classification;
-            this.initDefaultClassificationValues(classificationImpl);
-
             // UPDATE/INSERT classification
             try {
                 Classification oldClassification = this.getClassification(classificationImpl.getKey(),
                     classificationImpl.getDomain());
+                if (!oldClassification.getModified().equals(classificationImpl.getModified())) {
+                    throw new ConcurrencyException(
+                        "The current Classification has been modified while editing. The values can not be updated. Classification="
+                            + classificationImpl.toString());
+                }
+                classificationImpl.setModified(Instant.now());
+                this.initDefaultClassificationValues(classificationImpl);
                 // Update classification fields used by tasks
                 if (oldClassification.getCategory() != classificationImpl.getCategory()) {
                     List<TaskSummary> taskSumamries = taskanaEngine.getTaskService()
@@ -138,7 +147,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                 LOGGER.debug("Method updateClassification() updated the classification {}.",
                     classificationImpl);
             } catch (ClassificationNotFoundException e) {
-                classificationImpl.setCreated(Instant.now());
+                classificationImpl.setCreated(classification.getModified());
                 classificationMapper.insert(classificationImpl);
                 LOGGER.debug(
                     "Method updateClassification() inserted a unpersisted classification which was wanted to be updated {}.",
@@ -168,12 +177,17 @@ public class ClassificationServiceImpl implements ClassificationService {
      * @param classification
      */
     private void initDefaultClassificationValues(ClassificationImpl classification) throws IllegalStateException {
+        Instant now = Instant.now();
         if (classification.getId() == null) {
             classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
         }
 
         if (classification.getCreated() == null) {
-            classification.setCreated(Instant.now());
+            classification.setCreated(now);
+        }
+
+        if (classification.getModified() == null) {
+            classification.setModified(now);
         }
 
         if (classification.getIsValidInDomain() == null) {

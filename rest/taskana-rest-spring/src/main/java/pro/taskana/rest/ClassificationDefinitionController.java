@@ -24,6 +24,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
@@ -67,7 +68,9 @@ public class ClassificationDefinitionController {
     public ResponseEntity<String> importClassifications(
         @RequestBody List<ClassificationResource> classificationResources) {
         try {
-            Map<String, String> systemIds = classificationService.createClassificationQuery().list().stream()
+            Map<String, String> systemIds = classificationService.createClassificationQuery()
+                .list()
+                .stream()
                 .collect(Collectors.toMap(i -> i.getKey() + "|||" + i.getDomain(), ClassificationSummary::getId));
 
             for (ClassificationResource classificationResource : classificationResources) {
@@ -91,6 +94,9 @@ public class ClassificationDefinitionController {
         } catch (ClassificationAlreadyExistException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (ConcurrencyException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.LOCKED);
         }
     }
 }

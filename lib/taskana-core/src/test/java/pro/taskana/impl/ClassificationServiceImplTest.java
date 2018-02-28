@@ -25,6 +25,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import pro.taskana.Classification;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.mappings.ClassificationMapper;
 
@@ -153,9 +154,13 @@ public class ClassificationServiceImplTest {
     }
 
     @Test
-    public void testUpdateExistingClassification() throws ClassificationNotFoundException, NotAuthorizedException {
+    public void testUpdateExistingClassification()
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException {
+        Instant now = Instant.now();
         Classification classification = createDummyClassification();
+        ((ClassificationImpl) classification).setModified(now);
         ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
+        oldClassification.setModified(now);
         doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
 
         classification = cutSpy.updateClassification(classification);

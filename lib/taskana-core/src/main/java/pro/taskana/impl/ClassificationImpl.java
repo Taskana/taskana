@@ -19,6 +19,7 @@ public class ClassificationImpl implements Classification {
     private String domain;
     private Boolean isValidInDomain;
     private Instant created;
+    private Instant modified;
     private String name;
     private String description;
     private int priority;
@@ -109,6 +110,15 @@ public class ClassificationImpl implements Classification {
 
     public void setCreated(Instant created) {
         this.created = created;
+    }
+
+    @Override
+    public Instant getModified() {
+        return modified;
+    }
+
+    public void setModified(Instant modified) {
+        this.modified = modified;
     }
 
     @Override
@@ -278,6 +288,8 @@ public class ClassificationImpl implements Classification {
         builder.append(isValidInDomain);
         builder.append(", created=");
         builder.append(created);
+        builder.append(", modified=");
+        builder.append(modified);
         builder.append(", name=");
         builder.append(name);
         builder.append(", description=");

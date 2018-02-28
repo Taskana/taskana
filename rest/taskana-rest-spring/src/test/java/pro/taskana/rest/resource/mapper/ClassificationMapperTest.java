@@ -26,9 +26,10 @@ import pro.taskana.rest.resource.ClassificationResource;
 public class ClassificationMapperTest {
 
     @Autowired
-    ClassificationMapper classificationMapper;
+    private ClassificationMapper classificationMapper;
+
     @Autowired
-    ClassificationService classificationService;
+    private ClassificationService classificationService;
 
     @Test
     public void classificationToResource() {
@@ -53,6 +54,7 @@ public class ClassificationMapperTest {
         classification.setServiceLevel("P1D");
         classification.setDescription("Test");
         classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
+        classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
         // when
         ClassificationResource classificationResource = classificationMapper.toResource(classification);
         // then
@@ -71,6 +73,7 @@ public class ClassificationMapperTest {
         classificationResource.setApplicationEntryPoint("Test");
         classificationResource.setCategory("ABC");
         classificationResource.setCreated("2010-01-01T12:00:00Z");
+        classificationResource.setModified("2011-11-11T11:00:00Z");
         classificationResource.setCustom1("Custom");
         classificationResource.setCustom2("Custom2");
         classificationResource.setCustom1("Custom1");
