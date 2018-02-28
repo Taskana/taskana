@@ -62,7 +62,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setDescription("newDescription");
         classification.setIsValidInDomain(false);
         classification.setName(newName);
-        classification.setParentId("T2000");
+        classification.setParentId("CLI:100000000000000000000000000000000004");
         classification.setPriority(1000);
         classification.setServiceLevel("P2DT3H4M");
 
@@ -154,6 +154,19 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setDescription("IT SHOULD BE TO LATE...");
         classificationService.updateClassification(classification);
         fail("The Classification should not be updated, because it was modified while editing.");
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testUpdateClassificationParentToInvalid()
+        throws NotAuthorizedException, ClassificationNotFoundException,
+        ConcurrencyException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
+        classification.setParentId("ID WHICH CANT BE FOUND");
+        classification = classificationService.updateClassification(classification);
     }
 
     @AfterClass
