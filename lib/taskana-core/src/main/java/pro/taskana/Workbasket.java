@@ -2,8 +2,6 @@ package pro.taskana;
 
 import java.time.Instant;
 
-import pro.taskana.impl.WorkbasketType;
-
 /**
  * Workbasket entity interface.
  */

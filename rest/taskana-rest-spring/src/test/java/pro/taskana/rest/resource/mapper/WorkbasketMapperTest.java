@@ -12,9 +12,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.impl.WorkbasketType;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.WorkbasketResource;
 

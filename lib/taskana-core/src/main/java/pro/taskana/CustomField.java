@@ -1,4 +1,4 @@
-package pro.taskana.impl;
+package pro.taskana;
 
 /**
  * This enum contains the fields CUSTOM_1 - CUSTOM_10 for the task entity.

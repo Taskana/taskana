@@ -23,6 +23,7 @@ import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaRole;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;

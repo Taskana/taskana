@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.impl.WorkbasketType;
 import pro.taskana.impl.util.IdGenerator;
 
 /**
