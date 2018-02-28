@@ -69,6 +69,15 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
     ClassificationQuery createdWithin(TimeInterval... createdIn);
 
     /**
+     * Add your modified-Dates to your query.
+     *
+     * @param modifiedIn
+     *            the {@link TimeInterval} within which the searched-for classifications were modified the last time.
+     * @return the query
+     */
+    ClassificationQuery modifiedWithin(TimeInterval... modifiedIn);
+
+    /**
      * Add your name to your query.
      *
      * @param nameIn

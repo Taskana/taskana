@@ -75,11 +75,18 @@ public interface Classification {
     void setIsValidInDomain(Boolean isValidInDomain);
 
     /**
-     * Get the Date when this classification was as created.
+     * Get the timestamp when this classification was as created.
      *
      * @return created as instant
      */
     Instant getCreated();
+
+    /**
+     * Get the timestamp when this classification was as modified the last time.
+     *
+     * @return modified as instant
+     */
+    Instant getModified();
 
     /**
      * Get the classification name.
