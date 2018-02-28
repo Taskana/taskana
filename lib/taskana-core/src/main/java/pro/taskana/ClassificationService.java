@@ -65,20 +65,22 @@ public interface ClassificationService {
      *             when the classification does already exists at the given domain.
      * @throws NotAuthorizedException
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
+     * @throws ClassificationNotFoundException
+     *             if the current parentId is not NULL/EMPTY and can not be found.
      */
     Classification createClassification(Classification classification)
-        throws ClassificationAlreadyExistException, NotAuthorizedException;
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException;
 
     /**
-     * Update a Classification.
+     * Updates a Classification.
      *
      * @param classification
      *            the Classification to update
      * @return the updated Classification.
      * @throws ClassificationNotFoundException
-     *             when the classification does not exist already.
+     *             when the classification OR it´s parent does not exist.
      * @throws NotAuthorizedException
-     *             when a user got no permissions for WB content tasks.
+     *             when the caller got no ADMIN or BUSINESS_ADMIN permissions.
      * @throws ConcurrencyException
      *             when the Classification was modified meanwhile and is not latest anymore.
      */

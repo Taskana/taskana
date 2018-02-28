@@ -160,7 +160,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindAllClassifications() throws ClassificationAlreadyExistException, NotAuthorizedException {
+    public void testFindAllClassifications()
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
         Classification classification0 = this.createDummyClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification0);
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
@@ -227,7 +228,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
-        throws ClassificationAlreadyExistException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("domain1", "type1");
         classification1.setCategory("category1");
         classificationService.createClassification(classification1);
@@ -249,7 +250,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperCustomAndCategory()
-        throws ClassificationAlreadyExistException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1.setDescription("DESC1");
         classification1.setCategory("category1");
@@ -286,26 +287,27 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
-        throws ClassificationAlreadyExistException, NumberFormatException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, NumberFormatException, NotAuthorizedException,
+        ClassificationNotFoundException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setPriority(Integer.decode("5"));
         classificationService.createClassification(classification);
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1.setPriority(Integer.decode("3"));
-        classification1.setParentId(classification.getKey());
+        classification1.setParentId(classification.getId());
         classificationService.createClassification(classification1);
         Classification classification2 = this.createDummyClassificationWithUniqueKey("", "type2");
         classification2.setPriority(Integer.decode("5"));
-        classification2.setParentId(classification.getKey());
+        classification2.setParentId(classification.getId());
         classificationService.createClassification(classification2);
 
         Classification classification3 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification3.setPriority(Integer.decode("5"));
-        classification3.setParentId(classification1.getKey());
+        classification3.setParentId(classification1.getId());
         classificationService.createClassification(classification3);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .parentIdIn(classification.getKey())
+            .parentIdIn(classification.getId())
             .list();
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().typeIn("type1").priorityIn(Integer.decode("5")).list();
@@ -313,14 +315,14 @@ public class ClassificationServiceImplIntAutoCommitTest {
         list = classificationService.createClassificationQuery()
             .priorityIn(Integer.decode("5"))
             .typeIn("type1")
-            .parentIdIn(classification1.getKey())
+            .parentIdIn(classification1.getId())
             .list();
         Assert.assertEquals(1, list.size());
     }
 
     @Test
     public void testFindWithClassificationMapperServiceLevelNameAndDescription()
-        throws ClassificationAlreadyExistException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
         int all = 0;
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setServiceLevel("P1D");
@@ -366,7 +368,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
         classification1 = classificationService.createClassification(classification1);
 
-        classification1.setParentId(classification.getKey());
+        classification1.setParentId(classification.getId());
         classification1 = classificationService.updateClassification(classification1);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()

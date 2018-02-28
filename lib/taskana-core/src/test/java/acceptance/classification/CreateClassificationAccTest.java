@@ -98,7 +98,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testCreateClassificationWithInvalidValues()
-        throws ClassificationAlreadyExistException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
         long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
 
         // Check key NULL
@@ -135,9 +135,20 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test(expected = ClassificationAlreadyExistException.class)
     public void testCreateClassificationAlreadyExisting()
-        throws ClassificationAlreadyExistException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
         Classification classification = classificationService.newClassification("Key3", "", "TASK");
         classification = classificationService.createClassification(classification);
+        classification = classificationService.createClassification(classification);
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testCreateClassificationWithInvalidParent()
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        Classification classification = classificationService.newClassification("Key4", "", "TASK");
+        classification.setParentId("ID WHICH CANT BE FOUND");
         classification = classificationService.createClassification(classification);
     }
 
