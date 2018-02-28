@@ -1,6 +1,3 @@
-/**
- *
- */
 package pro.taskana.rest;
 
 import java.util.List;
