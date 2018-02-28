@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.ResourceSupport;
 
 /**
- * TODO.
+ * Resource class for {@link pro.taskana.WorkbasketAccessItem}.
  */
 public class WorkbasketAccessItemResource extends ResourceSupport {
 

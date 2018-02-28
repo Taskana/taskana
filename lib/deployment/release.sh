@@ -1,16 +1,16 @@
 #!/bin/bash
 set -e #fail fast
 
-reqRepo="mustaphazorgati/taskana"
+reqRepo="Taskana/taskana"
 if [[ -z "$MANIFEST_PREFIX" ]]; then
-  MANIFEST_PREFIX="/rest"
+  MANIFEST_PREFIX="target/taskana-rest-spring-example"
 fi
 #H Usage:
-#H deploy.sh -h | deploy.sh --help
+#H release.sh -h | release.sh --help
 #H
 #H prints this help and exits  
 #H 
-#H deploy.sh [PARAM...]
+#H release.sh [PARAM...]
 #H
 #H   an easy deployment tool to deploy maven projects.
 #H

@@ -29,7 +29,7 @@ import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
 
 /**
- * TODO.
+ * Controller for Importing / Exporting classifications.
  */
 @RestController
 @RequestMapping(path = "/v1/classificationdefinitions", produces = {MediaType.APPLICATION_JSON_VALUE})

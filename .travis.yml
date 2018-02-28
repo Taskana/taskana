@@ -24,8 +24,8 @@ script:
   - (cd admin && npm run test-phantom)
     && mvn verify -f lib/
     && mvn verify -f rest/
-    && lib/deployment/deploy.sh -ik -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/"
-    && lib/deployment/deploy.sh -pp -p rest/ -m rest/taskana-rest-spring -mf manifest.yml -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
+    && lib/deployment/release.sh -ik -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/"
+    && lib/deployment/release.sh -pp -p rest/ -m rest/taskana-rest-spring -mf manifest.yml -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
 deploy:
   provider: cloudfoundry
   username: tobias.schaefer@novatec-gmbh.de

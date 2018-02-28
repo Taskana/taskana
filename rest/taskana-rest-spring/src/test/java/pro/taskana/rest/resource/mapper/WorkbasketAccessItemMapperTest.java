@@ -15,7 +15,7 @@ import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
 /**
- * TODO.
+ * Test for {@link WorkbasketAccessItemMapper}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RestConfiguration.class})

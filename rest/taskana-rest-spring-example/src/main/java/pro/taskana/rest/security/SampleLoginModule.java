@@ -13,6 +13,9 @@ import javax.security.auth.spi.LoginModule;
 import pro.taskana.security.GroupPrincipal;
 import pro.taskana.security.UserPrincipal;
 
+/**
+ * TODO.
+ */
 public class SampleLoginModule implements LoginModule {
 
     private NameCallback nameCallback;
@@ -45,6 +48,8 @@ public class SampleLoginModule implements LoginModule {
                 subject.getPrincipals()
                     .add(new GroupPrincipal("manager" + "_domain_" + username.charAt(0)));
                 break;
+            default:
+                //necessary for checkstyle
         }
         subject.getPrincipals().add(new GroupPrincipal("team_" + username.substring(2, 6)));
     }
@@ -63,7 +68,7 @@ public class SampleLoginModule implements LoginModule {
             nameCallback = new NameCallback("prompt");
             passwordCallback = new PasswordCallback("prompt", false);
 
-            callbackHandler.handle(new Callback[] { nameCallback, passwordCallback });
+            callbackHandler.handle(new Callback[] {nameCallback, passwordCallback});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

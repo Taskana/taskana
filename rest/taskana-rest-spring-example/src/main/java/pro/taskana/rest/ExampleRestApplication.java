@@ -10,8 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 
-import sampledata.SampleDataGenerator;
+import pro.taskana.sampledata.SampleDataGenerator;
 
+/**
+ * Example Application showing the implementation of taskana-rest-spring.
+ */
 @SpringBootApplication
 @Import(RestConfiguration.class)
 public class ExampleRestApplication {

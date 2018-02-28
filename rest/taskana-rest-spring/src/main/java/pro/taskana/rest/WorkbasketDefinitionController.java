@@ -35,7 +35,7 @@ import pro.taskana.rest.resource.mapper.WorkbasketDefinitionMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
 
 /**
- * TODO.
+ * Controller for all {@link WorkbasketDefinition} related endpoints.
  */
 @RestController
 @RequestMapping(path = "/v1/workbasketdefinitions", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -85,8 +85,6 @@ public class WorkbasketDefinitionController {
      *            the list of workbasket definitions which will be imported to the current system.
      * @return Return answer is determined by the status code: 200 - all good 400 - list state error (referring to non
      *         existing id's) 401 - not authorized
-     * @throws InvalidArgumentException
-     *             When the pre-conditions of a workbasket doesn´t match.
      */
     @PostMapping(path = "/import")
     @Transactional(rollbackFor = Exception.class)

@@ -42,7 +42,7 @@ import pro.taskana.rest.resource.mapper.WorkbasketMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 
 /**
- * TODO.
+ * Controller for all {@link Workbasket} related endpoints.
  */
 @RestController
 @RequestMapping(path = "/v1/workbaskets", produces = {MediaType.APPLICATION_JSON_VALUE})
