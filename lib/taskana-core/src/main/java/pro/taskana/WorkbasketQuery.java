@@ -2,7 +2,6 @@ package pro.taskana;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.WorkbasketType;
 
 /**
  * WorkitemQuery for generating dynamic sql.

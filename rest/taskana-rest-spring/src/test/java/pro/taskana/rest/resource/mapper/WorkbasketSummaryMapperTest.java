@@ -9,8 +9,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketType;
 import pro.taskana.impl.WorkbasketSummaryImpl;
-import pro.taskana.impl.WorkbasketType;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 
@@ -22,12 +22,14 @@ import pro.taskana.rest.resource.WorkbasketSummaryResource;
 @WebAppConfiguration
 public class WorkbasketSummaryMapperTest {
 
-    @Autowired WorkbasketSummaryMapper workbasketSummaryMapper;
-    @Autowired WorkbasketService workbasketService;
+    @Autowired
+    WorkbasketSummaryMapper workbasketSummaryMapper;
+    @Autowired
+    WorkbasketService workbasketService;
 
     @Test
     public void workbasketSummaryToResource() {
-        //given
+        // given
         WorkbasketSummaryImpl workbasketSummary = (WorkbasketSummaryImpl) workbasketService.newWorkbasket("1",
             "DOMAIN_A").asSummary();
         workbasketSummary.setDescription("WorkbasketSummaryImplTes");
@@ -39,9 +41,9 @@ public class WorkbasketSummaryMapperTest {
         workbasketSummary.setOrgLevel4("Org4");
         workbasketSummary.setOwner("Lars");
         workbasketSummary.setType(WorkbasketType.PERSONAL);
-        //when
+        // when
         WorkbasketSummaryResource workbasketSummaryResource = workbasketSummaryMapper.toResource(workbasketSummary);
-        //then
+        // then
         Assert.assertEquals(workbasketSummary.getDescription(), workbasketSummaryResource.description);
         Assert.assertEquals(workbasketSummary.getDomain(), workbasketSummaryResource.domain);
         Assert.assertEquals(workbasketSummary.getId(), workbasketSummaryResource.workbasketId);

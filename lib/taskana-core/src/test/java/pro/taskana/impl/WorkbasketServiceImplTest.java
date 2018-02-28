@@ -32,6 +32,7 @@ import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketPermission;
+import pro.taskana.WorkbasketType;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;

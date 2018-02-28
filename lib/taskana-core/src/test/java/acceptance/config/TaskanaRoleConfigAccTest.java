@@ -11,9 +11,9 @@ import java.util.Set;
 import org.h2.store.fs.FileUtils;
 import org.junit.Test;
 
+import pro.taskana.TaskanaRole;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.TaskanaRole;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 
 /**

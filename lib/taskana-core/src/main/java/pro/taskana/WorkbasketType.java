@@ -1,4 +1,4 @@
-package pro.taskana.impl;
+package pro.taskana;
 
 /**
  * This enum contains the supported work basket types.

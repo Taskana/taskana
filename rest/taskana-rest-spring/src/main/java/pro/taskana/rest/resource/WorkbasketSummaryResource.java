@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.impl.WorkbasketType;
+import pro.taskana.WorkbasketType;
 
 /**
  * Resource class for {@link pro.taskana.WorkbasketSummary}.

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaRole;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemQuery;

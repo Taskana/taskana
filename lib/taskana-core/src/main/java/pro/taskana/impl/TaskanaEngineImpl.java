@@ -34,6 +34,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaRole;
 import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.AutocommitFailedException;

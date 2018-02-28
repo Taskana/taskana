@@ -13,6 +13,7 @@ import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;

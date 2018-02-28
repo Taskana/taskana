@@ -3,7 +3,6 @@ package pro.taskana;
 import java.util.List;
 
 import pro.taskana.impl.ClassificationReport;
-import pro.taskana.impl.CustomField;
 import pro.taskana.impl.DetailedClassificationReport;
 import pro.taskana.impl.Report;
 import pro.taskana.impl.ReportLineItemDefinition;

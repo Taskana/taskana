@@ -13,10 +13,10 @@ import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.WorkbasketType;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
