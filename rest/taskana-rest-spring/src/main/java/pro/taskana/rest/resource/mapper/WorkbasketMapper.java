@@ -17,7 +17,7 @@ import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketResource;
 
 /**
- * TODO.
+ * Transforms {@link Workbasket} to its resource counterpart {@link WorkbasketResource} and vice versa.
  */
 @Component
 public class WorkbasketMapper {

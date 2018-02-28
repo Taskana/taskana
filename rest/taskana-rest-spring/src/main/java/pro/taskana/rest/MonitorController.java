@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.TaskState;
 
 /**
- * TODO.
+ * Controller for all monitoring endpoints.
  */
 @RestController
 @RequestMapping(path = "/v1/monitor", produces = {MediaType.APPLICATION_JSON_VALUE})

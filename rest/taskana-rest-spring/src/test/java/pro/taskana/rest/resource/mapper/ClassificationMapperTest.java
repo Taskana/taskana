@@ -18,7 +18,7 @@ import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.ClassificationResource;
 
 /**
- * TODO.
+ * Test for {@link ClassificationMapper}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RestConfiguration.class})

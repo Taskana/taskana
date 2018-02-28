@@ -6,6 +6,9 @@ import java.util.Set;
 
 import org.springframework.security.authentication.jaas.AuthorityGranter;
 
+/**
+ * TODO.
+ */
 public class SampleRoleGranter implements AuthorityGranter {
 
     @Override

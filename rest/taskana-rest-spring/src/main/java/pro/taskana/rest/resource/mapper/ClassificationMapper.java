@@ -17,7 +17,7 @@ import pro.taskana.rest.ClassificationController;
 import pro.taskana.rest.resource.ClassificationResource;
 
 /**
- * TODO.
+ * Transforms {@link Classification} to its resource counterpart {@link ClassificationResource} and vice versa.
  */
 @Component
 public class ClassificationMapper {
