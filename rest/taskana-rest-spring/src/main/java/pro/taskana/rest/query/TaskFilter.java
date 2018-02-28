@@ -138,10 +138,10 @@ public class TaskFilter {
         return values.toArray(new String[0]);
     }
 
-    private TaskState[] extractStates(MultiValueMap<String, String> params) {
+    private TaskState[] extractStates(MultiValueMap<String, String> params) throws InvalidArgumentException {
         List<TaskState> states = new ArrayList<>();
-        params.get(STATE).forEach(item -> {
-            Arrays.asList(item.split(COMMA)).forEach(state -> {
+        for (String item : params.get(STATE)) {
+            for (String state : item.split(COMMA)) {
                 switch (state) {
                     case READY:
                         states.add(TaskState.READY);
@@ -153,10 +153,10 @@ public class TaskFilter {
                         states.add(TaskState.CLAIMED);
                         break;
                     default:
-                        throw new RuntimeException("should never occur");
+                        throw new InvalidArgumentException("Unknown status '" + state + "'");
                 }
-            });
-        });
+            }
+        }
         return states.toArray(new TaskState[0]);
     }
 }
