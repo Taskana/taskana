@@ -15,6 +15,7 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaRole;
 import pro.taskana.TimeInterval;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.exceptions.NotAuthorizedException;

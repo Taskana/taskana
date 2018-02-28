@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.WorkbasketType;
 
 /**
  * This entity contains the most important information about a workbasket.

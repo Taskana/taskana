@@ -18,13 +18,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
-import pro.taskana.impl.CustomField;
 import pro.taskana.impl.Report;
 import pro.taskana.impl.ReportLineItem;
 import pro.taskana.impl.ReportLineItemDefinition;

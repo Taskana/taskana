@@ -22,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.CustomField;
 import pro.taskana.TaskState;
 import pro.taskana.mappings.TaskMonitorMapper;
 
