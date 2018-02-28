@@ -16,14 +16,16 @@ before_install:
   - npm install -g @angular/cli >/dev/null 2>&1
 install:
   - (cd workplace && npm install --no-progress && ng build --environment=prod --no-progress)
-    && (cd admin && npm install --no-progress && npm run build:prod && npm run test-phantom)
+    && (cd admin && npm install --no-progress && npm run build:prod)
     && (cd monitor && npm install --no-progress && ng build --environment=prod --no-progress)
     && mvn clean install -q -f lib/ -DskipTests=true -Dmaven.javadoc.skip=true -B
-    && mvn clean install -q -f rest/ -DskipTests=true -B
+    && mvn clean install -q -f rest/ -DskipTests=true -Dmaven.javadoc.skip=true -B
 script:
-  - mvn verify -f lib/
+  - (cd admin && npm run test-phantom)
+    && mvn verify -f lib/
     && mvn verify -f rest/
-    && lib/deployment/deploy.sh -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/" -mf manifest.yml -avc rest/ -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
+    && lib/deployment/deploy.sh -ik -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/"
+    && lib/deployment/deploy.sh -pp -p rest/ -m rest/taskana-rest-spring -mf manifest.yml -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
 deploy:
   provider: cloudfoundry
   username: tobias.schaefer@novatec-gmbh.de

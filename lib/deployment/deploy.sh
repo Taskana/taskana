@@ -1,10 +1,12 @@
 #!/bin/bash
 set -e #fail fast
 
-reqRepo="Taskana/taskana"
-[[ -z "$MANIFEST_PREFIX" ]] && MANIFEST_PREFIX="/rest"
+reqRepo="mustaphazorgati/taskana"
+if [[ -z "$MANIFEST_PREFIX" ]]; then
+  MANIFEST_PREFIX="/rest"
+fi
 #H Usage:
-#H deploy.sh -h | pfcalc.sh --help
+#H deploy.sh -h | deploy.sh --help
 #H
 #H prints this help and exits  
 #H 
@@ -23,14 +25,18 @@ reqRepo="Taskana/taskana"
 #H   -avc | --append-version-change
 #H     List of modules (path) whose version will be updated after deployment.
 #H   -d   | --dry-run
-#H     echos out all commands instead of excecuting them.
+#H     Echos out all commands instead of executing them.
 #H   -m   | --modules
 #H     List of modules (path) which will be deployed.
 #H   -mf  | --manifest
-#H     if a manifest file exists the version of an artifact will be replaced.
+#H     If a manifest file exists the version of an artifact will be replaced.
 #H     You can Overwrite it by setting the env variable MANIFEST_PREFIX to the required prefix.
 #H   -p   | --parent
 #H     If a parent pom exists the version change will be done in the parent instead of every module.
+#H   -ik  | --import-keys
+#H     Toggles import of gpg keys.
+#H   -pp  | --push-poms
+#H     Toggles the commit & push of new poms (on release build)
 #H 
 #H
 #H IMPORTANT: 
@@ -158,7 +164,7 @@ function main {
           echo "missing parameter for argument '-avc|--additional-version-change'" >&2
           exit 1
         fi
-        local ADDITIONAL_VC=($2)
+        ADDITIONAL_VC=($2)
         shift # past argument
         shift # past value
         ;;
@@ -174,7 +180,7 @@ function main {
           echo "missing parameter for argument '-m|--modules'" >&2
           exit 1
         fi
-        local MODULES=($2)
+        MODULES=($2)
         shift # past argument
         shift # past value
         ;;
@@ -183,7 +189,7 @@ function main {
           echo "missing parameter for argument '-mf|--manifest'" >&2
           exit 1
         fi
-        local MANIFEST="$2"
+        MANIFEST="$2"
         shift # past argument
         shift # past value
         ;;
@@ -192,12 +198,20 @@ function main {
           echo "missing parameter for argument '-p|--parent'" >&2
           exit 1
         fi
-        local PARENT_DIR="$2"
+        PARENT_DIR="$2"
         shift # past argument
         shift # past value
         ;;
+      -pp|--push-poms)
+        PUSH_POMS="YES"
+        shift # past argument
+        ;;
+      -ik|--import-keys)
+        IMPORT_KEYS="YES"
+        shift # past argument
+        ;;
       -swarm)
-        local SWARM="$2"
+        SWARM="$2"
         shift # past argument
         shift # past value 
         ;;
@@ -213,7 +227,7 @@ function main {
     helpAndExit 1
   fi
 
-  local debug=
+  debug=
   if [[ -n "$DRY_RUN" ]]; then
     debug=echo
     print_environment
@@ -236,12 +250,12 @@ function main {
   fi
 
   if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    local profile="release"
+    profile="release"
 
     if [[ -z "$debug" ]]; then
       #check if tagged commit is a head commit of any branch
-      local commit=`git ls-remote -q -t origin | grep "$TRAVIS_TAG" | cut -c1-40`
-      local branch=`git ls-remote -q -h origin | grep "$commit" | sed "s/$commit.*refs\/heads\///"`
+      commit=`git ls-remote -q -t origin | grep "$TRAVIS_TAG" | cut -c1-40`
+      branch=`git ls-remote -q -h origin | grep "$commit" | sed "s/$commit.*refs\/heads\///"`
 
       if [[ -z "$commit" || -z "$branch" ]]; then
         echo "the commit '$commit' of tag '$TRAVIS_TAG' is not a head commit. Can not release" >&2
@@ -272,11 +286,14 @@ function main {
       echo "Skipping release to sonatype because this branch is not permitted"
       exit 0
     fi
-    local profile="snapshot"
+    profile="snapshot"
   fi 
   
 
-  decodeAndImportKeys `dirname "$0"`
+  if [[ "$IMPORT_KEYS" == 'YES' ]]; then
+   decodeAndImportKeys `dirname "$0"`
+  fi
+
   for dir in ${MODULES[@]}; do
     deploy "$dir" "$profile" "`dirname "$0"`/mvnsettings.xml"
   done
@@ -287,7 +304,7 @@ function main {
       exit 1
     fi
 
-    local newVersion=`increment_version ${TRAVIS_TAG##v}`
+    newVersion=`increment_version ${TRAVIS_TAG##v}`
 
     if [[ -n "$PARENT_DIR" ]]; then
       change_version "$PARENT_DIR" "$newVersion-SNAPSHOT"
@@ -309,7 +326,9 @@ function main {
         $debug sed -i "s|$MANIFEST_PREFIX.*\.jar|$MANIFEST_PREFIX-$newVersion-SNAPSHOT.jar|" "$MANIFEST"
     fi
     
-    push_new_poms "$MANIFEST" "$SWARM"
+    if [[ "$PUSH_POMS" == 'YES' ]]; then 
+      push_new_poms "$MANIFEST" "$SWARM"
+    fi
   fi
 }
 
