@@ -73,6 +73,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setOrgLevel1("company");
         workbasketService.createWorkbasket(workbasket);
+
         fail("NotAuthorizedException should have been thrown");
     }
 
