@@ -29,7 +29,7 @@ import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
 
 /**
- * TODO.
+ * Controller for all {@link Classification} related endpoints.
  */
 @RestController
 @RequestMapping(path = "/v1/classifications", produces = {MediaType.APPLICATION_JSON_VALUE})

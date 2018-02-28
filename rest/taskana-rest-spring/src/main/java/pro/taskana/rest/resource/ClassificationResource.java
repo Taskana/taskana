@@ -3,7 +3,7 @@ package pro.taskana.rest.resource;
 import org.springframework.hateoas.ResourceSupport;
 
 /**
- * TODO.
+ * Resource class for {@link pro.taskana.Classification}.
  */
 public class ClassificationResource extends ResourceSupport {
 

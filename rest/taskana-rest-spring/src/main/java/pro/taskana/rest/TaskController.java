@@ -34,7 +34,7 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.rest.query.TaskFilter;
 
 /**
- * TODO.
+ * Controller for all {@link Task} related endpoints.
  */
 @RestController
 @RequestMapping(path = "/v1/tasks", produces = {MediaType.APPLICATION_JSON_VALUE})

@@ -3,7 +3,7 @@ package pro.taskana.rest.resource.mapper;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
 /**
- * TODO.
+ * Transforms {@link WorkbasketAccessItem} to its resource counterpart {@link WorkbasketAccessItemResource} and vice versa.
  */
 @Component
 public class WorkbasketAccessItemMapper {
@@ -43,7 +43,7 @@ public class WorkbasketAccessItemMapper {
         return wbAccItemModel;
     }
 
-    WorkbasketAccessItemResource addLinks(WorkbasketAccessItemResource resource, WorkbasketAccessItem wbAccItem)
+    private WorkbasketAccessItemResource addLinks(WorkbasketAccessItemResource resource, WorkbasketAccessItem wbAccItem)
         throws NotAuthorizedException {
         resource.add(
             linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wbAccItem.getWorkbasketId()))
@@ -56,8 +56,8 @@ public class WorkbasketAccessItemMapper {
                 .withRel("updateWorkbasketAccessItem"));
         resource.add(
             linkTo(methodOn(WorkbasketController.class).setWorkbasketAccessItems(wbAccItem.getWorkbasketId(),
-                Arrays.asList(resource)))
-                    .withRel("setWorkbasketAccessItems"));
+                Collections.singletonList(resource)))
+                .withRel("setWorkbasketAuthorizations"));
         resource.add(
             linkTo(methodOn(WorkbasketController.class).deleteWorkbasketAccessItem(wbAccItem.getId()))
                 .withRel("deleteWorkbasketAccessItem"));

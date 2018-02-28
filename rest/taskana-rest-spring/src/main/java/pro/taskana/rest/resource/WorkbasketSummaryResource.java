@@ -7,7 +7,7 @@ import org.springframework.hateoas.ResourceSupport;
 import pro.taskana.impl.WorkbasketType;
 
 /**
- * TODO.
+ * Resource class for {@link pro.taskana.WorkbasketSummary}.
  */
 public class WorkbasketSummaryResource extends ResourceSupport {
 

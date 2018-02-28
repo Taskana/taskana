@@ -1,4 +1,4 @@
-package sampledata;
+package pro.taskana.sampledata;
 
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -11,11 +11,12 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class generates sample data for manual testing purposes.
+ */
 public class SampleDataGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger(SampleDataGenerator.class);
-    private ScriptRunner runner;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(SampleDataGenerator.class);
     private static final String SQL = "/sql";
     private static final String TEST_DATA = "/sample-data";
     private static final String TASK = SQL + TEST_DATA + "/task.sql";
@@ -24,19 +25,15 @@ public class SampleDataGenerator {
     private static final String WORKBASKET_ACCESS_LIST = SQL + TEST_DATA + "/workbasket-access-list.sql";
     private static final String CLASSIFICATION = SQL + TEST_DATA + "/classification.sql";
     private static final String OBJECT_REFERENCE = SQL + TEST_DATA + "/object-reference.sql";
+    private ScriptRunner runner;
 
     public SampleDataGenerator(DataSource dataSource) throws SQLException {
-        if (logger.isDebugEnabled()) {
-            logger.debug(dataSource.getConnection().getMetaData().toString());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(dataSource.getConnection().getMetaData().toString());
         }
         runner = new ScriptRunner(dataSource.getConnection());
     }
 
-    /**
-     * Creates sample data for manual testing purposes.
-     * 
-     * @throws SQLException
-     */
     public void generateSampleData() throws SQLException {
         StringWriter outWriter = new StringWriter();
         PrintWriter logWriter = new PrintWriter(outWriter);
@@ -57,9 +54,9 @@ public class SampleDataGenerator {
 
         runner.closeConnection();
 
-        logger.debug(outWriter.toString());
+        LOGGER.debug(outWriter.toString());
         if (!errorWriter.toString().trim().isEmpty()) {
-            logger.error(errorWriter.toString());
+            LOGGER.error(errorWriter.toString());
         }
     }
 

@@ -30,7 +30,7 @@ import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 /**
- * TODO.
+ * Configuration for REST service.
  */
 @Configuration
 @ComponentScan
@@ -72,7 +72,7 @@ public class RestConfiguration {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) throws SQLException {
+    public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         return taskanaEngineConfiguration.buildTaskanaEngine();
     }
 
@@ -82,12 +82,7 @@ public class RestConfiguration {
         return new SpringTaskanaEngineConfiguration(dataSource, true, true);
     }
 
-    /**
-     * Needed to override JSON De-/Serializer in Jackson.
-     *
-     * @param handlerInstantiator
-     * @return
-     */
+    // Needed to override JSON De-/Serializer in Jackson.
     @Bean
     public Jackson2ObjectMapperBuilder jacksonBuilder(HandlerInstantiator handlerInstantiator) {
         Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
@@ -96,12 +91,7 @@ public class RestConfiguration {
         return b;
     }
 
-    /**
-     * Needed for injection into jackson deserilizer.
-     *
-     * @param context
-     * @return
-     */
+    //Needed for injection into jackson deserilizer.
     @Bean
     public HandlerInstantiator handlerInstantiator(ApplicationContext context) {
         return new SpringHandlerInstantiator(context.getAutowireCapableBeanFactory());
