@@ -39,6 +39,9 @@ public interface BaseQuery<T> {
      *
      * @param dbColumnName
      *            column name of a existing DB Table.
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
      * @return a list of all existing values.
      */
     List<String> listValues(String dbColumnName, SortDirection sortDirection);

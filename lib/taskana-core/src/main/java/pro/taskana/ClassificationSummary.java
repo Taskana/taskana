@@ -54,4 +54,19 @@ public interface ClassificationSummary {
      * @return parentId
      */
     String getParentId();
+
+    /**
+     * Gets the service level of the parent classification. It is a String in ISO-8601 duration format. See the parse()
+     * method of {@code Duration} for details.
+     *
+     * @return the service level
+     */
+    String getServiceLevel();
+
+    /**
+     * Gets the priority of the lassification.
+     *
+     * @return the priority
+     */
+    int getPriority();
 }

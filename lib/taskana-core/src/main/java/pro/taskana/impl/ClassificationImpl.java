@@ -266,6 +266,8 @@ public class ClassificationImpl implements Classification {
         summary.setName(this.name);
         summary.setType(this.type);
         summary.setParentId(this.parentId);
+        summary.setPriority(this.priority);
+        summary.setServiceLevel(this.serviceLevel);
         return summary;
     }
 

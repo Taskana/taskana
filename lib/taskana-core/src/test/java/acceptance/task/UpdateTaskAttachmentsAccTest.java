@@ -1,12 +1,15 @@
 package acceptance.task;
 
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,8 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Attachment;
+import pro.taskana.Classification;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.AttachmentPersistenceException;
@@ -26,11 +31,14 @@ import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.AttachmentImpl;
 import pro.taskana.impl.TaskImpl;
+import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result correctly.
@@ -52,8 +60,9 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
         AttachmentPersistenceException {
         taskService = taskanaEngine.getTaskService();
-        task = taskService.getTask("TKI:000000000000000000000000000000000000");
-        attachment = createAttachment("DOCTYPE_DEFAULT",
+        task = taskService.getTask("TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D
+        task.setClassificationKey("T2000");
+        attachment = createAttachment("DOCTYPE_DEFAULT", // prio 99, SL P2000D
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3));
@@ -68,6 +77,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
         AttachmentPersistenceException {
         int attachmentCount = task.getAttachments().size();
+        assertTrue(task.getPriority() == 1);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
         task.addAttachment(attachment);
 
         task = taskService.updateTask(task);
@@ -75,6 +86,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount + 1));
         assertThat(task.getAttachments().get(0).getClassificationSummary().getKey(), equalTo("DOCTYPE_DEFAULT"));
+        assertTrue(task.getPriority() == 99);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
     }
 
     @Test(expected = AttachmentPersistenceException.class)
@@ -114,11 +127,17 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         attachmentCount = task.getAttachments().size();
         Attachment updatedAttachment = task.getAttachments().get(0);
         updatedAttachment.setChannel(newChannel);
+        Classification newClassification = taskanaEngine.getClassificationService()
+            .getClassification("CLI:000000000000000000000000000000000001");  // Prio 999, SL PT5H
+        updatedAttachment.setClassificationSummary(newClassification.asSummary());
         task.addAttachment(updatedAttachment);
         task = taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
+        assertTrue(task.getPriority() == 999);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofHours(5))));
+
     }
 
     @Test
@@ -173,6 +192,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, not persisted
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // persisted values not changed
+        assertTrue(task.getPriority() == 1);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
     }
 
     @Test
@@ -182,7 +203,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         AttachmentPersistenceException {
         task.addAttachment(attachment);
         task = taskService.updateTask(task);
-
+        assertTrue(task.getPriority() == 99);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
         int attachmentCount = task.getAttachments().size();
         Attachment attachmentToRemove = task.getAttachments().get(0);
         task.removeAttachment(attachmentToRemove.getId());
@@ -190,6 +212,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().size(), equalTo(attachmentCount - 1)); // locally, removed and not persisted
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount - 1)); // persisted, values removed
+        assertTrue(task.getPriority() == 1);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
     }
 
     @Test
@@ -221,18 +245,29 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         AttachmentPersistenceException {
         ((TaskImpl) task).setAttachments(new ArrayList<>());
         task = taskService.updateTask(task);
+        assertTrue(task.getPriority() == 1);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
 
         Attachment attachment = this.attachment;
         task.addAttachment(attachment);
         task = taskService.updateTask(task);
+        assertTrue(task.getPriority() == 99);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
+
         int attachmentCount = task.getAttachments().size();
 
         String newChannel = attachment.getChannel() + "-X";
         task.getAttachments().get(0).setChannel(newChannel);
+        Classification newClassification = taskanaEngine.getClassificationService()
+            .getClassification("CLI:000000000000000000000000000000000001");  // Prio 999, SL PT5H
+        task.getAttachments().get(0).setClassificationSummary(newClassification.asSummary());
         task = taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
+        assertTrue(task.getPriority() == 999);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofHours(5))));
+
     }
 
     @Test
@@ -243,13 +278,16 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         // setup test
         assertThat(task.getAttachments().size(), equalTo(0));
         task.addAttachment(attachment);
-        Attachment attachment2 = createAttachment("DOCTYPE_DEFAULT",
+
+        Attachment attachment2 = createAttachment("L10303",  // prio 101, SL PT7H
             createObjectReference("COMPANY_B", "SYSTEM_C", "INSTANCE_C", "ArchiveId",
                 "ABC45678901234567890123456789012345678901234567890"),
             "ROHRPOST", "2018-01-15", createSimpleCustomProperties(4));
         task.addAttachment(attachment2);
         task = taskService.updateTask(task);
         task = taskService.getTask(task.getId());
+        assertTrue(task.getPriority() == 101);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofHours(7))));
 
         assertThat(task.getAttachments().size(), equalTo(2));
         List<Attachment> attachments = task.getAttachments();
@@ -270,15 +308,22 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         }
         assertTrue(rohrpostFound && emailFound);
 
+        ClassificationSummary newClassificationSummary = taskanaEngine.getClassificationService()
+            .getClassification("CLI:100000000000000000000000000000000006")    // Prio 5, SL P16D
+            .asSummary();
         // modify existing attachment
         for (Attachment att : task.getAttachments()) {
+            att.setClassificationSummary(newClassificationSummary);
             if (att.getCustomAttributes().size() == 3) {
                 att.setChannel("FAX");
-                break;
             }
         }
+        // modify existing attachment and task classification
+        task.setClassificationKey("DOCTYPE_DEFAULT");  // Prio 99, SL P2000D
         task = taskService.updateTask(task);
         task = taskService.getTask(task.getId());
+        assertTrue(task.getPriority() == 99);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(16))));
 
         rohrpostFound = false;
         boolean faxFound = false;
@@ -341,6 +386,47 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.updateTask(task);
         assertThat(task.getAttachments().size(), equalTo(1));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo("DHL"));
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testPrioDurationOfTaskFromAttachmentsAtUpdate()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setClassificationKey("L12010"); // prio 8, SL P7D
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",  // prio 99, SL P2000D
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        newTask.addAttachment(createAttachment("L1060", // prio 1, SL P1D
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask.getId());
+        assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
+
+        Task readTask = taskService.getTask(createdTask.getId());
+        assertNotNull(readTask);
+        assertThat(readTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
+        assertNotNull(readTask.getAttachments());
+        assertEquals(2, readTask.getAttachments().size());
+        assertNotNull(readTask.getAttachments().get(1).getCreated());
+        assertNotNull(readTask.getAttachments().get(1).getModified());
+        assertEquals(readTask.getAttachments().get(0).getCreated(), readTask.getAttachments().get(1).getModified());
+        // assertNotNull(readTask.getAttachments().get(0).getClassification());
+        assertNotNull(readTask.getAttachments().get(0).getObjectReference());
+
+        assertTrue(readTask.getPriority() == 99);
+        assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(1))));
     }
 
     @AfterClass
