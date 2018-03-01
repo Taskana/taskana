@@ -22,9 +22,11 @@ import pro.taskana.impl.util.LoggerUtils;
  */
 public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasketAccessItem";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasketAccessItems";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbasketAccessItems";
+    private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasketAccessItemColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
+    private String columnName;
     private String[] accessIdIn;
     private String[] workbasketIdIn;
     private String[] idIn;
@@ -86,6 +88,27 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
+            }
+        }
+    }
+
+    @Override
+    public List<String> listValues(String columnName, SortDirection sortDirection) {
+        LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
+        List<String> result = null;
+        try {
+            taskanaEngine.openConnection();
+            this.columnName = columnName;
+            this.orderBy.clear();
+            this.addOrderCriteria(columnName, sortDirection);
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+            return result;
+        } finally {
+            taskanaEngine.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", numberOfResultObjects,
                     LoggerUtils.listToString(result));
             }
         }
@@ -171,6 +194,10 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
     public List<String> getOrderBy() {
         return orderBy;
+    }
+
+    public String getColumnName() {
+        return columnName;
     }
 
     @Override

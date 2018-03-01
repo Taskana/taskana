@@ -29,11 +29,13 @@ import pro.taskana.impl.util.LoggerUtils;
  */
 public class TaskQueryImpl implements TaskQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryTasks";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryTaskSummaries";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryTasks";
+    private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryTaskColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
     private TaskanaEngineImpl taskanaEngine;
     private TaskServiceImpl taskService;
+    private String columnName;
     private String[] nameIn;
     private String[] nameLike;
     private String[] creatorIn;
@@ -686,6 +688,27 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
+    public List<String> listValues(String columnName, SortDirection sortDirection) {
+        LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
+        List<String> result = null;
+        try {
+            taskanaEngine.openConnection();
+            this.columnName = columnName;
+            this.orderBy.clear();
+            this.addOrderCriteria(columnName, sortDirection);
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+            return result;
+        } finally {
+            taskanaEngine.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
+            }
+        }
+    }
+
+    @Override
     public List<TaskSummary> list(int offset, int limit) {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<TaskSummary> result = new ArrayList<>();
@@ -1030,6 +1053,10 @@ public class TaskQueryImpl implements TaskQuery {
 
     public String[] getWorkbasketIdIn() {
         return workbasketIdIn;
+    }
+
+    public String getColumnName() {
+        return columnName;
     }
 
     private TaskQuery addOrderCriteria(String columnName, SortDirection sortDirection) {

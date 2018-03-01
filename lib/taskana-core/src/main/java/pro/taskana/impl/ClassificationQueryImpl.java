@@ -23,10 +23,12 @@ import pro.taskana.impl.util.LoggerUtils;
  */
 public class ClassificationQueryImpl implements ClassificationQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryClassification";
+    private static final String LINK_TO_SUMMARYMAPPER = "pro.taskana.mappings.QueryMapper.queryClassificationSummaries";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryClassifications";
+    private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryClassificationColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
     private TaskanaEngineImpl taskanaEngine;
+    private String columnName;
     private String[] key;
     private String[] parentId;
     private String[] category;
@@ -354,7 +356,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         List<ClassificationSummary> result = null;
         try {
             taskanaEngine.openConnection();
-            result = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_SUMMARYMAPPER, this);
             return result;
         } finally {
             taskanaEngine.returnConnection();
@@ -373,7 +375,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         try {
             taskanaEngine.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            result = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_SUMMARYMAPPER, this, rowBounds);
             return result;
         } catch (Exception e) {
             if (e instanceof PersistenceException) {
@@ -396,12 +398,33 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
+    public List<String> listValues(String columnName, SortDirection sortDirection) {
+        LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
+        List<String> result = null;
+        try {
+            taskanaEngine.openConnection();
+            this.columnName = columnName;
+            this.orderBy.clear();
+            this.addOrderCriteria(columnName, sortDirection);
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+            return result;
+        } finally {
+            taskanaEngine.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
+            }
+        }
+    }
+
+    @Override
     public ClassificationSummary single() {
         LOGGER.debug("entry to single(), this = {}", this);
         ClassificationSummary result = null;
         try {
             taskanaEngine.openConnection();
-            result = taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+            result = taskanaEngine.getSqlSession().selectOne(LINK_TO_SUMMARYMAPPER, this);
             return result;
         } finally {
             taskanaEngine.returnConnection();
@@ -546,6 +569,10 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         return custom8Like;
     }
 
+    public String getColumnName() {
+        return columnName;
+    }
+
     @Override
     public long count() {
         LOGGER.debug("entry to count(), this = {}", this);
@@ -630,5 +657,4 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         builder.append("]");
         return builder.toString();
     }
-
 }

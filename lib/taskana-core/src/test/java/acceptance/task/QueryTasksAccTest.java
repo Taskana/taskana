@@ -1,6 +1,7 @@
 package acceptance.task;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -50,6 +51,22 @@ public class QueryTasksAccTest extends AbstractAccTest {
 
     public QueryTasksAccTest() {
         super();
+    }
+
+    @Test
+    public void testQueryTaskValuesForColumnName() {
+        TaskService taskService = taskanaEngine.getTaskService();
+        List<String> columnValueList = taskService.createTaskQuery()
+            .ownerLike("%user%")
+            .orderByOwner(desc)
+            .listValues("OWNER", null);
+        assertNotNull(columnValueList);
+        assertEquals(3, columnValueList.size());
+
+        columnValueList = taskService.createTaskQuery()
+            .listValues("STATE", null);
+        assertNotNull(columnValueList);
+        assertEquals(3, columnValueList.size());
     }
 
     @WithAccessId(
