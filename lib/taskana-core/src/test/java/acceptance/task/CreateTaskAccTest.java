@@ -10,6 +10,7 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.util.Map;
 
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.h2.store.fs.FileUtils;
 import org.junit.AfterClass;
@@ -30,11 +31,11 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.security.CurrentUserContext;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
 import pro.taskana.mappings.AttachmentMapper;
-import pro.taskana.mappings.TaskMapper;
+import pro.taskana.mappings.TaskTestMapper;
+import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -115,7 +116,12 @@ public class CreateTaskAccTest extends AbstractAccTest {
         TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest((TaskanaEngineImpl) taskanaEngine);
         try {
             SqlSession session = engineProxy.getSqlSession();
-            TaskMapper mapper = session.getMapper(TaskMapper.class);
+            Configuration config = session.getConfiguration();
+            if (!config.hasMapper(TaskTestMapper.class)) {
+                config.addMapper(TaskTestMapper.class);
+            }
+            TaskTestMapper mapper = session.getMapper(TaskTestMapper.class);
+
             engineProxy.openConnection();
             String customProperties = mapper.getCustomAttributesAsString(createdTask.getId());
             assertTrue(customProperties.contains("\"Property_13\":\"Property Value of Property_13\""));
