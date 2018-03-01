@@ -176,6 +176,8 @@ public interface QueryMapper {
         @Result(property = "type", column = "TYPE"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "name", column = "NAME"),
+        @Result(property = "priority", column = "PRIORITY"),
+        @Result(property = "serviceLevel", column = "SERVICE_LEVEL"),
         @Result(property = "parentId", column = "PARENT_ID")})
     List<ClassificationSummaryImpl> queryClassificationSummaries(ClassificationQueryImpl classificationQuery);
 

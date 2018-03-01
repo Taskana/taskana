@@ -14,6 +14,26 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     private String domain;
     private String name;
     private String parentId;
+    private int priority;
+    private String serviceLevel; // PddDThhHmmM
+
+    @Override
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    @Override
+    public String getServiceLevel() {
+        return serviceLevel;
+    }
+
+    public void setServiceLevel(String serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
 
     ClassificationSummaryImpl() {
     }
@@ -176,6 +196,10 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         builder.append(name);
         builder.append(", parentId=");
         builder.append(parentId);
+        builder.append(", priority=");
+        builder.append(priority);
+        builder.append(", serviceLevel=");
+        builder.append(serviceLevel);
         builder.append("]");
         return builder.toString();
     }
