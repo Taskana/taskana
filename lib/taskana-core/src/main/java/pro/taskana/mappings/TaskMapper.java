@@ -12,7 +12,6 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.type.ClobTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.TaskState;
@@ -224,12 +223,5 @@ public interface TaskMapper {
         + "</script>")
     void updateClassificationCategoryOnChange(@Param("taskIds") List<String> taskIds,
         @Param("newCategory") String newCategory);
-
-    @Select("select CUSTOM_ATTRIBUTES from task where id = #{taskId}")
-    @Results(value = {
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
-            javaType = String.class, typeHandler = ClobTypeHandler.class)
-    })
-    String getCustomAttributesAsString(@Param("taskId") String taskId);
 
 }
