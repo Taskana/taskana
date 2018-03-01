@@ -1,5 +1,8 @@
 package acceptance.workbasket;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
@@ -38,6 +41,26 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         userName = "dummy",
         groupNames = {"businessadmin"})
     @Test
+    public void testQueryWorkbasketAccessItemValuesForColumnName() throws NotAuthorizedException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<String> columnValueList = workbasketService.createWorkbasketAccessItemQuery()
+            .listValues("WORKBASKET_ID", null);
+        assertNotNull(columnValueList);
+        assertEquals(23, columnValueList.size());
+
+        columnValueList = workbasketService.createWorkbasketAccessItemQuery()
+            .listValues("ACCESS_ID", null);
+        assertNotNull(columnValueList);
+        assertEquals(9, columnValueList.size());
+
+        long countEntries = workbasketService.createWorkbasketAccessItemQuery().count();
+        assertTrue(columnValueList.size() < countEntries);  // DISTINCT
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
+    @Test
     public void testQueryAccessItemsForAccessIds()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -53,10 +76,10 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     public void testQueryAccessItemsForAccessIdsNotAuthorized()
         throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
+        workbasketService.createWorkbasketAccessItemQuery()
             .accessIdIn("user_1_1", "group_1")
             .list();
-        fail("NotAuthorizedException was expected");
+        fail("NotAuthorizedException was expected.");
     }
 
     @WithAccessId(

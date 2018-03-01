@@ -282,4 +282,9 @@ public class TestClassificationQuery implements ClassificationQuery {
     public ClassificationQuery modifiedWithin(TimeInterval... modifiedIn) {
         return this;
     }
+
+    @Override
+    public List<String> listValues(String dbColumnName, SortDirection sortDirection) {
+        return new ArrayList<>();
+    }
 }

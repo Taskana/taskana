@@ -1,5 +1,8 @@
 package acceptance.workbasket;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -31,6 +34,25 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
 
     public QueryWorkbasketAccTest() {
         super();
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testQueryWorkbasketValuesForColumnName() throws NotAuthorizedException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<String> columnValueList = workbasketService.createWorkbasketQuery()
+            .listValues("NAME", null);
+        assertNotNull(columnValueList);
+        assertEquals(9, columnValueList.size());
+
+        columnValueList = workbasketService.createWorkbasketQuery()
+            .nameLike("%korb%")
+            .orderByName(asc)
+            .listValues("NAME", SortDirection.DESCENDING);  // will override
+        assertNotNull(columnValueList);
+        assertEquals(3, columnValueList.size());
     }
 
     @WithAccessId(

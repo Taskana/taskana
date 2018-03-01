@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,19 +21,22 @@ import pro.taskana.impl.util.LoggerUtils;
  */
 public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryObjectReference";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryObjectReferences";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryObjectReferences";
+    private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryObjectReferenceColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceQueryImpl.class);
-
     private TaskanaEngineImpl taskanaEngine;
+    private String columnName;
     private String[] company;
     private String[] system;
     private String[] systemInstance;
     private String[] type;
     private String[] value;
+    private List<String> orderBy;
 
     ObjectReferenceQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+        this.orderBy = new ArrayList<>();
     }
 
     @Override
@@ -78,6 +82,27 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
             if (LOGGER.isDebugEnabled()) {
                 int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
+            }
+        }
+    }
+
+    @Override
+    public List<String> listValues(String columnName, SortDirection sortDirection) {
+        LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
+        List<String> result = null;
+        try {
+            taskanaEngine.openConnection();
+            this.columnName = columnName;
+            this.orderBy.clear();
+            this.addOrderCriteria(columnName, sortDirection);
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+            return result;
+        } finally {
+            taskanaEngine.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", numberOfResultObjects,
                     LoggerUtils.listToString(result));
             }
         }
@@ -166,6 +191,10 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         this.value = value;
     }
 
+    public String getColumnName() {
+        return columnName;
+    }
+
     @Override
     public long count() {
         LOGGER.debug("entry to count(), this = {}", this);
@@ -178,6 +207,15 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
+    }
+
+    private ObjectReferenceQuery addOrderCriteria(String colName, SortDirection sortDirection) {
+        String orderByDirection = " ASC";
+        if (sortDirection != null && SortDirection.DESCENDING.equals(sortDirection)) {
+            orderByDirection = " DESC";
+        }
+        orderBy.add(colName + orderByDirection);
+        return this;
     }
 
     @Override
