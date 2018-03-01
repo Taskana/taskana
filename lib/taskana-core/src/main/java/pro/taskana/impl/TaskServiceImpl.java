@@ -57,6 +57,7 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_TASK = "TKI";
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
     private static final String MUST_NOT_BE_EMPTY = " must not be empty";
+    private static final Duration MAX_DURATION = Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
     private TaskanaEngineImpl taskanaEngine;
     private WorkbasketService workbasketService;
     private ClassificationServiceImpl classificationService;
@@ -307,9 +308,9 @@ public class TaskServiceImpl implements TaskService {
                     workbasket.getDomain());
                 task.setClassificationSummary(classification.asSummary());
                 validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
-                validateAttachments(task);
+                PrioDurationHolder prioDurationFromAttachments = handleAttachments(task);
                 task.setDomain(workbasket.getDomain());
-                standardSettings(task, classification);
+                standardSettings(task, classification, prioDurationFromAttachments);
                 this.taskMapper.insert(task);
                 LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
             }
@@ -577,8 +578,8 @@ public class TaskServiceImpl implements TaskService {
         try {
             taskanaEngine.openConnection();
             oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
-            standardUpdateActions(oldTaskImpl, newTaskImpl);
-            handleAttachmentsOnTaskUpdate(oldTaskImpl, newTaskImpl);
+            PrioDurationHolder prioDurationFromAttachments = handleAttachmentsOnTaskUpdate(oldTaskImpl, newTaskImpl);
+            standardUpdateActions(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
             newTaskImpl.setModified(Instant.now());
 
             taskMapper.update(newTaskImpl);
@@ -591,7 +592,8 @@ public class TaskServiceImpl implements TaskService {
         return task;
     }
 
-    private void standardSettings(TaskImpl task, Classification classification) {
+    private void standardSettings(TaskImpl task, Classification classification,
+        PrioDurationHolder prioDurationFromAttachments) {
         Instant now = Instant.now();
         task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
         task.setState(TaskState.READY);
@@ -621,23 +623,24 @@ public class TaskServiceImpl implements TaskService {
         // insert Classification specifications if Classification is given.
 
         if (classification != null) {
-            if (classification.getServiceLevel() != null) {
-                Duration serviceLevel = Duration.parse(classification.getServiceLevel());
-                Instant due = task.getPlanned().plus(serviceLevel);
+            PrioDurationHolder finalPrioDuration = getNewPrioDuration(prioDurationFromAttachments.getPrio(),
+                prioDurationFromAttachments.getDuration(),
+                classification.getPriority(), classification.getServiceLevel());
+            Duration finalDuration = finalPrioDuration.getDuration();
+            if (finalDuration != null && !MAX_DURATION.equals(finalDuration)) {
+                Instant due = task.getPlanned().plus(finalDuration);
                 task.setDue(due);
             }
+            task.setPriority(finalPrioDuration.getPrio());
 
-            if (task.getName() == null) {
-                task.setName(classification.getName());
-            }
+        }
 
-            if (task.getDescription() == null) {
-                task.setDescription(classification.getDescription());
-            }
+        if (task.getName() == null) {
+            task.setName(classification.getName());
+        }
 
-            if (task.getPriority() == 0) {
-                task.setPriority(classification.getPriority());
-            }
+        if (task.getDescription() == null) {
+            task.setDescription(classification.getDescription());
         }
 
         // insert Attachments if needed
@@ -1013,11 +1016,14 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private void validateAttachments(TaskImpl task) throws InvalidArgumentException {
+    private PrioDurationHolder handleAttachments(TaskImpl task) throws InvalidArgumentException {
         List<Attachment> attachments = task.getAttachments();
         if (attachments == null || attachments.isEmpty()) {
-            return;
+            return new PrioDurationHolder(null, Integer.MIN_VALUE);
         }
+        Duration minDuration = MAX_DURATION;
+        int maxPrio = Integer.MIN_VALUE;
+
         Iterator<Attachment> i = attachments.iterator();
         while (i.hasNext()) {
             Attachment attachment = i.next();
@@ -1029,12 +1035,26 @@ public class TaskServiceImpl implements TaskService {
                 if (attachment.getClassificationSummary() == null) {
                     throw new InvalidArgumentException(
                         "Classification of attachment " + attachment + " must not be null");
+                } else {
+                    ClassificationSummary classificationSummary = attachment.getClassificationSummary();
+                    if (classificationSummary != null) {
+                        PrioDurationHolder newPrioDuraton = getNewPrioDuration(maxPrio, minDuration,
+                            classificationSummary.getPriority(), classificationSummary.getServiceLevel());
+                        maxPrio = newPrioDuraton.getPrio();
+                        minDuration = newPrioDuraton.getDuration();
+                    }
                 }
             }
         }
+        if (minDuration != null && MAX_DURATION.equals(minDuration)) {
+            minDuration = null;
+        }
+
+        return new PrioDurationHolder(minDuration, maxPrio);
     }
 
-    private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
+    private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
+        PrioDurationHolder prioDurationFromAttachments)
         throws InvalidArgumentException, ConcurrencyException, WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException {
         validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
@@ -1058,64 +1078,96 @@ public class TaskServiceImpl implements TaskService {
             newTaskImpl.setBusinessProcessId(oldTaskImpl.getBusinessProcessId());
         }
 
-        updateClassificationRelatedProperties(oldTaskImpl, newTaskImpl);
+        updateClassificationRelatedProperties(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
 
         newTaskImpl.setModified(Instant.now());
     }
 
-    private void updateClassificationRelatedProperties(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
+    private void updateClassificationRelatedProperties(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
+        PrioDurationHolder prioDurationFromAttachments)
         throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
         // insert Classification specifications if Classification is given.
         ClassificationSummary oldClassificationSummary = oldTaskImpl.getClassificationSummary();
-        ClassificationSummary newClassificationSummary = oldClassificationSummary;
-        String newClassificationKey = newTaskImpl.getClassificationKey();
-
-        Classification newClassification = null;
-        if (newClassificationKey != null && !newClassificationKey.equals(oldClassificationSummary.getKey())) {
-            Workbasket workbasket = workbasketService.getWorkbasket(newTaskImpl.getWorkbasketSummary().getId());
-            // set new classification
-            newClassification = this.classificationService.getClassification(newClassificationKey,
-                workbasket.getDomain());
-            newClassificationSummary = newClassification.asSummary();
+        ClassificationSummary newClassificationSummary = newTaskImpl.getClassificationSummary();
+        if (newClassificationSummary == null) {
+            newClassificationSummary = oldClassificationSummary;
         }
 
-        newTaskImpl.setClassificationSummary(newClassificationSummary);
+        if (newClassificationSummary == null) { // newClassification is null -> take prio and duration from attachments
+            if (prioDurationFromAttachments.getDuration() != null) {
+                Instant due = newTaskImpl.getPlanned().plus(prioDurationFromAttachments.getDuration());
+                newTaskImpl.setDue(due);
+            }
+            if (prioDurationFromAttachments.getPrio() > Integer.MIN_VALUE) {
+                newTaskImpl.setPriority(prioDurationFromAttachments.getPrio());
+            }
+        } else {
+            Classification newClassification = null;
+            if (!oldClassificationSummary.getKey().equals(newClassificationSummary.getKey())) {
+                newClassification = this.classificationService
+                    .getClassification(newClassificationSummary.getKey(),
+                        newTaskImpl.getWorkbasketSummary().getDomain());
+                newClassificationSummary = newClassification.asSummary();
+                newTaskImpl.setClassificationSummary(newClassificationSummary);
+            }
 
-        if (newClassification != null) {
-            if (newClassification.getServiceLevel() != null) {
-                Duration serviceLevel = Duration.parse(newClassification.getServiceLevel());
-                Instant due = newTaskImpl.getPlanned().plus(serviceLevel);
+            if (newClassificationSummary.getServiceLevel() != null) {
+                Duration durationFromClassification = Duration.parse(newClassificationSummary.getServiceLevel());
+                Duration minDuration = prioDurationFromAttachments.getDuration();
+                if (minDuration != null) {
+                    if (minDuration.compareTo(durationFromClassification) > 0) {
+                        minDuration = durationFromClassification;
+                    }
+                } else {
+                    minDuration = durationFromClassification;
+                }
+
+                Instant due = newTaskImpl.getPlanned().plus(minDuration);
                 newTaskImpl.setDue(due);
             }
 
             if (newTaskImpl.getName() == null) {
-                newTaskImpl.setName(newClassification.getName());
+                newTaskImpl.setName(newClassificationSummary.getName());
             }
 
-            if (newTaskImpl.getDescription() == null) {
+            if (newTaskImpl.getDescription() == null && newClassification != null) {
                 newTaskImpl.setDescription(newClassification.getDescription());
             }
 
-            if (newTaskImpl.getPriority() == 0) {
-                newTaskImpl.setPriority(newClassification.getPriority());
-            }
+            int newPriority = Math.max(newClassificationSummary.getPriority(), prioDurationFromAttachments.getPrio());
+            newTaskImpl.setPriority(newPriority);
+
         }
+
     }
 
-    private void handleAttachmentsOnTaskUpdate(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
+    private PrioDurationHolder handleAttachmentsOnTaskUpdate(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
         throws AttachmentPersistenceException {
+
+        Duration minDuration = MAX_DURATION;
+        int maxPrio = Integer.MIN_VALUE;
+
         // Iterator for removing invalid current values directly. OldAttachments can be ignored.
         Iterator<Attachment> i = newTaskImpl.getAttachments().iterator();
         while (i.hasNext()) {
             Attachment attachment = i.next();
             if (attachment != null) {
-                boolean wasAlreadyRepresented = false;
+                boolean wasAlreadyPresent = false;
                 if (attachment.getId() != null) {
                     for (Attachment oldAttachment : oldTaskImpl.getAttachments()) {
                         if (oldAttachment != null && attachment.getId().equals(oldAttachment.getId())) {
-                            wasAlreadyRepresented = true;
+                            wasAlreadyPresent = true;
                             if (!attachment.equals(oldAttachment)) {
                                 AttachmentImpl temp = (AttachmentImpl) attachment;
+
+                                ClassificationSummary classification = attachment.getClassificationSummary();
+                                if (classification != null) {
+                                    PrioDurationHolder newPrioDuration = getNewPrioDuration(maxPrio, minDuration,
+                                        classification.getPriority(), classification.getServiceLevel());
+                                    maxPrio = newPrioDuration.getPrio();
+                                    minDuration = newPrioDuration.getDuration();
+                                }
+
                                 temp.setModified(Instant.now());
                                 attachmentMapper.update(temp);
                                 LOGGER.debug("TaskService.updateTask() for TaskId={} UPDATED an Attachment={}.",
@@ -1129,9 +1181,17 @@ public class TaskServiceImpl implements TaskService {
                 }
 
                 // ADD, when ID not set or not found in elements
-                if (!wasAlreadyRepresented) {
+                if (!wasAlreadyPresent) {
                     AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
                     initAttachment(attachmentImpl, newTaskImpl);
+                    ClassificationSummary classification = attachment.getClassificationSummary();
+                    if (classification != null) {
+                        PrioDurationHolder newPrioDuration = getNewPrioDuration(maxPrio, minDuration,
+                            classification.getPriority(), classification.getServiceLevel());
+                        maxPrio = newPrioDuration.getPrio();
+                        minDuration = newPrioDuration.getDuration();
+                    }
+
                     try {
                         attachmentMapper.insert(attachmentImpl);
                         LOGGER.debug("TaskService.updateTask() for TaskId={} INSERTED an Attachment={}.",
@@ -1168,6 +1228,32 @@ public class TaskServiceImpl implements TaskService {
                 }
             }
         }
+        if (minDuration != null && MAX_DURATION.equals(minDuration)) {
+            minDuration = null;
+        }
+        return new PrioDurationHolder(minDuration, maxPrio);
+    }
+
+    private PrioDurationHolder getNewPrioDuration(int prio, Duration duration, int prioFromClassification,
+        String serviceLevelFromClassification) {
+        Duration minDuration = duration;
+        int maxPrio = prio;
+
+        if (serviceLevelFromClassification != null) {
+            Duration currentDuration = Duration.parse(serviceLevelFromClassification);
+            if (duration != null) {
+                if (duration.compareTo(currentDuration) > 0) {
+                    minDuration = currentDuration;
+                }
+            } else {
+                minDuration = currentDuration;
+            }
+        }
+        if (prioFromClassification > maxPrio) {
+            maxPrio = prioFromClassification;
+        }
+
+        return new PrioDurationHolder(minDuration, maxPrio);
     }
 
     private void initAttachment(AttachmentImpl attachment, Task newTask) {
@@ -1185,4 +1271,40 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    /**
+     * hold a pair of priority and Duration.
+     *
+     * @author bbr
+     */
+    static class PrioDurationHolder {
+
+        private Duration duration;
+
+        private int prio;
+
+        PrioDurationHolder(Duration duration, int prio) {
+            super();
+            this.duration = duration;
+            this.prio = prio;
+        }
+
+        public Duration getDuration() {
+            return duration;
+        }
+
+        public int getPrio() {
+            return prio;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("PrioDurationHolder [duration=");
+            builder.append(duration);
+            builder.append(", prio=");
+            builder.append(prio);
+            builder.append("]");
+            return builder.toString();
+        }
+    }
 }

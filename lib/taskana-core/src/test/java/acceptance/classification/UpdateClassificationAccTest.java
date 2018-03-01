@@ -139,7 +139,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test(expected = ConcurrencyException.class)
     public void testUpdateClassificationNotLatestAnymore()
-        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InterruptedException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification base = classificationService.getClassification("T2100", "DOMAIN_A");
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
@@ -148,6 +148,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         base.setApplicationEntryPoint("SOME CHANGED POINT");
         base.setDescription("AN OTHER DESCRIPTION");
         base.setName("I AM UPDATED");
+        Thread.sleep(20); // to avoid identity of modified timestamps between classification and base
         classificationService.updateClassification(base);
 
         classification.setName("NOW IT´S MY TURN");

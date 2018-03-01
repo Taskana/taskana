@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.Map;
 
 import org.apache.ibatis.session.Configuration;
@@ -241,6 +242,47 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals(readTask.getAttachments().get(0).getCreated(), readTask.getAttachments().get(1).getModified());
         // assertNotNull(readTask.getAttachments().get(0).getClassification());
         assertNotNull(readTask.getAttachments().get(0).getObjectReference());
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testPrioDurationOfTaskFromAttachmentsAtCreate()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setClassificationKey("L12010"); // prio 8, SL P7D
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",  // prio 99, SL P2000D
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        newTask.addAttachment(createAttachment("L1060", // prio 1, SL P1D
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask.getId());
+        assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
+
+        Task readTask = taskService.getTask(createdTask.getId());
+        assertNotNull(readTask);
+        assertThat(readTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
+        assertNotNull(readTask.getAttachments());
+        assertEquals(2, readTask.getAttachments().size());
+        assertNotNull(readTask.getAttachments().get(1).getCreated());
+        assertNotNull(readTask.getAttachments().get(1).getModified());
+        assertEquals(readTask.getAttachments().get(0).getCreated(), readTask.getAttachments().get(1).getModified());
+        // assertNotNull(readTask.getAttachments().get(0).getClassification());
+        assertNotNull(readTask.getAttachments().get(0).getObjectReference());
+
+        assertTrue(readTask.getPriority() == 99);
+        assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(1))));
     }
 
     @WithAccessId(
