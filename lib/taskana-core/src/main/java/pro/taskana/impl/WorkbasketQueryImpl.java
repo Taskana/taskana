@@ -30,9 +30,11 @@ import pro.taskana.security.CurrentUserContext;
  */
 public class WorkbasketQueryImpl implements WorkbasketQuery {
 
-    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasket";
+    private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasketSummaries";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbaskets";
+    private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasketColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
+    private String columnName;
     private String[] accessId;
     private WorkbasketPermission permission;
     private String[] nameIn;
@@ -372,6 +374,28 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
+    public List<String> listValues(String columnName, SortDirection sortDirection) {
+        LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
+        List<String> result = null;
+        try {
+            taskanaEngine.openConnection();
+            this.columnName = columnName;
+            addAccessIdsOfCallerToQuery();
+            this.orderBy.clear();
+            this.addOrderCriteria(columnName, sortDirection);
+            result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+            return result;
+        } finally {
+            taskanaEngine.returnConnection();
+            if (LOGGER.isDebugEnabled()) {
+                int numberOfResultObjects = result == null ? 0 : result.size();
+                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", numberOfResultObjects,
+                    LoggerUtils.listToString(result));
+            }
+        }
+    }
+
+    @Override
     public List<WorkbasketSummary> list(int offset, int limit) {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
         List<WorkbasketSummary> workbaskets = null;
@@ -542,6 +566,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     public List<String> getOrderBy() {
         return orderBy;
+    }
+
+    public String getColumnName() {
+        return columnName;
     }
 
     @Override

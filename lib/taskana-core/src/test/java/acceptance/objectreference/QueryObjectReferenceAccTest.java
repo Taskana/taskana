@@ -27,6 +27,23 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
+    public void testQueryObjectReferenceValuesForColumnName() {
+        TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
+        List<String> columnValues = taskQuery.createObjectReferenceQuery()
+            .listValues("COMPANY", null);
+        assertEquals(3, columnValues.size());
+
+        columnValues = taskQuery.createObjectReferenceQuery()
+            .listValues("SYSTEM", null);
+        assertEquals(3, columnValues.size());
+
+        columnValues = taskQuery.createObjectReferenceQuery()
+            .systemIn("System1")
+            .listValues("SYSTEM", null);
+        assertEquals(1, columnValues.size());
+    }
+
+    @Test
     public void testFindObjectReferenceByCompany()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();

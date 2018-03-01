@@ -28,6 +28,39 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
+    public void testQueryClassificationValuesForColumnName()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        List<String> columnValueList = classificationService.createClassificationQuery()
+            .listValues("NAME", null);
+        assertNotNull(columnValueList);
+        assertEquals(15, columnValueList.size());
+
+        columnValueList = classificationService.createClassificationQuery()
+            .listValues("TYPE", null);
+        assertNotNull(columnValueList);
+        assertEquals(3, columnValueList.size());
+
+        columnValueList = classificationService.createClassificationQuery()
+            .domainIn("")
+            .listValues("TYPE", null);
+        assertNotNull(columnValueList);
+        assertEquals(2, columnValueList.size());
+
+        columnValueList = classificationService.createClassificationQuery()
+            .domainIn("")
+            .listValues("CREATED", null);
+        assertNotNull(columnValueList);
+
+        columnValueList = classificationService.createClassificationQuery()
+            .domainIn("")
+            .validInDomainEquals(false)
+            .listValues("VALID_IN_DOMAIN", null);
+        assertNotNull(columnValueList);
+        assertEquals(1, columnValueList.size());    // all are false in ""
+    }
+
+    @Test
     public void testFindClassificationsByCategoryAndDomain()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();

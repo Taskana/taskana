@@ -32,6 +32,18 @@ public interface BaseQuery<T> {
     List<T> list(int offset, int limit);
 
     /**
+     * This method will return all currently existing values of a DB-Table once. The order of the returning values can
+     * be configured ASC oder DEC - DEFAULT at NULL is ASC. <br>
+     * All called orderBy()-Methods will be override. Just the current column-values will be ordered itself by the given
+     * direction.
+     *
+     * @param dbColumnName
+     *            column name of a existing DB Table.
+     * @return a list of all existing values.
+     */
+    List<String> listValues(String dbColumnName, SortDirection sortDirection);
+
+    /**
      * This method will return all results for page X with a size of Y of the current query.<br>
      * Negative pageNumber/size will be changed to 0 and the last page got maybe less elements. In case of a TaskQuery,
      * this method can throw a NotAuthorizedToQueryWorkbasketException.
