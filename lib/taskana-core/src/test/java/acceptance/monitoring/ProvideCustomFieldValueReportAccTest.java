@@ -65,30 +65,21 @@ public class ProvideCustomFieldValueReportAccTest {
     public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
-
         CustomField customField = CustomField.CUSTOM_1;
-        String customFieldValue1 = "Geschaeftsstelle A";
-        String customFieldValue2 = "Geschaeftsstelle B";
-        String customFieldValue3 = "Geschaeftsstelle C";
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
-            customField);
+        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
         }
 
         assertNotNull(report);
-        assertEquals(25, report.getReportLines().get(customFieldValue1).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(customFieldValue2).getTotalNumberOfTasks());
-        assertEquals(15, report.getReportLines().get(customFieldValue3).getTotalNumberOfTasks());
-        assertEquals(0, report.getReportLines().get(customFieldValue1).getLineItems().size());
-        assertEquals(0, report.getReportLines().get(customFieldValue2).getLineItems().size());
-        assertEquals(0, report.getReportLines().get(customFieldValue3).getLineItems().size());
+        assertEquals(25, report.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get("Geschaeftsstelle B").getTotalNumberOfTasks());
+        assertEquals(15, report.getReportLines().get("Geschaeftsstelle C").getTotalNumberOfTasks());
+        assertEquals(0, report.getReportLines().get("Geschaeftsstelle A").getLineItems().size());
+        assertEquals(0, report.getReportLines().get("Geschaeftsstelle B").getLineItems().size());
+        assertEquals(0, report.getReportLines().get("Geschaeftsstelle C").getLineItems().size());
         assertEquals(3, report.getReportLines().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
@@ -97,28 +88,20 @@ public class ProvideCustomFieldValueReportAccTest {
     public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
-
         CustomField customField = CustomField.CUSTOM_2;
-        String customFieldValue1 = "Vollkasko";
-        String customFieldValue2 = "Teilkasko";
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
-            customField);
+        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
         }
 
         assertNotNull(report);
-        assertEquals(21, report.getReportLines().get(customFieldValue1).getTotalNumberOfTasks());
-        assertEquals(29, report.getReportLines().get(customFieldValue2).getTotalNumberOfTasks());
+        assertEquals(21, report.getReportLines().get("Vollkasko").getTotalNumberOfTasks());
+        assertEquals(29, report.getReportLines().get("Teilkasko").getTotalNumberOfTasks());
 
-        assertEquals(0, report.getReportLines().get(customFieldValue1).getLineItems().size());
-        assertEquals(0, report.getReportLines().get(customFieldValue2).getLineItems().size());
+        assertEquals(0, report.getReportLines().get("Vollkasko").getLineItems().size());
+        assertEquals(0, report.getReportLines().get("Teilkasko").getLineItems().size());
 
         assertEquals(2, report.getReportLines().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
@@ -128,19 +111,11 @@ public class ProvideCustomFieldValueReportAccTest {
     public void testGetCustomFieldValueReportWithReportLineItemDefinitions() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
+        CustomField customField = CustomField.CUSTOM_1;
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
-        CustomField customField = CustomField.CUSTOM_1;
-        String customFieldValue1 = "Geschaeftsstelle A";
-        String customFieldValue2 = "Geschaeftsstelle B";
-        String customFieldValue3 = "Geschaeftsstelle C";
-
-        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
-            customField, reportLineItemDefinitions);
+        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null,
+            reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, reportLineItemDefinitions));
@@ -148,9 +123,9 @@ public class ProvideCustomFieldValueReportAccTest {
 
         assertNotNull(report);
 
-        assertEquals(25, report.getReportLines().get(customFieldValue1).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(customFieldValue2).getTotalNumberOfTasks());
-        assertEquals(15, report.getReportLines().get(customFieldValue3).getTotalNumberOfTasks());
+        assertEquals(25, report.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get("Geschaeftsstelle B").getTotalNumberOfTasks());
+        assertEquals(15, report.getReportLines().get("Geschaeftsstelle C").getTotalNumberOfTasks());
 
         assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
@@ -170,39 +145,31 @@ public class ProvideCustomFieldValueReportAccTest {
     public void testEachItemOfCustomFieldValueReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
+        CustomField customField = CustomField.CUSTOM_1;
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        CustomField customField = CustomField.CUSTOM_1;
-        String customFieldValue1 = "Geschaeftsstelle A";
-        String customFieldValue2 = "Geschaeftsstelle B";
-        String customFieldValue3 = "Geschaeftsstelle C";
-
-        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
-            customField, reportLineItemDefinitions);
+        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null,
+            reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, reportLineItemDefinitions));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get(customFieldValue1).getLineItems();
+        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
         assertEquals(11, line1.get(0).getNumberOfTasks());
         assertEquals(4, line1.get(1).getNumberOfTasks());
         assertEquals(3, line1.get(2).getNumberOfTasks());
         assertEquals(4, line1.get(3).getNumberOfTasks());
         assertEquals(3, line1.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line2 = report.getReportLines().get(customFieldValue2).getLineItems();
+        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
         assertEquals(5, line2.get(0).getNumberOfTasks());
         assertEquals(3, line2.get(1).getNumberOfTasks());
         assertEquals(0, line2.get(2).getNumberOfTasks());
         assertEquals(2, line2.get(3).getNumberOfTasks());
         assertEquals(0, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getReportLines().get(customFieldValue3).getLineItems();
+        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
         assertEquals(3, line3.get(0).getNumberOfTasks());
         assertEquals(4, line3.get(1).getNumberOfTasks());
         assertEquals(1, line3.get(2).getNumberOfTasks());
@@ -214,39 +181,31 @@ public class ProvideCustomFieldValueReportAccTest {
     public void testEachItemOfCustomFieldValueReportNotInWorkingDays() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
+        CustomField customField = CustomField.CUSTOM_1;
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        CustomField customField = CustomField.CUSTOM_1;
-        String customFieldValue1 = "Geschaeftsstelle A";
-        String customFieldValue2 = "Geschaeftsstelle B";
-        String customFieldValue3 = "Geschaeftsstelle C";
-
-        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
-            customField, reportLineItemDefinitions, false);
+        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null,
+            reportLineItemDefinitions, false);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, reportLineItemDefinitions));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get(customFieldValue1).getLineItems();
+        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
         assertEquals(15, line1.get(0).getNumberOfTasks());
         assertEquals(0, line1.get(1).getNumberOfTasks());
         assertEquals(3, line1.get(2).getNumberOfTasks());
         assertEquals(0, line1.get(3).getNumberOfTasks());
         assertEquals(7, line1.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line2 = report.getReportLines().get(customFieldValue2).getLineItems();
+        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
         assertEquals(8, line2.get(0).getNumberOfTasks());
         assertEquals(0, line2.get(1).getNumberOfTasks());
         assertEquals(0, line2.get(2).getNumberOfTasks());
         assertEquals(0, line2.get(3).getNumberOfTasks());
         assertEquals(2, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getReportLines().get(customFieldValue3).getLineItems();
+        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
         assertEquals(7, line3.get(0).getNumberOfTasks());
         assertEquals(0, line3.get(1).getNumberOfTasks());
         assertEquals(1, line3.get(2).getNumberOfTasks());
@@ -255,42 +214,110 @@ public class ProvideCustomFieldValueReportAccTest {
     }
 
     @Test
-    public void testEachItemOfCustomFieldValueReportWithCategoryFilter() throws InvalidArgumentException {
+    public void testEachItemOfCustomFieldValueReportWithWorkbasketFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
+        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        CustomField customField = CustomField.CUSTOM_1;
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        CustomField customField = CustomField.CUSTOM_1;
-        String customFieldValue1 = "Geschaeftsstelle A";
-        String customFieldValue2 = "Geschaeftsstelle B";
-        String customFieldValue3 = "Geschaeftsstelle C";
-
-        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
-            customField, reportLineItemDefinitions);
+        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, null, null, null, customField, null,
+            reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, reportLineItemDefinitions));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get(customFieldValue1).getLineItems();
+        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
+        assertEquals(6, line1.get(0).getNumberOfTasks());
+        assertEquals(1, line1.get(1).getNumberOfTasks());
+        assertEquals(1, line1.get(2).getNumberOfTasks());
+        assertEquals(1, line1.get(3).getNumberOfTasks());
+        assertEquals(1, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
+        assertEquals(4, line2.get(0).getNumberOfTasks());
+        assertEquals(1, line2.get(1).getNumberOfTasks());
+        assertEquals(0, line2.get(2).getNumberOfTasks());
+        assertEquals(0, line2.get(3).getNumberOfTasks());
+        assertEquals(0, line2.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
+        assertEquals(3, line3.get(0).getNumberOfTasks());
+        assertEquals(1, line3.get(1).getNumberOfTasks());
+        assertEquals(0, line3.get(2).getNumberOfTasks());
+        assertEquals(0, line3.get(3).getNumberOfTasks());
+        assertEquals(1, line3.get(4).getNumberOfTasks());
+    }
+
+    @Test
+    public void testEachItemOfCustomFieldValueReportWithStateFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<TaskState> states = Arrays.asList(TaskState.READY);
+        CustomField customField = CustomField.CUSTOM_1;
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getCustomFieldValueReport(null, states, null, null, customField, null,
+            reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
+
+        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
+        assertEquals(11, line1.get(0).getNumberOfTasks());
+        assertEquals(4, line1.get(1).getNumberOfTasks());
+        assertEquals(3, line1.get(2).getNumberOfTasks());
+        assertEquals(4, line1.get(3).getNumberOfTasks());
+        assertEquals(0, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
+        assertEquals(5, line2.get(0).getNumberOfTasks());
+        assertEquals(3, line2.get(1).getNumberOfTasks());
+        assertEquals(0, line2.get(2).getNumberOfTasks());
+        assertEquals(2, line2.get(3).getNumberOfTasks());
+        assertEquals(0, line2.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
+        assertEquals(3, line3.get(0).getNumberOfTasks());
+        assertEquals(4, line3.get(1).getNumberOfTasks());
+        assertEquals(1, line3.get(2).getNumberOfTasks());
+        assertEquals(1, line3.get(3).getNumberOfTasks());
+        assertEquals(0, line3.get(4).getNumberOfTasks());
+    }
+
+    @Test
+    public void testEachItemOfCustomFieldValueReportWithCategoryFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+        CustomField customField = CustomField.CUSTOM_1;
+
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getCustomFieldValueReport(null, null, categories, null, customField, null,
+            reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
+
+        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
         assertEquals(2, line1.get(0).getNumberOfTasks());
         assertEquals(1, line1.get(1).getNumberOfTasks());
         assertEquals(2, line1.get(2).getNumberOfTasks());
         assertEquals(1, line1.get(3).getNumberOfTasks());
         assertEquals(3, line1.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line2 = report.getReportLines().get(customFieldValue2).getLineItems();
+        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
         assertEquals(2, line2.get(0).getNumberOfTasks());
         assertEquals(0, line2.get(1).getNumberOfTasks());
         assertEquals(0, line2.get(2).getNumberOfTasks());
         assertEquals(0, line2.get(3).getNumberOfTasks());
         assertEquals(0, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getReportLines().get(customFieldValue3).getLineItems();
+        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
         assertEquals(0, line3.get(0).getNumberOfTasks());
         assertEquals(2, line3.get(1).getNumberOfTasks());
         assertEquals(0, line3.get(2).getNumberOfTasks());
@@ -302,39 +329,32 @@ public class ProvideCustomFieldValueReportAccTest {
     public void testEachItemOfCustomFieldValueReportWithDomainFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        CustomField customField = CustomField.CUSTOM_1;
-        String customFieldValue1 = "Geschaeftsstelle A";
-        String customFieldValue2 = "Geschaeftsstelle B";
-        String customFieldValue3 = "Geschaeftsstelle C";
-
-        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, states, categories, domains,
-            customField, reportLineItemDefinitions);
+        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, domains, customField, null,
+            reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, reportLineItemDefinitions));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get(customFieldValue1).getLineItems();
+        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
         assertEquals(8, line1.get(0).getNumberOfTasks());
         assertEquals(1, line1.get(1).getNumberOfTasks());
         assertEquals(1, line1.get(2).getNumberOfTasks());
         assertEquals(4, line1.get(3).getNumberOfTasks());
         assertEquals(1, line1.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line2 = report.getReportLines().get(customFieldValue2).getLineItems();
+        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
         assertEquals(2, line2.get(0).getNumberOfTasks());
         assertEquals(2, line2.get(1).getNumberOfTasks());
         assertEquals(0, line2.get(2).getNumberOfTasks());
         assertEquals(1, line2.get(3).getNumberOfTasks());
         assertEquals(0, line2.get(4).getNumberOfTasks());
 
-        List<ReportLineItem> line3 = report.getReportLines().get(customFieldValue3).getLineItems();
+        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
         assertEquals(1, line3.get(0).getNumberOfTasks());
         assertEquals(1, line3.get(1).getNumberOfTasks());
         assertEquals(1, line3.get(2).getNumberOfTasks());
@@ -342,12 +362,29 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(3, line3.get(4).getNumberOfTasks());
     }
 
-    private List<String> generateWorkbasketIds(int amount, int startAt) {
-        List<String> workbasketIds = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            workbasketIds.add(String.format("WBI:%036d", startAt + i));
+    @Test
+    public void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField,
+            customFieldValues, reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
         }
-        return workbasketIds;
+
+        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
+        assertEquals(11, line1.get(0).getNumberOfTasks());
+        assertEquals(4, line1.get(1).getNumberOfTasks());
+        assertEquals(3, line1.get(2).getNumberOfTasks());
+        assertEquals(4, line1.get(3).getNumberOfTasks());
+        assertEquals(3, line1.get(4).getNumberOfTasks());
+
+        assertEquals(1, report.getReportLines().size());
     }
 
     private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {
