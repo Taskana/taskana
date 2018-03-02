@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
@@ -64,12 +65,7 @@ public class ProvideWorkbasketLevelReportAccTest {
     public void testGetTotalNumbersOfTasksOfWorkbasketLevelReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
-
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains);
+        Report report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
@@ -86,13 +82,9 @@ public class ProvideWorkbasketLevelReportAccTest {
     public void testGetWorkbasketLevelReportWithReportLineItemDefinitions() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
             reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
@@ -132,13 +124,9 @@ public class ProvideWorkbasketLevelReportAccTest {
     public void testEachItemOfWorkbasketLevelReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
             reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
@@ -171,13 +159,9 @@ public class ProvideWorkbasketLevelReportAccTest {
     public void testEachItemOfWorkbasketLevelReportNotInWorkingDays() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
             reportLineItemDefinitions, false);
 
         if (LOGGER.isDebugEnabled()) {
@@ -207,16 +191,73 @@ public class ProvideWorkbasketLevelReportAccTest {
     }
 
     @Test
+    public void testEachItemOfWorkbasketLevelReportWithWorkbasketFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, null, null, null, null, null,
+            reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
+
+        List<ReportLineItem> line1 = report.getReportLines().get("USER_1_1").getLineItems();
+        assertEquals(13, line1.get(0).getNumberOfTasks());
+        assertEquals(3, line1.get(1).getNumberOfTasks());
+        assertEquals(1, line1.get(2).getNumberOfTasks());
+        assertEquals(1, line1.get(3).getNumberOfTasks());
+        assertEquals(2, line1.get(4).getNumberOfTasks());
+
+        assertEquals(1, report.getReportLines().size());
+    }
+
+    @Test
+    public void testEachItemOfWorkbasketLevelReportWithStateFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<TaskState> states = Arrays.asList(TaskState.READY);
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getWorkbasketLevelReport(null, states, null, null, null, null,
+            reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
+
+        List<ReportLineItem> line1 = report.getReportLines().get("USER_1_1").getLineItems();
+        assertEquals(13, line1.get(0).getNumberOfTasks());
+        assertEquals(3, line1.get(1).getNumberOfTasks());
+        assertEquals(1, line1.get(2).getNumberOfTasks());
+        assertEquals(1, line1.get(3).getNumberOfTasks());
+        assertEquals(0, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("USER_1_2").getLineItems();
+        assertEquals(4, line2.get(0).getNumberOfTasks());
+        assertEquals(6, line2.get(1).getNumberOfTasks());
+        assertEquals(3, line2.get(2).getNumberOfTasks());
+        assertEquals(6, line2.get(3).getNumberOfTasks());
+        assertEquals(0, line2.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line3 = report.getReportLines().get("USER_1_3").getLineItems();
+        assertEquals(2, line3.get(0).getNumberOfTasks());
+        assertEquals(2, line3.get(1).getNumberOfTasks());
+        assertEquals(0, line3.get(2).getNumberOfTasks());
+        assertEquals(0, line3.get(3).getNumberOfTasks());
+        assertEquals(0, line3.get(4).getNumberOfTasks());
+    }
+
+    @Test
     public void testEachItemOfWorkbasketLevelReportWithCategoryFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getWorkbasketLevelReport(null, null, categories, null, null, null,
             reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
@@ -251,13 +292,10 @@ public class ProvideWorkbasketLevelReportAccTest {
     public void testEachItemOfWorkbasketLevelReportWithDomainFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getWorkbasketLevelReport(null, null, null, domains, null, null,
             reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
@@ -286,12 +324,41 @@ public class ProvideWorkbasketLevelReportAccTest {
         assertEquals(2, line3.get(4).getNumberOfTasks());
     }
 
-    private List<String> generateWorkbasketIds(int amount, int startAt) {
-        List<String> workbasketIds = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            workbasketIds.add(String.format("WBI:%036d", startAt + i));
+    @Test
+    public void testEachItemOfWorkbasketLevelReportWithCustomFieldValueFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null,
+            customField, customFieldValues, reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
         }
-        return workbasketIds;
+
+        List<ReportLineItem> line1 = report.getReportLines().get("USER_1_1").getLineItems();
+        assertEquals(6, line1.get(0).getNumberOfTasks());
+        assertEquals(1, line1.get(1).getNumberOfTasks());
+        assertEquals(1, line1.get(2).getNumberOfTasks());
+        assertEquals(1, line1.get(3).getNumberOfTasks());
+        assertEquals(1, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("USER_1_2").getLineItems();
+        assertEquals(3, line2.get(0).getNumberOfTasks());
+        assertEquals(2, line2.get(1).getNumberOfTasks());
+        assertEquals(2, line2.get(2).getNumberOfTasks());
+        assertEquals(3, line2.get(3).getNumberOfTasks());
+        assertEquals(1, line2.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line3 = report.getReportLines().get("USER_1_3").getLineItems();
+        assertEquals(2, line3.get(0).getNumberOfTasks());
+        assertEquals(1, line3.get(1).getNumberOfTasks());
+        assertEquals(0, line3.get(2).getNumberOfTasks());
+        assertEquals(0, line3.get(3).getNumberOfTasks());
+        assertEquals(1, line3.get(4).getNumberOfTasks());
     }
 
     private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {

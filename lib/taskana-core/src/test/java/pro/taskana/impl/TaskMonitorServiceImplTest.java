@@ -21,9 +21,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.mappings.TaskMonitorMapper;
 
@@ -61,6 +61,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
 
         List<MonitorQueryItem> expectedResult = new ArrayList<>();
         MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -68,16 +70,17 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbaskets(workbasketIds, states,
-            categories, domains);
+            categories, domains, customField, customFieldValues);
 
-        Report actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains);
+        Report actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField,
+            customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbaskets(any(), any(), any(),
-            any());
+            any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -93,6 +96,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -103,16 +108,16 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbaskets(workbasketIds, states,
-            categories, domains);
+            categories, domains, customField, customFieldValues);
 
-        Report actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
-            reportLineItemDefinitions);
+        Report actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField,
+            customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbaskets(any(), any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -135,6 +140,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
 
         List<MonitorQueryItem> expectedResult = new ArrayList<>();
         MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -142,15 +149,16 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategories(workbasketIds, states, categories,
-            domains);
+            domains, customField, customFieldValues);
 
-        Report actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains);
+        Report actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains, customField,
+            customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategories(any(), any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategories(any(), any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -165,6 +173,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -175,16 +185,16 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategories(workbasketIds, states, categories,
-            domains);
+            domains, customField, customFieldValues);
 
-        Report actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains,
-            reportLineItemDefinitions);
+        Report actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains, customField,
+            customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategories(any(), any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCategories(any(), any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -200,6 +210,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
 
         List<MonitorQueryItem> expectedResult = new ArrayList<>();
         MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -207,15 +219,16 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfClassifications(workbasketIds, states,
-            categories, domains);
+            categories, domains, customField, customFieldValues);
 
-        ClassificationReport actualResult = cut.getClassificationReport(workbasketIds, states, categories, domains);
+        ClassificationReport actualResult = cut.getClassificationReport(workbasketIds, states, categories, domains,
+            customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassifications(any(), any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassifications(any(), any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -231,6 +244,9 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -241,16 +257,16 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfClassifications(workbasketIds, states,
-            categories, domains);
+            categories, domains, customField, customFieldValues);
 
         ClassificationReport actualResult = cut.getClassificationReport(workbasketIds, states, categories, domains,
-            reportLineItemDefinitions);
+            customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassifications(any(), any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfClassifications(any(), any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -271,6 +287,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
 
         List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
         DetailedMonitorQueryItem detailedMonitorQueryItem = new DetailedMonitorQueryItem();
@@ -279,16 +297,17 @@ public class TaskMonitorServiceImplTest {
         detailedMonitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(detailedMonitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfDetailedClassifications(workbasketIds,
-            states, categories, domains);
+            states, categories, domains, customField, customFieldValues);
 
         DetailedClassificationReport actualResult = cut.getDetailedClassificationReport(workbasketIds, states,
-            categories, domains);
+            categories, domains, customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassifications(any(), any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassifications(any(), any(), any(), any(), any(),
+            any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -306,6 +325,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -317,16 +338,17 @@ public class TaskMonitorServiceImplTest {
         detailedMonitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(detailedMonitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfDetailedClassifications(workbasketIds,
-            states, categories, domains);
+            states, categories, domains, customField, customFieldValues);
 
         DetailedClassificationReport actualResult = cut.getDetailedClassificationReport(workbasketIds, states,
-            categories, domains, reportLineItemDefinitions);
+            categories, domains, customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassifications(any(), any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfDetailedClassifications(any(), any(), any(), any(), any(),
+            any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -351,6 +373,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
 
         List<MonitorQueryItem> expectedResult = new ArrayList<>();
         MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -358,16 +382,18 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock)
-            .getTaskCountOfCustomFieldValues(workbasketIds, states, categories, domains, CustomField.CUSTOM_1);
+            .getTaskCountOfCustomFieldValues(workbasketIds, states, categories, domains, customField,
+                customFieldValues);
 
         Report actualResult = cut.getCustomFieldValueReport(workbasketIds, states, categories, domains,
-            CustomField.CUSTOM_1);
+            customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any());
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(),
+            any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -382,6 +408,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -392,17 +420,18 @@ public class TaskMonitorServiceImplTest {
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock)
-            .getTaskCountOfCustomFieldValues(workbasketIds, states, categories, domains, CustomField.CUSTOM_1);
+            .getTaskCountOfCustomFieldValues(workbasketIds, states, categories, domains, customField,
+                customFieldValues);
 
         Report actualResult = cut.getCustomFieldValueReport(workbasketIds, states, categories, domains,
-            CustomField.CUSTOM_1, reportLineItemDefinitions);
+            customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1))
-            .getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any());
+            .getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -419,6 +448,8 @@ public class TaskMonitorServiceImplTest {
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Arrays.asList("EXTERN");
         List<String> domains = Arrays.asList("DOMAIN_A");
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
             new ReportLineItemDefinition());
 
@@ -430,17 +461,17 @@ public class TaskMonitorServiceImplTest {
 
         List<String> expectedResult = Arrays.asList("TKI:000000000000000000000000000000000001");
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskIdsOfCategoriesBySelectedItems(workbasketIds,
-            states, categories, domains, selectedItems);
+            states, categories, domains, customField, customFieldValues, selectedItems);
 
         List<String> actualResult = cut.getTaskIdsOfCategoryReportLineItems(workbasketIds, states, categories, domains,
-            reportLineItemDefinitions, true, selectedItems);
+            customField, customFieldValues, reportLineItemDefinitions, selectedItems);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1))
-            .getTaskIdsOfCategoriesBySelectedItems(any(), any(), any(), any(), any());
+            .getTaskIdsOfCategoriesBySelectedItems(any(), any(), any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
