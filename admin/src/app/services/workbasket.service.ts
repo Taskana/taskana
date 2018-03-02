@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClientModule, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { WorkbasketSummary } from '../model/workbasketSummary';
 import { Workbasket } from '../model/workbasket';
-import { WorkbasketAuthorization } from '../model/workbasket-authorization';
+import { WorkbasketAccessItems } from '../model/workbasket-access-items';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -51,38 +51,33 @@ export class WorkbasketService {
 
 	//#region "REST calls"
 	// GET
-	getWorkBasketsSummary(	forceRequest: boolean = false,
-							sortBy: string = this.KEY,
-							order: string = Direction.ASC,
-							name: string = undefined,
-							nameLike: string = undefined,
-							descLike: string = undefined,
-							owner: string = undefined,
-							ownerLike: string = undefined,
-							type: string = undefined,
-							key: string = undefined,
-							keyLike: string = undefined,
-							requiredPermission: string = undefined): Observable<WorkbasketSummary[]> {
-		if(this.workbasketSummaryRef && !forceRequest){
+	getWorkBasketsSummary(forceRequest: boolean = false,
+		sortBy: string = this.KEY,
+		order: string = Direction.ASC,
+		name: string = undefined,
+		nameLike: string = undefined,
+		descLike: string = undefined,
+		owner: string = undefined,
+		ownerLike: string = undefined,
+		type: string = undefined,
+		key: string = undefined,
+		keyLike: string = undefined,
+		requiredPermission: string = undefined): Observable<WorkbasketSummary[]> {
+		if (this.workbasketSummaryRef && !forceRequest) {
 			return this.workbasketSummaryRef;
 		}
 		return this.httpClient.get<WorkbasketSummary[]>(`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(sortBy, order, name,
 			nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission)}`, this.httpOptions);
 
 	}
-
 	// GET
 	getWorkBasket(url: string): Observable<Workbasket> {
 		return this.httpClient.get<Workbasket>(url, this.httpOptions);
 	}
-	
-	getWorkBasket1(id: string): Observable<Workbasket> {
-		return this.httpClient.get<Workbasket>(environment.taskanaRestUrl + '/v1/workbaskets/' + id, this.httpOptions);
-	}
 	// POST
 	createWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {
 		return this.httpClient
-		.post<Workbasket>(url, this.httpOptions);
+			.post<Workbasket>(url, this.httpOptions);
 	}
 	// PUT
 	updateWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {
@@ -95,22 +90,19 @@ export class WorkbasketService {
 		return this.httpClient.delete(environment.taskanaRestUrl + '/v1/workbaskets/' + id, this.httpOptions);
 	}
 	// GET
-	getWorkBasketAuthorizations(id: String): Observable<WorkbasketAuthorization[]> {
-		return this.httpClient.get<WorkbasketAuthorization[]>(environment.taskanaRestUrl + '/v1/workbaskets/' + id + '/authorizations', this.httpOptions);
+	getWorkBasketAccessItems(id: String): Observable<WorkbasketAccessItems[]> {
+		return this.httpClient.get<WorkbasketAccessItems[]>(environment.taskanaRestUrl + '/v1/workbaskets/' + id + '/workbasketAccessItems', this.httpOptions);
 	}
 	// POST
-	createWorkBasketAuthorization(workbasketAuthorization: WorkbasketAuthorization): Observable<WorkbasketAuthorization> {
-		return this.httpClient.post<WorkbasketAuthorization>(environment.taskanaRestUrl + '/v1/workbaskets/authorizations', workbasketAuthorization, this.httpOptions);
+	createWorkBasketAccessItem(workbasketAccessItem: WorkbasketAccessItems): Observable<WorkbasketAccessItems> {
+		return this.httpClient.post<WorkbasketAccessItems>(environment.taskanaRestUrl + '/v1/workbaskets/workbasketAccessItems', workbasketAccessItem, this.httpOptions);
 	}
 	// PUT
-	updateWorkBasketAuthorization(workbasketAuthorization: WorkbasketAuthorization): Observable<WorkbasketAuthorization> {
-		return this.httpClient.put<WorkbasketAuthorization>(environment.taskanaRestUrl + '/v1/workbaskets/authorizations/' + workbasketAuthorization.accessId, workbasketAuthorization, this.httpOptions)
+	updateWorkBasketAccessItem(url: string, workbasketAccessItem: Array<WorkbasketAccessItems>): Observable<string> {
+		return this.httpClient.put<string>(url,
+											workbasketAccessItem,
+											this.httpOptions);
 	}
-	// DELETE
-	deleteWorkBasketAuthorization(workbasketAuthorization: WorkbasketAuthorization) {
-		return this.httpClient.delete(environment.taskanaRestUrl + '/v1/workbaskets/authorizations/' + workbasketAuthorization.accessId, this.httpOptions);
-	}
-
 	//#endregion 
 
 	//#region "Service extras"
@@ -162,19 +154,19 @@ export class WorkbasketService {
 		return query;
 	}
 
-	private handleError (error: Response | any) {
+	private handleError(error: Response | any) {
 		// In a real world app, you might use a remote logging infrastructure
 		let errMsg: string;
 		if (error instanceof Response) {
-		  const body = error.json() || '';
-		  const err = JSON.stringify(body);
-		  errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+			const body = error.json() || '';
+			const err = JSON.stringify(body);
+			errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
 		} else {
-		  errMsg = error.message ? error.message : error.toString();
+			errMsg = error.message ? error.message : error.toString();
 		}
 		console.error(errMsg);
 		return Observable.throw(errMsg);
-	  }
+	}
 
 	//#endregion 
 }
