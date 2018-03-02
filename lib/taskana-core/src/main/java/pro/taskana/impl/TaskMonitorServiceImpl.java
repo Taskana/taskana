@@ -30,49 +30,41 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains) throws InvalidArgumentException {
-        return getWorkbasketLevelReport(workbasketIds, states, categories, domains, null, false);
-    }
-
-    @Override
-    public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions)
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
         throws InvalidArgumentException {
-        return getWorkbasketLevelReport(workbasketIds, states, categories, domains, reportLineItemDefinitions, true);
+        return getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField, customFieldValues,
+            null, false);
     }
 
     @Override
     public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions,
-        boolean inWorkingDays) throws InvalidArgumentException {
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException {
+        return getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField, customFieldValues,
+            reportLineItemDefinitions, true);
+    }
+
+    @Override
+    public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getWorkbasketLevelReport(workbasketIds = {}, states = {}, categories = {}, "
-                + "domains = {}, reportLineItemDefinitions = {}, inWorkingDays = {})",
-                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
-                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
-                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
+                + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
+                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
-
-            if (workbasketIds == null) {
-                throw new InvalidArgumentException("WorkbasketIds can´t be used as NULL-Parameter");
-            }
-            if (states == null) {
-                throw new InvalidArgumentException("States can´t be used as NULL-Parameter");
-            }
-            if (categories == null) {
-                throw new InvalidArgumentException("Categories can´t be used as NULL-Parameter");
-            }
-            if (domains == null) {
-                throw new InvalidArgumentException("Domains can´t be used as NULL-Parameter");
-            }
 
             configureDaysToWorkingDaysConverter();
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfWorkbaskets(workbasketIds,
-                states, categories, domains);
+                states, categories, domains, customField, customFieldValues);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -84,49 +76,41 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
-        List<String> domains) throws InvalidArgumentException {
-        return getCategoryReport(workbasketIds, states, categories, domains, null, false);
+        List<String> domains, CustomField customField, List<String> customFieldValues) throws InvalidArgumentException {
+        return getCategoryReport(workbasketIds, states, categories, domains, customField, customFieldValues, null,
+            false);
     }
 
     @Override
     public Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
-        List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions)
+        List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<ReportLineItemDefinition> reportLineItemDefinitions)
         throws InvalidArgumentException {
-        return getCategoryReport(workbasketIds, states, categories, domains, reportLineItemDefinitions, true);
+        return getCategoryReport(workbasketIds, states, categories, domains, customField, customFieldValues,
+            reportLineItemDefinitions, true);
     }
 
     @Override
     public Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
-        List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
         throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getCategoryReport(workbasketIds = {}, states = {}, categories = {}, "
-                + "domains = {},reportLineItemDefinitions = {}, inWorkingDays = {})",
-                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
-                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
-                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
+                + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
+                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
-
-            if (workbasketIds == null) {
-                throw new InvalidArgumentException("WorkbasketIds can´t be used as NULL-Parameter");
-            }
-            if (states == null) {
-                throw new InvalidArgumentException("States can´t be used as NULL-Parameter");
-            }
-            if (categories == null) {
-                throw new InvalidArgumentException("Categories can´t be used as NULL-Parameter");
-            }
-            if (domains == null) {
-                throw new InvalidArgumentException("Domains can´t be used as NULL-Parameter");
-            }
 
             configureDaysToWorkingDaysConverter();
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfCategories(workbasketIds, states,
-                categories, domains);
+                categories, domains, customField, customFieldValues);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -138,49 +122,41 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains) throws InvalidArgumentException {
-        return getClassificationReport(workbasketIds, states, categories, domains, null, false);
-    }
-
-    @Override
-    public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions)
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
         throws InvalidArgumentException {
-        return getClassificationReport(workbasketIds, states, categories, domains, reportLineItemDefinitions, true);
+        return getClassificationReport(workbasketIds, states, categories, domains, customField, customFieldValues, null,
+            false);
     }
 
     @Override
     public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions,
-        boolean inWorkingDays) throws InvalidArgumentException {
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException {
+        return getClassificationReport(workbasketIds, states, categories, domains, customField, customFieldValues,
+            reportLineItemDefinitions, true);
+    }
+
+    @Override
+    public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getClassificationReport(workbasketIds = {}, states = {}, categories = {}, "
-                + "domains = {}, reportLineItemDefinitions = {}, inWorkingDays = {})",
-                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
-                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
-                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
+                + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
+                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
-
-            if (workbasketIds == null) {
-                throw new InvalidArgumentException("WorkbasketIds can´t be used as NULL-Parameter");
-            }
-            if (states == null) {
-                throw new InvalidArgumentException("States can´t be used as NULL-Parameter");
-            }
-            if (categories == null) {
-                throw new InvalidArgumentException("Categories can´t be used as NULL-Parameter");
-            }
-            if (domains == null) {
-                throw new InvalidArgumentException("Domains can´t be used as NULL-Parameter");
-            }
 
             configureDaysToWorkingDaysConverter();
 
             ClassificationReport report = new ClassificationReport();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfClassifications(workbasketIds,
-                states, categories, domains);
+                states, categories, domains, customField, customFieldValues);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -192,52 +168,44 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
-        List<TaskState> states, List<String> categories, List<String> domains) throws InvalidArgumentException {
-        return getDetailedClassificationReport(workbasketIds, states, categories, domains, null, false);
+        List<TaskState> states, List<String> categories, List<String> domains, CustomField customField,
+        List<String> customFieldValues) throws InvalidArgumentException {
+        return getDetailedClassificationReport(workbasketIds, states, categories, domains, customField,
+            customFieldValues, null, false);
     }
 
     @Override
     public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
-        List<TaskState> states, List<String> categories, List<String> domains,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException {
-        return getDetailedClassificationReport(workbasketIds, states, categories, domains, reportLineItemDefinitions,
-            true);
+        List<TaskState> states, List<String> categories, List<String> domains, CustomField customField,
+        List<String> customFieldValues, List<ReportLineItemDefinition> reportLineItemDefinitions)
+        throws InvalidArgumentException {
+        return getDetailedClassificationReport(workbasketIds, states, categories, domains, customField,
+            customFieldValues, reportLineItemDefinitions, true);
     }
 
     @Override
     public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
-        List<TaskState> states, List<String> categories, List<String> domains,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<TaskState> states, List<String> categories, List<String> domains, CustomField customField,
+        List<String> customFieldValues, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
         throws InvalidArgumentException {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getDetailedClassificationReport(workbasketIds = {}, states = {}, "
-                + "categories = {}, domains = {}, reportLineItemDefinitions = {}, inWorkingDays = {})",
-                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
-                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
+                + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
+                + "reportLineItemDefinitions = {}, inWorkingDays = {})", LoggerUtils.listToString(workbasketIds),
+                LoggerUtils.listToString(states), LoggerUtils.listToString(categories),
+                LoggerUtils.listToString(domains), customField, LoggerUtils.listToString(customFieldValues),
                 LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
 
-            if (workbasketIds == null) {
-                throw new InvalidArgumentException("WorkbasketIds can´t be used as NULL-Parameter");
-            }
-            if (states == null) {
-                throw new InvalidArgumentException("States can´t be used as NULL-Parameter");
-            }
-            if (categories == null) {
-                throw new InvalidArgumentException("Categories can´t be used as NULL-Parameter");
-            }
-            if (domains == null) {
-                throw new InvalidArgumentException("Domains can´t be used as NULL-Parameter");
-            }
-
             configureDaysToWorkingDaysConverter();
 
             DetailedClassificationReport report = new DetailedClassificationReport();
             List<DetailedMonitorQueryItem> detailedMonitorQueryItems = taskMonitorMapper
-                .getTaskCountOfDetailedClassifications(workbasketIds, states, categories, domains);
+                .getTaskCountOfDetailedClassifications(workbasketIds, states, categories, domains, customField,
+                    customFieldValues);
             report.addDetailedMonitoringQueryItems(detailedMonitorQueryItems, reportLineItemDefinitions,
                 inWorkingDays);
             return report;
@@ -250,45 +218,36 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, CustomField customField) throws InvalidArgumentException {
-        return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField, null, false);
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
+        throws InvalidArgumentException {
+        return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField, customFieldValues,
+            null, false);
     }
 
     @Override
     public Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, CustomField customField,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException {
-        return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField,
+        return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField, customFieldValues,
             reportLineItemDefinitions, true);
     }
 
     @Override
     public Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, CustomField customField,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
         throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getCustomFieldValueReport(workbasketIds = {}, states = {}, categories = {}, "
-                + "domains = {}, customField = {}, reportLineItemDefinitions = {}, inWorkingDays = {})",
-                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
+                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
-                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
 
-            if (workbasketIds == null) {
-                throw new InvalidArgumentException("WorkbasketIds can´t be used as NULL-Parameter");
-            }
-            if (states == null) {
-                throw new InvalidArgumentException("States can´t be used as NULL-Parameter");
-            }
-            if (categories == null) {
-                throw new InvalidArgumentException("Categories can´t be used as NULL-Parameter");
-            }
-            if (domains == null) {
-                throw new InvalidArgumentException("Domains can´t be used as NULL-Parameter");
-            }
             if (customField == null) {
                 throw new InvalidArgumentException("CustomField can´t be used as NULL-Parameter");
             }
@@ -297,7 +256,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             Report report = new Report();
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfCustomFieldValues(workbasketIds,
-                states, categories, domains, customField);
+                states, categories, domains, customField, customFieldValues);
             report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
             return report;
 
@@ -309,39 +268,30 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public List<String> getTaskIdsOfCategoryReportLineItems(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions,
-        List<SelectedItem> selectedItems) throws InvalidArgumentException {
-        return getTaskIdsOfCategoryReportLineItems(workbasketIds, states, categories, domains,
-            reportLineItemDefinitions, true, selectedItems);
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<ReportLineItemDefinition> reportLineItemDefinitions, List<SelectedItem> selectedItems)
+        throws InvalidArgumentException {
+        return getTaskIdsOfCategoryReportLineItems(workbasketIds, states, categories, domains, customField,
+            customFieldValues, reportLineItemDefinitions, true, selectedItems);
     }
 
     @Override
     public List<String> getTaskIdsOfCategoryReportLineItems(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, List<ReportLineItemDefinition> reportLineItemDefinitions,
-        boolean inWorkingDays, List<SelectedItem> selectedItems) throws InvalidArgumentException {
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays,
+        List<SelectedItem> selectedItems) throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getTaskIdsOfCategoryReportLineItems(workbasketIds = {}, states = {}, "
-                + "categories = {}, domains = {}, reportLineItemDefinitions = {}, inWorkingDays = {}, "
-                + "selectedItems = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
-                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
-                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays,
-                LoggerUtils.listToString(selectedItems));
+                + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
+                + "reportLineItemDefinitions = {}, inWorkingDays = {}, selectedItems = {})",
+                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                inWorkingDays, LoggerUtils.listToString(selectedItems));
         }
         try {
             taskanaEngineImpl.openConnection();
 
-            if (workbasketIds == null) {
-                throw new InvalidArgumentException("WorkbasketIds can´t be used as NULL-Parameter");
-            }
-            if (states == null) {
-                throw new InvalidArgumentException("States can´t be used as NULL-Parameter");
-            }
-            if (categories == null) {
-                throw new InvalidArgumentException("Categories can´t be used as NULL-Parameter");
-            }
-            if (domains == null) {
-                throw new InvalidArgumentException("Domains can´t be used as NULL-Parameter");
-            }
             if (reportLineItemDefinitions == null) {
                 throw new InvalidArgumentException("ReportLineItemDefinitions can´t be used as NULL-Parameter");
             }
@@ -357,7 +307,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
             }
 
             List<String> taskIds = taskMonitorMapper.getTaskIdsOfCategoriesBySelectedItems(workbasketIds, states,
-                categories, domains, selectedItems);
+                categories, domains, customField, customFieldValues, selectedItems);
 
             return taskIds;
 

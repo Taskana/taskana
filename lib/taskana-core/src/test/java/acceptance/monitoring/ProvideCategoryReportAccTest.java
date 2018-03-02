@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
@@ -64,23 +65,19 @@ public class ProvideCategoryReportAccTest {
     public void testGetTotalNumbersOfTasksOfCategoryReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
-        Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains);
+        Report report = taskMonitorService.getCategoryReport(null, null, null, null, null, null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
         }
 
         assertNotNull(report);
-        assertEquals(33, report.getReportLines().get(categories.get(0)).getTotalNumberOfTasks());
-        assertEquals(7, report.getReportLines().get(categories.get(1)).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(categories.get(2)).getTotalNumberOfTasks());
-        assertEquals(0, report.getReportLines().get(categories.get(0)).getLineItems().size());
-        assertEquals(0, report.getReportLines().get(categories.get(1)).getLineItems().size());
-        assertEquals(0, report.getReportLines().get(categories.get(2)).getLineItems().size());
+        assertEquals(33, report.getReportLines().get("EXTERN").getTotalNumberOfTasks());
+        assertEquals(7, report.getReportLines().get("AUTOMATIC").getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get("MANUAL").getTotalNumberOfTasks());
+        assertEquals(0, report.getReportLines().get("EXTERN").getLineItems().size());
+        assertEquals(0, report.getReportLines().get("AUTOMATIC").getLineItems().size());
+        assertEquals(0, report.getReportLines().get("MANUAL").getLineItems().size());
         assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
     }
 
@@ -88,13 +85,9 @@ public class ProvideCategoryReportAccTest {
     public void testGetCategoryReportWithReportLineItemDefinitions() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getCategoryReport(null, null, null, null, null, null,
             reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
@@ -113,9 +106,9 @@ public class ProvideCategoryReportAccTest {
 
         assertNotNull(report);
 
-        assertEquals(33, report.getReportLines().get(categories.get(0)).getTotalNumberOfTasks());
-        assertEquals(7, report.getReportLines().get(categories.get(1)).getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get(categories.get(2)).getTotalNumberOfTasks());
+        assertEquals(33, report.getReportLines().get("EXTERN").getTotalNumberOfTasks());
+        assertEquals(7, report.getReportLines().get("AUTOMATIC").getTotalNumberOfTasks());
+        assertEquals(10, report.getReportLines().get("MANUAL").getTotalNumberOfTasks());
 
         assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
         assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
@@ -134,13 +127,9 @@ public class ProvideCategoryReportAccTest {
     public void testEachItemOfCategoryReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getCategoryReport(null, null, null, null, null, null,
             reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
@@ -173,13 +162,9 @@ public class ProvideCategoryReportAccTest {
     public void testEachItemOfCategoryReportNotInWorkingDays() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getCategoryReport(null, null, null, null, null, null,
             reportLineItemDefinitions, false);
 
         if (LOGGER.isDebugEnabled()) {
@@ -209,16 +194,85 @@ public class ProvideCategoryReportAccTest {
     }
 
     @Test
+    public void testEachItemOfCategoryReportWithWorkbasketFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getCategoryReport(workbasketIds, null, null, null, null, null,
+            reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
+
+        List<ReportLineItem> line1 = report.getReportLines().get("EXTERN").getLineItems();
+        assertEquals(10, line1.get(0).getNumberOfTasks());
+        assertEquals(2, line1.get(1).getNumberOfTasks());
+        assertEquals(0, line1.get(2).getNumberOfTasks());
+        assertEquals(0, line1.get(3).getNumberOfTasks());
+        assertEquals(0, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("AUTOMATIC").getLineItems();
+        assertEquals(2, line2.get(0).getNumberOfTasks());
+        assertEquals(1, line2.get(1).getNumberOfTasks());
+        assertEquals(0, line2.get(2).getNumberOfTasks());
+        assertEquals(1, line2.get(3).getNumberOfTasks());
+        assertEquals(1, line2.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line3 = report.getReportLines().get("MANUAL").getLineItems();
+        assertEquals(1, line3.get(0).getNumberOfTasks());
+        assertEquals(0, line3.get(1).getNumberOfTasks());
+        assertEquals(1, line3.get(2).getNumberOfTasks());
+        assertEquals(0, line3.get(3).getNumberOfTasks());
+        assertEquals(1, line3.get(4).getNumberOfTasks());
+    }
+
+    @Test
+    public void testEachItemOfCategoryReportWithStateFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<TaskState> states = Arrays.asList(TaskState.READY);
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getCategoryReport(null, states, null, null, null, null,
+            reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+        }
+
+        List<ReportLineItem> line1 = report.getReportLines().get("EXTERN").getLineItems();
+        assertEquals(15, line1.get(0).getNumberOfTasks());
+        assertEquals(8, line1.get(1).getNumberOfTasks());
+        assertEquals(2, line1.get(2).getNumberOfTasks());
+        assertEquals(6, line1.get(3).getNumberOfTasks());
+        assertEquals(0, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("AUTOMATIC").getLineItems();
+        assertEquals(2, line2.get(0).getNumberOfTasks());
+        assertEquals(1, line2.get(1).getNumberOfTasks());
+        assertEquals(0, line2.get(2).getNumberOfTasks());
+        assertEquals(1, line2.get(3).getNumberOfTasks());
+        assertEquals(0, line2.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line3 = report.getReportLines().get("MANUAL").getLineItems();
+        assertEquals(2, line3.get(0).getNumberOfTasks());
+        assertEquals(2, line3.get(1).getNumberOfTasks());
+        assertEquals(2, line3.get(2).getNumberOfTasks());
+        assertEquals(0, line3.get(3).getNumberOfTasks());
+        assertEquals(0, line3.get(4).getNumberOfTasks());
+    }
+
+    @Test
     public void testEachItemOfCategoryReportWithCategoryFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
-        List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getCategoryReport(null, null, categories, null, null, null,
             reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
@@ -246,13 +300,10 @@ public class ProvideCategoryReportAccTest {
     public void testEachItemOfCategoryReportWithDomainFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = generateWorkbasketIds(3, 1);
-        List<TaskState> states = Arrays.asList(TaskState.READY, TaskState.CLAIMED);
-        List<String> categories = Arrays.asList("EXTERN", "AUTOMATIC", "MANUAL");
         List<String> domains = Arrays.asList("DOMAIN_A");
         List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
 
-        Report report = taskMonitorService.getCategoryReport(workbasketIds, states, categories, domains,
+        Report report = taskMonitorService.getCategoryReport(null, null, null, domains, null, null,
             reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
@@ -281,12 +332,41 @@ public class ProvideCategoryReportAccTest {
         assertEquals(3, line3.get(4).getNumberOfTasks());
     }
 
-    private List<String> generateWorkbasketIds(int amount, int startAt) {
-        List<String> workbasketIds = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            workbasketIds.add(String.format("WBI:%036d", startAt + i));
+    @Test
+    public void testEachItemOfCategoryReportWithCustomFieldValueFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        CustomField customField = CustomField.CUSTOM_1;
+        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+
+        Report report = taskMonitorService.getCategoryReport(null, null, null, null, customField, customFieldValues,
+            reportLineItemDefinitions);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
         }
-        return workbasketIds;
+
+        List<ReportLineItem> line1 = report.getReportLines().get("EXTERN").getLineItems();
+        assertEquals(9, line1.get(0).getNumberOfTasks());
+        assertEquals(3, line1.get(1).getNumberOfTasks());
+        assertEquals(1, line1.get(2).getNumberOfTasks());
+        assertEquals(3, line1.get(3).getNumberOfTasks());
+        assertEquals(0, line1.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line2 = report.getReportLines().get("AUTOMATIC").getLineItems();
+        assertEquals(1, line2.get(0).getNumberOfTasks());
+        assertEquals(0, line2.get(1).getNumberOfTasks());
+        assertEquals(0, line2.get(2).getNumberOfTasks());
+        assertEquals(1, line2.get(3).getNumberOfTasks());
+        assertEquals(1, line2.get(4).getNumberOfTasks());
+
+        List<ReportLineItem> line3 = report.getReportLines().get("MANUAL").getLineItems();
+        assertEquals(1, line3.get(0).getNumberOfTasks());
+        assertEquals(1, line3.get(1).getNumberOfTasks());
+        assertEquals(2, line3.get(2).getNumberOfTasks());
+        assertEquals(0, line3.get(3).getNumberOfTasks());
+        assertEquals(2, line3.get(4).getNumberOfTasks());
     }
 
     private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {
