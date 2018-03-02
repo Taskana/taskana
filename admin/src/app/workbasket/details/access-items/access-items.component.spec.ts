@@ -10,17 +10,17 @@ import { AlertService } from '../../../services/alert.service';
 import { GeneralMessageModalComponent } from '../../../shared/general-message-modal/general-message-modal.component';
 import { Links } from '../../../model/links';
 import { Observable } from 'rxjs/Observable';
-import { AuthorizationsComponent } from './authorizations.component';
-import { WorkbasketAuthorization } from '../../../model/workbasket-authorization';
+import { AccessItemsComponent } from './access-items.component';
+import { WorkbasketAccessItems } from '../../../model/workbasket-access-items';
 
-describe('AuthorizationsComponent', () => {
-	let component: AuthorizationsComponent;
-	let fixture: ComponentFixture<AuthorizationsComponent>;
+describe('AccessItemsComponent', () => {
+	let component: AccessItemsComponent;
+	let fixture: ComponentFixture<AccessItemsComponent>;
 	let workbasketService;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [SpinnerComponent, AuthorizationsComponent, GeneralMessageModalComponent],
+			declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent],
 			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
 			providers: [WorkbasketService, AlertService]
 
@@ -29,11 +29,11 @@ describe('AuthorizationsComponent', () => {
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(AuthorizationsComponent);
+		fixture = TestBed.createComponent(AccessItemsComponent);
 		component = fixture.componentInstance;
 		component.workbasket = new Workbasket('1')
 		workbasketService = TestBed.get(WorkbasketService);
-		spyOn(workbasketService, 'getWorkBasketAuthorizations').and.returnValue(Observable.of(new Array<WorkbasketAuthorization>(new WorkbasketAuthorization())));
+		spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(Observable.of(new Array<WorkbasketAccessItems>(new WorkbasketAccessItems())));
 
 		fixture.detectChanges();
 	});
