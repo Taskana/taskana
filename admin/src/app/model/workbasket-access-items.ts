@@ -1,6 +1,6 @@
 import { Links } from "./links";
 
-export class WorkbasketAuthorization {
+export class WorkbasketAccessItems {
     constructor(
         public accessItemId: string = '',
         public workbasketId: string = '',
