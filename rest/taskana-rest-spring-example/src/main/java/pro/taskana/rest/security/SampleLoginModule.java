@@ -37,7 +37,7 @@ public class SampleLoginModule implements LoginModule {
     }
 
     private void addGroupSubjectsDerivedFromUsername() {
-        String username = nameCallback.getName();
+        String username = nameCallback.getName().toLowerCase();
         char role = username.charAt(1);
         switch (role) {
             case 'u':
@@ -48,8 +48,12 @@ public class SampleLoginModule implements LoginModule {
                 subject.getPrincipals()
                     .add(new GroupPrincipal("manager" + "_domain_" + username.charAt(0)));
                 break;
+            case 'e':
+                subject.getPrincipals()
+                    .add(new GroupPrincipal("businessadmin"));
+                break;
             default:
-                //necessary for checkstyle
+                // necessary for checkstyle
         }
         subject.getPrincipals().add(new GroupPrincipal("team_" + username.substring(2, 6)));
     }
