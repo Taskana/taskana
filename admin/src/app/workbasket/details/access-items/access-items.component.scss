@@ -7,6 +7,10 @@ td > input[type="checkbox"] {
 .text-width{
     min-width: 150px;
 }
+.required-header:after {
+    content:" *"; 
+    color: red;
+}
 
 td {
     &.has-changes {
