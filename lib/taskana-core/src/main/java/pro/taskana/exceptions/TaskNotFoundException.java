@@ -5,8 +5,8 @@ package pro.taskana.exceptions;
  */
 public class TaskNotFoundException extends NotFoundException {
 
-    public TaskNotFoundException(String id) {
-        super("Task '" + id + "' not found");
+    public TaskNotFoundException(String id, String msg) {
+        super(id, msg);
     }
 
     private static final long serialVersionUID = 1L;
