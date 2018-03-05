@@ -5,8 +5,15 @@ package pro.taskana.exceptions;
  */
 public class NotFoundException extends TaskanaException {
 
-    public NotFoundException(String id) {
-        super(id);
+    String id;
+
+    public NotFoundException(String id, String message) {
+        super(message);
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     private static final long serialVersionUID = 1L;

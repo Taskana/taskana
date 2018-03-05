@@ -68,7 +68,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 LOGGER.error(
                     "Method getWorkbasket() didn't find workbasket with ID {}. Throwing WorkbasketNotFoundException",
                     workbasketId);
-                throw new WorkbasketNotFoundException(workbasketId);
+                throw new WorkbasketNotFoundException(workbasketId,
+                    "Workbasket with id " + workbasketId + " was not found.");
             }
             this.checkAuthorization(workbasketId, WorkbasketPermission.READ);
             return result;
@@ -90,7 +91,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 LOGGER.error(
                     "Method getWorkbasketByKey() didn't find workbasket with key {}. Throwing WorkbasketNotFoundException",
                     workbasketKey);
-                throw new WorkbasketNotFoundException(workbasketKey);
+                throw new WorkbasketNotFoundException(workbasketKey, domain,
+                    "Workbasket with key " + workbasketKey + " and domain " + domain + " was not found.");
             }
             this.checkAuthorization(workbasketKey, domain, WorkbasketPermission.READ);
             return result;
@@ -279,7 +281,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public void checkAuthorization(String workbasketId,
         WorkbasketPermission workbasketPermission) throws NotAuthorizedException, WorkbasketNotFoundException {
         if (workbasketMapper.findById(workbasketId) == null) {
-            throw new WorkbasketNotFoundException(workbasketId);
+            throw new WorkbasketNotFoundException(workbasketId,
+                "Workbasket with id " + workbasketId + " was not found.");
         }
         checkAuthorization(null, null, workbasketId, workbasketPermission);
     }
@@ -289,7 +292,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         WorkbasketPermission workbasketPermission)
         throws NotAuthorizedException, WorkbasketNotFoundException {
         if (workbasketMapper.findByKeyAndDomain(workbasketKey, domain) == null) {
-            throw new WorkbasketNotFoundException(workbasketKey + " - " + domain);
+            throw new WorkbasketNotFoundException(workbasketKey, domain,
+                "Workbasket with key " + workbasketKey + " and domain " + domain + " was not found");
         }
         checkAuthorization(workbasketKey, domain, null, workbasketPermission);
     }

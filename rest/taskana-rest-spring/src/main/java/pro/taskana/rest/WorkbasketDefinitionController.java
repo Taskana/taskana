@@ -131,6 +131,7 @@ public class WorkbasketDefinitionController {
                         distributionTargets.add(idConversion.get(oldId));
                     } else {
                         throw new WorkbasketNotFoundException(
+                            oldId,
                             String.format(
                                 "invalid import state: Workbasket '%s' does not exist in the given import list",
                                 oldId));

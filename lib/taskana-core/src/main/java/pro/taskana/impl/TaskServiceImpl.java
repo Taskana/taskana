@@ -247,7 +247,8 @@ public class TaskServiceImpl implements TaskService {
                         .findFirst()
                         .orElse(null);
                     if (taskSummary == null) {
-                        bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId));
+                        bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId, "task with id "
+                            + currentTaskId + " was not found."));
                         taskIdIterator.remove();
                     } else if (taskSummary.getClaimed() == null || taskSummary.getState() != TaskState.CLAIMED) {
                         bulkLog.addError(currentTaskId, new InvalidStateException(currentTaskId));
@@ -355,7 +356,7 @@ public class TaskServiceImpl implements TaskService {
                 return resultTask;
             } else {
                 LOGGER.warn("Method getTaskById() didn't find task with id {}. Throwing TaskNotFoundException", id);
-                throw new TaskNotFoundException(id);
+                throw new TaskNotFoundException(id, "Task with id " + id + " was not found");
             }
         } finally {
             taskanaEngine.returnConnection();
@@ -512,7 +513,8 @@ public class TaskServiceImpl implements TaskService {
                 .findFirst()
                 .orElse(null);
             if (taskSummary == null) {
-                bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId));
+                bulkLog.addError(currentTaskId,
+                    new TaskNotFoundException(currentTaskId, "Task with id " + currentTaskId + " was not found."));
                 taskIdIterator.remove();
             } else if (!sourceWorkbaskets.stream()
                 .anyMatch(wb -> taskSummary.getWorkbasketKey().equals(wb.getKey()))) {
@@ -975,7 +977,8 @@ public class TaskServiceImpl implements TaskService {
                         .findFirst()
                         .orElse(null);
                     if (foundSummary == null) {
-                        bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId));
+                        bulkLog.addError(currentTaskId, new TaskNotFoundException(currentTaskId,
+                            "Task with id " + currentTaskId + " was not found."));
                         taskIdIterator.remove();
                     } else {
                         if (!TaskState.COMPLETED.equals(foundSummary.getTaskState())) {
