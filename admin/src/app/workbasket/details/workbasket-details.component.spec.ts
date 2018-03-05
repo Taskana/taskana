@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 import { NoAccessComponent } from '../noAccess/no-access.component';
 import { WorkbasketInformationComponent } from './information/workbasket-information.component';
-import { AuthorizationsComponent } from './authorizations/authorizations.component';
+import { AccessItemsComponent } from './access-items/access-items.component';
 import { Workbasket } from 'app/model/workbasket';
 import { Observable } from 'rxjs/Observable';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
@@ -35,7 +35,7 @@ describe('WorkbasketDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[RouterTestingModule, FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [ WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AuthorizationsComponent ],
+      declarations: [ WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent ],
       providers:[WorkbasketService, MasterAndDetailService, PermissionService, AlertService]
     })
     .compileComponents();
