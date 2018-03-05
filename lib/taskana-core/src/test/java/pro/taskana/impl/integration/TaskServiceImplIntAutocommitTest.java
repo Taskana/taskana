@@ -77,7 +77,7 @@ public class TaskServiceImplIntAutocommitTest {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);
-        FileUtils.deleteRecursive("~/data", true);
+        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 
     @Before
@@ -412,6 +412,6 @@ public class TaskServiceImplIntAutocommitTest {
 
     @AfterClass
     public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/data", true);
+        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 }
