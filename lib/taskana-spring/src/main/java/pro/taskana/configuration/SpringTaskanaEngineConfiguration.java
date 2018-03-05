@@ -30,6 +30,11 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
         super(dataSource, useManagedTransactions, securityEnabled);
     }
 
+    public SpringTaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
+        boolean securityEnabled, String propertiesFileName, String propertiesSeparator) throws SQLException {
+        super(dataSource, useManagedTransactions, securityEnabled, propertiesFileName, propertiesSeparator);
+    }
+
     /**
      * This method creates the Spring-based TaskanaEngine without an sqlSessionFactory
      *
