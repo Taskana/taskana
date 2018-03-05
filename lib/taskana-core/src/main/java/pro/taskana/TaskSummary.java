@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import java.time.Instant;
+import java.util.List;
 
 import pro.taskana.impl.ObjectReference;
 
@@ -106,6 +107,13 @@ public interface TaskSummary {
      * @return the task's workbasketSummary
      */
     WorkbasketSummary getWorkbasketSummary();
+
+    /**
+     * Gets the attachment summaries of the task.
+     *
+     * @return the task's attachment summaries
+     */
+    List<AttachmentSummary> getAttachmentSummaries();
 
     /**
      * Gets the domain of the task.
@@ -225,4 +233,5 @@ public interface TaskSummary {
      * @return the task's custom10 property
      */
     String getCustom10();
+
 }
