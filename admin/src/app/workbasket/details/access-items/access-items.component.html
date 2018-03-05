@@ -9,7 +9,7 @@
 		<h4 class="panel-header">{{workbasket.name}}</h4>
 	</div>
 	<div class="panel-body">
-		<table class="table table-striped table-center">
+		<table id="table-access-items"class="table table-striped table-center">
 			<thead>
 				<tr>
 					<th></th>
@@ -102,7 +102,7 @@
 				</tr>
 			</tbody>
 		</table>
-			<button type="button" (click)="addAccessItem()" class="btn btn-default">
+			<button id="button-add-access-item" type="button" (click)="addAccessItem()" class="btn btn-default">
 				<span><svg-icon class="green small" src="./assets/icons/wb-add.svg"></svg-icon></span>
 				Add new access
 			</button>
