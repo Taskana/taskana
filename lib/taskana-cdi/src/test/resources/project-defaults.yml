@@ -5,7 +5,7 @@ swarm:
     data-sources:
       TestDS:
         driver-name: myh2
-        connection-url: jdbc:h2:~/data/testdb;AUTO_SERVER=TRUE
+        connection-url: jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE
         user-name: SA
         password: SA
     jdbc-drivers:
