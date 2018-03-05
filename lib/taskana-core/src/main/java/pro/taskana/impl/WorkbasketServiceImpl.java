@@ -210,10 +210,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public void setWorkbasketAccessItems(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
+        LOGGER.debug("entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems.toString());
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         List<WorkbasketAccessItemImpl> newItems = new ArrayList<>();
         try {
-            LOGGER.debug("entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems.toString());
             taskanaEngine.openConnection();
             // Check pre-conditions and set ID
             if (!wbAccessItems.isEmpty()) {
@@ -262,8 +263,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public void deleteWorkbasketAccessItemsForAccessId(String accessId) {
+    public void deleteWorkbasketAccessItemsForAccessId(String accessId) throws NotAuthorizedException {
         LOGGER.debug("entry to deleteWorkbasketAccessItemsForAccessId(accessId = {})", accessId);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
             taskanaEngine.openConnection();
             workbasketAccessMapper.deleteAccessItemsForAccessId(accessId);
@@ -321,8 +323,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId) {
+    public List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId) throws NotAuthorizedException {
         LOGGER.debug("entry to getWorkbasketAccessItems(workbasketId = {})", workbasketId);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         List<WorkbasketAccessItem> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();

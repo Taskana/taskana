@@ -17,7 +17,8 @@ import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
 /**
- * Transforms {@link WorkbasketAccessItem} to its resource counterpart {@link WorkbasketAccessItemResource} and vice versa.
+ * Transforms {@link WorkbasketAccessItem} to its resource counterpart {@link WorkbasketAccessItemResource} and vice
+ * versa.
  */
 @Component
 public class WorkbasketAccessItemMapper {
@@ -57,7 +58,7 @@ public class WorkbasketAccessItemMapper {
         resource.add(
             linkTo(methodOn(WorkbasketController.class).setWorkbasketAccessItems(wbAccItem.getWorkbasketId(),
                 Collections.singletonList(resource)))
-                .withRel("setWorkbasketAuthorizations"));
+                    .withRel("setWorkbasketAccessItems"));
         resource.add(
             linkTo(methodOn(WorkbasketController.class).deleteWorkbasketAccessItem(wbAccItem.getId()))
                 .withRel("deleteWorkbasketAccessItem"));

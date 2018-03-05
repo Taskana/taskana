@@ -185,8 +185,14 @@ public class WorkbasketController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<WorkbasketAccessItemResource>> getWorkbasketAccessItems(
         @PathVariable(value = "workbasketId") String workbasketId) {
-        List<WorkbasketAccessItem> wbAuthorizations = workbasketService.getWorkbasketAccessItems(workbasketId);
+        List<WorkbasketAccessItem> wbAuthorizations;
         List<WorkbasketAccessItemResource> result = new ArrayList<>();
+        try {
+            wbAuthorizations = workbasketService.getWorkbasketAccessItems(workbasketId);
+        } catch (NotAuthorizedException e1) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+        }
         wbAuthorizations
             .forEach(accItem -> {
                 try {
@@ -228,6 +234,7 @@ public class WorkbasketController {
     }
 
     @PutMapping(value = "/{workbasketId}/workbasketAccessItems/")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> setWorkbasketAccessItems(@PathVariable(value = "workbasketId") String workbasketId,
         @RequestBody List<WorkbasketAccessItemResource> workbasketAccessResourceItems) {
         try {
@@ -236,7 +243,12 @@ public class WorkbasketController {
             }
             List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
             workbasketAccessResourceItems.forEach(item -> wbAccessItems.add(workbasketAccessItemMapper.toModel(item)));
-            workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
+            try {
+                workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
+            } catch (NotAuthorizedException e) {
+                TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (InvalidArgumentException | NullPointerException e) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
