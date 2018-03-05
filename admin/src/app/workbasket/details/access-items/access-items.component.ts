@@ -56,17 +56,23 @@ export class AccessItemsComponent implements OnInit {
 		this.accessItemsClone.splice(index,1);
 	}
 
-	onSave() {
+	onSave(): boolean {
 		if(this.validateAccessItems()){
 			return;
 		}
+		if(!this.accessItems[0].links){
+			return;
+		}
+
 		this.workbasketService.updateWorkBasketAccessItem(Utils.getTagLinkRef(this.accessItems[0].links, 'setWorkbasketAccessItems').href, this.accessItems).subscribe(response =>{
 			this.accessItemsClone = this.cloneaccessItems(this.accessItems);
 			this.accessItemsResetClone = this.cloneaccessItems(this.accessItems);
-			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket  ${this.workbasket.key} Access items were saved successfully`))
+			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket  ${this.workbasket.key} Access items were saved successfully`));
+			return true;
 		},
 		error => {
 			this.modalErrorMessage = error.message;
+			return false;
 		})
 	}
 
