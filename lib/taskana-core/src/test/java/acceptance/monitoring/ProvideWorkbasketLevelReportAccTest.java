@@ -456,6 +456,6 @@ public class ProvideWorkbasketLevelReportAccTest {
 
     @AfterClass
     public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/data", true);
+        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 }
