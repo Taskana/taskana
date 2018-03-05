@@ -21,12 +21,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.Attachment;
+import pro.taskana.AttachmentSummary;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.KeyDomain;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
+import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -162,6 +166,37 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .classificationKeyIn(ids)
             .list();
         assertThat(result2.size(), equalTo(65));
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testQueryForAttachmentInSummary()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        TaskNotFoundException, WorkbasketNotFoundException, ConcurrencyException, InvalidWorkbasketException,
+        AttachmentPersistenceException {
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        Attachment attachment = createAttachment("DOCTYPE_DEFAULT", // prio 99, SL P2000D
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3));
+
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+        task.addAttachment(attachment);
+        taskService.updateTask(task);
+
+        List<TaskSummary> results = taskService.createTaskQuery()
+            .idIn("TKI:000000000000000000000000000000000000")
+            .list();
+        assertThat(results.size(), equalTo(1));
+        assertThat(results.get(0).getAttachmentSummaries().size(), equalTo(1));
+        AttachmentSummary att = results.get(0).getAttachmentSummaries().get(0);
+        assertThat(att.getClassificationSummary(), equalTo(attachment.getClassificationSummary()));
+        assertThat(att.getCreated(), equalTo(task.getAttachments().get(0).getCreated()));
+        assertThat(att.getModified(), equalTo(task.getAttachments().get(0).getModified()));
+
     }
 
     @WithAccessId(
