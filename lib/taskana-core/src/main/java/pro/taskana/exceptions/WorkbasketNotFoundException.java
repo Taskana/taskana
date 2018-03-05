@@ -5,8 +5,25 @@ package pro.taskana.exceptions;
  */
 public class WorkbasketNotFoundException extends NotFoundException {
 
-    public WorkbasketNotFoundException(String id) {
-        super("Workbasket with '" + id + "' not found");
+    private String key;
+    private String domain;
+
+    public WorkbasketNotFoundException(String id, String msg) {
+        super(id, msg);
+    }
+
+    public WorkbasketNotFoundException(String key, String domain, String msg) {
+        super(null, msg);
+        this.key = key;
+        this.domain = domain;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getDomain() {
+        return domain;
     }
 
     private static final long serialVersionUID = 1L;
