@@ -160,8 +160,10 @@ public interface WorkbasketService {
      * @param workbasketId
      *            the id of the Workbasket
      * @return List of WorkbasketAccessItems for the Workbasket with workbasketKey
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
-    List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId);
+    List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId) throws NotAuthorizedException;
 
     /**
      * Setting up the new WorkbasketAccessItems for a Workbasket. Already stored values will be completely replaced by
@@ -173,9 +175,11 @@ public interface WorkbasketService {
      *            List of WorkbasketAccessItems which does replace all current stored ones.
      * @throws InvalidArgumentException
      *             will be thrown when the parameter is NULL or member doesn´t match the preconditions
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
     void setWorkbasketAccessItems(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * This method returns the workbaskets for which the current user has all permissions specified in the permissions
@@ -352,6 +356,8 @@ public interface WorkbasketService {
      *
      * @param accessId
      *            of a taskana-user.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
-    void deleteWorkbasketAccessItemsForAccessId(String accessId);
+    void deleteWorkbasketAccessItemsForAccessId(String accessId) throws NotAuthorizedException;
 }

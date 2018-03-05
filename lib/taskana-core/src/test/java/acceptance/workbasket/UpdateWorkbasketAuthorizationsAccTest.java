@@ -158,9 +158,9 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testUpdatedAccessItemList() throws InvalidArgumentException {
+    public void testUpdatedAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000004";
         List<WorkbasketAccessItem> accessItems = workbasketService
@@ -199,9 +199,9 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"})
+        groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testInsertAccessItemList() throws InvalidArgumentException {
+    public void testInsertAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000004";
         List<WorkbasketAccessItem> accessItems = workbasketService
@@ -257,8 +257,11 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         assertTrue(accessIdCountBefore > accessIdCountAfter);
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"businessadmin"})
     @Test
-    public void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException() {
+    public void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException() throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.deleteWorkbasketAccessItemsForAccessId("");
         workbasketService.deleteWorkbasketAccessItemsForAccessId(null);
