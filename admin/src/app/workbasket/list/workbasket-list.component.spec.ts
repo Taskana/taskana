@@ -4,13 +4,14 @@ import { WorkbasketListComponent } from './workbasket-list.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { WorkbasketSummary } from '../../model/workbasketSummary';
-import { WorkbasketService, Direction } from '../../services/workbasket.service';
+import { WorkbasketService } from '../../services/workbasket.service';
 import { HttpModule } from '@angular/http';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { FilterModel } from '../../shared/filter/filter.component';
+import { SortComponent } from '../../shared/sort/sort.component';
 import { IconTypeComponent } from '../../shared/type-icon/icon-type.component';
 import { RemoveNoneTypePipe } from '../../pipes/remove-none-type';
 import { MapValuesPipe } from '../../pipes/map-values.pipe';
@@ -50,7 +51,7 @@ describe('WorkbasketListComponent', () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [WorkbasketListComponent, DummyDetailComponent, MapValuesPipe, SpinnerComponent, FilterComponent, RemoveNoneTypePipe, IconTypeComponent],
+			declarations: [WorkbasketListComponent, DummyDetailComponent, SpinnerComponent, FilterComponent, RemoveNoneTypePipe, IconTypeComponent, SortComponent, MapValuesPipe],
 			imports: [
 				AngularSvgIconModule,
 				HttpModule,

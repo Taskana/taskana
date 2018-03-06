@@ -1,5 +1,6 @@
 import { TestBed, inject, async } from '@angular/core/testing';
-import { WorkbasketService, Direction } from './workbasket.service';
+import { WorkbasketService } from './workbasket.service';
+import { Direction } from '../shared/sort/sort.component';
 import { HttpModule, Http } from '@angular/http';
 import { HttpClientModule, HttpClient  } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
