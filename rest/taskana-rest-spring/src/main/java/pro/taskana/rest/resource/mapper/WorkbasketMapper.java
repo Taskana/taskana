@@ -48,14 +48,10 @@ public class WorkbasketMapper {
 
     private WorkbasketResource addLinks(WorkbasketResource resource, Workbasket wb) throws NotAuthorizedException {
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
-        resource
-            .add(linkTo(methodOn(WorkbasketController.class).createWorkbasket(resource)).withRel("createWorkbasket"));
-        resource
-            .add(linkTo(methodOn(WorkbasketController.class).updateWorkbasket(wb.getId(), resource))
-                .withRel("updateWorkbasket"));
-        resource
-            .add(linkTo(methodOn(WorkbasketController.class).deleteWorkbasket(wb.getId()))
-                .withRel("deleteWorkbasket"));
+        resource.add(linkTo(methodOn(WorkbasketController.class).getDistributionTargetsForWorkbasketId(wb.getId()))
+            .withRel("distributionTargets"));
+        resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
+            .withRel("accessItems"));
         return resource;
     }
 }
