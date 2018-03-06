@@ -47,11 +47,6 @@ export class WorkbasketInformationComponent implements OnInit {
 		this.workbasket.type = type;
 	}
 
-	onSubmit(){
-		debugger;
-	}
-
-
 	onSave() {
 		this.beforeRequest();
 		this.workbasketSubscription = (this.workbasketService.updateWorkbasket((Utils.getSelfRef(this.workbasket.links).href), this.workbasket).subscribe(
