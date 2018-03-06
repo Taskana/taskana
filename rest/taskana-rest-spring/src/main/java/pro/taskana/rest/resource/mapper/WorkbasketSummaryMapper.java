@@ -27,8 +27,6 @@ public class WorkbasketSummaryMapper {
 
     private WorkbasketSummaryResource addLinks(WorkbasketSummaryResource resource, WorkbasketSummary summary) {
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(summary.getId())).withSelfRel());
-        resource.add(linkTo(methodOn(WorkbasketController.class).getDistributionTargetsForWorkbasketId(summary.getId()))
-            .withRel("getDistributionTargetsForWorkbasketId"));
         return resource;
     }
 }
