@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { WorkbasketService } from '../../../services/workbasket.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { Workbasket } from 'app/model/workbasket';
 import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
-import { AlertService, AlertModel , AlertType } from '../../../services/alert.service';
+import { AlertService, AlertModel, AlertType } from '../../../services/alert.service';
 import { GeneralMessageModalComponent } from '../../../shared/general-message-modal/general-message-modal.component';
 import { Links } from '../../../model/links';
 import { Observable } from 'rxjs/Observable';
@@ -21,7 +21,7 @@ describe('AccessItemsComponent', () => {
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
 			declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent],
-			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
+			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
 			providers: [WorkbasketService, AlertService]
 
 		})
@@ -34,11 +34,11 @@ describe('AccessItemsComponent', () => {
 		component.workbasket = new Workbasket('1')
 		workbasketService = TestBed.get(WorkbasketService);
 		alertService = TestBed.get(AlertService);
-		spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(Observable.of(new Array<WorkbasketAccessItems>(new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, new Array<Links>(new Links('setWorkbasketAccessItems',''))),
-																															new WorkbasketAccessItems('id2', '1', 'accessID2'))));
+		spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(Observable.of(new Array<WorkbasketAccessItems>(new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, new Array<Links>(new Links('setWorkbasketAccessItems', ''))),
+			new WorkbasketAccessItems('id2', '1', 'accessID2'))));
 		spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(Observable.of(true)),
-		spyOn(alertService, 'triggerAlert').and.returnValue(Observable.of(true)),
-		debugElement = fixture.debugElement.nativeElement;
+			spyOn(alertService, 'triggerAlert').and.returnValue(Observable.of(true)),
+			debugElement = fixture.debugElement.nativeElement;
 
 		fixture.detectChanges();
 	});
@@ -65,18 +65,21 @@ describe('AccessItemsComponent', () => {
 		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].getAttribute('class')).toBeNull();
 		debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].querySelector('input').click();
 		fixture.detectChanges();
-		component
-		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].getAttribute('class')).toBe('has-changes');
+		fixture.whenStable().then(() => {
+			expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].getAttribute('class')).toBe('has-changes');
+		});
+
 	});
 
 	it('should undo changes if undo changes button is clicked', () => {
 		debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].querySelector('input').click();
-		fixture.detectChanges();
-		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].getAttribute('class')).toBe('has-changes');
-		expect(debugElement.querySelectorAll('#wb-information > div > div')[0].querySelectorAll('button').length).toBe(2);
-		debugElement.querySelectorAll('#wb-information > div > div')[0].querySelectorAll('button')[1].click();
-		fixture.detectChanges();
-		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].getAttribute('class')).toBeNull();
+		fixture.whenStable().then(() => {
+			expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].getAttribute('class')).toBe('has-changes');
+			expect(debugElement.querySelectorAll('#wb-information > div > div')[0].querySelectorAll('button').length).toBe(2);
+			debugElement.querySelectorAll('#wb-information > div > div')[0].querySelectorAll('button')[1].click();
+			fixture.detectChanges();
+			expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].getAttribute('class')).toBeNull();
+		});
 	});
 
 	it('should remove an access item if remove button is clicked', () => {
@@ -85,16 +88,6 @@ describe('AccessItemsComponent', () => {
 		fixture.detectChanges();
 		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr').length).toBe(1);
 	});
-
-	it('should validate access-items before saving', () => {
-		debugElement.querySelector('#button-add-access-item').click();
-		fixture.detectChanges();
-		expect(component.onSave()).toBeUndefined();
-		component.accessItems[2].accessId = 'someText';
-		component.onSave();
-		expect(workbasketService.updateWorkBasketAccessItem).toHaveBeenCalled();
-	});
-
 
 	it('should show alert successfull after saving', () => {
 		component.onSave();

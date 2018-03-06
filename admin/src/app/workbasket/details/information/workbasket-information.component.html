@@ -1,87 +1,103 @@
-<taskana-spinner [isRunning]="requestInProgress" [isModal]= "modalSpinner" class = "centered-horizontally floating"></taskana-spinner>
-<taskana-general-message-modal  *ngIf="modalErrorMessage" [message]="modalErrorMessage" [title]="modalTitle" error = "true" ></taskana-general-message-modal>
-<div id = "wb-information" class="panel panel-default">
+<taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
+<taskana-general-message-modal *ngIf="modalErrorMessage" [message]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
+<div id="wb-information" class="panel panel-default">
     <div class="panel-heading">
         <div class="btn-group pull-right">
-            <button type="button" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
+            <button type="button" [disabled]="!WorkbasketForm.form.valid" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
             <button type="button" (click)="onClear()" class="btn btn-default">Undo changes</button>
         </div>
-        <h4 class="panel-header">{{workbasket.name}}</h4> 
+        <h4 class="panel-header">{{workbasket.name}}</h4>
     </div>
-    <div class="panel-body"> 
-        <form class="col-md-6">
-            <div class="form-group required">
-                <label for="wb-key" class="control-label">Key</label>
-                <input type="text" class="form-control" id="wb-key" placeholder="key" [(ngModel)]="workbasket.key" name ="workbasket.key">
-            </div>                                                     
-            <div class="form-group required">
-                <label for="wb-name" class="control-label">Name</label>
-                <input type="text" class="form-control" id="wb-name" placeholder="Name" [(ngModel)]="workbasket.name" name ="workbasket.name">
-            </div>                                                     
-            <div class="form-group required"> 
-                <label for="wb-type" class="control-label">Type</label>                                                         
-                <div class="dropdown clearfix btn-group"> 
-                    <button   class="btn btn-default" type="button" id="dropdownMenu24" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                        <taskana-icon-type class="vertical-align" [type] ='workbasket.type'></taskana-icon-type>
-                        {{allTypes.get(workbasket.type)}}
-                        <span class="caret"></span>
-                    </button>                                                             
-                    <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                        <li>
-                            <a  *ngFor="let type of allTypes | mapValues | removeEmptyType" (click)="selectType(type.key)">
-                                <taskana-icon-type class="vertical-align" [type] ='type.key'></taskana-icon-type>
-                                {{type.value}}
-                            </a>
-                        </li>                                                                 
-                    </ul>                                                             
+    <div class="panel-body">
+        <form #WorkbasketForm="ngForm">
+            <div class="col-md-6">
+                <div class="form-group required">
+                    <label for="wb-key" class="control-label">Key</label>
+                    <input type="text" required #key="ngModel" class="form-control" id="wb-key" placeholder="Key" [(ngModel)]="workbasket.key"
+                        name="workbasket.key">
+                    <div [hidden]="key.valid" class="required-text">
+                        * Key is required
+                    </div>
                 </div>
-            </div>                                                     
-            <div class="form-group required">
-                <label for="wb-owner" class="control-label">Owner</label>
-                <input type="text" class="form-control" id="wb-owner" placeholder="Owner" [(ngModel)]="workbasket.owner" name ="workbasket.owner">
-            </div>                                                     
-            <div class="form-group">
-                <label for="wb-domain" class="control-label">Domain</label>
-                <input type="text" class="form-control" id="wb-domain" placeholder="Domain" [(ngModel)]="workbasket.domain" name ="workbasket.domain" disabled="">
-            </div>                                                     
-            <div class="form-group">
-                <label for="wb-description" class="control-label">Description</label>
-                <textarea class="form-control" rows="5" id="wb-description" placeholder="Description" [(ngModel)]="workbasket.description" name ="workbasket.description"></textarea>                                                         
+                <div class="form-group required">
+                    <label for="wb-name" class="control-label">Name</label>
+                    <input type="text" required #name="ngModel" class="form-control" id="wb-name" placeholder="Name" [(ngModel)]="workbasket.name"
+                        name="workbasket.name">
+                    <div [hidden]="name.valid" class="required-text">
+                       *  Name is required
+                    </div>
+                </div>
+                <div class="form-group required">
+                    <label for="wb-owner" class="control-label">Owner</label>
+                    <input type="text" required #owner="ngModel" class="form-control" id="wb-owner" placeholder="Owner" [(ngModel)]="workbasket.owner"
+                        name="workbasket.owner">
+                    <div [hidden]="owner.valid" class="required-text">
+                       * Owner is required
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="wb-type" class="control-label">Type</label>
+                    <div class="dropdown clearfix btn-group">
+                        <button class="btn btn-default" type="button" id="dropdownMenu24" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <taskana-icon-type class="vertical-align" [type]='workbasket.type'></taskana-icon-type>
+                            {{allTypes.get(workbasket.type)}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li>
+                                <a *ngFor="let type of allTypes | mapValues | removeEmptyType" (click)="selectType(type.key)">
+                                    <taskana-icon-type class="vertical-align" [type]='type.key'></taskana-icon-type>
+                                    {{type.value}}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="wb-domain" class="control-label">Domain</label>
+                    <input type="text" class="form-control" id="wb-domain" placeholder="Domain" [(ngModel)]="workbasket.domain" name="workbasket.domain"
+                        disabled="">
+                </div>
+                <div class="form-group">
+                    <label for="wb-description" class="control-label">Description</label>
+                    <textarea class="form-control" rows="5" id="wb-description" placeholder="Description" [(ngModel)]="workbasket.description"
+                        name="workbasket.description"></textarea>
+                </div>
             </div>
-        </form>
-        <form class="col-md-6"> 
-            <div class="form-group">
-                <label for="wb-org-level-1" class="control-label">OrgLevel 1</label>
-                <input type="text" class="form-control" id="wb-org-level-1" placeholder="OrgLevel 1" [(ngModel)]="workbasket.orgLevel1" name ="workbasket.orgLevel1">
-            </div> 
-            <div class="form-group">
-                <label for="wb-org-level-2" class="control-label">OrgLevel 2</label>
-                <input type="text" class="form-control" id="wb-org-level-2" placeholder="OrgLevel 2" [(ngModel)]="workbasket.orgLevel2" name ="workbasket.orgLevel2">
-            </div>    
-            <div class="form-group">
-                <label for="wb-org-level-3" class="control-label">OrgLevel 3</label>
-                <input type="text" class="form-control" id="wb-org-level-3" placeholder="OrgLevel 3" [(ngModel)]="workbasket.orgLevel3" name ="workbasket.orgLevel3">
-            </div>       
-            <div class="form-group">
-                <label for="wb-org-level-4" class="control-label">OrgLevel 4</label>
-                <input type="text" class="form-control" id="wb-org-level-4" placeholder="OrgLevel 4" [(ngModel)]="workbasket.orgLevel4" name ="workbasket.orgLevel4">
-            </div>                                                     
-            <div class="form-group">
-                <label for="wb-custom-1" class="control-label">Custom 1</label>
-                <input type="text" class="form-control" id="wb-custom-1" placeholder="Custom 1" [(ngModel)]="workbasket.custom1" name ="workbasket.custom1">
-            </div>    
-            <div class="form-group">
-                <label for="wb-custom-2" class="control-label">Custom 2</label>
-                <input type="text" class="form-control" id="wb-custom-2" placeholder="Custom 2" [(ngModel)]="workbasket.custom2" name ="workbasket.custom2">
-            </div>  
-            <div class="form-group">
-                <label for="wb-custom-3" class="control-label">Custom 3</label>
-                <input type="text" class="form-control" id="wb-custom-3" placeholder="Custom 3" [(ngModel)]="workbasket.custom3" name ="workbasket.custom3">
-            </div>  
-            <div class="form-group">
-                <label for="wb-custom-4" class="control-label">Custom 4</label>
-                <input type="text" class="form-control" id="wb-custom-4" placeholder="Custom 4" [(ngModel)]="workbasket.custom4" name ="workbasket.custom4">
-            </div>                            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="wb-org-level-1" class="control-label">OrgLevel 1</label>
+                    <input type="text" class="form-control" id="wb-org-level-1" placeholder="OrgLevel 1" [(ngModel)]="workbasket.orgLevel1" name="workbasket.orgLevel1">
+                </div>
+                <div class="form-group">
+                    <label for="wb-org-level-2" class="control-label">OrgLevel 2</label>
+                    <input type="text" class="form-control" id="wb-org-level-2" placeholder="OrgLevel 2" [(ngModel)]="workbasket.orgLevel2" name="workbasket.orgLevel2">
+                </div>
+                <div class="form-group">
+                    <label for="wb-org-level-3" class="control-label">OrgLevel 3</label>
+                    <input type="text" class="form-control" id="wb-org-level-3" placeholder="OrgLevel 3" [(ngModel)]="workbasket.orgLevel3" name="workbasket.orgLevel3">
+                </div>
+                <div class="form-group">
+                    <label for="wb-org-level-4" class="control-label">OrgLevel 4</label>
+                    <input type="text" class="form-control" id="wb-org-level-4" placeholder="OrgLevel 4" [(ngModel)]="workbasket.orgLevel4" name="workbasket.orgLevel4">
+                </div>
+                <div class="form-group">
+                    <label for="wb-custom-1" class="control-label">Custom 1</label>
+                    <input type="text" class="form-control" id="wb-custom-1" placeholder="Custom 1" [(ngModel)]="workbasket.custom1" name="workbasket.custom1">
+                </div>
+                <div class="form-group">
+                    <label for="wb-custom-2" class="control-label">Custom 2</label>
+                    <input type="text" class="form-control" id="wb-custom-2" placeholder="Custom 2" [(ngModel)]="workbasket.custom2" name="workbasket.custom2">
+                </div>
+                <div class="form-group">
+                    <label for="wb-custom-3" class="control-label">Custom 3</label>
+                    <input type="text" class="form-control" id="wb-custom-3" placeholder="Custom 3" [(ngModel)]="workbasket.custom3" name="workbasket.custom3">
+                </div>
+                <div class="form-group">
+                    <label for="wb-custom-4" class="control-label">Custom 4</label>
+                    <input type="text" class="form-control" id="wb-custom-4" placeholder="Custom 4" [(ngModel)]="workbasket.custom4" name="workbasket.custom4">
+                </div>
+            </div>
         </form>
     </div>
 </div>
