@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 
 
 export enum ICONTYPES {
-	NONE = 'NONE',
+	NONE = '',
 	PERSONAL = 'PERSONAL',
 	GROUP = 'GROUP',
 	CLEARANCE = 'CLEARANCE',
@@ -17,7 +17,7 @@ export enum ICONTYPES {
 })
 export class IconTypeComponent implements OnInit {
 
-	public static get allTypes(): Map<string, string> {	return new Map([['NONE', 'None'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])};
+	public static get allTypes(): Map<string, string> {	return new Map([['', 'None'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])};
 	
 	constructor() { }
 

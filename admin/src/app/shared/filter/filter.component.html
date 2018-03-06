@@ -7,7 +7,7 @@
 			</button> 
 			<ul class="dropdown-menu dropdown-menu-users" role="menu">
 				<li *ngFor ="let type of allTypes | mapValues">
-					<button type="button" (click)="selectType(type.key)" class="btn btn-default btn-users-list" data-toggle="tooltip" [title]="type.value">
+					<button type="button" (click)="selectType(type.key); search()" class="btn btn-default btn-users-list" data-toggle="tooltip" [title]="type.value">
 						<taskana-icon-type class="vertical-align" [type] ='type.key'></taskana-icon-type>
 					</button>
 				</li>
@@ -19,7 +19,7 @@
 		<div class="col-xs-4">
 			<input type="text" [(ngModel)]= "filter.key" (keyup.enter)="search()" class="form-control" id="wb-display-key-filter" placeholder="Filter key">
 		</div>
-		<button (click)="clear()" type="button"
+		<button (click)="clear(); search()" type="button"
 				class="btn btn-default glyphicon glyphicon-ban-circle blue pull-right margin-right" data-toggle="tooltip" title="Clear">
 		</button>
 	</div>

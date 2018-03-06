@@ -1,7 +1,7 @@
-<div class = "workbasket-list-full-height">
-    <ul id = "wb-list-container" class="list-group footer-space"> 
-        <li id="wb-action-toolbar" class="list-group-item tab-align"> 
-            <div class="row"> 
+<div class="workbasket-list-full-height">
+    <ul id="wb-list-container" class="list-group footer-space">
+        <li id="wb-action-toolbar" class="list-group-item tab-align">
+            <div class="row">
                 <div class="col-xs-9">
                     <button type="button" data-toggle="tooltip" title="Add" class="btn btn-default">
                         <span class="glyphicon glyphicon-plus green" aria-hidden="true"></span>
@@ -19,83 +19,62 @@
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class = "pull-right margin-right">
-                    <div class="dropdown clearfix btn-group"> 
-                        <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-                            <span class="glyphicon {{sortDirection === 'asc'? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes' }} blue"
-                                data-toggle= "tooltip" title="{{sortDirection === 'asc'? 'A-Z' : 'Z-A' }}"></span> 
-                        </button>         
-                        <div class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown"> 
-                            <div>
-                                <div class="col-xs-6">
-                                    <h5>Sort By</h5>
-                                </div>
-                                <button  id="sort-by-direction-asc" type="button" (click)="changeOrder('asc')" data-toggle="tooltip" title="A-Z" class="btn btn-default {{sortDirection === 'asc'? 'selected' : '' }}">
-                                        <span class="glyphicon glyphicon-sort-by-attributes-alt blue" aria-hidden="true"></span>
-                                </button>
-                                <button id= "sort-by-direction-desc" type="button" (click)="changeOrder('desc')" data-toggle="tooltip" title="Z-A" class="btn btn-default {{sortDirection === 'desc'? 'selected' : '' }}" >
-                                    <span class="glyphicon glyphicon-sort-by-attributes blue" aria-hidden="true"></span>
-                                </button>
-                            </div>                                                 
-                            <div role="separator" class="divider"></div>
-                            <li id="sort-by-{{sortingField.key}}"(click)="changeSortBy(sortingField.key)"  *ngFor="let sortingField of sortingFields | mapValues">
-                                <a>
-                                    <label>
-                                        <span class="glyphicon {{sortBy === sortingField.key? 'glyphicon-check': 'glyphicon-unchecked'}} blue" aria-hidden="true"></span>
-                                        {{sortingField.value}}
-                                    </label>
-                                </a>
-                            </li>
-                        </div>
-                    </div>
-                    <div class="clearfix btn-group"> 
-                        <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" data-toggle="collapse" data-target="#wb-filter-bar" aria-expanded="false"> 
-                            <span class="glyphicon glyphicon-filter blue wb-filter-toggle"></span> 
+                <div class="pull-right margin-right">
+                    <taskana-sort (performSorting)="performSorting($event)"></taskana-sort>
+                    <div class="clearfix btn-group">
+                        <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" data-toggle="collapse" data-target="#wb-filter-bar"
+                            aria-expanded="false">
+                            <span class="glyphicon glyphicon-filter blue wb-filter-toggle"></span>
                         </button>
                     </div>
                 </div>
             </div>
-            <div class = "row">
-                <taskana-filter target="wb-filter-bar" (performFilter)="performFilter($event)"></taskana-filter>  
+            <div class="row">
+                <taskana-filter target="wb-filter-bar" (performFilter)="performFilter($event)"></taskana-filter>
             </div>
         </li>
-        <taskana-spinner [isRunning]="requestInProgress" class = "centered-horizontally"></taskana-spinner>                          
-        <li class="list-group-item"  *ngFor= "let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId" type="text" (click) ="selectWorkbasket(workbasket.workbasketId)">
+        <taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
+        <li class="list-group-item" *ngFor="let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId"
+            type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
             <div class="row">
                 <dl class="col-xs-1">
                     <dt>
-                        <taskana-icon-type class="vertical-align" [type] ="workbasket.type" [selected] = "workbasket.workbasketId === selectedId" ></taskana-icon-type>
+                        <taskana-icon-type class="vertical-align" [type]="workbasket.type" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
                     </dt>
                 </dl>
                 <dl class="col-xs-10">
-                    <dt>{{workbasket.name}}  ({{workbasket.key}}) </dt>
+                    <dt>{{workbasket.name}} ({{workbasket.key}}) </dt>
                     <dd>{{workbasket.description}}</dd>
                     <dd>{{workbasket.owner}} &nbsp;</dd>
                 </dl>
-            </div>                                     
-        </li>                    
-    </ul>                             
-    <ul id= "wb-pagination" class="pagination vertical-center"> 
-        <li> 
-            <a href="#" aria-label="Previous"> <span aria-hidden="true">«</span> </a> 
-        </li>                                 
+            </div>
+        </li>
+    </ul>
+    <ul id="wb-pagination" class="pagination vertical-center">
+        <li>
+            <a href="#" aria-label="Previous">
+                <span aria-hidden="true">«</span>
+            </a>
+        </li>
         <li>
             <a href="">1</a>
-        </li>                                 
+        </li>
         <li>
             <a href="">2</a>
-        </li>                                 
+        </li>
         <li>
             <a href="">3</a>
-        </li>                                 
+        </li>
         <li>
             <a href="">4</a>
-        </li>                                 
+        </li>
         <li>
             <a href="">5</a>
-        </li>                                 
-        <li> 
-            <a href="#" aria-label="Next"> <span aria-hidden="true">»</span> </a> 
-        </li>                                 
-    </ul>                             
+        </li>
+        <li>
+            <a href="#" aria-label="Next">
+                <span aria-hidden="true">»</span>
+            </a>
+        </li>
+    </ul>
 </div>

@@ -28,7 +28,7 @@
                     </button>                                                             
                     <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu1"> 
                         <li>
-                            <a  *ngFor="let type of allTypes | mapValues | removeNoneType" (click)="selectType(type.key)">
+                            <a  *ngFor="let type of allTypes | mapValues | removeEmptyType" (click)="selectType(type.key)">
                                 <taskana-icon-type class="vertical-align" [type] ='type.key'></taskana-icon-type>
                                 {{type.value}}
                             </a>
