@@ -12,6 +12,7 @@ import { RemoveNoneTypePipe } from '../../pipes/remove-none-type';
 import { AlertComponent } from '../../shared/alert/alert.component';
 import { GeneralMessageModalComponent } from '../../shared/general-message-modal/general-message-modal.component';
 import { Links } from 'app/model/links';
+import { WorkbasketAuthorization } from '../../model/workbasket-authorization';
 
 import { WorkbasketService } from '../../services/workbasket.service';
 import { MasterAndDetailService } from '../../services/master-and-detail.service';
@@ -34,11 +35,11 @@ describe('WorkbasketDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[RouterTestingModule, FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [ WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AuthorizationsComponent ],
-      providers:[WorkbasketService, MasterAndDetailService, PermissionService, AlertService]
+      imports: [RouterTestingModule, FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
+      declarations: [WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AuthorizationsComponent],
+      providers: [WorkbasketService, MasterAndDetailService, PermissionService, AlertService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -48,13 +49,15 @@ describe('WorkbasketDetailsComponent', () => {
     fixture.detectChanges();
     masterAndDetailService = TestBed.get(MasterAndDetailService);
     workbasketService = TestBed.get(WorkbasketService);
-    spyOn(masterAndDetailService, 'getShowDetail').and.returnValue(Observable.of(true));
-    spyOn(workbasketService,'getSelectedWorkBasket').and.returnValue(Observable.of('id1'));
-    spyOn(workbasketService,'getWorkBasketsSummary').and.returnValue(Observable.of(new Array<WorkbasketSummary>(new WorkbasketSummary('id1','','','','','','','','','','','',new Array<Links>( new Links('self', 'someurl'))))));
-    spyOn(workbasketService,'getWorkBasket').and.returnValue(Observable.of(new Workbasket('id1')));
+    spyOn(masterAndDetailService, 'getShowDetail').and.callFake(()=>{return Observable.of(true)})
+    spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(()=>{return Observable.of('id1')})
+    spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(()=>{return Observable.of(new Array<WorkbasketSummary>(new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Array<Links>(new Links('self', 'someurl')))))})
+    spyOn(workbasketService, 'getWorkBasket').and.callFake(()=>{return Observable.of(new Workbasket('id1'))})
+    spyOn(workbasketService, 'getWorkBasketAuthorizations').and.callFake(()=>{return Observable.of(new Array<WorkbasketAuthorization>())})
+    
   });
 
-  afterEach(() =>{
+  afterEach(() => {
     document.body.removeChild(debugElement);
   });
 
@@ -80,12 +83,12 @@ describe('WorkbasketDetailsComponent', () => {
   });
 
   it('should show back button with classes "visible-xs visible-sm hidden" when showDetail property is true', () => {
-    
+
     component.workbasket = new Workbasket('id1');
     component.ngOnInit();
     fixture.detectChanges();
     expect(debugElement.querySelector('.visible-xs.visible-sm.hidden > a').textContent).toBe('Back');
-  
+
   });
 
 });

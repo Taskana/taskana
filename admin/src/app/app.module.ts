@@ -30,6 +30,7 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { FilterComponent } from './shared/filter/filter.component';
 import { IconTypeComponent } from './shared/type-icon/icon-type.component';
 import { AlertComponent } from './shared/alert/alert.component';
+import { SortComponent } from './shared/sort/sort.component';
 import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component';
 
 //Shared
@@ -81,6 +82,7 @@ const DECLARATIONS =  [
                       IconTypeComponent,
                       AlertComponent,
                       GeneralMessageModalComponent,
+                      SortComponent,
                       MapValuesPipe,
                       RemoveNoneTypePipe
                     ];

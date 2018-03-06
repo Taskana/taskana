@@ -4,16 +4,9 @@ import { WorkbasketSummary } from '../model/workbasketSummary';
 import { Workbasket } from '../model/workbasket';
 import { WorkbasketAuthorization } from '../model/workbasket-authorization';
 import { environment } from '../../environments/environment';
+import { Direction } from '../shared/sort/sort.component';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { Timestamp } from 'rxjs';
-
-
-//sort direction
-export enum Direction {
-	ASC = 'asc',
-	DESC = 'desc'
-};
 
 @Injectable()
 export class WorkbasketService {
