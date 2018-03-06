@@ -35,8 +35,8 @@ export class AccessItemsComponent implements OnInit {
 	ngOnInit() {
 		this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket.workbasketId).subscribe( (accessItems: Array<WorkbasketAccessItems>) =>{
 			this.accessItems = accessItems;
-			this.accessItemsClone = this.cloneaccessItems(this.accessItems);
-			this.accessItemsResetClone = this.cloneaccessItems(this.accessItems);
+			this.accessItemsClone = this.cloneAccessItems(this.accessItems);
+			this.accessItemsResetClone = this.cloneAccessItems(this.accessItems);
 		})
 		
 	}
@@ -47,8 +47,9 @@ export class AccessItemsComponent implements OnInit {
 	}
 
 	clear() {
-		this.accessItems = this.cloneaccessItems(this.accessItemsResetClone);
-		this.accessItemsClone = this.cloneaccessItems(this.accessItemsResetClone);
+		this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'))
+		this.accessItems = this.cloneAccessItems(this.accessItemsResetClone);
+		this.accessItemsClone = this.cloneAccessItems(this.accessItemsResetClone);
 	}
 
 	remove(index: number) {
@@ -57,17 +58,14 @@ export class AccessItemsComponent implements OnInit {
 	}
 
 	onSave(): boolean {
-		if(this.validateAccessItems()){
-			return;
-		}
 		if(!this.accessItems[0].links){
 			return;
 		}
 
 		this.workbasketService.updateWorkBasketAccessItem(Utils.getTagLinkRef(this.accessItems[0].links, 'setWorkbasketAccessItems').href, this.accessItems).subscribe(response =>{
-			this.accessItemsClone = this.cloneaccessItems(this.accessItems);
-			this.accessItemsResetClone = this.cloneaccessItems(this.accessItems);
-			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket  ${this.workbasket.key} Access items were saved successfully`));
+			this.accessItemsClone = this.cloneAccessItems(this.accessItems);
+			this.accessItemsResetClone = this.cloneAccessItems(this.accessItems);
+			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
 			return true;
 		},
 		error => {
@@ -76,25 +74,14 @@ export class AccessItemsComponent implements OnInit {
 		})
 	}
 
-	private validateAccessItems(): boolean {
-		return this.accessItems.some(element => {
-			if(!element.accessId || element.accessId === '') {
-				this.showValidationError();
-				return true;
-			}
-		});
-	}
+	setValue() { debugger; }
 
-	private showValidationError() {
-		this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, "AccessId must not be empty", false));
-	}
-	
-	private cloneaccessItems(inputAuthorization): Array<WorkbasketAccessItems>{
-		let authorizationClone = new Array<WorkbasketAccessItems>();
-		inputAuthorization.forEach(authorization => {
-			authorizationClone.push({... authorization});
+	private cloneAccessItems(inputaccessItem): Array<WorkbasketAccessItems>{
+		let accessItemClone = new Array<WorkbasketAccessItems>();
+		inputaccessItem.forEach(accessItem => {
+			accessItemClone.push({... accessItem});
 		});
-		return authorizationClone;
+		return accessItemClone;
 	}
 
 	private ngOnDestroy(): void {
