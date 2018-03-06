@@ -47,6 +47,10 @@ export class WorkbasketInformationComponent implements OnInit {
 		this.workbasket.type = type;
 	}
 
+	onSubmit(){
+		debugger;
+	}
+
 
 	onSave() {
 		this.beforeRequest();
@@ -74,6 +78,7 @@ export class WorkbasketInformationComponent implements OnInit {
 		this.modalSpinner = true;
 		this.modalErrorMessage = undefined;
 	}
+	
 	private afterRequest(){
 		this.requestInProgress = false;
 		this.workbasketService.triggerWorkBasketSaved();

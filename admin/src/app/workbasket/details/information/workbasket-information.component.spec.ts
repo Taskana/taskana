@@ -48,9 +48,9 @@ describe('InformationComponent', () => {
 		fixture.detectChanges();
 		expect(debugElement.querySelector('#wb-information')).toBeDefined();
 		expect(debugElement.querySelector('#wb-information > .panel-heading > h4').textContent).toBe('name');
-		expect(debugElement.querySelectorAll('#wb-information > .panel-body > form').length).toBe(2);
+		expect(debugElement.querySelectorAll('#wb-information > .panel-body > form').length).toBe(1);
 		fixture.whenStable().then(() => {
-			expect(debugElement.querySelector('#wb-information > .panel-body > form:first-child > div:first-child > input').value).toBe('keyModified');
+			expect(debugElement.querySelector('#wb-information > .panel-body > form > div > div > input ').value).toBe('keyModified');
 		});
 
 	}));

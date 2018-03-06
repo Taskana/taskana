@@ -3,108 +3,112 @@
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
 	<div class="panel-heading">
 		<div class="btn-group pull-right">
-			<button type="button" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
+			<button type="button" (click)="onSave()"  [disabled]="!AccessItemsForm.form.valid" class="btn btn-default btn-primary">Save</button>
 			<button type="button" (click)="clear()" class="btn btn-default">Undo changes</button>
 		</div>
 		<h4 class="panel-header">{{workbasket.name}}</h4>
 	</div>
 	<div class="panel-body">
-		<table id="table-access-items"class="table table-striped table-center">
-			<thead>
-				<tr>
-					<th></th>
-					<th class="text-align required-header">AccessID</th>
-					<th>Read</th>
-					<th>Open</th>
-					<th>Append</th>
-					<th>Transfer</th>
-					<th>Distribute</th>
-					<th>Custom1</th>
-					<th>Custom2</th>
-					<th>Custom3</th>
-					<th>Custom4</th>
-					<th>Custom5</th>
-					<th>Custom6</th>
-					<th>Custom7</th>
-					<th>Custom8</th>
-					<th>Custom9</th>
-					<th>Custom10</th>
-					<th>Custom11</th>
-					<th>Custom12</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let authorization of accessItems; let index = index;">
-					<td>
-						<button type="button" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
-							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-						</button>
-					</td>
-					<td class="text-align text-width ">
-						<div	class ="input-group" 
-								[ngClass]="{
-										'has-warning': (accessItemsClone[index].accessId !== authorization.accessId),
-										'has-error': !authorization.accessId }">
-							<input type="text" class="form-control"  [(ngModel)]="authorization.accessId">
-						</div>
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permRead !== authorization.permRead)}">
-						<input type="checkbox" disabled="disabled"  [(ngModel)]="authorization.permRead">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permOpen !== authorization.permOpen)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permOpen">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permAppend !== authorization.permAppend)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permAppend">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permTransfer !== authorization.permTransfer)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permTransfer">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permDistribute !== authorization.permDistribute)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permDistribute">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom1 !== authorization.permCustom1)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom1">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom2 !== authorization.permCustom2)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom2">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom3 !== authorization.permCustom3)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom3">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom4 !== authorization.permCustom4)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom4">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom5 !== authorization.permCustom5)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom5">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom6 !== authorization.permCustom6)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom6">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom7 !== authorization.permCustom7)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom7">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom8 !== authorization.permCustom8)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom8">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom9 !== authorization.permCustom9)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom9">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom10 !== authorization.permCustom10)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom10">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom11 !== authorization.permCustom11)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom11">
-					</td>
-					<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom12 !== authorization.permCustom12)}">
-						<input type="checkbox"  [(ngModel)]="authorization.permCustom12">
-					</td>
-				</tr>
-			</tbody>
-		</table>
-			<button id="button-add-access-item" type="button" (click)="addAccessItem()" class="btn btn-default">
-				<span><svg-icon class="green small" src="./assets/icons/wb-add.svg"></svg-icon></span>
-				Add new access
-			</button>
+		<form #AccessItemsForm="ngForm">
+			<table id="table-access-items" class="table table-striped table-center">
+				<thead>
+					<tr>
+						<th></th>
+						<th class="text-align required-header">AccessID</th>
+						<th>Read</th>
+						<th>Open</th>
+						<th>Append</th>
+						<th>Transfer</th>
+						<th>Distribute</th>
+						<th>Custom1</th>
+						<th>Custom2</th>
+						<th>Custom3</th>
+						<th>Custom4</th>
+						<th>Custom5</th>
+						<th>Custom6</th>
+						<th>Custom7</th>
+						<th>Custom8</th>
+						<th>Custom9</th>
+						<th>Custom10</th>
+						<th>Custom11</th>
+						<th>Custom12</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let accessItem of accessItems; let index = index;" ngModelGroup="accessItems">
+						<td>
+							<button type="button" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
+								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+							</button>
+						</td>
+						<td class="text-align text-width ">
+							<div class="input-group" [ngClass]="{
+										'has-warning': (accessItemsClone[index].accessId !== accessItem.accessId),
+										'has-error': !accessItem.accessId }">
+								<input type="text" required #accessItemName="ngModel" class="form-control" name="accessItem.accessId-{{index}}" [(ngModel)]="accessItem.accessId" placeholder="{{accessItemName.invalid? 'Access id is required': ''}}">
+							</div>
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permRead !== accessItem.permRead)}">
+							<input type="checkbox" disabled="disabled" name="accessItem.permRead-{{index}}" [(ngModel)]="accessItem.permRead">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permOpen !== accessItem.permOpen)}">
+							<input type="checkbox"  name="accessItem.permOpen-{{index}}" [(ngModel)]="accessItem.permOpen">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permAppend !== accessItem.permAppend)}">
+							<input type="checkbox" name="accessItem.permAppend-{{index}}" [(ngModel)]="accessItem.permAppend">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permTransfer != accessItem.permTransfer)}">
+							<input type="checkbox" name="accessItem.permTransfer-{{index}}" [(ngModel)]="accessItem.permTransfer">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permDistribute !== accessItem.permDistribute)}">
+							<input type="checkbox" name="accessItem.permDistribute-{{index}}" [(ngModel)]="accessItem.permDistribute">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom1 !== accessItem.permCustom1)}">
+							<input type="checkbox" name="accessItem.permCustom1-{{index}}" [(ngModel)]="accessItem.permCustom1">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom2 !== accessItem.permCustom2)}">
+							<input type="checkbox" name="accessItem.permCustom2-{{index}}" [(ngModel)]="accessItem.permCustom2">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom3 !== accessItem.permCustom3)}">
+							<input type="checkbox" name="accessItem.permCustom3-{{index}}" [(ngModel)]="accessItem.permCustom3">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom4 !== accessItem.permCustom4)}">
+							<input type="checkbox" name="accessItem.permCustom4-{{index}}" [(ngModel)]="accessItem.permCustom4">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom5 !== accessItem.permCustom5)}">
+							<input type="checkbox" name="accessItem.permCustom5-{{index}}" [(ngModel)]="accessItem.permCustom5">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom6 !== accessItem.permCustom6)}">
+							<input type="checkbox" name="accessItem.permCustom6-{{index}}" [(ngModel)]="accessItem.permCustom6">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom7 !== accessItem.permCustom7)}">
+							<input type="checkbox" name="accessItem.permCustom7-{{index}}" [(ngModel)]="accessItem.permCustom7">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom8 !== accessItem.permCustom8)}">
+							<input type="checkbox" name="accessItem.permCustom8-{{index}}" [(ngModel)]="accessItem.permCustom8">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom9 !== accessItem.permCustom9)}">
+							<input type="checkbox" name="accessItem.permCustom9-{{index}}" [(ngModel)]="accessItem.permCustom9">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom10 !== accessItem.permCustom10)}">
+							<input type="checkbox" name="accessItem.permCustom10-{{index}}" [(ngModel)]="accessItem.permCustom10">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom11 !== accessItem.permCustom11)}">
+							<input type="checkbox" name="accessItem.permCustom11-{{index}}" [(ngModel)]="accessItem.permCustom11">
+						</td>
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permCustom12 !== accessItem.permCustom12)}">
+							<input type="checkbox" name="accessItem.permCustom12-{{index}}" [(ngModel)]="accessItem.permCustom12">
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</form>
+		<button id="button-add-access-item" type="button" (click)="addAccessItem()" class="btn btn-default">
+			<span>
+				<svg-icon class="green small" src="./assets/icons/wb-add.svg"></svg-icon>
+			</span>
+			Add new access
+		</button>
 	</div>
 </div>
