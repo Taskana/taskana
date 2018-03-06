@@ -5,7 +5,7 @@
 
 	<groupId>pro.taskana</groupId>
 	<artifactId>taskana-rest-spring</artifactId>
-	<version>0.0.8-SNAPSHOT</version>
+	<version>0.0.9-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>The taskana rest logic.</description>
