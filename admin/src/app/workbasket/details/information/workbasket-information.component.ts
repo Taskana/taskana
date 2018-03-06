@@ -47,7 +47,6 @@ export class WorkbasketInformationComponent implements OnInit {
 		this.workbasket.type = type;
 	}
 
-
 	onSave() {
 		this.beforeRequest();
 		this.workbasketSubscription = (this.workbasketService.updateWorkbasket((Utils.getSelfRef(this.workbasket.links).href), this.workbasket).subscribe(
@@ -74,6 +73,7 @@ export class WorkbasketInformationComponent implements OnInit {
 		this.modalSpinner = true;
 		this.modalErrorMessage = undefined;
 	}
+	
 	private afterRequest(){
 		this.requestInProgress = false;
 		this.workbasketService.triggerWorkBasketSaved();
