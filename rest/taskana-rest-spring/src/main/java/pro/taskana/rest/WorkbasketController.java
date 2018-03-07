@@ -3,9 +3,9 @@ package pro.taskana.rest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
@@ -36,14 +36,15 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.rest.resource.DistributionTargetResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
-import pro.taskana.rest.resource.WorkbasketListResource;
 import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
+import pro.taskana.rest.resource.mapper.DistributionTargetListMapper;
+import pro.taskana.rest.resource.mapper.WorkbasketAccessItemListMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketListMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
-import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 
 /**
  * Controller for all {@link Workbasket} related endpoints.
@@ -65,20 +66,23 @@ public class WorkbasketController {
     private WorkbasketService workbasketService;
 
     @Autowired
-    private WorkbasketSummaryMapper workbasketSummaryMapper;
-
-    @Autowired
     private WorkbasketMapper workbasketMapper;
 
     @Autowired
     private WorkbasketListMapper workbasketListMapper;
 
     @Autowired
+    private DistributionTargetListMapper distributionTargetListMapper;
+
+    @Autowired
+    private WorkbasketAccessItemListMapper accessItemListMapper;
+
+    @Autowired
     private WorkbasketAccessItemMapper workbasketAccessItemMapper;
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<WorkbasketListResource> getWorkbaskets(
+    public ResponseEntity<Resources<WorkbasketSummaryResource>> getWorkbaskets(
         @RequestParam(value = "sortBy", defaultValue = "name", required = false) String sortBy,
         @RequestParam(value = "order", defaultValue = "asc", required = false) String order,
         @RequestParam(value = "name", required = false) String name,
@@ -96,7 +100,8 @@ public class WorkbasketController {
             addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
             addAuthorizationFilter(query, requiredPermission);
             List<WorkbasketSummary> workbasketSummaries = query.list();
-            WorkbasketListResource workbasketListResource = workbasketListMapper.toResource(workbasketSummaries);
+            Resources<WorkbasketSummaryResource> workbasketListResource = workbasketListMapper
+                .toResource(workbasketSummaries);
             return new ResponseEntity<>(workbasketListResource, HttpStatus.OK);
         } catch (InvalidArgumentException ex) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
@@ -189,25 +194,19 @@ public class WorkbasketController {
 
     @GetMapping(path = "/{workbasketId}/workbasketAccessItems")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<WorkbasketAccessItemResource>> getWorkbasketAccessItems(
+    public ResponseEntity<Resources<WorkbasketAccessItemResource>> getWorkbasketAccessItems(
         @PathVariable(value = "workbasketId") String workbasketId) {
-        List<WorkbasketAccessItem> wbAuthorizations;
-        List<WorkbasketAccessItemResource> result = new ArrayList<>();
+
+        ResponseEntity<Resources<WorkbasketAccessItemResource>> result;
         try {
-            wbAuthorizations = workbasketService.getWorkbasketAccessItems(workbasketId);
-        } catch (NotAuthorizedException e1) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+            List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(workbasketId);
+            Resources<WorkbasketAccessItemResource> accessItemListResource = accessItemListMapper
+                .toResource(workbasketId, accessItems);
+            result = new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
+        } catch (NotAuthorizedException e) {
+            result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        wbAuthorizations
-            .forEach(accItem -> {
-                try {
-                    result.add(workbasketAccessItemMapper.toResource(accItem));
-                } catch (NotAuthorizedException e) {
-                    e.printStackTrace();
-                }
-            });
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return result;
     }
 
     @PostMapping(path = "/workbasketAccessItems")
@@ -271,16 +270,15 @@ public class WorkbasketController {
 
     @GetMapping(path = "/{workbasketId}/distributiontargets")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<WorkbasketSummaryResource>> getDistributionTargetsForWorkbasketId(
+    public ResponseEntity<Resources<DistributionTargetResource>> getDistributionTargets(
         @PathVariable(value = "workbasketId") String workbasketId) {
 
-        ResponseEntity<List<WorkbasketSummaryResource>> result;
-        List<WorkbasketSummary> distributionTargets;
+        ResponseEntity<Resources<DistributionTargetResource>> result;
         try {
-            distributionTargets = workbasketService.getDistributionTargets(workbasketId);
-            result = new ResponseEntity<>(distributionTargets.stream()
-                .map(workbasket -> workbasketSummaryMapper.toResource(workbasket))
-                .collect(Collectors.toList()), HttpStatus.OK);
+            List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(workbasketId);
+            Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListMapper
+                .toResource(workbasketId, distributionTargets);
+            result = new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
         } catch (WorkbasketNotFoundException e) {
             result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotAuthorizedException e) {
