@@ -17,9 +17,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.h2.store.fs.FileUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -63,11 +61,6 @@ public class ClassificationServiceImplIntExplicitTest {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);
-    }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 
     @Before

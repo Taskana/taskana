@@ -6,8 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -358,11 +356,6 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .modifiedWithin(todaysInterval())
             .list();
         Assert.assertEquals(8L, results.size());
-    }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 
 }

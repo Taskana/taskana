@@ -16,9 +16,7 @@ import java.util.UUID;
 import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
-import org.h2.store.fs.FileUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -84,7 +82,6 @@ public class TaskServiceImplIntExplicitTest {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 
     @Before
@@ -555,7 +552,8 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
-        boolean permRead, boolean permAppend, boolean permTransfer) throws InvalidArgumentException, NotAuthorizedException {
+        boolean permRead, boolean permAppend, boolean permTransfer)
+        throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
@@ -568,10 +566,4 @@ public class TaskServiceImplIntExplicitTest {
     public void cleanUp() {
         taskanaEngineImpl.setConnection(null);
     }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
-
 }

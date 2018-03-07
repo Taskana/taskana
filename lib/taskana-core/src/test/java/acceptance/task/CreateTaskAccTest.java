@@ -13,8 +13,6 @@ import java.util.Map;
 
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -538,8 +536,4 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals(workbasket.getDomain(), createdTask.getDomain());
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

@@ -10,9 +10,7 @@ import java.util.List;
 import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
-import org.h2.store.fs.FileUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -255,8 +253,4 @@ public class WorkbasketServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(null);
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

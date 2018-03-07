@@ -11,8 +11,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -301,8 +299,4 @@ public class GetTaskIdsOfCategoryReportAccTest {
         return reportLineItemDefinitions;
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

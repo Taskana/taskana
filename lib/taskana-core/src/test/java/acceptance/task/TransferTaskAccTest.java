@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -222,8 +220,4 @@ public class TransferTaskAccTest extends AbstractAccTest {
         assertEquals("USER_1_1", transferredTask.getWorkbasketKey());
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

@@ -2,8 +2,6 @@ package acceptance.task;
 
 import java.sql.SQLException;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,8 +51,4 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
             .list();
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

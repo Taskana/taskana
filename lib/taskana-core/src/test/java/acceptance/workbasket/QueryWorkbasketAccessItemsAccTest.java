@@ -8,8 +8,6 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -141,11 +139,6 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
             .list();
         Assert.assertEquals(3L, results.size());
         Assert.assertEquals("WAI:100000000000000000000000000000000009", results.get(0).getId());
-    }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 
 }

@@ -23,7 +23,7 @@ public class TaskanaEngineConfiguration {
 
     private static final String USER_NAME = "sa";
     private static final String USER_PASSWORD = "sa";
-    private static final String JDBC_H2_MEM_TASKANA = "jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE";
+    private static final String JDBC_H2_MEM_TASKANA = "jdbc:h2:mem:taskana;IGNORECASE=TRUE";
     private static final String H2_DRIVER = "org.h2.Driver";
     private static final String TASKANA_ROLES_PROPERTIES = "/taskanaroles.properties";
     private static final String TASKANA_PROPERTIES_SEPARATOR = "|";
