@@ -5,8 +5,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -128,8 +126,4 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
         workbasketService.deleteWorkbasket(wb.getId());
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

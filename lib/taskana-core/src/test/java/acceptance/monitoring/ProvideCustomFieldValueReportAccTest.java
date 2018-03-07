@@ -11,8 +11,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -480,8 +478,4 @@ public class ProvideCustomFieldValueReportAccTest {
         return builder.toString();
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

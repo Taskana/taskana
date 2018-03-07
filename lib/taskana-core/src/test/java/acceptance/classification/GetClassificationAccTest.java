@@ -2,8 +2,6 @@ package acceptance.classification;
 
 import java.util.List;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,11 +18,6 @@ public class GetClassificationAccTest extends AbstractAccTest {
 
     public GetClassificationAccTest() {
         super();
-    }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 
     @Test

@@ -5,8 +5,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,8 +74,4 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
         assertThat(results.get(4).getKey(), equalTo("key3"));
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

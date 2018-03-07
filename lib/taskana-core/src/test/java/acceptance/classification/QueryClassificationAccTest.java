@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 import acceptance.AbstractAccTest;
@@ -223,8 +221,4 @@ public class QueryClassificationAccTest extends AbstractAccTest {
 
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

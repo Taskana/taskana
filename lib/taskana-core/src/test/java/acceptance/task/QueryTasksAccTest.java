@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -530,8 +528,4 @@ public class QueryTasksAccTest extends AbstractAccTest {
         }
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

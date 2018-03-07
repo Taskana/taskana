@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -313,11 +311,6 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
             .getDistributionSources("WBI:10dasgibtsdochnicht00000000000000004");
 
         assertEquals(2, distributionSources.size());
-    }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 
 }
