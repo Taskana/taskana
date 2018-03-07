@@ -3,8 +3,6 @@ package pro.taskana.rest.resource.mapper;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.util.Collections;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,22 +44,10 @@ public class WorkbasketAccessItemMapper {
 
     private WorkbasketAccessItemResource addLinks(WorkbasketAccessItemResource resource, WorkbasketAccessItem wbAccItem)
         throws NotAuthorizedException {
+
         resource.add(
-            linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wbAccItem.getWorkbasketId()))
-                .withRel("getWorkbasketAccessItems"));
-        resource.add(
-            linkTo(methodOn(WorkbasketController.class).createWorkbasketAccessItem(resource))
-                .withRel("createWorkbasketAccessItem"));
-        resource.add(
-            linkTo(methodOn(WorkbasketController.class).updateWorkbasketAccessItem(wbAccItem.getId(), resource))
-                .withRel("updateWorkbasketAccessItem"));
-        resource.add(
-            linkTo(methodOn(WorkbasketController.class).setWorkbasketAccessItems(wbAccItem.getWorkbasketId(),
-                Collections.singletonList(resource)))
-                    .withRel("setWorkbasketAccessItems"));
-        resource.add(
-            linkTo(methodOn(WorkbasketController.class).deleteWorkbasketAccessItem(wbAccItem.getId()))
-                .withRel("deleteWorkbasketAccessItem"));
+            linkTo(methodOn(WorkbasketController.class).getWorkbasket(wbAccItem.getWorkbasketId()))
+                .withRel("workbasket"));
         return resource;
     }
 }
