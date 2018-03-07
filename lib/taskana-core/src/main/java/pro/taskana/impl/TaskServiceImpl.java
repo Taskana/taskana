@@ -281,36 +281,38 @@ public class TaskServiceImpl implements TaskService {
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         LOGGER.debug("entry to createTask(task = {})", taskToCreate);
+        TaskImpl task = (TaskImpl) taskToCreate;
         try {
             taskanaEngine.openConnection();
-            TaskImpl task = (TaskImpl) taskToCreate;
             if (task.getId() != "" && task.getId() != null) {
-                throw new TaskAlreadyExistException(taskToCreate.getId());
+                throw new TaskAlreadyExistException(task.getId());
             } else {
-                LOGGER.debug("Task {} cannot be be found, so it can be created.", taskToCreate.getId());
+                LOGGER.debug("Task {} cannot be be found, so it can be created.", task.getId());
                 Workbasket workbasket;
 
-                if (taskToCreate.getWorkbasketSummary().getId() != null) {
-                    workbasket = workbasketService.getWorkbasket(taskToCreate.getWorkbasketSummary().getId());
-                } else if (taskToCreate.getWorkbasketKey() != null) {
+                if (task.getWorkbasketSummary().getId() != null) {
+                    workbasket = workbasketService.getWorkbasket(task.getWorkbasketSummary().getId());
+                } else if (task.getWorkbasketKey() != null) {
                     workbasket = workbasketService.getWorkbasket(task.getWorkbasketKey(), task.getDomain());
                 } else {
                     throw new InvalidArgumentException("Cannot create a task outside a workbasket");
                 }
 
                 task.setWorkbasketSummary(workbasket.asSummary());
+                task.setDomain(workbasket.getDomain());
+
                 workbasketService.checkAuthorization(task.getWorkbasketSummary().getId(),
                     WorkbasketPermission.APPEND);
                 String classificationKey = task.getClassificationKey();
                 if (classificationKey == null || classificationKey.length() == 0) {
                     throw new InvalidArgumentException("classificationKey of task must not be empty");
                 }
+
                 Classification classification = this.classificationService.getClassification(classificationKey,
                     workbasket.getDomain());
                 task.setClassificationSummary(classification.asSummary());
                 validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
                 PrioDurationHolder prioDurationFromAttachments = handleAttachments(task);
-                task.setDomain(workbasket.getDomain());
                 standardSettings(task, classification, prioDurationFromAttachments);
                 this.taskMapper.insert(task);
                 LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
@@ -318,7 +320,7 @@ public class TaskServiceImpl implements TaskService {
             return task;
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from createTask(task = {})");
+            LOGGER.debug("exit from createTask(task = {})", task);
         }
     }
 
@@ -547,19 +549,18 @@ public class TaskServiceImpl implements TaskService {
     public Task setTaskRead(String taskId, boolean isRead)
         throws TaskNotFoundException {
         LOGGER.debug("entry to setTaskRead(taskId = {}, isRead = {})", taskId, isRead);
-        Task result = null;
+        TaskImpl task = null;
         try {
             taskanaEngine.openConnection();
-            TaskImpl task = (TaskImpl) getTask(taskId);
+            task = (TaskImpl) getTask(taskId);
             task.setRead(true);
             task.setModified(Instant.now());
             taskMapper.update(task);
-            result = getTask(taskId);
-            LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", result, isRead);
-            return result;
+            LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", task, isRead);
+            return task;
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from setTaskRead(taskId, isRead). Returning result {} ", result);
+            LOGGER.debug("exit from setTaskRead(taskId, isRead). Returning result {} ", task);
         }
     }
 
