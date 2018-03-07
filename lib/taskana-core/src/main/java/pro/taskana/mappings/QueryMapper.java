@@ -479,7 +479,6 @@ public interface QueryMapper {
         + "<if test = 'joinWithAccessList'> "
         + "<if test = 'checkReadPermission'> "
         + "AND (a.MAX_READ = 1 "
-        + "</if> "
         + "<if test='permission != null'>AND "
         + "<if test = '!checkReadPermission'> "
         + "( "
