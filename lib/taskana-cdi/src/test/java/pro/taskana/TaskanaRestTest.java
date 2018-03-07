@@ -73,7 +73,8 @@ public class TaskanaRestTest {
     @DELETE
     @Path("{id}")
     public void completeTask(@PathParam("id") String id)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException {
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException,
+        NotAuthorizedException {
         logger.info(id);
         taskanaEjb.getTaskService().completeTask(id, true);
     }

@@ -32,6 +32,8 @@ public class TaskQueryImpl implements TaskQuery {
     private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryTaskSummaries";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryTasks";
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryTaskColumnValues";
+    private static final String TIME_INTERVAL = "TimeInterval ";
+    private static final String IS_INVALID = " is invalid.";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
     private TaskanaEngineImpl taskanaEngine;
     private TaskServiceImpl taskService;
@@ -139,7 +141,7 @@ public class TaskQueryImpl implements TaskQuery {
         this.createdIn = intervals;
         for (TimeInterval ti : intervals) {
             if (!ti.isValid()) {
-                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+                throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
             }
         }
         return this;
@@ -150,7 +152,7 @@ public class TaskQueryImpl implements TaskQuery {
         this.claimedIn = intervals;
         for (TimeInterval ti : intervals) {
             if (!ti.isValid()) {
-                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+                throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
             }
         }
         return this;
@@ -161,7 +163,7 @@ public class TaskQueryImpl implements TaskQuery {
         this.completedIn = intervals;
         for (TimeInterval ti : intervals) {
             if (!ti.isValid()) {
-                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+                throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
             }
         }
         return this;
@@ -172,7 +174,7 @@ public class TaskQueryImpl implements TaskQuery {
         this.modifiedIn = intervals;
         for (TimeInterval ti : intervals) {
             if (!ti.isValid()) {
-                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+                throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
             }
         }
         return this;
@@ -183,7 +185,7 @@ public class TaskQueryImpl implements TaskQuery {
         this.plannedIn = intervals;
         for (TimeInterval ti : intervals) {
             if (!ti.isValid()) {
-                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+                throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
             }
         }
         return this;
@@ -194,7 +196,7 @@ public class TaskQueryImpl implements TaskQuery {
         this.dueIn = intervals;
         for (TimeInterval ti : intervals) {
             if (!ti.isValid()) {
-                throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+                throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
             }
         }
         return this;
@@ -673,6 +675,10 @@ public class TaskQueryImpl implements TaskQuery {
             checkOpenPermissionForSpecifiedWorkbaskets();
             List<TaskSummaryImpl> tasks = new ArrayList<>();
             tasks = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("mapper returned {} resulting Objects: {} ", tasks.size(),
+                    LoggerUtils.listToString(tasks));
+            }
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
         } catch (NotAuthorizedException e) {
@@ -787,27 +793,35 @@ public class TaskQueryImpl implements TaskQuery {
         try {
             if (this.workbasketIdIn != null && this.workbasketIdIn.length > 0) {
                 for (String workbasketId : workbasketIdIn) {
-                    try {
-                        taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId,
-                            WorkbasketPermission.OPEN);
-                    } catch (WorkbasketNotFoundException e) {
-                        LOGGER.warn("The workbasket with the ID '" + workbasketId + "' does not exist.", e);
-                    }
+                    checkOpenPermissionById(workbasketId);
                 }
             }
             if (workbasketKeyDomainIn != null && workbasketKeyDomainIn.length > 0) {
                 for (KeyDomain keyDomain : workbasketKeyDomainIn) {
-                    try {
-                        taskanaEngine.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
-                            keyDomain.getDomain(), WorkbasketPermission.OPEN);
-                    } catch (WorkbasketNotFoundException e) {
-                        LOGGER.warn("The workbasket with the KEY '" + keyDomain.getKey() + "' and DOMAIN '"
-                            + keyDomain.getDomain() + "'does not exist.", e);
-                    }
+                    checkOpenPermissionByKeyDomain(keyDomain);
                 }
             }
         } catch (NotAuthorizedException e) {
             throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
+        }
+    }
+
+    private void checkOpenPermissionById(String workbasketId) throws NotAuthorizedException {
+        try {
+            taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId,
+                WorkbasketPermission.OPEN);
+        } catch (WorkbasketNotFoundException e) {
+            LOGGER.warn("The workbasket with the ID '" + workbasketId + "' does not exist.", e);
+        }
+    }
+
+    private void checkOpenPermissionByKeyDomain(KeyDomain keyDomain) throws NotAuthorizedException {
+        try {
+            taskanaEngine.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
+                keyDomain.getDomain(), WorkbasketPermission.OPEN);
+        } catch (WorkbasketNotFoundException e) {
+            LOGGER.warn("The workbasket with the KEY '" + keyDomain.getKey() + "' and DOMAIN '"
+                + keyDomain.getDomain() + "'does not exist.", e);
         }
     }
 

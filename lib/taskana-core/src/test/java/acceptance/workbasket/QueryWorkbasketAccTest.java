@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
+import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
@@ -356,6 +357,38 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .modifiedWithin(todaysInterval())
             .list();
         Assert.assertEquals(8L, results.size());
+    }
+
+    @WithAccessId(
+        userName = "unknown",
+        groupNames = "admin")
+    @Test
+    public void testQueryWorkbasketByAdmin()
+        throws SQLException, NotAuthorizedException, InvalidRequestException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .nameLike("%")
+            .orderByName(desc)
+            .list();
+        Assert.assertEquals(24L, results.size());
+        // check sort order is correct
+        WorkbasketSummary previousSummary = null;
+        for (WorkbasketSummary wbSummary : results) {
+            if (previousSummary != null) {
+                Assert.assertTrue(wbSummary.getName().compareToIgnoreCase(
+                    previousSummary.getName()) <= 0);
+            }
+            previousSummary = wbSummary;
+        }
+
+        results = workbasketService.createWorkbasketQuery()
+            .nameLike("%")
+            .accessIdsHavePermission(WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
+            .orderByName(desc)
+            .list();
+
+        Assert.assertEquals(13L, results.size());
+
     }
 
 }

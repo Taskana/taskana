@@ -43,6 +43,7 @@ import pro.taskana.TaskState;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -452,7 +453,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testClaimDefaultFlag()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
         doReturn(expectedTask).when(cutSpy).claim(expectedTask.getId(), false);
@@ -556,7 +557,7 @@ public class TaskServiceImplTest {
     @Test(expected = InvalidStateException.class)
     public void testCancelClaimForcedWithInvalidState()
         throws TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
         expectedTask.setState(TaskState.COMPLETED);
@@ -578,7 +579,7 @@ public class TaskServiceImplTest {
     @Test(expected = InvalidOwnerException.class)
     public void testCancelClaimNotForcedWithInvalidOwner()
         throws TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
         expectedTask.setOwner("Thomas");
@@ -602,7 +603,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testCancelClaimDefaultFlag()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
         doReturn(expectedTask).when(cutSpy).cancelClaim(expectedTask.getId(), false);
@@ -616,7 +617,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCancelClaimSuccesfullForced()
         throws TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         String owner = "John Does";
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
@@ -646,7 +647,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testCancelClaimInvalidState()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         String owner = "John Does";
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
@@ -677,7 +678,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCompleteTaskDefault()
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, InterruptedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final long sleepTime = 100L;
         final boolean isForced = false;
@@ -699,6 +700,13 @@ public class TaskServiceImplTest {
         doReturn(classificationList).when(
             classificationQueryImplMock)
             .list();
+        doReturn(workbasketQueryImplMock).when(workbasketServiceMock).createWorkbasketQuery();
+        doReturn(workbasketQueryImplMock).when(workbasketQueryImplMock).idIn(any());
+        List<WorkbasketSummary> wbList = new ArrayList<>();
+        WorkbasketSummaryImpl wb = new WorkbasketSummaryImpl();
+        wb.setDomain("dummy-domain");
+        wbList.add(wb);
+        doReturn(wbList).when(workbasketQueryImplMock).list();
 
         Task actualTask = cut.completeTask(task.getId());
 
@@ -711,6 +719,10 @@ public class TaskServiceImplTest {
         verify(classificationQueryImplMock, times(1)).list();
         verify(taskMapperMock, times(1)).update(any());
         verify(taskanaEngineMock, times(2)).returnConnection();
+        verify(workbasketServiceMock, times(1)).createWorkbasketQuery();
+        verify(workbasketQueryImplMock, times(1)).idIn(any());
+        verify(workbasketQueryImplMock, times(1)).list();
+
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
             taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
@@ -723,7 +735,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCompleteTaskNotForcedWorking()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final long sleepTime = 100L;
         final boolean isForced = false;
@@ -755,7 +767,8 @@ public class TaskServiceImplTest {
 
     @Test(expected = InvalidStateException.class)
     public void testCompleteTaskNotForcedNotClaimedBefore()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException,
+        NotAuthorizedException {
         final boolean isForced = false;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
@@ -780,7 +793,8 @@ public class TaskServiceImplTest {
 
     @Test(expected = InvalidOwnerException.class)
     public void testCompleteTaskNotForcedInvalidOwnerException()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException,
+        NotAuthorizedException {
         final boolean isForced = false;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
@@ -806,7 +820,8 @@ public class TaskServiceImplTest {
 
     @Test(expected = TaskNotFoundException.class)
     public void testCompleteTaskTaskNotFound()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException,
+        NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final boolean isForced = false;
         String taskId = "1";
@@ -828,7 +843,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCompleteForcedAndAlreadyClaimed()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, NotAuthorizedException {
         final boolean isForced = true;
         final long sleepTime = 100L;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
@@ -860,7 +875,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCompleteForcedNotClaimed()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final boolean isForced = true;
         final long sleepTime = 100L;
@@ -1079,7 +1094,8 @@ public class TaskServiceImplTest {
 
     @Test
     public void testSetTaskReadWIthExistingTask()
-        throws TaskNotFoundException, ClassificationAlreadyExistException, ClassificationNotFoundException {
+        throws TaskNotFoundException, ClassificationAlreadyExistException, ClassificationNotFoundException,
+        NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
@@ -1122,7 +1138,8 @@ public class TaskServiceImplTest {
 
     @Test
     public void testGetTaskByIdWithExistingTask()
-        throws TaskNotFoundException, ClassificationAlreadyExistException, ClassificationNotFoundException {
+        throws TaskNotFoundException, ClassificationAlreadyExistException, ClassificationNotFoundException,
+        NotAuthorizedException {
         Classification dummyClassification = createDummyClassification();
         Task expectedTask = createUnitTestTask("1", "DUMMY-TASK", "1", dummyClassification);
         doReturn(expectedTask).when(taskMapperMock).findById(expectedTask.getId());
@@ -1131,7 +1148,13 @@ public class TaskServiceImplTest {
         doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
         doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domainIn(any());
         doReturn(classificationQueryImplMock).when(classificationQueryImplMock).keyIn(any());
-        doReturn(new ArrayList<>()).when(classificationQueryImplMock).list();
+        doReturn(workbasketQueryImplMock).when(workbasketServiceMock).createWorkbasketQuery();
+        doReturn(workbasketQueryImplMock).when(workbasketQueryImplMock).idIn(any());
+        List<WorkbasketSummary> wbList = new ArrayList<>();
+        WorkbasketSummaryImpl wb = new WorkbasketSummaryImpl();
+        wb.setDomain("dummy-domain");
+        wbList.add(wb);
+        doReturn(wbList).when(workbasketQueryImplMock).list();
 
         List<ClassificationSummaryImpl> classificationList = Arrays
             .asList((ClassificationSummaryImpl) dummyClassification.asSummary());
@@ -1147,6 +1170,10 @@ public class TaskServiceImplTest {
         verify(classificationQueryImplMock, times(1)).domainIn(any());
         verify(classificationQueryImplMock, times(1)).keyIn(any());
         verify(classificationQueryImplMock, times(1)).list();
+        verify(workbasketServiceMock, times(1)).createWorkbasketQuery();
+        verify(workbasketQueryImplMock, times(1)).idIn(any());
+        verify(workbasketQueryImplMock, times(1)).list();
+
         verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
             taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
