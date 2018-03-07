@@ -48,7 +48,7 @@ public class WorkbasketMapper {
 
     private WorkbasketResource addLinks(WorkbasketResource resource, Workbasket wb) throws NotAuthorizedException {
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
-        resource.add(linkTo(methodOn(WorkbasketController.class).getDistributionTargetsForWorkbasketId(wb.getId()))
+        resource.add(linkTo(methodOn(WorkbasketController.class).getDistributionTargets(wb.getId()))
             .withRel("distributionTargets"));
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
             .withRel("accessItems"));
