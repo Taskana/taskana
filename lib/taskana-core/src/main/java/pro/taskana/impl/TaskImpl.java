@@ -496,6 +496,10 @@ public class TaskImpl implements Task {
         return (WorkbasketSummaryImpl) workbasketSummary;
     }
 
+    public void setWorkbasketSummaryImpl(WorkbasketSummaryImpl workbasketSummary) {
+        this.workbasketSummary = workbasketSummary;
+    }
+
     public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
         this.classificationSummary = classificationSummary;
     }

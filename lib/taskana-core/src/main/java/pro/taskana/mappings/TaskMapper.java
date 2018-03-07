@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
@@ -18,17 +17,12 @@ import pro.taskana.TaskState;
 import pro.taskana.impl.MinimalTaskSummary;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskSummaryImpl;
-import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
 
 /**
  * This class is the mybatis mapping of task.
  */
 public interface TaskMapper {
-
-    String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.mappings.ObjectReferenceMapper.findById";
-    String WORKBASKET_FINDSUMMARYBYID = "pro.taskana.mappings.WorkbasketMapper.findSummaryById";
-    String CLASSIFICATION_FINDBYID = "pro.taskana.mappings.ClassificationMapper.findById";
 
     @Select("SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10 "
         + "FROM TASK "
@@ -47,8 +41,8 @@ public interface TaskMapper {
         @Result(property = "note", column = "NOTE"),
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "state", column = "STATE"),
-        @Result(property = "workbasketSummary", column = "WORKBASKET_ID", javaType = WorkbasketSummaryImpl.class,
-            one = @One(select = WORKBASKET_FINDSUMMARYBYID)),
+        @Result(property = "workbasketSummaryImpl.id", column = "WORKBASKET_ID"),
+        @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY"),
         @Result(property = "classificationSummaryImpl.category", column = "CLASSIFICATION_CATEGORY"),
         @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),

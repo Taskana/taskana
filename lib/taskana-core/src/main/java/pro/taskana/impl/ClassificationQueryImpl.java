@@ -432,6 +432,20 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         }
     }
 
+    @Override
+    public long count() {
+        LOGGER.debug("entry to count(), this = {}", this);
+        Long rowCount = null;
+        try {
+            taskanaEngine.openConnection();
+            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            return (rowCount == null) ? 0L : rowCount;
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from count(). Returning result {} ", rowCount);
+        }
+    }
+
     private ClassificationQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
         String orderByDirection = " ASC";
         if (sortDirection != null && SortDirection.DESCENDING.equals(sortDirection)) {
@@ -574,23 +588,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public long count() {
-        LOGGER.debug("entry to count(), this = {}", this);
-        Long rowCount = null;
-        try {
-            taskanaEngine.openConnection();
-            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
-            return (rowCount == null) ? 0L : rowCount;
-        } finally {
-            taskanaEngine.returnConnection();
-            LOGGER.debug("exit from count(). Returning result {} ", rowCount);
-        }
-    }
-
-    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ClassificationQueryImpl [key=");
+        builder.append("ClassificationQueryImpl [columnName=");
+        builder.append(columnName);
+        builder.append(", key=");
         builder.append(Arrays.toString(key));
         builder.append(", parentId=");
         builder.append(Arrays.toString(parentId));
@@ -654,7 +656,10 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         builder.append(Arrays.toString(custom8In));
         builder.append(", custom8Like=");
         builder.append(Arrays.toString(custom8Like));
+        builder.append(", orderBy=");
+        builder.append(orderBy);
         builder.append("]");
         return builder.toString();
     }
+
 }

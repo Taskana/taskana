@@ -36,6 +36,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
     private String columnName;
     private String[] accessId;
+    private String[] idIn;
     private WorkbasketPermission permission;
     private String[] nameIn;
     private String[] nameLike;
@@ -68,10 +69,19 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] orgLevel4Like;
     private TaskanaEngineImpl taskanaEngine;
     private List<String> orderBy;
+    private boolean joinWithAccessList;
+    private boolean checkReadPermission;
+    private boolean usedToAugmentTasks;
 
     WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.orderBy = new ArrayList<>();
+    }
+
+    @Override
+    public WorkbasketQuery idIn(String... id) {
+        this.idIn = id;
+        return this;
     }
 
     @Override
@@ -360,7 +370,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         List<WorkbasketSummary> workbaskets = null;
         try {
             taskanaEngine.openConnection();
-            addAccessIdsOfCallerToQuery();
+            handleCallerRolesAndAccessIds();
             workbaskets = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
             return workbaskets;
         } finally {
@@ -380,7 +390,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;
-            addAccessIdsOfCallerToQuery();
+            handleCallerRolesAndAccessIds();
             this.orderBy.clear();
             this.addOrderCriteria(columnName, sortDirection);
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
@@ -402,17 +412,15 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         try {
             taskanaEngine.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
-            addAccessIdsOfCallerToQuery();
+            handleCallerRolesAndAccessIds();
             workbaskets = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             return workbaskets;
-        } catch (Exception e) {
-            if (e instanceof PersistenceException) {
-                if (e.getMessage().contains("ERRORCODE=-4470")) {
-                    TaskanaRuntimeException ex = new TaskanaRuntimeException(
-                        "The offset beginning was set over the amount of result-rows.", e.getCause());
-                    ex.setStackTrace(e.getStackTrace());
-                    throw ex;
-                }
+        } catch (PersistenceException e) {
+            if (e.getMessage().contains("ERRORCODE=-4470")) {
+                TaskanaRuntimeException ex = new TaskanaRuntimeException(
+                    "The offset beginning was set over the amount of result-rows.", e.getCause());
+                ex.setStackTrace(e.getStackTrace());
+                throw ex;
             }
             throw e;
         } finally {
@@ -431,12 +439,27 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         WorkbasketSummary workbasket = null;
         try {
             taskanaEngine.openConnection();
-            addAccessIdsOfCallerToQuery();
+            handleCallerRolesAndAccessIds();
             workbasket = taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             return workbasket;
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", workbasket);
+        }
+    }
+
+    @Override
+    public long count() {
+        LOGGER.debug("entry to count(), this = {}", this);
+        Long rowCount = null;
+        try {
+            taskanaEngine.openConnection();
+            handleCallerRolesAndAccessIds();
+            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            return (rowCount == null) ? 0L : rowCount;
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
     }
 
@@ -564,6 +587,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return ownerLike;
     }
 
+    public String[] getIdIn() {
+        return idIn;
+    }
+
     public List<String> getOrderBy() {
         return orderBy;
     }
@@ -572,26 +599,27 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return columnName;
     }
 
-    @Override
-    public long count() {
-        LOGGER.debug("entry to count(), this = {}", this);
-        Long rowCount = null;
-        try {
-            taskanaEngine.openConnection();
-            addAccessIdsOfCallerToQuery();
-            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
-            return (rowCount == null) ? 0L : rowCount;
-        } finally {
-            taskanaEngine.returnConnection();
-            LOGGER.debug("exit from count(). Returning result {} ", rowCount);
-        }
+    public boolean isJoinWithAccessList() {
+        return joinWithAccessList;
+    }
+
+    public boolean isCheckReadPermission() {
+        return checkReadPermission;
+    }
+
+    void setUsedToAugmentTasks(boolean usedToAugmentTasks) {
+        this.usedToAugmentTasks = usedToAugmentTasks;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("WorkbasketQueryImpl [accessId=");
+        builder.append("WorkbasketQueryImpl [columnName=");
+        builder.append(columnName);
+        builder.append(", accessId=");
         builder.append(Arrays.toString(accessId));
+        builder.append(", idIn=");
+        builder.append(Arrays.toString(idIn));
         builder.append(", permission=");
         builder.append(permission);
         builder.append(", nameIn=");
@@ -654,11 +682,34 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(Arrays.toString(orgLevel4Like));
         builder.append(", orderBy=");
         builder.append(orderBy);
+        builder.append(", joinWithAccessList=");
+        builder.append(joinWithAccessList);
+        builder.append(", checkReadPermission=");
+        builder.append(checkReadPermission);
+        builder.append(", usedToAugmentTasks=");
+        builder.append(usedToAugmentTasks);
         builder.append("]");
         return builder.toString();
     }
 
-    private void addAccessIdsOfCallerToQuery() {
+    private void handleCallerRolesAndAccessIds() {
+        // if user is admin or businessadmin, don't check read permission on workbasket.
+        // in addition, if user is admin or businessadmin and no accessIds were specified, don't join with access list
+        // if this query is used to augment task, a business admin should be treated like a normal user
+        // (joinWithAccessList,checkReadPermission) can assume the following combinations:
+        // (t,t) -> query performed by user
+        // (f,f) -> admin queries w/o access ids specified
+        // (t,f) -> admin queries with access ids specified
+        // (f,t) -> cannot happen, cannot be matched to meaningful query
+        joinWithAccessList = true;
+        checkReadPermission = true;
+        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)
+            || (taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN) && !usedToAugmentTasks)) {
+            checkReadPermission = false;
+            if (accessId == null) {
+                joinWithAccessList = false;
+            }
+        }
         // might already be set by accessIdsHavePermission
         if (this.accessId == null) {
             String[] accessIds = new String[0];
@@ -670,6 +721,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             this.accessId = accessIds;
             lowercaseAccessIds(this.accessId);
         }
+
     }
 
     static void lowercaseAccessIds(String[] accessIdArray) {

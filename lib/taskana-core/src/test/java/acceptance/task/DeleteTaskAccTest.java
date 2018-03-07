@@ -93,7 +93,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test(expected = TaskNotFoundException.class)
-    public void testBulkDeleteTask() throws TaskNotFoundException, InvalidArgumentException {
+    public void testBulkDeleteTask() throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         ArrayList<String> taskIdList = new ArrayList<>();
@@ -110,7 +110,8 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test(expected = TaskNotFoundException.class)
-    public void testBulkDeleteTasksWithException() throws TaskNotFoundException, InvalidArgumentException {
+    public void testBulkDeleteTasksWithException()
+        throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         ArrayList<String> taskIdList = new ArrayList<>();

@@ -76,13 +76,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task claim(String taskId)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         return claim(taskId, false);
     }
 
     @Override
     public Task claim(String taskId, boolean forceClaim)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         String userId = CurrentUserContext.getUserid();
         LOGGER.debug("entry to claim(id = {}, forceClaim = {}, userId = {})", taskId, forceClaim, userId);
         TaskImpl task = null;
@@ -118,13 +118,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task cancelClaim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+    public Task cancelClaim(String taskId)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         return this.cancelClaim(taskId, false);
     }
 
     @Override
     public Task cancelClaim(String taskId, boolean forceUnclaim)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         String userId = CurrentUserContext.getUserid();
         LOGGER.debug("entry to cancelClaim(taskId = {}) with userId = {}, forceFlag = {}", taskId, userId,
             forceUnclaim);
@@ -163,13 +164,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task completeTask(String taskId)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
         return completeTask(taskId, false);
     }
 
     @Override
     public Task completeTask(String taskId, boolean isForced)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException {
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
         LOGGER.debug("entry to completeTask(id = {}, isForced {})", taskId, isForced);
         TaskImpl task = null;
         try {
@@ -323,7 +324,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTask(String id) throws TaskNotFoundException {
+    public Task getTask(String id) throws TaskNotFoundException, NotAuthorizedException {
         LOGGER.debug("entry to getTaskById(id = {})", id);
         TaskImpl resultTask = null;
         try {
@@ -331,6 +332,22 @@ public class TaskServiceImpl implements TaskService {
 
             resultTask = taskMapper.findById(id);
             if (resultTask != null) {
+                WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
+                query.setUsedToAugmentTasks(true);
+                String workbasketId = resultTask.getWorkbasketSummary().getId();
+                List<WorkbasketSummary> workbaskets = query
+                    .idIn(workbasketId)
+                    .list();
+                if (workbaskets.isEmpty()) {
+                    String currentUser = CurrentUserContext.getUserid();
+                    LOGGER.error("The current user {} has no read permission for workbasket {}.", currentUser,
+                        workbasketId);
+                    throw new NotAuthorizedException(
+                        "The current user " + currentUser + " has no read permission for workbasket " + workbasketId);
+                } else {
+                    resultTask.setWorkbasketSummary(workbaskets.get(0));
+                }
+
                 List<AttachmentImpl> attachmentImpls = attachmentMapper.findAttachmentsByTaskId(resultTask.getId());
                 if (attachmentImpls == null) {
                     attachmentImpls = new ArrayList<>();
@@ -501,7 +518,9 @@ public class TaskServiceImpl implements TaskService {
         // check source WB (read)+transfer
         Set<String> workbasketKeys = new HashSet<>();
         taskSummaries.stream().forEach(t -> workbasketKeys.add(t.getWorkbasketKey()));
-        List<WorkbasketSummary> sourceWorkbaskets = workbasketService.createWorkbasketQuery()
+        WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
+        query.setUsedToAugmentTasks(true);
+        List<WorkbasketSummary> sourceWorkbaskets = query
             .callerHasPermission(WorkbasketPermission.TRANSFER)
             .keyIn(workbasketKeys.toArray(new String[0]))
             .list();
@@ -545,7 +564,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task setTaskRead(String taskId, boolean isRead)
-        throws TaskNotFoundException {
+        throws TaskNotFoundException, NotAuthorizedException {
         LOGGER.debug("entry to setTaskRead(taskId = {}, isRead = {})", taskId, isRead);
         Task result = null;
         try {
@@ -792,11 +811,15 @@ public class TaskServiceImpl implements TaskService {
         String[] workbasketKeyArray = workbasketKeySet.toArray(new String[0]);
         // perform workbasket query
         LOGGER.debug("addWorkbasketSummariesToTaskSummaries() about to query workbaskets");
-        List<WorkbasketSummary> workbaskets = this.workbasketService.createWorkbasketQuery()
+        WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
+        query.setUsedToAugmentTasks(true);
+        List<WorkbasketSummary> workbaskets = query
             .keyIn(workbasketKeyArray)
             .list();
         // assign query results to appropriate tasks.
-        for (TaskSummaryImpl task : taskSummaries) {
+        Iterator<TaskSummaryImpl> taskIterator = taskSummaries.iterator();
+        while (taskIterator.hasNext()) {
+            TaskSummaryImpl task = taskIterator.next();
             String workbasketKey = task.getWorkbasketSummaryImpl().getKey();
 
             // find the appropriate workbasket from the query result
@@ -805,8 +828,9 @@ public class TaskServiceImpl implements TaskService {
                 .findFirst()
                 .orElse(null);
             if (aWorkbasket == null) {
-                LOGGER.error("Could not find a Workbasket for task {}.", task.getTaskId());
-                throw new SystemException("Could not find a Workbasket for task " + task.getTaskId());
+                LOGGER.warn("Could not find a Workbasket for task {}.", task.getTaskId());
+                taskIterator.remove();
+                continue;
             }
             // set the classification on the task object
             task.setWorkbasketSummary(aWorkbasket);
