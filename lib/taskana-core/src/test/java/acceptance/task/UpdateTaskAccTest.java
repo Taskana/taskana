@@ -11,8 +11,6 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.time.Instant;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -211,8 +209,4 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         taskService.updateTask(task);
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

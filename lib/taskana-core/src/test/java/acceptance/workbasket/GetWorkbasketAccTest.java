@@ -3,8 +3,6 @@ package acceptance.workbasket;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,8 +81,4 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

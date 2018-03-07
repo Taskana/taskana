@@ -6,8 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 import acceptance.AbstractAccTest;
@@ -110,8 +108,4 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
         assertEquals(2, objectReferenceList.size());
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

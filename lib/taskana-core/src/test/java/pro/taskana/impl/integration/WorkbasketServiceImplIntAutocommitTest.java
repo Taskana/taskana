@@ -16,8 +16,6 @@ import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -266,8 +264,4 @@ public class WorkbasketServiceImplIntAutocommitTest {
         return new TimeInterval(begin, end);
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

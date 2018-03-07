@@ -5,8 +5,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -140,8 +138,4 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
         assertThat(count, equalTo(3L));
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

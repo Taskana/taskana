@@ -13,8 +13,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -429,8 +427,4 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(1))));
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

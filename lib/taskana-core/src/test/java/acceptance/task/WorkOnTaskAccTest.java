@@ -15,8 +15,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -301,8 +299,4 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         assertTrue(results.getErrorForId("TKI:000000000000000000000000000000000102") instanceof InvalidStateException);
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }

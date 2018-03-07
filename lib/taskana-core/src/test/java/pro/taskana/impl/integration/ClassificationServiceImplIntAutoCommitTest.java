@@ -18,8 +18,6 @@ import java.util.List;
 import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -62,11 +60,6 @@ public class ClassificationServiceImplIntAutoCommitTest {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);
-    }
-
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
     }
 
     @Before

@@ -10,8 +10,6 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.time.Instant;
 
-import org.h2.store.fs.FileUtils;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -170,8 +168,4 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification = classificationService.updateClassification(classification);
     }
 
-    @AfterClass
-    public static void cleanUpClass() {
-        FileUtils.deleteRecursive("~/taskana-h2-data", true);
-    }
 }
