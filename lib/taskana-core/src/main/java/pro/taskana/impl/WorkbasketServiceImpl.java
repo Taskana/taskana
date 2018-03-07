@@ -133,7 +133,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         throws InvalidWorkbasketException, NotAuthorizedException {
         LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
-        Workbasket result = null;
         WorkbasketImpl workbasket = (WorkbasketImpl) newWorkbasket;
         try {
             taskanaEngine.openConnection();
@@ -147,11 +146,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             workbasketMapper.insert(workbasket);
             LOGGER.debug("Method createWorkbasket() created Workbasket '{}'", workbasket);
-            result = workbasketMapper.findById(workbasket.getId());
-            return result;
+            return workbasket;
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from createWorkbasket(workbasket). Returning result {} ", result);
+            LOGGER.debug("exit from createWorkbasket(workbasket). Returning result {} ", workbasket);
         }
     }
 
@@ -161,18 +159,16 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         LOGGER.debug("entry to updateWorkbasket(workbasket)", workbasketToUpdate);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
-        Workbasket result = null;
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketToUpdate;
         try {
             taskanaEngine.openConnection();
             workbasket.setModified(Instant.now());
             workbasketMapper.update(workbasket);
             LOGGER.debug("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
-            result = workbasketMapper.findById(workbasket.getId());
-            return result;
+            return workbasket;
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from updateWorkbasket(). Returning result {} ", result);
+            LOGGER.debug("exit from updateWorkbasket(). Returning result {} ", workbasket);
         }
     }
 

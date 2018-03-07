@@ -335,7 +335,7 @@ public class WorkbasketServiceImplTest {
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfigurationMock, times(2)).isSecurityEnabled();
         verify(workbasketMapperMock, times(1)).insert(expectedWb);
-        verify(workbasketMapperMock, times(4)).findById(expectedWb.getId());
+        verify(workbasketMapperMock, times(3)).findById(expectedWb.getId());
         verify(workbasketMapperMock, times(1)).update(any());
         verify(taskanaEngineImplMock, times(5)).returnConnection();
         verify(taskanaEngineImplMock, times(2)).checkRoleMembership(any());
@@ -371,7 +371,7 @@ public class WorkbasketServiceImplTest {
         verify(cutSpy, times(distTargetAmount + 1)).getWorkbasket(any());
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsBySourceId(any());
         verify(distributionTargetMapperMock, times(distTargetAmount)).insert(any(), any());
-        verify(workbasketMapperMock, times(4)).findById(any());
+        verify(workbasketMapperMock, times(1)).findById(any());
         verify(workbasketMapperMock, times(1)).update(any());
         verify(taskanaEngineImplMock, times(5)).returnConnection();
         verify(taskanaEngineImplMock, times(4)).checkRoleMembership(any());
@@ -401,7 +401,7 @@ public class WorkbasketServiceImplTest {
         } catch (WorkbasketNotFoundException e) {
             verify(taskanaEngineImplMock, times(3)).openConnection();
             verify(workbasketMapperMock, times(1)).insert(expectedWb);
-            verify(workbasketMapperMock, times(2)).findById(any());
+            verify(workbasketMapperMock, times(1)).findById(any());
             verify(cutSpy, times(1)).getWorkbasket(any());
             verify(taskanaEngineImplMock, times(3)).returnConnection();
             verify(taskanaEngineImplMock, times(2)).checkRoleMembership(any());
