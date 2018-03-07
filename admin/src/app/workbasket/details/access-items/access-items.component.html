@@ -41,8 +41,8 @@
 								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 							</button>
 						</td>
-						<td class="text-align text-width ">
-							<div class="input-group" [ngClass]="{
+						<td class="input-group text-align text-width ">
+							<div [ngClass]="{
 										'has-warning': (accessItemsClone[index].accessId !== accessItem.accessId),
 										'has-error': !accessItem.accessId }">
 								<input type="text" required #accessItemName="ngModel" class="form-control" name="accessItem.accessId-{{index}}" [(ngModel)]="accessItem.accessId" placeholder="{{accessItemName.invalid? 'Access id is required': ''}}">
@@ -57,8 +57,10 @@
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permAppend !== accessItem.permAppend)}">
 							<input type="checkbox" name="accessItem.permAppend-{{index}}" [(ngModel)]="accessItem.permAppend">
 						</td>
-						<td [ngClass]="{'has-changes': (accessItemsClone[index].permTransfer != accessItem.permTransfer)}">
-							<input type="checkbox" name="accessItem.permTransfer-{{index}}" [(ngModel)]="accessItem.permTransfer">
+						<td>
+							<div ngClass="{{(accessItemsClone[index].permTransfer != accessItem.permTransfer)? 'has-changes': 'pepe'}}">
+									<input type="checkbox" name="accessItem.permTransfer-{{index}}" [(ngModel)]="accessItem.permTransfer">
+							</div>
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permDistribute !== accessItem.permDistribute)}">
 							<input type="checkbox" name="accessItem.permDistribute-{{index}}" [(ngModel)]="accessItem.permDistribute">
