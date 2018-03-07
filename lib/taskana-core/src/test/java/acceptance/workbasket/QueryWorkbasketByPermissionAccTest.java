@@ -3,6 +3,8 @@ package acceptance.workbasket;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -70,7 +72,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
             .list();
-        Assert.assertEquals(7, results.size());
+        Assert.assertEquals(6, results.size());
     }
 
     @WithAccessId(
@@ -85,7 +87,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
             .orderByName(asc)
             .list();
-        Assert.assertEquals(7, results.size());
+        Assert.assertEquals(6, results.size());
         Assert.assertEquals("GPK_KSC_1", results.get(0).getKey());
     }
 
@@ -102,8 +104,26 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .orderByName(desc)
             .orderByKey(asc)
             .list();
-        Assert.assertEquals(7, results.size());
+        Assert.assertEquals(6, results.size());
         Assert.assertEquals("USER_2_2", results.get(0).getKey());
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
+    @Test
+    public void testQueryAllTransferSourcesForUserAndGroup()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException,
+        InvalidRequestException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user_1_1", "group_1")
+            .list();
+        Assert.assertEquals(2, results.size());
+        List<String> keys = new ArrayList<>(Arrays.asList("GPK_KSC_1", "USER_1_1"));
+        for (WorkbasketSummary wb : results) {
+            Assert.assertTrue(keys.contains(wb.getKey()));
+        }
     }
 
     @WithAccessId(
@@ -116,7 +136,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .callerHasPermission(WorkbasketPermission.APPEND)
             .list();
-        Assert.assertEquals(7, results.size());
+        Assert.assertEquals(6, results.size());
     }
 
     @WithAccessId(userName = "user_1_1")
