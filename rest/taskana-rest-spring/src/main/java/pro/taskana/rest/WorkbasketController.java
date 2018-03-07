@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +37,11 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
+import pro.taskana.rest.resource.WorkbasketListResource;
 import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
+import pro.taskana.rest.resource.mapper.WorkbasketListMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
 
@@ -45,6 +49,7 @@ import pro.taskana.rest.resource.mapper.WorkbasketSummaryMapper;
  * Controller for all {@link Workbasket} related endpoints.
  */
 @RestController
+@EnableHypermediaSupport(type = HypermediaType.HAL)
 @RequestMapping(path = "/v1/workbaskets", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class WorkbasketController {
 
@@ -66,11 +71,14 @@ public class WorkbasketController {
     private WorkbasketMapper workbasketMapper;
 
     @Autowired
+    private WorkbasketListMapper workbasketListMapper;
+
+    @Autowired
     private WorkbasketAccessItemMapper workbasketAccessItemMapper;
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<WorkbasketSummaryResource>> getWorkbaskets(
+    public ResponseEntity<WorkbasketListResource> getWorkbaskets(
         @RequestParam(value = "sortBy", defaultValue = "name", required = false) String sortBy,
         @RequestParam(value = "order", defaultValue = "asc", required = false) String order,
         @RequestParam(value = "name", required = false) String name,
@@ -83,15 +91,13 @@ public class WorkbasketController {
         @RequestParam(value = "type", required = false) String type,
         @RequestParam(value = "requiredPermission", required = false) String requiredPermission) {
         try {
-            List<WorkbasketSummary> workbasketsSummary;
             WorkbasketQuery query = workbasketService.createWorkbasketQuery();
             addSortingToQuery(query, sortBy, order);
             addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
             addAuthorizationFilter(query, requiredPermission);
-            workbasketsSummary = query.list();
-            return new ResponseEntity<>(workbasketsSummary.stream()
-                .map(workbasket -> workbasketSummaryMapper.toResource(workbasket))
-                .collect(Collectors.toList()), HttpStatus.OK);
+            List<WorkbasketSummary> workbasketSummaries = query.list();
+            WorkbasketListResource workbasketListResource = workbasketListMapper.toResource(workbasketSummaries);
+            return new ResponseEntity<>(workbasketListResource, HttpStatus.OK);
         } catch (InvalidArgumentException ex) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
