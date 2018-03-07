@@ -33,9 +33,11 @@ public interface TaskService {
      *             if the state of the task with taskId is not READY
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by some else
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the workbasket the task is in
      */
     Task claim(String taskId)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException;
 
     /**
      * Claim an existing task for the current user. Enable forced claim.
@@ -51,9 +53,11 @@ public interface TaskService {
      *             if the state of the task with taskId is not READY
      * @throws InvalidOwnerException
      *             if the task with taskId is claimed by someone else
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the workbasket the task is in
      */
     Task claim(String taskId, boolean forceClaim)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException;
 
     /**
      * Unclaim a existing Task which was claimed and owned by you before.
@@ -67,8 +71,11 @@ public interface TaskService {
      *             when the task is already completed.
      * @throws InvalidOwnerException
      *             when the task is claimed by another user.
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the workbasket the task is in
      */
-    Task cancelClaim(String taskId) throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+    Task cancelClaim(String taskId)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException;
 
     /**
      * Unclaim a existing Task which was claimed and owned by you before. Also there can be enabled a force flag for
@@ -86,9 +93,11 @@ public interface TaskService {
      *             when the task is already completed.
      * @throws InvalidOwnerException
      *             when forceCancel is false and the task is claimed by another user.
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the workbasket the task is in
      */
     Task cancelClaim(String taskId, boolean forceCancel)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException;
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException;
 
     /**
      * Complete a claimed Task as owner/admin and update State and Timestamps.
@@ -102,9 +111,11 @@ public interface TaskService {
      *             if the given Task can´t be found in DB.
      * @throws InvalidOwnerException
      *             if current user is not the task-owner or administrator.
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the workbasket the task is in
      */
     Task completeTask(String taskId)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException;
 
     /**
      * Complete a claimed Task and update State and Timestamps.
@@ -120,9 +131,11 @@ public interface TaskService {
      *             if the given Task can´t be found in DB.
      * @throws InvalidOwnerException
      *             if current user is not the task-owner or administrator.
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the workbasket the task is in
      */
     Task completeTask(String taskId, boolean isForced)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException;
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException;
 
     /**
      * Persists a not persisted Task which does not exist already.
@@ -155,8 +168,10 @@ public interface TaskService {
      * @return the Task
      * @throws TaskNotFoundException
      *             thrown of the {@link Task} with taskId is not found
+     * @throws NotAuthorizedException
+     *             if the current user has no READ permission for the workbasket the task is in.
      */
-    Task getTask(String taskId) throws TaskNotFoundException;
+    Task getTask(String taskId) throws TaskNotFoundException, NotAuthorizedException;
 
     /**
      * Transfer a task to another work basket. The transfer sets the transferred flag and resets the read flag.
@@ -210,8 +225,10 @@ public interface TaskService {
      * @return the updated Task
      * @throws TaskNotFoundException
      *             Thrown if the {@link Task} with taskId was not found
+     * @throws NotAuthorizedException
+     *             if the current user has no read permission for the workbasket the task is in
      */
-    Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException;
+    Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException, NotAuthorizedException;
 
     /**
      * This method provides a query builder for quering the database.

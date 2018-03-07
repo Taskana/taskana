@@ -77,6 +77,10 @@ public class TaskController {
             LOGGER.error("The searched Task couldn´t be found or does not exist.", e);
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (NotAuthorizedException e) {
+            LOGGER.error("The current user is not authorized to retrieve the task.", e);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
@@ -115,6 +119,10 @@ public class TaskController {
             LOGGER.error("The given Task could not be claimed. Reason: {}", e);
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (NotAuthorizedException e) {
+            LOGGER.error("The current user is not authorized to claim the task.", e);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
@@ -131,6 +139,10 @@ public class TaskController {
         } catch (InvalidStateException | InvalidOwnerException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
+        } catch (NotAuthorizedException e) {
+            LOGGER.error("The current user is not authorized to complete the task.", e);
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

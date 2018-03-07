@@ -9,6 +9,15 @@ import pro.taskana.exceptions.NotAuthorizedException;
 public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
 
     /**
+     * Add your ids to your query. The ids are compared to the ids of workbaskets with the IN operator.
+     *
+     * @param id
+     *            the id as Strings
+     * @return the query
+     */
+    WorkbasketQuery idIn(String... id);
+
+    /**
      * Add your keys to your query. The keys are compared case-insensitively to the keys of workbaskets with the IN
      * operator.
      *
