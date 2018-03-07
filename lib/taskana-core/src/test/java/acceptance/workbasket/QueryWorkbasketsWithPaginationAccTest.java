@@ -184,7 +184,20 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         long count = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .count();
-        assertThat(count, equalTo(9L));
+        assertThat(count, equalTo(8L));
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testWorkbasketQueryDomA()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> result = workbasketService.createWorkbasketQuery()
+            .domainIn("DOMAIN_A")
+            .list();
+        assertThat(result.size(), equalTo(8));
     }
 
 }
