@@ -1,6 +1,6 @@
 <taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
 <taskana-general-message-modal *ngIf="modalErrorMessage" [message]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
-<div id="wb-information" class="panel panel-default">
+<div *ngIf="workbasket" id="wb-information" class="panel panel-default">
     <div class="panel-heading">
         <div class="btn-group pull-right">
             <button type="button" [disabled]="!WorkbasketForm.form.valid" (click)="onSave()" class="btn btn-default btn-primary">Save</button>

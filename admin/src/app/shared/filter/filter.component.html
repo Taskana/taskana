@@ -1,43 +1,47 @@
-<div type="text" id="{{target}}" data-toogle="collapse" class="list-group-seach collapse">
-	<div class="row"> 
+<div id="{{target}}" data-toogle="collapse" class="list-group-search collapse">
+	<div class="row">
 		<div class="dropdown col-xs-2">
-			<button class="btn btn-default" type="button" id="dropdownMenufilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
-				<taskana-icon-type [type] ="filter.type" class="vertical-align"></taskana-icon-type>
+			<button class="btn btn-default" (click)="toggleDropDown = !toggleDropDown" type="button" id="dropdownMenufilter" data-toggle="dropdown"
+			 aria-haspopup="true" aria-expanded="true">
+				<taskana-icon-type [type]="filter.type" class="vertical-align"></taskana-icon-type>
 
-			</button> 
-			<ul class="dropdown-menu dropdown-menu-users" role="menu">
-				<li *ngFor ="let type of allTypes | mapValues">
-					<button type="button" (click)="selectType(type.key); search()" class="btn btn-default btn-users-list" data-toggle="tooltip" [title]="type.value">
-						<taskana-icon-type class="vertical-align" [type] ='type.key'></taskana-icon-type>
+			</button>
+			<ul class="dropdown-menu dropdown-menu-users" [ngClass]="{'hidden': !toggleDropDown}" role="menu">
+				<li *ngFor="let type of allTypes | mapValues">
+					<button type="button" (click)="selectType(type.key); toggleDropDown = !toggleDropDown; search()" class="btn btn-default btn-users-list" data-toggle="tooltip"
+					 [title]="type.value">
+						<taskana-icon-type class="vertical-align" [type]='type.key'></taskana-icon-type>
 					</button>
 				</li>
 			</ul>
 		</div>
 		<div class="col-xs-4">
-			<input type="text" [(ngModel)]= "filter.name" (keyup.enter)="search()" class="form-control" id="wb-display-name-filter" placeholder="Filter name">
+			<input type="text" [(ngModel)]="filter.name" (keyup.enter)="search()" class="form-control" id="wb-display-name-filter" placeholder="Filter name">
 		</div>
 		<div class="col-xs-4">
-			<input type="text" [(ngModel)]= "filter.key" (keyup.enter)="search()" class="form-control" id="wb-display-key-filter" placeholder="Filter key">
+			<input type="text" [(ngModel)]="filter.key" (keyup.enter)="search()" class="form-control" id="wb-display-key-filter" placeholder="Filter key">
 		</div>
-		<button (click)="clear(); search()" type="button"
-				class="btn btn-default glyphicon glyphicon-ban-circle blue pull-right margin-right" data-toggle="tooltip" title="Clear">
+		<button (click)="clear(); search()" type="button" class="btn btn-default glyphicon glyphicon-ban-circle blue pull-right margin-right"
+		 data-toggle="tooltip" title="Clear">
 		</button>
 	</div>
-	<div class="row"> 
+	<div class="row">
 		<div class="col-xs-2">
 		</div>
 		<div class="col-xs-8">
-			<input type="text" [(ngModel)]= "filter.description" (keyup.enter)="search()" class="form-control" id="wb-display-description-filter" placeholder="Filter by description">
+			<input type="text" [(ngModel)]="filter.description" (keyup.enter)="search()" class="form-control" id="wb-display-description-filter"
+			 placeholder="Filter by description">
 		</div>
 	</div>
-	<div class="row"> 
+	<div class="row">
 		<div class="col-xs-2">
 		</div>
 		<div class="col-xs-8">
-			<input type="text" [(ngModel)]= "filter.owner" (keyup.enter)="search()" class="form-control" id="wb-display-task-owner-filter" placeholder="Filter by Task owner">
+			<input type="text" [(ngModel)]="filter.owner" (keyup.enter)="search()" class="form-control" id="wb-display-task-owner-filter"
+			 placeholder="Filter by Task owner">
 		</div>
-		<button (click)="search()" type="button"
-				class="btn btn-default glyphicon glyphicon-search blue pull-right margin-right" data-toggle="tooltip" title="Search">
+		<button (click)="search()" type="button" class="btn btn-default glyphicon glyphicon-search blue pull-right margin-right"
+		 data-toggle="tooltip" title="Search">
 		</button>
-	</div>                                
-</div>  
+	</div>
+</div>

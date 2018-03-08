@@ -58,6 +58,7 @@ export class AccessItemsComponent implements OnInit {
 	}
 
 	onSave(): boolean {
+		this.requestInProgress = true;
 		if(!this.accessItems[0].links){
 			return;
 		}
@@ -66,6 +67,7 @@ export class AccessItemsComponent implements OnInit {
 			this.accessItemsClone = this.cloneAccessItems(this.accessItems);
 			this.accessItemsResetClone = this.cloneAccessItems(this.accessItems);
 			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
+			this.requestInProgress = false;
 			return true;
 		},
 		error => {
