@@ -1,0 +1,101 @@
+<taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
+<taskana-general-message-modal *ngIf="modalErrorMessage" [message]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
+<div *ngIf="workbasket" id="wb-information" class="panel panel-default">
+	<div class="panel-heading">
+		<div class="btn-group pull-right">
+			<button type="button" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
+			<button type="button" (click)="clear()" class="btn btn-default">Undo changes</button>
+		</div>
+		<h4 class="panel-header">{{workbasket.name}}</h4>
+	</div>
+	<div class="panel-body">
+		<div id="dual-list-Left" class="dual-list list-left col-xs-12 col-md-5-6 container">
+			<div class="row">
+				<div class="col-xs-2">
+					<button (click)="toggleDtl = !toggleDtl; selectAll(0, toggleDtl);" class="btn btn-default selector" title="select all">
+						<span aria-hidden="true" class="glyphicon blue {{toggleDtl?  'glyphicon-check':  'glyphicon-unchecked'}}"></span>
+					</button>
+				</div>
+				<div class="col-xs-8">
+					<h5>Available distribution targets</h5>
+				</div>
+				<button class="btn btn-default pull-right collapsed" type="button" id="collapsedMenufilterWbDta" data-toggle="collapse" data-target="#wb-dta-filter-bar"
+				 aria-expanded="false">
+					<span class="glyphicon glyphicon-filter blue"></span>
+				</button>
+			</div>
+			<taskana-filter target="wb-dta-filter-bar" (performFilter)="performAvailableFilter($event)"></taskana-filter>
+			<ul class="list-group dual-list-group">
+				<taskana-spinner [isRunning]="requestInProgressLeft" [isModal]="modalSpinner" positionClass="centered-spinner" class="centered-horizontally floating"></taskana-spinner>
+				<li class="list-group-item" *ngFor="let distributionTarget of distributionTargetsLeft  | selectWorkbaskets: distributionTargetsSelected: 0"
+				 [class.selected]="distributionTarget.selected" type="text" (click)="distributionTarget.selected = !distributionTarget.selected">
+					<div class="row">
+						<dl class="col-xs-1">
+							<dt>
+								<taskana-icon-type class="vertical-align" [type]="distributionTarget.type"></taskana-icon-type>
+							</dt>
+						</dl>
+						<dl class="col-xs-10">
+							<dt>{{distributionTarget.name}} ({{distributionTarget.key}}) </dt>
+							<dd>{{distributionTarget.description}}</dd>
+							<dd>{{distributionTarget.owner}} &nbsp;</dd>
+						</dl>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="hidden-xs hidden-sm col-md-1 list-arrows text-center button-margin-top">
+			<button  (click)="moveDistributionTargets(0)" [disabled] = "requestInProgressLeft || requestInProgressRight" class="btn btn-default move-right">
+				<span class="glyphicon glyphicon-chevron-right blue"></span>
+			</button>
+			<button (click)="moveDistributionTargets(1)" [disabled] = "requestInProgressLeft || requestInProgressRight" class="btn btn-default move-left">
+				<span class="glyphicon glyphicon-chevron-left blue"></span>
+			</button>
+		</div>
+		<div class="hidden visible-xs visible-sm col-xs-12 list-arrows text-center">
+			<button (click)="moveDistributionTargets(0)" [disabled] = "requestInProgressLeft || requestInProgressRight" class="btn btn-default move-down">
+				<span class="glyphicon glyphicon-chevron-down blue"></span>
+			</button>
+			<button (click)="moveDistributionTargets(1)" [disabled] = "requestInProgressLeft || requestInProgressRight" class="btn btn-default move-up">
+				<span class="glyphicon glyphicon-chevron-up blue"></span>
+			</button>
+		</div>
+		<div id="dual-list-right" class="dual-list list-right col-xs-12 col-md-5-6 container">
+			<div class="row">
+				<div class="col-xs-2">
+					<button (click)="toggleDtr = !toggleDtr; selectAll(1, toggleDtr);" class="btn btn-default selector" title="select all">
+						<span aria-hidden="true" class="glyphicon blue {{toggleDtr?  'glyphicon-check':  'glyphicon-unchecked'}}"></span>
+					</button>
+				</div>
+				<div class="col-xs-8">
+					<h5>Selected distribution targets</h5>
+				</div>
+				<button class="btn btn-default pull-right collapsed" type="button" id="collapsedMenufilterWbDta" data-toggle="collapse" data-target="#wb-dts-filter-bar"
+				 aria-expanded="false">
+					<span class="glyphicon glyphicon-filter blue"></span>
+				</button>
+			</div>
+			<taskana-filter target="wb-dts-filter-bar" (performFilter)="performSelectedFilter($event)"></taskana-filter>
+			<ul class="list-group dual-list-group">
+				<taskana-spinner [isRunning]="requestInProgressRight" [isModal]="modalSpinner" positionClass="centered-spinner" class="centered-horizontally floating"></taskana-spinner>
+				<ul class="list-group dual-list-group">
+					<li class="list-group-item" *ngFor="let distributionTarget of distributionTargetsRight  | selectWorkbaskets: distributionTargetsSelected: 1"
+					 [class.selected]="distributionTarget.selected" type="text" (click)="distributionTarget.selected = !distributionTarget.selected">
+						<div class="row">
+							<dl class="col-xs-1">
+								<dt>
+									<taskana-icon-type class="vertical-align" [type]="distributionTarget.type"></taskana-icon-type>
+								</dt>
+							</dl>
+							<dl class="col-xs-10">
+								<dt>{{distributionTarget.name}} ({{distributionTarget.key}}) </dt>
+								<dd>{{distributionTarget.description}}</dd>
+								<dd>{{distributionTarget.owner}} &nbsp;</dd>
+							</dl>
+						</div>
+					</li>
+				</ul>
+			</ul>
+		</div>
+	</div>
+</div>
