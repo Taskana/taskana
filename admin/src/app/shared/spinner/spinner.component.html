@@ -1,5 +1,5 @@
 <div [hidden]="!isDelayedRunning">
-	<div class="sk-circle spinner-centered" [hidden]="this.isModal">
+	<div class="sk-circle {{positionClass? positionClass: 'spinner-centered'}}" [hidden]="this.isModal">
 		<div class="sk-circle1 sk-child"></div>
 		<div class="sk-circle2 sk-child"></div>
 		<div class="sk-circle3 sk-child"></div>
@@ -15,7 +15,7 @@
 	</div>
 	<div #spinnerModal class="modal fade" id="spinner-modal" data-backdrop="static" data-keyboard="false" role="dialog">
 		<div class="modal-dialog">
-			<div class="modal-dialog spinner-centered">
+			<div class="modal-dialog {{positionClass? positionClass: 'spinner-centered'}}">
 				<div class="sk-circle">
 					<div class="sk-circle1 sk-child"></div>
 					<div class="sk-circle2 sk-child"></div>

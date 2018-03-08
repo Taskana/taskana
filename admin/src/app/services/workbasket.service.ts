@@ -93,73 +93,79 @@ export class WorkbasketService {
 	// PUT
 	updateWorkBasketAccessItem(url: string, workbasketAccessItem: Array<WorkbasketAccessItems>): Observable<string> {
 		return this.httpClient.put<string>(url,
-											workbasketAccessItem,
-											this.httpOptions);
+			workbasketAccessItem,
+			this.httpOptions);
 	}
-	//#endregion 
-
-	//#region "Service extras"
-	selectWorkBasket(id: string) {
-		this.workBasketSelected.next(id);
+	// GET
+	getWorkBasketsDistributionTargets(id: String): Observable<WorkbasketSummary[]> {
+		return this.httpClient.get<WorkbasketSummary[]>(environment.taskanaRestUrl + '/v1/workbaskets/' + id + '/distributiontargets', this.httpOptions);
 	}
 
-	getSelectedWorkBasket(): Observable<string> {
-		return this.workBasketSelected.asObservable();
-	}
+	
+//#endregion 
 
-	triggerWorkBasketSaved() {
-		this.workBasketSaved.next(Date.now());
-	}
+//#region "Service extras"
+selectWorkBasket(id: string) {
+	this.workBasketSelected.next(id);
+}
 
-	workbasketSavedTriggered(): Observable<number> {
-		return this.workBasketSaved.asObservable();
-	}
+getSelectedWorkBasket(): Observable < string > {
+	return this.workBasketSelected.asObservable();
+}
+
+triggerWorkBasketSaved() {
+	this.workBasketSaved.next(Date.now());
+}
+
+workbasketSavedTriggered(): Observable < number > {
+	return this.workBasketSaved.asObservable();
+}
 	//#endregion
 
 	//#region private
 	private getWorkbasketSummaryQueryParameters(sortBy: string,
-		order: string,
-		name: string,
-		nameLike: string,
-		descLike: string,
-		owner: string,
-		ownerLike: string,
-		type: string,
-		key: string,
-		keyLike: string,
-		requiredPermission: string): string {
-		let query: string = '?';
-		query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
-		query += order ? `${this.ORDER}=${order}&` : '';
-		query += name ? `${this.NAME}=${name}&` : '';
-		query += nameLike ? `${this.NAMELIKE}=${nameLike}&` : '';
-		query += descLike ? `${this.DESCLIKE}=${descLike}&` : '';
-		query += owner ? `${this.OWNER}=${owner}&` : '';
-		query += ownerLike ? `${this.OWNERLIKE}=${ownerLike}&` : '';
-		query += type ? `${this.TYPE}=${type}&` : '';
-		query += key ? `${this.KEY}=${key}&` : '';
-		query += keyLike ? `${this.KEYLIKE}=${keyLike}&` : '';
-		query += requiredPermission ? `${this.REQUIREDPERMISSION}=${requiredPermission}&` : '';
+	order: string,
+	name: string,
+	nameLike: string,
+	descLike: string,
+	owner: string,
+	ownerLike: string,
+	type: string,
+	key: string,
+	keyLike: string,
+	requiredPermission: string): string {
+	let query: string = '?';
+	query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
+	query += order ? `${this.ORDER}=${order}&` : '';
+	query += name ? `${this.NAME}=${name}&` : '';
+	query += nameLike ? `${this.NAMELIKE}=${nameLike}&` : '';
+	query += descLike ? `${this.DESCLIKE}=${descLike}&` : '';
+	query += owner ? `${this.OWNER}=${owner}&` : '';
+	query += ownerLike ? `${this.OWNERLIKE}=${ownerLike}&` : '';
+	query += type ? `${this.TYPE}=${type}&` : '';
+	query += key ? `${this.KEY}=${key}&` : '';
+	query += keyLike ? `${this.KEYLIKE}=${keyLike}&` : '';
+	query += requiredPermission ? `${this.REQUIREDPERMISSION}=${requiredPermission}&` : '';
 
-		if (query.lastIndexOf('&') === query.length - 1) {
-			query = query.slice(0, query.lastIndexOf('&'))
-		}
-		return query;
+	if (query.lastIndexOf('&') === query.length - 1) {
+		query = query.slice(0, query.lastIndexOf('&'))
 	}
+	return query;
+}
 
 	private handleError(error: Response | any) {
-		// In a real world app, you might use a remote logging infrastructure
-		let errMsg: string;
-		if (error instanceof Response) {
-			const body = error.json() || '';
-			const err = JSON.stringify(body);
-			errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-		} else {
-			errMsg = error.message ? error.message : error.toString();
-		}
-		console.error(errMsg);
-		return Observable.throw(errMsg);
+	// In a real world app, you might use a remote logging infrastructure
+	let errMsg: string;
+	if (error instanceof Response) {
+		const body = error.json() || '';
+		const err = JSON.stringify(body);
+		errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+	} else {
+		errMsg = error.message ? error.message : error.toString();
 	}
+	console.error(errMsg);
+	return Observable.throw(errMsg);
+}
 
 	//#endregion 
 }

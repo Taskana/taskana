@@ -34,6 +34,10 @@ export class SpinnerComponent {
     @Input()
     isModal: boolean = false;
 
+    @Input()
+    positionClass: string = undefined;
+    
+
     @ViewChild('spinnerModal')
     private modal;
 

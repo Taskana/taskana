@@ -21,9 +21,9 @@ import { CategorieslistComponent } from './categorieslist/categorieslist.compone
 import { CategoriestreeComponent } from './categoriestree/categoriestree.component';
 import { CategoryeditorComponent } from './categoryeditor/categoryeditor.component';
 import { CategoriesadministrationComponent } from './categoriesadministration/categoriesadministration.component';
-import { WorkbasketDistributiontargetsComponent } from './workbasket-distributiontargets/workbasket-distributiontargets.component';
 import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component';
 import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component';
+import { DistributionTargetsComponent } from './workbasket/details/distribution-targets/distribution-targets.component';
 import { AccessItemsComponent } from './workbasket/details/access-items/access-items.component';
 import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
@@ -51,6 +51,7 @@ import { AlertService } from './services/alert.service';
  */
 import { MapValuesPipe } from './pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from './pipes/remove-none-type';
+import { SelectWorkBasketPipe } from './pipes/seleted-workbasket.pipe';
 
 const MODULES =     [
                     BrowserModule,
@@ -74,7 +75,6 @@ const DECLARATIONS =  [
                       CategoriesadministrationComponent,
                       AccessItemsComponent,
                       WorkbasketDetailsComponent,
-                      WorkbasketDistributiontargetsComponent,
                       MasterAndDetailComponent,
                       WorkbasketInformationComponent,
                       NoAccessComponent,
@@ -83,9 +83,11 @@ const DECLARATIONS =  [
                       IconTypeComponent,
                       AlertComponent,
                       GeneralMessageModalComponent,
+                      DistributionTargetsComponent,
                       SortComponent,
                       MapValuesPipe,
-                      RemoveNoneTypePipe
+                      RemoveNoneTypePipe,
+                      SelectWorkBasketPipe
                     ];
 
 @NgModule({
