@@ -3,7 +3,7 @@
 <div *ngIf="workbasket && accessItems" id="wb-information" class="panel panel-default">
 	<div class="panel-heading">
 		<div class="btn-group pull-right">
-			<button type="button" (click)="onSave()"  [disabled]="!AccessItemsForm.form.valid" class="btn btn-default btn-primary">Save</button>
+			<button type="button" (click)="onSave()" [disabled]="!AccessItemsForm.form.valid" class="btn btn-default btn-primary">Save</button>
 			<button type="button" (click)="clear()" class="btn btn-default">Undo changes</button>
 		</div>
 		<h4 class="panel-header">{{workbasket.name}}</h4>
@@ -45,22 +45,21 @@
 							<div [ngClass]="{
 										'has-warning': (accessItemsClone[index].accessId !== accessItem.accessId),
 										'has-error': !accessItem.accessId }">
-								<input type="text" required #accessItemName="ngModel" class="form-control" name="accessItem.accessId-{{index}}" [(ngModel)]="accessItem.accessId" placeholder="{{accessItemName.invalid? 'Access id is required': ''}}">
+								<input type="text" required #accessItemName="ngModel" class="form-control" name="accessItem.accessId-{{index}}" [(ngModel)]="accessItem.accessId"
+								 placeholder="{{accessItemName.invalid? 'Access id is required': ''}}">
 							</div>
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permRead !== accessItem.permRead)}">
 							<input type="checkbox" disabled="disabled" name="accessItem.permRead-{{index}}" [(ngModel)]="accessItem.permRead">
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permOpen !== accessItem.permOpen)}">
-							<input type="checkbox"  name="accessItem.permOpen-{{index}}" [(ngModel)]="accessItem.permOpen">
+							<input type="checkbox" name="accessItem.permOpen-{{index}}" [(ngModel)]="accessItem.permOpen">
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permAppend !== accessItem.permAppend)}">
 							<input type="checkbox" name="accessItem.permAppend-{{index}}" [(ngModel)]="accessItem.permAppend">
 						</td>
-						<td>
-							<div ngClass="{{(accessItemsClone[index].permTransfer != accessItem.permTransfer)? 'has-changes': 'pepe'}}">
-									<input type="checkbox" name="accessItem.permTransfer-{{index}}" [(ngModel)]="accessItem.permTransfer">
-							</div>
+						<td ngClass="{{(accessItemsClone[index].permTransfer != accessItem.permTransfer)? 'has-changes': 'pepe'}}">
+							<input type="checkbox" name="accessItem.permTransfer-{{index}}" [(ngModel)]="accessItem.permTransfer">
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permDistribute !== accessItem.permDistribute)}">
 							<input type="checkbox" name="accessItem.permDistribute-{{index}}" [(ngModel)]="accessItem.permDistribute">
