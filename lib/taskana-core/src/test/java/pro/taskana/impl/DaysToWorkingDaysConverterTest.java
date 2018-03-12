@@ -2,6 +2,7 @@ package pro.taskana.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -38,6 +39,62 @@ public class DaysToWorkingDaysConverterTest {
 
         assertEquals(instance1, instance2);
         assertNotEquals(instance1, instance3);
+    }
+
+    @Test
+    public void testConvertWorkingDaysToDaysForTasks() {
+        List<ReportLineItemDefinition> reportItems = new ArrayList<>(Arrays.asList(new ReportLineItemDefinition(0)));
+        try {
+            DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(reportItems, Instant.now());
+
+            Instant thursday0201 = Instant.parse("2018-02-01T07:00:00.000Z");
+            long days = converter.convertWorkingDaysToDays(thursday0201, 0); // = thursday
+            assertEquals(0, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 1); // fri
+            assertEquals(1, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 2); // mon
+            assertEquals(4, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 3); // tues
+            assertEquals(5, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 4); // we
+            assertEquals(6, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 5); // thurs
+            assertEquals(7, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 6); // fri
+            assertEquals(8, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 7); // mon
+            assertEquals(11, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 8); // tue
+            assertEquals(12, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 9); // we
+            assertEquals(13, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 10); // thu
+            assertEquals(14, days);
+            days = converter.convertWorkingDaysToDays(thursday0201, 11); // fri
+            assertEquals(15, days);
+
+            Instant gruenDonnerstag2018 = Instant.parse("2018-03-29T01:00:00.000Z");
+            days = converter.convertWorkingDaysToDays(gruenDonnerstag2018, 0);
+            assertEquals(0, days);
+            days = converter.convertWorkingDaysToDays(gruenDonnerstag2018, 1); // Karfreitag
+            assertEquals(5, days);  // osterdienstag
+            days = converter.convertWorkingDaysToDays(gruenDonnerstag2018, 2); // Karfreitag
+            assertEquals(6, days);  // ostermittwoch
+
+            Instant freitag0427 = Instant.parse("2018-04-27T19:00:00.000Z");
+            days = converter.convertWorkingDaysToDays(freitag0427, 0);
+            assertEquals(0, days);
+            days = converter.convertWorkingDaysToDays(freitag0427, 1);
+            assertEquals(3, days); // 30.4.
+            days = converter.convertWorkingDaysToDays(freitag0427, 2);
+            assertEquals(5, days); // 2.5.
+
+        } catch (InvalidArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            fail("");
+        }
+
     }
 
     @Test

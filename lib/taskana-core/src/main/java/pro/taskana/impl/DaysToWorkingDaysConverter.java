@@ -149,6 +149,21 @@ public final class DaysToWorkingDaysConverter {
         return ageInWorkingDays;
     }
 
+    public long convertWorkingDaysToDays(Instant startTime, long numberOfDays) {
+        int days = 0;
+        int workingDays = 0;
+        while (workingDays < numberOfDays) {
+            if (isWorkingDay(days, startTime)) {
+                workingDays++;
+            }
+            days++;
+            while (!isWorkingDay(days, startTime)) {
+                days++;
+            }
+        }
+        return days;
+    }
+
     private ArrayList<Integer> generateNegativeDaysToWorkingDays(
         List<ReportLineItemDefinition> reportLineItemDefinitions, Instant referenceDate) {
         int minUpperLimit = getSmallestUpperLimit(reportLineItemDefinitions);
@@ -205,11 +220,10 @@ public final class DaysToWorkingDaysConverter {
     }
 
     private boolean isWorkingDay(int day, Instant referenceDate) {
-        if (LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day).getDayOfWeek().equals(
-            DayOfWeek.SATURDAY)
-            || LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day).getDayOfWeek().equals(
-                DayOfWeek.SUNDAY)
-            || isHoliday(LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day).toLocalDate())) {
+        LocalDateTime dateTime = LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day);
+        if (dateTime.getDayOfWeek().equals(DayOfWeek.SATURDAY)
+            || dateTime.getDayOfWeek().equals(DayOfWeek.SUNDAY)
+            || isHoliday(dateTime.toLocalDate())) {
             return false;
         }
         return true;
