@@ -42,9 +42,6 @@ public class WorkbasketAccessItemListMapper {
             .add(linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(workbasketId))
                 .withSelfRel());
         accessItemListResource
-            .add(linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(workbasketId))
-                .withRel("setWorkbasketAccessItemResourceList"));
-        accessItemListResource
             .add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(workbasketId))
                 .withRel("workbasket"));
 
