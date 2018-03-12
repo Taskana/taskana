@@ -245,6 +245,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         if (isUserInRole(roles)) {
             return;
         } else {
+            if (LOGGER.isErrorEnabled()) {
+                String accessIds = LoggerUtils.listToString(CurrentUserContext.getAccessIds());
+                String rolesAsString = Arrays.toString(roles);
+                LOGGER.error("Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
+                    accessIds,
+                    rolesAsString);
+            }
             throw new NotAuthorizedException("current user is not member of role(s) " + Arrays.toString(roles));
         }
     }

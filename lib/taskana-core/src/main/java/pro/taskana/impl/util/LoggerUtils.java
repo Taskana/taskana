@@ -32,7 +32,7 @@ public final class LoggerUtils {
             StringBuilder builder = new StringBuilder();
             builder.append("[");
             for (T t : list) {
-                builder.append(t.toString());
+                builder.append(String.valueOf(t));
                 builder.append(";\n");
             }
             builder.append("]");

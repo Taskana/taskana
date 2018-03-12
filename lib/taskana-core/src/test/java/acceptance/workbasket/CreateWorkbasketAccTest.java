@@ -17,6 +17,7 @@ import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -37,7 +38,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
     @Test
     public void testCreateWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException {
+        InvalidWorkbasketException, WorkbasketAlreadyExistException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
@@ -65,7 +66,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
     @Test(expected = NotAuthorizedException.class)
     public void testCreateWorkbasketNotAuthorized()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException {
+        InvalidWorkbasketException, WorkbasketAlreadyExistException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.newWorkbasket("key3", "novatec");
@@ -82,7 +83,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testCreateWorkbasketWithMissingRequiredField()
-        throws WorkbasketNotFoundException, NotAuthorizedException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketAlreadyExistException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.newWorkbasket(null, "novatec");
