@@ -3,12 +3,14 @@ package pro.taskana.rest.resource;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.core.Relation;
 
 import pro.taskana.WorkbasketType;
 
 /**
  * Resource class for {@link pro.taskana.WorkbasketSummary}.
  */
+@Relation(collectionRelation = "workbaskets")
 public class WorkbasketSummaryResource extends ResourceSupport {
 
     public String workbasketId;
