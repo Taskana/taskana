@@ -35,9 +35,6 @@ public class DistributionTargetListMapper {
             .add(linkTo(methodOn(WorkbasketController.class).getDistributionTargets(workbasketId))
                 .withSelfRel());
         distributionTargetListResource
-            .add(linkTo(methodOn(WorkbasketController.class).getDistributionTargets(workbasketId))
-                .withRel("distributionTargetResourceList"));
-        distributionTargetListResource
             .add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(workbasketId))
                 .withRel("workbasket"));
 
