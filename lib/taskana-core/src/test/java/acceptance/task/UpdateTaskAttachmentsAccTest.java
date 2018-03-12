@@ -10,7 +10,9 @@ import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -32,6 +34,8 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.AttachmentImpl;
+import pro.taskana.impl.DaysToWorkingDaysConverter;
+import pro.taskana.impl.ReportLineItemDefinition;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
@@ -147,7 +151,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
         assertTrue(task.getPriority() == 999);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofHours(5))));
+        assertTrue(task.getDue().equals(task.getPlanned()));
 
     }
 
@@ -297,7 +301,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
         assertTrue(task.getPriority() == 999);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofHours(5))));
+        assertTrue(task.getDue().equals(task.getPlanned()));
 
     }
 
@@ -322,7 +326,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertTrue(task.getPriority() == 101);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofHours(7))));
+        assertTrue(task.getDue().equals(task.getPlanned()));
 
         assertThat(task.getAttachments().size(), equalTo(2));
         List<Attachment> attachments = task.getAttachments();
@@ -358,7 +362,12 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertTrue(task.getPriority() == 99);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(16))));
+
+        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
+            .initialize(new ArrayList<>(Arrays.asList(new ReportLineItemDefinition(0))), Instant.now());
+        long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 16);
+
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
 
         rohrpostFound = false;
         boolean faxFound = false;
