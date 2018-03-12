@@ -58,6 +58,7 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
     private static final String MUST_NOT_BE_EMPTY = " must not be empty";
     private static final Duration MAX_DURATION = Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
+    private DaysToWorkingDaysConverter converter;
     private TaskanaEngineImpl taskanaEngine;
     private WorkbasketService workbasketService;
     private ClassificationServiceImpl classificationService;
@@ -67,6 +68,13 @@ public class TaskServiceImpl implements TaskService {
     TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
         AttachmentMapper attachmentMapper) {
         super();
+        try {
+            this.converter = DaysToWorkingDaysConverter
+                .initialize(new ArrayList<>(Arrays.asList(new ReportLineItemDefinition(0))), Instant.now());
+        } catch (InvalidArgumentException e) {
+            LOGGER.error("could not initialize DaysToWorkingDaysConverter. Caught exception " + e);
+            throw new SystemException("Internal error. Cannot initialize DaysToWorkingDaysConverter");
+        }
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.taskMapper = taskMapper;
         this.workbasketService = taskanaEngine.getWorkbasketService();
@@ -631,7 +639,8 @@ public class TaskServiceImpl implements TaskService {
                 classification.getPriority(), classification.getServiceLevel());
             Duration finalDuration = finalPrioDuration.getDuration();
             if (finalDuration != null && !MAX_DURATION.equals(finalDuration)) {
-                Instant due = task.getPlanned().plus(finalDuration);
+                long days = converter.convertWorkingDaysToDays(task.getPlanned(), finalDuration.toDays());
+                Instant due = task.getPlanned().plus(Duration.ofDays(days));
                 task.setDue(due);
             }
             task.setPriority(finalPrioDuration.getPrio());
@@ -1099,7 +1108,9 @@ public class TaskServiceImpl implements TaskService {
 
         if (newClassificationSummary == null) { // newClassification is null -> take prio and duration from attachments
             if (prioDurationFromAttachments.getDuration() != null) {
-                Instant due = newTaskImpl.getPlanned().plus(prioDurationFromAttachments.getDuration());
+                long days = converter.convertWorkingDaysToDays(newTaskImpl.getPlanned(),
+                    prioDurationFromAttachments.getDuration().toDays());
+                Instant due = newTaskImpl.getPlanned().plus(Duration.ofDays(days));
                 newTaskImpl.setDue(due);
             }
             if (prioDurationFromAttachments.getPrio() > Integer.MIN_VALUE) {
@@ -1126,7 +1137,9 @@ public class TaskServiceImpl implements TaskService {
                     minDuration = durationFromClassification;
                 }
 
-                Instant due = newTaskImpl.getPlanned().plus(minDuration);
+                long days = converter.convertWorkingDaysToDays(newTaskImpl.getPlanned(), minDuration.toDays());
+                Instant due = newTaskImpl.getPlanned().plus(Duration.ofDays(days));
+
                 newTaskImpl.setDue(due);
             }
 
