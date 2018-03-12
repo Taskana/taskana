@@ -28,6 +28,7 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
@@ -75,7 +76,7 @@ public class WorkbasketServiceImplIntExplicitTest {
     @Test
     public void testSelectWorkbasket()
         throws WorkbasketNotFoundException, NotAuthorizedException, SQLException, InvalidWorkbasketException,
-        InvalidArgumentException {
+        InvalidArgumentException, WorkbasketAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
@@ -96,7 +97,7 @@ public class WorkbasketServiceImplIntExplicitTest {
     @Test(expected = NotAuthorizedException.class)
     public void testGetWorkbasketFail()
         throws WorkbasketNotFoundException, SQLException, InvalidWorkbasketException, NotAuthorizedException,
-        InvalidArgumentException {
+        InvalidArgumentException, WorkbasketAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
@@ -113,7 +114,7 @@ public class WorkbasketServiceImplIntExplicitTest {
     @Test
     public void testSelectWorkbasketWithDistribution()
         throws WorkbasketNotFoundException, NotAuthorizedException, SQLException, InvalidWorkbasketException,
-        InvalidArgumentException {
+        InvalidArgumentException, WorkbasketAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();

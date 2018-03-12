@@ -40,6 +40,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.JunitHelper;
@@ -96,7 +97,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException,
         WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
         ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
-        InvalidArgumentException {
+        InvalidArgumentException, WorkbasketAlreadyExistException {
         Workbasket wb = workbasketService.newWorkbasket("workbasket", "novatec");
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
@@ -122,7 +123,8 @@ public class TaskServiceImplIntAutocommitTest {
     public void testStartTransactionFail()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
+        WorkbasketAlreadyExistException {
         Workbasket wb = workbasketService.newWorkbasket("wb1k1", "novatec");
         wb.setName("sdf");
         wb.setType(WorkbasketType.GROUP);
@@ -151,7 +153,8 @@ public class TaskServiceImplIntAutocommitTest {
     public void testCreateTaskInTaskanaWithDefaultDb()
         throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
+        WorkbasketAlreadyExistException {
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(TaskanaEngineConfiguration.createDefaultDataSource(), false);
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false);
@@ -179,7 +182,8 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException, SystemException {
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException, SystemException,
+        WorkbasketAlreadyExistException {
         Workbasket wb = workbasketService.newWorkbasket("key", "novatec");
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
@@ -216,7 +220,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void shouldTransferTaskToOtherWorkbasket()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         ClassificationAlreadyExistException, TaskNotFoundException, InterruptedException, TaskAlreadyExistException,
-        InvalidWorkbasketException, InvalidArgumentException {
+        InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException {
         Workbasket sourceWB;
         Workbasket destinationWB;
         WorkbasketImpl wb;
@@ -281,7 +285,8 @@ public class TaskServiceImplIntAutocommitTest {
     @Test
     public void shouldNotTransferByFailingSecurity() throws WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException, SQLException,
-        TaskNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
+        TaskNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
+        WorkbasketAlreadyExistException {
         final String user = CurrentUserContext.getUserid();
 
         // Set up Security for this Test
@@ -368,7 +373,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void testWithPrimaryObjectRef() throws FileNotFoundException, SQLException, TaskNotFoundException,
         WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
         ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
-        InvalidArgumentException {
+        InvalidArgumentException, WorkbasketAlreadyExistException {
         Workbasket wb = workbasketService.newWorkbasket("workbasket", "novatec");
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);

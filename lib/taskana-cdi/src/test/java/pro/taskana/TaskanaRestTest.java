@@ -21,6 +21,7 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ObjectReference;
 
@@ -38,7 +39,7 @@ public class TaskanaRestTest {
     @GET
     public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException,
         ClassificationNotFoundException, ClassificationAlreadyExistException, InvalidWorkbasketException,
-        TaskAlreadyExistException, InvalidArgumentException {
+        TaskAlreadyExistException, InvalidArgumentException, WorkbasketAlreadyExistException {
         Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket("key", "cdiDomain");
         workbasket.setName("wb");
         workbasket.setType(WorkbasketType.PERSONAL);
