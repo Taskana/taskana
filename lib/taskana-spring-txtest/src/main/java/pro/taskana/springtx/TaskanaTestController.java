@@ -13,6 +13,7 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.util.IdGenerator;
@@ -52,7 +53,8 @@ public class TaskanaTestController {
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping("/transaction")
     public @ResponseBody String transaction(@RequestParam(value = "rollback", defaultValue = "false") String rollback)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        WorkbasketAlreadyExistException {
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key", "workbasket"));
 
         int workbaskets = getWorkbaskets();
@@ -67,7 +69,8 @@ public class TaskanaTestController {
     @RequestMapping("/transaction-many")
     public @ResponseBody String transactionMany(
         @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        WorkbasketAlreadyExistException {
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key3", "workbasket3"));
@@ -83,7 +86,8 @@ public class TaskanaTestController {
     @RequestMapping("/geschbuch")
     public @ResponseBody String transactionGeschbuch(
         @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        WorkbasketAlreadyExistException {
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
 

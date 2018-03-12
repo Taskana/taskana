@@ -123,7 +123,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(
-        userName = "user_3_1", groupNames = {"businessadmin"})
+        userName = "user_3_1", groupNames = {"group_1"})
     @Test
     public void testDistributionTargetCallsFailWithNotAuthorizedException()
         throws NotAuthorizedException, WorkbasketNotFoundException {

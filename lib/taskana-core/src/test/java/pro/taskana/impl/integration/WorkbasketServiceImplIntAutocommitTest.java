@@ -34,6 +34,7 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
@@ -88,7 +89,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
     @Test
     public void testSelectWorkbasket()
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        InvalidArgumentException {
+        InvalidArgumentException, WorkbasketAlreadyExistException {
         String id = IdGenerator.generateWithPrefix("TWB");
         Workbasket workbasket = createTestWorkbasket(id, "key0", "novatec", "Superbasket", WorkbasketType.GROUP);
         workbasket = workBasketService.createWorkbasket(workbasket);
@@ -107,7 +108,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
     @Test
     public void testSelectWorkbasketWithDistribution()
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        InvalidArgumentException {
+        InvalidArgumentException, WorkbasketAlreadyExistException {
         String id = IdGenerator.generateWithPrefix("TWB");
         Workbasket wbDist1 = createTestWorkbasket(id, "key0", "novatec", "Superbasket", WorkbasketType.GROUP);
         wbDist1 = workBasketService.createWorkbasket(wbDist1);

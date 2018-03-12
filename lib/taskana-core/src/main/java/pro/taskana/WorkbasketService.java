@@ -5,6 +5,7 @@ import java.util.List;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 
@@ -53,9 +54,11 @@ public interface WorkbasketService {
      *             If a required property of the Workbasket is not set.
      * @throws NotAuthorizedException
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
+     * @throws WorkbasketAlreadyExistException
+     *             if the workbasket exists already
      */
     Workbasket createWorkbasket(Workbasket workbasket)
-        throws InvalidWorkbasketException, NotAuthorizedException;
+        throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException;
 
     /**
      * Update a Workbasket.

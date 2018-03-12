@@ -37,6 +37,7 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.mappings.DistributionTargetMapper;
@@ -98,6 +99,7 @@ public class WorkbasketServiceImplTest {
             verify(workbasketMapperMock, times(1)).findById(wbId);
             verify(cutSpy, times(1)).checkAuthorization(wb.getId(), authorization);
             verify(taskanaEngineImplMock, times(1)).returnConnection();
+            verify(taskanaEngineImplMock, times(1)).isUserInRole(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -138,6 +140,7 @@ public class WorkbasketServiceImplTest {
         verify(workbasketMapperMock, times(1)).findById(wbId);
         verify(cutSpy, times(1)).checkAuthorization(wb.getId(), authorization);
         verify(taskanaEngineImplMock, times(1)).returnConnection();
+        verify(taskanaEngineImplMock, times(1)).isUserInRole(any());
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
             taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -160,6 +163,7 @@ public class WorkbasketServiceImplTest {
             verify(workbasketMapperMock, times(1)).findByKeyAndDomain(wbKey, "domain");
             verify(cutSpy, times(1)).checkAuthorization(wbKey, "domain", authorization);
             verify(taskanaEngineImplMock, times(1)).returnConnection();
+            verify(taskanaEngineImplMock, times(1)).isUserInRole(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -200,6 +204,7 @@ public class WorkbasketServiceImplTest {
         verify(cutSpy, times(1)).checkAuthorization(wbKey, "test", authorization);
         verify(workbasketMapperMock, times(1)).findByKeyAndDomain(wbKey, "test");
         verify(taskanaEngineImplMock, times(1)).returnConnection();
+        verify(taskanaEngineImplMock, times(1)).isUserInRole(any());
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
             taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -208,7 +213,7 @@ public class WorkbasketServiceImplTest {
 
     @Test
     public void testCreateWorkbasket_InvalidWorkbasketCases()
-        throws WorkbasketNotFoundException, NotAuthorizedException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketAlreadyExistException {
         WorkbasketImpl wb = new WorkbasketImpl();
         int serviceCalls = 1;
 
@@ -216,11 +221,13 @@ public class WorkbasketServiceImplTest {
         try {
             wb.setId(null);
             wb.setKey(null);
+            doReturn(null).when(workbasketMapperMock).findByKeyAndDomain(any(), any());
             cutSpy.createWorkbasket(wb);
         } catch (InvalidWorkbasketException ex) {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
+            verify(workbasketMapperMock, times(serviceCalls)).findByKeyAndDomain(any(), any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -238,6 +245,7 @@ public class WorkbasketServiceImplTest {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
+            verify(workbasketMapperMock, times(serviceCalls)).findByKeyAndDomain(any(), any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -256,6 +264,7 @@ public class WorkbasketServiceImplTest {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
+            verify(workbasketMapperMock, times(serviceCalls)).findByKeyAndDomain(any(), any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -273,6 +282,7 @@ public class WorkbasketServiceImplTest {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
+            verify(workbasketMapperMock, times(serviceCalls)).findByKeyAndDomain(any(), any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -291,6 +301,7 @@ public class WorkbasketServiceImplTest {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
+            verify(workbasketMapperMock, times(serviceCalls)).findByKeyAndDomain(any(), any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -309,6 +320,7 @@ public class WorkbasketServiceImplTest {
             verify(taskanaEngineImplMock, times(serviceCalls)).openConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).returnConnection();
             verify(taskanaEngineImplMock, times(serviceCalls)).checkRoleMembership(any());
+            verify(workbasketMapperMock, times(serviceCalls)).findByKeyAndDomain(any(), any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
                 taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -321,7 +333,8 @@ public class WorkbasketServiceImplTest {
 
     @Test
     public void testCreateWorkbasket_WithoutDistibutionTargets()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        WorkbasketAlreadyExistException {
         WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
         doNothing().when(workbasketMapperMock).insert(expectedWb);
         doReturn(expectedWb).when(workbasketMapperMock).findById(any());
@@ -331,15 +344,16 @@ public class WorkbasketServiceImplTest {
         Workbasket actualWb = cutSpy.createWorkbasket(expectedWb);
         cutSpy.setDistributionTargets(expectedWb.getId(), null);
 
-        verify(taskanaEngineImplMock, times(5)).openConnection();
-        verify(taskanaEngineImplMock, times(2)).getConfiguration();
-        verify(taskanaEngineConfigurationMock, times(2)).isSecurityEnabled();
+        verify(taskanaEngineImplMock, times(3)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).getConfiguration();
+        verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
         verify(workbasketMapperMock, times(1)).insert(expectedWb);
-        verify(workbasketMapperMock, times(3)).findById(expectedWb.getId());
+        verify(workbasketMapperMock, times(1)).findByKeyAndDomain(any(), any());
+        verify(workbasketMapperMock, times(2)).findById(expectedWb.getId());
         verify(workbasketMapperMock, times(1)).update(any());
-        verify(taskanaEngineImplMock, times(5)).returnConnection();
+        verify(taskanaEngineImplMock, times(3)).returnConnection();
         verify(taskanaEngineImplMock, times(2)).checkRoleMembership(any());
-        verify(taskanaEngineImplMock, times(2)).isUserInRole(any());
+        verify(taskanaEngineImplMock, times(1)).isUserInRole(any());
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsBySourceId(any());
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
@@ -352,30 +366,25 @@ public class WorkbasketServiceImplTest {
 
     @Test
     public void testCreateWorkbasket_WithDistibutionTargets()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        WorkbasketAlreadyExistException {
         final int distTargetAmount = 2;
         WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
         doNothing().when(workbasketMapperMock).insert(expectedWb);
         doReturn(expectedWb).when(cutSpy).getWorkbasket(any());
-        doReturn(expectedWb).when(workbasketMapperMock).findById(any());
-        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineImplMock).getConfiguration();
-        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
 
         Workbasket actualWb = cutSpy.createWorkbasket(expectedWb);
         cutSpy.setDistributionTargets(expectedWb.getId(), createTestDistributionTargets(distTargetAmount));
 
-        verify(taskanaEngineImplMock, times(5)).openConnection();
-        verify(taskanaEngineImplMock, times(1)).getConfiguration();
-        verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
+        verify(taskanaEngineImplMock, times(4)).openConnection();
         verify(workbasketMapperMock, times(3)).insert(any());
         verify(cutSpy, times(distTargetAmount + 1)).getWorkbasket(any());
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsBySourceId(any());
         verify(distributionTargetMapperMock, times(distTargetAmount)).insert(any(), any());
-        verify(workbasketMapperMock, times(1)).findById(any());
+        verify(workbasketMapperMock, times(3)).findByKeyAndDomain(any(), any());
         verify(workbasketMapperMock, times(1)).update(any());
-        verify(taskanaEngineImplMock, times(5)).returnConnection();
+        verify(taskanaEngineImplMock, times(4)).returnConnection();
         verify(taskanaEngineImplMock, times(4)).checkRoleMembership(any());
-        verify(taskanaEngineImplMock, times(1)).isUserInRole(any());
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
             taskanaEngineImplMock, taskanaEngineConfigurationMock);
@@ -387,7 +396,8 @@ public class WorkbasketServiceImplTest {
 
     @Test(expected = WorkbasketNotFoundException.class)
     public void testCreateWorkbasket_DistibutionTargetNotExisting()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        WorkbasketAlreadyExistException {
         WorkbasketImpl expectedWb = createTestWorkbasket("ID-1", "Key-1");
         doNothing().when(workbasketMapperMock).insert(expectedWb);
 
@@ -402,6 +412,7 @@ public class WorkbasketServiceImplTest {
             verify(taskanaEngineImplMock, times(3)).openConnection();
             verify(workbasketMapperMock, times(1)).insert(expectedWb);
             verify(workbasketMapperMock, times(1)).findById(any());
+            verify(workbasketMapperMock, times(1)).findByKeyAndDomain(any(), any());
             verify(cutSpy, times(1)).getWorkbasket(any());
             verify(taskanaEngineImplMock, times(3)).returnConnection();
             verify(taskanaEngineImplMock, times(2)).checkRoleMembership(any());
@@ -416,7 +427,7 @@ public class WorkbasketServiceImplTest {
     @Ignore
     @Test(expected = WorkbasketNotFoundException.class)
     public void testCreateWorkbasket_NotCreated()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws Exception {
         WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
         doNothing().when(workbasketMapperMock).insert(expectedWb);
         doThrow(WorkbasketNotFoundException.class).when(workbasketMapperMock).findById(any());
@@ -553,7 +564,8 @@ public class WorkbasketServiceImplTest {
     }
 
     private List<String> createTestDistributionTargets(int amount)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        WorkbasketAlreadyExistException {
         List<String> distributionsTargets = new ArrayList<>();
         amount = (amount < 0) ? 0 : amount;
         for (int i = 0; i < amount; i++) {

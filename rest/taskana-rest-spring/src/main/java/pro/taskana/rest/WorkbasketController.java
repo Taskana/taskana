@@ -34,6 +34,7 @@ import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.DistributionTargetResource;
@@ -104,6 +105,7 @@ public class WorkbasketController {
                 .toResource(workbasketSummaries);
             return new ResponseEntity<>(workbasketListResource, HttpStatus.OK);
         } catch (InvalidArgumentException ex) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
@@ -149,8 +151,7 @@ public class WorkbasketController {
 
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource)
-        throws NotAuthorizedException {
+    public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource) {
         try {
             Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
             workbasket = workbasketService.createWorkbasket(workbasket);
@@ -158,6 +159,12 @@ public class WorkbasketController {
         } catch (InvalidWorkbasketException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (WorkbasketAlreadyExistException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (NotAuthorizedException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -219,6 +226,7 @@ public class WorkbasketController {
             workbasketAccessItem = workbasketService.createWorkbasketAccessItem(workbasketAccessItem);
             return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
         } catch (InvalidArgumentException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
@@ -234,6 +242,7 @@ public class WorkbasketController {
             workbasketAccessItem = workbasketService.updateWorkbasketAccessItem(workbasketAccessItem);
             return new ResponseEntity<>(workbasketAccessItemMapper.toResource(workbasketAccessItem), HttpStatus.OK);
         } catch (InvalidArgumentException | NotAuthorizedException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
@@ -256,6 +265,7 @@ public class WorkbasketController {
             }
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (InvalidArgumentException | NullPointerException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
@@ -280,8 +290,10 @@ public class WorkbasketController {
                 .toResource(workbasketId, distributionTargets);
             result = new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
         } catch (WorkbasketNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotAuthorizedException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         return result;
@@ -297,8 +309,10 @@ public class WorkbasketController {
             workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);
             result = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (WorkbasketNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (NotAuthorizedException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             result = ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return result;
