@@ -14,6 +14,7 @@ import pro.taskana.Task;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.exceptions.InvalidArgumentException;
 
 /**
  * Task entity.
@@ -54,6 +55,12 @@ public class TaskImpl implements Task {
     private String custom8;
     private String custom9;
     private String custom10;
+    private String custom11;
+    private String custom12;
+    private String custom13;
+    private String custom14;
+    private String custom15;
+    private String custom16;
 
     TaskImpl() {
     }
@@ -305,103 +312,119 @@ public class TaskImpl implements Task {
     }
 
     @Override
-    public String getCustom1() {
-        return custom1;
+    public String getCustomAttribute(String number) throws InvalidArgumentException {
+        int num = 0;
+        try {
+            num = Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16");
+        }
+
+        switch (num) {
+            case 1:
+                return custom1;
+            case 2:
+                return custom2;
+            case 3:
+                return custom3;
+            case 4:
+                return custom4;
+            case 5:
+                return custom5;
+            case 6:
+                return custom6;
+            case 7:
+                return custom7;
+            case 8:
+                return custom8;
+            case 9:
+                return custom9;
+            case 10:
+                return custom10;
+            case 11:
+                return custom10;
+            case 12:
+                return custom12;
+            case 13:
+                return custom13;
+            case 14:
+                return custom14;
+            case 15:
+                return custom15;
+            case 16:
+                return custom16;
+            default:
+                throw new InvalidArgumentException(
+                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+        }
+
     }
 
     @Override
-    public void setCustom1(String custom1) {
-        this.custom1 = custom1;
-    }
+    public void setCustomAttribute(String number, String value) throws InvalidArgumentException {
+        int num = 0;
+        try {
+            num = Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16");
+        }
 
-    @Override
-    public String getCustom2() {
-        return custom2;
-    }
+        switch (num) {
+            case 1:
+                custom1 = value;
+                break;
+            case 2:
+                custom2 = value;
+                break;
+            case 3:
+                custom3 = value;
+                break;
+            case 4:
+                custom4 = value;
+                break;
+            case 5:
+                custom5 = value;
+                break;
+            case 6:
+                custom6 = value;
+                break;
+            case 7:
+                custom7 = value;
+                break;
+            case 8:
+                custom8 = value;
+                break;
+            case 9:
+                custom9 = value;
+                break;
+            case 10:
+                custom10 = value;
+                break;
+            case 11:
+                custom11 = value;
+                break;
+            case 12:
+                custom12 = value;
+                break;
+            case 13:
+                custom13 = value;
+                break;
+            case 14:
+                custom14 = value;
+                break;
+            case 15:
+                custom15 = value;
+                break;
+            case 16:
+                custom16 = value;
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+        }
 
-    @Override
-    public void setCustom2(String custom2) {
-        this.custom2 = custom2;
-    }
-
-    @Override
-    public String getCustom3() {
-        return custom3;
-    }
-
-    @Override
-    public void setCustom3(String custom3) {
-        this.custom3 = custom3;
-    }
-
-    @Override
-    public String getCustom4() {
-        return custom4;
-    }
-
-    @Override
-    public void setCustom4(String custom4) {
-        this.custom4 = custom4;
-    }
-
-    @Override
-    public String getCustom5() {
-        return custom5;
-    }
-
-    @Override
-    public void setCustom5(String custom5) {
-        this.custom5 = custom5;
-    }
-
-    @Override
-    public String getCustom6() {
-        return custom6;
-    }
-
-    @Override
-    public void setCustom6(String custom6) {
-        this.custom6 = custom6;
-    }
-
-    @Override
-    public String getCustom7() {
-        return custom7;
-    }
-
-    @Override
-    public void setCustom7(String custom7) {
-        this.custom7 = custom7;
-    }
-
-    @Override
-    public String getCustom8() {
-        return custom8;
-    }
-
-    @Override
-    public void setCustom8(String custom8) {
-        this.custom8 = custom8;
-    }
-
-    @Override
-    public String getCustom9() {
-        return custom9;
-    }
-
-    @Override
-    public void setCustom9(String custom9) {
-        this.custom9 = custom9;
-    }
-
-    @Override
-    public String getCustom10() {
-        return custom10;
-    }
-
-    @Override
-    public void setCustom10(String custom10) {
-        this.custom10 = custom10;
     }
 
     @Override

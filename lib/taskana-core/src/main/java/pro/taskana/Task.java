@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.ObjectReference;
 
 /**
@@ -230,154 +231,31 @@ public interface Task {
     void setCustomAttributes(Map<String, String> customAttributes);
 
     /**
-     * Return the value for the 1. customAttribute.
+     * Return the value for custom Attribute number num.
      *
-     * @return custom1
+     * @param num
+     *            identifies which custom attribute is requested. Taskana concatenates "custom_" with num and the
+     *            resulting String must match the name of the database column that contains the custom attribute. Valid
+     *            values are "1", "2" .. "16"
+     * @return the value of custom attribute number num
+     * @throws InvalidArgumentException
+     *             if num has not a value of "1", "2" ... "16"
      */
-    String getCustom1();
+    String getCustomAttribute(String num) throws InvalidArgumentException;
 
     /**
-     * Sets the value for customAttribute1.
+     * Sets the value for custom Attribute number num.
      *
-     * @param custom1
-     *            the custom1 property of the task
+     * @param num
+     *            identifies which custom attribute is to be set. Taskana concatenates "custom_" with num and the
+     *            resulting String must match the name of the database column that contains the custom attribute. Valid
+     *            values are "1", "2" .. "16"
+     * @param value
+     *            the value of the custom attribute to be set
+     * @throws InvalidArgumentException
+     *             if num has not a value of "1", "2" ... "16"
      */
-    void setCustom1(String custom1);
-
-    /**
-     * Return the value for the 2. customAttribute.
-     *
-     * @return custom2
-     */
-    String getCustom2();
-
-    /**
-     * Sets the value for customAttribute2.
-     *
-     * @param custom2
-     *            the custom2 property of the task
-     */
-    void setCustom2(String custom2);
-
-    /**
-     * Return the value for the 3. customAttribute.
-     *
-     * @return custom3
-     */
-    String getCustom3();
-
-    /**
-     * Sets the value for customAttribute3.
-     *
-     * @param custom3
-     *            the custom3 property of the task
-     */
-    void setCustom3(String custom3);
-
-    /**
-     * Return the value for the 4. customAttribute.
-     *
-     * @return custom4
-     */
-    String getCustom4();
-
-    /**
-     * Sets the value for customAttribute4.
-     *
-     * @param custom4
-     *            the custom4 property of the task
-     */
-    void setCustom4(String custom4);
-
-    /**
-     * Return the value for the 5. customAttribute.
-     *
-     * @return custom5
-     */
-    String getCustom5();
-
-    /**
-     * Sets the value for customAttribute25.
-     *
-     * @param custom5
-     *            the custom5 property of the task
-     */
-    void setCustom5(String custom5);
-
-    /**
-     * Return the value for the 6. customAttribute.
-     *
-     * @return custom6
-     */
-    String getCustom6();
-
-    /**
-     * Sets the value for customAttribute6.
-     *
-     * @param custom6
-     *            the custom6 property of the task
-     */
-    void setCustom6(String custom6);
-
-    /**
-     * Return the value for the 7. customAttribute.
-     *
-     * @return custom7
-     */
-    String getCustom7();
-
-    /**
-     * Sets the value for customAttribute7.
-     *
-     * @param custom7
-     *            the custom7 property of the task
-     */
-    void setCustom7(String custom7);
-
-    /**
-     * Return the value for the 8. customAttribute.
-     *
-     * @return custom8
-     */
-    String getCustom8();
-
-    /**
-     * Sets the value for customAttribute8.
-     *
-     * @param custom8
-     *            the custom8 property of the task
-     */
-    void setCustom8(String custom8);
-
-    /**
-     * Return the value for the 9. customAttribute.
-     *
-     * @return custom9
-     */
-    String getCustom9();
-
-    /**
-     * Sets the value for customAttribute9.
-     *
-     * @param custom9
-     *            the custom9 property of the task
-     */
-    void setCustom9(String custom9);
-
-    /**
-     * Return the value for the 10. customAttribute.
-     *
-     * @return custom10
-     */
-    String getCustom10();
-
-    /**
-     * Sets the value for customAttribute10.
-     *
-     * @param custom10
-     *            the custom10 property of the task
-     */
-    void setCustom10(String custom10);
+    void setCustomAttribute(String num, String value) throws InvalidArgumentException;
 
     /**
      * Add an attachment.<br>

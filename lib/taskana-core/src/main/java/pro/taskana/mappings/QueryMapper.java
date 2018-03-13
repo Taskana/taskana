@@ -89,6 +89,18 @@ public interface QueryMapper {
         + "<if test='custom9Like != null'>AND (<foreach item='item' collection='custom9Like' separator=' OR '>UPPER(t.CUSTOM_9) LIKE #{item}</foreach>)</if> "
         + "<if test='custom10In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom10In' separator=',' >#{item}</foreach>)</if> "
         + "<if test='custom10Like != null'>AND (<foreach item='item' collection='custom10Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom11In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom11In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom11Like != null'>AND (<foreach item='item' collection='custom11Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom12In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom12In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom12Like != null'>AND (<foreach item='item' collection='custom12Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom13In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom13In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom13Like != null'>AND (<foreach item='item' collection='custom13Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom14In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom14In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom14Like != null'>AND (<foreach item='item' collection='custom14Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom15In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom15In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom15Like != null'>AND (<foreach item='item' collection='custom15Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
+        + "<if test='custom16In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom16In' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='custom16Like != null'>AND (<foreach item='item' collection='custom16Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
         + "<if test='customFields != null'>AND (t.CUSTOM_1 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_2 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_3 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_4 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_5 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_6 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_7 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_8 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_9 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>) OR t.CUSTOM_10 IN(<foreach item='item' collection='customFields' separator=',' >#{item}</foreach>))</if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
@@ -129,7 +141,13 @@ public interface QueryMapper {
         @Result(property = "custom7", column = "CUSTOM_7"),
         @Result(property = "custom8", column = "CUSTOM_8"),
         @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10")})
+        @Result(property = "custom10", column = "CUSTOM_10"),
+        @Result(property = "custom11", column = "CUSTOM_11"),
+        @Result(property = "custom12", column = "CUSTOM_12"),
+        @Result(property = "custom13", column = "CUSTOM_13"),
+        @Result(property = "custom14", column = "CUSTOM_14"),
+        @Result(property = "custom15", column = "CUSTOM_15"),
+        @Result(property = "custom16", column = "CUSTOM_16")})
     List<TaskSummaryImpl> queryTaskSummaries(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "

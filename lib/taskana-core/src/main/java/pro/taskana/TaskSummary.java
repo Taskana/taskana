@@ -3,6 +3,7 @@ package pro.taskana;
 import java.time.Instant;
 import java.util.List;
 
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.ObjectReference;
 
 /**
@@ -165,73 +166,16 @@ public interface TaskSummary {
     boolean isTransferred();
 
     /**
-     * Gets the custom1 property of the task.
+     * Gets the custom attribute number num of the task.
      *
-     * @return the task's custom1 property
+     * @param num
+     *            identifies which custom attribute is requested. Taskana concatenates "custom_" with num and the
+     *            resulting String must match the name of the database column that contains the custom attribute. Valid
+     *            values are "1", "2" .. "16"
+     * @return the value of custom attribute number num
+     * @throws InvalidArgumentException
+     *             if num has not a value of "1", "2" ... "16"
      */
-    String getCustom1();
-
-    /**
-     * Gets the custom2 property of the task.
-     *
-     * @return the task's custom2 property
-     */
-    String getCustom2();
-
-    /**
-     * Gets the custom3 property of the task.
-     *
-     * @return the task's custom3 property
-     */
-    String getCustom3();
-
-    /**
-     * Gets the custom4 property of the task.
-     *
-     * @return the task's custom4 property
-     */
-    String getCustom4();
-
-    /**
-     * Gets the custom5 property of the task.
-     *
-     * @return the task's custom5 property
-     */
-    String getCustom5();
-
-    /**
-     * Gets the custom6 property of the task.
-     *
-     * @return the task's custom6 property
-     */
-    String getCustom6();
-
-    /**
-     * Gets the custom7 property of the task.
-     *
-     * @return the task's custom7 property
-     */
-    String getCustom7();
-
-    /**
-     * Gets the custom8 property of the task.
-     *
-     * @return the task's custom8 property
-     */
-    String getCustom8();
-
-    /**
-     * Gets the custom9 property of the task.
-     *
-     * @return the task's custom9 property
-     */
-    String getCustom9();
-
-    /**
-     * Gets the custom10 property of the task.
-     *
-     * @return the task's custom10 property
-     */
-    String getCustom10();
+    String getCustomAttribute(String num) throws InvalidArgumentException;
 
 }
