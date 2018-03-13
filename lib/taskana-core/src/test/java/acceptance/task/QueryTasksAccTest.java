@@ -232,19 +232,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom1Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("1", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(2));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom1)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("1");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom1In(ids)
+            .customAttributeIn("1", ids)
             .list();
         assertThat(result2.size(), equalTo(2));
     }
@@ -258,19 +266,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom2Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("2", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(1));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom2)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("2");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom2In(ids)
+            .customAttributeIn("2", ids)
             .list();
         assertThat(result2.size(), equalTo(1));
     }
@@ -284,19 +300,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom3Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("3", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(1));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom3)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("3");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom3In(ids)
+            .customAttributeIn("3", ids)
             .list();
         assertThat(result2.size(), equalTo(1));
     }
@@ -310,19 +334,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom4Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("4", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(1));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom4)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("4");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom4In(ids)
+            .customAttributeIn("4", ids)
             .list();
         assertThat(result2.size(), equalTo(1));
     }
@@ -336,19 +368,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom5Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("5", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(3));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom5)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("5");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom5In(ids)
+            .customAttributeIn("5", ids)
             .list();
         assertThat(result2.size(), equalTo(3));
     }
@@ -362,19 +402,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom6Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("6", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(2));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom6)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("6");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom6In(ids)
+            .customAttributeIn("6", ids)
             .list();
         assertThat(result2.size(), equalTo(2));
     }
@@ -388,19 +436,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom7Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("7", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(1));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom7)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("7");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom7In(ids)
+            .customAttributeIn("7", ids)
             .list();
         assertThat(result2.size(), equalTo(1));
     }
@@ -414,19 +470,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom8Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("8", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(1));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom8)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("8");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom8In(ids)
+            .customAttributeIn("8", ids)
             .list();
         assertThat(result2.size(), equalTo(1));
     }
@@ -440,19 +504,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom9Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("9", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(1));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom9)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("9");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom9In(ids)
+            .customAttributeIn("9", ids)
             .list();
         assertThat(result2.size(), equalTo(1));
     }
@@ -466,19 +538,27 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .custom10Like("%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%", "%l%", "%m%",
+            .customAttributeLike("10", "%a%", "%b%", "%c%", "%d%", "%e%", "%f%", "%g%", "%h%", "%i%", "%j%", "%k%",
+                "%l%", "%m%",
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
         assertThat(results.size(), equalTo(2));
 
         String[] ids = results.stream()
-            .map(TaskSummary::getCustom10)
+            .map(t -> {
+                try {
+                    return t.getCustomAttribute("10");
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            })
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
-            .custom10In(ids)
+            .customAttributeIn("10", ids)
             .list();
         assertThat(result2.size(), equalTo(2));
     }

@@ -18,6 +18,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.TimeInterval;
 import pro.taskana.WorkbasketPermission;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
@@ -92,6 +93,18 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] custom9Like;
     private String[] custom10In;
     private String[] custom10Like;
+    private String[] custom11In;
+    private String[] custom11Like;
+    private String[] custom12In;
+    private String[] custom12Like;
+    private String[] custom13In;
+    private String[] custom13Like;
+    private String[] custom14In;
+    private String[] custom14Like;
+    private String[] custom15In;
+    private String[] custom15Like;
+    private String[] custom16In;
+    private String[] custom16Like;
     private TimeInterval[] createdIn;
     private TimeInterval[] claimedIn;
     private TimeInterval[] completedIn;
@@ -377,122 +390,136 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskQuery custom1In(String... strings) {
-        this.custom1In = strings;
+    public TaskQuery customAttributeIn(String number, String... strings) throws InvalidArgumentException {
+        int num = 0;
+        try {
+            num = Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16");
+        }
+
+        switch (num) {
+            case 1:
+                this.custom1In = strings;
+                break;
+            case 2:
+                this.custom2In = strings;
+                break;
+            case 3:
+                this.custom3In = strings;
+                break;
+            case 4:
+                this.custom4In = strings;
+                break;
+            case 5:
+                this.custom5In = strings;
+                break;
+            case 6:
+                this.custom6In = strings;
+                break;
+            case 7:
+                this.custom7In = strings;
+                break;
+            case 8:
+                this.custom8In = strings;
+                break;
+            case 9:
+                this.custom9In = strings;
+                break;
+            case 10:
+                this.custom10In = strings;
+                break;
+            case 11:
+                this.custom11In = strings;
+                break;
+            case 12:
+                this.custom12In = strings;
+                break;
+            case 13:
+                this.custom13In = strings;
+                break;
+            case 14:
+                this.custom14In = strings;
+                break;
+            case 15:
+                this.custom15In = strings;
+                break;
+            case 16:
+                this.custom16In = strings;
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+        }
+
         return this;
     }
 
     @Override
-    public TaskQuery custom1Like(String... strings) {
-        this.custom1Like = toUpperCopy(strings);
-        return this;
-    }
+    public TaskQuery customAttributeLike(String number, String... strings) throws InvalidArgumentException {
+        int num = 0;
+        try {
+            num = Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16");
+        }
 
-    @Override
-    public TaskQuery custom2In(String... strings) {
-        this.custom2In = strings;
-        return this;
-    }
+        switch (num) {
+            case 1:
+                this.custom1Like = toUpperCopy(strings);
+                break;
+            case 2:
+                this.custom2Like = toUpperCopy(strings);
+                break;
+            case 3:
+                this.custom3Like = toUpperCopy(strings);
+                break;
+            case 4:
+                this.custom4Like = toUpperCopy(strings);
+                break;
+            case 5:
+                this.custom5Like = toUpperCopy(strings);
+                break;
+            case 6:
+                this.custom6Like = toUpperCopy(strings);
+                break;
+            case 7:
+                this.custom7Like = toUpperCopy(strings);
+                break;
+            case 8:
+                this.custom8Like = toUpperCopy(strings);
+                break;
+            case 9:
+                this.custom9Like = toUpperCopy(strings);
+                break;
+            case 10:
+                this.custom10Like = toUpperCopy(strings);
+                break;
+            case 11:
+                this.custom11Like = toUpperCopy(strings);
+                break;
+            case 12:
+                this.custom12Like = toUpperCopy(strings);
+                break;
+            case 13:
+                this.custom13Like = toUpperCopy(strings);
+                break;
+            case 14:
+                this.custom14Like = toUpperCopy(strings);
+                break;
+            case 15:
+                this.custom15Like = toUpperCopy(strings);
+                break;
+            case 16:
+                this.custom16Like = toUpperCopy(strings);
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+        }
 
-    @Override
-    public TaskQuery custom2Like(String... strings) {
-        this.custom2Like = toUpperCopy(strings);
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom3In(String... strings) {
-        this.custom3In = strings;
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom3Like(String... strings) {
-        this.custom3Like = toUpperCopy(strings);
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom4In(String... strings) {
-        this.custom4In = strings;
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom4Like(String... strings) {
-        this.custom4Like = toUpperCopy(strings);
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom5In(String... strings) {
-        this.custom5In = strings;
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom5Like(String... strings) {
-        this.custom5Like = toUpperCopy(strings);
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom6In(String... strings) {
-        this.custom6In = strings;
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom6Like(String... strings) {
-        this.custom6Like = toUpperCopy(strings);
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom7In(String... strings) {
-        this.custom7In = strings;
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom7Like(String... strings) {
-        this.custom7Like = toUpperCopy(strings);
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom8In(String... strings) {
-        this.custom8In = strings;
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom8Like(String... strings) {
-        this.custom8Like = toUpperCopy(strings);
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom9In(String... strings) {
-        this.custom9In = strings;
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom9Like(String... strings) {
-        this.custom9Like = toUpperCopy(strings);
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom10In(String... strings) {
-        this.custom10In = strings;
-        return this;
-    }
-
-    @Override
-    public TaskQuery custom10Like(String... strings) {
-        this.custom10Like = toUpperCopy(strings);
         return this;
     }
 
@@ -1029,6 +1056,62 @@ public class TaskQueryImpl implements TaskQuery {
         return custom10Like;
     }
 
+    public String[] getCustom11In() {
+        return custom11In;
+    }
+
+    public String[] getCustom11Like() {
+        return custom11Like;
+    }
+
+    public String[] getCustom12In() {
+        return custom12In;
+    }
+
+    public String[] getCustom12Like() {
+        return custom12Like;
+    }
+
+    public String[] getCustom13In() {
+        return custom13In;
+    }
+
+    public String[] getCustom13Like() {
+        return custom13Like;
+    }
+
+    public String[] getCustom14In() {
+        return custom14In;
+    }
+
+    public String[] getCustom14Like() {
+        return custom14Like;
+    }
+
+    public String[] getCustom15In() {
+        return custom15In;
+    }
+
+    public String[] getCustom15Like() {
+        return custom15Like;
+    }
+
+    public String[] getCustom16In() {
+        return custom16In;
+    }
+
+    public String[] getCustom16Like() {
+        return custom16Like;
+    }
+
+    public String[] getClassificationCategoryIn() {
+        return classificationCategoryIn;
+    }
+
+    public String[] getClassificationCategoryLike() {
+        return classificationCategoryLike;
+    }
+
     public TimeInterval[] getClaimedIn() {
         return claimedIn;
     }
@@ -1093,7 +1176,13 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TaskQueryImpl [nameIn=");
+        builder.append("TaskQueryImpl [taskanaEngine=");
+        builder.append(taskanaEngine);
+        builder.append(", taskService=");
+        builder.append(taskService);
+        builder.append(", columnName=");
+        builder.append(columnName);
+        builder.append(", nameIn=");
         builder.append(Arrays.toString(nameIn));
         builder.append(", nameLike=");
         builder.append(Arrays.toString(nameLike));
@@ -1201,6 +1290,30 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(custom10In));
         builder.append(", custom10Like=");
         builder.append(Arrays.toString(custom10Like));
+        builder.append(", custom11In=");
+        builder.append(Arrays.toString(custom11In));
+        builder.append(", custom11Like=");
+        builder.append(Arrays.toString(custom11Like));
+        builder.append(", custom12In=");
+        builder.append(Arrays.toString(custom12In));
+        builder.append(", custom12Like=");
+        builder.append(Arrays.toString(custom12Like));
+        builder.append(", custom13In=");
+        builder.append(Arrays.toString(custom13In));
+        builder.append(", custom13Like=");
+        builder.append(Arrays.toString(custom13Like));
+        builder.append(", custom14In=");
+        builder.append(Arrays.toString(custom14In));
+        builder.append(", custom14Like=");
+        builder.append(Arrays.toString(custom14Like));
+        builder.append(", custom15In=");
+        builder.append(Arrays.toString(custom15In));
+        builder.append(", custom15Like=");
+        builder.append(Arrays.toString(custom15Like));
+        builder.append(", custom16In=");
+        builder.append(Arrays.toString(custom16In));
+        builder.append(", custom16Like=");
+        builder.append(Arrays.toString(custom16Like));
         builder.append(", createdIn=");
         builder.append(Arrays.toString(createdIn));
         builder.append(", claimedIn=");
