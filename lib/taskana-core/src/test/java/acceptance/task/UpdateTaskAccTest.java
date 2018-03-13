@@ -138,12 +138,12 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
 
-        task.setCustom1("willi");
+        task.setCustomAttribute("1", "willi");
         Task updatedTask = null;
         updatedTask = taskService.updateTask(task);
         updatedTask = taskService.getTask(updatedTask.getId());
 
-        task2.setCustom2("Walter");
+        task2.setCustomAttribute("2", "Walter");
         try {
             updatedTask = taskService.updateTask(task2);
         } catch (ConcurrencyException ex) {
@@ -187,7 +187,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         AttachmentPersistenceException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-        task.setCustom1("T2100");
+        task.setCustomAttribute("1", "T2100");
         Task updatedTask = taskService.updateTask(task);
         updatedTask = taskService.getTask(updatedTask.getId());
 

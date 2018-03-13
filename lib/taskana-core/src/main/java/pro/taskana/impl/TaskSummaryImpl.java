@@ -9,6 +9,7 @@ import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.exceptions.InvalidArgumentException;
 
 /**
  * Entity which contains the most important informations about a Task.
@@ -47,6 +48,12 @@ public class TaskSummaryImpl implements TaskSummary {
     private String custom8;
     private String custom9;
     private String custom10;
+    private String custom11;
+    private String custom12;
+    private String custom13;
+    private String custom14;
+    private String custom15;
+    private String custom16;
 
     TaskSummaryImpl() {
     }
@@ -355,132 +362,56 @@ public class TaskSummaryImpl implements TaskSummary {
 
     /*
      * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom1()
+     * @see pro.taskana.impl.TaskSummary#getCustomAttribute(String number)
      */
     @Override
-    public String getCustom1() {
-        return custom1;
-    }
+    public String getCustomAttribute(String number) throws InvalidArgumentException {
+        int num = 0;
+        try {
+            num = Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16");
+        }
 
-    public void setCustom1(String custom1) {
-        this.custom1 = custom1;
-    }
+        switch (num) {
+            case 1:
+                return custom1;
+            case 2:
+                return custom2;
+            case 3:
+                return custom3;
+            case 4:
+                return custom4;
+            case 5:
+                return custom5;
+            case 6:
+                return custom6;
+            case 7:
+                return custom7;
+            case 8:
+                return custom8;
+            case 9:
+                return custom9;
+            case 10:
+                return custom10;
+            case 11:
+                return custom10;
+            case 12:
+                return custom12;
+            case 13:
+                return custom13;
+            case 14:
+                return custom14;
+            case 15:
+                return custom15;
+            case 16:
+                return custom16;
+            default:
+                throw new InvalidArgumentException(
+                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+        }
 
-    /*
-     * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom2()
-     */
-    @Override
-    public String getCustom2() {
-        return custom2;
-    }
-
-    public void setCustom2(String custom2) {
-        this.custom2 = custom2;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom3()
-     */
-    @Override
-    public String getCustom3() {
-        return custom3;
-    }
-
-    public void setCustom3(String custom3) {
-        this.custom3 = custom3;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom4()
-     */
-    @Override
-    public String getCustom4() {
-        return custom4;
-    }
-
-    public void setCustom4(String custom4) {
-        this.custom4 = custom4;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom5()
-     */
-    @Override
-    public String getCustom5() {
-        return custom5;
-    }
-
-    public void setCustom5(String custom5) {
-        this.custom5 = custom5;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom6()
-     */
-    @Override
-    public String getCustom6() {
-        return custom6;
-    }
-
-    public void setCustom6(String custom6) {
-        this.custom6 = custom6;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom7()
-     */
-    @Override
-    public String getCustom7() {
-        return custom7;
-    }
-
-    public void setCustom7(String custom7) {
-        this.custom7 = custom7;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom8()
-     */
-    @Override
-    public String getCustom8() {
-        return custom8;
-    }
-
-    public void setCustom8(String custom8) {
-        this.custom8 = custom8;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom9()
-     */
-    @Override
-    public String getCustom9() {
-        return custom9;
-    }
-
-    public void setCustom9(String custom9) {
-        this.custom9 = custom9;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see pro.taskana.impl.TaskSummary#getCustom10()
-     */
-    @Override
-    public String getCustom10() {
-        return custom10;
-    }
-
-    public void setCustom10(String custom10) {
-        this.custom10 = custom10;
     }
 
     // auxiliary Method to enable Mybatis to access classificationSummary
@@ -491,6 +422,86 @@ public class TaskSummaryImpl implements TaskSummary {
     // auxiliary Method to enable Mybatis to access classificationSummary
     public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
         this.classificationSummary = classificationSummary;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom1(String custom1) {
+        this.custom1 = custom1;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom2(String custom2) {
+        this.custom2 = custom2;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom3(String custom3) {
+        this.custom3 = custom3;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom4(String custom4) {
+        this.custom4 = custom4;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom5(String custom5) {
+        this.custom5 = custom5;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom6(String custom6) {
+        this.custom6 = custom6;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom7(String custom7) {
+        this.custom7 = custom7;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom8(String custom8) {
+        this.custom8 = custom8;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom9(String custom9) {
+        this.custom9 = custom9;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom10(String custom10) {
+        this.custom10 = custom10;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom11(String custom11) {
+        this.custom11 = custom11;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom12(String custom12) {
+        this.custom12 = custom12;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom13(String custom13) {
+        this.custom13 = custom13;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom14(String custom14) {
+        this.custom14 = custom14;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom15(String custom15) {
+        this.custom15 = custom15;
+    }
+
+    // auxiliary Method needed by Mybatis
+    public void setCustom16(String custom16) {
+        this.custom16 = custom16;
     }
 
     @Override
@@ -767,8 +778,8 @@ public class TaskSummaryImpl implements TaskSummary {
         builder.append(", name=");
         builder.append(name);
         builder.append(", creator=");
-        builder.append(name);
-        builder.append(", creator=");
+        builder.append(creator);
+        builder.append(", note=");
         builder.append(note);
         builder.append(", priority=");
         builder.append(priority);
@@ -812,7 +823,20 @@ public class TaskSummaryImpl implements TaskSummary {
         builder.append(custom9);
         builder.append(", custom10=");
         builder.append(custom10);
+        builder.append(", custom11=");
+        builder.append(custom11);
+        builder.append(", custom12=");
+        builder.append(custom12);
+        builder.append(", custom13=");
+        builder.append(custom13);
+        builder.append(", custom14=");
+        builder.append(custom14);
+        builder.append(", custom15=");
+        builder.append(custom15);
+        builder.append(", custom16=");
+        builder.append(custom16);
         builder.append("]");
         return builder.toString();
     }
+
 }

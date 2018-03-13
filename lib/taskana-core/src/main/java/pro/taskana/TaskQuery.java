@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import pro.taskana.exceptions.InvalidArgumentException;
+
 /**
  * TaskQuery for generating dynamic sql.
  */
@@ -403,204 +405,36 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery customFieldsIn(String... customFields);
 
     /**
-     * Add the custom_1 values for exact matching to your query.
+     * Add the values of custom attribute number num for exact matching to your query.
      *
-     * @param strings
-     *            the custom_1 values of the searched for tasks
+     * @param num
+     *            identifies which custom attribute is affected. Taskana concatenates "custom_" with num and the
+     *            resulting String must match the name of the database column that contains the custom attribute. Valid
+     *            values are "1", "2" .. "16"
+     * @param searchArguments
+     *            the custom_num values of the searched for tasks
      * @return the query
+     * @throws InvalidArgumentException
+     *             if num has not a value of "1", "2" ... "16"
      */
-    TaskQuery custom1In(String... strings);
+    TaskQuery customAttributeIn(String num, String... searchArguments) throws InvalidArgumentException;
 
     /**
-     * Add the custom_1 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
+     * Add the values of custom attribute number num for pattern matching to your query. They will be compared in SQL
+     * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments
+     * they are combined with the OR keyword.
      *
-     * @param strings
-     *            the custom_1 values of the searched-for tasks
+     * @param num
+     *            identifies which custom attribute is affected. Taskana concatenates "custom_" with num and the
+     *            resulting String must match the name of the database column that contains the custom attribute. Valid
+     *            values are "1", "2" .. "16"
+     * @param searchArguments
+     *            the custom_num values of the searched-for tasks
      * @return the query
+     * @throws InvalidArgumentException
+     *             if num has not a value of "1", "2" ... "16"
      */
-    TaskQuery custom1Like(String... strings);
-
-    /**
-     * Add the custom_2 values for exact matching to your query.
-     *
-     * @param strings
-     *            the custom_2 values of the searched for tasks
-     * @return the query
-     */
-    TaskQuery custom2In(String... strings);
-
-    /**
-     * Add the custom_2 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
-     *
-     * @param strings
-     *            the custom_2 values of the searched-for tasks
-     * @return the query
-     */
-    TaskQuery custom2Like(String... strings);
-
-    /**
-     * Add the custom_3 values for exact matching to your query.
-     *
-     * @param strings
-     *            the custom_3 values of the searched for tasks
-     * @return the query
-     */
-    TaskQuery custom3In(String... strings);
-
-    /**
-     * Add the custom_3 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
-     *
-     * @param strings
-     *            the custom_3 values of the searched-for tasks
-     * @return the query
-     */
-    TaskQuery custom3Like(String... strings);
-
-    /**
-     * Add the custom_4 values for exact matching to your query.
-     *
-     * @param strings
-     *            the custom_4 values of the searched for tasks
-     * @return the query
-     */
-    TaskQuery custom4In(String... strings);
-
-    /**
-     * Add the custom_4 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
-     *
-     * @param strings
-     *            the custom_4 values of the searched-for tasks
-     * @return the query
-     */
-    TaskQuery custom4Like(String... strings);
-
-    /**
-     * Add the custom_5 values for exact matching to your query.
-     *
-     * @param strings
-     *            the custom_5 values of the searched for tasks
-     * @return the query
-     */
-    TaskQuery custom5In(String... strings);
-
-    /**
-     * Add the custom_5 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
-     *
-     * @param strings
-     *            the custom_5 values of the searched-for tasks
-     * @return the query
-     */
-    TaskQuery custom5Like(String... strings);
-
-    /**
-     * Add the custom_6 values for exact matching to your query.
-     *
-     * @param strings
-     *            the custom_6 values of the searched for tasks
-     * @return the query
-     */
-    TaskQuery custom6In(String... strings);
-
-    /**
-     * Add the custom_6 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
-     *
-     * @param strings
-     *            the custom_6 values of the searched-for tasks
-     * @return the query
-     */
-    TaskQuery custom6Like(String... strings);
-
-    /**
-     * Add the custom_7 values for exact matching to your query.
-     *
-     * @param strings
-     *            the custom_7 values of the searched for tasks
-     * @return the query
-     */
-    TaskQuery custom7In(String... strings);
-
-    /**
-     * Add the custom_7 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
-     *
-     * @param strings
-     *            the custom_7 values of the searched-for tasks
-     * @return the query
-     */
-    TaskQuery custom7Like(String... strings);
-
-    /**
-     * Add the custom_8 values for exact matching to your query.
-     *
-     * @param strings
-     *            the custom_8 values of the searched for tasks
-     * @return the query
-     */
-    TaskQuery custom8In(String... strings);
-
-    /**
-     * Add the custom_8 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
-     *
-     * @param strings
-     *            the custom_8 values of the searched-for tasks
-     * @return the query
-     */
-    TaskQuery custom8Like(String... strings);
-
-    /**
-     * Add the custom_9 values for exact matching to your query.
-     *
-     * @param strings
-     *            the custom_9 values of the searched for tasks
-     * @return the query
-     */
-    TaskQuery custom9In(String... strings);
-
-    /**
-     * Add the custom_9 value for pattern matching to your query. It will be compared in SQL with the LIKE operator. You
-     * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
-     * keyword.
-     *
-     * @param strings
-     *            the custom_9 values of the searched-for tasks
-     * @return the query
-     */
-    TaskQuery custom9Like(String... strings);
-
-    /**
-     * Add the custom_10 values for exact matching to your query.
-     *
-     * @param strings
-     *            the custom_10 values of the searched for tasks
-     * @return the query
-     */
-    TaskQuery custom10In(String... strings);
-
-    /**
-     * Add the custom_10 value for pattern matching to your query. It will be compared in SQL with the LIKE operator.
-     * You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with
-     * the OR keyword.
-     *
-     * @param strings
-     *            the custom_10 values of the searched-for tasks
-     * @return the query
-     */
-    TaskQuery custom10Like(String... strings);
+    TaskQuery customAttributeLike(String num, String... searchArguments) throws InvalidArgumentException;
 
     /**
      * This method provides a query builder for quering the database.
