@@ -11,6 +11,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
@@ -28,7 +29,8 @@ public class WorkbasketAccessItemMapperTest {
     WorkbasketService workbasketService;
 
     @Test
-    public void workBasketAccessItemToResourcePropertiesEqual() throws NotAuthorizedException {
+    public void workBasketAccessItemToResourcePropertiesEqual()
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         // given
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "2");
         accessItem.setPermDistribute(false);

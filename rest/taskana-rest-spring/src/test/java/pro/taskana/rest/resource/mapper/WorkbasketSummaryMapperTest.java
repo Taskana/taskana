@@ -10,6 +10,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
@@ -28,7 +30,7 @@ public class WorkbasketSummaryMapperTest {
     WorkbasketService workbasketService;
 
     @Test
-    public void workbasketSummaryToResource() {
+    public void workbasketSummaryToResource() throws WorkbasketNotFoundException, NotAuthorizedException {
         // given
         WorkbasketSummaryImpl workbasketSummary = (WorkbasketSummaryImpl) workbasketService.newWorkbasket("1",
             "DOMAIN_A").asSummary();

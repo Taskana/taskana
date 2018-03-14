@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import pro.taskana.TaskState;
 public class MonitorController {
 
     @GetMapping(path = "/countByState")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<?> getTaskcountForState(
         @RequestParam(value = "states") List<TaskState> taskStates) {
         String taskCount = "[{\"state\": \"READY\", \"counter\": 7},{\"state\": \"CLAIMED\",\"counter\": 4},{\"state\": \"COMPLETED\",\"counter\": 4 }]";
@@ -27,6 +29,7 @@ public class MonitorController {
     }
 
     @GetMapping(path = "/taskcountByWorkbasketDaysAndState")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<?> getTaskCountByWorkbasketAndDaysInPastAndState(
         @RequestParam(value = "daysInPast") Long daysInPast,
         @RequestParam(value = "states") List<TaskState> states) {

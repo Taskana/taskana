@@ -53,65 +53,40 @@ public class ClassificationController {
 
     @GetMapping(path = "/{classificationId}")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<ClassificationResource> getClassification(@PathVariable String classificationId) {
-        try {
-            Classification classification = classificationService.getClassification(classificationId);
-            return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
-        } catch (ClassificationNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<ClassificationResource> getClassification(@PathVariable String classificationId)
+        throws ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException,
+        ConcurrencyException {
+        Classification classification = classificationService.getClassification(classificationId);
+        return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
     }
 
     @GetMapping(path = "/{classificationKey}/{domain}")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> getClassification(@PathVariable String classificationKey,
-        @PathVariable String domain) {
-        try {
-            Classification classification = classificationService.getClassification(classificationKey, domain);
-            return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
-        } catch (ClassificationNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        @PathVariable String domain) throws ClassificationNotFoundException, NotAuthorizedException,
+        ClassificationAlreadyExistException, ConcurrencyException {
+        Classification classification = classificationService.getClassification(classificationKey, domain);
+        return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
     }
 
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> createClassification(
-        @RequestBody ClassificationResource resource) {
-        try {
-            Classification classification = classificationMapper.toModel(resource);
-            classification = classificationService.createClassification(classification);
-            return ResponseEntity.status(HttpStatus.CREATED).body(classificationMapper.toResource(classification));
-        } catch (ClassificationAlreadyExistException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (ClassificationNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        @RequestBody ClassificationResource resource)
+        throws NotAuthorizedException, ClassificationNotFoundException, ClassificationAlreadyExistException,
+        ConcurrencyException {
+        Classification classification = classificationMapper.toModel(resource);
+        classification = classificationService.createClassification(classification);
+        return ResponseEntity.status(HttpStatus.CREATED).body(classificationMapper.toResource(classification));
     }
 
     @PutMapping
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<ClassificationResource> updateClassification(@RequestBody ClassificationResource resource) {
-        try {
-            Classification classification = classificationMapper.toModel(resource);
-            classification = classificationService.updateClassification(classification);
-            return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
-        } catch (ClassificationNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (ConcurrencyException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.LOCKED).build();
-        }
+    public ResponseEntity<ClassificationResource> updateClassification(@RequestBody ClassificationResource resource)
+        throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
+        ClassificationAlreadyExistException {
+        Classification classification = classificationMapper.toModel(resource);
+        classification = classificationService.updateClassification(classification);
+        return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
     }
 }

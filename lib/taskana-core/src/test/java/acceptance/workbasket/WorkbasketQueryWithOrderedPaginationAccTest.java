@@ -13,7 +13,6 @@ import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.security.JAASRunner;
 
@@ -33,7 +32,7 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
     @Ignore
     @Test
     public void testGetFirstPageOfTaskQueryWithOffset()
-        throws NotAuthorizedException, InvalidRequestException {
+        throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -55,7 +54,7 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
     @Ignore
     @Test
     public void testGetSecondPageOfTaskQueryWithOffset()
-        throws NotAuthorizedException, InvalidRequestException {
+        throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
