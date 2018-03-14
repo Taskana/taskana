@@ -104,8 +104,12 @@ export class WorkbasketService {
 		return this.httpClient.get<WorkbasketSummaryResource>(url, this.httpOptions);
 	}
 
+	// GET
+  getWorkbasketDomains(url: string): Observable<string[]> {
+	  return this.httpClient.get<string[]>(url, this.httpOptions);
+  }
 
-	//#endregion 
+	//#endregion
 
 	//#region "Service extras"
 	selectWorkBasket(id: string) {
@@ -170,5 +174,5 @@ export class WorkbasketService {
 		return Observable.throw(errMsg);
 	}
 
-	//#endregion 
+	//#endregion
 }
