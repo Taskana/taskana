@@ -76,7 +76,7 @@ describe('InformationComponent', () => {
 	it('should reset requestInProgress after saving request is done', fakeAsync(() => {
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', 'type', 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-			'orgLevel3', 'orgLevel4', new Array<Links>(new Links('self', 'someUrl')));
+			'orgLevel3', 'orgLevel4', new Links({'href': 'someUrl'}));
 		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(Observable.of(component.workbasket));
 		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(Observable.of(component.workbasket));
 		component.onSave();
@@ -89,7 +89,7 @@ describe('InformationComponent', () => {
 	it('should trigger triggerWorkBasketSaved method after saving request is done', () => {
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', 'type', 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-			'orgLevel3', 'orgLevel4', new Array<Links>(new Links('self', 'someUrl')));
+			'orgLevel3', 'orgLevel4', new Links({'href': 'someUrl'}));
 		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(Observable.of(component.workbasket));
 		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(Observable.of(component.workbasket));
 		component.onSave();

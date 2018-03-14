@@ -80,7 +80,7 @@
 				<taskana-spinner [isRunning]="requestInProgressRight" [isModal]="modalSpinner" positionClass="centered-spinner" class="centered-horizontally floating"></taskana-spinner>
 				<ul class="list-group dual-list-group">
 					<li class="list-group-item" *ngFor="let distributionTarget of distributionTargetsRight  | selectWorkbaskets: distributionTargetsSelected: 1"
-					 [class.selected]="distributionTarget.selected" type="text" (click)="distributionTarget.selected = !distributionTarget.selected">
+					 [class.selected]="distributionTarget.select" type="text" (click)="distributionTarget.select = !distributionTarget.select">
 						<div class="row">
 							<dl class="col-xs-1">
 								<dt>

@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClientModule, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { WorkbasketSummary } from '../model/workbasketSummary';
+import { WorkbasketSummary } from '../model/workbasket-summary';
 import { Workbasket } from '../model/workbasket';
 import { WorkbasketAccessItems } from '../model/workbasket-access-items';
 import { environment } from '../../environments/environment';
 import { Direction } from '../shared/sort/sort.component';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { map } from 'rxjs/operator/map';
+import { WorkbasketSummaryResource } from '../model/workbasket-summary-resource';
+import { WorkbasketAccessItemsResource } from '../model/workbasket-access-items-resource';
 
 @Injectable()
 export class WorkbasketService {
@@ -35,12 +38,12 @@ export class WorkbasketService {
 
 	httpOptions = {
 		headers: new HttpHeaders({
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/hal+json',
 			'Authorization': 'Basic VEVBTUxFQURfMTpURUFNTEVBRF8x'
 		})
 	};
 
-	private workbasketSummaryRef: Observable<WorkbasketSummary[]>;
+	private workbasketSummaryRef: Observable<WorkbasketSummaryResource>;
 
 	//#region "REST calls"
 	// GET
@@ -55,11 +58,11 @@ export class WorkbasketService {
 		type: string = undefined,
 		key: string = undefined,
 		keyLike: string = undefined,
-		requiredPermission: string = undefined): Observable<WorkbasketSummary[]> {
+		requiredPermission: string = undefined): Observable<WorkbasketSummaryResource> {
 		if (this.workbasketSummaryRef && !forceRequest) {
 			return this.workbasketSummaryRef;
 		}
-		return this.httpClient.get<WorkbasketSummary[]>(`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(sortBy, order, name,
+		return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(sortBy, order, name,
 			nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission)}`, this.httpOptions);
 
 	}
@@ -79,16 +82,16 @@ export class WorkbasketService {
 			.catch(this.handleError);
 	}
 	// DELETE
-	deleteWorkbasket(id: string) {
-		return this.httpClient.delete(environment.taskanaRestUrl + '/v1/workbaskets/' + id, this.httpOptions);
+	deleteWorkbasket(url: string) {
+		return this.httpClient.delete(url, this.httpOptions);
 	}
 	// GET
-	getWorkBasketAccessItems(id: String): Observable<WorkbasketAccessItems[]> {
-		return this.httpClient.get<WorkbasketAccessItems[]>(environment.taskanaRestUrl + '/v1/workbaskets/' + id + '/workbasketAccessItems', this.httpOptions);
+	getWorkBasketAccessItems(url: string): Observable<WorkbasketAccessItemsResource> {
+		return this.httpClient.get<WorkbasketAccessItemsResource>(url, this.httpOptions);
 	}
 	// POST
-	createWorkBasketAccessItem(workbasketAccessItem: WorkbasketAccessItems): Observable<WorkbasketAccessItems> {
-		return this.httpClient.post<WorkbasketAccessItems>(environment.taskanaRestUrl + '/v1/workbaskets/workbasketAccessItems', workbasketAccessItem, this.httpOptions);
+	createWorkBasketAccessItem(url: string, workbasketAccessItem: WorkbasketAccessItems): Observable<WorkbasketAccessItems> {
+		return this.httpClient.post<WorkbasketAccessItems>(url , workbasketAccessItem, this.httpOptions);
 	}
 	// PUT
 	updateWorkBasketAccessItem(url: string, workbasketAccessItem: Array<WorkbasketAccessItems>): Observable<string> {
@@ -97,75 +100,75 @@ export class WorkbasketService {
 			this.httpOptions);
 	}
 	// GET
-	getWorkBasketsDistributionTargets(id: String): Observable<WorkbasketSummary[]> {
-		return this.httpClient.get<WorkbasketSummary[]>(environment.taskanaRestUrl + '/v1/workbaskets/' + id + '/distributiontargets', this.httpOptions);
+	getWorkBasketsDistributionTargets(url: string): Observable<WorkbasketSummaryResource> {
+		return this.httpClient.get<WorkbasketSummaryResource>(url, this.httpOptions);
 	}
 
-	
-//#endregion 
 
-//#region "Service extras"
-selectWorkBasket(id: string) {
-	this.workBasketSelected.next(id);
-}
+	//#endregion 
 
-getSelectedWorkBasket(): Observable < string > {
-	return this.workBasketSelected.asObservable();
-}
+	//#region "Service extras"
+	selectWorkBasket(id: string) {
+		this.workBasketSelected.next(id);
+	}
 
-triggerWorkBasketSaved() {
-	this.workBasketSaved.next(Date.now());
-}
+	getSelectedWorkBasket(): Observable<string> {
+		return this.workBasketSelected.asObservable();
+	}
 
-workbasketSavedTriggered(): Observable < number > {
-	return this.workBasketSaved.asObservable();
-}
+	triggerWorkBasketSaved() {
+		this.workBasketSaved.next(Date.now());
+	}
+
+	workbasketSavedTriggered(): Observable<number> {
+		return this.workBasketSaved.asObservable();
+	}
 	//#endregion
 
 	//#region private
 	private getWorkbasketSummaryQueryParameters(sortBy: string,
-	order: string,
-	name: string,
-	nameLike: string,
-	descLike: string,
-	owner: string,
-	ownerLike: string,
-	type: string,
-	key: string,
-	keyLike: string,
-	requiredPermission: string): string {
-	let query: string = '?';
-	query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
-	query += order ? `${this.ORDER}=${order}&` : '';
-	query += name ? `${this.NAME}=${name}&` : '';
-	query += nameLike ? `${this.NAMELIKE}=${nameLike}&` : '';
-	query += descLike ? `${this.DESCLIKE}=${descLike}&` : '';
-	query += owner ? `${this.OWNER}=${owner}&` : '';
-	query += ownerLike ? `${this.OWNERLIKE}=${ownerLike}&` : '';
-	query += type ? `${this.TYPE}=${type}&` : '';
-	query += key ? `${this.KEY}=${key}&` : '';
-	query += keyLike ? `${this.KEYLIKE}=${keyLike}&` : '';
-	query += requiredPermission ? `${this.REQUIREDPERMISSION}=${requiredPermission}&` : '';
+		order: string,
+		name: string,
+		nameLike: string,
+		descLike: string,
+		owner: string,
+		ownerLike: string,
+		type: string,
+		key: string,
+		keyLike: string,
+		requiredPermission: string): string {
+		let query: string = '?';
+		query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
+		query += order ? `${this.ORDER}=${order}&` : '';
+		query += name ? `${this.NAME}=${name}&` : '';
+		query += nameLike ? `${this.NAMELIKE}=${nameLike}&` : '';
+		query += descLike ? `${this.DESCLIKE}=${descLike}&` : '';
+		query += owner ? `${this.OWNER}=${owner}&` : '';
+		query += ownerLike ? `${this.OWNERLIKE}=${ownerLike}&` : '';
+		query += type ? `${this.TYPE}=${type}&` : '';
+		query += key ? `${this.KEY}=${key}&` : '';
+		query += keyLike ? `${this.KEYLIKE}=${keyLike}&` : '';
+		query += requiredPermission ? `${this.REQUIREDPERMISSION}=${requiredPermission}&` : '';
 
-	if (query.lastIndexOf('&') === query.length - 1) {
-		query = query.slice(0, query.lastIndexOf('&'))
+		if (query.lastIndexOf('&') === query.length - 1) {
+			query = query.slice(0, query.lastIndexOf('&'))
+		}
+		return query;
 	}
-	return query;
-}
 
 	private handleError(error: Response | any) {
-	// In a real world app, you might use a remote logging infrastructure
-	let errMsg: string;
-	if (error instanceof Response) {
-		const body = error.json() || '';
-		const err = JSON.stringify(body);
-		errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-	} else {
-		errMsg = error.message ? error.message : error.toString();
+		// In a real world app, you might use a remote logging infrastructure
+		let errMsg: string;
+		if (error instanceof Response) {
+			const body = error.json() || '';
+			const err = JSON.stringify(body);
+			errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+		} else {
+			errMsg = error.message ? error.message : error.toString();
+		}
+		console.error(errMsg);
+		return Observable.throw(errMsg);
 	}
-	console.error(errMsg);
-	return Observable.throw(errMsg);
-}
 
 	//#endregion 
 }

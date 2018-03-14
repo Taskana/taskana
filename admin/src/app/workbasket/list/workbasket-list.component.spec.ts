@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core
 import { WorkbasketListComponent } from './workbasket-list.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { WorkbasketSummary } from '../../model/workbasketSummary';
+import { WorkbasketSummary } from '../../model/workbasket-summary';
 import { WorkbasketService } from '../../services/workbasket.service';
 import { HttpModule } from '@angular/http';
 import { Router, Routes } from '@angular/router';
@@ -15,6 +15,8 @@ import { SortComponent } from '../../shared/sort/sort.component';
 import { IconTypeComponent } from '../../shared/type-icon/icon-type.component';
 import { RemoveNoneTypePipe } from '../../pipes/remove-none-type';
 import { MapValuesPipe } from '../../pipes/map-values.pipe';
+import { WorkbasketSummaryResource } from '../../model/workbasket-summary-resource';
+import { Links } from '../../model/links';
 
 
 @Component({
@@ -33,9 +35,11 @@ export class FilterComponent {
 
 }
 
-const workbasketSummary: WorkbasketSummary[] = [new WorkbasketSummary("1", "key1", "NAME1", "description 1", "owner 1", "", "", "PERSONAL", "", "", "", ""),
-new WorkbasketSummary("2", "key2", "NAME2", "description 2", "owner 2", "", "", "GROUP", "", "", "", "")
-];
+const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource({
+	'workbaskets': new Array<WorkbasketSummary>(
+		new WorkbasketSummary("1", "key1", "NAME1", "description 1", "owner 1", "", "", "PERSONAL", "", "", "", ""),
+		new WorkbasketSummary("2", "key2", "NAME2", "description 2", "owner 2", "", "", "GROUP", "", "", "", ""))
+}, new Links({ 'href': 'url' }));
 
 
 describe('WorkbasketListComponent', () => {
@@ -67,7 +71,7 @@ describe('WorkbasketListComponent', () => {
 		component = fixture.componentInstance;
 		debugElement = fixture.debugElement.nativeElement;
 		workbasketService = TestBed.get(WorkbasketService);
-		spyOn(workbasketService, 'getWorkBasketsSummary').and.returnValue(Observable.of(workbasketSummary));
+		spyOn(workbasketService, 'getWorkBasketsSummary').and.returnValue(Observable.of(workbasketSummaryResource));
 		spyOn(workbasketService, 'getSelectedWorkBasket').and.returnValue(Observable.of('2'));
 
 		fixture.detectChanges();
@@ -85,7 +89,7 @@ describe('WorkbasketListComponent', () => {
 		component.ngOnInit();
 		expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalled();
 		workbasketService.getWorkBasketsSummary().subscribe(value => {
-			expect(value).toBe(workbasketSummary);
+			expect(value).toBe(workbasketSummaryResource);
 		})
 	});
 
