@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,58 +44,41 @@ public class ClassificationDefinitionController {
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<ClassificationResource>> getClassifications(
-        @RequestParam(required = false) String domain) {
-        try {
-            ClassificationQuery query = classificationService.createClassificationQuery();
-            List<ClassificationSummary> summaries = domain != null ? query.domainIn(domain).list() : query.list();
-            List<ClassificationResource> export = new ArrayList<>();
+        @RequestParam(required = false) String domain) throws ClassificationNotFoundException, NotAuthorizedException,
+        ClassificationAlreadyExistException, ConcurrencyException {
+        ClassificationQuery query = classificationService.createClassificationQuery();
+        List<ClassificationSummary> summaries = domain != null ? query.domainIn(domain).list() : query.list();
+        List<ClassificationResource> export = new ArrayList<>();
 
-            for (ClassificationSummary summary : summaries) {
-                Classification classification = classificationService.getClassification(summary.getKey(),
-                    summary.getDomain());
-                export.add(classificationMapper.toResource(classification));
-            }
-            return new ResponseEntity<>(export, HttpStatus.OK);
-        } catch (ClassificationNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        for (ClassificationSummary summary : summaries) {
+            Classification classification = classificationService.getClassification(summary.getKey(),
+                summary.getDomain());
+            export.add(classificationMapper.toResource(classification));
         }
+        return new ResponseEntity<>(export, HttpStatus.OK);
     }
 
     @PostMapping(path = "/import")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<String> importClassifications(
-        @RequestBody List<ClassificationResource> classificationResources) {
-        try {
-            Map<String, String> systemIds = classificationService.createClassificationQuery()
-                .list()
-                .stream()
-                .collect(Collectors.toMap(i -> i.getKey() + "|||" + i.getDomain(), ClassificationSummary::getId));
+        @RequestBody List<ClassificationResource> classificationResources) throws NotAuthorizedException,
+        ClassificationNotFoundException, ConcurrencyException, ClassificationAlreadyExistException {
+        Map<String, String> systemIds = classificationService.createClassificationQuery()
+            .list()
+            .stream()
+            .collect(Collectors.toMap(i -> i.getKey() + "|||" + i.getDomain(), ClassificationSummary::getId));
 
-            for (ClassificationResource classificationResource : classificationResources) {
-                Classification classification = classificationMapper.toModel(classificationResource);
-                if (systemIds.containsKey(classificationResource.key + "|||" + classificationResource.domain)) {
-                    classificationService.updateClassification(classification);
+        for (ClassificationResource classificationResource : classificationResources) {
+            Classification classification = classificationMapper.toModel(classificationResource);
+            if (systemIds.containsKey(classificationResource.key + "|||" + classificationResource.domain)) {
+                classificationService.updateClassification(classification);
 
-                } else {
-                    classificationService.createClassification(classification);
-                }
+            } else {
+                classificationService.createClassification(classification);
             }
-
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        } catch (ClassificationNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } catch (ClassificationAlreadyExistException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (ConcurrencyException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.LOCKED);
         }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
@@ -24,7 +25,8 @@ public class WorkbasketAccessItemMapper {
     @Autowired
     private WorkbasketService workbasketService;
 
-    public WorkbasketAccessItemResource toResource(WorkbasketAccessItem wbAccItem) throws NotAuthorizedException {
+    public WorkbasketAccessItemResource toResource(WorkbasketAccessItem wbAccItem)
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketAccessItemResource resource = new WorkbasketAccessItemResource();
         BeanUtils.copyProperties(wbAccItem, resource);
         // property is named different, so it needs to be set by hand
@@ -43,7 +45,7 @@ public class WorkbasketAccessItemMapper {
     }
 
     private WorkbasketAccessItemResource addLinks(WorkbasketAccessItemResource resource, WorkbasketAccessItem wbAccItem)
-        throws NotAuthorizedException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
 
         resource.add(
             linkTo(methodOn(WorkbasketController.class).getWorkbasket(wbAccItem.getWorkbasketId()))
