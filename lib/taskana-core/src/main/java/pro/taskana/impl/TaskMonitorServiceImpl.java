@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -322,8 +323,10 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter.initialize(reportLineItemDefinitions);
         for (SelectedItem selectedItem : selectedItems) {
-            selectedItem.setLowerAgeLimit(instance.convertWorkingDaysToDays(selectedItem.getLowerAgeLimit()));
-            selectedItem.setUpperAgeLimit(instance.convertWorkingDaysToDays(selectedItem.getUpperAgeLimit()));
+            selectedItem
+                .setLowerAgeLimit(Collections.min(instance.convertWorkingDaysToDays(selectedItem.getLowerAgeLimit())));
+            selectedItem
+                .setUpperAgeLimit(Collections.max(instance.convertWorkingDaysToDays(selectedItem.getUpperAgeLimit())));
         }
         return selectedItems;
     }

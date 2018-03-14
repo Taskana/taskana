@@ -136,32 +136,98 @@ public class DaysToWorkingDaysConverterTest {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
             .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-02-27T00:00:00.000Z"));
 
-        assertEquals(-13, instance.convertWorkingDaysToDays(-13));
-        assertEquals(-12, instance.convertWorkingDaysToDays(-12));
+        assertEquals(Arrays.asList(-13), instance.convertWorkingDaysToDays(-13));
+        assertEquals(Arrays.asList(-12), instance.convertWorkingDaysToDays(-12));
 
-        assertEquals(-12, instance.convertWorkingDaysToDays(-8));
-        assertEquals(-11, instance.convertWorkingDaysToDays(-7));
-        assertEquals(-8, instance.convertWorkingDaysToDays(-6));
-        assertEquals(-7, instance.convertWorkingDaysToDays(-5));
-        assertEquals(-6, instance.convertWorkingDaysToDays(-4));
-        assertEquals(-5, instance.convertWorkingDaysToDays(-3));
-        assertEquals(-4, instance.convertWorkingDaysToDays(-2));
-        assertEquals(-1, instance.convertWorkingDaysToDays(-1));
-        assertEquals(0, instance.convertWorkingDaysToDays(0));
-        assertEquals(1, instance.convertWorkingDaysToDays(1));
-        assertEquals(2, instance.convertWorkingDaysToDays(2));
-        assertEquals(3, instance.convertWorkingDaysToDays(3));
-        assertEquals(6, instance.convertWorkingDaysToDays(4));
-        assertEquals(7, instance.convertWorkingDaysToDays(5));
-        assertEquals(8, instance.convertWorkingDaysToDays(6));
-        assertEquals(9, instance.convertWorkingDaysToDays(7));
-        assertEquals(10, instance.convertWorkingDaysToDays(8));
-        assertEquals(13, instance.convertWorkingDaysToDays(9));
-        assertEquals(14, instance.convertWorkingDaysToDays(10));
-        assertEquals(15, instance.convertWorkingDaysToDays(11));
+        assertEquals(Arrays.asList(-12), instance.convertWorkingDaysToDays(-8));
+        assertEquals(Arrays.asList(-11), instance.convertWorkingDaysToDays(-7));
+        assertEquals(Arrays.asList(-8, -9, -10), instance.convertWorkingDaysToDays(-6));
+        assertEquals(Arrays.asList(-7), instance.convertWorkingDaysToDays(-5));
+        assertEquals(Arrays.asList(-6), instance.convertWorkingDaysToDays(-4));
+        assertEquals(Arrays.asList(-5), instance.convertWorkingDaysToDays(-3));
+        assertEquals(Arrays.asList(-4), instance.convertWorkingDaysToDays(-2));
+        assertEquals(Arrays.asList(-1, -2, -3), instance.convertWorkingDaysToDays(-1));
+        assertEquals(Arrays.asList(0), instance.convertWorkingDaysToDays(0));
+        assertEquals(Arrays.asList(1), instance.convertWorkingDaysToDays(1));
+        assertEquals(Arrays.asList(2), instance.convertWorkingDaysToDays(2));
+        assertEquals(Arrays.asList(3, 4, 5), instance.convertWorkingDaysToDays(3));
+        assertEquals(Arrays.asList(6), instance.convertWorkingDaysToDays(4));
+        assertEquals(Arrays.asList(7), instance.convertWorkingDaysToDays(5));
+        assertEquals(Arrays.asList(8), instance.convertWorkingDaysToDays(6));
+        assertEquals(Arrays.asList(9), instance.convertWorkingDaysToDays(7));
+        assertEquals(Arrays.asList(10, 11, 12), instance.convertWorkingDaysToDays(8));
+        assertEquals(Arrays.asList(13), instance.convertWorkingDaysToDays(9));
+        assertEquals(Arrays.asList(14), instance.convertWorkingDaysToDays(10));
+        assertEquals(Arrays.asList(15), instance.convertWorkingDaysToDays(11));
 
-        assertEquals(12, instance.convertWorkingDaysToDays(12));
-        assertEquals(13, instance.convertWorkingDaysToDays(13));
+        assertEquals(Arrays.asList(12), instance.convertWorkingDaysToDays(12));
+        assertEquals(Arrays.asList(13), instance.convertWorkingDaysToDays(13));
+    }
+
+    @Test
+    public void testConvertWorkingDaysToDaysAtWeekend() throws InvalidArgumentException {
+        DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
+            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-03-10T00:00:00.000Z"));
+
+        assertEquals(Arrays.asList(-13), instance.convertWorkingDaysToDays(-13));
+        assertEquals(Arrays.asList(-12), instance.convertWorkingDaysToDays(-12));
+
+        assertEquals(Arrays.asList(-10), instance.convertWorkingDaysToDays(-8));
+        assertEquals(Arrays.asList(-9), instance.convertWorkingDaysToDays(-7));
+        assertEquals(Arrays.asList(-8), instance.convertWorkingDaysToDays(-6));
+        assertEquals(Arrays.asList(-5, -6, -7), instance.convertWorkingDaysToDays(-5));
+        assertEquals(Arrays.asList(-4), instance.convertWorkingDaysToDays(-4));
+        assertEquals(Arrays.asList(-3), instance.convertWorkingDaysToDays(-3));
+        assertEquals(Arrays.asList(-2), instance.convertWorkingDaysToDays(-2));
+        assertEquals(Arrays.asList(-1), instance.convertWorkingDaysToDays(-1));
+        assertEquals(Arrays.asList(0, 1), instance.convertWorkingDaysToDays(0));
+        assertEquals(Arrays.asList(2), instance.convertWorkingDaysToDays(1));
+        assertEquals(Arrays.asList(3), instance.convertWorkingDaysToDays(2));
+        assertEquals(Arrays.asList(4), instance.convertWorkingDaysToDays(3));
+        assertEquals(Arrays.asList(5), instance.convertWorkingDaysToDays(4));
+        assertEquals(Arrays.asList(6, 7, 8), instance.convertWorkingDaysToDays(5));
+        assertEquals(Arrays.asList(9), instance.convertWorkingDaysToDays(6));
+        assertEquals(Arrays.asList(10), instance.convertWorkingDaysToDays(7));
+        assertEquals(Arrays.asList(11), instance.convertWorkingDaysToDays(8));
+        assertEquals(Arrays.asList(12), instance.convertWorkingDaysToDays(9));
+        assertEquals(Arrays.asList(13, 14, 15), instance.convertWorkingDaysToDays(10));
+        assertEquals(Arrays.asList(16), instance.convertWorkingDaysToDays(11));
+
+        assertEquals(Arrays.asList(12), instance.convertWorkingDaysToDays(12));
+        assertEquals(Arrays.asList(13), instance.convertWorkingDaysToDays(13));
+    }
+
+    @Test
+    public void testConvertWorkingDaysToDaysOnEasterSunday() throws InvalidArgumentException {
+        DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
+            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-04-01T00:00:00.000Z"));
+
+        assertEquals(Arrays.asList(-13), instance.convertWorkingDaysToDays(-13));
+        assertEquals(Arrays.asList(-12), instance.convertWorkingDaysToDays(-12));
+
+        assertEquals(Arrays.asList(-12), instance.convertWorkingDaysToDays(-8));
+        assertEquals(Arrays.asList(-11), instance.convertWorkingDaysToDays(-7));
+        assertEquals(Arrays.asList(-10), instance.convertWorkingDaysToDays(-6));
+        assertEquals(Arrays.asList(-9), instance.convertWorkingDaysToDays(-5));
+        assertEquals(Arrays.asList(-6, -7, -8), instance.convertWorkingDaysToDays(-4));
+        assertEquals(Arrays.asList(-5), instance.convertWorkingDaysToDays(-3));
+        assertEquals(Arrays.asList(-4), instance.convertWorkingDaysToDays(-2));
+        assertEquals(Arrays.asList(-3), instance.convertWorkingDaysToDays(-1));
+        assertEquals(Arrays.asList(0, 1, -1, -2), instance.convertWorkingDaysToDays(0));
+        assertEquals(Arrays.asList(2), instance.convertWorkingDaysToDays(1));
+        assertEquals(Arrays.asList(3), instance.convertWorkingDaysToDays(2));
+        assertEquals(Arrays.asList(4), instance.convertWorkingDaysToDays(3));
+        assertEquals(Arrays.asList(5, 6, 7), instance.convertWorkingDaysToDays(4));
+        assertEquals(Arrays.asList(8), instance.convertWorkingDaysToDays(5));
+        assertEquals(Arrays.asList(9), instance.convertWorkingDaysToDays(6));
+        assertEquals(Arrays.asList(10), instance.convertWorkingDaysToDays(7));
+        assertEquals(Arrays.asList(11), instance.convertWorkingDaysToDays(8));
+        assertEquals(Arrays.asList(12, 13, 14), instance.convertWorkingDaysToDays(9));
+        assertEquals(Arrays.asList(15), instance.convertWorkingDaysToDays(10));
+        assertEquals(Arrays.asList(16), instance.convertWorkingDaysToDays(11));
+
+        assertEquals(Arrays.asList(12), instance.convertWorkingDaysToDays(12));
+        assertEquals(Arrays.asList(13), instance.convertWorkingDaysToDays(13));
     }
 
     @Test

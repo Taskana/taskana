@@ -120,33 +120,56 @@ public final class DaysToWorkingDaysConverter {
 
     /**
      * Converts an integer, that represents the age in working days, to the age in days by using the table that was
-     * created by initialization. If the age in working days is beyond the limits of the table, the integer will be
-     * returned unchanged.
+     * created by initialization. Because one age in working days could match to more than one age in days, the return
+     * value is a list of all days that match to the input parameter. If the age in working days is beyond the limits of
+     * the table, the integer will be returned unchanged.
      *
      * @param ageInWorkingDays
      *            represents the age in working days
-     * @return the age in days
+     * @return a list of age in days
      */
-    public int convertWorkingDaysToDays(int ageInWorkingDays) {
+    public ArrayList<Integer> convertWorkingDaysToDays(int ageInWorkingDays) {
+
+        ArrayList<Integer> list = new ArrayList<>();
 
         int minWorkingDay = negativeDaysToWorkingDays.get(negativeDaysToWorkingDays.size() - 1);
         int maxWorkingDay = positiveDaysToWorkingDays.get(positiveDaysToWorkingDays.size() - 1);
 
-        int ageInDays = 0;
         if (ageInWorkingDays >= minWorkingDay && ageInWorkingDays < 0) {
-            while (negativeDaysToWorkingDays.get(ageInDays) > ageInWorkingDays) {
-                ageInDays++;
+            for (int ageInDays = 0; ageInDays < negativeDaysToWorkingDays.size(); ageInDays++) {
+                if (negativeDaysToWorkingDays.get(ageInDays) == ageInWorkingDays) {
+                    list.add(-ageInDays);
+                }
             }
-            return -ageInDays;
+            return list;
         }
         if (ageInWorkingDays > 0 && ageInWorkingDays <= maxWorkingDay) {
-            while (positiveDaysToWorkingDays.get(ageInDays) < ageInWorkingDays) {
-                ageInDays++;
+            for (int ageInDays = 0; ageInDays < positiveDaysToWorkingDays.size(); ageInDays++) {
+                if (positiveDaysToWorkingDays.get(ageInDays) == ageInWorkingDays) {
+                    list.add(ageInDays);
+                }
             }
-            return ageInDays;
+            return list;
         }
 
-        return ageInWorkingDays;
+        if (ageInWorkingDays == 0) {
+            list.add(0);
+            for (int ageInDays = 1; ageInDays < positiveDaysToWorkingDays.size(); ageInDays++) {
+                if (positiveDaysToWorkingDays.get(ageInDays) == ageInWorkingDays) {
+                    list.add(ageInDays);
+                }
+            }
+            for (int ageInDays = 1; ageInDays < negativeDaysToWorkingDays.size(); ageInDays++) {
+                if (negativeDaysToWorkingDays.get(ageInDays) == ageInWorkingDays) {
+                    list.add(-ageInDays);
+                }
+            }
+            return list;
+        }
+
+        // If ageInWorkingDays is beyond the limits of the table, the value is returned unchanged.
+        list.add(ageInWorkingDays);
+        return list;
     }
 
     public long convertWorkingDaysToDays(Instant startTime, long numberOfDays) {
