@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -43,8 +45,8 @@ import pro.taskana.rest.resource.WorkbasketSummaryResource;
 import pro.taskana.rest.resource.mapper.DistributionTargetListMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemListMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
-import pro.taskana.rest.resource.mapper.WorkbasketListMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
+import pro.taskana.rest.resource.mapper.WorkbasketSummaryResourceAssembler;
 
 /**
  * Controller for all {@link Workbasket} related endpoints.
@@ -69,9 +71,6 @@ public class WorkbasketController {
     private WorkbasketMapper workbasketMapper;
 
     @Autowired
-    private WorkbasketListMapper workbasketListMapper;
-
-    @Autowired
     private DistributionTargetListMapper distributionTargetListMapper;
 
     @Autowired
@@ -82,7 +81,7 @@ public class WorkbasketController {
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<Resources<WorkbasketSummaryResource>> getWorkbaskets(
+    public ResponseEntity<PagedResources<WorkbasketSummaryResource>> getWorkbaskets(
         @RequestParam(value = "sortBy", defaultValue = "name", required = false) String sortBy,
         @RequestParam(value = "order", defaultValue = "asc", required = false) String order,
         @RequestParam(value = "name", required = false) String name,
@@ -95,14 +94,23 @@ public class WorkbasketController {
         @RequestParam(value = "type", required = false) String type,
         @RequestParam(value = "requiredPermission", required = false) String requiredPermission)
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
+
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         addSortingToQuery(query, sortBy, order);
         addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
         addAuthorizationFilter(query, requiredPermission);
         List<WorkbasketSummary> workbasketSummaries = query.list();
-        Resources<WorkbasketSummaryResource> workbasketListResource = workbasketListMapper
-            .toResource(workbasketSummaries);
-        return new ResponseEntity<>(workbasketListResource, HttpStatus.OK);
+
+        // Iterable<? extends WorkbasketSummary> workbasketSummaries2 = query.list();
+
+        WorkbasketSummaryResourceAssembler assembler = new WorkbasketSummaryResourceAssembler();
+        List<WorkbasketSummaryResource> resources = assembler.toResources(workbasketSummaries);
+        PageMetadata pageMetadata = new PageMetadata(5, 1, workbasketSummaries.size(), 4);
+        PagedResources<WorkbasketSummaryResource> pagedResources = new PagedResources<WorkbasketSummaryResource>(
+            resources,
+            pageMetadata);
+
+        return new ResponseEntity<>(pagedResources, HttpStatus.OK);
     }
 
     @GetMapping(path = "/{workbasketId}")
