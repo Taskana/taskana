@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.BaseQuery;
 import pro.taskana.Classification;
+import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -74,6 +77,15 @@ public class ClassificationController {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping(path = "/domains")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    public ResponseEntity<List<String>> getDomains() {
+        List<String> domains = new ArrayList<>();
+        ClassificationQuery classificationQuery = classificationService.createClassificationQuery();
+        domains = classificationQuery.listValues("DOMAIN", BaseQuery.SortDirection.ASCENDING);
+        return new ResponseEntity<>(domains, HttpStatus.OK);
     }
 
     @PostMapping
