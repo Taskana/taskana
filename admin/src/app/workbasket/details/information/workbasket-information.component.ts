@@ -3,7 +3,6 @@ import { Workbasket } from '../../../model/workbasket';
 import { WorkbasketService } from '../../../services/workbasket.service';
 import { IconTypeComponent, ICONTYPES } from '../../../shared/type-icon/icon-type.component';
 import { Subscription } from 'rxjs';
-import { Utils } from '../../../shared/utils/utils';
 import { AlertService, AlertModel, AlertType } from '../../../services/alert.service';
 import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 
@@ -49,7 +48,7 @@ export class WorkbasketInformationComponent implements OnInit {
 
 	onSave() {
 		this.beforeRequest();
-		this.workbasketSubscription = (this.workbasketService.updateWorkbasket((Utils.getSelfRef(this.workbasket.links).href), this.workbasket).subscribe(
+		this.workbasketSubscription = (this.workbasketService.updateWorkbasket(this.workbasket._links.self.href, this.workbasket).subscribe(
 			workbasketUpdated => {
 				this.afterRequest();
 				this.workbasket = workbasketUpdated;

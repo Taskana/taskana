@@ -13,7 +13,7 @@ export class SpinnerComponent {
     isDelayedRunning: boolean = false;
 
     @Input()
-    delay: number = 300;
+    delay: number = 100;
 
     @Input()
     set isRunning(value: boolean) {
