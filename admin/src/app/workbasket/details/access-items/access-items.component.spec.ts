@@ -12,6 +12,7 @@ import { Links } from '../../../model/links';
 import { Observable } from 'rxjs/Observable';
 import { AccessItemsComponent } from './access-items.component';
 import { WorkbasketAccessItems } from '../../../model/workbasket-access-items';
+import { WorkbasketAccessItemsResource } from '../../../model/workbasket-access-items-resource';
 
 describe('AccessItemsComponent', () => {
 	let component: AccessItemsComponent;
@@ -31,11 +32,14 @@ describe('AccessItemsComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(AccessItemsComponent);
 		component = fixture.componentInstance;
-		component.workbasket = new Workbasket('1')
+		component.workbasket = new Workbasket('1','','','','','','','','','','','','','','','', '', new Links(undefined,undefined, {'href': 'someurl' }));
 		workbasketService = TestBed.get(WorkbasketService);
 		alertService = TestBed.get(AlertService);
-		spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(Observable.of(new Array<WorkbasketAccessItems>(new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, new Array<Links>(new Links('setWorkbasketAccessItems', ''))),
-			new WorkbasketAccessItems('id2', '1', 'accessID2'))));
+		spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(Observable.of(new WorkbasketAccessItemsResource(
+			{'accessItems': new Array<WorkbasketAccessItems>(
+				new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+				new WorkbasketAccessItems('id2', '1', 'accessID2')) }, new Links({ 'href': 'someurl' })
+			)));
 		spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(Observable.of(true)),
 			spyOn(alertService, 'triggerAlert').and.returnValue(Observable.of(true)),
 			debugElement = fixture.debugElement.nativeElement;
@@ -59,23 +63,6 @@ describe('AccessItemsComponent', () => {
 
 	it('should show Add new access item button', () => {
 		expect(debugElement.querySelector('#button-add-access-item')).toBeTruthy;
-	});
-
-	xit('should highlight modified input', () => {
-		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].querySelector('div').getAttribute('class')).toBeNull();
-		debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].querySelector('input').click();
-		fixture.detectChanges();
-		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].querySelector('div').getAttribute('class')).toBe('has-changes');
-
-	});
-
-	xit('should undo changes if undo changes button is clicked', () => {
-		debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].querySelector('input').click();
-		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].getAttribute('class')).toBe('has-changes');
-		expect(debugElement.querySelectorAll('#wb-information > div > div')[0].querySelectorAll('button').length).toBe(2);
-		debugElement.querySelectorAll('#wb-information > div > div')[0].querySelectorAll('button')[1].click();
-		fixture.detectChanges();
-		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelectorAll('td')[5].getAttribute('class')).toBeNull();
 	});
 
 	it('should remove an access item if remove button is clicked', () => {

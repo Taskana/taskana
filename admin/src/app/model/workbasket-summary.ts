@@ -1,6 +1,6 @@
 import {Links} from './links';
 
-export class WorkbasketSummary {
+export class WorkbasketSummary{
     constructor(
         public workbasketId: string,
         public key: string,
@@ -14,5 +14,6 @@ export class WorkbasketSummary {
         public orgLevel2: string,
         public orgLevel3: string,
         public orgLevel4: string,
-        public links: Array<Links> = undefined){}
+        public _links: Links = undefined){
+        }
 }

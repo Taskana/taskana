@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { WorkbasketSummary } from '../../model/workbasketSummary';
+import { WorkbasketSummaryResource } from '../../model/workbasket-summary-resource';
+import { WorkbasketSummary } from '../../model/workbasket-summary';
 import { WorkbasketService } from '../../services/workbasket.service'
 import { Subscription } from 'rxjs/Subscription';
 import { FilterModel } from '../../shared/filter/filter.component'
@@ -32,7 +33,7 @@ export class WorkbasketListComponent implements OnInit {
 	ngOnInit() {
 		this.requestInProgress = true;
 		this.workBasketSummarySubscription = this.workbasketService.getWorkBasketsSummary().subscribe(resultList => {
-			this.workbaskets = resultList;
+			this.workbaskets = resultList._embedded.workbaskets;
 			this.requestInProgress = false;
 		});
 
@@ -79,11 +80,11 @@ export class WorkbasketListComponent implements OnInit {
 
 	private performRequest(): void {
 		this.requestInProgress = true;
-		this.workbaskets = undefined;
+		this.workbaskets = [];
 		this.workbasketServiceSubscription.add(this.workbasketService.getWorkBasketsSummary(true, this.sort.sortBy, this.sort.sortDirection, undefined,
 			this.filterBy.name, this.filterBy.description, undefined, this.filterBy.owner,
 			this.filterBy.type, undefined, this.filterBy.key).subscribe(resultList => {
-				this.workbaskets = resultList;
+				this.workbaskets = resultList._embedded? resultList._embedded.workbaskets:[];
 				this.requestInProgress = false;
 				this.unSelectWorkbasket();
 			}));

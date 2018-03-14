@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { async, ComponentFixture, TestBed,  } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, } from '@angular/core/testing';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 import { NoAccessComponent } from '../noAccess/no-access.component';
 import { WorkbasketInformationComponent } from './information/workbasket-information.component';
@@ -27,11 +27,13 @@ import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
-import { WorkbasketSummary } from '../../model/workbasketSummary';
+import { WorkbasketSummary } from '../../model/workbasket-summary';
+import { WorkbasketSummaryResource } from '../../model/workbasket-summary-resource';
+import { WorkbasketAccessItemsResource } from '../../model/workbasket-access-items-resource';
 
 @Component({
-	selector: 'taskana-filter',
-	template: ''
+  selector: 'taskana-filter',
+  template: ''
 })
 export class FilterComponent {
 
@@ -44,7 +46,8 @@ describe('WorkbasketDetailsComponent', () => {
   let debugElement;
   let masterAndDetailService;
   let workbasketService;
-  
+  let workbasket = new Workbasket('1', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
+
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -64,10 +67,14 @@ describe('WorkbasketDetailsComponent', () => {
     workbasketService = TestBed.get(WorkbasketService);
     spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => { return Observable.of(true) })
     spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => { return Observable.of('id1') })
-    spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => { return Observable.of(new Array<WorkbasketSummary>(new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Array<Links>(new Links('self', 'someurl'))))) })
-    spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return Observable.of(new Workbasket('id1')) })
-    spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => { return Observable.of(new Array<WorkbasketAccessItems>()) })
-    spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => { return Observable.of(new Array<WorkbasketSummary>()) })
+    spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
+      return Observable.of(new WorkbasketSummaryResource(
+        { 'workbaskets': new Array<WorkbasketSummary>(new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' }))) }, new Links({ 'href': 'someurl' })))
+    })
+
+    spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return Observable.of(workbasket) })
+    spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => { return Observable.of(new WorkbasketAccessItemsResource( {'accessItems': new Array<WorkbasketAccessItems>()}, new Links({'href': 'url'})) )})
+    spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => { return Observable.of(new WorkbasketSummaryResource( {'workbaskets': new Array<WorkbasketSummary>()}, new Links({'href': 'url'})) ) })
 
   });
 
@@ -88,7 +95,7 @@ describe('WorkbasketDetailsComponent', () => {
     expect(component.workbasket).toBeUndefined();
     expect(debugElement.querySelector('app-no-access')).toBeTruthy;
 
-    component.workbasket = new Workbasket('id1');
+    component.workbasket = workbasket;
     fixture.detectChanges();
 
     expect(debugElement.querySelector('app-no-access')).toBeFalsy;
@@ -98,7 +105,7 @@ describe('WorkbasketDetailsComponent', () => {
 
   it('should show back button with classes "visible-xs visible-sm hidden" when showDetail property is true', () => {
 
-    component.workbasket = new Workbasket('id1');
+    component.workbasket = workbasket;
     component.ngOnInit();
     fixture.detectChanges();
     expect(debugElement.querySelector('.visible-xs.visible-sm.hidden > a').textContent).toBe('Back');

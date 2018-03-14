@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Utils } from '../../../shared/utils/utils';
 
 import { Workbasket } from '../../../model/workbasket';
 import { WorkbasketAccessItems } from '../../../model/workbasket-access-items';
 
 import { WorkbasketService } from '../../../services/workbasket.service';
 import { AlertService, AlertModel, AlertType } from '../../../services/alert.service';
+import { WorkbasketAccessItemsResource } from '../../../model/workbasket-access-items-resource';
 
 declare var $: any;
 
@@ -20,6 +20,7 @@ export class AccessItemsComponent implements OnInit {
 	@Input()
 	workbasket: Workbasket;
 
+	accessItemsResource: WorkbasketAccessItemsResource;
 	accessItems: Array<WorkbasketAccessItems>;
 	accessItemsClone: Array<WorkbasketAccessItems>;
 	accessItemsResetClone: Array<WorkbasketAccessItems>;
@@ -33,8 +34,9 @@ export class AccessItemsComponent implements OnInit {
 	constructor(private workbasketService: WorkbasketService, private alertService: AlertService) { }
 
 	ngOnInit() {
-		this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket.workbasketId).subscribe( (accessItems: Array<WorkbasketAccessItems>) =>{
-			this.accessItems = accessItems;
+		this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href).subscribe( (accessItemsResource: WorkbasketAccessItemsResource) =>{
+			this.accessItemsResource = accessItemsResource;
+			this.accessItems = accessItemsResource._embedded.accessItems;
 			this.accessItemsClone = this.cloneAccessItems(this.accessItems);
 			this.accessItemsResetClone = this.cloneAccessItems(this.accessItems);
 		})
@@ -59,11 +61,7 @@ export class AccessItemsComponent implements OnInit {
 
 	onSave(): boolean {
 		this.requestInProgress = true;
-		if(!this.accessItems[0].links){
-			return;
-		}
-
-		this.workbasketService.updateWorkBasketAccessItem(Utils.getTagLinkRef(this.accessItems[0].links, 'setWorkbasketAccessItems').href, this.accessItems).subscribe(response =>{
+		this.workbasketService.updateWorkBasketAccessItem(this.accessItemsResource._links.self.href + '/', this.accessItems).subscribe(response =>{
 			this.accessItemsClone = this.cloneAccessItems(this.accessItems);
 			this.accessItemsResetClone = this.cloneAccessItems(this.accessItems);
 			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
@@ -72,8 +70,10 @@ export class AccessItemsComponent implements OnInit {
 		},
 		error => {
 			this.modalErrorMessage = error.message;
+			this.requestInProgress = false;
 			return false;
 		})
+		return false;
 	}
 
 	setValue() { debugger; }

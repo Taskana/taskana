@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Workbasket } from '../../../model/workbasket';
-import { WorkbasketSummary } from '../../../model/workbasketSummary';
+import { WorkbasketSummary } from '../../../model/workbasket-summary';
 import { WorkbasketAccessItems } from '../../../model/workbasket-access-items';
 import { FilterModel } from '../../../shared/filter/filter.component'
 
@@ -9,6 +9,7 @@ import { AlertService, AlertModel, AlertType } from '../../../services/alert.ser
 
 import { Subscription } from 'rxjs';
 import { element } from 'protractor';
+import { WorkbasketSummaryResource } from '../../../model/workbasket-summary-resource';
 
 @Component({
 	selector: 'taskana-workbaskets-distribution-targets',
@@ -23,9 +24,10 @@ export class DistributionTargetsComponent implements OnInit {
 	distributionTargetsSubscription: Subscription;
 	workbasketSubscription: Subscription;
 	workbasketFilterSubscription: Subscription;
-	distributionTargetsLeft: Array<WorkbasketSummary>;
-	distributionTargetsRight: Array<WorkbasketSummary>;
-	distributionTargetsSelected: Array<WorkbasketSummary>;
+	distributionTargetsResource: WorkbasketSummaryResource;
+	distributionTargetsLeft: Array<WorkbasketSummary> = [];
+	distributionTargetsRight: Array<WorkbasketSummary> = [];
+	distributionTargetsSelected: Array<WorkbasketSummary> = [];
 
 
 	filterBy: FilterModel = new FilterModel();
@@ -38,14 +40,15 @@ export class DistributionTargetsComponent implements OnInit {
 	ngOnInit() {
 		this.requestInProgressLeft = true;
 		this.requestInProgressRight = true;
-		this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(this.workbasket.workbasketId).subscribe((distributionTargetsSelected: Array<WorkbasketSummary>) => {
-			this.distributionTargetsSelected = distributionTargetsSelected;
-			this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary().subscribe((distributionTargetsAvailable: Array<WorkbasketSummary>) => {
-				this.distributionTargetsLeft = distributionTargetsAvailable;
-				this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable);
-				this.requestInProgressLeft = false;
-				this.requestInProgressRight = false;
-			});
+		this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(this.workbasket._links.distributionTargets.href).subscribe((distributionTargetsSelectedResource: WorkbasketSummaryResource) => {
+				this.distributionTargetsSelected = distributionTargetsSelectedResource._embedded ? distributionTargetsSelectedResource._embedded.workbaskets :[];
+				this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary().subscribe((distributionTargetsAvailable: WorkbasketSummaryResource) => {
+					this.distributionTargetsResource = distributionTargetsAvailable;
+					this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+					this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+					this.requestInProgressLeft = false;
+					this.requestInProgressRight = false;
+				});
 		})
 	}
 
@@ -91,8 +94,8 @@ export class DistributionTargetsComponent implements OnInit {
 		listType ? this.requestInProgressRight = true : this.requestInProgressLeft = true;
 		this.workbasketFilterSubscription = this.workbasketService.getWorkBasketsSummary(true, undefined, undefined, undefined,
 			this.filterBy.name, this.filterBy.description, undefined, this.filterBy.owner,
-			this.filterBy.type, undefined, this.filterBy.key).subscribe(resultList => {
-				listType ? this.distributionTargetsRight = resultList : this.distributionTargetsLeft = resultList;
+			this.filterBy.type, undefined, this.filterBy.key).subscribe((resultList: WorkbasketSummaryResource) => {
+				listType ? this.distributionTargetsRight = resultList._embedded.workbaskets : this.distributionTargetsLeft = resultList._embedded.workbaskets;
 				listType ? this.requestInProgressRight = false : this.requestInProgressLeft = false;
 			});
 

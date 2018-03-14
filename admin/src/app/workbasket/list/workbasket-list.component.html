@@ -34,6 +34,7 @@
             </div>
         </li>
         <taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
+
         <li class="list-group-item" *ngFor="let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId"
             type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
             <div class="row">

@@ -5,8 +5,8 @@ import { MasterAndDetailService } from '../../services/master-and-detail.service
 import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 import { PermissionService } from '../../services/permission.service';
 import { Subscription } from 'rxjs';
-import { WorkbasketSummary } from '../../model/workbasketSummary';
-import { Utils } from '../../shared/utils/utils';
+import { WorkbasketSummary } from '../../model/workbasket-summary';
+import { WorkbasketSummaryResource } from '../../model/workbasket-summary-resource';
 
 @Component({
 	selector: 'workbasket-details',
@@ -70,10 +70,10 @@ export class WorkbasketDetailsComponent implements OnInit {
 	}
 
 	private getWorkbasketInformation(workbasketIdSelected: string) {
-		this.service.getWorkBasketsSummary().subscribe((workbasketSummary: Array<WorkbasketSummary>) => {
-			let workbasketSummarySelected = this.getWorkbasketSummaryById(workbasketSummary, workbasketIdSelected);
-			if (workbasketSummarySelected && workbasketSummarySelected.links) {
-				this.workbasketSubscription = this.service.getWorkBasket(Utils.getSelfRef(workbasketSummarySelected.links).href).subscribe(workbasket => {
+		this.service.getWorkBasketsSummary().subscribe((workbasketSummary: WorkbasketSummaryResource) => {
+			let workbasketSummarySelected = this.getWorkbasketSummaryById(workbasketSummary._embedded.workbaskets, workbasketIdSelected);
+			if (workbasketSummarySelected && workbasketSummarySelected._links) {
+				this.workbasketSubscription = this.service.getWorkBasket(workbasketSummarySelected._links.self.href).subscribe(workbasket => {
 					this.workbasket = workbasket;
 					this.requestInProgress = false;
 				});
@@ -81,7 +81,7 @@ export class WorkbasketDetailsComponent implements OnInit {
 		});
 	}
 
-	private getWorkbasketSummaryById(workbasketSummary: Array<WorkbasketSummary>, selectedId: string) {
+	private getWorkbasketSummaryById(workbasketSummary: Array<WorkbasketSummary>, selectedId: string): WorkbasketSummary {
 		return workbasketSummary.find((summary => summary.workbasketId === selectedId));
 	}
 

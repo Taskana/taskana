@@ -17,10 +17,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  */
 import { AppComponent } from './app.component';
 import { WorkbasketListComponent } from './workbasket/list/workbasket-list.component';
-import { CategorieslistComponent } from './categorieslist/categorieslist.component';
-import { CategoriestreeComponent } from './categoriestree/categoriestree.component';
-import { CategoryeditorComponent } from './categoryeditor/categoryeditor.component';
-import { CategoriesadministrationComponent } from './categoriesadministration/categoriesadministration.component';
 import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component';
 import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component';
 import { DistributionTargetsComponent } from './workbasket/details/distribution-targets/distribution-targets.component';
@@ -69,10 +65,6 @@ const MODULES =     [
 const DECLARATIONS =  [  
                       AppComponent,
                       WorkbasketListComponent,
-                      CategorieslistComponent,
-                      CategoriestreeComponent,
-                      CategoryeditorComponent,
-                      CategoriesadministrationComponent,
                       AccessItemsComponent,
                       WorkbasketDetailsComponent,
                       MasterAndDetailComponent,
