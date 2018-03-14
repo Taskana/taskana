@@ -7,6 +7,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.DistributionTargetResource;
 
@@ -16,7 +18,8 @@ import pro.taskana.rest.resource.DistributionTargetResource;
 @Component
 public class DistributionTargetMapper {
 
-    public DistributionTargetResource toResource(WorkbasketSummary summary) {
+    public DistributionTargetResource toResource(WorkbasketSummary summary)
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         DistributionTargetResource resource = new DistributionTargetResource();
         BeanUtils.copyProperties(summary, resource);
         // named different so needs to be set by hand
@@ -25,7 +28,8 @@ public class DistributionTargetMapper {
         return addLinks(resource, summary);
     }
 
-    private DistributionTargetResource addLinks(DistributionTargetResource resource, WorkbasketSummary summary) {
+    private DistributionTargetResource addLinks(DistributionTargetResource resource, WorkbasketSummary summary)
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(summary.getId())).withSelfRel());
         return resource;
     }

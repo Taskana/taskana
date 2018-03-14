@@ -1,6 +1,5 @@
 package pro.taskana.rest;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,12 +23,15 @@ import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
+import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
+import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.query.TaskFilter;
 
 /**
@@ -50,144 +51,76 @@ public class TaskController {
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<TaskSummary>> getTasks(@RequestParam MultiValueMap<String, String> params) {
-        try {
-            if (params.keySet().size() == 0) {
-                // get all
-                return ResponseEntity.status(HttpStatus.OK).body(taskLogic.getAll());
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(taskLogic.inspectPrams(params));
-        } catch (NotAuthorizedException e) {
-            LOGGER.error("Something went wrong with the Authorisation, while getting all Tasks.", e);
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (InvalidArgumentException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
+    public ResponseEntity<List<TaskSummary>> getTasks(@RequestParam MultiValueMap<String, String> params)
+        throws NotAuthorizedException, InvalidArgumentException {
+        if (params.keySet().size() == 0) {
+            // get all
+            return ResponseEntity.status(HttpStatus.OK).body(taskLogic.getAll());
         }
+        return ResponseEntity.status(HttpStatus.OK).body(taskLogic.inspectPrams(params));
     }
 
     @GetMapping(path = "/{taskId}")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<Task> getTask(@PathVariable String taskId) {
-        try {
-            Task task = taskService.getTask(taskId);
-            return ResponseEntity.status(HttpStatus.OK).body(task);
-        } catch (TaskNotFoundException e) {
-            LOGGER.error("The searched Task couldn´t be found or does not exist.", e);
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error("The current user is not authorized to retrieve the task.", e);
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Task> getTask(@PathVariable String taskId)
+        throws TaskNotFoundException, NotAuthorizedException {
+        Task task = taskService.getTask(taskId);
+        return ResponseEntity.status(HttpStatus.OK).body(task);
     }
 
     @GetMapping(path = "/workbasket/{workbasketId}/state/{taskState}")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<TaskSummary>> getTasksByWorkbasketIdAndState(@PathVariable String workbasketId,
         @PathVariable TaskState taskState) {
-        try {
-            List<TaskSummary> taskList = taskService.createTaskQuery()
-                .workbasketIdIn(workbasketId)
-                .stateIn(taskState)
-                .list();
-            return ResponseEntity.status(HttpStatus.OK).body(taskList);
-        } catch (NotAuthorizedToQueryWorkbasketException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (Exception e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        List<TaskSummary> taskList = taskService.createTaskQuery()
+            .workbasketIdIn(workbasketId)
+            .stateIn(taskState)
+            .list();
+        return ResponseEntity.status(HttpStatus.OK).body(taskList);
     }
 
     @PostMapping(path = "/{taskId}/claim")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<Task> claimTask(@PathVariable String taskId, @RequestBody String userName) {
+    public ResponseEntity<Task> claimTask(@PathVariable String taskId, @RequestBody String userName)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         // TODO verify user
-        try {
-            taskService.claim(taskId);
-            Task updatedTask = taskService.getTask(taskId);
-            return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
-        } catch (TaskNotFoundException e) {
-            LOGGER.error("The given Task coundn´t be found/claimd or does not Exist.", e);
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (InvalidStateException | InvalidOwnerException e) {
-            LOGGER.error("The given Task could not be claimed. Reason: {}", e);
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error("The current user is not authorized to claim the task.", e);
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        taskService.claim(taskId);
+        Task updatedTask = taskService.getTask(taskId);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/complete")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<Task> completeTask(@PathVariable String taskId) {
-        try {
-            taskService.completeTask(taskId, true);
-            Task updatedTask = taskService.getTask(taskId);
-            return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
-        } catch (TaskNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (InvalidStateException | InvalidOwnerException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error("The current user is not authorized to complete the task.", e);
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Task> completeTask(@PathVariable String taskId)
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
+        taskService.completeTask(taskId, true);
+        Task updatedTask = taskService.getTask(taskId);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        try {
-            Task createdTask = taskService.createTask(task);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
-        } catch (Exception e) {
-            LOGGER.error("Something went wrong: ", e);
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<Task> createTask(@RequestBody Task task)
+        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
+        Task createdTask = taskService.createTask(task);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
 
     @RequestMapping(path = "/{taskId}/transfer/{workbasketKey}")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<Task> transferTask(@PathVariable String taskId, @PathVariable String workbasketKey) {
-        try {
-            Task updatedTask = taskService.transfer(taskId, workbasketKey);
-            return ResponseEntity.status(HttpStatus.CREATED).body(updatedTask);
-        } catch (Exception e) {
-            LOGGER.error("Something went wrong: ", e);
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<Task> transferTask(@PathVariable String taskId, @PathVariable String workbasketKey)
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        Task updatedTask = taskService.transfer(taskId, workbasketKey);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedTask);
     }
 
     @GetMapping(path = "/workbasket/{workbasketId}")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<TaskSummary>> getTasksummariesByWorkbasketId(@PathVariable String workbasketId) {
         List<TaskSummary> taskSummaries = null;
-        try {
-            taskSummaries = taskService.createTaskQuery().workbasketIdIn(workbasketId).list();
-            return ResponseEntity.status(HttpStatus.OK).body(taskSummaries);
-        } catch (NotAuthorizedToQueryWorkbasketException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (Exception ex) {
-            if (taskSummaries == null) {
-                taskSummaries = Collections.emptyList();
-            }
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        taskSummaries = taskService.createTaskQuery().workbasketIdIn(workbasketId).list();
+        return ResponseEntity.status(HttpStatus.OK).body(taskSummaries);
+
     }
 }

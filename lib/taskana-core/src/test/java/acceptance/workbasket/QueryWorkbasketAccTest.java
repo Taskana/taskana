@@ -17,7 +17,6 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -246,7 +245,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryWorkbasketByNameStartsWithSortedByNameAscending()
-        throws SQLException, NotAuthorizedException, InvalidRequestException, InvalidArgumentException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Gruppenpostkorb KSC%")
@@ -271,7 +270,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "max")
     @Test
     public void testQueryWorkbasketByNameStartsWithSortedByNameDescending()
-        throws SQLException, NotAuthorizedException, InvalidRequestException, InvalidArgumentException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("basxet%")
@@ -293,7 +292,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "max")
     @Test
     public void testQueryWorkbasketByNameStartsWithSortedByKeyAscending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, InvalidRequestException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("basxet%")
@@ -315,7 +314,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "max")
     @Test
     public void testQueryWorkbasketByNameStartsWithSortedByKeyDescending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, InvalidRequestException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("basxet%")
@@ -364,7 +363,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         groupNames = "admin")
     @Test
     public void testQueryWorkbasketByAdmin()
-        throws SQLException, NotAuthorizedException, InvalidRequestException, InvalidArgumentException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")

@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -94,106 +93,63 @@ public class WorkbasketController {
         @RequestParam(value = "owner", required = false) String owner,
         @RequestParam(value = "ownerLike", required = false) String ownerLike,
         @RequestParam(value = "type", required = false) String type,
-        @RequestParam(value = "requiredPermission", required = false) String requiredPermission) {
-        try {
-            WorkbasketQuery query = workbasketService.createWorkbasketQuery();
-            addSortingToQuery(query, sortBy, order);
-            addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
-            addAuthorizationFilter(query, requiredPermission);
-            List<WorkbasketSummary> workbasketSummaries = query.list();
-            Resources<WorkbasketSummaryResource> workbasketListResource = workbasketListMapper
-                .toResource(workbasketSummaries);
-            return new ResponseEntity<>(workbasketListResource, HttpStatus.OK);
-        } catch (InvalidArgumentException ex) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        @RequestParam(value = "requiredPermission", required = false) String requiredPermission)
+        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
+        WorkbasketQuery query = workbasketService.createWorkbasketQuery();
+        addSortingToQuery(query, sortBy, order);
+        addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
+        addAuthorizationFilter(query, requiredPermission);
+        List<WorkbasketSummary> workbasketSummaries = query.list();
+        Resources<WorkbasketSummaryResource> workbasketListResource = workbasketListMapper
+            .toResource(workbasketSummaries);
+        return new ResponseEntity<>(workbasketListResource, HttpStatus.OK);
     }
 
     @GetMapping(path = "/{workbasketId}")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<WorkbasketResource> getWorkbasket(@PathVariable(value = "workbasketId") String workbasketId) {
+    public ResponseEntity<WorkbasketResource> getWorkbasket(@PathVariable(value = "workbasketId") String workbasketId)
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         ResponseEntity<WorkbasketResource> result;
-        try {
-            Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
-            result = new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.OK);
-        } catch (WorkbasketNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
+        result = new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.OK);
         return result;
     }
 
     @DeleteMapping(path = "/{workbasketId}")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> deleteWorkbasket(@PathVariable(value = "workbasketId") String workbasketId) {
+    public ResponseEntity<?> deleteWorkbasket(@PathVariable(value = "workbasketId") String workbasketId)
+        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
         ResponseEntity<?> result = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        try {
-            workbasketService.deleteWorkbasket(workbasketId);
-        } catch (WorkbasketNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (WorkbasketInUseException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = ResponseEntity.status(HttpStatus.LOCKED).build();
-        } catch (InvalidArgumentException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        workbasketService.deleteWorkbasket(workbasketId);
         return result;
     }
 
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource) {
-        try {
-            Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
-            workbasket = workbasketService.createWorkbasket(workbasket);
-            return new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.CREATED);
-        } catch (InvalidWorkbasketException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (WorkbasketAlreadyExistException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource)
+        throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
+        WorkbasketNotFoundException {
+        Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
+        workbasket = workbasketService.createWorkbasket(workbasket);
+        return new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{workbasketId}")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketResource> updateWorkbasket(
         @PathVariable(value = "workbasketId") String workbasketId,
-        @RequestBody WorkbasketResource workbasketResource) {
+        @RequestBody WorkbasketResource workbasketResource)
+        throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException {
         ResponseEntity<WorkbasketResource> result;
-        try {
-            if (workbasketId.equals(workbasketResource.workbasketId)) {
-                Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
-                workbasket = workbasketService.updateWorkbasket(workbasket);
-                result = ResponseEntity.ok(workbasketMapper.toResource(workbasket));
-            } else {
-                throw new InvalidWorkbasketException(
-                    "Target-WB-ID('" + workbasketId
-                        + "') is not identical with the WB-ID of to object which should be updated. ID=('"
-                        + workbasketResource.getId() + "')");
-            }
-        } catch (InvalidWorkbasketException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (WorkbasketNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        if (workbasketId.equals(workbasketResource.workbasketId)) {
+            Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
+            workbasket = workbasketService.updateWorkbasket(workbasket);
+            result = ResponseEntity.ok(workbasketMapper.toResource(workbasket));
+        } else {
+            throw new InvalidWorkbasketException(
+                "Target-WB-ID('" + workbasketId
+                    + "') is not identical with the WB-ID of to object which should be updated. ID=('"
+                    + workbasketResource.getId() + "')");
         }
 
         return result;
@@ -202,17 +158,15 @@ public class WorkbasketController {
     @GetMapping(path = "/{workbasketId}/workbasketAccessItems")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<Resources<WorkbasketAccessItemResource>> getWorkbasketAccessItems(
-        @PathVariable(value = "workbasketId") String workbasketId) {
+        @PathVariable(value = "workbasketId") String workbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException {
 
         ResponseEntity<Resources<WorkbasketAccessItemResource>> result;
-        try {
-            List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(workbasketId);
-            Resources<WorkbasketAccessItemResource> accessItemListResource = accessItemListMapper
-                .toResource(workbasketId, accessItems);
-            result = new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
-        } catch (NotAuthorizedException e) {
-            result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+
+        List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(workbasketId);
+        Resources<WorkbasketAccessItemResource> accessItemListResource = accessItemListMapper
+            .toResource(workbasketId, accessItems);
+        result = new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
         return result;
     }
 
@@ -229,48 +183,34 @@ public class WorkbasketController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Resources<WorkbasketAccessItemResource>> setWorkbasketAccessItems(
         @PathVariable(value = "workbasketId") String workbasketId,
-        @RequestBody List<WorkbasketAccessItemResource> workbasketAccessResourceItems) {
-        try {
-            if (workbasketAccessResourceItems == null) {
-                throw new InvalidArgumentException("Can´t create something with NULL body-value.");
-            }
-
-            List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
-            workbasketAccessResourceItems.forEach(item -> wbAccessItems.add(workbasketAccessItemMapper.toModel(item)));
-            workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
-
-            List<WorkbasketAccessItem> updatedWbAccessItems = workbasketService.getWorkbasketAccessItems(workbasketId);
-            Resources<WorkbasketAccessItemResource> accessItemListResource = accessItemListMapper
-                .toResource(workbasketId, updatedWbAccessItems);
-
-            return new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } catch (InvalidArgumentException | NullPointerException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        @RequestBody List<WorkbasketAccessItemResource> workbasketAccessResourceItems)
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+        if (workbasketAccessResourceItems == null) {
+            throw new InvalidArgumentException("Can´t create something with NULL body-value.");
         }
+
+        List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
+        workbasketAccessResourceItems.forEach(item -> wbAccessItems.add(workbasketAccessItemMapper.toModel(item)));
+        workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
+
+        List<WorkbasketAccessItem> updatedWbAccessItems = workbasketService.getWorkbasketAccessItems(workbasketId);
+        Resources<WorkbasketAccessItemResource> accessItemListResource = accessItemListMapper
+            .toResource(workbasketId, updatedWbAccessItems);
+
+        return new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
     }
 
     @GetMapping(path = "/{workbasketId}/distributiontargets")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<Resources<DistributionTargetResource>> getDistributionTargets(
-        @PathVariable(value = "workbasketId") String workbasketId) {
+        @PathVariable(value = "workbasketId") String workbasketId)
+        throws WorkbasketNotFoundException, NotAuthorizedException {
 
         ResponseEntity<Resources<DistributionTargetResource>> result;
-        try {
-            List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(workbasketId);
-            Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListMapper
-                .toResource(workbasketId, distributionTargets);
-            result = new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
-        } catch (WorkbasketNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            result = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(workbasketId);
+        Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListMapper
+            .toResource(workbasketId, distributionTargets);
+        result = new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
         return result;
     }
 
@@ -278,22 +218,14 @@ public class WorkbasketController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Resources<DistributionTargetResource>> setDistributionTargetsForWorkbasketId(
         @PathVariable(value = "workbasketId") String sourceWorkbasketId,
-        @RequestBody List<String> targetWorkbasketIds) {
-        try {
-            workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);
+        @RequestBody List<String> targetWorkbasketIds) throws WorkbasketNotFoundException, NotAuthorizedException {
+        workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);
 
-            List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(sourceWorkbasketId);
-            Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListMapper
-                .toResource(sourceWorkbasketId, distributionTargets);
+        List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(sourceWorkbasketId);
+        Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListMapper
+            .toResource(sourceWorkbasketId, distributionTargets);
 
-            return new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
-        } catch (WorkbasketNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        return new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
     }
 
     private void addAuthorizationFilter(WorkbasketQuery query, String requiredPermission)

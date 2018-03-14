@@ -12,6 +12,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
+import pro.taskana.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.rest.RestConfiguration;
@@ -32,7 +35,8 @@ public class ClassificationMapperTest {
     private ClassificationService classificationService;
 
     @Test
-    public void classificationToResource() {
+    public void classificationToResource() throws ClassificationNotFoundException, NotAuthorizedException,
+        ClassificationAlreadyExistException, ConcurrencyException {
         // given
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("DOMAIN_A",
             "1", "A");

@@ -17,7 +17,6 @@ import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidRequestException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.security.JAASRunner;
@@ -80,8 +79,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupSortedByNameAscending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException,
-        InvalidRequestException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
@@ -96,8 +94,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupSortedByNameDescending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException,
-        InvalidRequestException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
@@ -113,8 +110,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferSourcesForUserAndGroup()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException,
-        InvalidRequestException {
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user_1_1", "group_1")

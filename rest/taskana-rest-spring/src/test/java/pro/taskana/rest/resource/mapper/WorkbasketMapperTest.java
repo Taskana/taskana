@@ -14,6 +14,7 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.WorkbasketResource;
@@ -32,7 +33,7 @@ public class WorkbasketMapperTest {
     WorkbasketMapper workbasketMapper;
 
     @Test
-    public void workbasketToResource() throws NotAuthorizedException {
+    public void workbasketToResource() throws NotAuthorizedException, WorkbasketNotFoundException {
         // given
         Workbasket workbasket = workbasketService.newWorkbasket("1", "DOMAIN_A");
         ((WorkbasketImpl) workbasket).setId("ID");

@@ -7,6 +7,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 
@@ -16,7 +18,8 @@ import pro.taskana.rest.resource.WorkbasketSummaryResource;
 @Component
 public class WorkbasketSummaryMapper {
 
-    public WorkbasketSummaryResource toResource(WorkbasketSummary summary) {
+    public WorkbasketSummaryResource toResource(WorkbasketSummary summary)
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         WorkbasketSummaryResource resource = new WorkbasketSummaryResource();
         BeanUtils.copyProperties(summary, resource);
         // named different so needs to be set by hand
@@ -25,7 +28,8 @@ public class WorkbasketSummaryMapper {
         return addLinks(resource, summary);
     }
 
-    private WorkbasketSummaryResource addLinks(WorkbasketSummaryResource resource, WorkbasketSummary summary) {
+    private WorkbasketSummaryResource addLinks(WorkbasketSummaryResource resource, WorkbasketSummary summary)
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(summary.getId())).withSelfRel());
         return resource;
     }
