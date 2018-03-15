@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed, } from '@angular/core/testing';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 import { NoAccessComponent } from '../noAccess/no-access.component';
 import { WorkbasketInformationComponent } from './information/workbasket-information.component';
 import { AccessItemsComponent } from './access-items/access-items.component';
 import { DistributionTargetsComponent } from './distribution-targets/distribution-targets.component';
+import { DualListComponent } from './distribution-targets//dual-list/dual-list.component';
 import { Workbasket } from 'app/model/workbasket';
 import { Observable } from 'rxjs/Observable';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
@@ -37,6 +38,8 @@ import { WorkbasketAccessItemsResource } from '../../model/workbasket-access-ite
 })
 export class FilterComponent {
 
+  @Input()
+  target: string;
 }
 
 
@@ -52,7 +55,7 @@ describe('WorkbasketDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent, DistributionTargetsComponent, FilterComponent, SelectWorkBasketPipe],
+      declarations: [WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent, DistributionTargetsComponent, FilterComponent, DualListComponent, SelectWorkBasketPipe],
       providers: [WorkbasketService, MasterAndDetailService, PermissionService, AlertService]
     })
       .compileComponents();
@@ -73,8 +76,8 @@ describe('WorkbasketDetailsComponent', () => {
     })
 
     spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return Observable.of(workbasket) })
-    spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => { return Observable.of(new WorkbasketAccessItemsResource( {'accessItems': new Array<WorkbasketAccessItems>()}, new Links({'href': 'url'})) )})
-    spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => { return Observable.of(new WorkbasketSummaryResource( {'workbaskets': new Array<WorkbasketSummary>()}, new Links({'href': 'url'})) ) })
+    spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => { return Observable.of(new WorkbasketAccessItemsResource({ 'accessItems': new Array<WorkbasketAccessItems>() }, new Links({ 'href': 'url' }))) })
+    spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => { return Observable.of(new WorkbasketSummaryResource({ 'workbaskets': new Array<WorkbasketSummary>() }, new Links({ 'href': 'url' }))) })
 
   });
 

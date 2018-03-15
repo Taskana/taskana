@@ -1,5 +1,5 @@
 <taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
-<taskana-general-message-modal *ngIf="modalErrorMessage" [message]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
+<taskana-general-message-modal *ngIf="modalErrorMessage" [(message)]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
     <div class="panel-heading">
         <div class="btn-group pull-right">
