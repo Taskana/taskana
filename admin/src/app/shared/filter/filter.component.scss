@@ -5,11 +5,12 @@
     margin-left: 15px;
 }
 
-.list-group-search {
-    padding: 10px 15px;
-}
-
 .btn-users-list {
     border: 0px solid transparent;
-    /* this was 1px earlier */
+}
+
+.list-group-search {
+    padding: 10px 15px;
+    margin-top: 12px;
+    border-top: 1px solid #ddd;
 }

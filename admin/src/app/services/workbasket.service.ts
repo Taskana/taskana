@@ -10,6 +10,7 @@ import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operator/map';
 import { WorkbasketSummaryResource } from '../model/workbasket-summary-resource';
 import { WorkbasketAccessItemsResource } from '../model/workbasket-access-items-resource';
+import { WorkbasketDistributionTargetsResource } from '../model/workbasket-distribution-targets-resource';
 
 @Injectable()
 export class WorkbasketService {
@@ -100,8 +101,13 @@ export class WorkbasketService {
 			this.httpOptions);
 	}
 	// GET
-	getWorkBasketsDistributionTargets(url: string): Observable<WorkbasketSummaryResource> {
-		return this.httpClient.get<WorkbasketSummaryResource>(url, this.httpOptions);
+	getWorkBasketsDistributionTargets(url: string): Observable<WorkbasketDistributionTargetsResource> {
+		return this.httpClient.get<WorkbasketDistributionTargetsResource>(url, this.httpOptions);
+	}
+
+	// PUT
+	updateWorkBasketsDistributionTargets(url: string, distributionTargetsIds :Array<string>): Observable<WorkbasketDistributionTargetsResource> {
+		return this.httpClient.put<WorkbasketDistributionTargetsResource>(url, distributionTargetsIds, this.httpOptions);
 	}
 
 

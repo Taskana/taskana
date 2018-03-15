@@ -1,8 +1,9 @@
 .nav.nav-tabs { 
     & > li {
         & > a {
-            min-height: 56px;
-            padding-top: 17px;
+            min-height: 52px;
+            padding-top: 15px;
+            border-radius: 0px;
             &.has-changes{
                 border-bottom: solid #f0ad4e;
             }
@@ -12,11 +13,12 @@
             border-left: none;
         }
     }
+    & > li.active > a {
+        border-top:  3px solid #479ea9;
+        padding-top: 13px;
+        background-color: #f5f5f5;
+    }
     & > p{
         margin: 0px;
     }
-}
-
-.workbasket-details{
-    margin-top:1px;
 }

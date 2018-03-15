@@ -3,6 +3,7 @@ import { Workbasket } from '../../../model/workbasket';
 import { WorkbasketSummary } from '../../../model/workbasket-summary';
 import { WorkbasketAccessItems } from '../../../model/workbasket-access-items';
 import { FilterModel } from '../../../shared/filter/filter.component'
+import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 
 import { WorkbasketService } from '../../../services/workbasket.service';
 import { AlertService, AlertModel, AlertType } from '../../../services/alert.service';
@@ -10,7 +11,12 @@ import { AlertService, AlertModel, AlertType } from '../../../services/alert.ser
 import { Subscription } from 'rxjs';
 import { element } from 'protractor';
 import { WorkbasketSummaryResource } from '../../../model/workbasket-summary-resource';
+import { WorkbasketDistributionTargetsResource } from '../../../model/workbasket-distribution-targets-resource';
 
+export enum Side {
+	LEFT,
+	RIGHT
+}
 @Component({
 	selector: 'taskana-workbaskets-distribution-targets',
 	templateUrl: './distribution-targets.component.html',
@@ -24,54 +30,45 @@ export class DistributionTargetsComponent implements OnInit {
 	distributionTargetsSubscription: Subscription;
 	workbasketSubscription: Subscription;
 	workbasketFilterSubscription: Subscription;
-	distributionTargetsResource: WorkbasketSummaryResource;
-	distributionTargetsLeft: Array<WorkbasketSummary> = [];
-	distributionTargetsRight: Array<WorkbasketSummary> = [];
-	distributionTargetsSelected: Array<WorkbasketSummary> = [];
+
+	distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource;
+	distributionTargetsLeft: Array<WorkbasketSummary>;
+	distributionTargetsRight: Array<WorkbasketSummary>;
+	distributionTargetsSelected: Array<WorkbasketSummary>;
+	distributionTargetsClone: Array<WorkbasketSummary>;
+	distributionTargetsSelectedClone: Array<WorkbasketSummary>;
 
 
-	filterBy: FilterModel = new FilterModel();
 	requestInProgress: boolean = false;
 	requestInProgressLeft: boolean = false;
 	requestInProgressRight: boolean = false;
+	modalErrorMessage: string;
+	side = Side;
 
-	constructor(private workbasketService: WorkbasketService) { }
+	constructor(private workbasketService: WorkbasketService, private alertService: AlertService) { }
 
 	ngOnInit() {
-		this.requestInProgressLeft = true;
-		this.requestInProgressRight = true;
-		this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(this.workbasket._links.distributionTargets.href).subscribe((distributionTargetsSelectedResource: WorkbasketSummaryResource) => {
-				this.distributionTargetsSelected = distributionTargetsSelectedResource._embedded ? distributionTargetsSelectedResource._embedded.workbaskets :[];
-				this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary().subscribe((distributionTargetsAvailable: WorkbasketSummaryResource) => {
-					this.distributionTargetsResource = distributionTargetsAvailable;
-					this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-					this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-					this.requestInProgressLeft = false;
-					this.requestInProgressRight = false;
-				});
-		})
-	}
-
-	selectAll(side: number, selected: boolean) {
-		if (side === 0) {
-			this.distributionTargetsLeft.forEach((element: any) => {
-				element.selected = selected;
+		this.onRequest(undefined);
+		this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(this.workbasket._links.distributionTargets.href).subscribe((distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource) => {
+			this.distributionTargetsSelectedResource = distributionTargetsSelectedResource;
+			this.distributionTargetsSelected = distributionTargetsSelectedResource._embedded ? distributionTargetsSelectedResource._embedded.distributionTargets : [];
+			this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
+			this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary().subscribe((distributionTargetsAvailable: WorkbasketSummaryResource) => {
+				this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+				this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+				this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+				this.onRequest(undefined, true);
 			});
-		}
-		else if (side === 1) {
-			this.distributionTargetsRight.forEach((element: any) => {
-				element.selected = selected;
-			});
-		}
+		});
 	}
 
 	moveDistributionTargets(side: number) {
-		if (side === 0) {
+		if (side === Side.LEFT) {
 			let itemsSelected = this.getSelectedItems(this.distributionTargetsLeft, this.distributionTargetsRight)
 			this.distributionTargetsSelected = this.distributionTargetsSelected.concat(itemsSelected);
 			this.distributionTargetsRight = this.distributionTargetsRight.concat(itemsSelected);
 		}
-		else if (side === 1) {
+		else {
 			let itemsSelected = this.getSelectedItems(this.distributionTargetsRight, this.distributionTargetsLeft);
 			this.distributionTargetsSelected = this.removeSeletedItems(this.distributionTargetsSelected, itemsSelected);
 			this.distributionTargetsRight = this.removeSeletedItems(this.distributionTargetsRight, itemsSelected);
@@ -79,28 +76,50 @@ export class DistributionTargetsComponent implements OnInit {
 		}
 	}
 
-	performAvailableFilter(filterBy: FilterModel) {
-		this.filterBy = filterBy;
-		this.performFilter(0);
-	}
-	performSelectedFilter(filterBy: FilterModel) {
-		this.filterBy = filterBy;
-		this.performFilter(1);
+	onSave() {
+		this.requestInProgress = true;
+		this.workbasketService.updateWorkBasketsDistributionTargets(this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()).subscribe(response => {
+			this.requestInProgress = false;
+			this.distributionTargetsSelected = response._embedded ? response._embedded.distributionTargets : [];
+			this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
+			this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
+			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
+			return true;
+		},
+			error => {
+				this.modalErrorMessage = error.message;
+				this.requestInProgress = false;
+				return false;
+			}
+		)
+		return false;
+
 	}
 
-	private performFilter(listType: number) {
+	onClear() {
+		this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'))
+		this.distributionTargetsLeft = Object.assign([], this.distributionTargetsClone);
+		this.distributionTargetsRight = Object.assign([], this.distributionTargetsSelectedClone);
+		this.distributionTargetsSelected = Object.assign([], this.distributionTargetsSelectedClone);
+	}
 
-		listType ? this.distributionTargetsRight = undefined : this.distributionTargetsLeft = undefined;
-		listType ? this.requestInProgressRight = true : this.requestInProgressLeft = true;
+	requestTimeoutExceeded(message: string) {
+		this.modalErrorMessage = message;
+	}
+
+	performFilter(dualListFilter: any) {
+
+		dualListFilter.side === Side.RIGHT ? this.distributionTargetsRight = undefined : this.distributionTargetsLeft = undefined;
+		this.onRequest(dualListFilter.side, false);
 		this.workbasketFilterSubscription = this.workbasketService.getWorkBasketsSummary(true, undefined, undefined, undefined,
-			this.filterBy.name, this.filterBy.description, undefined, this.filterBy.owner,
-			this.filterBy.type, undefined, this.filterBy.key).subscribe((resultList: WorkbasketSummaryResource) => {
-				listType ? this.distributionTargetsRight = resultList._embedded.workbaskets : this.distributionTargetsLeft = resultList._embedded.workbaskets;
-				listType ? this.requestInProgressRight = false : this.requestInProgressLeft = false;
+			dualListFilter.filterBy.name, dualListFilter.filterBy.description, undefined, dualListFilter.filterBy.owner,
+			dualListFilter.filterBy.type, undefined, dualListFilter.filterBy.key).subscribe(resultList => {
+				(dualListFilter.side === Side.RIGHT) ?
+					this.distributionTargetsRight = (resultList._embedded ? resultList._embedded.workbaskets : []) :
+					this.distributionTargetsLeft = (resultList._embedded ? resultList._embedded.workbaskets : []);
+				this.onRequest(dualListFilter.side, true);
 			});
-
 	}
-
 
 	private getSelectedItems(originList: any, destinationList: any): Array<any> {
 		return originList.filter((element: any) => { return (element.selected === true) });
@@ -113,7 +132,24 @@ export class DistributionTargetsComponent implements OnInit {
 			}
 		}
 		return originList;
+	}
 
+	private onRequest(side: Side = undefined, finished: boolean = false) {
+		if (finished) {
+			side === undefined ? (this.requestInProgressLeft = false, this.requestInProgressRight = false) :
+				side === Side.LEFT ? this.requestInProgressLeft = false : this.requestInProgressRight = false;
+			return;
+		}
+		side === undefined ? (this.requestInProgressLeft = true, this.requestInProgressRight = true) :
+			side === Side.LEFT ? this.requestInProgressLeft = true : this.requestInProgressRight = true;
+	}
+
+	private getSeletedIds(): Array<string> {
+		let distributionTargetsSelelected: Array<string> = [];
+		this.distributionTargetsSelected.forEach(element => {
+			distributionTargetsSelelected.push(element.workbasketId);
+		})
+		return distributionTargetsSelelected;
 	}
 
 	private ngOnDestroy(): void {
