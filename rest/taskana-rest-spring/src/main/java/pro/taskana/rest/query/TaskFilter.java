@@ -55,7 +55,7 @@ public class TaskFilter {
         return taskService.createTaskQuery().list();
     }
 
-    public List<TaskSummary> inspectPrams(MultiValueMap<String, String> params)
+    public List<TaskSummary> inspectParams(MultiValueMap<String, String> params)
         throws NotAuthorizedException, InvalidArgumentException {
         TaskQuery taskQuery = taskService.createTaskQuery();
 
@@ -116,10 +116,6 @@ public class TaskFilter {
         }
         if (params.containsKey(IS_TRANSFERRED)) {
             taskQuery.transferredEquals(Boolean.getBoolean(params.get(IS_TRANSFERRED).get(0)));
-        }
-        if (params.containsKey(CUSTOM)) {
-            String[] custom = extractCommaSeperatedFields(params.get(CUSTOM));
-            taskQuery.customFieldsIn(custom);
         }
         return taskQuery.list();
     }

@@ -396,15 +396,6 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery businessProcessIdLike(String... businessProcessIds);
 
     /**
-     * Filter the custom fields with this query. The scan will be run over all 10 fields.
-     *
-     * @param customFields
-     *            the value in the fields
-     * @return the query
-     */
-    TaskQuery customFieldsIn(String... customFields);
-
-    /**
      * Add the values of custom attribute number num for exact matching to your query.
      *
      * @param num

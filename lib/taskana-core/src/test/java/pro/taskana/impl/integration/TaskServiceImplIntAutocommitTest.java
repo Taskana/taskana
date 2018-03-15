@@ -204,7 +204,7 @@ public class TaskServiceImplIntAutocommitTest {
             .stateIn(TaskState.CLAIMED)
             .workbasketKeyDomainIn(new KeyDomain("asd", "novatec"), new KeyDomain("asdasdasd", "novatec"))
             .ownerIn("test", "test2", "bla")
-            .customFieldsIn("test")
+            .customAttributeIn("16", "test")
             .classificationKeyIn("pId1", "pId2")
             .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
             .primaryObjectReferenceSystemIn("sys")

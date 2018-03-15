@@ -58,7 +58,6 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] ownerLike;
     private Boolean isRead;
     private Boolean isTransferred;
-    private String[] customFields;
     private String[] porCompanyIn;
     private String[] porCompanyLike;
     private String[] porSystemIn;
@@ -350,12 +349,6 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery transferredEquals(Boolean isTransferred) {
         this.isTransferred = isTransferred;
-        return this;
-    }
-
-    @Override
-    public TaskQuery customFieldsIn(String... customFields) {
-        this.customFields = customFields;
         return this;
     }
 
@@ -892,10 +885,6 @@ public class TaskQueryImpl implements TaskQuery {
         return ownerLike;
     }
 
-    public String[] getCustomFields() {
-        return customFields;
-    }
-
     public Boolean getIsRead() {
         return isRead;
     }
@@ -1220,8 +1209,6 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(isRead);
         builder.append(", isTransferred=");
         builder.append(isTransferred);
-        builder.append(", customFields=");
-        builder.append(Arrays.toString(customFields));
         builder.append(", porCompanyIn=");
         builder.append(Arrays.toString(porCompanyIn));
         builder.append(", porCompanyLike=");
