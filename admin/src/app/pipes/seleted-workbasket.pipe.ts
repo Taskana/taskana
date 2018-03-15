@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class SelectWorkBasketPipe implements PipeTransform {
     transform(originArray: any, selectionArray: any, arg1: any): Object[] {
         let returnArray = [];
-        if (!originArray) {
+        if (!originArray || !selectionArray) {
             return returnArray;
         }
 
@@ -17,5 +17,4 @@ export class SelectWorkBasketPipe implements PipeTransform {
         returnArray = originArray;
         return returnArray;
     }
-
 }
