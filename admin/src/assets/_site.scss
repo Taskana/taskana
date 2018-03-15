@@ -146,14 +146,6 @@ li > div.row > dl {
     color: red;
 }
 
-.detail-tab-content {
-    margin-top: 20px;
-}
-
-.col-xs-9.mod-col-9 {
-    width: 74%;
-    padding-right: 0px;
-}
 
 .user-select {
     margin-left: 2px;
@@ -225,5 +217,27 @@ li > div.row > dl {
 }
 
 .centered-spinner {
-    margin-top: 100px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.list-group-item {
+    padding: 5px 15px;
+}
+
+.dual-list > taskana-filter >.list-group-search {
+    margin-top: 4px;
+}
+
+workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets {
+    &> .panel{
+        border: none;
+        box-shadow: none;
+        margin-bottom: 0px;
+        &> .panel-body {
+            height: 84vh;
+            max-height: 84vh;
+            overflow-y: scroll;
+        }
+    }
 }

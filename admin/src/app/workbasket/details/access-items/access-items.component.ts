@@ -36,7 +36,7 @@ export class AccessItemsComponent implements OnInit {
 	ngOnInit() {
 		this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href).subscribe( (accessItemsResource: WorkbasketAccessItemsResource) =>{
 			this.accessItemsResource = accessItemsResource;
-			this.accessItems = accessItemsResource._embedded.accessItems;
+			this.accessItems = accessItemsResource._embedded?accessItemsResource._embedded.accessItems: [];
 			this.accessItemsClone = this.cloneAccessItems(this.accessItems);
 			this.accessItemsResetClone = this.cloneAccessItems(this.accessItems);
 		})
@@ -61,7 +61,7 @@ export class AccessItemsComponent implements OnInit {
 
 	onSave(): boolean {
 		this.requestInProgress = true;
-		this.workbasketService.updateWorkBasketAccessItem(this.accessItemsResource._links.self.href + '/', this.accessItems).subscribe(response =>{
+		this.workbasketService.updateWorkBasketAccessItem(this.accessItemsResource._links.self.href , this.accessItems).subscribe(response =>{
 			this.accessItemsClone = this.cloneAccessItems(this.accessItems);
 			this.accessItemsResetClone = this.cloneAccessItems(this.accessItems);
 			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
