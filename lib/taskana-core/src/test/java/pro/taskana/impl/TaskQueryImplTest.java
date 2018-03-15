@@ -59,7 +59,6 @@ public class TaskQueryImplTest {
         doReturn(intermediate).when(taskServiceMock).augmentTaskSummariesByContainedSummaries(any());
 
         List<TaskSummary> result = taskQueryImpl.nameIn("test", "asd", "blubber")
-            .customFieldsIn("cool", "bla")
             .priorityIn(1, 2)
             .stateIn(TaskState.CLAIMED, TaskState.COMPLETED)
             .list();
@@ -76,7 +75,6 @@ public class TaskQueryImplTest {
         doReturn(intermediate).when(taskServiceMock).augmentTaskSummariesByContainedSummaries(any());
 
         List<TaskSummary> result = taskQueryImpl.nameIn("test", "asd", "blubber")
-            .customFieldsIn("cool", "bla")
             .priorityIn(1, 2)
             .stateIn(TaskState.CLAIMED, TaskState.COMPLETED)
             .list(1, 1);
@@ -93,7 +91,6 @@ public class TaskQueryImplTest {
         // when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
 
         TaskSummary result = taskQueryImpl.nameIn("test", "asd", "blubber")
-            .customFieldsIn("cool", "bla")
             .priorityIn(1, 2)
             .stateIn(TaskState.CLAIMED, TaskState.COMPLETED)
             .single();
