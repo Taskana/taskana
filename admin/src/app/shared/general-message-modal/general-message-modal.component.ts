@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnChanges, SimpleChanges, Output, EventEmitter, DoCheck } from '@angular/core';
 declare var $: any;
 
 @Component({
@@ -7,9 +7,9 @@ declare var $: any;
 	styleUrls: ['./general-message-modal.component.scss']
 })
 export class GeneralMessageModalComponent implements OnChanges {
-
-	@Input()
-	message: string = '';
+	
+	@Input()  message: string;
+	@Output() messageChange = new EventEmitter<string>();
 
 	@Input()
 	title: string = '';
@@ -29,7 +29,8 @@ export class GeneralMessageModalComponent implements OnChanges {
 	}
 
 	removeMessage() {
-		this.message = undefined;
+		this.message = '';
+		this.messageChange.emit(this.message);
 	}
 
 }

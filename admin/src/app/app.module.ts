@@ -20,6 +20,7 @@ import { WorkbasketListComponent } from './workbasket/list/workbasket-list.compo
 import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component';
 import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component';
 import { DistributionTargetsComponent } from './workbasket/details/distribution-targets/distribution-targets.component';
+import { DualListComponent } from './workbasket/details/distribution-targets/dual-list/dual-list.component';
 import { AccessItemsComponent } from './workbasket/details/access-items/access-items.component';
 import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
@@ -77,6 +78,7 @@ const DECLARATIONS =  [
                       GeneralMessageModalComponent,
                       DistributionTargetsComponent,
                       SortComponent,
+                      DualListComponent,
                       MapValuesPipe,
                       RemoveNoneTypePipe,
                       SelectWorkBasketPipe

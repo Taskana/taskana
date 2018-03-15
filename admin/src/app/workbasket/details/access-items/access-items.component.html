@@ -1,5 +1,5 @@
 <taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
-<taskana-general-message-modal *ngIf="modalErrorMessage" [message]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
+<taskana-general-message-modal *ngIf="modalErrorMessage" [(message)]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
 <div *ngIf="workbasket && accessItems" id="wb-information" class="panel panel-default">
 	<div class="panel-heading">
 		<div class="btn-group pull-right">
@@ -58,7 +58,7 @@
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permAppend !== accessItem.permAppend)}">
 							<input type="checkbox" name="accessItem.permAppend-{{index}}" [(ngModel)]="accessItem.permAppend">
 						</td>
-						<td ngClass="{{(accessItemsClone[index].permTransfer != accessItem.permTransfer)? 'has-changes': 'pepe'}}">
+						<td [ngClass]="{'has-changes': (accessItemsClone[index].permTransfer !== accessItem.permTransfer)}">
 							<input type="checkbox" name="accessItem.permTransfer-{{index}}" [(ngModel)]="accessItem.permTransfer">
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permDistribute !== accessItem.permDistribute)}">
