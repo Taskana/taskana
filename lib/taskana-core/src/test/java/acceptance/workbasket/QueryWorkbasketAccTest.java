@@ -2,6 +2,7 @@ package acceptance.workbasket;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.WorkbasketPermission;
+import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
@@ -32,6 +34,57 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
 
     public QueryWorkbasketAccTest() {
         super();
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1_1"})
+    @Test
+    public void testQueryAllForUserMultipleTimes() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        WorkbasketQuery query = workbasketService.createWorkbasketQuery();
+        long count = query.count();
+        assertEquals(3, count);
+        List<WorkbasketSummary> workbaskets = query.list();
+        assertNotNull(workbaskets);
+        assertEquals(count, workbaskets.size());
+        workbaskets = query.list();
+        assertNotNull(workbaskets);
+        assertEquals(count, workbaskets.size());
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"businessadmin"})
+    @Test
+    public void testQueryAllForBusinessAdminMultipleTimes() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        WorkbasketQuery query = workbasketService.createWorkbasketQuery();
+        long count = query.count();
+        assertTrue(count == 24);
+        List<WorkbasketSummary> workbaskets = query.list();
+        assertNotNull(workbaskets);
+        assertEquals(count, workbaskets.size());
+        workbaskets = query.list();
+        assertNotNull(workbaskets);
+        assertEquals(count, workbaskets.size());
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"admin"})
+    @Test
+    public void testQueryAllForAdminMultipleTimes() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        WorkbasketQuery query = workbasketService.createWorkbasketQuery();
+        long count = query.count();
+        assertTrue(count == 24);
+        List<WorkbasketSummary> workbaskets = query.list();
+        assertNotNull(workbaskets);
+        assertEquals(count, workbaskets.size());
+        workbaskets = query.list();
+        assertNotNull(workbaskets);
+        assertEquals(count, workbaskets.size());
     }
 
     @WithAccessId(
