@@ -351,7 +351,7 @@ public class TaskServiceImplIntExplicitTest {
             .stateIn(TaskState.CLAIMED)
             .workbasketKeyDomainIn(new KeyDomain("k1", "novatec"))
             .ownerIn("test", "test2", "bla")
-            .customFieldsIn("test")
+            .customAttributeLike("13", "test")
             .classificationKeyIn("pId1", "pId2")
             .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
             .primaryObjectReferenceSystemIn("sys")

@@ -57,7 +57,7 @@ public class TaskController {
             // get all
             return ResponseEntity.status(HttpStatus.OK).body(taskLogic.getAll());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(taskLogic.inspectPrams(params));
+        return ResponseEntity.status(HttpStatus.OK).body(taskLogic.inspectParams(params));
     }
 
     @GetMapping(path = "/{taskId}")
