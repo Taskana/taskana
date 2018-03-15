@@ -72,10 +72,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private boolean joinWithAccessList;
     private boolean checkReadPermission;
     private boolean usedToAugmentTasks;
+    private boolean callerRolesAndAccessIdsAlreadyHandled;
 
     WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.orderBy = new ArrayList<>();
+        this.callerRolesAndAccessIdsAlreadyHandled = false;
     }
 
     @Override
@@ -693,35 +695,40 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     private void handleCallerRolesAndAccessIds() {
-        // if user is admin or businessadmin, don't check read permission on workbasket.
-        // in addition, if user is admin or businessadmin and no accessIds were specified, don't join with access list
-        // if this query is used to augment task, a business admin should be treated like a normal user
-        // (joinWithAccessList,checkReadPermission) can assume the following combinations:
-        // (t,t) -> query performed by user
-        // (f,f) -> admin queries w/o access ids specified
-        // (t,f) -> admin queries with access ids specified
-        // (f,t) -> cannot happen, cannot be matched to meaningful query
-        joinWithAccessList = true;
-        checkReadPermission = true;
-        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)
-            || (taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN) && !usedToAugmentTasks)) {
-            checkReadPermission = false;
-            if (accessId == null) {
-                joinWithAccessList = false;
-            }
-        }
-        // might already be set by accessIdsHavePermission
-        if (this.accessId == null) {
-            String[] accessIds = new String[0];
-            List<String> ucAccessIds = CurrentUserContext.getAccessIds();
-            if (ucAccessIds != null && !ucAccessIds.isEmpty()) {
-                accessIds = new String[ucAccessIds.size()];
-                accessIds = ucAccessIds.toArray(accessIds);
-            }
-            this.accessId = accessIds;
-            lowercaseAccessIds(this.accessId);
-        }
+        if (!callerRolesAndAccessIdsAlreadyHandled) {
+            callerRolesAndAccessIdsAlreadyHandled = true;
 
+            // if user is admin or businessadmin, don't check read permission on workbasket.
+            // in addition, if user is admin or businessadmin and no accessIds were specified, don't join with access
+            // list
+            // if this query is used to augment task, a business admin should be treated like a normal user
+            // (joinWithAccessList,checkReadPermission) can assume the following combinations:
+            // (t,t) -> query performed by user
+            // (f,f) -> admin queries w/o access ids specified
+            // (t,f) -> admin queries with access ids specified
+            // (f,t) -> cannot happen, cannot be matched to meaningful query
+            joinWithAccessList = true;
+            checkReadPermission = true;
+            if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)
+                || (taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN) && !usedToAugmentTasks)) {
+                checkReadPermission = false;
+                if (accessId == null) {
+                    joinWithAccessList = false;
+                }
+            }
+            // might already be set by accessIdsHavePermission
+            if (this.accessId == null) {
+                String[] accessIds = new String[0];
+                List<String> ucAccessIds = CurrentUserContext.getAccessIds();
+                if (ucAccessIds != null && !ucAccessIds.isEmpty()) {
+                    accessIds = new String[ucAccessIds.size()];
+                    accessIds = ucAccessIds.toArray(accessIds);
+                }
+                this.accessId = accessIds;
+                lowercaseAccessIds(this.accessId);
+            }
+        }
+        LOGGER.debug("exit from handleCallerRolesAndAccessIds, now this is {}", this);
     }
 
     static void lowercaseAccessIds(String[] accessIdArray) {
