@@ -11,7 +11,6 @@ import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,14 +45,14 @@ import pro.taskana.rest.resource.mapper.DistributionTargetListMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemListMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
-import pro.taskana.rest.resource.mapper.WorkbasketSummaryResourceAssembler;
+import pro.taskana.rest.resource.mapper.WorkbasketSummaryResourcesAssembler;
 
 /**
  * Controller for all {@link Workbasket} related endpoints.
  */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
-@RequestMapping(path = "/v1/workbaskets", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/v1/workbaskets", produces = "application/hal+json")
 public class WorkbasketController {
 
     private static final String LIKE = "%";
@@ -92,22 +91,23 @@ public class WorkbasketController {
         @RequestParam(value = "owner", required = false) String owner,
         @RequestParam(value = "ownerLike", required = false) String ownerLike,
         @RequestParam(value = "type", required = false) String type,
-        @RequestParam(value = "requiredPermission", required = false) String requiredPermission)
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
+        @RequestParam(value = "requiredPermission", required = false) String requiredPermission,
+        @RequestParam(value = "page", required = false) String page,
+        @RequestParam(value = "pagesize", required = false) String pagesize) {
 
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         addSortingToQuery(query, sortBy, order);
         addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
         addAuthorizationFilter(query, requiredPermission);
-        List<WorkbasketSummary> workbasketSummaries = query.list();
 
-        // Iterable<? extends WorkbasketSummary> workbasketSummaries2 = query.list();
+        // long totalElements = query.count();
 
-        WorkbasketSummaryResourceAssembler assembler = new WorkbasketSummaryResourceAssembler();
-        List<WorkbasketSummaryResource> resources = assembler.toResources(workbasketSummaries);
-        PageMetadata pageMetadata = new PageMetadata(5, 1, workbasketSummaries.size(), 4);
-        PagedResources<WorkbasketSummaryResource> pagedResources = new PagedResources<WorkbasketSummaryResource>(
-            resources,
+        PageMetadata pageMetadata = new PageMetadata(Integer.MAX_VALUE, 0, 11, 4);
+        List<WorkbasketSummary> workbasketSummaries = query.listPage((int) pageMetadata.getNumber(),
+            (int) pageMetadata.getSize());
+
+        WorkbasketSummaryResourcesAssembler assembler = new WorkbasketSummaryResourcesAssembler();
+        PagedResources<WorkbasketSummaryResource> pagedResources = assembler.toResources(workbasketSummaries,
             pageMetadata);
 
         return new ResponseEntity<>(pagedResources, HttpStatus.OK);
