@@ -174,7 +174,6 @@ public interface WorkbasketMapper {
         @Param("accessId") String accessId);
 
     @Insert("<script>INSERT INTO WORKBASKET (ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4) VALUES (#{workbasket.id}, #{workbasket.key}, #{workbasket.created}, #{workbasket.modified}, #{workbasket.name}, #{workbasket.domain}, #{workbasket.type}, #{workbasket.description}, #{workbasket.owner}, #{workbasket.custom1}, #{workbasket.custom2}, #{workbasket.custom3}, #{workbasket.custom4}, #{workbasket.orgLevel1}, #{workbasket.orgLevel2}, #{workbasket.orgLevel3}, #{workbasket.orgLevel4}) "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Options(keyProperty = "id", keyColumn = "ID")
     void insert(@Param("workbasket") WorkbasketImpl workbasket);
