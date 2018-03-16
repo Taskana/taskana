@@ -23,7 +23,7 @@ public class TaskanaEngineConfiguration {
 
     private static final String USER_NAME = "sa";
     private static final String USER_PASSWORD = "sa";
-    private static final String JDBC_H2_MEM_TASKANA = "jdbc:h2:mem:taskana;IGNORECASE=TRUE";
+    private static final String JDBC_H2_MEM_TASKANA = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0";
     private static final String H2_DRIVER = "org.h2.Driver";
     private static final String TASKANA_ROLES_PROPERTIES = "/taskanaroles.properties";
     private static final String TASKANA_PROPERTIES_SEPARATOR = "|";
@@ -81,7 +81,7 @@ public class TaskanaEngineConfiguration {
 
     public static DataSource createDefaultDataSource() {
         LOGGER.warn("No datasource is provided. A inmemory db is used: "
-            + "'org.h2.Driver', 'jdbc:h2:mem:taskana;IGNORECASE=TRUE', 'sa', 'sa'");
+            + "'org.h2.Driver', 'jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0', 'sa', 'sa'");
         return createDatasource(H2_DRIVER, JDBC_H2_MEM_TASKANA, USER_NAME, USER_PASSWORD);
     }
 

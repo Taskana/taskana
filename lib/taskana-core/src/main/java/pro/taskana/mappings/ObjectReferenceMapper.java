@@ -16,9 +16,11 @@ import pro.taskana.impl.ObjectReference;
  */
 public interface ObjectReferenceMapper {
 
-    @Select("SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
+    @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
             + "FROM OBJECT_REFERENCE "
-            + "ORDER BY ID")
+            + "ORDER BY ID "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results({
         @Result(property = "id", column = "ID"),
         @Result(property = "company", column = "COMPANY"),
@@ -28,9 +30,11 @@ public interface ObjectReferenceMapper {
         @Result(property = "value", column = "VALUE") })
     List<ObjectReference> findAll();
 
-    @Select("SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
+    @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
             + "FROM OBJECT_REFERENCE "
-            + "WHERE ID = #{id}")
+            + "WHERE ID = #{id}"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results({
         @Result(property = "id", column = "ID"),
         @Result(property = "company", column = "COMPANY"),
@@ -40,13 +44,15 @@ public interface ObjectReferenceMapper {
         @Result(property = "value", column = "VALUE") })
     ObjectReference findById(@Param("id") String id);
 
-    @Select("SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
+    @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
             + "FROM OBJECT_REFERENCE "
             + "WHERE COMPANY = #{objectReference.company} "
             + "AND SYSTEM = #{objectReference.system} "
             + "AND SYSTEM_INSTANCE = #{objectReference.systemInstance} "
             + "AND TYPE = #{objectReference.type} "
-            + "AND VALUE = #{objectReference.value}")
+            + "AND VALUE = #{objectReference.value} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results({
         @Result(property = "id", column = "ID"),
         @Result(property = "company", column = "COMPANY"),

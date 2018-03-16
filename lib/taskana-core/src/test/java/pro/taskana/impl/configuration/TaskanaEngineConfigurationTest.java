@@ -77,12 +77,12 @@ public class TaskanaEngineConfigurationTest {
      */
     private static DataSource createDefaultDataSource() {
         // JdbcDataSource ds = new JdbcDataSource();
-        // ds.setURL("jdbc:h2:mem:taskana;IGNORECASE=TRUE");
+        // ds.setURL("jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0");
         // ds.setPassword("sa");
         // ds.setUser("sa");
 
         String jdbcDriver = "org.h2.Driver";
-        String jdbcUrl = "jdbc:h2:mem:taskana;IGNORECASE=TRUE";
+        String jdbcUrl = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0";
         String dbUserName = "sa";
         String dbPassword = "sa";
         DataSource ds = new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver,

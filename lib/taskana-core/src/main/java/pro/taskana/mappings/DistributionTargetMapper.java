@@ -18,10 +18,14 @@ public interface DistributionTargetMapper {
     @Delete("DELETE FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID = #{targetId}")
     void delete(@Param("sourceId") String sourceId, @Param("targetId") String targetId);
 
-    @Select("SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId}")
+    @Select("<script>SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     List<String> findBySourceId(@Param("sourceId") String sourceId);
 
-    @Select("SELECT count(*) FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID = #{targetId}")
+    @Select("<script>SELECT count(*) FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID = #{targetId}"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     int getNumberOfDistributionTargets(@Param("sourceId") String sourceId, @Param("targetId") String targetId);
 
     @Delete("<script>DELETE FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID IN (<foreach item='target' collection='targetId' separator=',' > #{target} </foreach>)</script>")

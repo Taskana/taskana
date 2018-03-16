@@ -42,11 +42,12 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY WORKBASKET_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
         @Result(column = "WORKBASKET_KEY", property = "key"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
+        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")})
     List<MonitorQueryItem> getTaskCountOfWorkbaskets(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
@@ -78,11 +79,12 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY CLASSIFICATION_CATEGORY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY CLASSIFICATION_CATEGORY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
         @Result(column = "CLASSIFICATION_CATEGORY", property = "key"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
+        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")})
     List<MonitorQueryItem> getTaskCountOfCategories(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
@@ -114,11 +116,12 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
         @Result(column = "CLASSIFICATION_KEY", property = "key"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
+        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")})
     List<MonitorQueryItem> getTaskCountOfClassifications(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
@@ -150,12 +153,13 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY T.CLASSIFICATION_KEY, A.CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY T.CLASSIFICATION_KEY, A.CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
         @Result(column = "TASK_CLASSIFICATION_KEY", property = "key"),
         @Result(column = "ATTACHMENT_CLASSIFICATION_KEY", property = "attachmentKey"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
+        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")})
     List<DetailedMonitorQueryItem> getTaskCountOfDetailedClassifications(
         @Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
@@ -188,11 +192,12 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY ${customField}, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY ${customField}, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
         @Result(column = "CUSTOM_FIELD", property = "key"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks") })
+        @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")})
     List<MonitorQueryItem> getTaskCountOfCustomFieldValues(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
@@ -231,6 +236,7 @@ public interface TaskMonitorMapper {
         + "</if> "
         + "</foreach>) "
         + "</where>"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> getTaskIdsOfCategoriesBySelectedItems(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,

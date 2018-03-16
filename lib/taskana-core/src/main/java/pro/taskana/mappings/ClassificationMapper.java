@@ -18,10 +18,12 @@ import pro.taskana.impl.ClassificationSummaryImpl;
  */
 public interface ClassificationMapper {
 
-    @Select("SELECT ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
+    @Select("<script> SELECT ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
         + "FROM CLASSIFICATION "
         + "WHERE KEY = #{key}"
-        + "AND DOMAIN = #{domain}")
+        + "AND DOMAIN = #{domain}"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results({@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "parentId", column = "PARENT_ID"),
@@ -46,9 +48,11 @@ public interface ClassificationMapper {
         @Result(property = "custom8", column = "CUSTOM_8")})
     ClassificationImpl findByKeyAndDomain(@Param("key") String key, @Param("domain") String domain);
 
-    @Select("SELECT ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
+    @Select("<script>SELECT ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
         + "FROM CLASSIFICATION "
-        + "WHERE ID = #{id}")
+        + "WHERE ID = #{id}"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results({@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "parentId", column = "PARENT_ID"),
@@ -91,7 +95,8 @@ public interface ClassificationMapper {
         + "FROM CLASSIFICATION "
         + "WHERE KEY = #{key} "
         + "AND DOMAIN = #{domain}"
-        + "ORDER BY KEY DESC"
+        + "ORDER BY KEY DESC "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
@@ -107,11 +112,14 @@ public interface ClassificationMapper {
         + "SELECT DOMAIN "
         + "FROM CLASSIFICATION "
         + "WHERE KEY = #{classification_key} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> getDomainsForClassification(@Param("classification_key") String classificationKey);
 
-    @Select("SELECT KEY "
+    @Select("<script>SELECT KEY "
         + "FROM CLASSIFICATION "
-        + "WHERE PARENT_ID = #{parentId}")
+        + "WHERE PARENT_ID = #{parentId} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     List<String> getChildrenOfClassification(@Param("parentId") String parentId);
 }
