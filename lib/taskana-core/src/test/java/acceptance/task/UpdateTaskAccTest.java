@@ -5,11 +5,15 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,6 +32,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -207,6 +212,59 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         ((TaskImpl) task).setWorkbasketKey("USER_2_2");
         taskService.updateTask(task);
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testUpdateTasksByPorForUser1() throws InvalidArgumentException {
+        ObjectReference por = new ObjectReference();
+        por.setCompany("00");
+        por.setSystem("PASystem");
+        por.setSystemInstance("00");
+        por.setType("VNR");
+        por.setValue("22334455");
+        Map<String, String> customProperties = new HashMap<>();
+        customProperties.put("7", "This is modifiedValue 7");
+        customProperties.put("14", null);
+        customProperties.put("3", "This is modifiedValue 3");
+        customProperties.put("16", "This is modifiedValue 16");
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        List<String> taskIds = taskService.updateTasks(por, customProperties);
+        assertEquals(0, taskIds.size());
+
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testUpdateTasksByPor() throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
+        ObjectReference por = new ObjectReference();
+        por.setCompany("00");
+        por.setSystem("PASystem");
+        por.setSystemInstance("00");
+        por.setType("VNR");
+        por.setValue("22334455");
+        Map<String, String> customProperties = new HashMap<>();
+        customProperties.put("7", "This is modifiedValue 7");
+        customProperties.put("14", null);
+        customProperties.put("3", "This is modifiedValue 3");
+        customProperties.put("16", "This is modifiedValue 16");
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        List<String> taskIds = taskService.updateTasks(por, customProperties);
+        assertEquals(6, taskIds.size());
+        for (String taskId : taskIds) {
+            Task task = taskService.getTask(taskId);
+            assertEquals("This is modifiedValue 3", task.getCustomAttribute("3"));
+            assertEquals("This is modifiedValue 7", task.getCustomAttribute("7"));
+            assertEquals("This is modifiedValue 16", task.getCustomAttribute("16"));
+            assertNull(task.getCustomAttribute("14"));
+        }
+
     }
 
 }

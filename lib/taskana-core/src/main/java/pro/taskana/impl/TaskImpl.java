@@ -343,7 +343,7 @@ public class TaskImpl implements Task {
             case 10:
                 return custom10;
             case 11:
-                return custom10;
+                return custom11;
             case 12:
                 return custom12;
             case 13:
@@ -527,6 +527,134 @@ public class TaskImpl implements Task {
         this.classificationSummary = classificationSummary;
     }
 
+    public String getCustom1() {
+        return custom1;
+    }
+
+    public void setCustom1(String custom1) {
+        this.custom1 = custom1;
+    }
+
+    public String getCustom2() {
+        return custom2;
+    }
+
+    public void setCustom2(String custom2) {
+        this.custom2 = custom2;
+    }
+
+    public String getCustom3() {
+        return custom3;
+    }
+
+    public void setCustom3(String custom3) {
+        this.custom3 = custom3;
+    }
+
+    public String getCustom4() {
+        return custom4;
+    }
+
+    public void setCustom4(String custom4) {
+        this.custom4 = custom4;
+    }
+
+    public String getCustom5() {
+        return custom5;
+    }
+
+    public void setCustom5(String custom5) {
+        this.custom5 = custom5;
+    }
+
+    public String getCustom6() {
+        return custom6;
+    }
+
+    public void setCustom6(String custom6) {
+        this.custom6 = custom6;
+    }
+
+    public String getCustom7() {
+        return custom7;
+    }
+
+    public void setCustom7(String custom7) {
+        this.custom7 = custom7;
+    }
+
+    public String getCustom8() {
+        return custom8;
+    }
+
+    public void setCustom8(String custom8) {
+        this.custom8 = custom8;
+    }
+
+    public String getCustom9() {
+        return custom9;
+    }
+
+    public void setCustom9(String custom9) {
+        this.custom9 = custom9;
+    }
+
+    public String getCustom10() {
+        return custom10;
+    }
+
+    public void setCustom10(String custom10) {
+        this.custom10 = custom10;
+    }
+
+    public String getCustom11() {
+        return custom11;
+    }
+
+    public void setCustom11(String custom11) {
+        this.custom11 = custom11;
+    }
+
+    public String getCustom12() {
+        return custom12;
+    }
+
+    public void setCustom12(String custom12) {
+        this.custom12 = custom12;
+    }
+
+    public String getCustom13() {
+        return custom13;
+    }
+
+    public void setCustom13(String custom13) {
+        this.custom13 = custom13;
+    }
+
+    public String getCustom14() {
+        return custom14;
+    }
+
+    public void setCustom14(String custom14) {
+        this.custom14 = custom14;
+    }
+
+    public String getCustom15() {
+        return custom15;
+    }
+
+    public void setCustom15(String custom15) {
+        this.custom15 = custom15;
+    }
+
+    public String getCustom16() {
+        return custom16;
+    }
+
+    public void setCustom16(String custom16) {
+        this.custom16 = custom16;
+    }
+
     @Override
     public Attachment removeAttachment(String attachmentId) {
         Attachment result = null;
@@ -612,7 +740,20 @@ public class TaskImpl implements Task {
         builder.append(custom9);
         builder.append(", custom10=");
         builder.append(custom10);
+        builder.append(", custom11=");
+        builder.append(custom11);
+        builder.append(", custom12=");
+        builder.append(custom12);
+        builder.append(", custom13=");
+        builder.append(custom13);
+        builder.append(", custom14=");
+        builder.append(custom14);
+        builder.append(", custom15=");
+        builder.append(custom15);
+        builder.append(", custom16=");
+        builder.append(custom16);
         builder.append("]");
         return builder.toString();
     }
+
 }

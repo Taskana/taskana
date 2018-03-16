@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,7 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.AttachmentMapper;
+import pro.taskana.mappings.CustomPropertySelector;
 import pro.taskana.mappings.TaskMapper;
 import pro.taskana.security.CurrentUserContext;
 
@@ -1032,6 +1034,68 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
+    public List<String> updateTasks(ObjectReference selectionCriteria,
+        Map<String, String> customFieldsToUpdate) throws InvalidArgumentException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to updateTasks(selectionCriteria = {}, customFieldsToUpdate = {})", selectionCriteria,
+                customFieldsToUpdate);
+        }
+
+        if (customFieldsToUpdate == null || customFieldsToUpdate.isEmpty()) {
+            LOGGER.warn(
+                "The customFieldsToUpdate argument to updateTasks must not be empty. Throwing InvalidArgumentException.");
+            throw new InvalidArgumentException("The customFieldsToUpdate argument to updateTasks must not be empty.");
+        }
+        validateObjectReference(selectionCriteria, "ObjectReference", "updateTasks call");
+
+        Set<String> allowedKeys = new HashSet<>(
+            Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"));
+
+        try {
+            taskanaEngine.openConnection();
+
+            CustomPropertySelector fieldSelector = new CustomPropertySelector();
+            TaskImpl newTask = new TaskImpl();
+            newTask.setModified(Instant.now());
+            for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
+                String key = entry.getKey();
+                if (!allowedKeys.contains(key)) {
+                    LOGGER.warn("The customFieldsToUpdate argument to updateTasks contains invalid key {}.", key);
+                    throw new InvalidArgumentException(
+                        "The customFieldsToUpdate argument to updateTasks contains invalid key " + key);
+                } else {
+                    fieldSelector.setCustomProperty(key, true);
+                    newTask.setCustomAttribute(key, entry.getValue());
+                }
+            }
+
+            // use query in order to find only those tasks that are visible to the current user
+            List<TaskSummary> taskSummaries = createTaskQuery()
+                .primaryObjectReferenceCompanyIn(selectionCriteria.getCompany())
+                .primaryObjectReferenceSystemIn(selectionCriteria.getSystem())
+                .primaryObjectReferenceSystemInstanceIn(selectionCriteria.getSystemInstance())
+                .primaryObjectReferenceTypeIn(selectionCriteria.getType())
+                .primaryObjectReferenceValueIn(selectionCriteria.getValue())
+                .list();
+
+            List<String> taskIds = new ArrayList<>();
+            if (!taskSummaries.isEmpty()) {
+                taskIds = taskSummaries.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
+                taskMapper.updateTasks(taskIds, newTask, fieldSelector);
+                LOGGER.debug("updateTasks() updated the following tasks: {} ",
+                    LoggerUtils.listToString(taskIds));
+            } else {
+                LOGGER.debug("updateTasks() found no tasks for update ");
+            }
+            return taskIds;
+        } finally {
+            LOGGER.debug("exit from deleteTasks().");
+            taskanaEngine.returnConnection();
+        }
+
+    }
+
     private void validateObjectReference(ObjectReference objRef, String objRefType, String objName)
         throws InvalidArgumentException {
         // check that all values in the ObjectReference are set correctly
@@ -1348,4 +1412,5 @@ public class TaskServiceImpl implements TaskService {
             return builder.toString();
         }
     }
+
 }
