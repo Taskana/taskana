@@ -476,7 +476,12 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertNotNull(readTask.getAttachments().get(0).getObjectReference());
 
         assertTrue(readTask.getPriority() == 99);
-        assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(1))));
+
+        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
+            .initialize(new ArrayList<>(Arrays.asList(new ReportLineItemDefinition(0))), Instant.now());
+        long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
+
+        assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(calendarDays))));
     }
 
 }
