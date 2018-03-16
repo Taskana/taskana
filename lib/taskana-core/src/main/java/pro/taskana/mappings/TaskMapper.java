@@ -24,7 +24,8 @@ import pro.taskana.impl.persistence.MapTypeHandler;
  */
 public interface TaskMapper {
 
-    @Select("SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10 "
+    @Select("SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, "
+        + "CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 "
         + "FROM TASK "
         + "WHERE ID = #{id}")
     @Results(value = {
@@ -191,5 +192,28 @@ public interface TaskMapper {
         + "</script>")
     void updateClassificationCategoryOnChange(@Param("taskIds") List<String> taskIds,
         @Param("newCategory") String newCategory);
+
+    @Update("<script>UPDATE TASK SET  "
+        + "<if test='fields.custom1'>CUSTOM_1 = #{task.custom1}, </if> "
+        + "<if test='fields.custom2'>CUSTOM_2 = #{task.custom2}, </if> "
+        + "<if test='fields.custom3'>CUSTOM_3 = #{task.custom3}, </if> "
+        + "<if test='fields.custom4'>CUSTOM_4 = #{task.custom4}, </if> "
+        + "<if test='fields.custom5'>CUSTOM_5 = #{task.custom5}, </if> "
+        + "<if test='fields.custom6'>CUSTOM_6 = #{task.custom6}, </if> "
+        + "<if test='fields.custom7'>CUSTOM_7 = #{task.custom7}, </if> "
+        + "<if test='fields.custom8'>CUSTOM_8 = #{task.custom8}, </if> "
+        + "<if test='fields.custom9'>CUSTOM_9 = #{task.custom9}, </if> "
+        + "<if test='fields.custom10'>CUSTOM_10 = #{task.custom10}, </if> "
+        + "<if test='fields.custom11'>CUSTOM_11 = #{task.custom11}, </if> "
+        + "<if test='fields.custom12'>CUSTOM_12 = #{task.custom12}, </if> "
+        + "<if test='fields.custom13'>CUSTOM_13 = #{task.custom13}, </if> "
+        + "<if test='fields.custom14'>CUSTOM_14 = #{task.custom14}, </if> "
+        + "<if test='fields.custom15'>CUSTOM_15 = #{task.custom15}, </if> "
+        + "<if test='fields.custom16'>CUSTOM_16 = #{task.custom16}, </if> "
+        + "MODIFIED = #{task.modified} "
+        + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
+        + "</script>")
+    void updateTasks(@Param("taskIds") List<String> taskIds, @Param("task") TaskImpl task,
+        @Param("fields") CustomPropertySelector fields);
 
 }
