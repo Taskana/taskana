@@ -27,9 +27,11 @@ public interface AttachmentMapper {
         + " #{att.objectReference.type}, #{att.objectReference.value}, #{att.channel}, #{att.received}, #{att.customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )")
     void insert(@Param("att") AttachmentImpl att);
 
-    @Select("SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
+    @Select("<script> SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
         + "FROM ATTACHMENT "
-        + "WHERE TASK_ID = #{taskId}")
+        + "WHERE TASK_ID = #{taskId} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "taskId", column = "TASK_ID"),
@@ -49,9 +51,11 @@ public interface AttachmentMapper {
     })
     List<AttachmentImpl> findAttachmentsByTaskId(@Param("taskId") String taskId);
 
-    @Select("SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
+    @Select("<script> SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
         + "FROM ATTACHMENT "
-        + "WHERE ID = #{attachmentId}")
+        + "WHERE ID = #{attachmentId} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "taskId", column = "TASK_ID"),
@@ -76,6 +80,7 @@ public interface AttachmentMapper {
         + "<where>"
         + "TASK_ID IN (<foreach collection='array' item='item' separator=',' >#{item}</foreach>)"
         + "</where>"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
@@ -98,7 +103,9 @@ public interface AttachmentMapper {
         + " WHERE ID = #{id}")
     void update(AttachmentImpl attachment);
 
-    @Select("select CUSTOM_ATTRIBUTES from attachment where id = #{attachmentId}")
+    @Select("<script> select CUSTOM_ATTRIBUTES from attachment where id = #{attachmentId}"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
             javaType = String.class, typeHandler = ClobTypeHandler.class)

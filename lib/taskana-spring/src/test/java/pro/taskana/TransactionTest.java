@@ -40,7 +40,7 @@ public class TransactionTest {
     @Before
     public void init() throws SQLException, ClassNotFoundException {
         Class.forName("org.h2.Driver");
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE", "SA", "SA")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
             conn.createStatement().executeUpdate("DELETE FROM TASK WHERE 1=1");
             conn.commit();
         }
@@ -52,7 +52,7 @@ public class TransactionTest {
         restTemplate.getForEntity("http://127.0.0.1:" + port + "/test", String.class);
 
         int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE", "SA", "SA")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
 
             while (rs.next()) {
@@ -69,7 +69,7 @@ public class TransactionTest {
         restTemplate.postForEntity("http://127.0.0.1:" + port + "/test", null, String.class);
 
         int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE", "SA", "SA")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
 
             while (rs.next()) {

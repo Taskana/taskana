@@ -20,7 +20,9 @@ import pro.taskana.impl.WorkbasketSummaryImpl;
  */
 public interface WorkbasketMapper {
 
-    @Select("SELECT ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1 ,CUSTOM_2 ,CUSTOM_3 ,CUSTOM_4 ,ORG_LEVEL_1 ,ORG_LEVEL_2 ,ORG_LEVEL_3 ,ORG_LEVEL_4 FROM WORKBASKET WHERE ID = #{id}")
+    @Select("<script>SELECT ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1 ,CUSTOM_2 ,CUSTOM_3 ,CUSTOM_4 ,ORG_LEVEL_1 ,ORG_LEVEL_2 ,ORG_LEVEL_3 ,ORG_LEVEL_4 FROM WORKBASKET WHERE ID = #{id} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "created", column = "CREATED"),
@@ -40,7 +42,9 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     WorkbasketImpl findById(@Param("id") String id);
 
-    @Select("SELECT ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1 ,CUSTOM_2 ,CUSTOM_3 ,CUSTOM_4 ,ORG_LEVEL_1 ,ORG_LEVEL_2 ,ORG_LEVEL_3 ,ORG_LEVEL_4 FROM WORKBASKET WHERE KEY = #{key} and DOMAIN = #{domain}")
+    @Select("<script>SELECT ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1 ,CUSTOM_2 ,CUSTOM_3 ,CUSTOM_4 ,ORG_LEVEL_1 ,ORG_LEVEL_2 ,ORG_LEVEL_3 ,ORG_LEVEL_4 FROM WORKBASKET WHERE KEY = #{key} and DOMAIN = #{domain} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
         @Result(property = "created", column = "CREATED"),
@@ -60,7 +64,9 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     WorkbasketImpl findByKeyAndDomain(@Param("key") String key, @Param("domain") String domain);
 
-    @Select("SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM WORKBASKET WHERE ID IN (SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id})")
+    @Select("<script>SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM WORKBASKET WHERE ID IN (SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id}) "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
@@ -75,8 +81,10 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketSummaryImpl> findByDistributionTargets(@Param("id") String id);
 
-    @Select("SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM WORKBASKET "
-        + " WHERE ID IN (SELECT SOURCE_ID FROM DISTRIBUTION_TARGETS WHERE TARGET_ID = #{id})")
+    @Select("<script>SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM WORKBASKET "
+        + " WHERE ID IN (SELECT SOURCE_ID FROM DISTRIBUTION_TARGETS WHERE TARGET_ID = #{id}) "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
@@ -91,7 +99,9 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketSummaryImpl> findDistributionSources(@Param("id") String id);
 
-    @Select("SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4  FROM WORKBASKET WHERE ID = #{id}")
+    @Select("<script>SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4  FROM WORKBASKET WHERE ID = #{id} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
@@ -106,7 +116,9 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketSummaryImpl> findSummaryById(@Param("key") String id);
 
-    @Select("SELECT * FROM WORKBASKET ORDER BY id")
+    @Select("<script>SELECT * FROM WORKBASKET ORDER BY id "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
@@ -142,7 +154,9 @@ public interface WorkbasketMapper {
         + "<if test=\"permission.name() == 'CUSTOM_10'\">PERM_CUSTOM_10</if>"
         + "<if test=\"permission.name() == 'CUSTOM_11'\">PERM_CUSTOM_11</if>"
         + "<if test=\"permission.name() == 'CUSTOM_12'\">PERM_CUSTOM_12</if> = 1 </foreach> "
-        + "ORDER BY id</script>")
+        + "ORDER BY id "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
@@ -159,7 +173,9 @@ public interface WorkbasketMapper {
     List<WorkbasketSummaryImpl> findByPermission(@Param("permissions") List<WorkbasketPermission> permissions,
         @Param("accessId") String accessId);
 
-    @Insert("INSERT INTO WORKBASKET (ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4) VALUES (#{workbasket.id}, #{workbasket.key}, #{workbasket.created}, #{workbasket.modified}, #{workbasket.name}, #{workbasket.domain}, #{workbasket.type}, #{workbasket.description}, #{workbasket.owner}, #{workbasket.custom1}, #{workbasket.custom2}, #{workbasket.custom3}, #{workbasket.custom4}, #{workbasket.orgLevel1}, #{workbasket.orgLevel2}, #{workbasket.orgLevel3}, #{workbasket.orgLevel4})")
+    @Insert("<script>INSERT INTO WORKBASKET (ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4) VALUES (#{workbasket.id}, #{workbasket.key}, #{workbasket.created}, #{workbasket.modified}, #{workbasket.name}, #{workbasket.domain}, #{workbasket.type}, #{workbasket.description}, #{workbasket.owner}, #{workbasket.custom1}, #{workbasket.custom2}, #{workbasket.custom3}, #{workbasket.custom4}, #{workbasket.orgLevel1}, #{workbasket.orgLevel2}, #{workbasket.orgLevel3}, #{workbasket.orgLevel4}) "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Options(keyProperty = "id", keyColumn = "ID")
     void insert(@Param("workbasket") WorkbasketImpl workbasket);
 
