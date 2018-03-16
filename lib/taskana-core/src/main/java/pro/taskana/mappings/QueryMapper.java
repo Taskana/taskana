@@ -103,6 +103,7 @@ public interface QueryMapper {
         + "<if test='custom16Like != null'>AND (<foreach item='item' collection='custom16Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {@Result(property = "taskId", column = "ID"),
         @Result(property = "created", column = "CREATED"),
@@ -186,6 +187,7 @@ public interface QueryMapper {
         + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR ' > CUSTOM_8 LIKE #{item}</foreach>)</if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({@Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
@@ -207,6 +209,7 @@ public interface QueryMapper {
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='value != null'>AND VALUE IN(<foreach item='item' collection='value' separator=',' >#{item}</foreach>)</if> "
         + "</where>"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
         @Result(property = "id", column = "ID"),
@@ -267,27 +270,28 @@ public interface QueryMapper {
         + "<if test = '!checkReadPermission'> "
         + "( "
         + "</if> "
-        + "<if test=\"permission.name().equals('READ')\">a.MAX_READ</if> "
-        + "<if test=\"permission.name().equals('OPEN')\">a.MAX_OPEN</if> "
-        + "<if test=\"permission.name().equals('APPEND')\">a.MAX_APPEND</if>"
-        + "<if test=\"permission.name().equals('TRANSFER')\">a.MAX_TRANSFER</if>"
-        + "<if test=\"permission.name().equals('DISTRIBUTE')\">a.MAX_DISTRIBUTE</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_1')\">a.MAX_CUSTOM_1</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_2')\">a.MAX_CUSTOM_2</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_3')\">a.MAX_CUSTOM_3</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_4')\">a.MAX_CUSTOM_4</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_5')\">a.MAX_CUSTOM_5</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_6')\">a.MAX_CUSTOM_6</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_7')\">a.MAX_CUSTOM_7</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_8')\">a.MAX_CUSTOM_8</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_9')\">a.MAX_CUSTOM_9</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_10')\">a.MAX_CUSTOM_10</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_11')\">a.MAX_CUSTOM_11</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_12')\">a.MAX_CUSTOM_12</if> = 1 "
+        + "<if test=\"permission.name() == 'READ'\">a.MAX_READ</if> "
+        + "<if test=\"permission.name() == 'OPEN'\">a.MAX_OPEN</if> "
+        + "<if test=\"permission.name() == 'APPEND'\">a.MAX_APPEND</if>"
+        + "<if test=\"permission.name() == 'TRANSFER'\">a.MAX_TRANSFER</if>"
+        + "<if test=\"permission.name() == 'DISTRIBUTE'\">a.MAX_DISTRIBUTE</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_1'\">a.MAX_CUSTOM_1</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_2'\">a.MAX_CUSTOM_2</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_3'\">a.MAX_CUSTOM_3</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_4'\">a.MAX_CUSTOM_4</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_5'\">a.MAX_CUSTOM_5</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_6'\">a.MAX_CUSTOM_6</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_7'\">a.MAX_CUSTOM_7</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_8'\">a.MAX_CUSTOM_8</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_9'\">a.MAX_CUSTOM_9</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_10'\">a.MAX_CUSTOM_10</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_11'\">a.MAX_CUSTOM_11</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_12'\">a.MAX_CUSTOM_12</if> = 1 "
         + "</if>)"
         + "</if>"
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
         @Result(property = "id", column = "ID"),
@@ -314,6 +318,7 @@ public interface QueryMapper {
         + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
         @Result(property = "id", column = "ID"),
@@ -413,6 +418,7 @@ public interface QueryMapper {
         + "<if test='custom16Like != null'>AND (<foreach item='item' collection='custom16Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     Long countQueryTasks(TaskQueryImpl taskQuery);
 
@@ -451,6 +457,7 @@ public interface QueryMapper {
         + "<if test='custom8In != null'>AND CUSTOM_8 IN(<foreach item='item' collection='custom8In' separator=',' >#{item}</foreach>) </if> "
         + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR ' > CUSTOM_8 LIKE #{item}</foreach>)</if> "
         + "</where>"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     Long countQueryClassifications(ClassificationQueryImpl classificationQuery);
 
@@ -462,6 +469,7 @@ public interface QueryMapper {
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='value != null'>AND VALUE IN(<foreach item='item' collection='value' separator=',' >#{item}</foreach>)</if> "
         + "</where>"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     Long countQueryObjectReferences(ObjectReferenceQueryImpl objectReference);
 
@@ -514,26 +522,27 @@ public interface QueryMapper {
         + "<if test = '!checkReadPermission'> "
         + "( "
         + "</if> "
-        + "<if test=\"permission.name().equals('READ')\">a.MAX_READ</if> "
-        + "<if test=\"permission.name().equals('OPEN')\">a.MAX_OPEN</if> "
-        + "<if test=\"permission.name().equals('APPEND')\">a.MAX_APPEND</if>"
-        + "<if test=\"permission.name().equals('TRANSFER')\">a.MAX_TRANSFER</if>"
-        + "<if test=\"permission.name().equals('DISTRIBUTE')\">a.MAX_DISTRIBUTE</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_1')\">a.MAX_CUSTOM_1</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_2')\">a.MAX_CUSTOM_2</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_3')\">a.MAX_CUSTOM_3</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_4')\">a.MAX_CUSTOM_4</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_5')\">a.MAX_CUSTOM_5</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_6')\">a.MAX_CUSTOM_6</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_7')\">a.MAX_CUSTOM_7</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_8')\">a.MAX_CUSTOM_8</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_9')\">a.MAX_CUSTOM_9</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_10')\">a.MAX_CUSTOM_10</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_11')\">a.MAX_CUSTOM_11</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_12')\">a.MAX_CUSTOM_12</if> = 1 "
+        + "<if test=\"permission.name() == 'READ'\">a.MAX_READ</if> "
+        + "<if test=\"permission.name() == 'OPEN'\">a.MAX_OPEN</if> "
+        + "<if test=\"permission.name() == 'APPEND'\">a.MAX_APPEND</if>"
+        + "<if test=\"permission.name() == 'TRANSFER'\">a.MAX_TRANSFER</if>"
+        + "<if test=\"permission.name() == 'DISTRIBUTE'\">a.MAX_DISTRIBUTE</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_1'\">a.MAX_CUSTOM_1</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_2'\">a.MAX_CUSTOM_2</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_3'\">a.MAX_CUSTOM_3</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_4'\">a.MAX_CUSTOM_4</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_5'\">a.MAX_CUSTOM_5</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_6'\">a.MAX_CUSTOM_6</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_7'\">a.MAX_CUSTOM_7</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_8'\">a.MAX_CUSTOM_8</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_9'\">a.MAX_CUSTOM_9</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_10'\">a.MAX_CUSTOM_10</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_11'\">a.MAX_CUSTOM_11</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_12'\">a.MAX_CUSTOM_12</if> = 1 "
         + "</if>)"
         + "</if>"
         + "</where>"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     Long countQueryWorkbaskets(WorkbasketQueryImpl workbasketQuery);
 
@@ -542,6 +551,7 @@ public interface QueryMapper {
         + "<if test='workbasketIdIn != null'>AND WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
         + "</where>"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     Long countQueryWorkbasketAccessItems(WorkbasketAccessItemQueryImpl accessItem);
 
@@ -621,6 +631,7 @@ public interface QueryMapper {
         + "<if test='custom16Like != null'>AND (<foreach item='item' collection='custom16Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> queryTaskColumnValues(TaskQueryImpl taskQuery);
 
@@ -661,6 +672,7 @@ public interface QueryMapper {
         + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR ' > CUSTOM_8 LIKE #{item}</foreach>)</if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> queryClassificationColumnValues(ClassificationQueryImpl classificationQuery);
 
@@ -673,6 +685,7 @@ public interface QueryMapper {
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='value != null'>AND VALUE IN(<foreach item='item' collection='value' separator=',' >#{item}</foreach>)</if> "
         + "</where>"
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> queryObjectReferenceColumnValues(ObjectReferenceQueryImpl objectReference);
 
@@ -725,27 +738,28 @@ public interface QueryMapper {
         + "<if test = '!checkReadPermission'> "
         + "( "
         + "</if> "
-        + "<if test=\"permission.name().equals('READ')\">a.MAX_READ</if> "
-        + "<if test=\"permission.name().equals('OPEN')\">a.MAX_OPEN</if> "
-        + "<if test=\"permission.name().equals('APPEND')\">a.MAX_APPEND</if>"
-        + "<if test=\"permission.name().equals('TRANSFER')\">a.MAX_TRANSFER</if>"
-        + "<if test=\"permission.name().equals('DISTRIBUTE')\">a.MAX_DISTRIBUTE</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_1')\">a.MAX_CUSTOM_1</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_2')\">a.MAX_CUSTOM_2</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_3')\">a.MAX_CUSTOM_3</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_4')\">a.MAX_CUSTOM_4</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_5')\">a.MAX_CUSTOM_5</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_6')\">a.MAX_CUSTOM_6</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_7')\">a.MAX_CUSTOM_7</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_8')\">a.MAX_CUSTOM_8</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_9')\">a.MAX_CUSTOM_9</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_10')\">a.MAX_CUSTOM_10</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_11')\">a.MAX_CUSTOM_11</if>"
-        + "<if test=\"permission.name().equals('CUSTOM_12')\">a.MAX_CUSTOM_12</if> = 1 "
+        + "<if test=\"permission.name() == 'READ'\">a.MAX_READ</if> "
+        + "<if test=\"permission.name() == 'OPEN'\">a.MAX_OPEN</if> "
+        + "<if test=\"permission.name() == 'APPEND'\">a.MAX_APPEND</if>"
+        + "<if test=\"permission.name() == 'TRANSFER'\">a.MAX_TRANSFER</if>"
+        + "<if test=\"permission.name() == 'DISTRIBUTE'\">a.MAX_DISTRIBUTE</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_1'\">a.MAX_CUSTOM_1</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_2'\">a.MAX_CUSTOM_2</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_3'\">a.MAX_CUSTOM_3</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_4'\">a.MAX_CUSTOM_4</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_5'\">a.MAX_CUSTOM_5</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_6'\">a.MAX_CUSTOM_6</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_7'\">a.MAX_CUSTOM_7</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_8'\">a.MAX_CUSTOM_8</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_9'\">a.MAX_CUSTOM_9</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_10'\">a.MAX_CUSTOM_10</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_11'\">a.MAX_CUSTOM_11</if>"
+        + "<if test=\"permission.name() == 'CUSTOM_12'\">a.MAX_CUSTOM_12</if> = 1 "
         + "</if>)"
         + "</if>"
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> queryWorkbasketColumnValues(WorkbasketQueryImpl workbasketQuery);
 
@@ -757,6 +771,7 @@ public interface QueryMapper {
         + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
         + "</where>"
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> queryWorkbasketAccessItemColumnValues(WorkbasketAccessItemQueryImpl accessItemQuery);
 }

@@ -18,8 +18,10 @@ import pro.taskana.impl.WorkbasketAccessItemImpl;
  */
 public interface WorkbasketAccessMapper {
 
-    @Select("SELECT ID, WORKBASKET_ID, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
-        + "FROM WORKBASKET_ACCESS_LIST WHERE ID = #{id}")
+    @Select("<script>SELECT ID, WORKBASKET_ID, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
+        + "FROM WORKBASKET_ACCESS_LIST WHERE ID = #{id} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
@@ -43,8 +45,10 @@ public interface WorkbasketAccessMapper {
         @Result(property = "permCustom12", column = "PERM_CUSTOM_12")})
     WorkbasketAccessItemImpl findById(@Param("id") String id);
 
-    @Select("SELECT ID, WORKBASKET_ID, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
-        + "FROM WORKBASKET_ACCESS_LIST WHERE WORKBASKET_ID = #{id}")
+    @Select("<script>SELECT ID, WORKBASKET_ID, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
+        + "FROM WORKBASKET_ACCESS_LIST WHERE WORKBASKET_ID = #{id} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
@@ -89,7 +93,8 @@ public interface WorkbasketAccessMapper {
     @Select("<script>SELECT MAX(PERM_READ) AS P_READ, MAX(PERM_OPEN) AS P_OPEN, MAX(PERM_APPEND) AS P_APPEND, MAX(PERM_TRANSFER) AS P_TRANSFER, MAX(PERM_DISTRIBUTE) AS P_DISTRIBUTE, MAX(PERM_CUSTOM_1) AS P_CUSTOM_1, MAX(PERM_CUSTOM_2) AS P_CUSTOM_2, MAX(PERM_CUSTOM_3) AS P_CUSTOM_3, MAX(PERM_CUSTOM_4) AS P_CUSTOM_4, MAX(PERM_CUSTOM_5) AS P_CUSTOM_5, MAX(PERM_CUSTOM_6) AS P_CUSTOM_6, MAX(PERM_CUSTOM_7) AS P_CUSTOM_7, MAX(PERM_CUSTOM_8) AS P_CUSTOM_8, MAX(PERM_CUSTOM_9) AS P_CUSTOM_9, MAX(PERM_CUSTOM_10) AS P_CUSTOM_10, MAX(PERM_CUSTOM_11) AS P_CUSTOM_11, MAX(PERM_CUSTOM_12) AS P_CUSTOM_12 "
         + "FROM WORKBASKET_ACCESS_LIST "
         + "WHERE WORKBASKET_ID = #{workbasketId} "
-        + "AND ACCESS_ID IN(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>)"
+        + "AND ACCESS_ID IN(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>) "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
@@ -135,7 +140,9 @@ public interface WorkbasketAccessMapper {
         + "<if test=\"authorization == 'CUSTOM_9'\">a.PERM_CUSTOM_9</if>"
         + "<if test=\"authorization == 'CUSTOM_10'\">a.PERM_CUSTOM_10</if>"
         + "<if test=\"authorization == 'CUSTOM_11'\">a.PERM_CUSTOM_11</if>"
-        + "<if test=\"authorization == 'CUSTOM_12'\">a.PERM_CUSTOM_12</if> = 1</script>")
+        + "<if test=\"authorization == 'CUSTOM_12'\">a.PERM_CUSTOM_12</if> = 1 "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     @Results(value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
@@ -181,7 +188,9 @@ public interface WorkbasketAccessMapper {
         + "<if test=\"authorization == 'CUSTOM_9'\">PERM_CUSTOM_9</if>"
         + "<if test=\"authorization == 'CUSTOM_10'\">PERM_CUSTOM_10</if>"
         + "<if test=\"authorization == 'CUSTOM_11'\">PERM_CUSTOM_11</if>"
-        + "<if test=\"authorization == 'CUSTOM_12'\">PERM_CUSTOM_12</if> = 1</script>")
+        + "<if test=\"authorization == 'CUSTOM_12'\">PERM_CUSTOM_12</if> = 1 "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
     List<WorkbasketAccessItemImpl> findByWorkbasketAndAccessIdAndAuthorizationsById(
         @Param("workbasketId") String workbasketId, @Param("accessIds") List<String> accessIds,
         @Param("authorization") String authorization);
