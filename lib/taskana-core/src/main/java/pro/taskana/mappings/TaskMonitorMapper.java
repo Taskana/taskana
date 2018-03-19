@@ -9,9 +9,9 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
-import pro.taskana.impl.DetailedMonitorQueryItem;
-import pro.taskana.impl.MonitorQueryItem;
 import pro.taskana.impl.SelectedItem;
+import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.impl.MonitorQueryItem;
 
 /**
  * This class is the mybatis mapping of task monitoring.

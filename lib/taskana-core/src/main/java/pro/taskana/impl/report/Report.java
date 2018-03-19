@@ -4,42 +4,67 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public abstract class Report<Item extends QueryItem, Column extends ReportColumnHeader<? super Item>> {
+/**
+ * A Report represents a an abstract table that consists of {@link ReportRow}s and a list of &lt;ColumnHeader&gt;s.
+ * Since a report does not specify &lt;Item&gt; and &lt;ColumnHeader&gt; it does not contain functional logic.
+ * Due to readability implicit definition of functional logic is prevented and thus prevent
+ * initialization of an abstract Report. In order to create a specific Report a subclass has to be created.
+ *
+ * @param <Item> {@link QueryItem} whose value is relevant for this report.
+ * @param <ColumnHeader> {@link ReportColumnHeader} which can determine if an &lt;Item&gt; belongs into that column or not.
+ */
+public abstract class Report<Item extends QueryItem, ColumnHeader extends ReportColumnHeader<? super Item>> {
 
-    protected List<Column> columns = new ArrayList<>(); //this can be done as an array
-    private Map<String, ReportRow<Item>> reportLines = new LinkedHashMap<>();
-    private ReportRow<Item> sumLine;
+    protected List<ColumnHeader> columnHeaders = new ArrayList<>();
+    private Map<String, ReportRow<Item>> reportRows = new LinkedHashMap<>();
+    private ReportRow<Item> sumRow;
 
-    public Report(List<Column> columns) {
-        sumLine = new ReportRow<>(columns.size());
-        this.columns.addAll(columns);
+    public Report(List<ColumnHeader> columnHeaders) {
+        sumRow = new ReportRow<>(columnHeaders.size());
+        this.columnHeaders.addAll(columnHeaders);
     }
 
-    protected final void addItem(Item item) {
-        ReportRow<Item> row = reportLines.computeIfAbsent(item.getKey(), (s) -> createReportRow(columns.size()));
-        for (int i = 0; i < columns.size(); i++) {
-            if (columns.get(i).fits(item)) {
-                row.addItem(item, i);
-                sumLine.addItem(item, i);
+    public final void addItem(Item item) {
+        ReportRow<Item> row = reportRows.computeIfAbsent(item.getKey(), (s) -> createReportRow(columnHeaders.size()));
+        if (columnHeaders.isEmpty()) {
+            row.updateTotalValue(item);
+            sumRow.updateTotalValue(item);
+        } else {
+            for (int i = 0; i < columnHeaders.size(); i++) {
+                if (columnHeaders.get(i).fits(item)) {
+                    row.addItem(item, i);
+                    sumRow.addItem(item, i);
+                }
             }
         }
     }
 
-    public ReportRow<Item> getRow(String key) {
-        return reportLines.get(key);
+    public final void addItems(List<Item> items, QueryItemPreprocessor<Item> preprocessor) {
+        items.stream()
+            .map(preprocessor::apply)
+            .forEach(this::addItem);
     }
 
-    public void addItems(List<Item> items) {
+    public final void addItems(List<Item> items) {
         items.forEach(this::addItem);
     }
 
-    public final ReportRow<Item> getSumLine() {
-        return sumLine;
+    public ReportRow<Item> getRow(String key) {
+        return reportRows.get(key);
     }
 
-    public Map<String, ReportRow<Item>> getReportLines() {
-        return reportLines;
+    public final ReportRow<Item> getSumRow() {
+        return sumRow;
+    }
+
+    public Set<String> getRowTitles() {
+        return reportRows.keySet();
+    }
+
+    public final int rowSize() {
+        return reportRows.size();
     }
 
     protected ReportRow<Item> createReportRow(int columnSize) {

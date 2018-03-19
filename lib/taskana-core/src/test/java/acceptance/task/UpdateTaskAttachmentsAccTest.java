@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -35,8 +35,8 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.AttachmentImpl;
 import pro.taskana.impl.DaysToWorkingDaysConverter;
-import pro.taskana.impl.ReportLineItemDefinition;
 import pro.taskana.impl.TaskImpl;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -364,7 +364,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertTrue(task.getPriority() == 99);
 
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
-            .initialize(new ArrayList<>(Arrays.asList(new ReportLineItemDefinition(0))), Instant.now());
+            .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 16);
 
         assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
@@ -477,8 +477,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
         assertTrue(readTask.getPriority() == 99);
 
-        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
-            .initialize(new ArrayList<>(Arrays.asList(new ReportLineItemDefinition(0))), Instant.now());
+        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(
+            Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
 
         assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(calendarDays))));

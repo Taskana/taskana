@@ -1,5 +1,6 @@
 package acceptance.monitoring;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -7,7 +8,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.sql.DataSource;
 
@@ -24,21 +27,20 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.impl.Report;
-import pro.taskana.impl.ReportLineItem;
-import pro.taskana.impl.ReportLineItemDefinition;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.report.impl.ClassificationReport;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 
 /**
  * Acceptance test for all "classification report" scenarios.
  */
 public class ProvideClassificationReportAccTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProvideClassificationReportAccTest.class);
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProvideClassificationReportAccTest.class);
 
     @BeforeClass
     public static void setupTest() throws Exception {
@@ -59,71 +61,66 @@ public class ProvideClassificationReportAccTest {
         testDataGenerator.generateMonitoringTestData(dataSource);
     }
 
-    @Test
+        @Test
     public void testGetTotalNumbersOfTasksOfClassificationReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        Report report = taskMonitorService.getClassificationReport(null, null, null, null, null, null);
+        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, null, null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
         }
 
         assertNotNull(report);
-        assertEquals(10, report.getReportLines().get("L10000").getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get("L20000").getTotalNumberOfTasks());
-        assertEquals(7, report.getReportLines().get("L30000").getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get("L40000").getTotalNumberOfTasks());
-        assertEquals(13, report.getReportLines().get("L50000").getTotalNumberOfTasks());
-        assertEquals(0, report.getReportLines().get("L10000").getLineItems().size());
-        assertEquals(0, report.getReportLines().get("L20000").getLineItems().size());
-        assertEquals(0, report.getReportLines().get("L30000").getLineItems().size());
-        assertEquals(0, report.getReportLines().get("L40000").getLineItems().size());
-        assertEquals(0, report.getReportLines().get("L50000").getLineItems().size());
-        assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
+        assertEquals(5, report.rowSize());
+
+        assertEquals(10, report.getRow("L10000").getTotalValue());
+        assertEquals(10, report.getRow("L20000").getTotalValue());
+        assertEquals(7, report.getRow("L30000").getTotalValue());
+        assertEquals(10, report.getRow("L40000").getTotalValue());
+        assertEquals(13, report.getRow("L50000").getTotalValue());
+        assertEquals(0, report.getRow("L10000").getCells().length);
+        assertEquals(0, report.getRow("L20000").getCells().length);
+        assertEquals(0, report.getRow("L30000").getCells().length);
+        assertEquals(0, report.getRow("L40000").getCells().length);
+        assertEquals(0, report.getRow("L50000").getCells().length);
+        assertEquals(50, report.getSumRow().getTotalValue());
     }
 
     @Test
     public void testGetClassificationReportWithReportLineItemDefinitions() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> reportLineItemDefinitions = getListOfColumnsHeaders();
 
-        Report report = taskMonitorService.getClassificationReport(null, null, null, null, null, null,
+        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, null, null,
             reportLineItemDefinitions);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, reportLineItemDefinitions));
         }
 
-        int sumLineCount = report.getSumLine().getLineItems().get(0).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(1).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(2).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(3).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(4).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(5).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(6).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(7).getNumberOfTasks()
-            + report.getSumLine().getLineItems().get(8).getNumberOfTasks();
+        int sumLineCount = IntStream.of(report.getSumRow().getCells()).sum();
 
         assertNotNull(report);
+        assertEquals(5, report.rowSize());
 
-        assertEquals(10, report.getReportLines().get("L10000").getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get("L20000").getTotalNumberOfTasks());
-        assertEquals(7, report.getReportLines().get("L30000").getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get("L40000").getTotalNumberOfTasks());
-        assertEquals(13, report.getReportLines().get("L50000").getTotalNumberOfTasks());
+        assertEquals(10, report.getRow("L10000").getTotalValue());
+        assertEquals(10, report.getRow("L20000").getTotalValue());
+        assertEquals(7, report.getRow("L30000").getTotalValue());
+        assertEquals(10, report.getRow("L40000").getTotalValue());
+        assertEquals(13, report.getRow("L50000").getTotalValue());
 
-        assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
-        assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
-        assertEquals(11, report.getSumLine().getLineItems().get(2).getNumberOfTasks());
-        assertEquals(0, report.getSumLine().getLineItems().get(3).getNumberOfTasks());
-        assertEquals(4, report.getSumLine().getLineItems().get(4).getNumberOfTasks());
-        assertEquals(0, report.getSumLine().getLineItems().get(5).getNumberOfTasks());
-        assertEquals(7, report.getSumLine().getLineItems().get(6).getNumberOfTasks());
-        assertEquals(4, report.getSumLine().getLineItems().get(7).getNumberOfTasks());
-        assertEquals(5, report.getSumLine().getLineItems().get(8).getNumberOfTasks());
-        assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
+        assertEquals(10, report.getSumRow().getCells()[0]);
+        assertEquals(9, report.getSumRow().getCells()[1]);
+        assertEquals(11, report.getSumRow().getCells()[2]);
+        assertEquals(0, report.getSumRow().getCells()[3]);
+        assertEquals(4, report.getSumRow().getCells()[4]);
+        assertEquals(0, report.getSumRow().getCells()[5]);
+        assertEquals(7, report.getSumRow().getCells()[6]);
+        assertEquals(4, report.getSumRow().getCells()[7]);
+        assertEquals(5, report.getSumRow().getCells()[8]);
+        assertEquals(50, report.getSumRow().getTotalValue());
         assertEquals(50, sumLineCount);
     }
 
@@ -131,198 +128,131 @@ public class ProvideClassificationReportAccTest {
     public void testEachItemOfClassificationReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getClassificationReport(null, null, null, null, null, null,
-            reportLineItemDefinitions);
+        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, null, null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("L10000").getLineItems();
-        assertEquals(7, line1.get(0).getNumberOfTasks());
-        assertEquals(2, line1.get(1).getNumberOfTasks());
-        assertEquals(1, line1.get(2).getNumberOfTasks());
-        assertEquals(0, line1.get(3).getNumberOfTasks());
-        assertEquals(0, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(5, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("L20000").getLineItems();
-        assertEquals(5, line2.get(0).getNumberOfTasks());
-        assertEquals(3, line2.get(1).getNumberOfTasks());
-        assertEquals(1, line2.get(2).getNumberOfTasks());
-        assertEquals(1, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("L10000").getCells();
+        assertArrayEquals(new int[] {7, 2, 1, 0, 0}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("L30000").getLineItems();
-        assertEquals(2, line3.get(0).getNumberOfTasks());
-        assertEquals(1, line3.get(1).getNumberOfTasks());
-        assertEquals(0, line3.get(2).getNumberOfTasks());
-        assertEquals(1, line3.get(3).getNumberOfTasks());
-        assertEquals(3, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("L20000").getCells();
+        assertArrayEquals(new int[] {5, 3, 1, 1, 0}, row2);
 
-        List<ReportLineItem> line4 = report.getReportLines().get("L40000").getLineItems();
-        assertEquals(2, line4.get(0).getNumberOfTasks());
-        assertEquals(2, line4.get(1).getNumberOfTasks());
-        assertEquals(2, line4.get(2).getNumberOfTasks());
-        assertEquals(0, line4.get(3).getNumberOfTasks());
-        assertEquals(4, line4.get(4).getNumberOfTasks());
+        int[] row3 = report.getRow("L30000").getCells();
+        assertArrayEquals(new int[] {2, 1, 0, 1, 3}, row3);
 
-        List<ReportLineItem> line5 = report.getReportLines().get("L50000").getLineItems();
-        assertEquals(3, line5.get(0).getNumberOfTasks());
-        assertEquals(3, line5.get(1).getNumberOfTasks());
-        assertEquals(0, line5.get(2).getNumberOfTasks());
-        assertEquals(5, line5.get(3).getNumberOfTasks());
-        assertEquals(2, line5.get(4).getNumberOfTasks());
+        int[] row4 = report.getRow("L40000").getCells();
+        assertArrayEquals(new int[] {2, 2, 2, 0, 4}, row4);
+
+        int[] row5 = report.getRow("L50000").getCells();
+        assertArrayEquals(new int[] {3, 3, 0, 5, 2}, row5);
     }
 
     @Test
     public void testEachItemOfClassificationReportNotInWorkingDays() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> reportLineItemDefinitions = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getClassificationReport(null, null, null, null, null, null,
+        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, null, null,
             reportLineItemDefinitions, false);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, reportLineItemDefinitions));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("L10000").getLineItems();
-        assertEquals(9, line1.get(0).getNumberOfTasks());
-        assertEquals(0, line1.get(1).getNumberOfTasks());
-        assertEquals(1, line1.get(2).getNumberOfTasks());
-        assertEquals(0, line1.get(3).getNumberOfTasks());
-        assertEquals(0, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(5, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("L20000").getLineItems();
-        assertEquals(8, line2.get(0).getNumberOfTasks());
-        assertEquals(0, line2.get(1).getNumberOfTasks());
-        assertEquals(1, line2.get(2).getNumberOfTasks());
-        assertEquals(0, line2.get(3).getNumberOfTasks());
-        assertEquals(1, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("L10000").getCells();
+        assertArrayEquals(new int[] {9, 0, 1, 0, 0}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("L30000").getLineItems();
-        assertEquals(3, line3.get(0).getNumberOfTasks());
-        assertEquals(0, line3.get(1).getNumberOfTasks());
-        assertEquals(0, line3.get(2).getNumberOfTasks());
-        assertEquals(0, line3.get(3).getNumberOfTasks());
-        assertEquals(4, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("L20000").getCells();
+        assertArrayEquals(new int[] {8, 0, 1, 0, 1}, row2);
 
-        List<ReportLineItem> line4 = report.getReportLines().get("L40000").getLineItems();
-        assertEquals(4, line4.get(0).getNumberOfTasks());
-        assertEquals(0, line4.get(1).getNumberOfTasks());
-        assertEquals(2, line4.get(2).getNumberOfTasks());
-        assertEquals(0, line4.get(3).getNumberOfTasks());
-        assertEquals(4, line4.get(4).getNumberOfTasks());
+        int[] row3 = report.getRow("L30000").getCells();
+        assertArrayEquals(new int[] {3, 0, 0, 0, 4}, row3);
 
-        List<ReportLineItem> line5 = report.getReportLines().get("L50000").getLineItems();
-        assertEquals(6, line5.get(0).getNumberOfTasks());
-        assertEquals(0, line5.get(1).getNumberOfTasks());
-        assertEquals(0, line5.get(2).getNumberOfTasks());
-        assertEquals(0, line5.get(3).getNumberOfTasks());
-        assertEquals(7, line5.get(4).getNumberOfTasks());
+        int[] row4 = report.getRow("L40000").getCells();
+        assertArrayEquals(new int[] {4, 0, 2, 0, 4}, row4);
+
+        int[] row5 = report.getRow("L50000").getCells();
+        assertArrayEquals(new int[] {6, 0, 0, 0, 7}, row5);
     }
 
     @Test
     public void testEachItemOfClassificationReportWithWorkbasketFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getClassificationReport(workbasketIds, null, null, null, null, null,
-            reportLineItemDefinitions);
+        ClassificationReport report = taskMonitorService.getClassificationReport(workbasketIds, null, null, null, null,
+            null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("L10000").getLineItems();
-        assertEquals(6, line1.get(0).getNumberOfTasks());
-        assertEquals(0, line1.get(1).getNumberOfTasks());
-        assertEquals(0, line1.get(2).getNumberOfTasks());
-        assertEquals(0, line1.get(3).getNumberOfTasks());
-        assertEquals(0, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(5, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("L20000").getLineItems();
-        assertEquals(2, line2.get(0).getNumberOfTasks());
-        assertEquals(0, line2.get(1).getNumberOfTasks());
-        assertEquals(0, line2.get(2).getNumberOfTasks());
-        assertEquals(0, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("L10000").getCells();
+        assertArrayEquals(new int[] {6, 0, 0, 0, 0}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("L30000").getLineItems();
-        assertEquals(2, line3.get(0).getNumberOfTasks());
-        assertEquals(1, line3.get(1).getNumberOfTasks());
-        assertEquals(0, line3.get(2).getNumberOfTasks());
-        assertEquals(1, line3.get(3).getNumberOfTasks());
-        assertEquals(1, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("L20000").getCells();
+        assertArrayEquals(new int[] {2, 0, 0, 0, 0}, row2);
 
-        List<ReportLineItem> line4 = report.getReportLines().get("L40000").getLineItems();
-        assertEquals(1, line4.get(0).getNumberOfTasks());
-        assertEquals(0, line4.get(1).getNumberOfTasks());
-        assertEquals(1, line4.get(2).getNumberOfTasks());
-        assertEquals(0, line4.get(3).getNumberOfTasks());
-        assertEquals(1, line4.get(4).getNumberOfTasks());
+        int[] row3 = report.getRow("L30000").getCells();
+        assertArrayEquals(new int[] {2, 1, 0, 1, 1}, row3);
 
-        List<ReportLineItem> line5 = report.getReportLines().get("L50000").getLineItems();
-        assertEquals(2, line5.get(0).getNumberOfTasks());
-        assertEquals(2, line5.get(1).getNumberOfTasks());
-        assertEquals(0, line5.get(2).getNumberOfTasks());
-        assertEquals(0, line5.get(3).getNumberOfTasks());
-        assertEquals(0, line5.get(4).getNumberOfTasks());
+        int[] row4 = report.getRow("L40000").getCells();
+        assertArrayEquals(new int[] {1, 0, 1, 0, 1}, row4);
+
+        int[] row5 = report.getRow("L50000").getCells();
+        assertArrayEquals(new int[] {2, 2, 0, 0, 0}, row5);
     }
 
     @Test
     public void testEachItemOfClassificationReportWithStateFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<TaskState> states = Arrays.asList(TaskState.READY);
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TaskState> states = Collections.singletonList(TaskState.READY);
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getClassificationReport(null, states, null, null, null, null,
-            reportLineItemDefinitions);
+        ClassificationReport report = taskMonitorService.getClassificationReport(null, states, null, null, null, null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("L10000").getLineItems();
-        assertEquals(7, line1.get(0).getNumberOfTasks());
-        assertEquals(2, line1.get(1).getNumberOfTasks());
-        assertEquals(1, line1.get(2).getNumberOfTasks());
-        assertEquals(0, line1.get(3).getNumberOfTasks());
-        assertEquals(0, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(5, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("L20000").getLineItems();
-        assertEquals(5, line2.get(0).getNumberOfTasks());
-        assertEquals(3, line2.get(1).getNumberOfTasks());
-        assertEquals(1, line2.get(2).getNumberOfTasks());
-        assertEquals(1, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("L10000").getCells();
+        assertArrayEquals(new int[] {7, 2, 1, 0, 0}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("L30000").getLineItems();
-        assertEquals(2, line3.get(0).getNumberOfTasks());
-        assertEquals(1, line3.get(1).getNumberOfTasks());
-        assertEquals(0, line3.get(2).getNumberOfTasks());
-        assertEquals(1, line3.get(3).getNumberOfTasks());
-        assertEquals(0, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("L20000").getCells();
+        assertArrayEquals(new int[] {5, 3, 1, 1, 0}, row2);
 
-        List<ReportLineItem> line4 = report.getReportLines().get("L40000").getLineItems();
-        assertEquals(2, line4.get(0).getNumberOfTasks());
-        assertEquals(2, line4.get(1).getNumberOfTasks());
-        assertEquals(2, line4.get(2).getNumberOfTasks());
-        assertEquals(0, line4.get(3).getNumberOfTasks());
-        assertEquals(0, line4.get(4).getNumberOfTasks());
+        int[] row3 = report.getRow("L30000").getCells();
+        assertArrayEquals(new int[] {2, 1, 0, 1, 0}, row3);
 
-        List<ReportLineItem> line5 = report.getReportLines().get("L50000").getLineItems();
-        assertEquals(3, line5.get(0).getNumberOfTasks());
-        assertEquals(3, line5.get(1).getNumberOfTasks());
-        assertEquals(0, line5.get(2).getNumberOfTasks());
-        assertEquals(5, line5.get(3).getNumberOfTasks());
-        assertEquals(0, line5.get(4).getNumberOfTasks());
+        int[] row4 = report.getRow("L40000").getCells();
+        assertArrayEquals(new int[] {2, 2, 2, 0, 0}, row4);
+
+        int[] row5 = report.getRow("L50000").getCells();
+        assertArrayEquals(new int[] {3, 3, 0, 5, 0}, row5);
     }
 
     @Test
@@ -330,80 +260,57 @@ public class ProvideClassificationReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getClassificationReport(null, null, categories, null, null, null,
-            reportLineItemDefinitions);
+        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, categories, null, null,
+            null, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("L30000").getLineItems();
-        assertEquals(2, line1.get(0).getNumberOfTasks());
-        assertEquals(1, line1.get(1).getNumberOfTasks());
-        assertEquals(0, line1.get(2).getNumberOfTasks());
-        assertEquals(1, line1.get(3).getNumberOfTasks());
-        assertEquals(3, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(2, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("L40000").getLineItems();
-        assertEquals(2, line2.get(0).getNumberOfTasks());
-        assertEquals(2, line2.get(1).getNumberOfTasks());
-        assertEquals(2, line2.get(2).getNumberOfTasks());
-        assertEquals(0, line2.get(3).getNumberOfTasks());
-        assertEquals(4, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("L30000").getCells();
+        assertArrayEquals(new int[] {2, 1, 0, 1, 3}, row1);
 
-        assertEquals(2, report.getReportLines().size());
+        int[] row2 = report.getRow("L40000").getCells();
+        assertArrayEquals(new int[] {2, 2, 2, 0, 4}, row2);
+
     }
 
     @Test
     public void testEachItemOfClassificationReportWithDomainFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> domains = Arrays.asList("DOMAIN_A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<String> domains = Collections.singletonList("DOMAIN_A");
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getClassificationReport(null, null, null, domains, null, null,
-            reportLineItemDefinitions);
+        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, domains, null, null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("L10000").getLineItems();
-        assertEquals(5, line1.get(0).getNumberOfTasks());
-        assertEquals(2, line1.get(1).getNumberOfTasks());
-        assertEquals(1, line1.get(2).getNumberOfTasks());
-        assertEquals(0, line1.get(3).getNumberOfTasks());
-        assertEquals(0, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(5, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("L20000").getLineItems();
-        assertEquals(3, line2.get(0).getNumberOfTasks());
-        assertEquals(1, line2.get(1).getNumberOfTasks());
-        assertEquals(1, line2.get(2).getNumberOfTasks());
-        assertEquals(1, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("L10000").getCells();
+        assertArrayEquals(new int[] {5, 2, 1, 0, 0}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("L30000").getLineItems();
-        assertEquals(1, line3.get(0).getNumberOfTasks());
-        assertEquals(0, line3.get(1).getNumberOfTasks());
-        assertEquals(0, line3.get(2).getNumberOfTasks());
-        assertEquals(1, line3.get(3).getNumberOfTasks());
-        assertEquals(1, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("L20000").getCells();
+        assertArrayEquals(new int[] {3, 1, 1, 1, 0}, row2);
 
-        List<ReportLineItem> line4 = report.getReportLines().get("L40000").getLineItems();
-        assertEquals(2, line4.get(0).getNumberOfTasks());
-        assertEquals(0, line4.get(1).getNumberOfTasks());
-        assertEquals(0, line4.get(2).getNumberOfTasks());
-        assertEquals(0, line4.get(3).getNumberOfTasks());
-        assertEquals(3, line4.get(4).getNumberOfTasks());
+        int[] row3 = report.getRow("L30000").getCells();
+        assertArrayEquals(new int[] {1, 0, 0, 1, 1}, row3);
 
-        List<ReportLineItem> line5 = report.getReportLines().get("L50000").getLineItems();
-        assertEquals(0, line5.get(0).getNumberOfTasks());
-        assertEquals(1, line5.get(1).getNumberOfTasks());
-        assertEquals(0, line5.get(2).getNumberOfTasks());
-        assertEquals(3, line5.get(3).getNumberOfTasks());
-        assertEquals(0, line5.get(4).getNumberOfTasks());
+        int[] row4 = report.getRow("L40000").getCells();
+        assertArrayEquals(new int[] {2, 0, 0, 0, 3}, row4);
+
+        int[] row5 = report.getRow("L50000").getCells();
+        assertArrayEquals(new int[] {0, 1, 0, 3, 0}, row5);
     }
 
     @Test
@@ -411,86 +318,69 @@ public class ProvideClassificationReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getClassificationReport(null, null, null, null, customField,
-            customFieldValues, reportLineItemDefinitions);
+        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, customField,
+            customFieldValues, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("L10000").getLineItems();
-        assertEquals(4, line1.get(0).getNumberOfTasks());
-        assertEquals(0, line1.get(1).getNumberOfTasks());
-        assertEquals(0, line1.get(2).getNumberOfTasks());
-        assertEquals(0, line1.get(3).getNumberOfTasks());
-        assertEquals(0, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(5, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("L20000").getLineItems();
-        assertEquals(4, line2.get(0).getNumberOfTasks());
-        assertEquals(1, line2.get(1).getNumberOfTasks());
-        assertEquals(1, line2.get(2).getNumberOfTasks());
-        assertEquals(1, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("L10000").getCells();
+        assertArrayEquals(new int[] {4, 0, 0, 0, 0}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("L30000").getLineItems();
-        assertEquals(1, line3.get(0).getNumberOfTasks());
-        assertEquals(0, line3.get(1).getNumberOfTasks());
-        assertEquals(0, line3.get(2).getNumberOfTasks());
-        assertEquals(1, line3.get(3).getNumberOfTasks());
-        assertEquals(1, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("L20000").getCells();
+        assertArrayEquals(new int[] {4, 1, 1, 1, 0}, row2);
 
-        List<ReportLineItem> line4 = report.getReportLines().get("L40000").getLineItems();
-        assertEquals(1, line4.get(0).getNumberOfTasks());
-        assertEquals(1, line4.get(1).getNumberOfTasks());
-        assertEquals(2, line4.get(2).getNumberOfTasks());
-        assertEquals(0, line4.get(3).getNumberOfTasks());
-        assertEquals(2, line4.get(4).getNumberOfTasks());
+        int[] row3 = report.getRow("L30000").getCells();
+        assertArrayEquals(new int[] {1, 0, 0, 1, 1}, row3);
 
-        List<ReportLineItem> line5 = report.getReportLines().get("L50000").getLineItems();
-        assertEquals(1, line5.get(0).getNumberOfTasks());
-        assertEquals(2, line5.get(1).getNumberOfTasks());
-        assertEquals(0, line5.get(2).getNumberOfTasks());
-        assertEquals(2, line5.get(3).getNumberOfTasks());
-        assertEquals(0, line5.get(4).getNumberOfTasks());
+        int[] row4 = report.getRow("L40000").getCells();
+        assertArrayEquals(new int[] {1, 1, 2, 0, 2}, row4);
+
+        int[] row5 = report.getRow("L50000").getCells();
+        assertArrayEquals(new int[] {1, 2, 0, 2, 0}, row5);
     }
 
-    private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {
-        List<ReportLineItemDefinition> reportLineItemDefinitions = new ArrayList<>();
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -11));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-10, -6));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-5, -2));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(0));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(2, 5));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(6, 10));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(11, Integer.MAX_VALUE));
+    private List<TimeIntervalColumnHeader> getListOfColumnsHeaders() {
+        List<TimeIntervalColumnHeader> columnHeaders = new ArrayList<>();
+        columnHeaders.add(new TimeIntervalColumnHeader(Integer.MIN_VALUE, -11));
+        columnHeaders.add(new TimeIntervalColumnHeader(-10, -6));
+        columnHeaders.add(new TimeIntervalColumnHeader(-5, -2));
+        columnHeaders.add(new TimeIntervalColumnHeader(-1));
+        columnHeaders.add(new TimeIntervalColumnHeader(0));
+        columnHeaders.add(new TimeIntervalColumnHeader(1));
+        columnHeaders.add(new TimeIntervalColumnHeader(2, 5));
+        columnHeaders.add(new TimeIntervalColumnHeader(6, 10));
+        columnHeaders.add(new TimeIntervalColumnHeader(11, Integer.MAX_VALUE));
+        return columnHeaders;
+    }
+
+    private List<TimeIntervalColumnHeader> getShortListOfColumnHeaders() {
+        List<TimeIntervalColumnHeader> reportLineItemDefinitions = new ArrayList<>();
+        reportLineItemDefinitions.add(new TimeIntervalColumnHeader(Integer.MIN_VALUE, -6));
+        reportLineItemDefinitions.add(new TimeIntervalColumnHeader(-5, -1));
+        reportLineItemDefinitions.add(new TimeIntervalColumnHeader(0));
+        reportLineItemDefinitions.add(new TimeIntervalColumnHeader(1, 5));
+        reportLineItemDefinitions.add(new TimeIntervalColumnHeader(6, Integer.MAX_VALUE));
         return reportLineItemDefinitions;
     }
 
-    private List<ReportLineItemDefinition> getShortListOfReportLineItemDefinitions() {
-        List<ReportLineItemDefinition> reportLineItemDefinitions = new ArrayList<>();
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -6));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-5, -1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(0));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(1, 5));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(6, Integer.MAX_VALUE));
-        return reportLineItemDefinitions;
-    }
-
-    private String reportToString(Report report) {
+    private String reportToString(ClassificationReport report) {
         return reportToString(report, null);
     }
 
-    private String reportToString(Report report, List<ReportLineItemDefinition> reportLineItemDefinitions) {
+    private String reportToString(ClassificationReport report, List<TimeIntervalColumnHeader> columnHeaders) {
         String formatColumWidth = "| %-7s ";
         String formatFirstColumn = "| %-36s  %-4s ";
         String formatFirstColumnFirstLine = "| %-29s %12s ";
         String formatFirstColumnSumLine = "| %-36s  %-5s";
-        int reportWidth = reportLineItemDefinitions == null ? 46 : reportLineItemDefinitions.size() * 10 + 46;
+        int reportWidth = columnHeaders == null ? 46 : columnHeaders.size() * 10 + 46;
 
         StringBuilder builder = new StringBuilder();
         builder.append("\n");
@@ -499,8 +389,8 @@ public class ProvideClassificationReportAccTest {
         }
         builder.append("\n");
         builder.append(String.format(formatFirstColumnFirstLine, "Classifications", "Total"));
-        if (reportLineItemDefinitions != null) {
-            for (ReportLineItemDefinition def : reportLineItemDefinitions) {
+        if (columnHeaders != null) {
+            for (TimeIntervalColumnHeader def : columnHeaders) {
                 if (def.getLowerAgeLimit() == Integer.MIN_VALUE) {
                     builder.append(String.format(formatColumWidth, "< " + def.getUpperAgeLimit()));
                 } else if (def.getUpperAgeLimit() == Integer.MAX_VALUE) {
@@ -524,12 +414,12 @@ public class ProvideClassificationReportAccTest {
         }
         builder.append("\n");
 
-        for (String rl : report.getReportLines().keySet()) {
+        for (String rl : report.getRowTitles()) {
             builder
-                .append(String.format(formatFirstColumn, rl, report.getReportLines().get(rl).getTotalNumberOfTasks()));
-            if (reportLineItemDefinitions != null) {
-                for (ReportLineItem reportLineItem : report.getReportLines().get(rl).getLineItems()) {
-                    builder.append(String.format(formatColumWidth, reportLineItem.getNumberOfTasks()));
+                .append(String.format(formatFirstColumn, rl, report.getRow(rl).getTotalValue()));
+            if (columnHeaders != null) {
+                for (int cell : report.getRow(rl).getCells()) {
+                    builder.append(String.format(formatColumWidth, cell));
                 }
             }
             builder.append("|\n");
@@ -538,9 +428,9 @@ public class ProvideClassificationReportAccTest {
             }
             builder.append("\n");
         }
-        builder.append(String.format(formatFirstColumnSumLine, "Total", report.getSumLine().getTotalNumberOfTasks()));
-        for (ReportLineItem sumLine : report.getSumLine().getLineItems()) {
-            builder.append(String.format(formatColumWidth, sumLine.getNumberOfTasks()));
+        builder.append(String.format(formatFirstColumnSumLine, "Total", report.getSumRow().getTotalValue()));
+        for (int cell : report.getSumRow().getCells()) {
+            builder.append(String.format(formatColumWidth, cell));
         }
         builder.append("|\n");
         for (int i = 0; i < reportWidth; i++) {

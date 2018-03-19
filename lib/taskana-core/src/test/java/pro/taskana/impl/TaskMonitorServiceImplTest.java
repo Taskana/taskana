@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -25,6 +26,14 @@ import pro.taskana.CustomField;
 import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.impl.report.impl.CategoryReport;
+import pro.taskana.impl.report.impl.ClassificationReport;
+import pro.taskana.impl.report.impl.CustomFieldValueReport;
+import pro.taskana.impl.report.impl.DetailedClassificationReport;
+import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.impl.DetailedReportRow;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.impl.WorkbasketLevelReport;
 import pro.taskana.mappings.TaskMonitorMapper;
 
 /**
@@ -57,22 +66,23 @@ public class TaskMonitorServiceImplTest {
 
     @Test
     public void testGetTotalNumbersOfWorkbasketLevelReport() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
-        List<MonitorQueryItem> expectedResult = new ArrayList<>();
-        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
+        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
         monitorQueryItem.setKey("WBI:000000000000000000000000000000000001");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbaskets(workbasketIds, states,
             categories, domains, customField, customFieldValues);
 
-        Report actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField,
+        WorkbasketLevelReport actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
+            customField,
             customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
@@ -86,23 +96,23 @@ public class TaskMonitorServiceImplTest {
 
         assertNotNull(actualResult);
         assertEquals(
-            actualResult.getReportLines().get("WBI:000000000000000000000000000000000001").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+            actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue(), 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
     @Test
     public void testGetWorkbasketLevelReportWithReportLineItemDefinitions() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
-            new ReportLineItemDefinition());
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
+            new TimeIntervalColumnHeader(0, 0));
 
-        List<MonitorQueryItem> expectedResult = new ArrayList<>();
-        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
+        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
         monitorQueryItem.setKey("WBI:000000000000000000000000000000000001");
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
@@ -110,7 +120,8 @@ public class TaskMonitorServiceImplTest {
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbaskets(workbasketIds, states,
             categories, domains, customField, customFieldValues);
 
-        Report actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField,
+        WorkbasketLevelReport actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
+            customField,
             customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
@@ -123,35 +134,30 @@ public class TaskMonitorServiceImplTest {
 
         assertNotNull(actualResult);
         assertEquals(
-            actualResult.getReportLines().get("WBI:000000000000000000000000000000000001").getTotalNumberOfTasks(), 1);
-        assertEquals(
-            actualResult.getReportLines()
-                .get("WBI:000000000000000000000000000000000001")
-                .getLineItems()
-                .get(0)
-                .getNumberOfTasks(),
-            1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+            actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue(), 1);
+        assertEquals(actualResult.getRow("WBI:000000000000000000000000000000000001").getCells()[0], 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
     @Test
     public void testGetTotalNumbersOfCatgoryReport() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
-        List<MonitorQueryItem> expectedResult = new ArrayList<>();
-        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
+        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
         monitorQueryItem.setKey("EXTERN");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategories(workbasketIds, states, categories,
             domains, customField, customFieldValues);
 
-        Report actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains, customField,
+        CategoryReport actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains,
+            customField,
             customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
@@ -163,23 +169,23 @@ public class TaskMonitorServiceImplTest {
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getReportLines().get("EXTERN").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getRow("EXTERN").getTotalValue(), 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
     @Test
     public void testGetCategoryReportWithReportLineItemDefinitions() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
-            new ReportLineItemDefinition());
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
+            new TimeIntervalColumnHeader(0, 0));
 
-        List<MonitorQueryItem> expectedResult = new ArrayList<>();
-        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
+        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
         monitorQueryItem.setKey("EXTERN");
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
@@ -187,7 +193,8 @@ public class TaskMonitorServiceImplTest {
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategories(workbasketIds, states, categories,
             domains, customField, customFieldValues);
 
-        Report actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains, customField,
+        CategoryReport actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains,
+            customField,
             customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
@@ -199,22 +206,22 @@ public class TaskMonitorServiceImplTest {
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getReportLines().get("EXTERN").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getReportLines().get("EXTERN").getLineItems().get(0).getNumberOfTasks(), 1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getRow("EXTERN").getTotalValue(), 1);
+        assertEquals(actualResult.getRow("EXTERN").getCells()[0], 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
     @Test
     public void testGetTotalNumbersOfClassificationReport() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
-        List<MonitorQueryItem> expectedResult = new ArrayList<>();
-        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
+        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
         monitorQueryItem.setKey("CLI:000000000000000000000000000000000001");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
@@ -234,24 +241,24 @@ public class TaskMonitorServiceImplTest {
 
         assertNotNull(actualResult);
         assertEquals(
-            actualResult.getReportLines().get("CLI:000000000000000000000000000000000001").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+            actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue(), 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
     @Test
     public void testGetClassificationReportWithReportLineItemDefinitions() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
-        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
-            new ReportLineItemDefinition());
+        List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
+            new TimeIntervalColumnHeader(0, 0));
 
-        List<MonitorQueryItem> expectedResult = new ArrayList<>();
-        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
+        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
         monitorQueryItem.setKey("CLI:000000000000000000000000000000000001");
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
@@ -272,23 +279,19 @@ public class TaskMonitorServiceImplTest {
 
         assertNotNull(actualResult);
         assertEquals(
-            actualResult.getReportLines().get("CLI:000000000000000000000000000000000001").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getReportLines()
-            .get("CLI:000000000000000000000000000000000001")
-            .getLineItems()
-            .get(0)
-            .getNumberOfTasks(), 1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+            actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue(), 1);
+        assertEquals(actualResult.getRow("CLI:000000000000000000000000000000000001").getCells()[0], 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
     @Test
     public void testGetTotalNumbersOfDetailedClassificationReport() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
         List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
         DetailedMonitorQueryItem detailedMonitorQueryItem = new DetailedMonitorQueryItem();
@@ -311,24 +314,23 @@ public class TaskMonitorServiceImplTest {
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
-        DetailedReportLine line = (DetailedReportLine) actualResult.getReportLines()
-            .get("CLI:000000000000000000000000000000000001");
+        DetailedReportRow line = actualResult.getRow("CLI:000000000000000000000000000000000001");
         assertNotNull(actualResult);
-        assertEquals(line.getTotalNumberOfTasks(), 1);
-        assertEquals(line.getDetailLines().get("CLI:000000000000000000000000000000000006").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+        assertEquals(line.getTotalValue(), 1);
+        assertEquals(line.getDetailRows().get("CLI:000000000000000000000000000000000006").getTotalValue(), 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
     @Test
     public void testGetDetailedClassificationReportWithReportLineItemDefinitions() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
-            new ReportLineItemDefinition());
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
+            new TimeIntervalColumnHeader(0, 0));
 
         List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
         DetailedMonitorQueryItem detailedMonitorQueryItem = new DetailedMonitorQueryItem();
@@ -352,32 +354,27 @@ public class TaskMonitorServiceImplTest {
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
-        DetailedReportLine line = (DetailedReportLine) actualResult.getReportLines()
-            .get("CLI:000000000000000000000000000000000001");
+        DetailedReportRow line = actualResult.getRow("CLI:000000000000000000000000000000000001");
         assertNotNull(actualResult);
-        assertEquals(line.getTotalNumberOfTasks(), 1);
-        assertEquals(line.getDetailLines().get("CLI:000000000000000000000000000000000006").getTotalNumberOfTasks(), 1);
-        assertEquals(line.getLineItems().get(0).getNumberOfTasks(), 1);
-        assertEquals(line.getDetailLines()
-            .get("CLI:000000000000000000000000000000000006")
-            .getLineItems()
-            .get(0)
-            .getNumberOfTasks(), 1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getSumLine().getLineItems().get(0).getNumberOfTasks(), 1);
+        assertEquals(line.getTotalValue(), 1);
+        assertEquals(line.getDetailRows().get("CLI:000000000000000000000000000000000006").getTotalValue(), 1);
+        assertEquals(line.getCells()[0], 1);
+        assertEquals(line.getDetailRows().get("CLI:000000000000000000000000000000000006").getCells()[0], 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+        assertEquals(actualResult.getSumRow().getCells()[0], 1);
     }
 
     @Test
     public void testGetTotalNumbersOfCustomFieldValueReport() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
-        List<MonitorQueryItem> expectedResult = new ArrayList<>();
-        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
+        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
         monitorQueryItem.setKey("Geschaeftsstelle A");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
@@ -385,7 +382,7 @@ public class TaskMonitorServiceImplTest {
             .getTaskCountOfCustomFieldValues(workbasketIds, states, categories, domains, customField,
                 customFieldValues);
 
-        Report actualResult = cut.getCustomFieldValueReport(workbasketIds, states, categories, domains,
+        CustomFieldValueReport actualResult = cut.getCustomFieldValueReport(workbasketIds, states, categories, domains,
             customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
@@ -398,23 +395,23 @@ public class TaskMonitorServiceImplTest {
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getRow("Geschaeftsstelle A").getTotalValue(), 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
     @Test
     public void testGetCustomFieldValueReportWithReportLineItemDefinitions() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
-            new ReportLineItemDefinition());
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
+            new TimeIntervalColumnHeader(0, 0));
 
-        List<MonitorQueryItem> expectedResult = new ArrayList<>();
-        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
+        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
         monitorQueryItem.setKey("Geschaeftsstelle A");
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
@@ -423,7 +420,7 @@ public class TaskMonitorServiceImplTest {
             .getTaskCountOfCustomFieldValues(workbasketIds, states, categories, domains, customField,
                 customFieldValues);
 
-        Report actualResult = cut.getCustomFieldValueReport(workbasketIds, states, categories, domains,
+        CustomFieldValueReport actualResult = cut.getCustomFieldValueReport(workbasketIds, states, categories, domains,
             customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
@@ -436,30 +433,29 @@ public class TaskMonitorServiceImplTest {
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
-        assertEquals(actualResult.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks(), 1);
-        assertEquals(actualResult.getReportLines().get("Geschaeftsstelle A").getLineItems().get(0).getNumberOfTasks(),
-            1);
-        assertEquals(actualResult.getSumLine().getTotalNumberOfTasks(), 1);
+        assertEquals(actualResult.getRow("Geschaeftsstelle A").getTotalValue(), 1);
+        assertEquals(actualResult.getRow("Geschaeftsstelle A").getCells()[0], 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
     @Test
     public void testGetTaskIdsOfCategoryReportLineItems() throws InvalidArgumentException {
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-        List<String> categories = Arrays.asList("EXTERN");
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = Arrays.asList(new ReportLineItemDefinition(),
-            new ReportLineItemDefinition());
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
+            new TimeIntervalColumnHeader(0, 0));
 
         SelectedItem selectedItem = new SelectedItem();
         selectedItem.setKey("EXTERN");
         selectedItem.setLowerAgeLimit(1);
         selectedItem.setUpperAgeLimit(5);
-        List<SelectedItem> selectedItems = Arrays.asList(selectedItem);
+        List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
 
-        List<String> expectedResult = Arrays.asList("TKI:000000000000000000000000000000000001");
+        List<String> expectedResult = Collections.singletonList("TKI:000000000000000000000000000000000001");
         doReturn(expectedResult).when(taskMonitorMapperMock).getTaskIdsOfCategoriesBySelectedItems(workbasketIds,
             states, categories, domains, customField, customFieldValues, selectedItems);
 

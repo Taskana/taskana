@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -22,11 +23,11 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.impl.ReportLineItemDefinition;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 
 /**
  * Acceptance test for all "get task ids of category report" scenarios.
@@ -59,7 +60,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
     public void testGetTaskIdsOfCategoryReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
@@ -82,7 +83,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
         selectedItems.add(s3);
 
         List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, null, null, null, null, null,
-            reportLineItemDefinitions, selectedItems);
+            columnHeaders, selectedItems);
 
         assertEquals(11, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
@@ -102,8 +103,8 @@ public class GetTaskIdsOfCategoryReportAccTest {
     public void testGetTaskIdsOfCategoryReportWithWorkbasketFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
@@ -126,7 +127,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
         selectedItems.add(s3);
 
         List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(workbasketIds, null, null, null, null,
-            null, reportLineItemDefinitions, selectedItems);
+            null, columnHeaders, selectedItems);
 
         assertEquals(4, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
@@ -139,8 +140,8 @@ public class GetTaskIdsOfCategoryReportAccTest {
     public void testGetTaskIdsOfCategoryReportWithStateFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<TaskState> states = Arrays.asList(TaskState.READY);
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
+        List<TaskState> states = Collections.singletonList(TaskState.READY);
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
@@ -163,7 +164,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
         selectedItems.add(s3);
 
         List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, states, null, null, null, null,
-            reportLineItemDefinitions, selectedItems);
+            columnHeaders, selectedItems);
 
         assertEquals(11, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
@@ -184,7 +185,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
@@ -201,7 +202,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
         selectedItems.add(s2);
 
         List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, null, categories, null, null,
-            null, reportLineItemDefinitions, selectedItems);
+            null, columnHeaders, selectedItems);
 
         assertEquals(3, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
@@ -213,8 +214,8 @@ public class GetTaskIdsOfCategoryReportAccTest {
     public void testGetTaskIdsOfCategoryReportWithDomainFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> domains = Arrays.asList("DOMAIN_A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
+        List<String> domains = Collections.singletonList("DOMAIN_A");
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
@@ -237,7 +238,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
         selectedItems.add(s3);
 
         List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, null, null, domains, null, null,
-            reportLineItemDefinitions, selectedItems);
+            columnHeaders, selectedItems);
 
         assertEquals(4, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
@@ -251,8 +252,8 @@ public class GetTaskIdsOfCategoryReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
@@ -275,7 +276,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
         selectedItems.add(s3);
 
         List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, null, null, null, customField,
-            customFieldValues, reportLineItemDefinitions, selectedItems);
+            customFieldValues, columnHeaders, selectedItems);
 
         assertEquals(5, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
@@ -285,18 +286,18 @@ public class GetTaskIdsOfCategoryReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
     }
 
-    private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {
-        List<ReportLineItemDefinition> reportLineItemDefinitions = new ArrayList<>();
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -11));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-10, -6));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-5, -2));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(0));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(2, 5));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(6, 10));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(11, Integer.MAX_VALUE));
-        return reportLineItemDefinitions;
+    private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {
+        List<TimeIntervalColumnHeader> columnHeaders = new ArrayList<>();
+        columnHeaders.add(new TimeIntervalColumnHeader(Integer.MIN_VALUE, -11));
+        columnHeaders.add(new TimeIntervalColumnHeader(-10, -6));
+        columnHeaders.add(new TimeIntervalColumnHeader(-5, -2));
+        columnHeaders.add(new TimeIntervalColumnHeader(-1));
+        columnHeaders.add(new TimeIntervalColumnHeader(0));
+        columnHeaders.add(new TimeIntervalColumnHeader(1));
+        columnHeaders.add(new TimeIntervalColumnHeader(2, 5));
+        columnHeaders.add(new TimeIntervalColumnHeader(6, 10));
+        columnHeaders.add(new TimeIntervalColumnHeader(11, Integer.MAX_VALUE));
+        return columnHeaders;
     }
 
 }
