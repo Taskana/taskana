@@ -1,9 +1,9 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({name: 'mapValues'})
+@Pipe({ name: 'mapValues' })
 export class MapValuesPipe implements PipeTransform {
     transform(value: any, args?: any[]): Object[] {
-        let returnArray = [];
+        const returnArray = [];
 
         value.forEach((entryVal, entryKey) => {
             returnArray.push({

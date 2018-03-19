@@ -49,13 +49,16 @@ describe('WorkbasketDetailsComponent', () => {
   let debugElement;
   let masterAndDetailService;
   let workbasketService;
-  let workbasket = new Workbasket('1', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
+  const workbasket = new Workbasket('1', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+    new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
 
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent, DistributionTargetsComponent, FilterComponent, DualListComponent, SelectWorkBasketPipe],
+      declarations: [WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent,
+        IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
+        DistributionTargetsComponent, FilterComponent, DualListComponent, SelectWorkBasketPipe],
       providers: [WorkbasketService, MasterAndDetailService, PermissionService, AlertService]
     })
       .compileComponents();
@@ -72,12 +75,22 @@ describe('WorkbasketDetailsComponent', () => {
     spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => { return Observable.of('id1') })
     spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
       return Observable.of(new WorkbasketSummaryResource(
-        { 'workbaskets': new Array<WorkbasketSummary>(new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' }))) }, new Links({ 'href': 'someurl' })))
+        {
+          'workbaskets': new Array<WorkbasketSummary>(
+            new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
+              new Links({ 'href': 'someurl' })))
+        }, new Links({ 'href': 'someurl' })))
     })
 
     spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return Observable.of(workbasket) })
-    spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => { return Observable.of(new WorkbasketAccessItemsResource({ 'accessItems': new Array<WorkbasketAccessItems>() }, new Links({ 'href': 'url' }))) })
-    spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => { return Observable.of(new WorkbasketSummaryResource({ 'workbaskets': new Array<WorkbasketSummary>() }, new Links({ 'href': 'url' }))) })
+    spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => {
+      return Observable.of(new WorkbasketAccessItemsResource(
+        { 'accessItems': new Array<WorkbasketAccessItems>() }, new Links({ 'href': 'url' })))
+    })
+    spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
+      return Observable.of(new WorkbasketSummaryResource(
+        { 'workbaskets': new Array<WorkbasketSummary>() }, new Links({ 'href': 'url' })))
+    })
 
   });
 
@@ -89,20 +102,20 @@ describe('WorkbasketDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should has created app-no-access if workbasket is not defined', () => {
+  it('should has created taskana-no-access if workbasket is not defined', () => {
     expect(component.workbasket).toBeUndefined();
-    expect(debugElement.querySelector('app-no-access')).toBeTruthy;
+    expect(debugElement.querySelector('taskana-no-access')).toBeTruthy();
   });
 
-  it('should has created workbasket-details if workbasket is defined and app-no-access should dissapear', () => {
+  it('should has created taskana-workbasket-details if workbasket is defined and taskana-no-access should dissapear', () => {
     expect(component.workbasket).toBeUndefined();
-    expect(debugElement.querySelector('app-no-access')).toBeTruthy;
+    expect(debugElement.querySelector('taskana-no-access')).toBeTruthy();
 
     component.workbasket = workbasket;
     fixture.detectChanges();
 
-    expect(debugElement.querySelector('app-no-access')).toBeFalsy;
-    expect(debugElement.querySelector('worbasket-details')).toBeTruthy;
+    expect(debugElement.querySelector('taskana-no-access')).toBeFalsy();
+    expect(debugElement.querySelector('taskana-workbasket-information')).toBeTruthy();
 
   });
 

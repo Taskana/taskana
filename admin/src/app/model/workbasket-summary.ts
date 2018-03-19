@@ -1,11 +1,11 @@
-import {Links} from './links';
+import { Links } from './links';
 
-export class WorkbasketSummary{
+export class WorkbasketSummary {
     constructor(
         public workbasketId: string,
         public key: string,
         public name: string,
-        public description: string,        
+        public description: string,
         public owner: string,
         public modified: string,
         public domain: string,
@@ -14,6 +14,6 @@ export class WorkbasketSummary{
         public orgLevel2: string,
         public orgLevel3: string,
         public orgLevel4: string,
-        public _links: Links = undefined){
-        }
+        public _links: Links = undefined) {
+    }
 }

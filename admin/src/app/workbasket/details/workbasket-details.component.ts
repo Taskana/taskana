@@ -1,26 +1,26 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Workbasket } from '../../model/workbasket';
 import { WorkbasketService } from '../../services/workbasket.service'
 import { MasterAndDetailService } from '../../services/master-and-detail.service'
 import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 import { PermissionService } from '../../services/permission.service';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { WorkbasketSummary } from '../../model/workbasket-summary';
 import { WorkbasketSummaryResource } from '../../model/workbasket-summary-resource';
 
 @Component({
-	selector: 'workbasket-details',
+	selector: 'taskana-workbasket-details',
 	templateUrl: './workbasket-details.component.html',
 	styleUrls: ['./workbasket-details.component.scss']
 })
-export class WorkbasketDetailsComponent implements OnInit {
+export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
 
-	selectedId: number = -1;
 	workbasket: Workbasket;
-	showDetail: boolean = false;
-	hasPermission: boolean = true;
-	requestInProgress: boolean = false;
+	selectedId = -1;
+	showDetail = false;
+	hasPermission = true;
+	requestInProgress = false;
 
 	private workbasketSelectedSubscription: Subscription;
 	private workbasketSubscription: Subscription;
@@ -44,7 +44,7 @@ export class WorkbasketDetailsComponent implements OnInit {
 		});
 
 		this.routeSubscription = this.route.params.subscribe(params => {
-			let id = params['id'];
+			const id = params['id'];
 			if (id && id !== '') {
 				this.selectedId = id;
 				this.service.selectWorkBasket(id);
@@ -71,7 +71,7 @@ export class WorkbasketDetailsComponent implements OnInit {
 
 	private getWorkbasketInformation(workbasketIdSelected: string) {
 		this.service.getWorkBasketsSummary().subscribe((workbasketSummary: WorkbasketSummaryResource) => {
-			let workbasketSummarySelected = this.getWorkbasketSummaryById(workbasketSummary._embedded.workbaskets, workbasketIdSelected);
+			const workbasketSummarySelected = this.getWorkbasketSummaryById(workbasketSummary._embedded.workbaskets, workbasketIdSelected);
 			if (workbasketSummarySelected && workbasketSummarySelected._links) {
 				this.workbasketSubscription = this.service.getWorkBasket(workbasketSummarySelected._links.self.href).subscribe(workbasket => {
 					this.workbasket = workbasket;

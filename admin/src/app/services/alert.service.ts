@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+
 
 export enum AlertType {
 	SUCCESS = 'success',
@@ -11,9 +13,9 @@ export enum AlertType {
 export class AlertModel {
 
 	constructor(public type: string = AlertType.SUCCESS,
-				public text: string = 'Success',
-				public autoClosing: boolean = true,
-				public closingDelay: number = 2500){
+		public text: string = 'Success',
+		public autoClosing: boolean = true,
+		public closingDelay: number = 2500) {
 	}
 }
 
