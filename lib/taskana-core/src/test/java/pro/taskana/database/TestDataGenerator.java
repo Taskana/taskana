@@ -61,6 +61,8 @@ public class TestDataGenerator {
                 new InputStreamReader(this.getClass().getResourceAsStream("/sql/distribution-targets.sql")));
             runner.runScript(
                 new InputStreamReader(this.getClass().getResourceAsStream("/sql/object-reference.sql")));
+            runner.runScript(
+                new InputStreamReader(this.getClass().getResourceAsStream("/sql/attachment.sql")));
         } finally {
 
             runner.closeConnection();

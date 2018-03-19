@@ -80,6 +80,25 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
     @Test
     public void testDeleteMasterClassification()
         throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+
+        classificationService.deleteClassification("L3060", "");
+
+        boolean classificationNotFound = false;
+        try {
+            classificationService.getClassification("L3060", "DOMAIN_A");
+        } catch (ClassificationNotFoundException e) {
+            classificationNotFound = true;
+        }
+        assertTrue(classificationNotFound);
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
+    @Test(expected = ClassificationInUseException.class)
+    public void testDeleteMasterClassificationWithExistingAttachment()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+
         classificationService.deleteClassification("L12010", "");
 
         boolean classificationNotFound = false;

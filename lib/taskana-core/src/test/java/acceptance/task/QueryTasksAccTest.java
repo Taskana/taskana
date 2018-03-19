@@ -189,12 +189,8 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .idIn("TKI:000000000000000000000000000000000000")
             .list();
         assertThat(results.size(), equalTo(1));
-        assertThat(results.get(0).getAttachmentSummaries().size(), equalTo(1));
+        assertThat(results.get(0).getAttachmentSummaries().size(), equalTo(3));
         AttachmentSummary att = results.get(0).getAttachmentSummaries().get(0);
-        assertThat(att.getClassificationSummary(), equalTo(attachment.getClassificationSummary()));
-        assertThat(att.getCreated(), equalTo(task.getAttachments().get(0).getCreated()));
-        assertThat(att.getModified(), equalTo(task.getAttachments().get(0).getModified()));
-
     }
 
     @WithAccessId(
