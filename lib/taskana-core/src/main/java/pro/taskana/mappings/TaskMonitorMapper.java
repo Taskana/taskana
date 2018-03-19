@@ -12,6 +12,7 @@ import pro.taskana.TaskState;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.impl.MonitorQueryItem;
+import pro.taskana.impl.report.impl.TaskQueryItem;
 
 /**
  * This class is the mybatis mapping of task monitoring.
@@ -245,5 +246,26 @@ public interface TaskMonitorMapper {
         @Param("customField") CustomField customField,
         @Param("customFieldValues") List<String> customFieldValues,
         @Param("selectedItems") List<SelectedItem> selectedItems);
+
+    @Select("<script>"
+        + "SELECT DOMAIN, STATE, COUNT(STATE) as COUNT "
+        + "FROM TASK "
+        + "<where>"
+        + "<if test='domains != null'>"
+        + "DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
+        + "</if>"
+        + "<if test='states != null'>"
+        + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
+        + "</if>"
+        + "</where>"
+        + "GROUP BY DOMAIN, STATE"
+        + "</script>")
+    @Results({
+        @Result(column = "DOMAIN", property = "domain"),
+        @Result(column = "STATE", property = "state"),
+        @Result(column = "COUNT", property = "count"),
+    })
+    List<TaskQueryItem> getTasksCountByState(@Param("domains") List<String> domains,
+        @Param("states") List<TaskState> states);
 
 }

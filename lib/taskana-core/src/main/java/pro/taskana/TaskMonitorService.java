@@ -8,6 +8,7 @@ import pro.taskana.impl.report.impl.CategoryReport;
 import pro.taskana.impl.report.impl.ClassificationReport;
 import pro.taskana.impl.report.impl.CustomFieldValueReport;
 import pro.taskana.impl.report.impl.DetailedClassificationReport;
+import pro.taskana.impl.report.impl.TaskStatusReport;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.impl.WorkbasketLevelReport;
 
@@ -657,5 +658,36 @@ public interface TaskMonitorService {
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays,
         List<SelectedItem> selectedItems) throws InvalidArgumentException;
+
+    /**
+     * Overloaded method for {@link #getTaskStatusReport(List, List)}.
+     * This method omits all filters.
+     *
+     * @return the {@link TaskStatusReport}
+     */
+    TaskStatusReport getTaskStatusReport();
+
+    /**
+     * Overloaded method for {@link #getTaskStatusReport(List, List)}.
+     * This method applies a domain filter and omits the state filter.
+     *
+     * @param domains
+     *            a list of domains to filter by domains. To omit this filter, use null for this parameter
+     * @return the {@link TaskStatusReport}
+     */
+    TaskStatusReport getTaskStatusReport(List<String> domains);
+
+    /**
+     * Returns a {@link TaskStatusReport}. For each domain the report contains the total number of tasks, clustered in
+     * their task status. Furthermore the report contains a sum line that contains the total numbers of the different
+     * clusters and the total number of all tasks.
+     *
+     * @param states
+     *            a list of states objects to filter by states. To omit this filter, use null for this parameter
+     * @param domains
+     *            a list of domains to filter by domains. To omit this filter, use null for this parameter
+     * @return the {@link TaskStatusReport}
+     */
+    TaskStatusReport getTaskStatusReport(List<String> domains, List<TaskState> states);
 
 }
