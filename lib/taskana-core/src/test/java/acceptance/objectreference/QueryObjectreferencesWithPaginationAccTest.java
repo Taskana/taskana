@@ -71,25 +71,25 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     @Test
     public void testPaginationWithPages() throws NotAuthorizedException {
         // Getting full page
-        int pageNumber = 0;
+        int pageNumber = 1;
         int pageSize = 10;
         List<ObjectReference> results = objRefQuery.listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(3));
 
         // Getting full page
-        pageNumber = 1;
+        pageNumber = 2;
         pageSize = 2;
         results = objRefQuery.listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(1));
 
         // Getting last results on 1 big page
-        pageNumber = 0;
+        pageNumber = 1;
         pageSize = 100;
         results = objRefQuery.listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(3));
 
         // Getting last results on multiple pages
-        pageNumber = 1;
+        pageNumber = 2;
         pageSize = 2;
         results = objRefQuery.listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(1));
@@ -98,13 +98,13 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     @Test
     public void testPaginationNullAndNegativeLimitsIgnoring() throws NotAuthorizedException {
         // 0 limit/size = 0 results
-        int pageNumber = 1;
+        int pageNumber = 2;
         int pageSize = 0;
         List<ObjectReference> results = objRefQuery.listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(0));
 
         // Negative will be 0 = all results
-        pageNumber = 1;
+        pageNumber = 2;
         pageSize = -1;
         results = objRefQuery.listPage(pageNumber, pageSize);
         assertThat(results.size(), equalTo(0));
@@ -126,7 +126,7 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     @Test(expected = TaskanaRuntimeException.class)
     public void testPaginationThrowingExceptionWhenPageOutOfBounds() throws NotAuthorizedException {
         // entrypoint set outside result amount
-        int pageNumber = 5;
+        int pageNumber = 6;
         int pageSize = 10;
         objRefQuery.listPage(pageNumber, pageSize);
     }

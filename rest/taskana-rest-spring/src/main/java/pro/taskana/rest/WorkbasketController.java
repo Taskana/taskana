@@ -93,18 +93,27 @@ public class WorkbasketController {
         @RequestParam(value = "type", required = false) String type,
         @RequestParam(value = "requiredPermission", required = false) String requiredPermission,
         @RequestParam(value = "page", required = false) String page,
-        @RequestParam(value = "pagesize", required = false) String pagesize) {
+        @RequestParam(value = "pagesize", required = false) String pagesize) throws InvalidArgumentException {
 
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         addSortingToQuery(query, sortBy, order);
         addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
         addAuthorizationFilter(query, requiredPermission);
 
-        // long totalElements = query.count();
-
-        PageMetadata pageMetadata = new PageMetadata(Integer.MAX_VALUE, 0, 11, 4);
-        List<WorkbasketSummary> workbasketSummaries = query.listPage((int) pageMetadata.getNumber(),
-            (int) pageMetadata.getSize());
+        PageMetadata pageMetadata = null;
+        List<WorkbasketSummary> workbasketSummaries = null;
+        if (page != null && pagesize != null) {
+            // paging
+            long totalElements = query.count();
+            pageMetadata = initPageMetadata(pagesize, page, totalElements);
+            workbasketSummaries = query.listPage((int) pageMetadata.getNumber(),
+                (int) pageMetadata.getSize());
+        } else if (page == null && pagesize == null) {
+            // not paging
+            workbasketSummaries = query.list();
+        } else {
+            throw new InvalidArgumentException("Paging information is incomplete.");
+        }
 
         WorkbasketSummaryResourcesAssembler assembler = new WorkbasketSummaryResourcesAssembler();
         PagedResources<WorkbasketSummaryResource> pagedResources = assembler.toResources(workbasketSummaries,
@@ -377,4 +386,19 @@ public class WorkbasketController {
             }
         }
     }
+
+    private PageMetadata initPageMetadata(String pagesizeParam, String pageParam, long totalElements)
+        throws InvalidArgumentException {
+        long pagesize;
+        long page;
+        try {
+            pagesize = Long.valueOf(pagesizeParam);
+            page = Long.valueOf(pageParam);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException("page and pagesize must be a integer value.");
+        }
+        PageMetadata pageMetadata = new PageMetadata(pagesize, page, totalElements, (totalElements / pagesize) + 1);
+        return pageMetadata;
+    }
+
 }

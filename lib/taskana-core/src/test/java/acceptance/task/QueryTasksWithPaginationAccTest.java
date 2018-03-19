@@ -92,7 +92,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // Getting full page
-        int pageNumber = 1;
+        int pageNumber = 2;
         int pageSize = 4;
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -100,7 +100,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         assertThat(results.size(), equalTo(4));
 
         // Getting full page
-        pageNumber = 3;
+        pageNumber = 4;
         pageSize = 1;
         results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -108,7 +108,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         assertThat(results.size(), equalTo(1));
 
         // Getting last results on 1 big page
-        pageNumber = 0;
+        pageNumber = 1;
         pageSize = 100;
         results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -116,7 +116,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         assertThat(results.size(), equalTo(22));
 
         // Getting last results on multiple pages
-        pageNumber = 2;
+        pageNumber = 3;
         pageSize = 10;
         results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -133,7 +133,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // 0 limit/size = 0 results
-        int pageNumber = 1;
+        int pageNumber = 2;
         int pageSize = 0;
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -141,7 +141,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         assertThat(results.size(), equalTo(0));
 
         // Negative size will be 0 = 0 results
-        pageNumber = 1;
+        pageNumber = 2;
         pageSize = -1;
         results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -175,7 +175,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // entrypoint set outside result amount
-        int pageNumber = 5;
+        int pageNumber = 6;
         int pageSize = 10;
         taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))

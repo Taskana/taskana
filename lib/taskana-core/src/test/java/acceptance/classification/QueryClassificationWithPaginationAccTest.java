@@ -88,7 +88,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         assertThat(results.size(), equalTo(4));
 
         // Getting last results on 1 big page
-        pageNumber = 0;
+        pageNumber = 1;
         pageSize = 100;
         results = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")
@@ -96,7 +96,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
         assertThat(results.size(), equalTo(16));
 
         // Getting last results on multiple pages
-        pageNumber = 1;
+        pageNumber = 2;
         pageSize = 10;
         results = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")
