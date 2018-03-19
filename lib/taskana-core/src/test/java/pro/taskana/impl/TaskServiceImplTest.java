@@ -692,8 +692,7 @@ public class TaskServiceImplTest {
         doReturn(null).when(attachmentMapperMock).findAttachmentsByTaskId(task.getId());
         doReturn(task).when(cutSpy).completeTask(task.getId(), isForced);
         doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domainIn(any());
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).keyIn(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).idIn(any());
         doReturn(new ArrayList<>()).when(classificationQueryImplMock).list();
         List<ClassificationSummaryImpl> classificationList = Arrays
             .asList((ClassificationSummaryImpl) dummyClassification.asSummary());
@@ -714,8 +713,7 @@ public class TaskServiceImplTest {
         verify(taskMapperMock, times(1)).findById(task.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(task.getId());
         verify(classificationServiceImplMock, times(1)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(1)).domainIn(any());
-        verify(classificationQueryImplMock, times(1)).keyIn(any());
+        verify(classificationQueryImplMock, times(1)).idIn(any());
         verify(classificationQueryImplMock, times(1)).list();
         verify(taskMapperMock, times(1)).update(any());
         verify(taskanaEngineMock, times(2)).returnConnection();
@@ -1146,8 +1144,7 @@ public class TaskServiceImplTest {
         doReturn(null).when(attachmentMapperMock).findAttachmentsByTaskId(expectedTask.getId());
 
         doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).domainIn(any());
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).keyIn(any());
+        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).idIn(any());
         doReturn(workbasketQueryImplMock).when(workbasketServiceMock).createWorkbasketQuery();
         doReturn(workbasketQueryImplMock).when(workbasketQueryImplMock).idIn(any());
         List<WorkbasketSummary> wbList = new ArrayList<>();
@@ -1167,8 +1164,7 @@ public class TaskServiceImplTest {
         verify(taskMapperMock, times(1)).findById(expectedTask.getId());
         verify(attachmentMapperMock, times(1)).findAttachmentsByTaskId(expectedTask.getId());
         verify(classificationServiceImplMock, times(1)).createClassificationQuery();
-        verify(classificationQueryImplMock, times(1)).domainIn(any());
-        verify(classificationQueryImplMock, times(1)).keyIn(any());
+        verify(classificationQueryImplMock, times(1)).idIn(any());
         verify(classificationQueryImplMock, times(1)).list();
         verify(workbasketServiceMock, times(1)).createWorkbasketQuery();
         verify(workbasketQueryImplMock, times(1)).idIn(any());
@@ -1379,6 +1375,7 @@ public class TaskServiceImplTest {
         classification.setName("dummy-classification");
         classification.setDomain("dummy-domain");
         classification.setKey("dummy-classification-key");
+        classification.setId("DummyClassificationId");
         return classification;
     }
 

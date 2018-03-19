@@ -15,6 +15,15 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
     ClassificationQuery keyIn(String... key);
 
     /**
+     * Add your Id to your query.
+     *
+     * @param id
+     *            as String
+     * @return the query
+     */
+    ClassificationQuery idIn(String... id);
+
+    /**
      * Add your parentIds to your query.
      *
      * @param parentId
