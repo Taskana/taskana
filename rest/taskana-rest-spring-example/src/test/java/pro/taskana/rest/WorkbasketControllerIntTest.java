@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -66,11 +67,35 @@ public class WorkbasketControllerIntTest {
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith("/v1/workbaskets?type=PERSONAL&sortBy=key&order=desc"));
+    }
+
+    @Test
+    public void testGetSecondPageSortedByKey() {
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/workbaskets?sortBy=key&order=desc&page=2&pagesize=5", HttpMethod.GET,
+            request,
+            new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
+            });
+        assertEquals(5, response.getBody().getContent().size());
+        assertEquals("USER_1_1", response.getBody().getContent().iterator().next().key);
+        assertNotNull(response.getBody().getLink(Link.REL_SELF));
+        assertTrue(response.getBody()
+            .getLink(Link.REL_SELF)
+            .getHref()
+            .endsWith("/v1/workbaskets?sortBy=key&order=desc&page=2&pagesize=5"));
         assertNotNull(response.getBody().getLink("allWorkbaskets"));
         assertTrue(response.getBody()
             .getLink("allWorkbaskets")
             .getHref()
             .endsWith("/v1/workbaskets"));
+        assertNotNull(response.getBody().getLink(Link.REL_FIRST));
+        assertNotNull(response.getBody().getLink(Link.REL_LAST));
+        assertNotNull(response.getBody().getLink(Link.REL_NEXT));
+        assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
     }
 
     /**
