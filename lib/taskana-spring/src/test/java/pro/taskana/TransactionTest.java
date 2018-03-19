@@ -12,10 +12,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,7 +40,8 @@ public class TransactionTest {
     @Before
     public void init() throws SQLException, ClassNotFoundException {
         Class.forName("org.h2.Driver");
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA",
+            "SA")) {
             conn.createStatement().executeUpdate("DELETE FROM TASK WHERE 1=1");
             conn.commit();
         }
@@ -52,7 +53,8 @@ public class TransactionTest {
         restTemplate.getForEntity("http://127.0.0.1:" + port + "/test", String.class);
 
         int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA",
+            "SA")) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
 
             while (rs.next()) {
@@ -69,7 +71,8 @@ public class TransactionTest {
         restTemplate.postForEntity("http://127.0.0.1:" + port + "/test", null, String.class);
 
         int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA",
+            "SA")) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
 
             while (rs.next()) {
