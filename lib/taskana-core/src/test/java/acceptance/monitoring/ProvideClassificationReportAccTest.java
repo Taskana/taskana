@@ -414,7 +414,7 @@ public class ProvideClassificationReportAccTest {
         }
         builder.append("\n");
 
-        for (String rl : report.getRowTitles()) {
+        for (String rl : report.rowTitles()) {
             builder
                 .append(String.format(formatFirstColumn, rl, report.getRow(rl).getTotalValue()));
             if (columnHeaders != null) {

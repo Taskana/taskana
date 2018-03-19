@@ -2,6 +2,7 @@ package pro.taskana.rest;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 
 /**
@@ -19,6 +21,9 @@ import pro.taskana.TaskState;
 @RestController
 @RequestMapping(path = "/v1/monitor", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class MonitorController {
+
+    @Autowired
+    private TaskMonitorService taskMonitorService;
 
     @GetMapping(path = "/countByState")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -56,5 +61,12 @@ public class MonitorController {
         builder.append("{\"data\": [0,0,0,0,0,0,0,0,0,0,0],\"label\": \"Gruppenpostkorb KSC B2\"}");
         builder.append("]}");
         return ResponseEntity.status(HttpStatus.OK).body(builder.toString());
+    }
+
+    @GetMapping(path = "/taskStatusReport")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    public ResponseEntity<?> getTaskStatusReport(@RequestParam(required = false) List<String> domains,
+        @RequestParam(required = false) List<TaskState> states) {
+        return ResponseEntity.status(HttpStatus.OK).body(taskMonitorService.getTaskStatusReport(domains, states));
     }
 }
