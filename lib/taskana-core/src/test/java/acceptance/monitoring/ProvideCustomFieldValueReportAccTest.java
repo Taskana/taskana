@@ -1,5 +1,6 @@
 package acceptance.monitoring;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -24,21 +26,19 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.impl.Report;
-import pro.taskana.impl.ReportLineItem;
-import pro.taskana.impl.ReportLineItemDefinition;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.report.impl.CustomFieldValueReport;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 
 /**
  * Acceptance test for all "classification report" scenarios.
  */
 public class ProvideCustomFieldValueReportAccTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProvideCustomFieldValueReportAccTest.class);
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProvideCustomFieldValueReportAccTest.class);
 
     @BeforeClass
     public static void setupTest() throws Exception {
@@ -53,7 +53,7 @@ public class ProvideCustomFieldValueReportAccTest {
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
         taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
-        ((TaskanaEngineImpl) taskanaEngine).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+        taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         cleaner.clearDb(dataSource, false);
         TestDataGenerator testDataGenerator = new TestDataGenerator();
         testDataGenerator.generateMonitoringTestData(dataSource);
@@ -65,21 +65,24 @@ public class ProvideCustomFieldValueReportAccTest {
 
         CustomField customField = CustomField.CUSTOM_1;
 
-        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
+            customField, null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
         }
 
         assertNotNull(report);
-        assertEquals(25, report.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get("Geschaeftsstelle B").getTotalNumberOfTasks());
-        assertEquals(15, report.getReportLines().get("Geschaeftsstelle C").getTotalNumberOfTasks());
-        assertEquals(0, report.getReportLines().get("Geschaeftsstelle A").getLineItems().size());
-        assertEquals(0, report.getReportLines().get("Geschaeftsstelle B").getLineItems().size());
-        assertEquals(0, report.getReportLines().get("Geschaeftsstelle C").getLineItems().size());
-        assertEquals(3, report.getReportLines().size());
-        assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
+        assertEquals(3, report.rowSize());
+
+        assertEquals(25, report.getRow("Geschaeftsstelle A").getTotalValue());
+        assertEquals(10, report.getRow("Geschaeftsstelle B").getTotalValue());
+        assertEquals(15, report.getRow("Geschaeftsstelle C").getTotalValue());
+        assertEquals(0, report.getRow("Geschaeftsstelle A").getCells().length);
+        assertEquals(0, report.getRow("Geschaeftsstelle B").getCells().length);
+        assertEquals(0, report.getRow("Geschaeftsstelle C").getCells().length);
+
+        assertEquals(50, report.getSumRow().getTotalValue());
     }
 
     @Test
@@ -88,21 +91,23 @@ public class ProvideCustomFieldValueReportAccTest {
 
         CustomField customField = CustomField.CUSTOM_2;
 
-        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
+            customField, null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
         }
 
         assertNotNull(report);
-        assertEquals(21, report.getReportLines().get("Vollkasko").getTotalNumberOfTasks());
-        assertEquals(29, report.getReportLines().get("Teilkasko").getTotalNumberOfTasks());
+        assertEquals(2, report.rowSize());
 
-        assertEquals(0, report.getReportLines().get("Vollkasko").getLineItems().size());
-        assertEquals(0, report.getReportLines().get("Teilkasko").getLineItems().size());
+        assertEquals(21, report.getRow("Vollkasko").getTotalValue());
+        assertEquals(29, report.getRow("Teilkasko").getTotalValue());
 
-        assertEquals(2, report.getReportLines().size());
-        assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
+        assertEquals(0, report.getRow("Vollkasko").getCells().length);
+        assertEquals(0, report.getRow("Teilkasko").getCells().length);
+
+        assertEquals(50, report.getSumRow().getTotalValue());
     }
 
     @Test
@@ -110,33 +115,26 @@ public class ProvideCustomFieldValueReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null,
-            reportLineItemDefinitions);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
+            customField, null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
         assertNotNull(report);
+        assertEquals(3, report.rowSize());
 
-        assertEquals(25, report.getReportLines().get("Geschaeftsstelle A").getTotalNumberOfTasks());
-        assertEquals(10, report.getReportLines().get("Geschaeftsstelle B").getTotalNumberOfTasks());
-        assertEquals(15, report.getReportLines().get("Geschaeftsstelle C").getTotalNumberOfTasks());
+        assertEquals(25, report.getRow("Geschaeftsstelle A").getTotalValue());
+        assertEquals(10, report.getRow("Geschaeftsstelle B").getTotalValue());
+        assertEquals(15, report.getRow("Geschaeftsstelle C").getTotalValue());
 
-        assertEquals(10, report.getSumLine().getLineItems().get(0).getNumberOfTasks());
-        assertEquals(9, report.getSumLine().getLineItems().get(1).getNumberOfTasks());
-        assertEquals(11, report.getSumLine().getLineItems().get(2).getNumberOfTasks());
-        assertEquals(0, report.getSumLine().getLineItems().get(3).getNumberOfTasks());
-        assertEquals(4, report.getSumLine().getLineItems().get(4).getNumberOfTasks());
-        assertEquals(0, report.getSumLine().getLineItems().get(5).getNumberOfTasks());
-        assertEquals(7, report.getSumLine().getLineItems().get(6).getNumberOfTasks());
-        assertEquals(4, report.getSumLine().getLineItems().get(7).getNumberOfTasks());
-        assertEquals(5, report.getSumLine().getLineItems().get(8).getNumberOfTasks());
+        assertArrayEquals(new int[] {10, 9, 11, 0, 4, 0, 7, 4, 5}, report.getSumRow().getCells());
 
-        assertEquals(3, report.getReportLines().size());
-        assertEquals(50, report.getSumLine().getTotalNumberOfTasks());
+        assertEquals(50, report.getSumRow().getTotalValue());
     }
 
     @Test
@@ -144,35 +142,27 @@ public class ProvideCustomFieldValueReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null,
-            reportLineItemDefinitions);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
+            customField, null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
-        assertEquals(11, line1.get(0).getNumberOfTasks());
-        assertEquals(4, line1.get(1).getNumberOfTasks());
-        assertEquals(3, line1.get(2).getNumberOfTasks());
-        assertEquals(4, line1.get(3).getNumberOfTasks());
-        assertEquals(3, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(3, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
-        assertEquals(5, line2.get(0).getNumberOfTasks());
-        assertEquals(3, line2.get(1).getNumberOfTasks());
-        assertEquals(0, line2.get(2).getNumberOfTasks());
-        assertEquals(2, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
+        assertArrayEquals(new int[] {11, 4, 3, 4, 3}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
-        assertEquals(3, line3.get(0).getNumberOfTasks());
-        assertEquals(4, line3.get(1).getNumberOfTasks());
-        assertEquals(1, line3.get(2).getNumberOfTasks());
-        assertEquals(1, line3.get(3).getNumberOfTasks());
-        assertEquals(6, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
+        assertArrayEquals(new int[] {5, 3, 0, 2, 0}, row2);
+
+        int[] row3 = report.getRow("Geschaeftsstelle C").getCells();
+        assertArrayEquals(new int[] {3, 4, 1, 1, 6}, row3);
     }
 
     @Test
@@ -180,109 +170,85 @@ public class ProvideCustomFieldValueReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField, null,
-            reportLineItemDefinitions, false);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
+            customField, null,
+            columnHeaders, false);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
-        assertEquals(15, line1.get(0).getNumberOfTasks());
-        assertEquals(0, line1.get(1).getNumberOfTasks());
-        assertEquals(3, line1.get(2).getNumberOfTasks());
-        assertEquals(0, line1.get(3).getNumberOfTasks());
-        assertEquals(7, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(3, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
-        assertEquals(8, line2.get(0).getNumberOfTasks());
-        assertEquals(0, line2.get(1).getNumberOfTasks());
-        assertEquals(0, line2.get(2).getNumberOfTasks());
-        assertEquals(0, line2.get(3).getNumberOfTasks());
-        assertEquals(2, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
+        assertArrayEquals(new int[] {15, 0, 3, 0, 7}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
-        assertEquals(7, line3.get(0).getNumberOfTasks());
-        assertEquals(0, line3.get(1).getNumberOfTasks());
-        assertEquals(1, line3.get(2).getNumberOfTasks());
-        assertEquals(0, line3.get(3).getNumberOfTasks());
-        assertEquals(7, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
+        assertArrayEquals(new int[] {8, 0, 0, 0, 2}, row2);
+
+        int[] row3 = report.getRow("Geschaeftsstelle C").getCells();
+        assertArrayEquals(new int[] {7, 0, 1, 0, 7}, row3);
     }
 
     @Test
     public void testEachItemOfCustomFieldValueReportWithWorkbasketFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> workbasketIds = Arrays.asList("WBI:000000000000000000000000000000000001");
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         CustomField customField = CustomField.CUSTOM_1;
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getCustomFieldValueReport(workbasketIds, null, null, null, customField, null,
-            reportLineItemDefinitions);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(workbasketIds, null, null, null,
+            customField, null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
-        assertEquals(6, line1.get(0).getNumberOfTasks());
-        assertEquals(1, line1.get(1).getNumberOfTasks());
-        assertEquals(1, line1.get(2).getNumberOfTasks());
-        assertEquals(1, line1.get(3).getNumberOfTasks());
-        assertEquals(1, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(3, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
-        assertEquals(4, line2.get(0).getNumberOfTasks());
-        assertEquals(1, line2.get(1).getNumberOfTasks());
-        assertEquals(0, line2.get(2).getNumberOfTasks());
-        assertEquals(0, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
+        assertArrayEquals(new int[] {6, 1, 1, 1, 1}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
-        assertEquals(3, line3.get(0).getNumberOfTasks());
-        assertEquals(1, line3.get(1).getNumberOfTasks());
-        assertEquals(0, line3.get(2).getNumberOfTasks());
-        assertEquals(0, line3.get(3).getNumberOfTasks());
-        assertEquals(1, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
+        assertArrayEquals(new int[] {4, 1, 0, 0, 0}, row2);
+
+        int[] row3 = report.getRow("Geschaeftsstelle C").getCells();
+        assertArrayEquals(new int[] {3, 1, 0, 0, 1}, row3);
     }
 
     @Test
     public void testEachItemOfCustomFieldValueReportWithStateFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<TaskState> states = Arrays.asList(TaskState.READY);
+        List<TaskState> states = Collections.singletonList(TaskState.READY);
         CustomField customField = CustomField.CUSTOM_1;
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getCustomFieldValueReport(null, states, null, null, customField, null,
-            reportLineItemDefinitions);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, states, null, null,
+            customField, null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
-        assertEquals(11, line1.get(0).getNumberOfTasks());
-        assertEquals(4, line1.get(1).getNumberOfTasks());
-        assertEquals(3, line1.get(2).getNumberOfTasks());
-        assertEquals(4, line1.get(3).getNumberOfTasks());
-        assertEquals(0, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(3, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
-        assertEquals(5, line2.get(0).getNumberOfTasks());
-        assertEquals(3, line2.get(1).getNumberOfTasks());
-        assertEquals(0, line2.get(2).getNumberOfTasks());
-        assertEquals(2, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
+        assertArrayEquals(new int[] {11, 4, 3, 4, 0}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
-        assertEquals(3, line3.get(0).getNumberOfTasks());
-        assertEquals(4, line3.get(1).getNumberOfTasks());
-        assertEquals(1, line3.get(2).getNumberOfTasks());
-        assertEquals(1, line3.get(3).getNumberOfTasks());
-        assertEquals(0, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
+        assertArrayEquals(new int[] {5, 3, 0, 2, 0}, row2);
+
+        int[] row3 = report.getRow("Geschaeftsstelle C").getCells();
+        assertArrayEquals(new int[] {3, 4, 1, 1, 0}, row3);
     }
 
     @Test
@@ -292,72 +258,56 @@ public class ProvideCustomFieldValueReportAccTest {
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
         CustomField customField = CustomField.CUSTOM_1;
 
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getCustomFieldValueReport(null, null, categories, null, customField, null,
-            reportLineItemDefinitions);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, categories, null,
+            customField, null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
-        assertEquals(2, line1.get(0).getNumberOfTasks());
-        assertEquals(1, line1.get(1).getNumberOfTasks());
-        assertEquals(2, line1.get(2).getNumberOfTasks());
-        assertEquals(1, line1.get(3).getNumberOfTasks());
-        assertEquals(3, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(3, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
-        assertEquals(2, line2.get(0).getNumberOfTasks());
-        assertEquals(0, line2.get(1).getNumberOfTasks());
-        assertEquals(0, line2.get(2).getNumberOfTasks());
-        assertEquals(0, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
+        assertArrayEquals(new int[] {2, 1, 2, 1, 3}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
-        assertEquals(0, line3.get(0).getNumberOfTasks());
-        assertEquals(2, line3.get(1).getNumberOfTasks());
-        assertEquals(0, line3.get(2).getNumberOfTasks());
-        assertEquals(0, line3.get(3).getNumberOfTasks());
-        assertEquals(4, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
+        assertArrayEquals(new int[] {2, 0, 0, 0, 0}, row2);
+
+        int[] row3 = report.getRow("Geschaeftsstelle C").getCells();
+        assertArrayEquals(new int[] {0, 2, 0, 0, 4}, row3);
     }
 
     @Test
     public void testEachItemOfCustomFieldValueReportWithDomainFilter() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> domains = Arrays.asList("DOMAIN_A");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
         CustomField customField = CustomField.CUSTOM_1;
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, domains, customField, null,
-            reportLineItemDefinitions);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, domains,
+            customField, null,
+            columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
-        assertEquals(8, line1.get(0).getNumberOfTasks());
-        assertEquals(1, line1.get(1).getNumberOfTasks());
-        assertEquals(1, line1.get(2).getNumberOfTasks());
-        assertEquals(4, line1.get(3).getNumberOfTasks());
-        assertEquals(1, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(3, report.rowSize());
 
-        List<ReportLineItem> line2 = report.getReportLines().get("Geschaeftsstelle B").getLineItems();
-        assertEquals(2, line2.get(0).getNumberOfTasks());
-        assertEquals(2, line2.get(1).getNumberOfTasks());
-        assertEquals(0, line2.get(2).getNumberOfTasks());
-        assertEquals(1, line2.get(3).getNumberOfTasks());
-        assertEquals(0, line2.get(4).getNumberOfTasks());
+        int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
+        assertArrayEquals(new int[] {8, 1, 1, 4, 1}, row1);
 
-        List<ReportLineItem> line3 = report.getReportLines().get("Geschaeftsstelle C").getLineItems();
-        assertEquals(1, line3.get(0).getNumberOfTasks());
-        assertEquals(1, line3.get(1).getNumberOfTasks());
-        assertEquals(1, line3.get(2).getNumberOfTasks());
-        assertEquals(0, line3.get(3).getNumberOfTasks());
-        assertEquals(3, line3.get(4).getNumberOfTasks());
+        int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
+        assertArrayEquals(new int[] {2, 2, 0, 1, 0}, row2);
+
+        int[] row3 = report.getRow("Geschaeftsstelle C").getCells();
+        assertArrayEquals(new int[] {1, 1, 1, 0, 3}, row3);
     }
 
     @Test
@@ -365,60 +315,58 @@ public class ProvideCustomFieldValueReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Arrays.asList("Geschaeftsstelle A");
-        List<ReportLineItemDefinition> reportLineItemDefinitions = getShortListOfReportLineItemDefinitions();
+        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        Report report = taskMonitorService.getCustomFieldValueReport(null, null, null, null, customField,
-            customFieldValues, reportLineItemDefinitions);
+        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
+            customField,
+            customFieldValues, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
-        List<ReportLineItem> line1 = report.getReportLines().get("Geschaeftsstelle A").getLineItems();
-        assertEquals(11, line1.get(0).getNumberOfTasks());
-        assertEquals(4, line1.get(1).getNumberOfTasks());
-        assertEquals(3, line1.get(2).getNumberOfTasks());
-        assertEquals(4, line1.get(3).getNumberOfTasks());
-        assertEquals(3, line1.get(4).getNumberOfTasks());
+        assertNotNull(report);
+        assertEquals(1, report.rowSize());
 
-        assertEquals(1, report.getReportLines().size());
+        int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
+        assertArrayEquals(new int[] {11, 4, 3, 4, 3}, row1);
     }
 
-    private List<ReportLineItemDefinition> getListOfReportLineItemDefinitions() {
-        List<ReportLineItemDefinition> reportLineItemDefinitions = new ArrayList<>();
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -11));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-10, -6));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-5, -2));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(0));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(2, 5));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(6, 10));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(11, Integer.MAX_VALUE));
-        return reportLineItemDefinitions;
+    private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {
+        List<TimeIntervalColumnHeader> columnHeaders = new ArrayList<>();
+        columnHeaders.add(new TimeIntervalColumnHeader(Integer.MIN_VALUE, -11));
+        columnHeaders.add(new TimeIntervalColumnHeader(-10, -6));
+        columnHeaders.add(new TimeIntervalColumnHeader(-5, -2));
+        columnHeaders.add(new TimeIntervalColumnHeader(-1));
+        columnHeaders.add(new TimeIntervalColumnHeader(0));
+        columnHeaders.add(new TimeIntervalColumnHeader(1));
+        columnHeaders.add(new TimeIntervalColumnHeader(2, 5));
+        columnHeaders.add(new TimeIntervalColumnHeader(6, 10));
+        columnHeaders.add(new TimeIntervalColumnHeader(11, Integer.MAX_VALUE));
+        return columnHeaders;
     }
 
-    private List<ReportLineItemDefinition> getShortListOfReportLineItemDefinitions() {
-        List<ReportLineItemDefinition> reportLineItemDefinitions = new ArrayList<>();
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -6));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-5, -1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(0));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(1, 5));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(6, Integer.MAX_VALUE));
-        return reportLineItemDefinitions;
+    private List<TimeIntervalColumnHeader> getShortListOfColumnHeaders() {
+        List<TimeIntervalColumnHeader> columnHeaders = new ArrayList<>();
+        columnHeaders.add(new TimeIntervalColumnHeader(Integer.MIN_VALUE, -6));
+        columnHeaders.add(new TimeIntervalColumnHeader(-5, -1));
+        columnHeaders.add(new TimeIntervalColumnHeader(0));
+        columnHeaders.add(new TimeIntervalColumnHeader(1, 5));
+        columnHeaders.add(new TimeIntervalColumnHeader(6, Integer.MAX_VALUE));
+        return columnHeaders;
     }
 
-    private String reportToString(Report report) {
+    private String reportToString(CustomFieldValueReport report) {
         return reportToString(report, null);
     }
 
-    private String reportToString(Report report, List<ReportLineItemDefinition> reportLineItemDefinitions) {
+    private String reportToString(CustomFieldValueReport report, List<TimeIntervalColumnHeader> columnHeaders) {
         String formatColumWidth = "| %-7s ";
         String formatFirstColumn = "| %-36s  %-4s ";
         String formatFirstColumnFirstLine = "| %-29s %12s ";
         String formatFirstColumnSumLine = "| %-36s  %-5s";
-        int reportWidth = reportLineItemDefinitions == null ? 46 : reportLineItemDefinitions.size() * 10 + 46;
+        int reportWidth = columnHeaders == null ? 46 : columnHeaders.size() * 10 + 46;
 
         StringBuilder builder = new StringBuilder();
         builder.append("\n");
@@ -427,8 +375,8 @@ public class ProvideCustomFieldValueReportAccTest {
         }
         builder.append("\n");
         builder.append(String.format(formatFirstColumnFirstLine, "Custom field values", "Total"));
-        if (reportLineItemDefinitions != null) {
-            for (ReportLineItemDefinition def : reportLineItemDefinitions) {
+        if (columnHeaders != null) {
+            for (TimeIntervalColumnHeader def : columnHeaders) {
                 if (def.getLowerAgeLimit() == Integer.MIN_VALUE) {
                     builder.append(String.format(formatColumWidth, "< " + def.getUpperAgeLimit()));
                 } else if (def.getUpperAgeLimit() == Integer.MAX_VALUE) {
@@ -452,12 +400,12 @@ public class ProvideCustomFieldValueReportAccTest {
         }
         builder.append("\n");
 
-        for (String rl : report.getReportLines().keySet()) {
+        for (String rl : report.getRowTitles()) {
             builder
-                .append(String.format(formatFirstColumn, rl, report.getReportLines().get(rl).getTotalNumberOfTasks()));
-            if (reportLineItemDefinitions != null) {
-                for (ReportLineItem reportLineItem : report.getReportLines().get(rl).getLineItems()) {
-                    builder.append(String.format(formatColumWidth, reportLineItem.getNumberOfTasks()));
+                .append(String.format(formatFirstColumn, rl, report.getRow(rl).getTotalValue()));
+            if (columnHeaders != null) {
+                for (int cell : report.getRow(rl).getCells()) {
+                    builder.append(String.format(formatColumWidth, cell));
                 }
             }
             builder.append("|\n");
@@ -466,9 +414,9 @@ public class ProvideCustomFieldValueReportAccTest {
             }
             builder.append("\n");
         }
-        builder.append(String.format(formatFirstColumnSumLine, "Total", report.getSumLine().getTotalNumberOfTasks()));
-        for (ReportLineItem sumLine : report.getSumLine().getLineItems()) {
-            builder.append(String.format(formatColumWidth, sumLine.getNumberOfTasks()));
+        builder.append(String.format(formatFirstColumnSumLine, "Total", report.getSumRow().getTotalValue()));
+        for (int cell : report.getSumRow().getCells()) {
+            builder.append(String.format(formatColumWidth, cell));
         }
         builder.append("|\n");
         for (int i = 0; i < reportWidth; i++) {
