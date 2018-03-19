@@ -59,7 +59,7 @@ public abstract class Report<Item extends QueryItem, ColumnHeader extends Report
         return sumRow;
     }
 
-    public Set<String> getRowTitles() {
+    public Set<String> rowTitles() {
         return reportRows.keySet();
     }
 
@@ -69,5 +69,9 @@ public abstract class Report<Item extends QueryItem, ColumnHeader extends Report
 
     protected ReportRow<Item> createReportRow(int columnSize) {
         return new ReportRow<>(columnSize);
+    }
+
+    public List<ColumnHeader> getColumnHeaders() {
+        return columnHeaders;
     }
 }
