@@ -48,17 +48,17 @@ public interface BaseQuery<T> {
 
     /**
      * This method will return all results for page X with a size of Y of the current query.<br>
-     * Negative pageNumber/size will be changed to 0 and the last page got maybe less elements. In case of a TaskQuery,
-     * this method can throw a NotAuthorizedToQueryWorkbasketException.
+     * Negative pageNumber/size will be changed to 1 or 0 and the last page might contains less elements. In case of a
+     * TaskQuery, this method can throw a NotAuthorizedToQueryWorkbasketException.
      *
      * @param pageNumber
-     *            current pagination page starting at 0.
+     *            current pagination page starting at 1.
      * @param pageSize
      *            amount of elements for this page.
      * @return resulList for the current query starting at X and returning max Y elements.
      */
     default List<T> listPage(int pageNumber, int pageSize) {
-        int offset = (pageNumber < 0) ? 0 : (pageNumber * pageSize);
+        int offset = (pageNumber < 1) ? 0 : ((pageNumber - 1) * pageSize);
         int limit = (pageSize < 0) ? 0 : pageSize;
         return list(offset, limit);
     }

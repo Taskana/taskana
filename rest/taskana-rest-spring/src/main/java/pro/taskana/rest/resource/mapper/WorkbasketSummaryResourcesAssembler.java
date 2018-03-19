@@ -38,7 +38,22 @@ public class WorkbasketSummaryResourcesAssembler {
 
         UriComponentsBuilder original = getBuilderForOriginalUri();
         pagedResources.add(new Link(original.toUriString()).withSelfRel());
-        pagedResources.add(linkTo(WorkbasketController.class).withRel("allWorkbaskets"));
+        if (pageMetadata != null) {
+            pagedResources.add(linkTo(WorkbasketController.class).withRel("allWorkbaskets"));
+            pagedResources.add(new Link(original.replaceQueryParam("page", 1).toUriString()).withRel(Link.REL_FIRST));
+            pagedResources.add(new Link(original.replaceQueryParam("page", pageMetadata.getTotalPages()).toUriString())
+                .withRel(Link.REL_LAST));
+            if (pageMetadata.getNumber() > 1) {
+                pagedResources
+                    .add(new Link(original.replaceQueryParam("page", pageMetadata.getNumber() - 1).toUriString())
+                        .withRel(Link.REL_PREVIOUS));
+            }
+            if (pageMetadata.getNumber() < pageMetadata.getTotalPages()) {
+                pagedResources
+                    .add(new Link(original.replaceQueryParam("page", pageMetadata.getNumber() + 1).toUriString())
+                        .withRel(Link.REL_NEXT));
+            }
+        }
 
         return pagedResources;
     }
