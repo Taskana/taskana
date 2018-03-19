@@ -30,6 +30,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private TaskanaEngineImpl taskanaEngine;
     private String columnName;
     private String[] key;
+    private String[] idIn;
     private String[] parentId;
     private String[] category;
     private String[] type;
@@ -71,6 +72,12 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public ClassificationQuery keyIn(String... key) {
         this.key = key;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery idIn(String... id) {
+        this.idIn = id;
         return this;
     }
 
@@ -459,6 +466,10 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         return key;
     }
 
+    public String[] getIdIn() {
+        return idIn;
+    }
+
     public String[] getparentId() {
         return parentId;
     }
@@ -594,6 +605,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         builder.append(columnName);
         builder.append(", key=");
         builder.append(Arrays.toString(key));
+        builder.append(", idIn=");
+        builder.append(Arrays.toString(idIn));
         builder.append(", parentId=");
         builder.append(Arrays.toString(parentId));
         builder.append(", category=");

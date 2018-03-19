@@ -93,6 +93,24 @@ public interface AttachmentMapper {
     })
     List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(String[] taskIds);
 
+    @Select("<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, RECEIVED "
+        + "FROM ATTACHMENT "
+        + "<where>"
+        + "CLASSIFICATION_ID = #{classificationId}"
+        + "</where>"
+        + "</script>")
+    @Results(value = {
+        @Result(property = "id", column = "ID"),
+        @Result(property = "taskId", column = "TASK_ID"),
+        @Result(property = "created", column = "CREATED"),
+        @Result(property = "modified", column = "MODIFIED"),
+        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
+        @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
+        @Result(property = "received", column = "RECEIVED"),
+    })
+    List<AttachmentSummaryImpl> findAttachmentSummariesByClassificationId(
+        @Param("classificationId") String classificationId);
+
     @Delete("DELETE FROM ATTACHMENT WHERE ID=#{attachmentId}")
     void deleteAttachment(@Param("attachmentId") String attachmentId);
 
@@ -111,4 +129,12 @@ public interface AttachmentMapper {
             javaType = String.class, typeHandler = ClobTypeHandler.class)
     })
     String getCustomAttributesAsString(@Param("attachmentId") String attachmentId);
+
+    @Select("<script> SELECT DISTINCT TASK_ID FROM ATTACHMENT WHERE CLASSIFICATION_ID = #{classificationId} "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
+    @Results(value = {
+        @Result(property = "taskId", column = "TASK_ID")})
+    List<String> findTaskIdsAffectedByClassificationChange(@Param("classificationId") String classificationId);
+
 }

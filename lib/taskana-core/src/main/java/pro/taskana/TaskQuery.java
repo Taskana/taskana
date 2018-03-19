@@ -108,6 +108,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery classificationKeyLike(String... classificationKeys);
 
     /**
+     * Add your classificationId to your query.
+     *
+     * @param classificationIds
+     *            the classification Ids
+     * @return the query
+     */
+    TaskQuery classificationIdIn(String... classificationIds);
+
+    /**
      * Add your classificationCategory to your query.
      *
      * @param classificationCategories

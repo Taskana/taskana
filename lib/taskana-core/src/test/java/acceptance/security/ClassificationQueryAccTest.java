@@ -39,7 +39,7 @@ public class ClassificationQueryAccTest extends AbstractAccTest {
             .list();
 
         assertNotNull(classificationSummaryList);
-        assertEquals(16, classificationSummaryList.size());
+        assertEquals(17, classificationSummaryList.size());
     }
 
     @WithAccessId(userName = "businessadmin")
@@ -52,7 +52,7 @@ public class ClassificationQueryAccTest extends AbstractAccTest {
             .list();
 
         assertNotNull(classificationSummaryList);
-        assertEquals(16, classificationSummaryList.size());
+        assertEquals(17, classificationSummaryList.size());
     }
 
     @WithAccessId(userName = "admin")
@@ -65,7 +65,7 @@ public class ClassificationQueryAccTest extends AbstractAccTest {
             .list();
 
         assertNotNull(classificationSummaryList);
-        assertEquals(16, classificationSummaryList.size());
+        assertEquals(17, classificationSummaryList.size());
     }
 
 }

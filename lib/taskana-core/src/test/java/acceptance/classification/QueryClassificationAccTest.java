@@ -94,7 +94,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .list();
 
         assertNotNull(classifications);
-        assertEquals(23, classifications.size());
+        assertEquals(25, classifications.size());
 
         List<ClassificationSummary> documentTypes = classifications.stream()
             .filter(c -> c.getType().equals("DOCUMENT"))
@@ -106,7 +106,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .filter(c -> c.getType().equals("TASK"))
             .collect(
                 Collectors.toList());
-        assertEquals(21, taskTypes.size());
+        assertEquals(23, taskTypes.size());
     }
 
     @Test
@@ -167,7 +167,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .domainIn("DOMAIN_A")
             .list();
         assertNotNull(classifications);
-        assertEquals(13, classifications.size());
+        assertEquals(14, classifications.size());
     }
 
     @Test
@@ -180,7 +180,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .typeIn("TASK")
             .list();
         assertNotNull(classifications);
-        assertEquals(11, classifications.size());
+        assertEquals(12, classifications.size());
     }
 
     @Test
@@ -206,7 +206,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .list();
 
         assertNotNull(classificationSummaryList);
-        assertEquals(16, classificationSummaryList.size());
+        assertEquals(17, classificationSummaryList.size());
     }
 
     @Test
