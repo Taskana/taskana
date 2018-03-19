@@ -12,14 +12,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.util.LoggerUtils;
 
 /**
  * The DaysToWorkingDaysConverter provides a method to convert an age in days into an age in working days. Before the
  * method convertDaysToWorkingDays() can be used, the DaysToWorkingDaysConverter has to be initialized. For a list of
- * {@link ReportLineItemDefinition}s the converter creates a "table" with integer that represents the age in days from
- * the largest lower limit until the smallest upper limit of the reportLineItemDefinitions. This table is valid for a
+ * {@link TimeIntervalColumnHeader}s the converter creates a "table" with integer that represents the age in days from
+ * the largest lower limit until the smallest upper limit of the timeIntervalColumnHeaders. This table is valid for a
  * whole day until the converter is initialized with bigger limits.
  */
 public final class DaysToWorkingDaysConverter {
@@ -33,61 +34,61 @@ public final class DaysToWorkingDaysConverter {
     private static boolean germanHolidaysEnabled;
     private static List<LocalDate> customHolidays;
 
-    private DaysToWorkingDaysConverter(List<ReportLineItemDefinition> reportLineItemDefinitions,
+    private DaysToWorkingDaysConverter(List<TimeIntervalColumnHeader> columnHeaders,
         Instant referenceDate) {
         easterSunday = getEasterSunday(LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).getYear());
         dateCreated = referenceDate;
-        positiveDaysToWorkingDays = generatePositiveDaysToWorkingDays(reportLineItemDefinitions, referenceDate);
-        negativeDaysToWorkingDays = generateNegativeDaysToWorkingDays(reportLineItemDefinitions, referenceDate);
+        positiveDaysToWorkingDays = generatePositiveDaysToWorkingDays(columnHeaders, referenceDate);
+        negativeDaysToWorkingDays = generateNegativeDaysToWorkingDays(columnHeaders, referenceDate);
     }
 
     /**
-     * Initializes the DaysToWorkingDaysConverter for a list of {@link ReportLineItemDefinition}s and the current day. A
+     * Initializes the DaysToWorkingDaysConverter for a list of {@link TimeIntervalColumnHeader}s and the current day. A
      * new table is only created if there are bigger limits or the date has changed.
      *
-     * @param reportLineItemDefinitions
-     *            a list of {@link ReportLineItemDefinition}s that determines the size of the table
+     * @param columnHeaders
+     *            a list of {@link TimeIntervalColumnHeader}s that determines the size of the table
      * @return an instance of the DaysToWorkingDaysConverter
      * @throws InvalidArgumentException
-     *             thrown if reportLineItemDefinitions is null
+     *             thrown if columnHeaders is null
      */
-    public static DaysToWorkingDaysConverter initialize(List<ReportLineItemDefinition> reportLineItemDefinitions)
+    public static DaysToWorkingDaysConverter initialize(List<TimeIntervalColumnHeader> columnHeaders)
         throws InvalidArgumentException {
-        return initialize(reportLineItemDefinitions, Instant.now());
+        return initialize(columnHeaders, Instant.now());
     }
 
     /**
-     * Initializes the DaysToWorkingDaysConverter for a list of {@link ReportLineItemDefinition}s and a referenceDate. A
+     * Initializes the DaysToWorkingDaysConverter for a list of {@link TimeIntervalColumnHeader}s and a referenceDate. A
      * new table is only created if there are bigger limits or the date has changed.
      *
-     * @param reportLineItemDefinitions
-     *            a list of {@link ReportLineItemDefinition}s that determines the size of the table
+     * @param columnHeaders
+     *            a list of {@link TimeIntervalColumnHeader}s that determines the size of the table
      * @param referenceDate
      *            a {@link Instant} that represents the current day of the table
      * @return an instance of the DaysToWorkingDaysConverter
      * @throws InvalidArgumentException
-     *             thrown if reportLineItemDefinitions or referenceDate is null
+     *             thrown if columnHeaders or referenceDate is null
      */
-    public static DaysToWorkingDaysConverter initialize(List<ReportLineItemDefinition> reportLineItemDefinitions,
+    public static DaysToWorkingDaysConverter initialize(List<TimeIntervalColumnHeader> columnHeaders,
         Instant referenceDate) throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Initialize DaysToWorkingDaysConverter with reportLineItemDefinitions: {}",
-                LoggerUtils.listToString(reportLineItemDefinitions));
+            LOGGER.debug("Initialize DaysToWorkingDaysConverter with columnHeaders: {}",
+                LoggerUtils.listToString(columnHeaders));
         }
-        if (reportLineItemDefinitions == null) {
-            throw new InvalidArgumentException("ReportLineItemDefinitions can´t be used as NULL-Parameter");
+        if (columnHeaders == null) {
+            throw new InvalidArgumentException("TimeIntervalColumnHeaders can´t be used as NULL-Parameter");
         }
         if (referenceDate == null) {
             throw new InvalidArgumentException("ReferenceDate can´t be used as NULL-Parameter");
         }
-        int largesLowerLimit = getLargestLowerLimit(reportLineItemDefinitions);
-        int smallestUpperLimit = getSmallestUpperLimit(reportLineItemDefinitions);
+        int largesLowerLimit = getLargestLowerLimit(columnHeaders);
+        int smallestUpperLimit = getSmallestUpperLimit(columnHeaders);
         if (instance == null
             || !positiveDaysToWorkingDays.contains(largesLowerLimit)
             || !negativeDaysToWorkingDays.contains(smallestUpperLimit)
             || !dateCreated.truncatedTo(ChronoUnit.DAYS).equals(referenceDate.truncatedTo(ChronoUnit.DAYS))) {
 
-            instance = new DaysToWorkingDaysConverter(reportLineItemDefinitions, referenceDate);
+            instance = new DaysToWorkingDaysConverter(columnHeaders, referenceDate);
             LOGGER.debug("Create new converter for the values from {} until {} for the date: {}.", largesLowerLimit,
                 smallestUpperLimit, dateCreated);
         }
@@ -188,8 +189,8 @@ public final class DaysToWorkingDaysConverter {
     }
 
     private ArrayList<Integer> generateNegativeDaysToWorkingDays(
-        List<ReportLineItemDefinition> reportLineItemDefinitions, Instant referenceDate) {
-        int minUpperLimit = getSmallestUpperLimit(reportLineItemDefinitions);
+        List<TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
+        int minUpperLimit = getSmallestUpperLimit(columnHeaders);
         ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
         daysToWorkingDays.add(0);
         int day = -1;
@@ -205,8 +206,8 @@ public final class DaysToWorkingDaysConverter {
     }
 
     private ArrayList<Integer> generatePositiveDaysToWorkingDays(
-        List<ReportLineItemDefinition> reportLineItemDefinitions, Instant referenceDate) {
-        int maxLowerLimit = getLargestLowerLimit(reportLineItemDefinitions);
+        List<TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
+        int maxLowerLimit = getLargestLowerLimit(columnHeaders);
         ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
         daysToWorkingDays.add(0);
 
@@ -222,21 +223,21 @@ public final class DaysToWorkingDaysConverter {
         return daysToWorkingDays;
     }
 
-    private static int getSmallestUpperLimit(List<ReportLineItemDefinition> reportLineItemDefinitions) {
+    private static int getSmallestUpperLimit(List<TimeIntervalColumnHeader> columnHeaders) {
         int smallestUpperLimit = 0;
-        for (ReportLineItemDefinition reportLineItemDefinition : reportLineItemDefinitions) {
-            if (reportLineItemDefinition.getUpperAgeLimit() < smallestUpperLimit) {
-                smallestUpperLimit = reportLineItemDefinition.getUpperAgeLimit();
+        for (TimeIntervalColumnHeader columnHeader : columnHeaders) {
+            if (columnHeader.getUpperAgeLimit() < smallestUpperLimit) {
+                smallestUpperLimit = columnHeader.getUpperAgeLimit();
             }
         }
         return smallestUpperLimit;
     }
 
-    private static int getLargestLowerLimit(List<ReportLineItemDefinition> reportLineItemDefinitions) {
+    private static int getLargestLowerLimit(List<TimeIntervalColumnHeader> columnHeaders) {
         int greatestLowerLimit = 0;
-        for (ReportLineItemDefinition reportLineItemDefinition : reportLineItemDefinitions) {
-            if (reportLineItemDefinition.getUpperAgeLimit() > greatestLowerLimit) {
-                greatestLowerLimit = reportLineItemDefinition.getLowerAgeLimit();
+        for (TimeIntervalColumnHeader columnHeader : columnHeaders) {
+            if (columnHeader.getUpperAgeLimit() > greatestLowerLimit) {
+                greatestLowerLimit = columnHeader.getLowerAgeLimit();
             }
         }
         return greatestLowerLimit;

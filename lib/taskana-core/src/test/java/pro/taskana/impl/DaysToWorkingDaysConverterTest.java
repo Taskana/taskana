@@ -8,12 +8,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 
 /**
  * Test for the DaysToWorkingDaysConverter.
@@ -31,11 +33,11 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testInitializeForDifferentReportLineItemDefinitions() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance1 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfReportLineItemDefinitions(), Instant.parse("2018-02-03T00:00:00.000Z"));
+            .initialize(getShortListOfColumnHeaders(), Instant.parse("2018-02-03T00:00:00.000Z"));
         DaysToWorkingDaysConverter instance2 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfReportLineItemDefinitions(), Instant.parse("2018-02-03T00:00:00.000Z"));
+            .initialize(getShortListOfColumnHeaders(), Instant.parse("2018-02-03T00:00:00.000Z"));
         DaysToWorkingDaysConverter instance3 = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-02-03T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-02-03T00:00:00.000Z"));
 
         assertEquals(instance1, instance2);
         assertNotEquals(instance1, instance3);
@@ -43,7 +45,7 @@ public class DaysToWorkingDaysConverterTest {
 
     @Test
     public void testConvertWorkingDaysToDaysForTasks() {
-        List<ReportLineItemDefinition> reportItems = new ArrayList<>(Arrays.asList(new ReportLineItemDefinition(0)));
+        List<TimeIntervalColumnHeader> reportItems = Collections.singletonList(new TimeIntervalColumnHeader(0));
         try {
             DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(reportItems, Instant.now());
 
@@ -100,9 +102,9 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testInitializeForDifferentDates() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance1 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfReportLineItemDefinitions(), Instant.parse("2018-02-04T00:00:00.000Z"));
+            .initialize(getShortListOfColumnHeaders(), Instant.parse("2018-02-04T00:00:00.000Z"));
         DaysToWorkingDaysConverter instance2 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfReportLineItemDefinitions(), Instant.parse("2018-02-05T00:00:00.000Z"));
+            .initialize(getShortListOfColumnHeaders(), Instant.parse("2018-02-05T00:00:00.000Z"));
 
         assertNotEquals(instance1, instance2);
     }
@@ -110,7 +112,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testConvertDaysToWorkingDays() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-02-06T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-02-06T00:00:00.000Z"));
 
         assertEquals(-16, instance.convertDaysToWorkingDays(-16));
         assertEquals(-11, instance.convertDaysToWorkingDays(-15));
@@ -134,7 +136,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testConvertWorkingDaysToDays() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-02-27T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-02-27T00:00:00.000Z"));
 
         assertEquals(Arrays.asList(-13), instance.convertWorkingDaysToDays(-13));
         assertEquals(Arrays.asList(-12), instance.convertWorkingDaysToDays(-12));
@@ -167,7 +169,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testConvertWorkingDaysToDaysAtWeekend() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-03-10T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-03-10T00:00:00.000Z"));
 
         assertEquals(Arrays.asList(-13), instance.convertWorkingDaysToDays(-13));
         assertEquals(Arrays.asList(-12), instance.convertWorkingDaysToDays(-12));
@@ -200,7 +202,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testConvertWorkingDaysToDaysOnEasterSunday() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-04-01T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-04-01T00:00:00.000Z"));
 
         assertEquals(Arrays.asList(-13), instance.convertWorkingDaysToDays(-13));
         assertEquals(Arrays.asList(-12), instance.convertWorkingDaysToDays(-12));
@@ -233,7 +235,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testEasterHolidays() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-03-28T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-03-28T00:00:00.000Z"));
 
         assertEquals(0, instance.convertDaysToWorkingDays(0));
         assertEquals(1, instance.convertDaysToWorkingDays(1));
@@ -247,7 +249,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testWhitsunHolidays() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-05-16T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-05-16T00:00:00.000Z"));
 
         assertEquals(0, instance.convertDaysToWorkingDays(0));
         assertEquals(1, instance.convertDaysToWorkingDays(1));
@@ -261,7 +263,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testLabourDayHoliday() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-04-26T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-04-26T00:00:00.000Z"));
 
         assertEquals(0, instance.convertDaysToWorkingDays(0));
         assertEquals(1, instance.convertDaysToWorkingDays(1));
@@ -276,7 +278,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testAscensionDayHoliday() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-05-07T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-05-07T00:00:00.000Z"));
 
         assertEquals(0, instance.convertDaysToWorkingDays(0));
         assertEquals(1, instance.convertDaysToWorkingDays(1));
@@ -291,7 +293,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testDayOfGermanUnityHoliday() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-10-01T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-10-01T00:00:00.000Z"));
 
         assertEquals(0, instance.convertDaysToWorkingDays(0));
         assertEquals(1, instance.convertDaysToWorkingDays(1));
@@ -306,7 +308,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testChristmasAndNewYearHolidays() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-12-20T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-12-20T00:00:00.000Z"));
 
         assertEquals(0, instance.convertDaysToWorkingDays(0));
         assertEquals(1, instance.convertDaysToWorkingDays(1));
@@ -328,7 +330,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testCustomHolidaysWithDayOfReformationAndAllSaintsDay() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfReportLineItemDefinitions(), Instant.parse("2018-10-26T00:00:00.000Z"));
+            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-10-26T00:00:00.000Z"));
 
         assertEquals(0, instance.convertDaysToWorkingDays(0));
         assertEquals(0, instance.convertDaysToWorkingDays(1));
@@ -344,7 +346,7 @@ public class DaysToWorkingDaysConverterTest {
     @Test
     public void testGetEasterSunday() throws InvalidArgumentException {
         DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter
-            .initialize(getShortListOfReportLineItemDefinitions(), Instant.parse("2018-02-27T00:00:00.000Z"));
+            .initialize(getShortListOfColumnHeaders(), Instant.parse("2018-02-27T00:00:00.000Z"));
 
         assertEquals(LocalDate.of(2018, 4, 1), instance.getEasterSunday(2018));
         assertEquals(LocalDate.of(2019, 4, 21), instance.getEasterSunday(2019));
@@ -370,27 +372,27 @@ public class DaysToWorkingDaysConverterTest {
 
     }
 
-    private List<ReportLineItemDefinition> getShortListOfReportLineItemDefinitions() {
-        List<ReportLineItemDefinition> reportLineItemDefinitions = new ArrayList<>();
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -3));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-1, -2));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(0));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(1, 2));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(3, Integer.MAX_VALUE));
-        return reportLineItemDefinitions;
+    private List<TimeIntervalColumnHeader> getShortListOfColumnHeaders() {
+        List<TimeIntervalColumnHeader> columnHeaders = new ArrayList<>();
+        columnHeaders.add(new TimeIntervalColumnHeader(Integer.MIN_VALUE, -3));
+        columnHeaders.add(new TimeIntervalColumnHeader(-1, -2));
+        columnHeaders.add(new TimeIntervalColumnHeader(0));
+        columnHeaders.add(new TimeIntervalColumnHeader(1, 2));
+        columnHeaders.add(new TimeIntervalColumnHeader(3, Integer.MAX_VALUE));
+        return columnHeaders;
     }
 
-    private List<ReportLineItemDefinition> getLargeListOfReportLineItemDefinitions() {
-        List<ReportLineItemDefinition> reportLineItemDefinitions = new ArrayList<>();
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(Integer.MIN_VALUE, -11));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-10, -6));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-5, -2));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(-1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(0));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(1));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(2, 5));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(6, 10));
-        reportLineItemDefinitions.add(new ReportLineItemDefinition(11, Integer.MAX_VALUE));
-        return reportLineItemDefinitions;
+    private List<TimeIntervalColumnHeader> getLargeListOfColumnHeaders() {
+        List<TimeIntervalColumnHeader> columnHeaders = new ArrayList<>();
+        columnHeaders.add(new TimeIntervalColumnHeader(Integer.MIN_VALUE, -11));
+        columnHeaders.add(new TimeIntervalColumnHeader(-10, -6));
+        columnHeaders.add(new TimeIntervalColumnHeader(-5, -2));
+        columnHeaders.add(new TimeIntervalColumnHeader(-1));
+        columnHeaders.add(new TimeIntervalColumnHeader(0));
+        columnHeaders.add(new TimeIntervalColumnHeader(1));
+        columnHeaders.add(new TimeIntervalColumnHeader(2, 5));
+        columnHeaders.add(new TimeIntervalColumnHeader(6, 10));
+        columnHeaders.add(new TimeIntervalColumnHeader(11, Integer.MAX_VALUE));
+        return columnHeaders;
     }
 }

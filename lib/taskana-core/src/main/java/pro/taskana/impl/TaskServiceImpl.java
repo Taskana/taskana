@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +43,7 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.AttachmentMapper;
@@ -72,7 +74,7 @@ public class TaskServiceImpl implements TaskService {
         super();
         try {
             this.converter = DaysToWorkingDaysConverter
-                .initialize(new ArrayList<>(Arrays.asList(new ReportLineItemDefinition(0))), Instant.now());
+                .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         } catch (InvalidArgumentException e) {
             LOGGER.error("could not initialize DaysToWorkingDaysConverter. Caught exception " + e);
             throw new SystemException("Internal error. Cannot initialize DaysToWorkingDaysConverter");

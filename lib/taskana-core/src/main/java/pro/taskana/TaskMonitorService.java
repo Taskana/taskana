@@ -3,11 +3,13 @@ package pro.taskana;
 import java.util.List;
 
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.impl.ClassificationReport;
-import pro.taskana.impl.DetailedClassificationReport;
-import pro.taskana.impl.Report;
-import pro.taskana.impl.ReportLineItemDefinition;
 import pro.taskana.impl.SelectedItem;
+import pro.taskana.impl.report.impl.CategoryReport;
+import pro.taskana.impl.report.impl.ClassificationReport;
+import pro.taskana.impl.report.impl.CustomFieldValueReport;
+import pro.taskana.impl.report.impl.DetailedClassificationReport;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.impl.WorkbasketLevelReport;
 
 /**
  * The Task Monitor Service manages operations on tasks regarding the monitoring.
@@ -15,7 +17,7 @@ import pro.taskana.impl.SelectedItem;
 public interface TaskMonitorService {
 
     /**
-     * Returns a {@link Report} grouped by workbaskets. The report contains the total numbers of tasks of the respective
+     * Returns a {@link WorkbasketLevelReport} grouped by workbaskets. The report contains the total numbers of tasks of the respective
      * workbasket as well as the total number of all tasks. If no filter is required, the respective parameter should be
      * null. The tasks of the report are filtered by workbaskets, states, categories, domains and values of a custom
      * field. Tasks with Timestamp DUE = null are not considered.
@@ -38,13 +40,14 @@ public interface TaskMonitorService {
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
      */
-    Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
-        List<String> domains, CustomField customField, List<String> customFieldValues) throws InvalidArgumentException;
+    WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
+        throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Report} grouped by workbaskets. For each workbasket the report contains the total number of
+     * Returns a {@link WorkbasketLevelReport} grouped by workbaskets. For each workbasket the report contains the total number of
      * tasks and the number of tasks of the respective cluster that are specified by the
-     * {@link ReportLineItemDefinition}s. By default the age of the tasks is counted in working days. Furthermore the
+     * {@link TimeIntervalColumnHeader}s. By default the age of the tasks is counted in working days. Furthermore the
      * Report contains a sum line that contains the total numbers of the different clusters and the total number of all
      * tasks in this report. The tasks of the report are filtered by workbaskets, states, categories, domains and values
      * of a custom field. If no filter is required, the respective parameter should be null. Tasks with Timestamp DUE =
@@ -65,11 +68,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -77,14 +80,14 @@ public interface TaskMonitorService {
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
      */
-    Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
+    WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException;
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Report} grouped by workbaskets. For each workbasket the report contains the total number of
+     * Returns a {@link WorkbasketLevelReport} grouped by workbaskets. For each workbasket the report contains the total number of
      * tasks and the number of tasks of the respective cluster that are specified by the
-     * {@link ReportLineItemDefinition}s. It can be specified whether the age of the tasks is counted in days or in
+     * {@link TimeIntervalColumnHeader}s. It can be specified whether the age of the tasks is counted in days or in
      * working days. Furthermore the report contains a sum line that contains the total numbers of the different
      * clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets, states,
      * categories, domains and values of a custom field. If no filter is required, the respective parameter should be
@@ -105,11 +108,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -120,13 +123,13 @@ public interface TaskMonitorService {
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
      */
-    Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
+    WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
         throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Report} grouped by categories. The report contains the total numbers of tasks of the respective
+     * Returns a {@link CategoryReport} grouped by categories. The report contains the total numbers of tasks of the respective
      * category as well as the total number of all tasks. The tasks of the report are filtered by workbaskets, states,
      * categories, domains and values of a custom field and values of a custom field. If no filter is required, the
      * respective parameter should be null. Tasks with Timestamp DUE = null are not considered.
@@ -149,12 +152,12 @@ public interface TaskMonitorService {
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
      */
-    Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
+    CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues) throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Report} grouped by categories. For each category the report contains the total number of tasks
-     * and the number of tasks of the respective cluster that are specified by the {@link ReportLineItemDefinition}s. By
+     * Returns a {@link CategoryReport} grouped by categories. For each category the report contains the total number of tasks
+     * and the number of tasks of the respective cluster that are specified by the {@link TimeIntervalColumnHeader}s. By
      * default the age of the tasks is counted in working days. Furthermore the Report contains a sum line that contains
      * the total numbers of the different clusters and the total number of all tasks in this report. The tasks of the
      * report are filtered by workbaskets, states, categories, domains and values of a custom field. If no filter is
@@ -175,11 +178,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -187,13 +190,13 @@ public interface TaskMonitorService {
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
      */
-    Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
+    CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException;
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Report} grouped by categories. For each category the report contains the total number of tasks
-     * and the number of tasks of the respective cluster that are specified by the {@link ReportLineItemDefinition}s. It
+     * Returns a {@link CategoryReport} grouped by categories. For each category the report contains the total number of tasks
+     * and the number of tasks of the respective cluster that are specified by the {@link TimeIntervalColumnHeader}s. It
      * can be specified whether the age of the tasks is counted in days or in working days. Furthermore the report
      * contains a sum line that contains the total numbers of the different clusters and the total number of all tasks.
      * The tasks of the report are filtered by workbaskets, states, categories, domains and values of a custom field. If
@@ -215,11 +218,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -230,13 +233,13 @@ public interface TaskMonitorService {
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
      */
-    Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
+    CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
         throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Classification} grouped by classifications. The report contains the total numbers of tasks of
+     * Returns a {@link ClassificationReport} grouped by classifications. The report contains the total numbers of tasks of
      * the respective classification as well as the total number of all tasks. The tasks of the report are filtered by
      * workbaskets, states, categories, domains and values of a custom field. If no filter is required, the respective
      * parameter should be null. Tasks with Timestamp DUE = null are not considered.
@@ -264,9 +267,9 @@ public interface TaskMonitorService {
         throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Classification} grouped by classifications. For each classification the report contains the
+     * Returns a {@link ClassificationReport} grouped by classifications. For each classification the report contains the
      * total number of tasks and the number of tasks of the respective cluster that are specified by the
-     * {@link ReportLineItemDefinition}s. By default the age of the tasks is counted in working days. Furthermore the
+     * {@link TimeIntervalColumnHeader}s. By default the age of the tasks is counted in working days. Furthermore the
      * Report contains a sum line that contains the total numbers of the different clusters and the total number of all
      * tasks in this report. The tasks of the report are filtered by workbaskets, states, categories, domains and values
      * of a custom field. If no filter is required, the respective parameter should be null. Tasks with Timestamp DUE =
@@ -287,11 +290,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -301,12 +304,12 @@ public interface TaskMonitorService {
      */
     ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException;
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
 
     /**
      * Returns a {@link ClassificationReport} grouped by classification. For each classification the report contains the
      * total number of tasks and the number of tasks of the respective cluster that are specified by the
-     * {@link ReportLineItemDefinition}s. It can be specified whether the age of the tasks is counted in days or in
+     * {@link TimeIntervalColumnHeader}s. It can be specified whether the age of the tasks is counted in days or in
      * working days. Furthermore the report contains a sum line that contains the total numbers of the different
      * clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets, states,
      * categories, domains and values of a custom field. If no filter is required, the respective parameter should be
@@ -327,11 +330,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -344,7 +347,7 @@ public interface TaskMonitorService {
      */
     ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
         throws InvalidArgumentException;
 
     /**
@@ -379,7 +382,7 @@ public interface TaskMonitorService {
     /**
      * Returns a {@link DetailedClassificationReport}. For each classification the report contains the total number of
      * tasks and the number of tasks of the respective cluster that are specified by the
-     * {@link ReportLineItemDefinition}s. By default the age of the tasks is counted in working days. Each ReportLine
+     * {@link TimeIntervalColumnHeader}s. By default the age of the tasks is counted in working days. Each ReportLine
      * contains an additional list of ReportLines for the classifications of the attachments of the tasks. Furthermore
      * the Report contains a sum line that contains the total numbers of the different clusters and the total number of
      * all tasks in this report. The tasks of the report are filtered by workbaskets, states, categories, domains and
@@ -401,11 +404,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -415,12 +418,12 @@ public interface TaskMonitorService {
      */
     DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException;
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
 
     /**
      * Returns a {@link DetailedClassificationReport}. For each classification the report contains the total number of
      * tasks and the number of tasks of the respective cluster that are specified by the
-     * {@link ReportLineItemDefinition}s. It can be specified whether the age of the tasks is counted in days or in
+     * {@link TimeIntervalColumnHeader}s. It can be specified whether the age of the tasks is counted in days or in
      * working days. Each ReportLine contains an additional list of ReportLines for the classifications of the
      * attachments of the tasks. Furthermore the report contains a sum line that contains the total numbers of the
      * different clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets,
@@ -442,11 +445,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -459,11 +462,11 @@ public interface TaskMonitorService {
      */
     DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
         throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Report} grouped by the value of a certain {@link CustomField}. The report contains the total
+     * Returns a {@link CustomFieldValueReport} grouped by the value of a certain {@link CustomField}. The report contains the total
      * numbers of tasks of the respective custom field as well as the total number of all tasks. The tasks of the report
      * are filtered by workbaskets, states, categories, domains and values of a custom field. If no filter is required,
      * the respective parameter should be null. Tasks with Timestamp DUE = null are not considered.
@@ -485,13 +488,14 @@ public interface TaskMonitorService {
      * @throws InvalidArgumentException
      *             thrown if customField is null
      */
-    Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
-        List<String> domains, CustomField customField, List<String> customFieldValues) throws InvalidArgumentException;
+    CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
+        throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Report} grouped by the value of a certain {@link CustomField}. For each value of the custom
+     * Returns a {@link CustomFieldValueReport} grouped by the value of a certain {@link CustomField}. For each value of the custom
      * field the report contains the total number of tasks and the number of tasks of the respective cluster that are
-     * specified by the {@link ReportLineItemDefinition}s. By default the age of the tasks is counted in working days.
+     * specified by the {@link TimeIntervalColumnHeader}s. By default the age of the tasks is counted in working days.
      * Furthermore the Report contains a sum line that contains the total numbers of the different clusters and the
      * total number of all tasks in this report. The tasks of the report are filtered by workbaskets, states,
      * categories, domains and values of a custom field. If no filter is required, the respective parameter should be
@@ -511,11 +515,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -523,14 +527,14 @@ public interface TaskMonitorService {
      * @throws InvalidArgumentException
      *             thrown if customField is null
      */
-    Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
-        List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException;
+    CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
 
     /**
-     * Returns a {@link Report} grouped by the value of a certain {@link CustomField}. For each value of the custom
+     * Returns a {@link CustomFieldValueReport} grouped by the value of a certain {@link CustomField}. For each value of the custom
      * field the report contains the total number of tasks and the number of tasks of the respective cluster that are
-     * specified by the {@link ReportLineItemDefinition}s. It can be specified whether the age of the tasks is counted
+     * specified by the {@link TimeIntervalColumnHeader}s. It can be specified whether the age of the tasks is counted
      * in days or in working days. Furthermore the report contains a sum line that contains the total numbers of the
      * different clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets,
      * states, categories, domains and values of a custom field. If no filter is required, the respective parameter
@@ -550,11 +554,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -565,16 +569,17 @@ public interface TaskMonitorService {
      * @throws InvalidArgumentException
      *             thrown if customField is null
      */
-    Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
+    CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
         throws InvalidArgumentException;
 
     /**
-     * Returns a list of all task ids in the selected items of a {@link Report}. By default the age of the tasks is
-     * counted in working days. The tasks of the report are filtered by workbaskets, states, categories, domains and
-     * values of a custom field. If no filter is required, the respective parameter should be null. Tasks with Timestamp
-     * DUE = null are not considered.
+     * Returns a list of all task ids in the selected items of a {@link pro.taskana.impl.report.Report}.
+     * By default the age of the tasks is counted in working days. The tasks of the report are filtered by workbaskets,
+     * states, categories, domains and values of a custom field. If no filter is required, the respective parameter
+     * should be null. Tasks with Timestamp DUE = null are not considered.
      *
      * @param workbasketIds
      *            a list of workbasket ids objects to filter by workbaskets. To omit this filter, use null for this
@@ -591,11 +596,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -603,18 +608,18 @@ public interface TaskMonitorService {
      *            a list of {@link SelectedItem}s that are selected from the report whose task ids should be determined.
      * @return the list of task ids
      * @throws InvalidArgumentException
-     *             thrown if reportLineItemDefinitions is null or if selectedItems is empty or null
+     *             thrown if columnHeaders is null or if selectedItems is empty or null
      */
     List<String> getTaskIdsOfCategoryReportLineItems(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, List<SelectedItem> selectedItems)
+        List<TimeIntervalColumnHeader> columnHeaders, List<SelectedItem> selectedItems)
         throws InvalidArgumentException;
 
     /**
-     * Returns a list of all task ids in the selected items of a {@link Report}. By default the age of the tasks is
-     * counted in working days. The tasks of the report are filtered by workbaskets, states, categories, domains and
-     * values of a custom field. If no filter is required, the respective parameter should be null. Tasks with Timestamp
-     * DUE = null are not considered.
+     * Returns a list of all task ids in the selected items of a {@link pro.taskana.impl.report.Report}.
+     * By default the age of the tasks is counted in working days. The tasks of the report are filtered by workbaskets,
+     * states, categories, domains and values of a custom field. If no filter is required, the respective parameter
+     * should be null. Tasks with Timestamp DUE = null are not considered.
      *
      * @param workbasketIds
      *            a list of workbasket ids objects to filter by workbaskets. To omit this filter, use null for this
@@ -631,11 +636,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
-     * @param reportLineItemDefinitions
-     *            a list of reportLineItemDefinitions that specify the subdivision into different cluster of due dates.
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates.
      *            Days in past are represented as negative values and days in the future are represented as positive
      *            values. To avoid tasks are counted multiple times or not be listed in the report, these
-     *            reportLineItemDefinitions should not overlap and should not have gaps. If the ReportLineDefinition
+     *            columnHeaders should not overlap and should not have gaps. If the ReportLineDefinition
      *            should represent a single day, lowerLimit and upperLimit have to be equal. The outer cluster of a
      *            report should have open ends. These open ends are represented with Integer.MIN_VALUE and
      *            Integer.MAX_VALUE.
@@ -646,11 +651,11 @@ public interface TaskMonitorService {
      *            a list of {@link SelectedItem}s that are selected from the report whose task ids should be determined.
      * @return the list of task ids
      * @throws InvalidArgumentException
-     *             thrown if reportLineItemDefinitions is null or if selectedItems is empty or null
+     *             thrown if columnHeaders is null or if selectedItems is empty or null
      */
     List<String> getTaskIdsOfCategoryReportLineItems(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays,
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays,
         List<SelectedItem> selectedItems) throws InvalidArgumentException;
 
 }

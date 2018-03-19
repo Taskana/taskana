@@ -10,8 +10,7 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.ibatis.session.Configuration;
@@ -34,9 +33,9 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.DaysToWorkingDaysConverter;
-import pro.taskana.impl.ReportLineItemDefinition;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.TaskTestMapper;
 import pro.taskana.security.CurrentUserContext;
@@ -287,7 +286,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertTrue(readTask.getPriority() == 99);
 
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
-            .initialize(new ArrayList<>(Arrays.asList(new ReportLineItemDefinition(0))), Instant.now());
+            .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
 
         assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(calendarDays))));

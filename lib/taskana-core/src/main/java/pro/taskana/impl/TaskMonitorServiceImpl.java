@@ -11,6 +11,15 @@ import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.impl.report.impl.CategoryReport;
+import pro.taskana.impl.report.impl.ClassificationReport;
+import pro.taskana.impl.report.impl.CustomFieldValueReport;
+import pro.taskana.impl.report.impl.DaysToWorkingDaysPreProcessor;
+import pro.taskana.impl.report.impl.DetailedClassificationReport;
+import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.impl.MonitorQueryItem;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.impl.WorkbasketLevelReport;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.TaskMonitorMapper;
 
@@ -30,32 +39,32 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
+    public WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
         throws InvalidArgumentException {
         return getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField, customFieldValues,
-            null, false);
+            Collections.emptyList(), false);
     }
 
     @Override
-    public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
+    public WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
         return getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField, customFieldValues,
-            reportLineItemDefinitions, true);
+            columnHeaders, true);
     }
 
     @Override
-    public Report getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
+    public WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
         throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getWorkbasketLevelReport(workbasketIds = {}, states = {}, categories = {}, "
-                + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
-                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                    + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
+                    + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
-                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
         }
         try {
@@ -63,10 +72,16 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             configureDaysToWorkingDaysConverter();
 
-            Report report = new Report();
-            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfWorkbaskets(workbasketIds,
-                states, categories, domains, customField, customFieldValues);
-            report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
+            WorkbasketLevelReport report = new WorkbasketLevelReport(columnHeaders);
+            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfWorkbaskets(
+                workbasketIds, states, categories, domains, customField, customFieldValues);
+
+            if (inWorkingDays) {
+                report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
+            } else {
+                report.addItems(monitorQueryItems);
+            }
+
             return report;
 
         } finally {
@@ -76,32 +91,31 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
+    public CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues) throws InvalidArgumentException {
-        return getCategoryReport(workbasketIds, states, categories, domains, customField, customFieldValues, null,
+        return getCategoryReport(workbasketIds, states, categories, domains, customField, customFieldValues,
+            Collections.emptyList(),
             false);
     }
 
     @Override
-    public Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
+    public CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions)
-        throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
         return getCategoryReport(workbasketIds, states, categories, domains, customField, customFieldValues,
-            reportLineItemDefinitions, true);
+            columnHeaders, true);
     }
 
     @Override
-    public Report getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
+    public CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
-        throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays) throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getCategoryReport(workbasketIds = {}, states = {}, categories = {}, "
-                + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
-                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                    + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
+                    + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
-                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
         }
         try {
@@ -109,10 +123,16 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             configureDaysToWorkingDaysConverter();
 
-            Report report = new Report();
-            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfCategories(workbasketIds, states,
-                categories, domains, customField, customFieldValues);
-            report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
+            CategoryReport report = new CategoryReport(columnHeaders);
+            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfCategories(
+                workbasketIds, states, categories, domains, customField, customFieldValues);
+
+            if (inWorkingDays) {
+                report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
+            } else {
+                report.addItems(monitorQueryItems);
+            }
+
             return report;
 
         } finally {
@@ -125,29 +145,29 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
         throws InvalidArgumentException {
-        return getClassificationReport(workbasketIds, states, categories, domains, customField, customFieldValues, null,
-            false);
-    }
-
-    @Override
-    public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException {
         return getClassificationReport(workbasketIds, states, categories, domains, customField, customFieldValues,
-            reportLineItemDefinitions, true);
+            Collections.emptyList(), false);
     }
 
     @Override
     public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
+        return getClassificationReport(workbasketIds, states, categories, domains, customField, customFieldValues,
+            columnHeaders, true);
+    }
+
+    @Override
+    public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
         throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getClassificationReport(workbasketIds = {}, states = {}, categories = {}, "
-                + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
-                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                    + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
+                    + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
-                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
         }
         try {
@@ -155,10 +175,16 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             configureDaysToWorkingDaysConverter();
 
-            ClassificationReport report = new ClassificationReport();
-            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfClassifications(workbasketIds,
-                states, categories, domains, customField, customFieldValues);
-            report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
+            ClassificationReport report = new ClassificationReport(columnHeaders);
+            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfClassifications(
+                workbasketIds, states, categories, domains, customField, customFieldValues);
+
+            if (inWorkingDays) {
+                report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
+            } else {
+                report.addItems(monitorQueryItems);
+            }
+
             return report;
 
         } finally {
@@ -172,43 +198,48 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         List<TaskState> states, List<String> categories, List<String> domains, CustomField customField,
         List<String> customFieldValues) throws InvalidArgumentException {
         return getDetailedClassificationReport(workbasketIds, states, categories, domains, customField,
-            customFieldValues, null, false);
+            customFieldValues, Collections.emptyList(), false);
     }
 
     @Override
     public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
         List<TaskState> states, List<String> categories, List<String> domains, CustomField customField,
-        List<String> customFieldValues, List<ReportLineItemDefinition> reportLineItemDefinitions)
+        List<String> customFieldValues, List<TimeIntervalColumnHeader> columnHeaders)
         throws InvalidArgumentException {
         return getDetailedClassificationReport(workbasketIds, states, categories, domains, customField,
-            customFieldValues, reportLineItemDefinitions, true);
+            customFieldValues, columnHeaders, true);
     }
 
     @Override
     public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
         List<TaskState> states, List<String> categories, List<String> domains, CustomField customField,
-        List<String> customFieldValues, List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<String> customFieldValues, List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
         throws InvalidArgumentException {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getDetailedClassificationReport(workbasketIds = {}, states = {}, "
-                + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
-                + "reportLineItemDefinitions = {}, inWorkingDays = {})", LoggerUtils.listToString(workbasketIds),
+                    + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
+                    + "columnHeaders = {}, inWorkingDays = {})", LoggerUtils.listToString(workbasketIds),
                 LoggerUtils.listToString(states), LoggerUtils.listToString(categories),
                 LoggerUtils.listToString(domains), customField, LoggerUtils.listToString(customFieldValues),
-                LoggerUtils.listToString(reportLineItemDefinitions), inWorkingDays);
+                LoggerUtils.listToString(columnHeaders), inWorkingDays);
         }
         try {
             taskanaEngineImpl.openConnection();
 
             configureDaysToWorkingDaysConverter();
 
-            DetailedClassificationReport report = new DetailedClassificationReport();
+            DetailedClassificationReport report = new DetailedClassificationReport(columnHeaders);
             List<DetailedMonitorQueryItem> detailedMonitorQueryItems = taskMonitorMapper
                 .getTaskCountOfDetailedClassifications(workbasketIds, states, categories, domains, customField,
                     customFieldValues);
-            report.addDetailedMonitoringQueryItems(detailedMonitorQueryItems, reportLineItemDefinitions,
-                inWorkingDays);
+
+            if (inWorkingDays) {
+                report.addItems(detailedMonitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
+            } else {
+                report.addItems(detailedMonitorQueryItems);
+            }
+
             return report;
 
         } finally {
@@ -218,32 +249,32 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
+    public CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
         throws InvalidArgumentException {
         return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField, customFieldValues,
-            null, false);
+            Collections.emptyList(), false);
     }
 
     @Override
-    public Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
+    public CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
         return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField, customFieldValues,
-            reportLineItemDefinitions, true);
+            columnHeaders, true);
     }
 
     @Override
-    public Report getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
+    public CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays)
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
         throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getCustomFieldValueReport(workbasketIds = {}, states = {}, categories = {}, "
-                + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
-                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                    + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
+                    + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
-                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
         }
         try {
@@ -255,10 +286,16 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             configureDaysToWorkingDaysConverter();
 
-            Report report = new Report();
-            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfCustomFieldValues(workbasketIds,
-                states, categories, domains, customField, customFieldValues);
-            report.addMonitoringQueryItems(monitorQueryItems, reportLineItemDefinitions, inWorkingDays);
+            CustomFieldValueReport report = new CustomFieldValueReport(columnHeaders);
+            List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfCustomFieldValues(
+                workbasketIds, states, categories, domains, customField, customFieldValues);
+
+            if (inWorkingDays) {
+                report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
+            } else {
+                report.addItems(monitorQueryItems);
+            }
+
             return report;
 
         } finally {
@@ -270,30 +307,30 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public List<String> getTaskIdsOfCategoryReportLineItems(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, List<SelectedItem> selectedItems)
+        List<TimeIntervalColumnHeader> columnHeaders, List<SelectedItem> selectedItems)
         throws InvalidArgumentException {
         return getTaskIdsOfCategoryReportLineItems(workbasketIds, states, categories, domains, customField,
-            customFieldValues, reportLineItemDefinitions, true, selectedItems);
+            customFieldValues, columnHeaders, true, selectedItems);
     }
 
     @Override
     public List<String> getTaskIdsOfCategoryReportLineItems(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<ReportLineItemDefinition> reportLineItemDefinitions, boolean inWorkingDays,
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays,
         List<SelectedItem> selectedItems) throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getTaskIdsOfCategoryReportLineItems(workbasketIds = {}, states = {}, "
-                + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
-                + "reportLineItemDefinitions = {}, inWorkingDays = {}, selectedItems = {})",
+                    + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
+                    + "columnHeaders = {}, inWorkingDays = {}, selectedItems = {})",
                 LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
-                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(reportLineItemDefinitions),
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays, LoggerUtils.listToString(selectedItems));
         }
         try {
             taskanaEngineImpl.openConnection();
 
-            if (reportLineItemDefinitions == null) {
+            if (columnHeaders == null) {
                 throw new InvalidArgumentException("ReportLineItemDefinitions can´t be used as NULL-Parameter");
             }
             if (selectedItems == null || selectedItems.size() == 0) {
@@ -304,7 +341,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
             configureDaysToWorkingDaysConverter();
 
             if (inWorkingDays) {
-                selectedItems = convertWorkingDaysToDays(selectedItems, reportLineItemDefinitions);
+                selectedItems = convertWorkingDaysToDays(selectedItems, columnHeaders);
             }
 
             List<String> taskIds = taskMonitorMapper.getTaskIdsOfCategoriesBySelectedItems(workbasketIds, states,
@@ -319,9 +356,9 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     private List<SelectedItem> convertWorkingDaysToDays(List<SelectedItem> selectedItems,
-        List<ReportLineItemDefinition> reportLineItemDefinitions) throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
 
-        DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter.initialize(reportLineItemDefinitions);
+        DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter.initialize(columnHeaders);
         for (SelectedItem selectedItem : selectedItems) {
             selectedItem
                 .setLowerAgeLimit(Collections.min(instance.convertWorkingDaysToDays(selectedItem.getLowerAgeLimit())));
