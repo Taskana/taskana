@@ -23,8 +23,8 @@ import { DualListComponent } from './dual-list/dual-list.component';
 
 const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource({
 	'workbaskets': new Array<WorkbasketSummary>(
-		new WorkbasketSummary("1", "key1", "NAME1", "description 1", "owner 1", "", "", "PERSONAL", "", "", "", ""),
-		new WorkbasketSummary("2", "key2", "NAME2", "description 2", "owner 2", "", "", "GROUP", "", "", "", ""))
+		new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
+		new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', ''))
 }, new Links({ 'href': 'url' }));
 
 @Component({
@@ -43,12 +43,14 @@ describe('DistributionTargetsComponent', () => {
 	let component: DistributionTargetsComponent;
 	let fixture: ComponentFixture<DistributionTargetsComponent>;
 	let workbasketService;
-	let workbasket = new Workbasket('1', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
+	const workbasket = new Workbasket('1', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+		new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
 			imports: [AngularSvgIconModule, HttpClientModule, HttpModule, JsonpModule],
-			declarations: [DistributionTargetsComponent, SpinnerComponent, GeneralMessageModalComponent, FilterComponent, SelectWorkBasketPipe, IconTypeComponent, DualListComponent],
+			declarations: [DistributionTargetsComponent, SpinnerComponent, GeneralMessageModalComponent,
+				FilterComponent, SelectWorkBasketPipe, IconTypeComponent, DualListComponent],
 			providers: [WorkbasketService, AlertService]
 		})
 			.compileComponents();
@@ -70,7 +72,10 @@ describe('DistributionTargetsComponent', () => {
 		})
 		spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
 			return Observable.of(new WorkbasketDistributionTargetsResource(
-				{ 'distributionTargets': new Array<WorkbasketSummary>(new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' }))) }, new Links({ 'href': 'someurl' })))
+				{
+					'distributionTargets': new Array<WorkbasketSummary>(
+						new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
+				}, new Links({ 'href': 'someurl' })))
 		})
 
 		fixture.detectChanges();
@@ -95,13 +100,13 @@ describe('DistributionTargetsComponent', () => {
 		expect(component.distributionTargetsRight.length).toBe(1);
 		component.distributionTargetsLeft.forEach(leftElement => {
 			component.distributionTargetsRight.forEach(rightElement => {
-				if (leftElement.workbasketId === rightElement.workbasketId) repeteadElemens = true;
+				if (leftElement.workbasketId === rightElement.workbasketId) { repeteadElemens = true };
 			})
 		})
 		expect(repeteadElemens).toBeFalsy();
 	});
 	it('should filter left list and keep selected elements as selected', () => {
-		component.performFilter({filterBy:new FilterModel(), side: Side.LEFT});
+		component.performFilter({ filterBy: new FilterModel(), side: Side.LEFT });
 		component.distributionTargetsLeft = new Array<WorkbasketSummary>(
 			new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' }))
 		)
@@ -111,8 +116,10 @@ describe('DistributionTargetsComponent', () => {
 		expect(component.distributionTargetsRight[0].workbasketId).toBe('id2');
 	});
 	it('should reset distribution target and distribution target selected on reset', () => {
-		component.distributionTargetsLeft.push(new WorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })));
-		component.distributionTargetsRight.push(new WorkbasketSummary('id5', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })));
+		component.distributionTargetsLeft.push(
+			new WorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })));
+		component.distributionTargetsRight.push(
+			new WorkbasketSummary('id5', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })));
 
 		expect(component.distributionTargetsLeft.length).toBe(3);
 		expect(component.distributionTargetsRight.length).toBe(2);
@@ -139,6 +146,6 @@ describe('DistributionTargetsComponent', () => {
 		expect(component.distributionTargetsSelected.length).toBe(2);
 		expect(component.distributionTargetsSelectedClone.length).toBe(2);
 		expect(component.distributionTargetsLeft.length).toBe(1);
-		
+
 	});
 });

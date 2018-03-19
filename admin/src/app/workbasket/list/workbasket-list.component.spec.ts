@@ -20,7 +20,7 @@ import { Links } from '../../model/links';
 
 
 @Component({
-	selector: 'dummy-detail',
+	selector: 'taskana-dummy-detail',
 	template: 'dummydetail'
 })
 export class DummyDetailComponent {
@@ -37,8 +37,8 @@ export class FilterComponent {
 
 const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource({
 	'workbaskets': new Array<WorkbasketSummary>(
-		new WorkbasketSummary("1", "key1", "NAME1", "description 1", "owner 1", "", "", "PERSONAL", "", "", "", ""),
-		new WorkbasketSummary("2", "key2", "NAME2", "description 2", "owner 2", "", "", "GROUP", "", "", "", ""))
+		new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
+		new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', ''))
 }, new Links({ 'href': 'url' }));
 
 
@@ -55,7 +55,8 @@ describe('WorkbasketListComponent', () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [WorkbasketListComponent, DummyDetailComponent, SpinnerComponent, FilterComponent, RemoveNoneTypePipe, IconTypeComponent, SortComponent, MapValuesPipe],
+			declarations: [WorkbasketListComponent, DummyDetailComponent, SpinnerComponent, FilterComponent,
+				RemoveNoneTypePipe, IconTypeComponent, SortComponent, MapValuesPipe],
 			imports: [
 				AngularSvgIconModule,
 				HttpModule,
@@ -93,15 +94,16 @@ describe('WorkbasketListComponent', () => {
 		})
 	});
 
-	it('should have wb-action-toolbar, wb-search-bar, wb-list-container, wb-pagination, collapsedMenufilterWb and taskana-filter created in the html', () => {
-		expect(debugElement.querySelector('#wb-action-toolbar')).toBeDefined();
-		expect(debugElement.querySelector('#wb-search-bar')).toBeDefined();
-		expect(debugElement.querySelector('#wb-pagination')).toBeDefined();
-		expect(debugElement.querySelector('#wb-list-container')).toBeDefined();
-		expect(debugElement.querySelector('#collapsedMenufilterWb')).toBeDefined();
-		expect(debugElement.querySelector('taskana-filter')).toBeDefined();
-		expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
-	});
+	it('should have wb-action-toolbar, wb-search-bar, wb-list-container, wb-pagination,' +
+		' collapsedMenufilterWb and taskana-filter created in the html', () => {
+			expect(debugElement.querySelector('#wb-action-toolbar')).toBeDefined();
+			expect(debugElement.querySelector('#wb-search-bar')).toBeDefined();
+			expect(debugElement.querySelector('#wb-pagination')).toBeDefined();
+			expect(debugElement.querySelector('#wb-list-container')).toBeDefined();
+			expect(debugElement.querySelector('#collapsedMenufilterWb')).toBeDefined();
+			expect(debugElement.querySelector('taskana-filter')).toBeDefined();
+			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
+		});
 
 	it('should have two workbasketsummary rows created with the second one selected.', () => {
 		expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
@@ -110,8 +112,10 @@ describe('WorkbasketListComponent', () => {
 	});
 
 	it('should have two workbasketsummary rows created with two different icons: user and users', () => {
-		expect(debugElement.querySelectorAll('#wb-list-container > li')[1].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
-		expect(debugElement.querySelectorAll('#wb-list-container > li')[2].querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
+		expect(debugElement.querySelectorAll('#wb-list-container > li')[1]
+			.querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
+		expect(debugElement.querySelectorAll('#wb-list-container > li')[2]
+			.querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
 	});
 
 	it('should have rendered sort by: name, id, description, owner and type', () => {
@@ -124,10 +128,11 @@ describe('WorkbasketListComponent', () => {
 	});
 
 	it('should have performRequest with forced = true after performFilter is triggered', (() => {
-		let type = 'PERSONAL', name = 'someName', description = 'someDescription', owner = 'someOwner', key = 'someKey';
-		let filter = new FilterModel(type, name, description, owner, key);
+		const type = 'PERSONAL', name = 'someName', description = 'someDescription', owner = 'someOwner', key = 'someKey';
+		const filter = new FilterModel(type, name, description, owner, key);
 		component.performFilter(filter);
-		expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith(true, 'key', 'asc', undefined, name, description, undefined, owner, type, undefined, key);
+		expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith(true, 'key', 'asc', undefined,
+			name, description, undefined, owner, type, undefined, key);
 
 	}));
 

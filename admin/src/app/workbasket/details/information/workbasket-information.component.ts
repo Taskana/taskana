@@ -1,27 +1,27 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
 import { Workbasket } from '../../../model/workbasket';
 import { WorkbasketService } from '../../../services/workbasket.service';
 import { IconTypeComponent, ICONTYPES } from '../../../shared/type-icon/icon-type.component';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { AlertService, AlertModel, AlertType } from '../../../services/alert.service';
 import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 
 @Component({
-	selector: 'workbasket-information',
+	selector: 'taskana-workbasket-information',
 	templateUrl: './workbasket-information.component.html',
 	styleUrls: ['./workbasket-information.component.scss']
 })
-export class WorkbasketInformationComponent implements OnInit {
+export class WorkbasketInformationComponent implements OnInit, OnDestroy {
 
 	@Input()
 	workbasket: Workbasket;
 	workbasketClone: Workbasket;
 
 	allTypes: Map<string, string>;
-	requestInProgress: boolean = false;
-	modalSpinner: boolean = false;
+	requestInProgress = false;
+	modalSpinner = false;
 	modalErrorMessage: string;
-	modalTitle: string = 'There was error while saving your workbasket';
+	modalTitle = 'There was error while saving your workbasket';
 
 	private workbasketSubscription: Subscription;
 	private routeSubscription: Subscription;
@@ -52,7 +52,7 @@ export class WorkbasketInformationComponent implements OnInit {
 			workbasketUpdated => {
 				this.afterRequest();
 				this.workbasket = workbasketUpdated;
-				this.workbasketClone = {...this.workbasket};
+				this.workbasketClone = { ...this.workbasket };
 				this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket ${workbasketUpdated.key} was saved successfully`))
 			},
 			error => {
@@ -67,16 +67,16 @@ export class WorkbasketInformationComponent implements OnInit {
 		this.workbasket = { ...this.workbasketClone };
 	}
 
-	private beforeRequest(){
+	private beforeRequest() {
 		this.requestInProgress = true;
 		this.modalSpinner = true;
 		this.modalErrorMessage = undefined;
 	}
-	
-	private afterRequest(){
+
+	private afterRequest() {
 		this.requestInProgress = false;
 		this.workbasketService.triggerWorkBasketSaved();
-		
+
 	}
 
 	private checkForChanges() {
@@ -89,7 +89,7 @@ export class WorkbasketInformationComponent implements OnInit {
 
 	}
 
-	private ngOnDestroy() {
+	ngOnDestroy() {
 		if (this.workbasketSubscription) { this.workbasketSubscription.unsubscribe(); }
 		if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
 	}

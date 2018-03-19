@@ -12,7 +12,7 @@ describe('AlertComponent', () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			imports:[BrowserAnimationsModule],
+			imports: [BrowserAnimationsModule],
 			declarations: [AlertComponent],
 			providers: [AlertService]
 		})
@@ -36,35 +36,35 @@ describe('AlertComponent', () => {
 	});
 
 	it('should show alert message', () => {
-		alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,'some custom text',));
+		alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'some custom text', ));
 		fixture.detectChanges();
 		expect(debugElement.querySelector('.alert.alert-success')).toBeDefined();
 		expect(debugElement.querySelector('.alert.alert-success').innerText).toBe('some custom text');
 	});
 
 	it('should have differents alert types', () => {
-		alertService.triggerAlert(new AlertModel(AlertType.DANGER,'some custom text',));
+		alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'some custom text', ));
 		fixture.detectChanges();
 		expect(debugElement.querySelector('.alert.alert-danger')).toBeDefined();
 
-		alertService.triggerAlert(new AlertModel(AlertType.WARNING,'some custom text',));
+		alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'some custom text', ));
 		fixture.detectChanges();
 		expect(debugElement.querySelector('.alert.alert-warning')).toBeDefined();
 	});
 
-	it('should define a closing timeout if alert has autoclosing property',  (done) => {
-		alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,'some custom text',true, 5));
+	it('should define a closing timeout if alert has autoclosing property', (done) => {
+		alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'some custom text', true, 5));
 		fixture.detectChanges();
 		expect(component.alert).toBeDefined();
-		setTimeout(()=>{
+		setTimeout(() => {
 			fixture.detectChanges();
 			expect(component.alert).toBeUndefined();
 			done();
-		},6)
+		}, 6)
 	});
 
 	it('should have defined a closing button if alert has no autoclosing property', () => {
-		alertService.triggerAlert(new AlertModel(AlertType.DANGER,'some custom text',false));
+		alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'some custom text', false));
 		fixture.detectChanges();
 		expect(debugElement.querySelector('.alert.alert-danger > button')).toBeDefined();
 	});

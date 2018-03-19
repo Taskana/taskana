@@ -1,28 +1,28 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, Routes,  ActivatedRoute, NavigationStart,  RouterEvent } from '@angular/router';
+import { Router, Routes, ActivatedRoute, NavigationStart, RouterEvent } from '@angular/router';
 import { MasterAndDetailService } from '../../services/master-and-detail.service'
 
 @Component({
-    selector: 'master-and-detail',
+    selector: 'taskana-master-and-detail',
     templateUrl: './master-and-detail.component.html',
     styleUrls: ['./master-and-detail.component.scss'],
 
 })
-export class MasterAndDetailComponent implements OnInit{
+export class MasterAndDetailComponent implements OnInit {
     private detailRoutes: Array<string> = ['/workbaskets/(detail', 'clasifications'];
     private sub: any;
 
     showDetail: Boolean = false;
-    constructor(private route: ActivatedRoute, private router: Router, private masterAndDetailService: MasterAndDetailService){
+    constructor(private route: ActivatedRoute, private router: Router, private masterAndDetailService: MasterAndDetailService) {
     }
 
     ngOnInit(): void {
         this.showDetail = this.showDetails();
-        this.masterAndDetailService.setShowDetail(this.showDetail? true: false);
+        this.masterAndDetailService.setShowDetail(this.showDetail ? true : false);
         this.router.events.subscribe(event => {
-            if(event instanceof NavigationStart) { 
+            if (event instanceof NavigationStart) {
                 this.showDetail = this.showDetails(event);
-                this.masterAndDetailService.setShowDetail(this.showDetail? true: false);
+                this.masterAndDetailService.setShowDetail(this.showDetail ? true : false);
             }
         });
     }
@@ -31,18 +31,18 @@ export class MasterAndDetailComponent implements OnInit{
         this.router.navigate(['../'], { relativeTo: this.route });
     }
 
-    private showDetails(event? : RouterEvent): Boolean {
-        if(event === undefined) {
+    private showDetails(event?: RouterEvent): Boolean {
+        if (event === undefined) {
             return this.checkUrl(this.router.url);
         }
         return this.checkUrl(event.url)
     }
 
     private checkUrl(url: string): Boolean {
-        for(let routeDetail of this.detailRoutes){
-            if(url.indexOf(routeDetail) !== -1){
+        for (const routeDetail of this.detailRoutes) {
+            if (url.indexOf(routeDetail) !== -1) {
                 return true;
-            }    
+            }
         }
         return false;
     }

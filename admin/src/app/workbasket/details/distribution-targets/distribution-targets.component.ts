@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Workbasket } from '../../../model/workbasket';
 import { WorkbasketSummary } from '../../../model/workbasket-summary';
 import { WorkbasketAccessItems } from '../../../model/workbasket-access-items';
@@ -8,7 +8,7 @@ import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-c
 import { WorkbasketService } from '../../../services/workbasket.service';
 import { AlertService, AlertModel, AlertType } from '../../../services/alert.service';
 
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { element } from 'protractor';
 import { WorkbasketSummaryResource } from '../../../model/workbasket-summary-resource';
 import { WorkbasketDistributionTargetsResource } from '../../../model/workbasket-distribution-targets-resource';
@@ -22,7 +22,7 @@ export enum Side {
 	templateUrl: './distribution-targets.component.html',
 	styleUrls: ['./distribution-targets.component.scss']
 })
-export class DistributionTargetsComponent implements OnInit {
+export class DistributionTargetsComponent implements OnInit, OnDestroy {
 
 	@Input()
 	workbasket: Workbasket;
@@ -39,9 +39,9 @@ export class DistributionTargetsComponent implements OnInit {
 	distributionTargetsSelectedClone: Array<WorkbasketSummary>;
 
 
-	requestInProgress: boolean = false;
-	requestInProgressLeft: boolean = false;
-	requestInProgressRight: boolean = false;
+	requestInProgress = false;
+	requestInProgressLeft = false;
+	requestInProgressRight = false;
 	modalErrorMessage: string;
 	side = Side;
 
@@ -49,27 +49,30 @@ export class DistributionTargetsComponent implements OnInit {
 
 	ngOnInit() {
 		this.onRequest(undefined);
-		this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(this.workbasket._links.distributionTargets.href).subscribe((distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource) => {
-			this.distributionTargetsSelectedResource = distributionTargetsSelectedResource;
-			this.distributionTargetsSelected = distributionTargetsSelectedResource._embedded ? distributionTargetsSelectedResource._embedded.distributionTargets : [];
-			this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
-			this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary().subscribe((distributionTargetsAvailable: WorkbasketSummaryResource) => {
-				this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-				this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-				this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-				this.onRequest(undefined, true);
-			});
-		});
+		this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(
+			this.workbasket._links.distributionTargets.href).subscribe(
+				(distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource) => {
+					this.distributionTargetsSelectedResource = distributionTargetsSelectedResource;
+					this.distributionTargetsSelected = distributionTargetsSelectedResource._embedded ?
+						distributionTargetsSelectedResource._embedded.distributionTargets : [];
+					this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
+					this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary().subscribe(
+						(distributionTargetsAvailable: WorkbasketSummaryResource) => {
+							this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+							this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+							this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+							this.onRequest(undefined, true);
+						});
+				});
 	}
 
 	moveDistributionTargets(side: number) {
 		if (side === Side.LEFT) {
-			let itemsSelected = this.getSelectedItems(this.distributionTargetsLeft, this.distributionTargetsRight)
+			const itemsSelected = this.getSelectedItems(this.distributionTargetsLeft, this.distributionTargetsRight)
 			this.distributionTargetsSelected = this.distributionTargetsSelected.concat(itemsSelected);
 			this.distributionTargetsRight = this.distributionTargetsRight.concat(itemsSelected);
-		}
-		else {
-			let itemsSelected = this.getSelectedItems(this.distributionTargetsRight, this.distributionTargetsLeft);
+		} else {
+			const itemsSelected = this.getSelectedItems(this.distributionTargetsRight, this.distributionTargetsLeft);
 			this.distributionTargetsSelected = this.removeSeletedItems(this.distributionTargetsSelected, itemsSelected);
 			this.distributionTargetsRight = this.removeSeletedItems(this.distributionTargetsRight, itemsSelected);
 			this.distributionTargetsLeft = this.distributionTargetsLeft.concat(itemsSelected);
@@ -78,20 +81,22 @@ export class DistributionTargetsComponent implements OnInit {
 
 	onSave() {
 		this.requestInProgress = true;
-		this.workbasketService.updateWorkBasketsDistributionTargets(this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()).subscribe(response => {
-			this.requestInProgress = false;
-			this.distributionTargetsSelected = response._embedded ? response._embedded.distributionTargets : [];
-			this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
-			this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
-			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
-			return true;
-		},
-			error => {
-				this.modalErrorMessage = error.message;
+		this.workbasketService.updateWorkBasketsDistributionTargets(
+			this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()).subscribe(response => {
 				this.requestInProgress = false;
-				return false;
-			}
-		)
+				this.distributionTargetsSelected = response._embedded ? response._embedded.distributionTargets : [];
+				this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
+				this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
+				this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
+					`Workbasket  ${this.workbasket.name} Access items were saved successfully`));
+				return true;
+			},
+				error => {
+					this.modalErrorMessage = error.message;
+					this.requestInProgress = false;
+					return false;
+				}
+			)
 		return false;
 
 	}
@@ -122,12 +127,12 @@ export class DistributionTargetsComponent implements OnInit {
 	}
 
 	private getSelectedItems(originList: any, destinationList: any): Array<any> {
-		return originList.filter((element: any) => { return (element.selected === true) });
+		return originList.filter((item: any) => { return (item.selected === true) });
 	}
 
 	private removeSeletedItems(originList: any, selectedItemList) {
 		for (let index = originList.length - 1; index >= 0; index--) {
-			if (selectedItemList.some(elementToRemove => { return originList[index].workbasketId === elementToRemove.workbasketId })) {
+			if (selectedItemList.some(itemToRemove => { return originList[index].workbasketId === itemToRemove.workbasketId })) {
 				originList.splice(index, 1);
 			}
 		}
@@ -145,14 +150,14 @@ export class DistributionTargetsComponent implements OnInit {
 	}
 
 	private getSeletedIds(): Array<string> {
-		let distributionTargetsSelelected: Array<string> = [];
-		this.distributionTargetsSelected.forEach(element => {
-			distributionTargetsSelelected.push(element.workbasketId);
+		const distributionTargetsSelelected: Array<string> = [];
+		this.distributionTargetsSelected.forEach(item => {
+			distributionTargetsSelelected.push(item.workbasketId);
 		})
 		return distributionTargetsSelelected;
 	}
 
-	private ngOnDestroy(): void {
+	ngOnDestroy(): void {
 		if (this.distributionTargetsSubscription) { this.distributionTargetsSubscription.unsubscribe(); }
 		if (this.workbasketSubscription) { this.workbasketSubscription.unsubscribe(); }
 		if (this.workbasketFilterSubscription) { this.workbasketFilterSubscription.unsubscribe(); }

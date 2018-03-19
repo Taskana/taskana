@@ -5,13 +5,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": " ng build --env=dev",
-    "build:prod": "ng build --environment=prod --no-progress",
+    "build": " npm run lint && ng build --env=dev ",
+    "build:prod": "npm run lint && ng build --target=production --environment=prod --no-progress",
     "test": "./node_modules/.bin/karma start --single-run --browsers Firefox",
     "test-phantom": "./node_modules/.bin/karma start --single-run --browsers PhantomJS",
     "test:watch": "./node_modules/.bin/karma start --browsers Chrome",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {

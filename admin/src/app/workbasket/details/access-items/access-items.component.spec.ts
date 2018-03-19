@@ -32,14 +32,18 @@ describe('AccessItemsComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(AccessItemsComponent);
 		component = fixture.componentInstance;
-		component.workbasket = new Workbasket('1','','','','','','','','','','','','','','','', '', new Links(undefined,undefined, {'href': 'someurl' }));
+		component.workbasket = new Workbasket('1', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+			new Links(undefined, undefined, { 'href': 'someurl' }));
 		workbasketService = TestBed.get(WorkbasketService);
 		alertService = TestBed.get(AlertService);
 		spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(Observable.of(new WorkbasketAccessItemsResource(
-			{'accessItems': new Array<WorkbasketAccessItems>(
-				new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
-				new WorkbasketAccessItems('id2', '1', 'accessID2')) }, new Links({ 'href': 'someurl' })
-			)));
+			{
+				'accessItems': new Array<WorkbasketAccessItems>(
+					new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false,
+						false, false, false, false, false, false, false, false, false),
+					new WorkbasketAccessItems('id2', '1', 'accessID2'))
+			}, new Links({ 'href': 'someurl' })
+		)));
 		spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(Observable.of(true)),
 			spyOn(alertService, 'triggerAlert').and.returnValue(Observable.of(true)),
 			debugElement = fixture.debugElement.nativeElement;
@@ -62,7 +66,7 @@ describe('AccessItemsComponent', () => {
 	});
 
 	it('should show Add new access item button', () => {
-		expect(debugElement.querySelector('#button-add-access-item')).toBeTruthy;
+		expect(debugElement.querySelector('#button-add-access-item')).toBeTruthy();
 	});
 
 	it('should remove an access item if remove button is clicked', () => {
@@ -74,7 +78,8 @@ describe('AccessItemsComponent', () => {
 
 	it('should show alert successfull after saving', () => {
 		component.onSave();
-		expect(alertService.triggerAlert).toHaveBeenCalledWith(new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`));
+		expect(alertService.triggerAlert).toHaveBeenCalledWith(
+			new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`));
 	});
 
 });

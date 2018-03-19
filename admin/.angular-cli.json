@@ -1,59 +1,54 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "project": {
-    "name": "admin"
-  },
-  "apps": [
-    {
-      "root": "src",
-      "outDir": "dist",
-      "assets": [
-        "assets",
-        "taskana.ico"
-      ],
-      "index": "index.html",
-      "main": "main.ts",
-      "polyfills": "polyfills.ts",
-      "test": "test.ts",
-      "tsconfig": "tsconfig.app.json",
-      "testTsconfig": "tsconfig.spec.json",
-      "prefix": "app",
-      "styles": [
-        "../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss",
-        "./assets/_site.scss",
-        "./assets/_forms.scss"
-      ],
-      "scripts": ["../node_modules/jquery/dist/jquery.min.js","../node_modules/bootstrap/dist/js/bootstrap.min.js"],
-      "environmentSource": "environments/environment.ts",
-      "environments": {
-        "dev": "environments/environment.ts",
-        "prod": "environments/environment.prod.ts"
-      }
-    }
-  ],
-  "e2e": {
-    "protractor": {
-      "config": "./protractor.conf.js"
-    }
-  },
-  "lint": [
-    {
-      "project": "src/tsconfig.app.json"
-    },
-    {
-      "project": "src/tsconfig.spec.json"
-    },
-    {
-      "project": "e2e/tsconfig.e2e.json"
-    }
-  ],
-  "test": {
-    "karma": {
-      "config": "./karma.conf.js"
-    }
-  },
-  "defaults": {
-    "styleExt": "scss",
-    "component": {}
-  }
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"project": {
+		"name": "admin"
+	},
+	"apps": [
+		{
+			"root": "src",
+			"outDir": "dist",
+			"assets": [
+				"assets",
+				"taskana.ico"
+			],
+			"index": "index.html",
+			"main": "main.ts",
+			"polyfills": "polyfills.ts",
+			"test": "test.ts",
+			"tsconfig": "tsconfig.app.json",
+			"testTsconfig": "tsconfig.spec.json",
+			"prefix": "app",
+			"styles": [
+				"../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss",
+				"./assets/_site.scss",
+				"./assets/_forms.scss"
+			],
+			"scripts": [
+				"../node_modules/jquery/dist/jquery.min.js",
+				"../node_modules/bootstrap/dist/js/bootstrap.min.js"
+			],
+			"environmentSource": "environments/environment.ts",
+			"environments": {
+				"dev": "environments/environment.ts",
+				"prod": "environments/environment.prod.ts"
+			}
+		}
+	],
+	"lint": [
+		{
+			"project": "src/tsconfig.app.json"
+		},
+		{
+			"project": "src/tsconfig.spec.json"
+		}
+	],
+	"test": {
+		"karma": {
+			"config": "./karma.conf.js"
+		}
+	},
+	"defaults": {
+		"styleExt": "scss",
+		"component": {}
+	}
 }

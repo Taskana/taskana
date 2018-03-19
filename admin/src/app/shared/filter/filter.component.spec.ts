@@ -8,17 +8,17 @@ import { FilterComponent, FilterModel } from './filter.component';
 import { MapValuesPipe } from '../../pipes/map-values.pipe';
 
 describe('FilterComponent', () => {
-	let component: FilterComponent, 
+	let component: FilterComponent,
 		fixture: ComponentFixture<FilterComponent>,
 		debugElement: any;
 
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [ FilterComponent, IconTypeComponent, MapValuesPipe ],
-			imports: [AngularSvgIconModule, FormsModule, HttpClientModule, HttpModule ]
+			declarations: [FilterComponent, IconTypeComponent, MapValuesPipe],
+			imports: [AngularSvgIconModule, FormsModule, HttpClientModule, HttpModule]
 		})
-		.compileComponents();
+			.compileComponents();
 
 		fixture = TestBed.createComponent(FilterComponent);
 		component = fixture.componentInstance;
@@ -50,7 +50,7 @@ describe('FilterComponent', () => {
 	});
 
 	it('should be able to clear all fields after pressing clear button', () => {
-		component.filter =  new FilterModel('a','a','a','a','a');
+		component.filter = new FilterModel('a', 'a', 'a', 'a', 'a');
 		debugElement.querySelector('[title="Clear"]').click();
 		expect(component.filter.name).toBe('');
 		expect(component.filter.description).toBe('');
@@ -60,14 +60,14 @@ describe('FilterComponent', () => {
 	});
 
 	it('should be able to select a type and return it based on a number', () => {
-	expect(component).toBeTruthy();
+		expect(component).toBeTruthy();
 	});
 
 	it('should be able to emit a filter after clicking on search button', (done) => {
-		component.filter =  new FilterModel('a', 'name1', 'a', 'a');
+		component.filter = new FilterModel('a', 'name1', 'a', 'a');
 		component.performFilter.subscribe(filter => {
 			expect(filter.name).toBe('name1');
-			done();	
+			done();
 		})
 		debugElement.querySelector('[title="Search"]').click();
 	});

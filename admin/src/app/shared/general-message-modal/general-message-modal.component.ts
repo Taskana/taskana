@@ -7,15 +7,15 @@ declare var $: any;
 	styleUrls: ['./general-message-modal.component.scss']
 })
 export class GeneralMessageModalComponent implements OnChanges {
-	
-	@Input()  message: string;
+
+	@Input() message: string;
 	@Output() messageChange = new EventEmitter<string>();
 
 	@Input()
-	title: string = '';
+	title = '';
 
 	@Input()
-	error: boolean = false;
+	error = false;
 
 	@ViewChild('generalModal')
 	private modal;
