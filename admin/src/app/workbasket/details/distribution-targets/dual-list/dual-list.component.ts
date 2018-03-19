@@ -11,20 +11,22 @@ import { Side } from '../distribution-targets.component';
 })
 export class DualListComponent implements OnInit {
 
-	constructor() { }
-
-	ngOnInit() {
-		this.sideNumber = this.side === Side.LEFT ? 0 : 1;
-	}
 
 	@Input() distributionTargets: Array<WorkbasketSummary>;
 	@Output() distributionTargetsChange = new EventEmitter<Array<WorkbasketSummary>>();
 	@Input() distributionTargetsSelected: Array<WorkbasketSummary>;
 	@Output() performDualListFilter = new EventEmitter<{ filterBy: FilterModel, side: Side }>();
-	@Input() requestInProgress: boolean = false;
-
+	@Input() requestInProgress = false;
 	@Input() side: Side;
-	sideNumber: number = 0;
+
+	sideNumber = 0;
+	toggleDtl = false;
+
+	constructor() { }
+
+	ngOnInit() {
+		this.sideNumber = this.side === Side.LEFT ? 0 : 1;
+	}
 
 	selectAll(selected: boolean) {
 		this.distributionTargets.forEach((element: any) => {
@@ -32,9 +34,7 @@ export class DualListComponent implements OnInit {
 		});
 	}
 
-
 	performAvailableFilter(filterModel: FilterModel) {
 		this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
 	}
-
 }

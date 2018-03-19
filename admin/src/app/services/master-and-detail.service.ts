@@ -9,11 +9,11 @@ export class MasterAndDetailService {
 
   constructor() { }
 
-  setShowDetail(newValue : boolean){
-    this.showDetail.next(newValue)
+  setShowDetail(newValue: boolean) {
+    this.showDetail.next(newValue);
   }
 
-  getShowDetail(){
+  getShowDetail() {
     return this.showDetail.asObservable();
   }
 

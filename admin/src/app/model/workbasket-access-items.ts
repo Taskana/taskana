@@ -1,4 +1,4 @@
-import { Links } from "./links";
+import { Links } from './links';
 
 export class WorkbasketAccessItems {
     constructor(

@@ -6,24 +6,22 @@ import 'rxjs/add/observable/throw';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { PermissionService } from './permission.service';
 
-
-
 @Injectable()
 export class HttpClientInterceptor implements HttpInterceptor {
-  permissionService: PermissionService;
+	permissionService: PermissionService;
 
-  constructor(permissionService: PermissionService) {
-    this.permissionService = permissionService;
-  }
+	constructor(permissionService: PermissionService) {
+		this.permissionService = permissionService;
+	}
 
-  intercept (req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(req).do(event => {
-      setTimeout(() => {this.permissionService.setPermission(true);},1)
-      
-    }, err => {
-      if (err instanceof HttpErrorResponse && (err.status === 401 || err.status ===403 )) {
-        setTimeout(() => {this.permissionService.setPermission(false);},1)
-      }
-    });
-  }
+	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+		return next.handle(req).do(event => {
+			this.permissionService.setPermission(true);
+
+		}, err => {
+			if (err instanceof HttpErrorResponse && (err.status === 401 || err.status === 403)) {
+				this.permissionService.setPermission(false)
+			}
+		});
+	}
 }

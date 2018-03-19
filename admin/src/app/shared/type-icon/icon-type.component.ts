@@ -17,20 +17,24 @@ export enum ICONTYPES {
 })
 export class IconTypeComponent implements OnInit {
 
-	public static get allTypes(): Map<string, string> {	return new Map([['', 'None'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])};
-	
-	constructor() { }
 
 	@Input()
 	type: ICONTYPES = ICONTYPES.PERSONAL;
 
 	@Input()
-	selected: boolean = false;
+	selected = false;
 
 	@Input()
-	tooltip: boolean = false;
+	tooltip = false;
+
+	public static get allTypes(): Map<string, string> {
+		return new Map([['', 'None'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])
+	};
+
+	constructor() { }
 
 	ngOnInit() {
+
 	}
 
 }

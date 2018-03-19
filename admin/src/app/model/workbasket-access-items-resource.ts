@@ -1,5 +1,5 @@
-import { Links } from "./links";
-import { WorkbasketAccessItems } from "./workbasket-access-items";
+import { Links } from './links';
+import { WorkbasketAccessItems } from './workbasket-access-items';
 
 export class WorkbasketAccessItemsResource {
     constructor(

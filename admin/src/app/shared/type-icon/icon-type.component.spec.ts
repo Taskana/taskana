@@ -10,10 +10,10 @@ describe('IconTypeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[AngularSvgIconModule,HttpClientModule, HttpModule],
-      declarations: [ IconTypeComponent ]
+      imports: [AngularSvgIconModule, HttpClientModule, HttpModule],
+      declarations: [IconTypeComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -2,8 +2,8 @@
  * Modules
  */
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule,  } from '@angular/core';
-import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
+import { NgModule, } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AlertModule } from 'ngx-bootstrap';
@@ -30,8 +30,8 @@ import { AlertComponent } from './shared/alert/alert.component';
 import { SortComponent } from './shared/sort/sort.component';
 import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component';
 
-//Shared
-import { MasterAndDetailComponent} from './shared/masterAndDetail/master-and-detail.component';
+// Shared
+import { MasterAndDetailComponent } from './shared/masterAndDetail/master-and-detail.component';
 
 /**
  * Services
@@ -50,54 +50,54 @@ import { MapValuesPipe } from './pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from './pipes/remove-none-type';
 import { SelectWorkBasketPipe } from './pipes/seleted-workbasket.pipe';
 
-const MODULES =     [
-                    BrowserModule,
-                    FormsModule,
-                    TabsModule.forRoot(),
-                    TreeModule,
-                    AppRoutingModule,
-                    AlertModule.forRoot(),
-                    AngularSvgIconModule,
-                    HttpClientModule,
-                    BrowserAnimationsModule,
-                    ReactiveFormsModule
-                    ];
+const MODULES = [
+	BrowserModule,
+	FormsModule,
+	TabsModule.forRoot(),
+	TreeModule,
+	AppRoutingModule,
+	AlertModule.forRoot(),
+	AngularSvgIconModule,
+	HttpClientModule,
+	BrowserAnimationsModule,
+	ReactiveFormsModule
+];
 
-const DECLARATIONS =  [  
-                      AppComponent,
-                      WorkbasketListComponent,
-                      AccessItemsComponent,
-                      WorkbasketDetailsComponent,
-                      MasterAndDetailComponent,
-                      WorkbasketInformationComponent,
-                      NoAccessComponent,
-                      SpinnerComponent,
-                      FilterComponent,
-                      IconTypeComponent,
-                      AlertComponent,
-                      GeneralMessageModalComponent,
-                      DistributionTargetsComponent,
-                      SortComponent,
-                      DualListComponent,
-                      MapValuesPipe,
-                      RemoveNoneTypePipe,
-                      SelectWorkBasketPipe
-                    ];
+const DECLARATIONS = [
+	AppComponent,
+	WorkbasketListComponent,
+	AccessItemsComponent,
+	WorkbasketDetailsComponent,
+	MasterAndDetailComponent,
+	WorkbasketInformationComponent,
+	NoAccessComponent,
+	SpinnerComponent,
+	FilterComponent,
+	IconTypeComponent,
+	AlertComponent,
+	GeneralMessageModalComponent,
+	DistributionTargetsComponent,
+	SortComponent,
+	DualListComponent,
+	MapValuesPipe,
+	RemoveNoneTypePipe,
+	SelectWorkBasketPipe
+];
 
 @NgModule({
-  declarations: DECLARATIONS,
-  imports: MODULES,
-  providers: [
-    WorkbasketService,
-    MasterAndDetailService,
-    PermissionService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpClientInterceptor,
-      multi: true
-    },
-    AlertService
-  ],
-  bootstrap: [AppComponent]
+	declarations: DECLARATIONS,
+	imports: MODULES,
+	providers: [
+		WorkbasketService,
+		MasterAndDetailService,
+		PermissionService,
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: HttpClientInterceptor,
+			multi: true
+		},
+		AlertService
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

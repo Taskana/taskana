@@ -102,7 +102,7 @@
 /*
  *Remove bootstrap cols padding for master and detail component
 */
-.no-gutter > master-and-detail > [class*='col-'] {
+.no-gutter > taskana-master-and-detail > [class*='col-'] {
     padding-right: 0;
     padding-left: 0;
 }
@@ -229,7 +229,7 @@ li > div.row > dl {
     margin-top: 4px;
 }
 
-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets {
+taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets {
     &> .panel{
         border: none;
         box-shadow: none;

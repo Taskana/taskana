@@ -18,13 +18,11 @@ export class WorkbasketService {
 	public workBasketSelected = new Subject<string>();
 	public workBasketSaved = new Subject<number>();
 
-	constructor(private httpClient: HttpClient) { }
-
-	//Sorting
+	// Sorting
 	readonly SORTBY = 'sortBy';
 	readonly ORDER = 'order';
 
-	//Filtering
+	// Filtering
 	readonly NAME = 'name';
 	readonly NAMELIKE = 'nameLike';
 	readonly DESCLIKE = 'descLike';
@@ -34,19 +32,21 @@ export class WorkbasketService {
 	readonly KEY = 'key';
 	readonly KEYLIKE = 'keyLike';
 
-	//Access
+	// Access
 	readonly REQUIREDPERMISSION = 'requiredPermission';
 
 	httpOptions = {
 		headers: new HttpHeaders({
-			'Content-Type': 'application/hal+json',
+			'Content-Type': 'application/json',
 			'Authorization': 'Basic VEVBTUxFQURfMTpURUFNTEVBRF8x'
 		})
 	};
 
 	private workbasketSummaryRef: Observable<WorkbasketSummaryResource>;
 
-	//#region "REST calls"
+	constructor(private httpClient: HttpClient) { }
+
+	// #region "REST calls"
 	// GET
 	getWorkBasketsSummary(forceRequest: boolean = false,
 		sortBy: string = this.KEY,
@@ -63,8 +63,9 @@ export class WorkbasketService {
 		if (this.workbasketSummaryRef && !forceRequest) {
 			return this.workbasketSummaryRef;
 		}
-		return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(sortBy, order, name,
-			nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission)}`, this.httpOptions);
+		return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
+			`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(sortBy, order, name,
+				nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission)}`, this.httpOptions);
 
 	}
 	// GET
@@ -92,7 +93,7 @@ export class WorkbasketService {
 	}
 	// POST
 	createWorkBasketAccessItem(url: string, workbasketAccessItem: WorkbasketAccessItems): Observable<WorkbasketAccessItems> {
-		return this.httpClient.post<WorkbasketAccessItems>(url , workbasketAccessItem, this.httpOptions);
+		return this.httpClient.post<WorkbasketAccessItems>(url, workbasketAccessItem, this.httpOptions);
 	}
 	// PUT
 	updateWorkBasketAccessItem(url: string, workbasketAccessItem: Array<WorkbasketAccessItems>): Observable<string> {
@@ -106,14 +107,13 @@ export class WorkbasketService {
 	}
 
 	// PUT
-	updateWorkBasketsDistributionTargets(url: string, distributionTargetsIds :Array<string>): Observable<WorkbasketDistributionTargetsResource> {
+	updateWorkBasketsDistributionTargets(url: string, distributionTargetsIds: Array<string>):
+		Observable<WorkbasketDistributionTargetsResource> {
 		return this.httpClient.put<WorkbasketDistributionTargetsResource>(url, distributionTargetsIds, this.httpOptions);
 	}
 
-
-	//#endregion 
-
-	//#region "Service extras"
+	// #endregion
+	// #region "Service extras"
 	selectWorkBasket(id: string) {
 		this.workBasketSelected.next(id);
 	}
@@ -129,9 +129,9 @@ export class WorkbasketService {
 	workbasketSavedTriggered(): Observable<number> {
 		return this.workBasketSaved.asObservable();
 	}
-	//#endregion
+	// #endregion
 
-	//#region private
+	// #region private
 	private getWorkbasketSummaryQueryParameters(sortBy: string,
 		order: string,
 		name: string,
@@ -143,7 +143,7 @@ export class WorkbasketService {
 		key: string,
 		keyLike: string,
 		requiredPermission: string): string {
-		let query: string = '?';
+		let query = '?';
 		query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
 		query += order ? `${this.ORDER}=${order}&` : '';
 		query += name ? `${this.NAME}=${name}&` : '';
@@ -176,5 +176,5 @@ export class WorkbasketService {
 		return Observable.throw(errMsg);
 	}
 
-	//#endregion 
+	// #endregion
 }

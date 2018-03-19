@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Router, ActivatedRoute} from  '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 @Component({
-  selector: 'app-no-access',
+  selector: 'taskana-no-access',
   templateUrl: './no-access.component.html',
   styleUrls: ['./no-access.component.scss']
 })

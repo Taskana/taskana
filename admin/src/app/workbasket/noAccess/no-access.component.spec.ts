@@ -8,38 +8,40 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 
 describe('NoAccessComponent', () => {
-  let component: NoAccessComponent;
-  let fixture: ComponentFixture<NoAccessComponent>;
-  let debugElement;
+	let component: NoAccessComponent;
+	let fixture: ComponentFixture<NoAccessComponent>;
+	let debugElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports:[RouterTestingModule, AngularSvgIconModule, HttpModule, HttpClientModule],
-      declarations: [ NoAccessComponent ]
-    })
-    .compileComponents();
-  }));
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			imports: [RouterTestingModule, AngularSvgIconModule, HttpModule, HttpClientModule],
+			declarations: [NoAccessComponent]
+		})
+			.compileComponents();
+	}));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NoAccessComponent);
-    component = fixture.componentInstance;
-    debugElement = fixture.debugElement.nativeElement;
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(NoAccessComponent);
+		component = fixture.componentInstance;
+		debugElement = fixture.debugElement.nativeElement;
+	});
 
-  afterEach(() =>{
-    document.body.removeChild(debugElement);
-  });
+	afterEach(() => {
+		document.body.removeChild(debugElement);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should have a back button with the following classes "btn btn-default back-button pull-left visible-xs visible-sm hidden blue"', () => {
-    expect(debugElement.querySelector('button').attributes.class.value).toBe('btn btn-default back-button pull-left visible-xs visible-sm hidden blue');
-  });
+	it('should have a back button with the following classes "btn btn-default back-button' +
+		'pull-left visible-xs visible-sm hidden blue"', () => {
+			expect(debugElement.querySelector('button').attributes.class.value)
+				.toBe('btn btn-default back-button pull-left visible-xs visible-sm hidden blue');
+		});
 
-  it('should have a div with title and svg', () => {
-    expect(debugElement.querySelector('div.center-block.no-access > h3' ).textContent).toBeDefined();
-    expect(debugElement.querySelector('div.center-block.no-access > svg-icon' ).attributes.src.value).toBe('./assets/icons/noaccess.svg');
-  });
+	it('should have a div with title and svg', () => {
+		expect(debugElement.querySelector('div.center-block.no-access > h3').textContent).toBeDefined();
+		expect(debugElement.querySelector('div.center-block.no-access > svg-icon').attributes.src.value).toBe('./assets/icons/noaccess.svg');
+	});
 });

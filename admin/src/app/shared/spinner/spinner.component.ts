@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ElementRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ViewChild } from '@angular/core';
 declare var $: any;
 
@@ -7,15 +7,15 @@ declare var $: any;
     templateUrl: './spinner.component.html',
     styleUrls: ['./spinner.component.scss']
 })
-export class SpinnerComponent {
+export class SpinnerComponent implements OnDestroy {
     private currentTimeout: any;
     private requestTimeout: any;
-    private maxRequestTimeout: number = 10000;
+    private maxRequestTimeout = 10000;
 
-    isDelayedRunning: boolean = false;
+    isDelayedRunning = false;
 
     @Input()
-    delay: number = 200;
+    delay = 200;
 
     @Input()
     set isRunning(value: boolean) {
@@ -34,7 +34,7 @@ export class SpinnerComponent {
     }
 
     @Input()
-    isModal: boolean = false;
+    isModal = false;
 
     @Input()
     positionClass: string = undefined;
@@ -48,13 +48,13 @@ export class SpinnerComponent {
     private runSpinner(value) {
         this.currentTimeout = setTimeout(() => {
             if (this.isModal) { $(this.modal.nativeElement).modal('toggle'); }
-                this.isDelayedRunning = value;
-                this.cancelTimeout();
+            this.isDelayedRunning = value;
+            this.cancelTimeout();
             this.requestTimeout = setTimeout(() => {
                 this.requestTimeoutExceeded.emit('There was an error with your request, please make sure you have internet connection');
                 this.cancelTimeout();
                 this.isRunning = false;
-            },this.maxRequestTimeout);
+            }, this.maxRequestTimeout);
         }, this.delay);
     }
     private closeModal() {

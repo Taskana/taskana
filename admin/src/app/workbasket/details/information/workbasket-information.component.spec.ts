@@ -23,7 +23,8 @@ describe('InformationComponent', () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent],
+			declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe,
+				RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent],
 			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, RouterTestingModule],
 			providers: [WorkbasketService, AlertService]
 
@@ -44,7 +45,9 @@ describe('InformationComponent', () => {
 	});
 
 	it('should create a panel with heading and form with all fields', async(() => {
-		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', 'type', 'modified', 'name', 'description', 'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2', 'orgLevel3', 'orgLevel4', null);
+		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', 'type',
+			'modified', 'name', 'description', 'owner', 'custom1', 'custom2', 'custom3', 'custom4',
+			'orgLevel1', 'orgLevel2', 'orgLevel3', 'orgLevel4', null);
 		fixture.detectChanges();
 		expect(debugElement.querySelector('#wb-information')).toBeDefined();
 		expect(debugElement.querySelector('#wb-information > .panel-heading > h4').textContent).toBe('name');
@@ -67,7 +70,8 @@ describe('InformationComponent', () => {
 
 	it('should create a copy of workbasket when workbasket is selected', () => {
 		expect(component.workbasketClone).toBeUndefined();
-		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', 'type', 'modified', 'name', 'description', 'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2', 'orgLevel3', 'orgLevel4', null);
+		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', 'type', 'modified', 'name', 'description',
+			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2', 'orgLevel3', 'orgLevel4', null);
 		component.ngOnInit();
 		fixture.detectChanges();
 		expect(component.workbasket.workbasketId).toEqual(component.workbasketClone.workbasketId);
@@ -76,12 +80,12 @@ describe('InformationComponent', () => {
 	it('should reset requestInProgress after saving request is done', fakeAsync(() => {
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', 'type', 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-			'orgLevel3', 'orgLevel4', new Links({'href': 'someUrl'}));
+			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
 		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(Observable.of(component.workbasket));
 		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(Observable.of(component.workbasket));
 		component.onSave();
 		expect(component.modalSpinner).toBeTruthy();
-		expect(component.modalErrorMessage).toBeUndefined
+		expect(component.modalErrorMessage).toBeUndefined();
 		expect(component.requestInProgress).toBeFalsy();
 
 	}));
@@ -89,7 +93,7 @@ describe('InformationComponent', () => {
 	it('should trigger triggerWorkBasketSaved method after saving request is done', () => {
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', 'type', 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-			'orgLevel3', 'orgLevel4', new Links({'href': 'someUrl'}));
+			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
 		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(Observable.of(component.workbasket));
 		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(Observable.of(component.workbasket));
 		component.onSave();
