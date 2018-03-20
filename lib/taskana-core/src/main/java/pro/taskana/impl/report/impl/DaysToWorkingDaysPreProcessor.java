@@ -14,14 +14,18 @@ public class DaysToWorkingDaysPreProcessor<Item extends MonitorQueryItem> implem
 
     private DaysToWorkingDaysConverter instance;
 
-    public DaysToWorkingDaysPreProcessor(List<TimeIntervalColumnHeader> columnHeaders)
+    public DaysToWorkingDaysPreProcessor(List<TimeIntervalColumnHeader> columnHeaders, boolean activate)
         throws InvalidArgumentException {
-        instance = DaysToWorkingDaysConverter.initialize(columnHeaders);
+        if (activate) {
+            instance = DaysToWorkingDaysConverter.initialize(columnHeaders);
+        }
     }
 
     @Override
     public Item apply(Item item) {
-        item.setAgeInDays(instance.convertDaysToWorkingDays(item.getAgeInDays()));
+        if (instance != null) {
+            item.setAgeInDays(instance.convertDaysToWorkingDays(item.getAgeInDays()));
+        }
         return item;
     }
 }
