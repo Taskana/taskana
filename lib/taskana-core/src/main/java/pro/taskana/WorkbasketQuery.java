@@ -163,17 +163,14 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
         throws InvalidArgumentException, NotAuthorizedException;
 
     /**
-     * Setting up the permissions for the accessIds of the CurrentUserContext. READ permissions need to be granted,too
-     * by default.<br>
-     * The UserContext-AccessIds and the given permission will throw a Exception if they would be NULL.
+     * Add condition to query if the caller (one of the accessIds of the caller) has the given permission on the
+     * workbasket.
      *
-     * @return the current query object.
+     * @return the updated query.
      * @param permission
-     *            which should be used for results.
-     * @throws InvalidArgumentException
-     *             when permission OR accessIds of the userContext are NULL.
+     *            the permission for the query condition.
      */
-    WorkbasketQuery callerHasPermission(WorkbasketPermission permission) throws InvalidArgumentException;
+    WorkbasketQuery callerHasPermission(WorkbasketPermission permission);
 
     /**
      * Sort the query result by name.
