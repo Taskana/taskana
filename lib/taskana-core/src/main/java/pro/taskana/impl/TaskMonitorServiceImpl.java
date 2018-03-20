@@ -76,11 +76,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfWorkbaskets(
                 workbasketIds, states, categories, domains, customField, customFieldValues);
 
-            if (inWorkingDays) {
-                report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
-            } else {
-                report.addItems(monitorQueryItems);
-            }
+            report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders, inWorkingDays));
 
             return report;
 
@@ -127,11 +123,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfCategories(
                 workbasketIds, states, categories, domains, customField, customFieldValues);
 
-            if (inWorkingDays) {
-                report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
-            } else {
-                report.addItems(monitorQueryItems);
-            }
+            report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders, inWorkingDays));
 
             return report;
 
@@ -179,11 +171,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfClassifications(
                 workbasketIds, states, categories, domains, customField, customFieldValues);
 
-            if (inWorkingDays) {
-                report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
-            } else {
-                report.addItems(monitorQueryItems);
-            }
+            report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders, inWorkingDays));
 
             return report;
 
@@ -234,11 +222,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 .getTaskCountOfDetailedClassifications(workbasketIds, states, categories, domains, customField,
                     customFieldValues);
 
-            if (inWorkingDays) {
-                report.addItems(detailedMonitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
-            } else {
-                report.addItems(detailedMonitorQueryItems);
-            }
+            report.addItems(detailedMonitorQueryItems,
+                new DaysToWorkingDaysPreProcessor<>(columnHeaders, inWorkingDays));
 
             return report;
 
@@ -290,11 +275,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfCustomFieldValues(
                 workbasketIds, states, categories, domains, customField, customFieldValues);
 
-            if (inWorkingDays) {
-                report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders));
-            } else {
-                report.addItems(monitorQueryItems);
-            }
+            report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders, inWorkingDays));
 
             return report;
 
