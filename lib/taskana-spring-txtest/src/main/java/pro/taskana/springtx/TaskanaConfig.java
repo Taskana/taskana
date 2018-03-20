@@ -60,9 +60,9 @@ public class TaskanaConfig {
     }
 
     @Bean
-    public SpringTaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) {
-        SpringTaskanaEngineConfiguration taskanaEngineConfiguration = new SpringTaskanaEngineConfiguration(false);
-        taskanaEngineConfiguration.setDataSource(dataSource);
+    public SpringTaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) throws SQLException {
+        SpringTaskanaEngineConfiguration taskanaEngineConfiguration = new SpringTaskanaEngineConfiguration(dataSource,
+            true, false);
         return taskanaEngineConfiguration;
     }
 
