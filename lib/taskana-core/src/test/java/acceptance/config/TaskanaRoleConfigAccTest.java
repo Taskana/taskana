@@ -29,20 +29,20 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
 
     @Test
     public void testStandardConfig() {
-        Set<TaskanaRole> rolesConfigured = super.roleMap.keySet();
+        Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
         assertTrue(rolesConfigured.contains(TaskanaRole.ADMIN));
         assertTrue(rolesConfigured.contains(TaskanaRole.BUSINESS_ADMIN));
         assertTrue(rolesConfigured.contains(TaskanaRole.USER));
 
-        Set<String> users = roleMap.get(TaskanaRole.USER);
+        Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
         assertTrue(users.contains("user_1_1"));
         assertTrue(users.contains("user_1_2"));
 
-        Set<String> admins = roleMap.get(TaskanaRole.ADMIN);
+        Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
         assertTrue(admins.contains("name=konrad,organisation=novatec"));
         assertTrue(admins.contains("admin"));
 
-        Set<String> businessAdmins = roleMap.get(TaskanaRole.BUSINESS_ADMIN);
+        Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
         assertTrue(businessAdmins.contains("max"));
         assertTrue(businessAdmins.contains("moritz"));
 
@@ -52,21 +52,21 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     public void testOtherConfigFileSameDelimiter() throws IOException, SQLException {
         String propertiesFileName = createNewConfigFileWithSameDelimiter("/dummyTestConfig.properties");
         try {
-            initRoles(propertiesFileName, null);
+            getConfiguration().initTaskanaProperties(propertiesFileName, "|");
 
-            Set<TaskanaRole> rolesConfigured = super.roleMap.keySet();
+            Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
             assertTrue(rolesConfigured.contains(TaskanaRole.ADMIN));
             assertTrue(rolesConfigured.contains(TaskanaRole.BUSINESS_ADMIN));
             assertTrue(rolesConfigured.contains(TaskanaRole.USER));
 
-            Set<String> users = roleMap.get(TaskanaRole.USER);
+            Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
             assertTrue(users.contains("nobody"));
 
-            Set<String> admins = roleMap.get(TaskanaRole.ADMIN);
+            Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
             assertTrue(admins.contains("holger"));
             assertTrue(admins.contains("stefan"));
 
-            Set<String> businessAdmins = roleMap.get(TaskanaRole.BUSINESS_ADMIN);
+            Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
             assertTrue(businessAdmins.contains("ebe"));
             assertTrue(businessAdmins.contains("konstantin"));
         } finally {
@@ -80,21 +80,21 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
         String delimiter = ";";
         String propertiesFileName = createNewConfigFileWithDifferentDelimiter("/dummyTestConfig.properties", delimiter);
         try {
-            initRoles(propertiesFileName, delimiter);
+            getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
 
-            Set<TaskanaRole> rolesConfigured = super.roleMap.keySet();
+            Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
             assertTrue(rolesConfigured.contains(TaskanaRole.ADMIN));
             assertTrue(rolesConfigured.contains(TaskanaRole.BUSINESS_ADMIN));
             assertTrue(rolesConfigured.contains(TaskanaRole.USER));
 
-            Set<String> users = roleMap.get(TaskanaRole.USER);
+            Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
             assertTrue(users.isEmpty());
 
-            Set<String> admins = roleMap.get(TaskanaRole.ADMIN);
+            Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
             assertTrue(admins.contains("holger"));
             assertTrue(admins.contains("name=stefan,organisation=novatec"));
 
-            Set<String> businessAdmins = roleMap.get(TaskanaRole.BUSINESS_ADMIN);
+            Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
             assertTrue(businessAdmins.contains("name=ebe, ou = bpm"));
             assertTrue(businessAdmins.contains("konstantin"));
         } finally {
