@@ -82,8 +82,7 @@ public class TaskMonitorServiceImplTest {
             categories, domains, customField, customFieldValues);
 
         WorkbasketLevelReport actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
-            customField,
-            customFieldValues);
+            customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
@@ -121,8 +120,7 @@ public class TaskMonitorServiceImplTest {
             categories, domains, customField, customFieldValues);
 
         WorkbasketLevelReport actualResult = cut.getWorkbasketLevelReport(workbasketIds, states, categories, domains,
-            customField,
-            customFieldValues, reportLineItemDefinitions);
+            customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
@@ -157,8 +155,7 @@ public class TaskMonitorServiceImplTest {
             domains, customField, customFieldValues);
 
         CategoryReport actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains,
-            customField,
-            customFieldValues);
+            customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
@@ -194,8 +191,7 @@ public class TaskMonitorServiceImplTest {
             domains, customField, customFieldValues);
 
         CategoryReport actualResult = cut.getCategoryReport(workbasketIds, states, categories, domains,
-            customField,
-            customFieldValues, reportLineItemDefinitions);
+            customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
