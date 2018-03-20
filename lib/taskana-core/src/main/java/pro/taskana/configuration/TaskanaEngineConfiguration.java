@@ -1,8 +1,20 @@
 package pro.taskana.configuration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.sql.DataSource;
 
@@ -11,7 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaRole;
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.util.LoggerUtils;
 
 /**
  * This central class creates the TaskanaEngine and holds all the information about DB and Security.<br>
@@ -25,25 +40,31 @@ public class TaskanaEngineConfiguration {
     private static final String USER_PASSWORD = "sa";
     private static final String JDBC_H2_MEM_TASKANA = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0";
     private static final String H2_DRIVER = "org.h2.Driver";
-    private static final String TASKANA_ROLES_PROPERTIES = "/taskanaroles.properties";
-    private static final String TASKANA_PROPERTIES_SEPARATOR = "|";
+    private static final String TASKANA_PROPERTIES = "/taskana.properties";
+    private static final String TASKANA_ROLES_SEPARATOR = "|";
 
+    // Taskana properties file
+    protected String propertiesFileName = TASKANA_PROPERTIES;
+
+    // Taskana datasource configuration
     protected DataSource dataSource;
     protected DbSchemaCreator dbScriptRunner;
-    protected String propertiesFileName = TASKANA_ROLES_PROPERTIES;
-    protected String propertiesSeparator = TASKANA_PROPERTIES_SEPARATOR;
+
+    // Taskana role configuration
+    protected String rolesSeparator = TASKANA_ROLES_SEPARATOR;
+    protected Map<TaskanaRole, Set<String>> roleMap = new HashMap<>();
 
     // global switch to enable JAAS based authentication and Taskana
     // authorizations
     protected boolean securityEnabled = true;
     protected boolean useManagedTransactions;
 
+    // Properties for the monitor
     private boolean germanPublicHolidaysEnabled;
     private List<LocalDate> customHolidays;
 
-    public TaskanaEngineConfiguration(boolean enableSecurity) {
-        this.securityEnabled = enableSecurity;
-    }
+    // List of configured domain names
+    protected List<String> domains = null;
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions)
         throws SQLException {
@@ -56,7 +77,7 @@ public class TaskanaEngineConfiguration {
     }
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
-        boolean securityEnabled, String propertiesFileName, String propertiesSeparator) throws SQLException {
+        boolean securityEnabled, String propertiesFileName, String rolesSeparator) throws SQLException {
         this.useManagedTransactions = useManagedTransactions;
         this.securityEnabled = securityEnabled;
 
@@ -64,9 +85,11 @@ public class TaskanaEngineConfiguration {
             this.propertiesFileName = propertiesFileName;
         }
 
-        if (propertiesSeparator != null) {
-            this.propertiesSeparator = propertiesSeparator;
+        if (rolesSeparator != null) {
+            this.rolesSeparator = rolesSeparator;
         }
+
+        initTaskanaProperties(this.propertiesFileName, this.rolesSeparator);
 
         if (dataSource != null) {
             this.dataSource = dataSource;
@@ -79,8 +102,89 @@ public class TaskanaEngineConfiguration {
 
     }
 
+    public void initTaskanaProperties(String propertiesFile, String rolesSeparator) {
+        Properties props = readPropertiesFromFile(propertiesFile);
+        initTaskanaRoles(props, rolesSeparator);
+    }
+
+    private void initTaskanaRoles(Properties props, String rolesSeparator) {
+        List<String> validPropertyNames = Arrays.asList(TaskanaRole.USER.getPropertyName(),
+            TaskanaRole.BUSINESS_ADMIN.getPropertyName(), TaskanaRole.ADMIN.getPropertyName());
+        for (Object obj : props.keySet()) {
+            String propertyName = ((String) obj);
+            if (validPropertyNames.contains(propertyName.toLowerCase().trim())) {
+                String propertyValue = props.getProperty(propertyName);
+                Set<String> roleMemberSet = new HashSet<>();
+                StringTokenizer st = new StringTokenizer(propertyValue, rolesSeparator);
+                while (st.hasMoreTokens()) {
+                    String token = st.nextToken().toLowerCase().trim();
+                    roleMemberSet.add(token);
+                }
+                TaskanaRole key = TaskanaRole.fromPropertyName(propertyName);
+                if (key != null) {
+                    roleMap.put(key, roleMemberSet);
+                } else {
+                    LOGGER.error("Internal System error when processing role property {}.", propertyName);
+                    throw new SystemException(
+                        "Internal System error when processing role property " + propertyName);
+                }
+            }
+        }
+        ensureRoleMapIsFullyInitialized();
+
+        roleMap.forEach(
+            (k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, LoggerUtils.setToString(v)));
+    }
+
+    private Properties readPropertiesFromFile(String propertiesFile) {
+        Properties props = new Properties();
+        boolean loadFromClasspath = loadFromClasspath(propertiesFile);
+        try {
+            if (loadFromClasspath) {
+                InputStream inputStream = this.getClass().getResourceAsStream(propertiesFile);
+                if (inputStream == null) {
+                    LOGGER.error("taskana properties file {} was not found on classpath.",
+                        propertiesFile);
+                } else {
+                    props.load(new InputStreamReader(inputStream));
+                    LOGGER.debug("Role properties were loaded from file {} from classpath.", propertiesFile);
+                }
+            } else {
+                props.load(new FileInputStream(propertiesFile));
+                LOGGER.debug("Role properties were loaded from file {}.", propertiesFile);
+            }
+        } catch (IOException e) {
+            LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);
+            throw new SystemException("internal System error when processing properties file " + propertiesFile);
+        }
+        return props;
+    }
+
+    private boolean loadFromClasspath(String propertiesFile) {
+        boolean loadFromClasspath = true;
+        File f = new File(propertiesFile);
+        if (f.exists() && !f.isDirectory()) {
+            loadFromClasspath = false;
+        }
+        return loadFromClasspath;
+    }
+
+    private void ensureRoleMapIsFullyInitialized() {
+        // make sure that roleMap does not return null for any role
+        if (!roleMap.containsKey(TaskanaRole.ADMIN)) {
+            roleMap.put(TaskanaRole.ADMIN, new HashSet<>());
+        }
+        if (!roleMap.containsKey(TaskanaRole.BUSINESS_ADMIN)) {
+            roleMap.put(TaskanaRole.BUSINESS_ADMIN, new HashSet<>());
+        }
+
+        if (!roleMap.containsKey(TaskanaRole.USER)) {
+            roleMap.put(TaskanaRole.USER, new HashSet<>());
+        }
+    }
+
     public static DataSource createDefaultDataSource() {
-        LOGGER.warn("No datasource is provided. A inmemory db is used: "
+        LOGGER.info("No datasource is provided. A inmemory db is used: "
             + "'org.h2.Driver', 'jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0', 'sa', 'sa'");
         return createDatasource(H2_DRIVER, JDBC_H2_MEM_TASKANA, USER_NAME, USER_PASSWORD);
     }
@@ -132,11 +236,11 @@ public class TaskanaEngineConfiguration {
     }
 
     public String getPropertiesSeparator() {
-        return this.propertiesSeparator;
+        return this.rolesSeparator;
     }
 
     public void setPropertiesSeparator(String propertiesSeparator) {
-        this.propertiesSeparator = propertiesSeparator;
+        this.rolesSeparator = propertiesSeparator;
     }
 
     public boolean isGermanPublicHolidaysEnabled() {
@@ -153,6 +257,22 @@ public class TaskanaEngineConfiguration {
 
     public void setCustomHolidays(List<LocalDate> customHolidays) {
         this.customHolidays = customHolidays;
+    }
+
+    public Map<TaskanaRole, Set<String>> getRoleMap() {
+        return roleMap;
+    }
+
+    public void setRoleMap(Map<TaskanaRole, Set<String>> roleMap) {
+        this.roleMap = roleMap;
+    }
+
+    public List<String> getDomains() {
+        return domains;
+    }
+
+    public void setDomains(List<String> domains) {
+        this.domains = domains;
     }
 
     /**
