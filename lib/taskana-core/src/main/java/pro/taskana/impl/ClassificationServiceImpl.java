@@ -20,6 +20,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.SystemException;
@@ -50,9 +51,14 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public Classification createClassification(Classification classification)
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
         LOGGER.debug("entry to createClassification(classification = {})", classification);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+        if (!taskanaEngine.domainExists(classification.getDomain()) && !"".equals(classification.getDomain())) {
+            throw new DomainNotFoundException(classification.getDomain(),
+                "Domain " + classification.getDomain() + " does not exist in the configuration.");
+        }
         ClassificationImpl classificationImpl;
         final boolean isClassificationExisting;
         try {
@@ -225,10 +231,6 @@ public class ClassificationServiceImpl implements ClassificationService {
 
         if (classification.getParentId() == null) {
             classification.setParentId("");
-        }
-
-        if (classification.getDomain() == null) {
-            classification.setDomain("");
         }
 
         if (classification.getDomain().isEmpty()) {
