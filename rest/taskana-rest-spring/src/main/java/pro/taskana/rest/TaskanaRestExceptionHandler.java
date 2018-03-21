@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
@@ -103,6 +104,11 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(InvalidWorkbasketException.class)
     protected ResponseEntity<Object> handleInvalidWorkbasket(InvalidWorkbasketException ex, WebRequest req) {
+        return buildResponse(ex, req, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DomainNotFoundException.class)
+    protected ResponseEntity<Object> handleDomainNotFound(DomainNotFoundException ex, WebRequest req) {
         return buildResponse(ex, req, HttpStatus.BAD_REQUEST);
     }
 

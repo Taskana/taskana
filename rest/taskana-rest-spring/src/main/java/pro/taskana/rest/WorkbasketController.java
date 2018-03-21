@@ -31,6 +31,7 @@ import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -145,7 +146,7 @@ public class WorkbasketController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource)
         throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
-        WorkbasketNotFoundException {
+        WorkbasketNotFoundException, DomainNotFoundException {
         Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
         workbasket = workbasketService.createWorkbasket(workbasket);
         return new ResponseEntity<>(workbasketMapper.toResource(workbasket), HttpStatus.CREATED);

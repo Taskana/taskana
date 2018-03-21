@@ -2,6 +2,7 @@ package pro.taskana;
 
 import java.util.List;
 
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -56,9 +57,12 @@ public interface WorkbasketService {
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      * @throws WorkbasketAlreadyExistException
      *             if the workbasket exists already
+     * @throws DomainNotFoundException
+     *             if the domain does not exist in the configuration.
      */
     Workbasket createWorkbasket(Workbasket workbasket)
-        throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException;
+        throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
+        DomainNotFoundException;
 
     /**
      * Update a Workbasket.

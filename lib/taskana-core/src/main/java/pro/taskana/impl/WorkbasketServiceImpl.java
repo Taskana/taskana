@@ -18,6 +18,7 @@ import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -135,9 +136,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public Workbasket createWorkbasket(Workbasket newWorkbasket)
-        throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException {
+        throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
+        DomainNotFoundException {
         LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+
         WorkbasketImpl workbasket = (WorkbasketImpl) newWorkbasket;
         try {
             taskanaEngine.openConnection();
@@ -383,7 +386,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         return new WorkbasketQueryImpl(taskanaEngine);
     }
 
-    private void validateWorkbasket(Workbasket workbasket) throws InvalidWorkbasketException {
+    private void validateWorkbasket(Workbasket workbasket) throws InvalidWorkbasketException, DomainNotFoundException {
         // check that required properties (database not null) are set
         if (workbasket.getId() == null || workbasket.getId().length() == 0) {
             throw new InvalidWorkbasketException("Id must not be null for " + workbasket);
@@ -398,6 +401,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         }
         if (workbasket.getType() == null) {
             throw new InvalidWorkbasketException("Type must not be null for " + workbasket);
+        }
+        if (!taskanaEngine.domainExists(workbasket.getDomain())) {
+            throw new DomainNotFoundException(workbasket.getDomain(),
+                "Domain " + workbasket.getDomain() + " does not exist in the configuration.");
         }
     }
 
