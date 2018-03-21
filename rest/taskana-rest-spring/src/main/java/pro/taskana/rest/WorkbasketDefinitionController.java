@@ -23,6 +23,7 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -159,6 +160,9 @@ public class WorkbasketDefinitionController {
         } catch (WorkbasketAlreadyExistException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (DomainNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 

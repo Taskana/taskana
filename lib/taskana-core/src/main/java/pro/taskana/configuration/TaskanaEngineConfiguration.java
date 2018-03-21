@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +43,7 @@ public class TaskanaEngineConfiguration {
     private static final String H2_DRIVER = "org.h2.Driver";
     private static final String TASKANA_PROPERTIES = "/taskana.properties";
     private static final String TASKANA_ROLES_SEPARATOR = "|";
+    private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
 
     // Taskana properties file
     protected String propertiesFileName = TASKANA_PROPERTIES;
@@ -64,7 +66,7 @@ public class TaskanaEngineConfiguration {
     private List<LocalDate> customHolidays;
 
     // List of configured domain names
-    protected List<String> domains = null;
+    protected List<String> domains = new ArrayList<String>();
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions)
         throws SQLException {
@@ -103,8 +105,21 @@ public class TaskanaEngineConfiguration {
     }
 
     public void initTaskanaProperties(String propertiesFile, String rolesSeparator) {
+        LOGGER.debug("Reading taskana configuration from {} with role separator {}", propertiesFile, rolesSeparator);
         Properties props = readPropertiesFromFile(propertiesFile);
         initTaskanaRoles(props, rolesSeparator);
+        initDomains(props);
+    }
+
+    private void initDomains(Properties props) {
+        String domainNames = props.getProperty(TASKANA_DOMAINS_PROPERTY);
+        if (domainNames != null && !domainNames.isEmpty()) {
+            StringTokenizer st = new StringTokenizer(domainNames, ",");
+            while (st.hasMoreTokens()) {
+                domains.add(st.nextToken().trim().toUpperCase());
+            }
+        }
+        LOGGER.debug("Configured domains: {}", domains);
     }
 
     private void initTaskanaRoles(Properties props, String rolesSeparator) {

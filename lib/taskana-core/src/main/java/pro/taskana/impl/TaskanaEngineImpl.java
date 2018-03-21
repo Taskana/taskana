@@ -372,4 +372,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             stack.pop();
         }
     }
+
+    /**
+     * Returns true if the given domain does exist in the configuration.
+     *
+     * @param domain
+     * @return <code>true</code> if the domain exists
+     */
+    public boolean domainExists(String domain) {
+        return getConfiguration().getDomains().contains(domain);
+    }
 }
