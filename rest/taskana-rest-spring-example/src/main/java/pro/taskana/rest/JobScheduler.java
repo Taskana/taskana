@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.impl.BulkOperationResults;
@@ -26,6 +27,7 @@ public class JobScheduler {
     private TaskanaEngine taskanaEngine;
 
     @Scheduled(fixedRate = 60000)
+    @Transactional(rollbackFor = Exception.class)
     public void triggerJobs() {
         JobRunner runner = new JobRunner(taskanaEngine);
         LOGGER.info("Running Jobs");

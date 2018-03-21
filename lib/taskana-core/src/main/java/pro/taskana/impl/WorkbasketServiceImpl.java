@@ -9,7 +9,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.Workbasket;
@@ -29,6 +28,7 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.DistributionTargetMapper;
+import pro.taskana.mappings.TaskMapper;
 import pro.taskana.mappings.WorkbasketAccessMapper;
 import pro.taskana.mappings.WorkbasketMapper;
 import pro.taskana.security.CurrentUserContext;
@@ -691,11 +691,13 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             // check if the workbasket does exist and is empty (Task)
             Workbasket wb = this.getWorkbasket(workbasketId);
-            List<TaskSummary> taskUsages = taskanaEngine.getTaskService()
-                .createTaskQuery()
-                .workbasketIdIn(wb.getId())
-                .list();
-            if (taskUsages == null || taskUsages.size() > 0) {
+
+            long numTasksInWorkbasket = taskanaEngine.getSqlSession()
+                .getMapper(TaskMapper.class)
+                .countTasksInWorkbasket(workbasketId)
+                .longValue();
+
+            if (numTasksInWorkbasket > 0) {
                 throw new WorkbasketInUseException(
                     "Workbasket is used on tasks and can´t be deleted. WorkbasketId=" + workbasketId);
             }
