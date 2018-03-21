@@ -12,6 +12,7 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -34,7 +35,8 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testCreateRootClassification()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
+        DomainNotFoundException {
         long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
         Classification classification = classificationService.newClassification("Key0", "", "TASK");
         classification.setIsValidInDomain(true);
@@ -57,18 +59,20 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testCreateClassificationWithRootCopy()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
+        DomainNotFoundException {
         long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
-        Classification classification = classificationService.newClassification("Key1", "Dummy-Domain", "TASK");
+        Classification classification = classificationService.newClassification("Key1", "DOMAIN_A", "TASK");
         classification.setIsValidInDomain(true);
         classification = classificationService.createClassification(classification);
 
         // Check returning one is the "original"
-        assertNotNull(classification.getId());
-        assertNotNull(classification.getCreated());
-        assertNotNull(classification.getModified());
-        assertThat(classification.getIsValidInDomain(), equalTo(true));
-        assertThat(classification.getDomain(), equalTo("Dummy-Domain"));
+        Classification createdClassification = classificationService.getClassification(classification.getId());
+        assertNotNull(createdClassification.getId());
+        assertNotNull(createdClassification.getCreated());
+        assertNotNull(createdClassification.getModified());
+        assertThat(createdClassification.getIsValidInDomain(), equalTo(true));
+        assertThat(createdClassification.getDomain(), equalTo("DOMAIN_A"));
 
         // Check 2 new created
         long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
@@ -96,12 +100,13 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testCreateClassificationWithInvalidValues()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
         long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
 
         // Check key NULL
         try {
-            Classification classification = classificationService.newClassification(null, "Dummy-Domain", "TASK");
+            Classification classification = classificationService.newClassification(null, "DOMAIN_A", "TASK");
             classification = classificationService.createClassification(classification);
         } catch (IllegalStateException e) {
             // nothing to do
@@ -109,23 +114,12 @@ public class CreateClassificationAccTest extends AbstractAccTest {
 
         // Check invalid ServiceLevel
         try {
-            Classification classification = classificationService.newClassification("Key2", "Domain", "TASK");
+            Classification classification = classificationService.newClassification("Key2", "DOMAIN_B", "TASK");
             classification.setServiceLevel("abc");
             classification = classificationService.createClassification(classification);
         } catch (IllegalArgumentException e) {
             // nothing to do
         }
-
-        // Check domain NULL will be replaced ""
-        Classification classification = classificationService.newClassification("Key2", null, "TASK");
-        classification = classificationService.createClassification(classification);
-        long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
-        assertThat(amountOfClassificationsAfter, equalTo(amountOfClassificationsBefore + 1));
-        assertThat(classification.getDomain(), equalTo(""));
-        assertThat(classification.getParentId(), equalTo(""));
-        assertThat(classification.getIsValidInDomain(), equalTo(false));
-        assertNotNull(classification.getCreated());
-        assertNotNull(classification.getModified());
     }
 
     @WithAccessId(
@@ -133,7 +127,8 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test(expected = ClassificationAlreadyExistException.class)
     public void testCreateClassificationAlreadyExisting()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
         Classification classification = classificationService.newClassification("Key3", "", "TASK");
         classification = classificationService.createClassification(classification);
         classification = classificationService.createClassification(classification);
@@ -142,9 +137,21 @@ public class CreateClassificationAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
+    @Test(expected = DomainNotFoundException.class)
+    public void testCreateClassificationInUnknownDomain()
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
+        Classification classification = classificationService.newClassification("Key3", "UNKNOWN_DOMAIN", "TASK");
+        classification = classificationService.createClassification(classification);
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
     @Test(expected = ClassificationNotFoundException.class)
     public void testCreateClassificationWithInvalidParent()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
         Classification classification = classificationService.newClassification("Key4", "", "TASK");
         classification.setParentId("ID WHICH CANT BE FOUND");
         classification = classificationService.createClassification(classification);

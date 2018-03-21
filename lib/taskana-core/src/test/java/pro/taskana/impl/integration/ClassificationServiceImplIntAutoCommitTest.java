@@ -33,6 +33,7 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
@@ -76,7 +77,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testInsertClassifications() throws Exception {
-        final String domain = "test-domain";
+        final String domain = "DOMAIN_A";
         final String key = "dummy-key";
         ClassificationImpl expectedClassification;
         Classification actualClassification;
@@ -125,16 +126,16 @@ public class ClassificationServiceImplIntAutoCommitTest {
         }
 
         // new classification but root existing
-        expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey(domain + "_2",
+        expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey("DOMAIN_B",
             "type1");
         expectedClassification.setKey(key);
         classificationService.createClassification(expectedClassification);
-        actualClassification = classificationService.getClassification(key, domain + "_2");
+        actualClassification = classificationService.getClassification(key, "DOMAIN_B");
         assertThat(actualClassification, not(equalTo(null)));
         assertThat(actualClassification.getCreated(), not(equalTo(null)));
         assertThat(actualClassification.getId(), not(equalTo(null)));
         assertThat(actualClassification.getKey(), equalTo(key));
-        assertThat(actualClassification.getDomain(), equalTo(domain + "_2"));
+        assertThat(actualClassification.getDomain(), equalTo("DOMAIN_B"));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
         // verify that
         Classification rootResults = classificationService.getClassification(key, "");
@@ -154,7 +155,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindAllClassifications()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
         Classification classification0 = this.createDummyClassificationWithUniqueKey("", "type1");
         classificationService.createClassification(classification0);
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
@@ -169,9 +171,9 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testModifiedClassification()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
-        ConcurrencyException {
+        ConcurrencyException, DomainNotFoundException {
         String description = "TEST SOMETHING";
-        Classification classification = this.createDummyClassificationWithUniqueKey("domain1", "type1");
+        Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "type1");
         classification.setDescription("");
         classification = classificationService.createClassification(classification);
         classification.setDescription("TEST SOMETHING");
@@ -184,8 +186,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testInsertAndClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        InvalidArgumentException {
-        Classification classification = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
+        InvalidArgumentException, DomainNotFoundException {
+        Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "type1");
         classification = classificationService.createClassification(classification);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
@@ -199,8 +201,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testUpdateAndClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        ConcurrencyException {
-        Classification classification = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
+        ConcurrencyException, DomainNotFoundException {
+        Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "type1");
         classification = classificationService.createClassification(classification);
         classification.setDescription("description");
         classification = classificationService.updateClassification(classification);
@@ -221,29 +223,31 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
-        Classification classification1 = this.createDummyClassificationWithUniqueKey("domain1", "type1");
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
+        Classification classification1 = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "type1");
         classification1.setCategory("category1");
         classificationService.createClassification(classification1);
-        Classification classification2 = this.createDummyClassificationWithUniqueKey("domain2", "type1");
+        Classification classification2 = this.createDummyClassificationWithUniqueKey("DOMAIN_B", "type1");
         classification2.setCategory("category1");
         classificationService.createClassification(classification2);
-        Classification classification3 = this.createDummyClassificationWithUniqueKey("domain1", "type1");
+        Classification classification3 = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "type1");
         classification3.setCategory("category2");
         classificationService.createClassification(classification3);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .categoryIn("category1")
-            .domainIn("domain1")
+            .domainIn("DOMAIN_A")
             .list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().domainIn("domain1", "domain3").list();
+        list = classificationService.createClassificationQuery().domainIn("DOMAIN_A", "DOMAIN_C").list();
         Assert.assertEquals(2, list.size());
     }
 
     @Test
     public void testFindWithClassificationMapperCustomAndCategory()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "type1");
         classification1.setDescription("DESC1");
         classification1.setCategory("category1");
@@ -281,7 +285,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
         throws ClassificationAlreadyExistException, NumberFormatException, NotAuthorizedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, DomainNotFoundException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setPriority(Integer.decode("5"));
         classificationService.createClassification(classification);
@@ -315,7 +319,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperServiceLevelNameAndDescription()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
         int all = 0;
         Classification classification = this.createDummyClassificationWithUniqueKey("", "type1");
         classification.setServiceLevel("P1D");
@@ -354,11 +359,11 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testDefaultSettingsWithClassificationMapper()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        ConcurrencyException {
-        Classification classification = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
+        ConcurrencyException, DomainNotFoundException {
+        Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "type1");
         classification = classificationService.createClassification(classification);
 
-        Classification classification1 = this.createDummyClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
+        Classification classification1 = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "type1");
         classification1 = classificationService.createClassification(classification1);
 
         classification1.setParentId(classification.getId());
@@ -382,7 +387,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         list = classificationService.createClassificationQuery().createdWithin(today()).list();
         Assert.assertEquals(4, list.size());
 
-        list = classificationService.createClassificationQuery().domainIn("domain1").validInDomainEquals(false).list();
+        list = classificationService.createClassificationQuery().domainIn("DOMAIN_C").validInDomainEquals(false).list();
         Assert.assertEquals(0, list.size());
 
         list = classificationService.createClassificationQuery()
