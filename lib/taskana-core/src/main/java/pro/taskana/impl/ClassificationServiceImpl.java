@@ -143,9 +143,12 @@ public class ClassificationServiceImpl implements ClassificationService {
                 List<TaskSummary> taskSumamries = taskanaEngine.getTaskService()
                     .createTaskQuery()
                     .classificationIdIn(oldClassification.getId())
-                    // .classificationCategoryIn(oldClassification.getCategory())
                     .list();
-                if (!taskSumamries.isEmpty()) {
+
+                boolean categoryChanged = !(oldClassification.getCategory() == null
+                    ? classification.getCategory() == null
+                    : oldClassification.getCategory().equals(classification.getCategory()));
+                if (!taskSumamries.isEmpty() && categoryChanged) {
                     List<String> taskIds = new ArrayList<>();
                     taskSumamries.stream().forEach(ts -> taskIds.add(ts.getTaskId()));
                     taskMapper.updateClassificationCategoryOnChange(taskIds, classificationImpl.getCategory());
