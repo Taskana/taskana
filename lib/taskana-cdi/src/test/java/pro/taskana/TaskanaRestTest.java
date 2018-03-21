@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
@@ -39,7 +40,7 @@ public class TaskanaRestTest {
     @GET
     public Response startTask() throws NotAuthorizedException, WorkbasketNotFoundException,
         ClassificationNotFoundException, ClassificationAlreadyExistException, InvalidWorkbasketException,
-        TaskAlreadyExistException, InvalidArgumentException, WorkbasketAlreadyExistException {
+        TaskAlreadyExistException, InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException {
         Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket("key", "cdiDomain");
         workbasket.setName("wb");
         workbasket.setType(WorkbasketType.PERSONAL);

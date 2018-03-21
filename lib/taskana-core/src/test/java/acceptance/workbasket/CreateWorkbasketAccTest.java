@@ -14,6 +14,7 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -38,7 +39,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
     @Test
     public void testCreateWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException, WorkbasketAlreadyExistException {
+        InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
@@ -66,10 +67,10 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
     @Test(expected = NotAuthorizedException.class)
     public void testCreateWorkbasketNotAuthorized()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException, WorkbasketAlreadyExistException {
+        InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-        Workbasket workbasket = workbasketService.newWorkbasket("key3", "novatec");
+        Workbasket workbasket = workbasketService.newWorkbasket("key3", "DOMAIN_A");
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setOrgLevel1("company");
@@ -79,11 +80,30 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(
+        userName = "user_1_2",
+        groupNames = {"businessadmin"})
+    @Test(expected = DomainNotFoundException.class)
+    public void testCreateWorkbasketWithInvalidDomain()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+        InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+        Workbasket workbasket = workbasketService.newWorkbasket("key3", "UNKNOWN_DOMAIN");
+        workbasket.setName("Megabasket");
+        workbasket.setType(WorkbasketType.GROUP);
+        workbasket.setOrgLevel1("company");
+        workbasketService.createWorkbasket(workbasket);
+
+        fail("DomainNotFoundException should have been thrown");
+    }
+
+    @WithAccessId(
         userName = "dummy",
         groupNames = {"businessadmin"})
     @Test
     public void testCreateWorkbasketWithMissingRequiredField()
-        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketAlreadyExistException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketAlreadyExistException,
+        DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.newWorkbasket(null, "novatec");

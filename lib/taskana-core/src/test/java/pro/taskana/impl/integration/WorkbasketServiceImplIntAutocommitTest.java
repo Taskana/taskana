@@ -34,7 +34,6 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
@@ -43,7 +42,6 @@ import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.mappings.WorkbasketMapper;
-import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -85,19 +83,6 @@ public class WorkbasketServiceImplIntAutocommitTest {
         now = Instant.now();
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
-    @Test
-    public void testSelectWorkbasket()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        InvalidArgumentException, WorkbasketAlreadyExistException {
-        String id = IdGenerator.generateWithPrefix("TWB");
-        Workbasket workbasket = createTestWorkbasket(id, "key0", "novatec", "Superbasket", WorkbasketType.GROUP);
-        workbasket = workBasketService.createWorkbasket(workbasket);
-        createWorkbasketWithSecurity(workbasket, CurrentUserContext.getUserid(), true, true, false, false);
-        Workbasket foundWorkbasket = workBasketService.getWorkbasket(id);
-        Assert.assertEquals(id, foundWorkbasket.getId());
-    }
-
     @Test(expected = WorkbasketNotFoundException.class)
     public void testGetWorkbasketFail()
         throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
@@ -106,46 +91,19 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
-    public void testSelectWorkbasketWithDistribution()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        InvalidArgumentException, WorkbasketAlreadyExistException {
-        String id = IdGenerator.generateWithPrefix("TWB");
-        Workbasket wbDist1 = createTestWorkbasket(id, "key0", "novatec", "Superbasket", WorkbasketType.GROUP);
-        wbDist1 = workBasketService.createWorkbasket(wbDist1);
-        createWorkbasketWithSecurity(wbDist1, CurrentUserContext.getUserid(), true, true, false, false);
-
-        id = IdGenerator.generateWithPrefix("TWB");
-        Workbasket wbDist2 = createTestWorkbasket(id, "key1", "novatec", "Megabasket", WorkbasketType.GROUP);
-        wbDist2 = workBasketService.createWorkbasket(wbDist2);
-        createWorkbasketWithSecurity(wbDist2, "Elena", true, true, false, false);
-        id = IdGenerator.generateWithPrefix("TWB");
-        Workbasket workbasket = createTestWorkbasket(id, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
-        workbasket = workBasketService.createWorkbasket(workbasket);
-        List<String> distributionTargets = new ArrayList<>(Arrays.asList(wbDist1.getId(), wbDist2.getId()));
-        createWorkbasketWithSecurity(workbasket, "Elena", true, true, false, false);
-        workBasketService.setDistributionTargets(workbasket.getId(), distributionTargets);
-
-        Workbasket foundWorkbasket = workBasketService.getWorkbasket(workbasket.getId());
-        Assert.assertEquals(id, foundWorkbasket.getId());
-        Assert.assertEquals(2, workBasketService.getDistributionTargets(foundWorkbasket.getId()).size());
-
-    }
-
-    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
-    @Test
     public void testUpdateWorkbasket() throws Exception {
         String id0 = IdGenerator.generateWithPrefix("TWB");
-        Workbasket workbasket0 = createTestWorkbasket(id0, "key0", "novatec", "Superbasket", WorkbasketType.GROUP);
+        Workbasket workbasket0 = createTestWorkbasket(id0, "key0", "DOMAIN_A", "Superbasket", WorkbasketType.GROUP);
         workbasket0 = workBasketService.createWorkbasket(workbasket0);
         createWorkbasketWithSecurity(workbasket0, "Elena", true, true, false, false);
 
         String id1 = IdGenerator.generateWithPrefix("TWB");
-        Workbasket workbasket1 = createTestWorkbasket(id1, "key1", "novatec", "Megabasket", WorkbasketType.GROUP);
+        Workbasket workbasket1 = createTestWorkbasket(id1, "key1", "DOMAIN_A", "Megabasket", WorkbasketType.GROUP);
         workbasket1 = workBasketService.createWorkbasket(workbasket1);
         createWorkbasketWithSecurity(workbasket1, "Elena", true, true, false, false);
 
         String id2 = IdGenerator.generateWithPrefix("TWB");
-        Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "novatec", "Hyperbasket", WorkbasketType.GROUP);
+        Workbasket workbasket2 = createTestWorkbasket(id2, "key2", "DOMAIN_A", "Hyperbasket", WorkbasketType.GROUP);
         workbasket2 = workBasketService.createWorkbasket(workbasket2);
         createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
         List<String> distTargets = new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
@@ -153,7 +111,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         workBasketService.setDistributionTargets(workbasket2.getId(), distTargets);
 
         String id3 = IdGenerator.generateWithPrefix("TWB");
-        Workbasket workbasket3 = createTestWorkbasket(id3, "key3", "novatec", "hm ... irgend ein basket",
+        Workbasket workbasket3 = createTestWorkbasket(id3, "key3", "DOMAIN_A", "hm ... irgend ein basket",
             WorkbasketType.GROUP);
         workbasket3 = workBasketService.createWorkbasket(workbasket3);
         createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
