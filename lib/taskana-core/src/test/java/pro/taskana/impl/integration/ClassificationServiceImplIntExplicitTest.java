@@ -33,6 +33,7 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
@@ -78,11 +79,11 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testInsertClassification()
         throws SQLException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        NotAuthorizedException {
+        NotAuthorizedException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
-        final String domain = "test-domain";
+        final String domain = "DOMAIN_A";
         final String key = "dummy-key";
         ClassificationImpl expectedClassification;
         Classification actualClassification;
@@ -136,15 +137,15 @@ public class ClassificationServiceImplIntExplicitTest {
         // new classification but root existing
         expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey("", "t1");
         expectedClassification.setKey(key);
-        expectedClassification.setDomain(domain + "_2");
+        expectedClassification.setDomain("DOMAIN_B");
         classificationService.createClassification(expectedClassification);
         connection.commit();
-        actualClassification = classificationService.getClassification(key, domain + "_2");
+        actualClassification = classificationService.getClassification(key, "DOMAIN_B");
         assertThat(actualClassification, not(equalTo(null)));
         assertThat(actualClassification.getCreated(), not(equalTo(null)));
         assertThat(actualClassification.getId(), not(equalTo(null)));
         assertThat(actualClassification.getKey(), equalTo(key));
-        assertThat(actualClassification.getDomain(), equalTo(domain + "_2"));
+        assertThat(actualClassification.getDomain(), equalTo("DOMAIN_B"));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
         Classification rootResult = classificationService.getClassification(key, "");
         assertThat(rootResult, not(equalTo(null)));
@@ -165,7 +166,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindAllClassifications()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification0 = this.createNewClassificationWithUniqueKey("", "t1");
@@ -183,11 +184,11 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testModifiedClassification()
         throws SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        NotAuthorizedException, ConcurrencyException {
+        NotAuthorizedException, ConcurrencyException, DomainNotFoundException {
 
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey("novatec", "t1");
+        Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "t1");
         connection.commit();
         classification = classificationService.createClassification(classification);
 
@@ -203,10 +204,10 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testInsertAndClassificationQuery()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "t1");
+        Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "t1");
         classificationService.createClassification(classification);
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .validInDomainEquals(Boolean.TRUE)
@@ -217,10 +218,11 @@ public class ClassificationServiceImplIntExplicitTest {
 
     @Test
     public void testUpdateAndClassificationQuery() throws NotAuthorizedException, SQLException,
-        ClassificationAlreadyExistException, ClassificationNotFoundException, ConcurrencyException {
+        ClassificationAlreadyExistException, ClassificationNotFoundException, ConcurrencyException,
+        DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "t1");
+        Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "t1");
         classification.setDescription("");
         classification = classificationService.createClassification(classification);
         classification.setDescription("description");
@@ -247,26 +249,26 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification1 = this.createNewClassificationWithUniqueKey("domain1", "t1");
+        Classification classification1 = this.createNewClassificationWithUniqueKey("DOMAIN_A", "t1");
         classification1.setCategory("category1");
         classificationService.createClassification(classification1);
-        Classification classification2 = this.createNewClassificationWithUniqueKey("domain2", "t1");
+        Classification classification2 = this.createNewClassificationWithUniqueKey("DOMAIN_B", "t1");
         classification2.setCategory("category1");
         classificationService.createClassification(classification2);
 
-        Classification classification3 = this.createNewClassificationWithUniqueKey("domain1", "t1");
+        Classification classification3 = this.createNewClassificationWithUniqueKey("DOMAIN_A", "t1");
         classification3.setCategory("category2");
         classificationService.createClassification(classification3);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .categoryIn("category1")
-            .domainIn("domain1")
+            .domainIn("DOMAIN_A")
             .list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().domainIn("domain1", "domain3").list();
+        list = classificationService.createClassificationQuery().domainIn("DOMAIN_A", "domain3").list();
         Assert.assertEquals(2, list.size());
         connection.commit();
     }
@@ -274,7 +276,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindWithClassificationMapperCustomAndCategory()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "t1");
@@ -315,7 +317,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "type1");
@@ -352,7 +354,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindWithClassificationMapperServiceLevelNameAndDescription()
         throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         int all = 0;
@@ -394,13 +396,13 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testDefaultSettingsWithClassificationQuery() throws NotAuthorizedException, SQLException,
         ClassificationAlreadyExistException, ClassificationNotFoundException, InvalidArgumentException,
-        ConcurrencyException {
+        ConcurrencyException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-        Classification classification = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
+        Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "type1");
         classification = classificationService.createClassification(classification);
 
-        Classification classification1 = this.createNewClassificationWithUniqueKey("UNIQUE-DOMAIN", "type1");
+        Classification classification1 = this.createNewClassificationWithUniqueKey("DOMAIN_A", "type1");
         classification1 = classificationService.createClassification(classification1);
         classification1.setParentId(classification.getId());
         classification1 = classificationService.updateClassification(classification1);
@@ -418,7 +420,7 @@ public class ClassificationServiceImplIntExplicitTest {
         Assert.assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().createdWithin(today()).list();
         Assert.assertEquals(4, list.size());
-        list = classificationService.createClassificationQuery().domainIn("domain1").validInDomainEquals(false).list();
+        list = classificationService.createClassificationQuery().domainIn("DOMAIN_C").validInDomainEquals(false).list();
         Assert.assertEquals(0, list.size());
         list = classificationService.createClassificationQuery()
             .keyIn(classification1.getKey())

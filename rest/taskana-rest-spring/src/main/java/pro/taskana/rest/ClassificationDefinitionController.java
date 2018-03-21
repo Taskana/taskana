@@ -24,6 +24,7 @@ import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
@@ -45,7 +46,7 @@ public class ClassificationDefinitionController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<ClassificationResource>> getClassifications(
         @RequestParam(required = false) String domain) throws ClassificationNotFoundException, NotAuthorizedException,
-        ClassificationAlreadyExistException, ConcurrencyException {
+        ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException {
         ClassificationQuery query = classificationService.createClassificationQuery();
         List<ClassificationSummary> summaries = domain != null ? query.domainIn(domain).list() : query.list();
         List<ClassificationResource> export = new ArrayList<>();
@@ -62,7 +63,8 @@ public class ClassificationDefinitionController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<String> importClassifications(
         @RequestBody List<ClassificationResource> classificationResources) throws NotAuthorizedException,
-        ClassificationNotFoundException, ConcurrencyException, ClassificationAlreadyExistException {
+        ClassificationNotFoundException, ConcurrencyException, ClassificationAlreadyExistException,
+        DomainNotFoundException {
         Map<String, String> systemIds = classificationService.createClassificationQuery()
             .list()
             .stream()

@@ -4,6 +4,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
@@ -67,9 +68,12 @@ public interface ClassificationService {
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      * @throws ClassificationNotFoundException
      *             if the current parentId is not NULL/EMPTY and can not be found.
+     * @throws DomainNotFoundException
+     *             if the domain does not exist in the configuration
      */
     Classification createClassification(Classification classification)
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException;
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException;
 
     /**
      * Updates a Classification.

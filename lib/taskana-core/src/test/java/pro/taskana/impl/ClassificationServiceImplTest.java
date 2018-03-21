@@ -26,6 +26,7 @@ import pro.taskana.Classification;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.mappings.ClassificationMapper;
 
@@ -60,10 +61,12 @@ public class ClassificationServiceImplTest {
 
     @Test(expected = ClassificationAlreadyExistException.class)
     public void testCreateClassificationAlreadyExisting()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
+        DomainNotFoundException {
         Classification classification = createDummyClassification();
         doReturn(classification).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
+        doReturn(true).when(taskanaEngineImplMock).domainExists(any());
 
         try {
             cutSpy.createClassification(classification);
@@ -73,6 +76,7 @@ public class ClassificationServiceImplTest {
                 classification.getDomain());
             verify(taskanaEngineImplMock, times(1)).returnConnection();
             verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
+            verify(taskanaEngineImplMock, times(1)).domainExists(any());
             verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
             throw e;
         }
@@ -80,12 +84,14 @@ public class ClassificationServiceImplTest {
 
     @Test(expected = ClassificationNotFoundException.class)
     public void testCreateClassificationParentNotExisting()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException {
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
+        DomainNotFoundException {
         Classification classification = createDummyClassification();
         classification.setParentId("NOT EXISTING ID");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
         doReturn(null).when(classificationMapperMock).findById(classification.getParentId());
+        doReturn(true).when(taskanaEngineImplMock).domainExists(any());
 
         try {
             cutSpy.createClassification(classification);
@@ -97,6 +103,7 @@ public class ClassificationServiceImplTest {
             verify(cutSpy, times(1)).getClassification(classification.getParentId());
             verify(classificationMapperMock, times(1)).findById(classification.getParentId());
             verify(taskanaEngineImplMock, times(2)).returnConnection();
+            verify(taskanaEngineImplMock, times(1)).domainExists(any());
             verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
             throw e;
         }
@@ -105,7 +112,7 @@ public class ClassificationServiceImplTest {
     @Test
     public void testCreateClassificationInOwnDomainButExistingInRoot()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, InterruptedException,
-        NotAuthorizedException {
+        NotAuthorizedException, DomainNotFoundException {
         Instant beforeTimestamp = Instant.now();
         Thread.sleep(10L);
         Classification classification = createDummyClassification();
@@ -114,6 +121,7 @@ public class ClassificationServiceImplTest {
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
         doReturn(classification).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(), "");
+        doReturn(true).when(taskanaEngineImplMock).domainExists(any());
 
         classification = cutSpy.createClassification(classification);
 
@@ -124,6 +132,7 @@ public class ClassificationServiceImplTest {
         verify(classificationMapperMock, times(1)).insert(any());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
+        verify(taskanaEngineImplMock, times(1)).domainExists(any());
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
         Thread.sleep(15);
         assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
@@ -135,13 +144,15 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
         Classification classification = createDummyClassification();
         String domain = classification.getDomain();
         String key = classification.getKey();
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(), "");
+        doReturn(true).when(taskanaEngineImplMock).domainExists(any());
 
         classification = cutSpy.createClassification(classification);
 
@@ -151,6 +162,7 @@ public class ClassificationServiceImplTest {
         verify(classificationMapperMock, times(2)).insert(any());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
         verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
+        verify(taskanaEngineImplMock, times(1)).domainExists(any());
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
         assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
         assertThat(classification.getDomain(), equalTo(domain));
@@ -159,7 +171,8 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationIntoRootDomain()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException {
         ClassificationImpl classification = (ClassificationImpl) createDummyClassification();
         classification.setDomain("");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -173,6 +186,7 @@ public class ClassificationServiceImplTest {
         verify(classificationMapperMock, times(1)).insert(classification);
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
+        verify(taskanaEngineImplMock, times(1)).domainExists(any());
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
         assertThat(classification.getCreated().toString().substring(0, 10), equalTo(todaysDate));
     }
@@ -286,7 +300,7 @@ public class ClassificationServiceImplTest {
         classificationImpl.setDescription("A DUMMY FOR TESTING A SERVICE");
         classificationImpl.setName("SERVICE-DUMMY");
         classificationImpl.setCategory("dummy-category");
-        classificationImpl.setDomain("test-domain");
+        classificationImpl.setDomain("DOMAIN_A");
         classificationImpl.setServiceLevel("P2D");
         classificationImpl.setId("ID: 1");
         classificationImpl.setKey("ABC111");
