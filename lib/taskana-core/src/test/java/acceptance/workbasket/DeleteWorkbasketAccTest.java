@@ -5,6 +5,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.sql.SQLException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,8 +14,11 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.security.JAASRunner;
@@ -124,6 +129,30 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
         throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
         Workbasket wb = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");   // all rights, DOMAIN_A with Tasks
         workbasketService.deleteWorkbasket(wb.getId());
+    }
+
+    @WithAccessId(
+        userName = "user_1_2",
+        groupNames = {"businessadmin"})
+    @Test
+    public void testCreateAndDeleteWorkbasket()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+        InvalidWorkbasketException, WorkbasketAlreadyExistException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
+
+        Workbasket workbasket = workbasketService.newWorkbasket("NT1234", "DOMAIN_A");
+        workbasket.setName("TheUltimate");
+        workbasket.setType(WorkbasketType.GROUP);
+        workbasket.setOrgLevel1("company");
+        workbasket = workbasketService.createWorkbasket(workbasket);
+
+        try {
+            workbasketService.deleteWorkbasket(workbasket.getId());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
