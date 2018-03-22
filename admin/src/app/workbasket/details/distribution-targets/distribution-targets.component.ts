@@ -12,6 +12,10 @@ import { Subscription } from 'rxjs/Subscription';
 import { element } from 'protractor';
 import { WorkbasketSummaryResource } from '../../../model/workbasket-summary-resource';
 import { WorkbasketDistributionTargetsResource } from '../../../model/workbasket-distribution-targets-resource';
+import { SavingWorkbasketService, SavingInformation } from '../../../services/saving-workbaskets/saving-workbaskets.service';
+import { ErrorModalService } from '../../../services/error-modal.service';
+import { ErrorModel } from '../../../model/modal-error';
+import { ACTION } from '../../../model/action';
 
 export enum Side {
 	LEFT,
@@ -26,10 +30,14 @@ export class DistributionTargetsComponent implements OnInit, OnDestroy {
 
 	@Input()
 	workbasket: Workbasket;
+	@Input()
+	action: string;
+	badgeMessage = '';
 
 	distributionTargetsSubscription: Subscription;
 	workbasketSubscription: Subscription;
 	workbasketFilterSubscription: Subscription;
+	savingDistributionTargetsSubscription: Subscription;
 
 	distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource;
 	distributionTargetsLeft: Array<WorkbasketSummary>;
@@ -45,10 +53,17 @@ export class DistributionTargetsComponent implements OnInit, OnDestroy {
 	modalErrorMessage: string;
 	side = Side;
 
-	constructor(private workbasketService: WorkbasketService, private alertService: AlertService) { }
+	constructor(
+		private workbasketService: WorkbasketService,
+		private alertService: AlertService,
+		private savingWorkbaskets: SavingWorkbasketService,
+		private errorModalService: ErrorModalService) { }
 
 	ngOnInit() {
 		this.onRequest(undefined);
+		if (!this.workbasket._links.distributionTargets) {
+			return;
+		}
 		this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(
 			this.workbasket._links.distributionTargets.href).subscribe(
 				(distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource) => {
@@ -64,6 +79,18 @@ export class DistributionTargetsComponent implements OnInit, OnDestroy {
 							this.onRequest(undefined, true);
 						});
 				});
+
+		this.savingDistributionTargetsSubscription = this.savingWorkbaskets.triggeredDistributionTargetsSaving()
+			.subscribe((savingInformation: SavingInformation) => {
+				if (this.action === ACTION.COPY) {
+					this.distributionTargetsSelectedResource._links.self.href = savingInformation.url;
+					this.onSave();
+				}
+			});
+
+		if (this.action === ACTION.COPY) {
+			this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
+		}
 	}
 
 	moveDistributionTargets(side: number) {
@@ -92,7 +119,7 @@ export class DistributionTargetsComponent implements OnInit, OnDestroy {
 				return true;
 			},
 				error => {
-					this.modalErrorMessage = error.message;
+					this.errorModalService.triggerError(new ErrorModel(`There was error while saving your workbasket's distribution targets`, error))
 					this.requestInProgress = false;
 					return false;
 				}
@@ -161,6 +188,8 @@ export class DistributionTargetsComponent implements OnInit, OnDestroy {
 		if (this.distributionTargetsSubscription) { this.distributionTargetsSubscription.unsubscribe(); }
 		if (this.workbasketSubscription) { this.workbasketSubscription.unsubscribe(); }
 		if (this.workbasketFilterSubscription) { this.workbasketFilterSubscription.unsubscribe(); }
+		if (this.savingDistributionTargetsSubscription) { this.savingDistributionTargetsSubscription.unsubscribe(); }
+
 	}
 
 }

@@ -1,14 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-
-
-export enum ICONTYPES {
-	NONE = '',
-	PERSONAL = 'PERSONAL',
-	GROUP = 'GROUP',
-	CLEARANCE = 'CLEARANCE',
-	TOPIC = 'TOPIC'
-}
-
+import { ICONTYPES } from '../../model/type';
 
 @Component({
 	selector: 'taskana-icon-type',

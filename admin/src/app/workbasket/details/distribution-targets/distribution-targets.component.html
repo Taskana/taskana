@@ -1,13 +1,14 @@
 <taskana-spinner [isRunning]="requestInProgress" isModal="true" (requestTimeoutExceeded)="requestTimeoutExceeded($event)"
  class="centered-horizontally floating"></taskana-spinner>
-<taskana-general-message-modal *ngIf="modalErrorMessage" [(message)]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
 	<div class="panel-heading">
 		<div class="btn-group pull-right">
-			<button type="button" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
+			<button type="button" (click)="onSave()" [disabled]="action === 'COPY'" class="btn btn-default btn-primary">Save</button>
 			<button type="button" (click)="onClear()" class="btn btn-default">Undo changes</button>
 		</div>
-		<h4 class="panel-header">{{workbasket.name}}</h4>
+		<h4 class="panel-header">{{workbasket.name}}
+			<span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
+		</h4>
 	</div>
 	<div class="panel-body">
 		<taskana-dual-list id="dual-list-Left" [(distributionTargets)]="distributionTargetsLeft" [distributionTargetsSelected]="distributionTargetsSelected"

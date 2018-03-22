@@ -5,6 +5,12 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { Router, Routes } from '@angular/router';
+import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component'
+import { SpinnerComponent } from './shared/spinner/spinner.component'
+import { ErrorModalService } from './services/error-modal.service';
+import { RequestInProgressService } from './services/request-in-progress.service';
+import { AlertComponent } from './shared/alert/alert.component';
+import { AlertService } from './services/alert.service';
 
 describe('AppComponent', () => {
 
@@ -17,13 +23,14 @@ describe('AppComponent', () => {
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
 			declarations: [
-				AppComponent
+				AppComponent, GeneralMessageModalComponent, SpinnerComponent, AlertComponent
 			],
 			imports: [
 				AngularSvgIconModule,
 				RouterTestingModule.withRoutes(routes),
 				HttpClientModule
-			]
+			],
+			providers: [ErrorModalService, RequestInProgressService, AlertService]
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(AppComponent);

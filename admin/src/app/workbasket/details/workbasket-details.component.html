@@ -1,32 +1,32 @@
-<div class="container-scrollable" >
-    <taskana-spinner [isRunning]="requestInProgress" class = "centered-horizontally"></taskana-spinner>
-    <taskana-no-access *ngIf="!requestInProgress && (!hasPermission || !workbasket && selectedId)" ></taskana-no-access>
-    <div id ="workbasket-details" *ngIf="workbasket && !requestInProgress">
+<div class="container-scrollable">
+    <taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
+    <taskana-no-access *ngIf="!requestInProgress && (!hasPermission && !workbasket || !workbasket && selectedId)"></taskana-no-access>
+    <div id="workbasket-details" *ngIf="workbasket && !requestInProgress">
         <ul class="nav nav-tabs" role="tablist">
             <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
-                <a (click) = "backClicked()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
+                <a (click)="backClicked()">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
             </li>
             <li role="presentation" class="active">
                 <a href="#work-baskets" aria-controls="work baskets" role="tab" data-toggle="tab" aria-expanded="true">Information</a>
             </li>
-            <li role="presentation" class=""> 
-                <a href="#access-items" aria-controls="Acccess" role="tab" data-toggle="tab" aria-expanded="true">Access</a> 
+            <li role="presentation" [ngClass]="{'disabled': !workbasket._links?.accessItems}">
+                <a href="#access-items" aria-controls="Acccess" role="tab" data-toggle="tab" aria-expanded="true">Access</a>
             </li>
-            <li role="presentation" class="">
+            <li role="presentation" [ngClass]="{'disabled': !workbasket._links?.distributionTargets}">
                 <a href="#distribution-targets" aria-controls="distribution targets" role="tab" data-toggle="tab" aria-expanded="true">Distribution targets</a>
             </li>
-        </ul>                                 
+        </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="work-baskets"> 
-                <taskana-workbasket-information [workbasket]="workbasket"></taskana-workbasket-information>
-            </div>                                     
-            <div role="tabpanel" class="tab-pane inactive" id="access-items"> 
-                <taskana-workbasket-access-items [workbasket]="workbasket"></taskana-workbasket-access-items>
+            <div role="tabpanel" class="tab-pane fade in active" id="work-baskets">
+                <taskana-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-workbasket-information>
             </div>
-            <div role="tabpanel" class="tab-pane inactive" id="distribution-targets"> 
-                <taskana-workbaskets-distribution-targets [workbasket]="workbasket"></taskana-workbaskets-distribution-targets>
+            <div role="tabpanel" class="tab-pane fade" id="access-items">
+                <taskana-workbasket-access-items [workbasket]="workbasket" [action]="action"></taskana-workbasket-access-items>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="distribution-targets">
+                <taskana-workbaskets-distribution-targets [workbasket]="workbasket" [action]="action"></taskana-workbaskets-distribution-targets>
             </div>
         </div>
     </div>
-    <taskana-alert></taskana-alert>
 </div>

@@ -21,4 +21,11 @@
     & > p{
         margin: 0px;
     }
+    & > li.disabled {
+        cursor: not-allowed;
+    }
+
+    & > li.disabled > a {
+        pointer-events: none;
+    }
 }

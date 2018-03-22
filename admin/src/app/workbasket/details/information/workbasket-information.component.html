@@ -1,12 +1,13 @@
 <taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
-<taskana-general-message-modal *ngIf="modalErrorMessage" [(message)]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
     <div class="panel-heading">
         <div class="btn-group pull-right">
             <button type="button" [disabled]="!WorkbasketForm.form.valid" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
             <button type="button" (click)="onClear()" class="btn btn-default">Undo changes</button>
         </div>
-        <h4 class="panel-header">{{workbasket.name}}</h4>
+        <h4 class="panel-header">{{workbasket.name}}&nbsp;
+            <span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
+        </h4>
     </div>
     <div class="panel-body">
         <form #WorkbasketForm="ngForm">
@@ -24,7 +25,7 @@
                     <input type="text" required #name="ngModel" class="form-control" id="wb-name" placeholder="Name" [(ngModel)]="workbasket.name"
                         name="workbasket.name">
                     <div [hidden]="name.valid" class="required-text">
-                       *  Name is required
+                        * Name is required
                     </div>
                 </div>
                 <div class="form-group required">
@@ -32,7 +33,15 @@
                     <input type="text" required #owner="ngModel" class="form-control" id="wb-owner" placeholder="Owner" [(ngModel)]="workbasket.owner"
                         name="workbasket.owner">
                     <div [hidden]="owner.valid" class="required-text">
-                       * Owner is required
+                        * Owner is required
+                    </div>
+                </div>
+                <div class="form-group required">
+                    <label for="wb-domain" class="control-label">Domain</label>
+                    <input type="text" required #domain="ngModel" class="form-control" id="wb-domain" placeholder="Domain" [(ngModel)]="workbasket.domain"
+                        name="workbasket.domain">
+                    <div [hidden]="domain.valid" class="required-text">
+                        * Domain is required
                     </div>
                 </div>
                 <div class="form-group">
@@ -43,7 +52,7 @@
                             {{allTypes.get(workbasket.type)}}
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
                             <li>
                                 <a *ngFor="let type of allTypes | mapValues | removeEmptyType" (click)="selectType(type.key)">
                                     <taskana-icon-type class="vertical-align" [type]='type.key'></taskana-icon-type>
@@ -52,11 +61,6 @@
                             </li>
                         </ul>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="wb-domain" class="control-label">Domain</label>
-                    <input type="text" class="form-control" id="wb-domain" placeholder="Domain" [(ngModel)]="workbasket.domain" name="workbasket.domain"
-                        disabled="">
                 </div>
                 <div class="form-group">
                     <label for="wb-description" class="control-label">Description</label>

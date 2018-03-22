@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { WorkbasketSummaryResource } from '../../model/workbasket-summary-resource';
 import { WorkbasketSummary } from '../../model/workbasket-summary';
 import { WorkbasketService } from '../../services/workbasket.service'
@@ -14,8 +14,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class WorkbasketListComponent implements OnInit, OnDestroy {
 
-	newWorkbasket: WorkbasketSummary;
-	selectedId: string = undefined;
+	selectedId = '';
 	workbaskets: Array<WorkbasketSummary> = [];
 	requestInProgress = false;
 
@@ -26,7 +25,11 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 	private workbasketServiceSubscription: Subscription;
 	private workbasketServiceSavedSubscription: Subscription;
 
-	constructor(private workbasketService: WorkbasketService, private router: Router, private route: ActivatedRoute) { }
+	constructor(
+		private workbasketService: WorkbasketService,
+		private router: Router,
+		private route: ActivatedRoute,
+		private cdRef: ChangeDetectorRef) { }
 
 	ngOnInit() {
 		this.requestInProgress = true;
@@ -37,6 +40,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
 		this.workbasketServiceSubscription = this.workbasketService.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
 			this.selectedId = workbasketIdSelected;
+			this.cdRef.detectChanges();
 		});
 
 		this.workbasketServiceSavedSubscription = this.workbasketService.workbasketSavedTriggered().subscribe(value => {
@@ -51,29 +55,16 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 			return
 		}
 		this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
-
 	}
 
 	performSorting(sort: SortingModel) {
 		this.sort = sort;
 		this.performRequest();
-
 	}
 
 	performFilter(filterBy: FilterModel) {
 		this.filterBy = filterBy;
 		this.performRequest();
-	}
-
-	onDelete(workbasket: WorkbasketSummary) {
-
-	}
-
-	onAdd() {
-
-	}
-
-	onClear() {
 	}
 
 	private performRequest(): void {
