@@ -12,7 +12,7 @@ import pro.taskana.impl.report.Report;
 public class DetailedClassificationReport extends Report<DetailedMonitorQueryItem, TimeIntervalColumnHeader> {
 
     public DetailedClassificationReport(List<TimeIntervalColumnHeader> workbasketLevelReportColumnHeaders) {
-        super(workbasketLevelReportColumnHeaders);
+        super(workbasketLevelReportColumnHeaders, "TASK CLASSIFICATION KEYS");
     }
 
     @Override

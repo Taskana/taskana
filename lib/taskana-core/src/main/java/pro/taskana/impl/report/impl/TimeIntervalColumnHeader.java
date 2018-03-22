@@ -35,11 +35,11 @@ public class TimeIntervalColumnHeader implements ReportColumnHeader<MonitorQuery
 
     @Override
     public String toString() {
-        return displayName();
+        return getDisplayName();
     }
 
     @Override
-    public String displayName() {
+    public String getDisplayName() {
         return "(" + this.lowerAgeLimit + "," + this.upperAgeLimit + ")";
     }
 

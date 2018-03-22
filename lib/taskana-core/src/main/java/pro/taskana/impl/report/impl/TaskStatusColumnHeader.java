@@ -4,7 +4,7 @@ import pro.taskana.TaskState;
 import pro.taskana.impl.report.ReportColumnHeader;
 
 /**
- * TODO.
+ * The TaskStatusColumnHeader represents a column for each {@link TaskState}.
  */
 public class TaskStatusColumnHeader implements ReportColumnHeader<TaskQueryItem> {
 
@@ -15,7 +15,7 @@ public class TaskStatusColumnHeader implements ReportColumnHeader<TaskQueryItem>
     }
 
     @Override
-    public String displayName() {
+    public String getDisplayName() {
         return state.name();
     }
 
@@ -26,6 +26,6 @@ public class TaskStatusColumnHeader implements ReportColumnHeader<TaskQueryItem>
 
     @Override
     public String toString() {
-        return displayName();
+        return getDisplayName();
     }
 }

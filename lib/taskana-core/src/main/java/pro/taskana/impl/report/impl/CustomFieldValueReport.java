@@ -10,6 +10,6 @@ import pro.taskana.impl.report.Report;
 public class CustomFieldValueReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
     public CustomFieldValueReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
-        super(timeIntervalColumnHeaders);
+        super(timeIntervalColumnHeaders, "CUSTOM FIELDS");
     }
 }

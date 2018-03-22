@@ -19,9 +19,6 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
 
 import pro.taskana.ClassificationService;
@@ -92,11 +89,6 @@ public class RestConfiguration {
         b.indentOutput(true);
         b.handlerInstantiator(handlerInstantiator);
         return b;
-    }
-
-    @Bean
-    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder jacksonBuilder) {
-        return jacksonBuilder.build().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
 
     //Needed for injection into jackson deserilizer.

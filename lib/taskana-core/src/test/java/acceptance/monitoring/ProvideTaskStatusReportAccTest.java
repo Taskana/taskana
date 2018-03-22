@@ -160,7 +160,7 @@ public class ProvideTaskStatusReportAccTest {
         builder.append("\n");
         builder.append(String.format(formatFirstColumnFirstLine, "Domain", "Total"));
         for (TaskStatusColumnHeader def : columnHeaders) {
-            builder.append(String.format(formatColumnWidth, def.displayName()));
+            builder.append(String.format(formatColumnWidth, def.getDisplayName()));
         }
         builder.append("|\n");
 
