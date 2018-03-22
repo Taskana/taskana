@@ -7,7 +7,8 @@ import { MasterAndDetailComponent } from './shared/masterAndDetail/master-and-de
 import { NoAccessComponent } from './workbasket/noAccess/no-access.component';
 
 const appRoutes: Routes = [
-    {   path: 'workbaskets',
+    {
+        path: 'workbaskets',
         component: MasterAndDetailComponent,
         children: [
             {
@@ -27,7 +28,8 @@ const appRoutes: Routes = [
             }
         ]
     },
-    {   path: 'clasifications',
+    {
+        path: 'clasifications',
         component: MasterAndDetailComponent,
         children: [
             {

@@ -16,7 +16,13 @@ a > label{
     width: 100%;
 }
 
-.tab-align{
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 12px;
+dt > i {
+    font-weight: normal;
+}
+
+li > div.row > dl {
+    margin-bottom: 0px;
+}
+li > div.row > dl:first-child {
+    margin-left: 10px;
 }

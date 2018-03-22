@@ -7,6 +7,10 @@ import { WorkbasketAccessItems } from '../../../model/workbasket-access-items';
 import { WorkbasketService } from '../../../services/workbasket.service';
 import { AlertService, AlertModel, AlertType } from '../../../services/alert.service';
 import { WorkbasketAccessItemsResource } from '../../../model/workbasket-access-items-resource';
+import { ErrorModalService } from '../../../services/error-modal.service';
+import { ErrorModel } from '../../../model/modal-error';
+import { SavingWorkbasketService, SavingInformation } from '../../../services/saving-workbaskets/saving-workbaskets.service';
+import { ACTION } from '../../../model/action';
 
 declare var $: any;
 
@@ -19,6 +23,9 @@ export class AccessItemsComponent implements OnInit, OnDestroy {
 
 	@Input()
 	workbasket: Workbasket;
+	@Input()
+	action: string;
+	badgeMessage = '';
 
 	accessItemsResource: WorkbasketAccessItemsResource;
 	accessItems: Array<WorkbasketAccessItems>;
@@ -29,11 +36,19 @@ export class AccessItemsComponent implements OnInit, OnDestroy {
 	modalTitle: string;
 	modalErrorMessage: string;
 	accessItemsubscription: Subscription;
+	savingAccessItemsSubscription: Subscription;
 
 
-	constructor(private workbasketService: WorkbasketService, private alertService: AlertService) { }
+	constructor(
+		private workbasketService: WorkbasketService,
+		private alertService: AlertService,
+		private errorModalService: ErrorModalService,
+		private savingWorkbaskets: SavingWorkbasketService) { }
 
 	ngOnInit() {
+		if (!this.workbasket._links.accessItems) {
+			return;
+		}
 		this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href)
 			.subscribe((accessItemsResource: WorkbasketAccessItemsResource) => {
 				this.accessItemsResource = accessItemsResource;
@@ -41,7 +56,17 @@ export class AccessItemsComponent implements OnInit, OnDestroy {
 				this.accessItemsClone = this.cloneAccessItems(this.accessItems);
 				this.accessItemsResetClone = this.cloneAccessItems(this.accessItems);
 			})
-
+		this.savingAccessItemsSubscription = this.savingWorkbaskets.triggeredAccessItemsSaving()
+			.subscribe((savingInformation: SavingInformation) => {
+				if (this.action === ACTION.COPY) {
+					this.accessItemsResource._links.self.href = savingInformation.url;
+					this.setWorkbasketIdForCopy(savingInformation.workbasketId);
+					this.onSave();
+				}
+			})
+		if (this.action === ACTION.COPY) {
+			this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
+		}
 	}
 
 	addAccessItem() {
@@ -70,12 +95,11 @@ export class AccessItemsComponent implements OnInit, OnDestroy {
 					AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
 				this.requestInProgress = false;
 				return true;
-			},
-				error => {
-					this.modalErrorMessage = error.message;
-					this.requestInProgress = false;
-					return false;
-				})
+			}, error => {
+				this.errorModalService.triggerError(new ErrorModel(`There was error while saving your workbasket's access items`, error))
+				this.requestInProgress = false;
+				return false;
+			})
 		return false;
 	}
 
@@ -86,8 +110,15 @@ export class AccessItemsComponent implements OnInit, OnDestroy {
 		});
 		return accessItemClone;
 	}
+	private setWorkbasketIdForCopy(workbasketId: string) {
+		this.accessItems.forEach(element => {
+			element.accessItemId = undefined;
+			element.workbasketId = workbasketId;
+		});
+	}
 
 	ngOnDestroy(): void {
 		if (this.accessItemsubscription) { this.accessItemsubscription.unsubscribe(); }
+		if (this.savingAccessItemsSubscription) { this.savingAccessItemsSubscription.unsubscribe(); }
 	}
 }

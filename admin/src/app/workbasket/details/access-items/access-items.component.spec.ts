@@ -13,6 +13,9 @@ import { Observable } from 'rxjs/Observable';
 import { AccessItemsComponent } from './access-items.component';
 import { WorkbasketAccessItems } from '../../../model/workbasket-access-items';
 import { WorkbasketAccessItemsResource } from '../../../model/workbasket-access-items-resource';
+import { ICONTYPES } from '../../../model/type';
+import { ErrorModalService } from '../../../services/error-modal.service';
+import { SavingWorkbasketService, SavingInformation } from '../../../services/saving-workbaskets/saving-workbaskets.service';
 
 describe('AccessItemsComponent', () => {
 	let component: AccessItemsComponent;
@@ -23,7 +26,7 @@ describe('AccessItemsComponent', () => {
 		TestBed.configureTestingModule({
 			declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent],
 			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
-			providers: [WorkbasketService, AlertService]
+			providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService]
 
 		})
 			.compileComponents();
@@ -32,7 +35,7 @@ describe('AccessItemsComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(AccessItemsComponent);
 		component = fixture.componentInstance;
-		component.workbasket = new Workbasket('1', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+		component.workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
 			new Links(undefined, undefined, { 'href': 'someurl' }));
 		workbasketService = TestBed.get(WorkbasketService);
 		alertService = TestBed.get(AlertService);

@@ -20,6 +20,9 @@ import { Workbasket } from '../../../model/workbasket';
 import { WorkbasketDistributionTargetsResource } from '../../../model/workbasket-distribution-targets-resource';
 import { FilterModel } from '../../../shared/filter/filter.component';
 import { DualListComponent } from './dual-list/dual-list.component';
+import { ICONTYPES } from '../../../model/type';
+import { ErrorModalService } from '../../../services/error-modal.service';
+import { SavingWorkbasketService, SavingInformation } from '../../../services/saving-workbaskets/saving-workbaskets.service';
 
 const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource({
 	'workbaskets': new Array<WorkbasketSummary>(
@@ -43,7 +46,7 @@ describe('DistributionTargetsComponent', () => {
 	let component: DistributionTargetsComponent;
 	let fixture: ComponentFixture<DistributionTargetsComponent>;
 	let workbasketService;
-	const workbasket = new Workbasket('1', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+	const workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
 		new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
 
 	beforeEach(async(() => {
@@ -51,7 +54,7 @@ describe('DistributionTargetsComponent', () => {
 			imports: [AngularSvgIconModule, HttpClientModule, HttpModule, JsonpModule],
 			declarations: [DistributionTargetsComponent, SpinnerComponent, GeneralMessageModalComponent,
 				FilterComponent, SelectWorkBasketPipe, IconTypeComponent, DualListComponent],
-			providers: [WorkbasketService, AlertService]
+			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService]
 		})
 			.compileComponents();
 	}));
