@@ -1,15 +1,15 @@
 <div class="no-gutter">
-    <div class="{{showDetail? 'col-md-4 hidden-xs hidden-sm':'col-xs-12 col-md-4'}} vertical-right-divider" >
+    <div class="{{showDetail? 'col-md-4 hidden-xs hidden-sm':'col-xs-12 col-md-4'}} vertical-right-divider">
         <router-outlet name="master"></router-outlet>
     </div>
-    <div class="{{showDetail? 'col-xs-12 col-md-8': 'hidden'}}" >
+    <div class="{{showDetail? 'col-xs-12 col-md-8': 'hidden'}}">
         <router-outlet name="detail">
         </router-outlet>
     </div>
     <div class="{{showDetail? 'hidden': 'hidden-xs hidden-sm col-md-8 container-no-detail'}}">
-        <div class = "center-block no-detail" >
-            <h3 class = "grey">Select a worbasket</h3>
+        <div class="center-block no-detail">
+            <h3 class="grey">Select a worbasket</h3>
             <svg-icon class="img-responsive no-detail-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
         </div>
-    </div>
+    </div>    
 </div>

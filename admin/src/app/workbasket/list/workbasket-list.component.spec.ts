@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { WorkbasketListComponent } from './workbasket-list.component';
+import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar/workbasket-list-toolbar.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { WorkbasketSummary } from '../../model/workbasket-summary';
@@ -17,7 +18,9 @@ import { RemoveNoneTypePipe } from '../../pipes/remove-none-type';
 import { MapValuesPipe } from '../../pipes/map-values.pipe';
 import { WorkbasketSummaryResource } from '../../model/workbasket-summary-resource';
 import { Links } from '../../model/links';
-
+import { ErrorModalService } from '../../services/error-modal.service';
+import { RequestInProgressService } from '../../services/request-in-progress.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -55,7 +58,7 @@ describe('WorkbasketListComponent', () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [WorkbasketListComponent, DummyDetailComponent, SpinnerComponent, FilterComponent,
+			declarations: [WorkbasketListComponent, DummyDetailComponent, SpinnerComponent, FilterComponent, WorkbasketListToolbarComponent,
 				RemoveNoneTypePipe, IconTypeComponent, SortComponent, MapValuesPipe],
 			imports: [
 				AngularSvgIconModule,
@@ -63,7 +66,7 @@ describe('WorkbasketListComponent', () => {
 				HttpClientModule,
 				RouterTestingModule.withRoutes(routes)
 			],
-			providers: [WorkbasketService]
+			providers: [WorkbasketService, ErrorModalService, RequestInProgressService, AlertService]
 		})
 			.compileComponents();
 
@@ -102,19 +105,19 @@ describe('WorkbasketListComponent', () => {
 			expect(debugElement.querySelector('#wb-list-container')).toBeDefined();
 			expect(debugElement.querySelector('#collapsedMenufilterWb')).toBeDefined();
 			expect(debugElement.querySelector('taskana-filter')).toBeDefined();
-			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
+			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(2);
 		});
 
 	it('should have two workbasketsummary rows created with the second one selected.', () => {
-		expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
-		expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class')).toBe('list-group-item');
-		expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class')).toBe('list-group-item active');
+		expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(2);
+		expect(debugElement.querySelectorAll('#wb-list-container > li')[0].getAttribute('class')).toBe('list-group-item');
+		expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class')).toBe('list-group-item active');
 	});
 
 	it('should have two workbasketsummary rows created with two different icons: user and users', () => {
-		expect(debugElement.querySelectorAll('#wb-list-container > li')[1]
+		expect(debugElement.querySelectorAll('#wb-list-container > li')[0]
 			.querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
-		expect(debugElement.querySelectorAll('#wb-list-container > li')[2]
+		expect(debugElement.querySelectorAll('#wb-list-container > li')[1]
 			.querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
 	});
 

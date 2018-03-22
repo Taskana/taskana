@@ -7,6 +7,10 @@ import { PermissionService } from '../../services/permission.service';
 import { Subscription } from 'rxjs/Subscription';
 import { WorkbasketSummary } from '../../model/workbasket-summary';
 import { WorkbasketSummaryResource } from '../../model/workbasket-summary-resource';
+import { ICONTYPES } from '../../model/type';
+import { ErrorModel } from '../../model/modal-error';
+import { ErrorModalService } from '../../services/error-modal.service';
+import { ACTION } from '../../model/action';
 
 @Component({
 	selector: 'taskana-workbasket-details',
@@ -17,10 +21,12 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
 
 	workbasket: Workbasket;
-	selectedId = -1;
+	workbasketCopy: Workbasket;
+	selectedId: string = undefined;
 	showDetail = false;
 	hasPermission = true;
 	requestInProgress = false;
+	action: string;
 
 	private workbasketSelectedSubscription: Subscription;
 	private workbasketSubscription: Subscription;
@@ -32,22 +38,37 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		private route: ActivatedRoute,
 		private router: Router,
 		private masterAndDetailService: MasterAndDetailService,
-		private permissionService: PermissionService) { }
+		private permissionService: PermissionService,
+		private errorModalService: ErrorModalService) { }
 
 
 
 	ngOnInit() {
 		this.workbasketSelectedSubscription = this.service.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
 			this.workbasket = undefined;
-			this.requestInProgress = true;
 			this.getWorkbasketInformation(workbasketIdSelected);
 		});
 
 		this.routeSubscription = this.route.params.subscribe(params => {
-			const id = params['id'];
+			let id = params['id'];
+			this.action = undefined;
+			if (id && id.indexOf('new-workbasket') !== -1) {
+				this.action = ACTION.CREATE;
+				id = undefined;
+				this.getWorkbasketInformation(id);
+			} else if (id && id.indexOf('copy-workbasket') !== -1) {
+				if (!this.selectedId) {
+					this.router.navigate(['./'], { relativeTo: this.route.parent });
+					return;
+				}
+				this.action = ACTION.COPY;
+				this.workbasketCopy = this.workbasket;
+				id = undefined
+				this.getWorkbasketInformation(id, this.selectedId);
+			}
+
 			if (id && id !== '') {
-				this.selectedId = id;
-				this.service.selectWorkBasket(id);
+				this.selectWorkbasket(id);
 			}
 		});
 
@@ -69,8 +90,25 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		this.router.navigate(['./'], { relativeTo: this.route.parent });
 	}
 
-	private getWorkbasketInformation(workbasketIdSelected: string) {
-		this.service.getWorkBasketsSummary().subscribe((workbasketSummary: WorkbasketSummaryResource) => {
+	private selectWorkbasket(id: string) {
+		this.selectedId = id;
+		this.service.selectWorkBasket(id);
+	}
+
+	private getWorkbasketInformation(workbasketIdSelected: string, copyId: string = undefined) {
+		this.requestInProgress = true;
+		this.service.getWorkBasketsSummary(true).subscribe((workbasketSummary: WorkbasketSummaryResource) => {
+			if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
+				this.workbasket = new Workbasket(undefined);
+				this.workbasket._links.self = workbasketSummary._links.self;
+				this.requestInProgress = false;
+			} else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
+				this.workbasket = { ...this.workbasketCopy };
+				this.workbasket._links.self = workbasketSummary._links.self;
+				this.workbasket.workbasketId = undefined;
+				this.requestInProgress = false;
+			}
+
 			const workbasketSummarySelected = this.getWorkbasketSummaryById(workbasketSummary._embedded.workbaskets, workbasketIdSelected);
 			if (workbasketSummarySelected && workbasketSummarySelected._links) {
 				this.workbasketSubscription = this.service.getWorkBasket(workbasketSummarySelected._links.self.href).subscribe(workbasket => {

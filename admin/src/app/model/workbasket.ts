@@ -1,4 +1,5 @@
 import { Links } from './links';
+import { ICONTYPES } from './type';
 export class Workbasket {
 
     public static equals(org: Workbasket, comp: Workbasket): boolean {
@@ -28,7 +29,7 @@ export class Workbasket {
         public created: string = undefined,
         public key: string = undefined,
         public domain: string = undefined,
-        public type: string = undefined,
+        public type: ICONTYPES = ICONTYPES.PERSONAL,
         public modified: string = undefined,
         public name: string = undefined,
         public description: string = undefined,
@@ -41,6 +42,6 @@ export class Workbasket {
         public orgLevel2: string = undefined,
         public orgLevel3: string = undefined,
         public orgLevel4: string = undefined,
-        public _links: Links = undefined) {
+        public _links: Links = new Links()) {
     }
 }

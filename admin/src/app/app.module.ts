@@ -17,6 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  */
 import { AppComponent } from './app.component';
 import { WorkbasketListComponent } from './workbasket/list/workbasket-list.component';
+import { WorkbasketListToolbarComponent } from './workbasket/list/workbasket-list-toolbar/workbasket-list-toolbar.component'
 import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component';
 import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component';
 import { DistributionTargetsComponent } from './workbasket/details/distribution-targets/distribution-targets.component';
@@ -42,6 +43,11 @@ import { HttpClientInterceptor } from './services/http-client-interceptor.servic
 import { PermissionService } from './services/permission.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AlertService } from './services/alert.service';
+import { ErrorModalService } from './services/error-modal.service';
+import { RequestInProgressService } from './services/request-in-progress.service';
+import { SavingWorkbasketService } from './services/saving-workbaskets/saving-workbaskets.service';
+
+
 
 /**
  * Pipes
@@ -66,6 +72,7 @@ const MODULES = [
 const DECLARATIONS = [
 	AppComponent,
 	WorkbasketListComponent,
+	WorkbasketListToolbarComponent,
 	AccessItemsComponent,
 	WorkbasketDetailsComponent,
 	MasterAndDetailComponent,
@@ -96,7 +103,10 @@ const DECLARATIONS = [
 			useClass: HttpClientInterceptor,
 			multi: true
 		},
-		AlertService
+		AlertService,
+		ErrorModalService,
+		RequestInProgressService,
+		SavingWorkbasketService
 	],
 	bootstrap: [AppComponent]
 })

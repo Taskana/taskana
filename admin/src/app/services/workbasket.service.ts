@@ -75,7 +75,7 @@ export class WorkbasketService {
 	// POST
 	createWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {
 		return this.httpClient
-			.post<Workbasket>(url, this.httpOptions);
+			.post<Workbasket>(url, workbasket, this.httpOptions);
 	}
 	// PUT
 	updateWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {

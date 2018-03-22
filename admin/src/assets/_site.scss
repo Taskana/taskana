@@ -34,8 +34,7 @@
 .container-scrollable {
     max-height: calc(100vh - 55px);
     height: calc(100vh - 55px);
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .vertical-center {
@@ -99,6 +98,12 @@
 }
 
 
+.panel-default > .panel-heading .badge.warning {
+    background-color: #f0ad4e;
+}
+
+
+
 /*
  *Remove bootstrap cols padding for master and detail component
 */
@@ -129,10 +134,6 @@
 
 .no-border-bottom {
     border-bottom: none;
-}
-
-li > div.row > dl {
-    margin-bottom: 0px;
 }
 
 .selected {

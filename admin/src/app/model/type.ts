@@ -1,0 +1,9 @@
+
+
+export enum ICONTYPES {
+	NONE = '',
+	PERSONAL = 'PERSONAL',
+	GROUP = 'GROUP',
+	CLEARANCE = 'CLEARANCE',
+	TOPIC = 'TOPIC'
+}

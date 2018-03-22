@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { IconTypeComponent, ICONTYPES } from '../type-icon/icon-type.component'
+import { IconTypeComponent } from '../type-icon/icon-type.component'
+import { ICONTYPES } from '../../model/type';
 
 export class FilterModel {
 	type: string;

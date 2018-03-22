@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
-import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
+import { ErrorModalService } from './services/error-modal.service';
+import { ErrorModel } from './model/modal-error';
+import { RequestInProgressService } from './services/request-in-progress.service';
 
 @Component({
 	selector: 'taskana-root',
@@ -15,7 +18,15 @@ export class AppComponent implements OnInit {
 	workplaceUrl: string = environment.taskanaWorkplaceUrl;
 	workbasketsRoute = true;
 
-	constructor(private route: ActivatedRoute, private router: Router) {
+	modalErrorMessage = '';
+	modalTitle = '';
+
+	requestInProgress = false;
+
+	constructor(
+		private router: Router,
+		private errorModalService: ErrorModalService,
+		private requestInProgressService: RequestInProgressService) {
 	}
 
 	ngOnInit() {
@@ -26,5 +37,14 @@ export class AppComponent implements OnInit {
 				}
 			}
 		});
+
+		this.errorModalService.getError().subscribe((error: ErrorModel) => {
+			this.modalErrorMessage = error.message;
+			this.modalTitle = error.title;
+		})
+
+		this.requestInProgressService.getRequestInProgress().subscribe((value: boolean) => {
+			this.requestInProgress = value;
+		})
 	}
 }
