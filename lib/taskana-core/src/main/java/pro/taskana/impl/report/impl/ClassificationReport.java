@@ -11,7 +11,7 @@ import pro.taskana.impl.report.Report;
 public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
     public ClassificationReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
-        super(timeIntervalColumnHeaders);
+        super(timeIntervalColumnHeaders, "CLASSIFICATION KEYS");
     }
 
 }
