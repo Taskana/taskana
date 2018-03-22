@@ -8,7 +8,7 @@ import pro.taskana.TaskState;
 import pro.taskana.impl.report.Report;
 
 /**
- * TODO.
+ * The TaskStatusReport displays the amount of tasks, differentiated by their state and grouped by domain.
  */
 public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHeader> {
 
@@ -19,7 +19,7 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
     public TaskStatusReport(List<TaskState> filter) {
         super((filter != null ? filter.stream() : Arrays.stream(TaskState.values()))
             .map(TaskStatusColumnHeader::new)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList()), "DOMAINS");
     }
 
 }

@@ -20,10 +20,40 @@ public abstract class Report<Item extends QueryItem, ColumnHeader extends Report
     protected List<ColumnHeader> columnHeaders = new ArrayList<>();
     private Map<String, ReportRow<Item>> reportRows = new LinkedHashMap<>();
     private ReportRow<Item> sumRow;
+    private String rowDesc;
 
-    public Report(List<ColumnHeader> columnHeaders) {
+    public Report(List<ColumnHeader> columnHeaders, String rowDesc) {
+        this.rowDesc = rowDesc;
         sumRow = new ReportRow<>(columnHeaders.size());
         this.columnHeaders.addAll(columnHeaders);
+    }
+
+    public final Map<String, ReportRow<Item>> getReportRows() {
+        return reportRows;
+    }
+
+    public final ReportRow<Item> getSumRow() {
+        return sumRow;
+    }
+
+    public final List<ColumnHeader> getColumnHeaders() {
+        return columnHeaders;
+    }
+
+    public final String getRowDesc() {
+        return rowDesc;
+    }
+
+    public ReportRow<Item> getRow(String key) {
+        return reportRows.get(key);
+    }
+
+    public final Set<String> rowTitles() {
+        return reportRows.keySet();
+    }
+
+    public final int rowSize() {
+        return reportRows.size();
     }
 
     public final void addItem(Item item) {
@@ -51,27 +81,7 @@ public abstract class Report<Item extends QueryItem, ColumnHeader extends Report
         items.forEach(this::addItem);
     }
 
-    public ReportRow<Item> getRow(String key) {
-        return reportRows.get(key);
-    }
-
-    public final ReportRow<Item> getSumRow() {
-        return sumRow;
-    }
-
-    public Set<String> rowTitles() {
-        return reportRows.keySet();
-    }
-
-    public final int rowSize() {
-        return reportRows.size();
-    }
-
     protected ReportRow<Item> createReportRow(int columnSize) {
         return new ReportRow<>(columnSize);
-    }
-
-    public List<ColumnHeader> getColumnHeaders() {
-        return columnHeaders;
     }
 }
