@@ -323,7 +323,7 @@ function main {
     fi
 
     if [[ -n "$MANIFEST" ]]; then
-        $debug sed -i "s|$MANIFEST_PREFIX.*\.jar|$MANIFEST_PREFIX-$newVersion-SNAPSHOT.jar|" "$MANIFEST"
+        $debug sed -i "s|$MANIFEST_PREFIX.*\.jar|$MANIFEST_PREFIX-${TRAVIS_TAG##v}.jar|" "$MANIFEST"
     fi
     
     if [[ "$PUSH_POMS" == 'YES' ]]; then 
