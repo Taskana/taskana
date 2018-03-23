@@ -1,6 +1,7 @@
 <li id="wb-action-toolbar" class="list-group-item tab-align">
     <div class="row">
         <div class="col-xs-9">
+          <taskana-import-export-component [currentSelection]="'workbaskets'"></taskana-import-export-component>
             <button type="button" (click)="addWorkbasket()" data-toggle="tooltip" title="Add" class="btn btn-default">
                 <span class="glyphicon glyphicon-plus green" aria-hidden="true"></span>
             </button>

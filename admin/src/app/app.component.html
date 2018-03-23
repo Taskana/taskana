@@ -1,51 +1,51 @@
 <nav class="navbar navbar-fixed-top">
-    <div class="navbar show no-border-radius navbar-inverse no-gutter">
-        <div class="col-xs-3 col-md-4">
-            <svg-icon class="logo hidden visible-xs visible-sm" src="./assets/icons/logo.svg"></svg-icon>
-            <ul class="nav logo">
-                <svg-icon class="logo hidden-xs hidden-sm" src="./assets/icons/logo.svg"></svg-icon>
-                <p class="navbar-brand no-margin hidden-xs hidden-sm">
-                    <a [href]="adminUrl">{{title}}</a>
-                </p>
-            </ul>
-        </div>
-        <div class="col-xs-8 col-md-7 logo-container">
-            <ul class="nav nav-tabs no-border-bottom" id="myTabs" role="tablist">
-                <li role="presentation" class="{{workbasketsRoute? 'active' : 'inactive'}}" role="tab" data-toggle="tab">
-                    <a routerLink="/workbaskets" aria-controls="Work baskets" routerLinkActive="active">Workbaskets</a>
-                </li>
-                <li role="presentation" class="{{workbasketsRoute? 'inactive' : 'active'}}" role="tab" data-toggle="tab">
-                    <a routerLink="/clasifications" aria-controls="Clasifications" routerLinkActive="active">Clasifications</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-xs-1">
-            <button type="button" class="navbar-toggle collapsed show" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-                aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
+  <div class="navbar show no-border-radius navbar-inverse no-gutter">
+    <div class="col-xs-3 col-md-4">
+      <svg-icon class="logo hidden visible-xs visible-sm" src="./assets/icons/logo.svg"></svg-icon>
+      <ul class="nav logo">
+        <svg-icon class="logo hidden-xs hidden-sm" src="./assets/icons/logo.svg"></svg-icon>
+        <p class="navbar-brand no-margin hidden-xs hidden-sm">
+          <a [href]="adminUrl">{{title}}</a>
+        </p>
+      </ul>
     </div>
-    <div id="navbar" class="collapse pull-right navbar-inverse" data-html="false">
-        <ul class="nav navbar-nav navbar-right content-margin">
-            <li>
-                <a [href]="monitorUrl">Monitor</a>
-            </li>
-            <li>
-                <a [href]="workplaceUrl">Workplace</a>
-            </li>
-        </ul>
+    <div class="col-xs-8 col-md-7 logo-container">
+      <ul class="nav nav-tabs no-border-bottom" id="myTabs" role="tablist">
+        <li role="presentation" class="{{workbasketsRoute? 'active' : 'inactive'}}" role="tab" data-toggle="tab">
+          <a routerLink="/workbaskets" aria-controls="Work baskets" routerLinkActive="active">Workbaskets</a>
+        </li>
+        <li role="presentation" class="{{workbasketsRoute? 'inactive' : 'active'}}" role="tab" data-toggle="tab">
+          <a routerLink="/classifications" aria-controls="Classifications" routerLinkActive="active">Classifications</a>
+        </li>
+      </ul>
     </div>
+    <div class="col-xs-1">
+      <button type="button" class="navbar-toggle collapsed show" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+              aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+  </div>
+  <div id="navbar" class="collapse pull-right navbar-inverse" data-html="false">
+    <ul class="nav navbar-nav navbar-right content-margin">
+      <li>
+        <a [href]="monitorUrl">Monitor</a>
+      </li>
+      <li>
+        <a [href]="workplaceUrl">Workplace</a>
+      </li>
+    </ul>
+  </div>
 </nav>
 
 <div class="container-fluid container-main">
-    <div class="row ">
-        <router-outlet></router-outlet>
-        <taskana-general-message-modal *ngIf="modalErrorMessage" [(message)]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
-        <taskana-spinner [isRunning]="requestInProgress" isModal="true"></taskana-spinner>
-        <taskana-alert></taskana-alert>
-    </div>
+  <div class="row ">
+    <router-outlet></router-outlet>
+    <taskana-general-message-modal *ngIf="modalErrorMessage" [(message)]="modalErrorMessage" [title]="modalTitle" error="true"></taskana-general-message-modal>
+    <taskana-spinner [isRunning]="requestInProgress" isModal="true"></taskana-spinner>
+    <taskana-alert></taskana-alert>
+  </div>
 </div>

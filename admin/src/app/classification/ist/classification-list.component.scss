@@ -1,0 +1,22 @@
+.classification-list-full-height {
+  height: calc(100vh - 55px);
+}
+
+.row.list-group {
+  margin-left: 2px;
+}
+
+.list-group > li {
+  border-left: none;
+  border-right: none;
+}
+
+a > label {
+  height: 2em;
+  width: 100%;
+}
+
+.tab-align {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+}

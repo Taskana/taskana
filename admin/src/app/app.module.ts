@@ -55,59 +55,67 @@ import { SavingWorkbasketService } from './services/saving-workbaskets/saving-wo
 import { MapValuesPipe } from './pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from './pipes/remove-none-type';
 import { SelectWorkBasketPipe } from './pipes/seleted-workbasket.pipe';
+import {WorkbasketDefinitionService} from './services/workbasketDefinition/workbasketDefinition.service';
+import {ClassificationService} from './services/classification.service';
+import {ImportExportComponent} from './import-export/import-export.component';
+import {ClassificationListComponent} from './classification/ist/classification-list.component';
 
 const MODULES = [
-	BrowserModule,
-	FormsModule,
-	TabsModule.forRoot(),
-	TreeModule,
-	AppRoutingModule,
-	AlertModule.forRoot(),
-	AngularSvgIconModule,
-	HttpClientModule,
-	BrowserAnimationsModule,
-	ReactiveFormsModule
+  BrowserModule,
+  FormsModule,
+  TabsModule.forRoot(),
+  TreeModule,
+  AppRoutingModule,
+  AlertModule.forRoot(),
+  AngularSvgIconModule,
+  HttpClientModule,
+  BrowserAnimationsModule,
+  ReactiveFormsModule
 ];
 
 const DECLARATIONS = [
-	AppComponent,
-	WorkbasketListComponent,
-	WorkbasketListToolbarComponent,
-	AccessItemsComponent,
-	WorkbasketDetailsComponent,
-	MasterAndDetailComponent,
-	WorkbasketInformationComponent,
-	NoAccessComponent,
-	SpinnerComponent,
-	FilterComponent,
-	IconTypeComponent,
-	AlertComponent,
-	GeneralMessageModalComponent,
-	DistributionTargetsComponent,
-	SortComponent,
-	DualListComponent,
-	MapValuesPipe,
-	RemoveNoneTypePipe,
-	SelectWorkBasketPipe
+  AppComponent,
+  WorkbasketListComponent,
+  WorkbasketListToolbarComponent,
+  AccessItemsComponent,
+  WorkbasketDetailsComponent,
+  MasterAndDetailComponent,
+  WorkbasketInformationComponent,
+  NoAccessComponent,
+  SpinnerComponent,
+  FilterComponent,
+  IconTypeComponent,
+  AlertComponent,
+  GeneralMessageModalComponent,
+  DistributionTargetsComponent,
+  SortComponent,
+  DualListComponent,
+  MapValuesPipe,
+  RemoveNoneTypePipe,
+  SelectWorkBasketPipe,
+  ClassificationListComponent,
+  ImportExportComponent
 ];
 
 @NgModule({
-	declarations: DECLARATIONS,
-	imports: MODULES,
-	providers: [
-		WorkbasketService,
-		MasterAndDetailService,
-		PermissionService,
-		{
-			provide: HTTP_INTERCEPTORS,
-			useClass: HttpClientInterceptor,
-			multi: true
-		},
-		AlertService,
-		ErrorModalService,
-		RequestInProgressService,
-		SavingWorkbasketService
-	],
-	bootstrap: [AppComponent]
+  declarations: DECLARATIONS,
+  imports: MODULES,
+  providers: [
+    WorkbasketService,
+    MasterAndDetailService,
+    PermissionService,
+    ClassificationService,
+    WorkbasketDefinitionService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpClientInterceptor,
+      multi: true
+    },
+    AlertService,
+    ErrorModalService,
+    RequestInProgressService,
+    SavingWorkbasketService
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

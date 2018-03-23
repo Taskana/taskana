@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, Routes, ActivatedRoute, NavigationStart, RouterEvent } from '@angular/router';
-import { MasterAndDetailService } from '../../services/master-and-detail.service'
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationStart, Router, RouterEvent} from '@angular/router';
+import {MasterAndDetailService} from '../../services/master-and-detail.service'
 
 @Component({
     selector: 'taskana-master-and-detail',
@@ -9,7 +9,7 @@ import { MasterAndDetailService } from '../../services/master-and-detail.service
 
 })
 export class MasterAndDetailComponent implements OnInit {
-    private detailRoutes: Array<string> = ['/workbaskets/(detail', 'clasifications'];
+    private detailRoutes: Array<string> = ['/workbaskets/(detail', 'classifications'];
     private sub: any;
 
     showDetail: Boolean = false;

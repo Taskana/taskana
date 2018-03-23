@@ -1,11 +1,5 @@
 package pro.taskana.rest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
@@ -35,6 +29,12 @@ import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketDefinitionMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Controller for all {@link WorkbasketDefinition} related endpoints.
@@ -83,10 +83,9 @@ public class WorkbasketDefinitionController {
      * we want to have an option to import all settings at once. When a logical equal (key and domain are equal)
      * workbasket already exists an update will be executed. Otherwise a new workbasket will be created.
      *
-     * @param definitions
-     *            the list of workbasket definitions which will be imported to the current system.
+     * @param definitions the list of workbasket definitions which will be imported to the current system.
      * @return Return answer is determined by the status code: 200 - all good 400 - list state error (referring to non
-     *         existing id's) 401 - not authorized
+     * existing id's) 401 - not authorized
      */
     @PostMapping(path = "/import")
     @Transactional(rollbackFor = Exception.class)
@@ -107,15 +106,22 @@ public class WorkbasketDefinitionController {
             for (WorkbasketDefinition definition : definitions) {
                 WorkbasketResource res = definition.workbasketResource;
                 Workbasket workbasket;
+                String oldId = res.workbasketId;
                 if (systemIds.containsKey(logicalId(res))) {
-                    String oldId = res.workbasketId;
                     res.workbasketId = systemIds.get(logicalId(res));
                     workbasket = workbasketService.updateWorkbasket(
                         workbasketMapper.toModel(res));
-                    res.workbasketId = oldId;
                 } else {
+                    res.workbasketId = null;
                     workbasket = workbasketService.createWorkbasket(
                         workbasketMapper.toModel(res));
+                }
+                res.workbasketId = oldId;
+
+                // Since we would have a n² runtime when doing a lookup and updating the access items we decided to
+                // simply delete all existing accessItems and create new ones.
+                for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(workbasket.getId())) {
+                    workbasketService.deleteWorkbasketAccessItem(accessItem.getId());
                 }
                 for (WorkbasketAccessItemResource authorization : definition.authorizations) {
                     workbasketService.createWorkbasketAccessItem(
@@ -132,8 +138,7 @@ public class WorkbasketDefinitionController {
                     if (idConversion.containsKey(oldId)) {
                         distributionTargets.add(idConversion.get(oldId));
                     } else {
-                        throw new WorkbasketNotFoundException(
-                            oldId,
+                        throw new InvalidWorkbasketException(
                             String.format(
                                 "invalid import state: Workbasket '%s' does not exist in the given import list",
                                 oldId));
