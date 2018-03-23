@@ -1,0 +1,244 @@
+
+.placeholder {
+    margin-bottom: 20px;
+}
+
+.placeholder img {
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.no-margin {
+    margin: 0px;
+}
+
+.content-margin {
+    margin: 0px 10px 0px 10px;
+}
+
+.no-border-radius {
+    border-radius: 0px;
+}
+/*
+ * Base structure
+ */
+/* Move down content because we have a fixed navbar that is 55px tall */
+
+.container-main {
+    margin-top: 55px;
+    overflow-y: hidden;
+    /*Min mobile view size*/
+    min-width: 420px;
+}
+
+.container-scrollable {
+    max-height: calc(100vh - 55px);
+    height: calc(100vh - 55px);
+    overflow: hidden;
+}
+
+.vertical-center {
+    /* Make it a flex container */
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    /* In legacy web browsers such as Firefox 9
+     we need to specify the width of the flex container */
+    width: 100%;
+
+    /* Also 'margin: 0 auto' doesn't have any effect on flex items in such web browsers
+     hence the bootstrap's container won't be aligned to the center anymore.
+     Therefore, we should use the following declarations to get it centered again */
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+/*
+    Colors
+*/
+.white {
+    color: white;
+    & svg {
+        fill: white;
+   }
+ }
+
+.blue{
+    color: #337ab7;
+    & svg {
+        fill: #337ab7;
+    }
+}
+
+.green {
+    color: green;
+    & svg {
+        fill: green;
+    }
+}
+
+.grey {
+    color:grey;
+    & svg {
+        fill: grey;
+    }
+}
+
+.brown {
+    color: #f0ad4e;
+    & svg {
+        fill: #f0ad4e;
+    }
+}
+
+
+.panel-default > .panel-heading .badge.warning {
+    background-color: #f0ad4e;
+}
+
+
+
+/*
+ *Remove bootstrap cols padding for master and detail component
+*/
+.no-gutter > taskana-master-and-detail > [class*='col-'] {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.small {
+    width: 16px;
+    height: 16px;
+}
+
+.dropdown-menu.action {
+    min-width: 0px;
+}
+
+.footer-space {
+    max-height: calc(100vh - 140px);
+    height: calc(100vh - 140px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.margin-right {
+    margin-right: 2px;
+}
+
+.no-border-bottom {
+    border-bottom: none;
+}
+
+.selected {
+    z-index: 2;
+    background-color: #f5f5f5;
+    border-color: #f5f5f5;
+}
+
+.form-group.required .control-label:after {
+    content: " *";
+    color: red;
+}
+
+
+.user-select {
+    margin-left: 2px;
+}
+
+.dropdown-menu-users {
+    min-width: 0px;
+}
+
+.no-gutter > [class*='col-'] {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.table-center > thead > tr > th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-center > tbody > tr > td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-center > tbody > tr > td.text-align {
+    text-align: left;
+}
+
+.table-center > thead > tr > th.text-align {
+    text-align: left;
+}
+
+.btn.remove {
+    color: crimson;
+}
+
+.dropdown-menu-users >li {
+    margin-bottom: 5px;
+}
+
+
+.toolbar {
+    padding: 13px 15px;
+}
+
+.open > .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+}
+  
+.dropdown-menu {
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: opacity 300ms ease, visibility 300ms ease;
+    -moz-transition: opacity 300ms ease, visibility 300ms ease;
+    -o-transition: opacity 300ms ease, visibility 300ms ease;
+    transition: opacity 300ms ease, visibility 300ms ease;
+}
+.vertical-align{
+    vertical-align: middle;
+}
+
+.panel-heading{
+    min-height: 60px;
+}
+.panel {
+    border-radius: 0px;
+}
+
+.centered-spinner {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.list-group-item {
+    padding: 5px 15px;
+}
+
+.dual-list > taskana-filter >.list-group-search {
+    margin-top: 4px;
+}
+
+taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets {
+    &> .panel{
+        border: none;
+        box-shadow: none;
+        margin-bottom: 0px;
+        &> .panel-body {
+            height: 80vh;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    }
+}
