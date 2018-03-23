@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -123,8 +124,9 @@ public class TaskanaEngineConfiguration {
     }
 
     private void initTaskanaRoles(Properties props, String rolesSeparator) {
-        List<String> validPropertyNames = Arrays.asList(TaskanaRole.USER.getPropertyName(),
-            TaskanaRole.BUSINESS_ADMIN.getPropertyName(), TaskanaRole.ADMIN.getPropertyName());
+        List<String> validPropertyNames = Arrays.stream(TaskanaRole.values())
+            .map(TaskanaRole::getPropertyName)
+            .collect(Collectors.toList());
         for (Object obj : props.keySet()) {
             String propertyName = ((String) obj);
             if (validPropertyNames.contains(propertyName.toLowerCase().trim())) {
@@ -186,16 +188,8 @@ public class TaskanaEngineConfiguration {
 
     private void ensureRoleMapIsFullyInitialized() {
         // make sure that roleMap does not return null for any role
-        if (!roleMap.containsKey(TaskanaRole.ADMIN)) {
-            roleMap.put(TaskanaRole.ADMIN, new HashSet<>());
-        }
-        if (!roleMap.containsKey(TaskanaRole.BUSINESS_ADMIN)) {
-            roleMap.put(TaskanaRole.BUSINESS_ADMIN, new HashSet<>());
-        }
-
-        if (!roleMap.containsKey(TaskanaRole.USER)) {
-            roleMap.put(TaskanaRole.USER, new HashSet<>());
-        }
+        Arrays.stream(TaskanaRole.values())
+            .forEach(role -> roleMap.putIfAbsent(role, new HashSet<>()));
     }
 
     public static DataSource createDefaultDataSource() {
