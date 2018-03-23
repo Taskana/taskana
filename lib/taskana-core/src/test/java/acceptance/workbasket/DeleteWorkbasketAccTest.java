@@ -15,6 +15,7 @@ import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -137,7 +138,7 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
     @Test
     public void testCreateAndDeleteWorkbasket()
         throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException, WorkbasketAlreadyExistException {
+        InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
