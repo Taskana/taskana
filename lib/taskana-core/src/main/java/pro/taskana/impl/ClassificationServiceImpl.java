@@ -3,7 +3,9 @@ package pro.taskana.impl;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,9 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.ClassificationMapper;
+import pro.taskana.mappings.JobMapper;
 import pro.taskana.mappings.TaskMapper;
 
 /**
@@ -144,10 +148,13 @@ public class ClassificationServiceImpl implements ClassificationService {
             if (oldClassification.getCategory() != classificationImpl.getCategory()) {
                 List<TaskSummary> taskSumamries = taskanaEngine.getTaskService()
                     .createTaskQuery()
-                    .classificationKeyIn(oldClassification.getKey())
-                    .classificationCategoryIn(oldClassification.getCategory())
+                    .classificationIdIn(oldClassification.getId())
                     .list();
-                if (!taskSumamries.isEmpty()) {
+
+                boolean categoryChanged = !(oldClassification.getCategory() == null
+                    ? classification.getCategory() == null
+                    : oldClassification.getCategory().equals(classification.getCategory()));
+                if (!taskSumamries.isEmpty() && categoryChanged) {
                     List<String> taskIds = new ArrayList<>();
                     taskSumamries.stream().forEach(ts -> taskIds.add(ts.getTaskId()));
                     taskMapper.updateClassificationCategoryOnChange(taskIds, classificationImpl.getCategory());
@@ -161,6 +168,23 @@ public class ClassificationServiceImpl implements ClassificationService {
                 }
             }
             classificationMapper.update(classificationImpl);
+            boolean priorityChanged = oldClassification.getPriority() != classification.getPriority();
+            boolean serviceLevelChanged = oldClassification.getServiceLevel() != classification.getServiceLevel();
+
+            if (priorityChanged || serviceLevelChanged) {
+                Map<String, String> args = new HashMap<>();
+                args.put(TaskUpdateOnClassificationChangeExecutor.CLASSIFICATION_ID, classificationImpl.getId());
+                args.put(TaskUpdateOnClassificationChangeExecutor.PRIORITY_CHANGED, String.valueOf(priorityChanged));
+                args.put(TaskUpdateOnClassificationChangeExecutor.SERVICE_LEVEL_CHANGED,
+                    String.valueOf(serviceLevelChanged));
+                Job job = new Job();
+                job.setCreated(Instant.now());
+                job.setState(Job.State.READY);
+                job.setExecutor(TaskUpdateOnClassificationChangeExecutor.class.getName());
+                job.setArguments(args);
+                taskanaEngine.getSqlSession().getMapper(JobMapper.class).insertJob(job);
+            }
+
             LOGGER.debug("Method updateClassification() updated the classification {}.",
                 classificationImpl);
             return classification;
@@ -304,6 +328,14 @@ public class ClassificationServiceImpl implements ClassificationService {
             if (classification == null) {
                 throw new ClassificationNotFoundException(classificationKey, domain,
                     "The classification " + classificationKey + "wasn't found in the domain " + domain);
+            }
+
+            List<AttachmentSummaryImpl> attachments = taskanaEngine.getSqlSession()
+                .getMapper(AttachmentMapper.class)
+                .findAttachmentSummariesByClassificationId(classification.getId());
+            if (!attachments.isEmpty()) {
+                throw new ClassificationInUseException("Classification " + classification.getId()
+                    + " is used by Attachment " + attachments.get(0).getId());
             }
 
             if (domain.equals("")) {

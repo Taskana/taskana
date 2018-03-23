@@ -18,6 +18,8 @@ import pro.taskana.impl.report.impl.DaysToWorkingDaysPreProcessor;
 import pro.taskana.impl.report.impl.DetailedClassificationReport;
 import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.impl.MonitorQueryItem;
+import pro.taskana.impl.report.impl.TaskQueryItem;
+import pro.taskana.impl.report.impl.TaskStatusReport;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.impl.WorkbasketLevelReport;
 import pro.taskana.impl.util.LoggerUtils;
@@ -336,6 +338,31 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         }
     }
 
+    @Override
+    public TaskStatusReport getTaskStatusReport() {
+        return getTaskStatusReport(null, null);
+    }
+
+    @Override
+    public TaskStatusReport getTaskStatusReport(List<String> domains) {
+        return getTaskStatusReport(domains, null);
+    }
+
+    @Override
+    public TaskStatusReport getTaskStatusReport(List<String> domains, List<TaskState> states) {
+        try {
+            taskanaEngineImpl.openConnection();
+
+            List<TaskQueryItem> tasks = taskMonitorMapper.getTasksCountByState(domains, states);
+            TaskStatusReport report = new TaskStatusReport(states);
+            report.addItems(tasks);
+            return report;
+
+        } finally {
+            taskanaEngineImpl.returnConnection();
+        }
+    }
+
     private List<SelectedItem> convertWorkingDaysToDays(List<SelectedItem> selectedItems,
         List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
 
@@ -354,5 +381,4 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(
             this.taskanaEngineImpl.getConfiguration().isGermanPublicHolidaysEnabled());
     }
-
 }

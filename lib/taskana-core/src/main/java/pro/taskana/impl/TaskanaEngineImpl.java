@@ -38,6 +38,7 @@ import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.ClassificationMapper;
 import pro.taskana.mappings.DistributionTargetMapper;
+import pro.taskana.mappings.JobMapper;
 import pro.taskana.mappings.ObjectReferenceMapper;
 import pro.taskana.mappings.QueryMapper;
 import pro.taskana.mappings.TaskMapper;
@@ -313,6 +314,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         configuration.addMapper(ObjectReferenceMapper.class);
         configuration.addMapper(QueryMapper.class);
         configuration.addMapper(AttachmentMapper.class);
+        configuration.addMapper(JobMapper.class);
         configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
         SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
         return SqlSessionManager.newInstance(localSessionFactory);

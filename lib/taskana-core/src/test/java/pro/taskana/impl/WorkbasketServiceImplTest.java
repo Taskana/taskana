@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -42,6 +43,7 @@ import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.mappings.DistributionTargetMapper;
+import pro.taskana.mappings.TaskMapper;
 import pro.taskana.mappings.WorkbasketAccessMapper;
 import pro.taskana.mappings.WorkbasketMapper;
 
@@ -59,6 +61,12 @@ public class WorkbasketServiceImplTest {
 
     @Mock
     private WorkbasketMapper workbasketMapperMock;
+
+    @Mock
+    private TaskMapper taskMapperMock;
+
+    @Mock
+    private SqlSession sqlSessionMock;
 
     @Mock
     private DistributionTargetMapper distributionTargetMapperMock;
@@ -509,10 +517,10 @@ public class WorkbasketServiceImplTest {
         Workbasket wb = createTestWorkbasket("WBI:0", "wb-key");
         List<TaskSummary> usages = Arrays.asList(new TaskSummaryImpl(), new TaskSummaryImpl());
         doReturn(wb).when(cutSpy).getWorkbasket(wb.getId());
-        doReturn(taskServiceMock).when(taskanaEngineImplMock).getTaskService();
-        doReturn(taskQueryMock).when(taskServiceMock).createTaskQuery();
-        doReturn(taskQueryMock).when(taskQueryMock).workbasketIdIn(wb.getId());
-        doReturn(usages).when(taskQueryMock).list();
+
+        doReturn(sqlSessionMock).when(taskanaEngineImplMock).getSqlSession();
+        doReturn(taskMapperMock).when(sqlSessionMock).getMapper(TaskMapper.class);
+        doReturn(new Long(1)).when(taskMapperMock).countTasksInWorkbasket(any());
 
         try {
             cutSpy.deleteWorkbasket(wb.getId());
@@ -536,19 +544,18 @@ public class WorkbasketServiceImplTest {
         throws NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException, WorkbasketNotFoundException {
         Workbasket wb = createTestWorkbasket("WBI:0", "wb-key");
         doReturn(wb).when(cutSpy).getWorkbasket(wb.getId());
-        doReturn(taskServiceMock).when(taskanaEngineImplMock).getTaskService();
-        doReturn(taskQueryMock).when(taskServiceMock).createTaskQuery();
-        doReturn(taskQueryMock).when(taskQueryMock).workbasketIdIn(wb.getId());
-        doReturn(new ArrayList<>()).when(taskQueryMock).list();
+        doReturn(sqlSessionMock).when(taskanaEngineImplMock).getSqlSession();
+        doReturn(taskMapperMock).when(sqlSessionMock).getMapper(TaskMapper.class);
+        doReturn(new Long(0)).when(taskMapperMock).countTasksInWorkbasket(any());
 
         cutSpy.deleteWorkbasket(wb.getId());
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getWorkbasket(wb.getId());
-        verify(taskanaEngineImplMock, times(1)).getTaskService();
-        verify(taskServiceMock, times(1)).createTaskQuery();
-        verify(taskQueryMock, times(1)).workbasketIdIn(wb.getId());
-        verify(taskQueryMock, times(1)).list();
+        verify(taskanaEngineImplMock, times(1)).getSqlSession();
+        verify(sqlSessionMock, times(1)).getMapper(TaskMapper.class);
+        verify(taskMapperMock, times(1)).countTasksInWorkbasket(any());
+
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsBySourceId(wb.getId());
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsByTargetId(wb.getId());
         verify(workbasketAccessMapperMock, times(1)).deleteAllAccessItemsForWorkbasketId(wb.getId());

@@ -1,12 +1,16 @@
 package pro.taskana.impl;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +20,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -32,6 +37,9 @@ import pro.taskana.impl.report.impl.CustomFieldValueReport;
 import pro.taskana.impl.report.impl.DetailedClassificationReport;
 import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.impl.DetailedReportRow;
+import pro.taskana.impl.report.impl.MonitorQueryItem;
+import pro.taskana.impl.report.impl.TaskQueryItem;
+import pro.taskana.impl.report.impl.TaskStatusReport;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.impl.WorkbasketLevelReport;
 import pro.taskana.mappings.TaskMonitorMapper;
@@ -73,8 +81,8 @@ public class TaskMonitorServiceImplTest {
         CustomField customField = CustomField.CUSTOM_1;
         List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
-        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
-        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
         monitorQueryItem.setKey("WBI:000000000000000000000000000000000001");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
@@ -110,8 +118,8 @@ public class TaskMonitorServiceImplTest {
         List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
             new TimeIntervalColumnHeader(0, 0));
 
-        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
-        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
         monitorQueryItem.setKey("WBI:000000000000000000000000000000000001");
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
@@ -146,8 +154,8 @@ public class TaskMonitorServiceImplTest {
         CustomField customField = CustomField.CUSTOM_1;
         List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
-        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
-        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
         monitorQueryItem.setKey("EXTERN");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
@@ -181,8 +189,8 @@ public class TaskMonitorServiceImplTest {
         List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
             new TimeIntervalColumnHeader(0, 0));
 
-        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
-        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
         monitorQueryItem.setKey("EXTERN");
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
@@ -216,8 +224,8 @@ public class TaskMonitorServiceImplTest {
         CustomField customField = CustomField.CUSTOM_1;
         List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
-        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
-        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
         monitorQueryItem.setKey("CLI:000000000000000000000000000000000001");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
@@ -253,8 +261,8 @@ public class TaskMonitorServiceImplTest {
         List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
             new TimeIntervalColumnHeader(0, 0));
 
-        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
-        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
         monitorQueryItem.setKey("CLI:000000000000000000000000000000000001");
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
@@ -369,8 +377,8 @@ public class TaskMonitorServiceImplTest {
         CustomField customField = CustomField.CUSTOM_1;
         List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
 
-        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
-        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
         monitorQueryItem.setKey("Geschaeftsstelle A");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
@@ -406,8 +414,8 @@ public class TaskMonitorServiceImplTest {
         List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
             new TimeIntervalColumnHeader(0, 0));
 
-        List<pro.taskana.impl.report.impl.MonitorQueryItem> expectedResult = new ArrayList<>();
-        pro.taskana.impl.report.impl.MonitorQueryItem monitorQueryItem = new pro.taskana.impl.report.impl.MonitorQueryItem();
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
         monitorQueryItem.setKey("Geschaeftsstelle A");
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
@@ -469,5 +477,67 @@ public class TaskMonitorServiceImplTest {
 
         assertNotNull(actualResult);
         assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    public void testGetTaskStateReportWithoutFilters() {
+        //given
+        TaskQueryItem queryItem1 = new TaskQueryItem();
+        queryItem1.setCount(50);
+        queryItem1.setState(TaskState.READY);
+        queryItem1.setDomain("DOMAIN_X");
+        TaskQueryItem queryItem2 = new TaskQueryItem();
+        queryItem2.setCount(30);
+        queryItem2.setState(TaskState.COMPLETED);
+        queryItem2.setDomain("DOMAIN_X");
+        List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
+        when(taskMonitorMapperMock.getTasksCountByState(null, null)).thenReturn(queryItems);
+
+        //when
+        TaskStatusReport report = cut.getTaskStatusReport();
+
+        //then
+        InOrder inOrder = inOrder(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineImplMock);
+        inOrder.verify(taskanaEngineImplMock).openConnection();
+        inOrder.verify(taskMonitorMapperMock).getTasksCountByState(eq(null), eq(null));
+        inOrder.verify(taskanaEngineImplMock).returnConnection();
+
+        assertNotNull(report);
+        assertEquals(1, report.rowSize());
+        assertArrayEquals(new int[] {50, 0, 30}, report.getRow("DOMAIN_X").getCells());
+        assertArrayEquals(new int[] {50, 0, 30}, report.getSumRow().getCells());
+        assertEquals(80, report.getRow("DOMAIN_X").getTotalValue());
+        assertEquals(80, report.getSumRow().getTotalValue());
+    }
+
+    @Test
+    public void testGetTotalNumberOfTaskStateReport() {
+        //given
+        TaskQueryItem queryItem1 = new TaskQueryItem();
+        queryItem1.setCount(50);
+        queryItem1.setState(TaskState.READY);
+        queryItem1.setDomain("DOMAIN_X");
+        TaskQueryItem queryItem2 = new TaskQueryItem();
+        queryItem2.setCount(30);
+        queryItem2.setState(TaskState.COMPLETED);
+        queryItem2.setDomain("DOMAIN_X");
+        List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
+        when(taskMonitorMapperMock.getTasksCountByState(eq(null), eq(Collections.emptyList()))).thenReturn(queryItems);
+
+        //when
+        TaskStatusReport report = cut.getTaskStatusReport(null, Collections.emptyList());
+
+        //then
+        InOrder inOrder = inOrder(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineImplMock);
+        inOrder.verify(taskanaEngineImplMock).openConnection();
+        inOrder.verify(taskMonitorMapperMock).getTasksCountByState(eq(null), eq(Collections.emptyList()));
+        inOrder.verify(taskanaEngineImplMock).returnConnection();
+
+        assertNotNull(report);
+        assertEquals(1, report.rowSize());
+        assertArrayEquals(new int[0], report.getRow("DOMAIN_X").getCells());
+        assertArrayEquals(new int[0], report.getSumRow().getCells());
+        assertEquals(80, report.getRow("DOMAIN_X").getTotalValue());
+        assertEquals(80, report.getSumRow().getTotalValue());
     }
 }

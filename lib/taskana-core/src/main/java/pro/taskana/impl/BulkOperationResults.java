@@ -97,4 +97,17 @@ public class BulkOperationResults<K, V> {
     public void clearErrors() {
         this.errorMap.clear();
     }
+
+    /**
+     * Add all errors from another BulkOperationResult to this.
+     *
+     * @param log
+     *            the other log
+     */
+    public void addAllErrors(BulkOperationResults<K, V> log) {
+        List<K> failedIds = log.getFailedIds();
+        for (K id : failedIds) {
+            addError(id, log.getErrorForId(id));
+        }
+    }
 }

@@ -380,8 +380,16 @@ public class TaskServiceImpl implements TaskService {
                     classifications);
                 resultTask.setAttachments(attachments);
 
-                ClassificationSummary classification = getMatchingClassificationFromList(classifications,
-                    resultTask.getClassificationSummary().getKey(), resultTask.getDomain());
+                String classificationId = resultTask.getClassificationSummary().getId();
+                ClassificationSummary classification = classifications.stream()
+                    .filter(c -> c.getId().equals(classificationId))
+                    .findFirst()
+                    .orElse(null);
+                if (classification == null) {
+                    LOGGER.error("Could not find a Classification for task {} ", resultTask);
+                    throw new SystemException(
+                        "Could not find a Classification for task " + resultTask.getId());
+                }
 
                 resultTask.setClassificationSummary(classification);
                 return resultTask;
@@ -614,7 +622,6 @@ public class TaskServiceImpl implements TaskService {
             oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
             PrioDurationHolder prioDurationFromAttachments = handleAttachmentsOnTaskUpdate(oldTaskImpl, newTaskImpl);
             standardUpdateActions(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
-            newTaskImpl.setModified(Instant.now());
 
             taskMapper.update(newTaskImpl);
             LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
@@ -725,34 +732,21 @@ public class TaskServiceImpl implements TaskService {
         }
         // assign query results to appropriate tasks.
         for (TaskSummaryImpl task : tasks) {
-            ClassificationSummary aClassification = getMatchingClassificationFromList(classifications,
-                task.getClassificationSummary().getKey(),
-                task.getDomain());
-            // set the classification on the task object
-            task.setClassificationSummary(aClassification);
-        }
-    }
-
-    private ClassificationSummary getMatchingClassificationFromList(List<ClassificationSummary> classifications,
-        String taskClassKey, String taskDomain) {
-        ClassificationSummary aClassification = classifications.stream()
-            .filter(x -> taskClassKey != null && taskClassKey.equals(x.getKey()) && taskDomain != null
-                && taskDomain.equals(x.getDomain()))
-            .findFirst()
-            .orElse(null);
-        if (aClassification == null) {
-            // search in "" domain
-            aClassification = classifications.stream()
-                .filter(x -> taskClassKey != null && taskClassKey.equals(x.getKey()) && "".equals(x.getDomain()))
+            String classificationId = task.getClassificationSummary().getId();
+            ClassificationSummary aClassification = classifications.stream()
+                .filter(c -> c.getId().equals(classificationId))
                 .findFirst()
                 .orElse(null);
             if (aClassification == null) {
-                LOGGER.error("Could not find a Classification for task ");
+                LOGGER.error("Didnt find a Classification for task ");
                 throw new SystemException(
-                    "Could not find a Classification for task (key=" + taskClassKey + ",domain=" + taskDomain + ")");
+                    "Did not find a Classification for task (Id=" + task.getTaskId() + ",classification="
+                        + task.getClassificationSummary().getId()
+                        + ")");
             }
+            // set the classification on the task object
+            task.setClassificationSummary(aClassification);
         }
-        return aClassification;
     }
 
     private List<ClassificationSummary> findClassificationsForTasksAndAttachments(
@@ -763,53 +757,40 @@ public class TaskServiceImpl implements TaskService {
             return new ArrayList<>();
         }
 
-        Set<String> classificationDomainSet = taskSummaries.stream().map(TaskSummaryImpl::getDomain).collect(
+        Set<String> classificationIdSet = taskSummaries.stream().map(t -> t.getClassificationSummary().getId()).collect(
             Collectors.toSet());
-        // add "" domain in case the classification exists only there (fallback for tasks)
-        classificationDomainSet.add("");
-
-        Set<String> classificationKeySet = taskSummaries.stream()
-            .map(t -> t.getClassificationSummary().getKey())
-            .collect(Collectors.toSet());
 
         if (attachmentSummaries != null && !attachmentSummaries.isEmpty()) {
-            Set<String> classificationKeysFromAttachments = attachmentSummaries.stream()
-                .map(t -> t.getClassificationSummary().getKey())
-                .collect(Collectors.toSet());
-            classificationKeySet.addAll(classificationKeysFromAttachments);
+            for (AttachmentSummaryImpl att : attachmentSummaries) {
+                classificationIdSet.add(att.getClassificationSummary().getId());
+            }
         }
-
-        return queryClassificationsForTasksAndAttachments(classificationDomainSet, classificationKeySet);
+        return queryClassificationsForTasksAndAttachments(classificationIdSet);
     }
 
     private List<ClassificationSummary> findClassificationForTaskImplAndAttachments(TaskImpl task,
         List<AttachmentImpl> attachmentImpls) throws NotAuthorizedException {
 
-        Set<String> classificationDomainSet = new HashSet<>(Arrays.asList(task.getDomain(), ""));
-        Set<String> classificationKeySet = new HashSet<>(Arrays.asList(task.getClassificationKey()));
-
+        Set<String> classificationIdSet = new HashSet<>(Arrays.asList(task.getClassificationSummary().getId()));
         if (attachmentImpls != null && !attachmentImpls.isEmpty()) {
-            Set<String> classificationKeysFromAttachments = attachmentImpls.stream()
-                .map(t -> t.getClassificationSummary().getKey())
-                .collect(Collectors.toSet());
-            classificationKeySet.addAll(classificationKeysFromAttachments);
+            for (AttachmentImpl att : attachmentImpls) {
+                classificationIdSet.add(att.getClassificationSummary().getId());
+            }
         }
 
-        return queryClassificationsForTasksAndAttachments(classificationDomainSet, classificationKeySet);
+        return queryClassificationsForTasksAndAttachments(classificationIdSet);
 
     }
 
-    private List<ClassificationSummary> queryClassificationsForTasksAndAttachments(Set<String> classificationDomainSet,
-        Set<String> classificationKeySet) throws NotAuthorizedException {
+    private List<ClassificationSummary> queryClassificationsForTasksAndAttachments(Set<String> classificationIdSet)
+        throws NotAuthorizedException {
 
-        String[] classificationDomainArray = classificationDomainSet.toArray(new String[0]);
-        String[] classificationKeyArray = classificationKeySet.toArray(new String[0]);
+        String[] classificationIdArray = classificationIdSet.toArray(new String[0]);
 
         LOGGER.debug("getClassificationsForTasksAndAttachments() about to query classifications and exit");
         // perform classification query
         return this.classificationService.createClassificationQuery()
-            .domainIn(classificationDomainArray)
-            .keyIn(classificationKeyArray)
+            .idIn(classificationIdArray)
             .list();
     }
 
@@ -820,25 +801,26 @@ public class TaskServiceImpl implements TaskService {
             return;
         }
         // calculate parameters for workbasket query: workbasket keys
-        Set<String> workbasketKeySet = taskSummaries.stream().map(t -> t.getWorkbasketSummary().getKey()).collect(
+        Set<String> workbasketIdSet = taskSummaries.stream().map(t -> t.getWorkbasketSummary().getId()).collect(
             Collectors.toSet());
-        String[] workbasketKeyArray = workbasketKeySet.toArray(new String[0]);
+        String[] workbasketIdArray = workbasketIdSet.toArray(new String[0]);
         // perform workbasket query
         LOGGER.debug("addWorkbasketSummariesToTaskSummaries() about to query workbaskets");
         WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
         query.setUsedToAugmentTasks(true);
+
         List<WorkbasketSummary> workbaskets = query
-            .keyIn(workbasketKeyArray)
+            .idIn(workbasketIdArray)
             .list();
         // assign query results to appropriate tasks.
         Iterator<TaskSummaryImpl> taskIterator = taskSummaries.iterator();
         while (taskIterator.hasNext()) {
             TaskSummaryImpl task = taskIterator.next();
-            String workbasketKey = task.getWorkbasketSummaryImpl().getKey();
+            String workbasketId = task.getWorkbasketSummaryImpl().getId();
 
             // find the appropriate workbasket from the query result
             WorkbasketSummary aWorkbasket = workbaskets.stream()
-                .filter(x -> workbasketKey != null && workbasketKey.equals(x.getKey()))
+                .filter(x -> workbasketId != null && workbasketId.equals(x.getId()))
                 .findFirst()
                 .orElse(null);
             if (aWorkbasket == null) {
@@ -883,20 +865,9 @@ public class TaskServiceImpl implements TaskService {
         }
         // iterate over all attachment summaries an add the appropriate classification summary to each
         for (AttachmentSummaryImpl att : attachmentSummaries) {
-            // find the associated task to use the correct domain
-            TaskSummaryImpl aTaskSummary = taskSummaries.stream()
-                .filter(x -> x.getTaskId().equals(att.getTaskId()))
-                .findFirst()
-                .orElse(null);
-            if (aTaskSummary == null) {
-                LOGGER.error("Could not find a Task associated to attachment {}.", att);
-                throw new SystemException("Could not find a Task associated to attachment " + att);
-            }
-            String domain = aTaskSummary.getDomain();
-            String classificationKey = att.getClassificationSummary().getKey();
+            String classificationId = att.getClassificationSummary().getId();
             ClassificationSummary aClassification = classifications.stream()
-                .filter(x -> classificationKey != null && classificationKey.equals(x.getKey()) && domain != null
-                    && domain.equals(x.getDomain()))
+                .filter(x -> classificationId != null && classificationId.equals(x.getId()))
                 .findFirst()
                 .orElse(null);
             if (aClassification == null) {
@@ -916,13 +887,11 @@ public class TaskServiceImpl implements TaskService {
         List<Attachment> result = new ArrayList<>();
         for (AttachmentImpl att : attachmentImpls) {
             // find the associated task to use the correct domain
-            String domain = task.getDomain();
-            String classificationKey = att.getClassificationSummary().getKey();
             ClassificationSummary aClassification = classifications.stream()
-                .filter(x -> classificationKey != null && classificationKey.equals(x.getKey()) && domain != null
-                    && domain.equals(x.getDomain()))
+                .filter(c -> c != null & c.getId().equals(att.getClassificationSummary().getId()))
                 .findFirst()
                 .orElse(null);
+
             if (aClassification == null) {
                 LOGGER.error("Could not find a Classification for attachment {}.", att);
                 throw new SystemException("Could not find a Classification for attachment " + att);
@@ -1188,7 +1157,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void updateClassificationRelatedProperties(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
         PrioDurationHolder prioDurationFromAttachments)
-        throws WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+        throws NotAuthorizedException, ClassificationNotFoundException {
         // insert Classification specifications if Classification is given.
         ClassificationSummary oldClassificationSummary = oldTaskImpl.getClassificationSummary();
         ClassificationSummary newClassificationSummary = newTaskImpl.getClassificationSummary();
@@ -1341,6 +1310,32 @@ public class TaskServiceImpl implements TaskService {
         return new PrioDurationHolder(minDuration, maxPrio);
     }
 
+    private PrioDurationHolder handleAttachmentsOnClassificationUpdate(Task task) {
+
+        Duration minDuration = MAX_DURATION;
+        int maxPrio = Integer.MIN_VALUE;
+
+        // Iterator for removing invalid current values directly. OldAttachments can be ignored.
+        Iterator<Attachment> i = task.getAttachments().iterator();
+        while (i.hasNext()) {
+            Attachment attachment = i.next();
+            if (attachment != null) {
+                ClassificationSummary classification = attachment.getClassificationSummary();
+                if (classification != null) {
+                    PrioDurationHolder newPrioDuration = getNewPrioDuration(maxPrio, minDuration,
+                        classification.getPriority(), classification.getServiceLevel());
+                    maxPrio = newPrioDuration.getPrio();
+                    minDuration = newPrioDuration.getDuration();
+                }
+
+            }
+        }
+        if (minDuration != null && MAX_DURATION.equals(minDuration)) {
+            minDuration = null;
+        }
+        return new PrioDurationHolder(minDuration, maxPrio);
+    }
+
     private PrioDurationHolder getNewPrioDuration(int prio, Duration duration, int prioFromClassification,
         String serviceLevelFromClassification) {
         Duration minDuration = duration;
@@ -1413,6 +1408,73 @@ public class TaskServiceImpl implements TaskService {
             builder.append("]");
             return builder.toString();
         }
+    }
+
+    BulkOperationResults<String, Exception> classificationChanged(String taskId, String classificationId)
+        throws TaskNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+        LOGGER.debug("entry to classificationChanged(taskId = {} , classificationId = {} )", taskId, classificationId);
+        TaskImpl task = null;
+        BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();
+        try {
+            taskanaEngine.openConnection();
+            if (taskId == null || taskId.isEmpty() || classificationId == null || classificationId.isEmpty()) {
+                return bulkLog;
+            }
+
+            task = taskMapper.findById(taskId);
+
+            List<AttachmentImpl> attachmentImpls = attachmentMapper.findAttachmentsByTaskId(task.getId());
+            if (attachmentImpls == null) {
+                attachmentImpls = new ArrayList<>();
+            }
+            List<Attachment> attachments = augmentAttachmentsByClassification(attachmentImpls, bulkLog);
+            task.setAttachments(attachments);
+
+            Classification classification = classificationService.getClassification(classificationId);
+            task.setClassificationSummary(classification.asSummary());
+
+            PrioDurationHolder prioDurationFromAttachments = handleAttachmentsOnClassificationUpdate(task);
+
+            updateClassificationRelatedProperties(task, task, prioDurationFromAttachments);
+
+            task.setModified(Instant.now());
+            taskMapper.update(task);
+            return bulkLog;
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from deleteTask(). ");
+        }
+
+    }
+
+    private List<Attachment> augmentAttachmentsByClassification(List<AttachmentImpl> attachmentImpls,
+        BulkOperationResults<String, Exception> bulkLog) {
+        List<Attachment> result = new ArrayList<>();
+        if (attachmentImpls == null || attachmentImpls.isEmpty()) {
+            return result;
+        }
+        Set<String> classificationIds = attachmentImpls.stream().map(t -> t.getClassificationSummary().getId()).collect(
+            Collectors.toSet());
+        List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
+            .idIn(classificationIds.toArray(new String[0]))
+            .list();
+        for (AttachmentImpl att : attachmentImpls) {
+            ClassificationSummary classificationSummary = classifications.stream()
+                .filter(cl -> cl.getId().equals(att.getClassificationSummary().getId()))
+                .findFirst()
+                .orElse(null);
+            if (classificationSummary == null) {
+                String id = att.getClassificationSummary().getId();
+                bulkLog.addError(att.getClassificationSummary().getId(), new ClassificationNotFoundException(id,
+                    "When processing task updates due to change of classification, the classification with id " + id
+                        + " was not found."));
+            } else {
+                att.setClassificationSummary(classificationSummary);
+                result.add(att);
+            }
+        }
+
+        return result;
     }
 
 }

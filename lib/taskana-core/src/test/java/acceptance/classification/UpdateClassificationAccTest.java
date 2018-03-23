@@ -8,7 +8,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,11 +21,17 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
+import pro.taskana.Task;
+import pro.taskana.TaskService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.impl.DaysToWorkingDaysConverter;
+import pro.taskana.impl.JobRunner;
 import pro.taskana.impl.TaskImpl;
+import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -108,7 +119,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testUpdateTaskOnClassificationKeyCategoryChange()
-        throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException {
+        throws Exception {
+        setupTest();
         TaskImpl beforeTask = (TaskImpl) taskanaEngine.getTaskService()
             .getTask("TKI:000000000000000000000000000000000000");
 
@@ -166,6 +178,73 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         classification.setParentId("ID WHICH CANT BE FOUND");
         classification = classificationService.updateClassification(classification);
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"admin"})
+    @Test
+    public void testUpdateClassificationPrioServiceLevel()
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+        InterruptedException, TaskNotFoundException, InvalidArgumentException {
+        String newEntryPoint = "updated EntryPoint";
+        Instant before = Instant.now();
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        Classification classification = classificationService
+            .getClassification("CLI:100000000000000000000000000000000003");
+        Instant createdBefore = classification.getCreated();
+        Instant modifiedBefore = classification.getModified();
+        classification.setPriority(1000);
+        classification.setServiceLevel("P15D");
+
+        classificationService.updateClassification(classification);
+        Thread.sleep(100);
+        JobRunner runner = new JobRunner(taskanaEngine);
+        runner.runJobs();
+        // Get and check the new value
+        Classification updatedClassification = classificationService
+            .getClassification("CLI:100000000000000000000000000000000003");
+        assertNotNull(updatedClassification);
+
+        assertTrue(modifiedBefore.isBefore(updatedClassification.getModified()));
+        List<String> affectedTasks = new ArrayList<>(
+            Arrays.asList("TKI:000000000000000000000000000000000000", "TKI:000000000000000000000000000000000003",
+                "TKI:000000000000000000000000000000000004", "TKI:000000000000000000000000000000000005",
+                "TKI:000000000000000000000000000000000006", "TKI:000000000000000000000000000000000007",
+                "TKI:000000000000000000000000000000000008", "TKI:000000000000000000000000000000000009",
+                "TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
+                "TKI:000000000000000000000000000000000012", "TKI:000000000000000000000000000000000013",
+                "TKI:000000000000000000000000000000000014", "TKI:000000000000000000000000000000000015",
+                "TKI:000000000000000000000000000000000016", "TKI:000000000000000000000000000000000017",
+                "TKI:000000000000000000000000000000000018", "TKI:000000000000000000000000000000000019",
+                "TKI:000000000000000000000000000000000020", "TKI:000000000000000000000000000000000021",
+                "TKI:000000000000000000000000000000000022", "TKI:000000000000000000000000000000000023",
+                "TKI:000000000000000000000000000000000024", "TKI:000000000000000000000000000000000025",
+                "TKI:000000000000000000000000000000000026", "TKI:000000000000000000000000000000000027",
+                "TKI:000000000000000000000000000000000028", "TKI:000000000000000000000000000000000029",
+                "TKI:000000000000000000000000000000000030", "TKI:000000000000000000000000000000000031",
+                "TKI:000000000000000000000000000000000032", "TKI:000000000000000000000000000000000033",
+                "TKI:000000000000000000000000000000000034", "TKI:000000000000000000000000000000000035",
+                "TKI:000000000000000000000000000000000053", "TKI:000000000000000000000000000000000054",
+                "TKI:000000000000000000000000000000000055", "TKI:000000000000000000000000000000000100",
+                "TKI:000000000000000000000000000000000101", "TKI:000000000000000000000000000000000102",
+                "TKI:000000000000000000000000000000000103"));
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
+            .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+
+        for (String taskId : affectedTasks) {
+            Task task = taskService.getTask(taskId);
+            assertTrue(task.getModified().isAfter(before));
+            assertTrue(task.getPriority() == 1000);
+            long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), 15);
+            if (!taskId.equals("TKI:000000000000000000000000000000000008")
+                && !taskId.equals("TKI:000000000000000000000000000000000053")) {
+                assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
+            }
+
+        }
     }
 
 }

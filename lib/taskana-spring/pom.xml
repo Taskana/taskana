@@ -35,7 +35,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -48,7 +47,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -143,7 +141,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.2.RELEASE</version>
+		<version>2.0.0.RELEASE</version>
 		<relativePath />
 	</parent>
 

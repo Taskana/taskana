@@ -27,7 +27,7 @@ public interface QueryMapper {
     String CLASSIFICATION_FINDBYID = "pro.taskana.mappings.ClassificationMapper.findById";
     String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.mappings.WorkbasketMapper.findSummaryByKey";
 
-    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.CREATOR, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.CLASSIFICATION_CATEGORY, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
+    @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.CREATOR, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.CLASSIFICATION_CATEGORY, t.CLASSIFICATION_ID, t.WORKBASKET_ID, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
         + "FROM TASK t "
         + "<where>"
         + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
@@ -49,6 +49,7 @@ public interface QueryMapper {
         + "<if test='workbasketKeyDomainIn != null'>AND (<foreach item='item' collection='workbasketKeyDomainIn' separator=' OR '>(t.WORKBASKET_KEY = #{item.key} AND t.DOMAIN = #{item.domain})</foreach>)</if> "
         + "<if test='classificationKeyIn != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKeyIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationKeyLike != null'>AND (<foreach item='item' collection='classificationKeyLike' separator=' OR '>UPPER(t.CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='classificationIdIn != null'>AND t.CLASSIFICATION_ID IN(<foreach item='item' collection='classificationIdIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationCategoryIn != null'>AND t.CLASSIFICATION_CATEGORY IN(<foreach item='item' collection='classificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationCategoryLike != null'>AND (<foreach item='item' collection='classificationCategoryLike' separator=' OR '>UPPER(t.CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
         + "<if test='ownerIn != null'>AND t.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
@@ -119,7 +120,9 @@ public interface QueryMapper {
         @Result(property = "state", column = "STATE"),
         @Result(property = "workbasketSummaryImpl.domain", column = "DOMAIN"),
         @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY"),
+        @Result(property = "workbasketSummaryImpl.id", column = "WORKBASKET_ID"),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
+        @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
         @Result(property = "classificationSummaryImpl.domain", column = "DOMAIN"),
         @Result(property = "classificationSummaryImpl.category", column = "CLASSIFICATION_CATEGORY"),
         @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
@@ -154,6 +157,7 @@ public interface QueryMapper {
         + "FROM CLASSIFICATION "
         + "<where>"
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='parentId != null'>AND PARENT_ID IN(<foreach item='item' collection='parentId' separator=',' >#{item}</foreach>)</if> "
         + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
@@ -364,6 +368,7 @@ public interface QueryMapper {
         + "<if test='workbasketKeyDomainIn != null'>AND (<foreach item='item' collection='workbasketKeyDomainIn' separator=' OR '>(t.WORKBASKET_KEY = #{item.key} AND t.DOMAIN = #{item.domain})</foreach>)</if> "
         + "<if test='classificationKeyIn != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKeyIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationKeyLike != null'>AND (<foreach item='item' collection='classificationKeyLike' separator=' OR '>UPPER(t.CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='classificationIdIn != null'>AND t.CLASSIFICATION_ID IN(<foreach item='item' collection='classificationIdIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationCategoryIn != null'>AND t.CLASSIFICATION_CATEGORY IN(<foreach item='item' collection='classificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationCategoryLike != null'>AND (<foreach item='item' collection='classificationCategoryLike' separator=' OR '>UPPER(t.CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
         + "<if test='ownerIn != null'>AND t.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
@@ -425,6 +430,7 @@ public interface QueryMapper {
     @Select("<script>SELECT COUNT(ID) FROM CLASSIFICATION "
         + "<where>"
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='parentId != null'>AND PARENT_ID IN(<foreach item='item' collection='parentId' separator=',' >#{item}</foreach>)</if> "
         + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
@@ -577,6 +583,7 @@ public interface QueryMapper {
         + "<if test='workbasketKeyDomainIn != null'>AND (<foreach item='item' collection='workbasketKeyDomainIn' separator=' OR '>(t.WORKBASKET_KEY = #{item.key} AND t.DOMAIN = #{item.domain})</foreach>)</if> "
         + "<if test='classificationKeyIn != null'>AND t.CLASSIFICATION_KEY IN(<foreach item='item' collection='classificationKeyIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationKeyLike != null'>AND (<foreach item='item' collection='classificationKeyLike' separator=' OR '>UPPER(t.CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='classificationIdIn != null'>AND t.CLASSIFICATION_ID IN(<foreach item='item' collection='classificationIdIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationCategoryIn != null'>AND t.CLASSIFICATION_CATEGORY IN(<foreach item='item' collection='classificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='classificationCategoryLike != null'>AND (<foreach item='item' collection='classificationCategoryLike' separator=' OR '>UPPER(t.CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
         + "<if test='ownerIn != null'>AND t.OWNER IN(<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
@@ -639,6 +646,7 @@ public interface QueryMapper {
         + "FROM CLASSIFICATION"
         + "<where>"
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='parentId != null'>AND PARENT_ID IN(<foreach item='item' collection='parentId' separator=',' >#{item}</foreach>)</if> "
         + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "

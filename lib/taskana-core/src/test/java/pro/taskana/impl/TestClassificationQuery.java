@@ -26,6 +26,11 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
+    public ClassificationQuery idIn(String... id) {
+        return this;
+    }
+
+    @Override
     public ClassificationQuery parentIdIn(String... parentId) {
         this.parentId = parentId;
         return this;
@@ -287,4 +292,5 @@ public class TestClassificationQuery implements ClassificationQuery {
     public List<String> listValues(String dbColumnName, SortDirection sortDirection) {
         return new ArrayList<>();
     }
+
 }

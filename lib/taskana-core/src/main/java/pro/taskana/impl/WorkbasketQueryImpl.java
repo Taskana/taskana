@@ -361,7 +361,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
-    public WorkbasketQuery callerHasPermission(WorkbasketPermission permission) throws InvalidArgumentException {
+    public WorkbasketQuery callerHasPermission(WorkbasketPermission permission) {
         this.permission = permission;
         return this;
     }
