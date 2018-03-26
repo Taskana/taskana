@@ -11,7 +11,7 @@ applications:
   memory: 16M
   disk_quota: 64M
 - name: taskana-admin
-  path: admin/dist
+  path: web/dist
   buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git#v1.3.16
   memory: 16M
   disk_quota: 64M
