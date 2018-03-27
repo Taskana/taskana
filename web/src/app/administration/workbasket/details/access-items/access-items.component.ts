@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Workbasket } from 'app/models/workbasket';
@@ -20,12 +20,15 @@ declare var $: any;
 	templateUrl: './access-items.component.html',
 	styleUrls: ['./access-items.component.scss']
 })
-export class AccessItemsComponent implements OnInit, OnDestroy {
+export class AccessItemsComponent implements OnChanges, OnDestroy {
+
 
 	@Input()
 	workbasket: Workbasket;
 	@Input()
 	action: string;
+	@Input()
+	active: string;
 	badgeMessage = '';
 
 	accessItemsResource: WorkbasketAccessItemsResource;
@@ -38,6 +41,7 @@ export class AccessItemsComponent implements OnInit, OnDestroy {
 	modalErrorMessage: string;
 	accessItemsubscription: Subscription;
 	savingAccessItemsSubscription: Subscription;
+	private initialized = false;
 
 
 	constructor(
@@ -46,7 +50,13 @@ export class AccessItemsComponent implements OnInit, OnDestroy {
 		private errorModalService: ErrorModalService,
 		private savingWorkbaskets: SavingWorkbasketService) { }
 
-	ngOnInit() {
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes.active.currentValue === 'accessItems' && !this.initialized) {
+			this.init();
+		}
+	}
+	private init() {
+		this.initialized = true;
 		if (!this.workbasket._links.accessItems) {
 			return;
 		}

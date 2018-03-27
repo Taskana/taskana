@@ -1,51 +1,30 @@
 <div class="workbasket-list-full-height">
-    <ul id="wb-list-container" class="list-group footer-space">
-        <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)" (performSorting)="performSorting ($event)"
-            [(workbasketIdSelected)]="selectedId"></taskana-workbasket-list-toolbar>
+    <div class="footer-space">
+        <div #wbToolbar>
+            <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)" (performSorting)="performSorting ($event)"
+                [(workbasketIdSelected)]="selectedId"></taskana-workbasket-list-toolbar>
+        </div>
         <taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
-        <li class="list-group-item" *ngFor="let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId"
-            type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
-            <div class="row">
-                <dl class="col-xs-1">
-                    <dt>
-                        <taskana-icon-type class="vertical-align" [type]="workbasket.type" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
-                    </dt>
-                </dl>
-                <dl class="col-xs-10">
-                    <dt>{{workbasket.name}},
-                        <i>{{workbasket.key}} </i>
-                    </dt>
-                    <dd>{{workbasket.description}} &nbsp;</dd>
-                    <dd>{{workbasket.owner}} &nbsp;</dd>
-                </dl>
-            </div>
-        </li>
-    </ul>
-    <ul id="wb-pagination" class="pagination vertical-center">
-        <li>
-            <a href="#" aria-label="Previous">
-                <span aria-hidden="true">«</span>
-            </a>
-        </li>
-        <li>
-            <a href="">1</a>
-        </li>
-        <li>
-            <a href="">2</a>
-        </li>
-        <li>
-            <a href="">3</a>
-        </li>
-        <li>
-            <a href="">4</a>
-        </li>
-        <li>
-            <a href="">5</a>
-        </li>
-        <li>
-            <a href="#" aria-label="Next">
-                <span aria-hidden="true">»</span>
-            </a>
-        </li>
-    </ul>
+        <div>
+            <ul #wbList id="wb-list-container" class="list-group">
+
+                <li class="list-group-item" *ngFor="let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId"
+                    type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
+                    <div class="row">
+                        <dl class="col-xs-1">
+                            <taskana-icon-type class="vertical-align" [type]="workbasket.type" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
+                        </dl>
+                        <dl class="col-xs-10">
+                            <dt>{{workbasket.name}},
+                                <i>{{workbasket.key}} </i>
+                            </dt>
+                            <dd>{{workbasket.description}} &nbsp;</dd>
+                            <dd>{{workbasket.owner}} &nbsp;</dd>
+                        </dl>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <taskana-pagination [(workbasketsResource)]="workbasketsResource" (changePage)="changePage($event)"></taskana-pagination>
 </div>

@@ -20,6 +20,7 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
+import { SimpleChange } from '@angular/core';
 
 
 
@@ -56,7 +57,9 @@ describe('AccessItemsComponent', () => {
 		spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(Observable.of(true)),
 			spyOn(alertService, 'triggerAlert').and.returnValue(Observable.of(true)),
 			debugElement = fixture.debugElement.nativeElement;
-
+		component.ngOnChanges({
+			active: new SimpleChange(undefined, 'accessItems', true)
+		});
 		fixture.detectChanges();
 	});
 

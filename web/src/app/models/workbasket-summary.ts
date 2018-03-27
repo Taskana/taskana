@@ -1,5 +1,6 @@
-import { Links } from './links';
 import { ICONTYPES } from './type';
+import { Page } from './page';
+import { Links } from './links';
 
 export class WorkbasketSummary {
     constructor(
@@ -15,6 +16,7 @@ export class WorkbasketSummary {
         public orgLevel2: string = undefined,
         public orgLevel3: string = undefined,
         public orgLevel4: string = undefined,
-        public _links: Links = undefined) {
+        public _links: Links = undefined,
+        public page: Page = undefined) {
     }
 }

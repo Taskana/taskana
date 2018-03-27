@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ErrorModalService } from './services/errorModal/error-modal.service';
 import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
 import { AlertService } from './services/alert/alert.service';
+import { OrientationService } from './services/orientation/orientation.service';
 
 import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component'
 import { SpinnerComponent } from './shared/spinner/spinner.component'
@@ -32,7 +33,7 @@ describe('AppComponent', () => {
 				RouterTestingModule.withRoutes(routes),
 				HttpClientModule
 			],
-			providers: [ErrorModalService, RequestInProgressService, AlertService]
+			providers: [ErrorModalService, RequestInProgressService, AlertService, OrientationService]
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(AppComponent);

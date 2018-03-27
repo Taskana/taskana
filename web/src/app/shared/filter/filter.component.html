@@ -1,14 +1,14 @@
-<div id="{{target}}" data-toogle="collapse" class="list-group-search collapse">
+<div id="{{target}}" class="list-group-search">
 	<div class="row">
 		<div class="dropdown col-xs-2">
-			<button class="btn btn-default" (click)="toggleDropDown = !toggleDropDown" type="button" id="dropdownMenufilter" data-toggle="dropdown"
+			<button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdownMenufilter" data-toggle="dropdown"
 			 aria-haspopup="true" aria-expanded="true">
 				<taskana-icon-type [type]="filter.type" class="vertical-align"></taskana-icon-type>
 
 			</button>
-			<ul class="dropdown-menu dropdown-menu-users" [ngClass]="{'hidden': !toggleDropDown}" role="menu">
+			<ul class="dropdown-menu dropdown-menu-users" role="menu">
 				<li *ngFor="let type of allTypes | mapValues">
-					<button type="button" (click)="selectType(type.key); toggleDropDown = !toggleDropDown; search()" class="btn btn-default btn-users-list" data-toggle="tooltip"
+					<button type="button" (click)="selectType(type.key); search()" class="btn btn-default btn-users-list" data-toggle="tooltip"
 					 [title]="type.value">
 						<taskana-icon-type class="vertical-align" [type]='type.key'></taskana-icon-type>
 					</button>
@@ -25,7 +25,7 @@
 		 data-toggle="tooltip" title="Clear">
 		</button>
 	</div>
-	<div class="row">
+	<div class="row padding">
 		<div class="col-xs-2">
 		</div>
 		<div class="col-xs-8">

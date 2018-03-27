@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, SimpleChanges, OnChanges } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Workbasket } from 'app/models/workbasket';
@@ -24,12 +24,14 @@ export enum Side {
 	templateUrl: './distribution-targets.component.html',
 	styleUrls: ['./distribution-targets.component.scss']
 })
-export class DistributionTargetsComponent implements OnInit, OnDestroy {
+export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 
 	@Input()
 	workbasket: Workbasket;
 	@Input()
 	action: string;
+	@Input()
+	active: string;
 	badgeMessage = '';
 
 	distributionTargetsSubscription: Subscription;
@@ -44,12 +46,12 @@ export class DistributionTargetsComponent implements OnInit, OnDestroy {
 	distributionTargetsClone: Array<WorkbasketSummary>;
 	distributionTargetsSelectedClone: Array<WorkbasketSummary>;
 
-
 	requestInProgress = false;
 	requestInProgressLeft = false;
 	requestInProgressRight = false;
 	modalErrorMessage: string;
 	side = Side;
+	private initialized = false;
 
 	constructor(
 		private workbasketService: WorkbasketService,
@@ -57,7 +59,14 @@ export class DistributionTargetsComponent implements OnInit, OnDestroy {
 		private savingWorkbaskets: SavingWorkbasketService,
 		private errorModalService: ErrorModalService) { }
 
-	ngOnInit() {
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes.active.currentValue === 'distributionTargets' && !this.initialized) {
+			this.init();
+		}
+	}
+
+	private init() {
+		this.initialized = true;
 		this.onRequest(undefined);
 		if (!this.workbasket._links.distributionTargets) {
 			return;
@@ -69,13 +78,15 @@ export class DistributionTargetsComponent implements OnInit, OnDestroy {
 					this.distributionTargetsSelected = distributionTargetsSelectedResource._embedded ?
 						distributionTargetsSelectedResource._embedded.distributionTargets : [];
 					this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
-					this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary().subscribe(
-						(distributionTargetsAvailable: WorkbasketSummaryResource) => {
-							this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-							this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-							this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-							this.onRequest(undefined, true);
-						});
+					this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary(true,
+						undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+						undefined, undefined, undefined, true).subscribe(
+							(distributionTargetsAvailable: WorkbasketSummaryResource) => {
+								this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+								this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+								this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+								this.onRequest(undefined, true);
+							});
 				});
 
 		this.savingDistributionTargetsSubscription = this.savingWorkbaskets.triggeredDistributionTargetsSaving()
@@ -143,7 +154,7 @@ export class DistributionTargetsComponent implements OnInit, OnDestroy {
 		this.onRequest(dualListFilter.side, false);
 		this.workbasketFilterSubscription = this.workbasketService.getWorkBasketsSummary(true, undefined, undefined, undefined,
 			dualListFilter.filterBy.name, dualListFilter.filterBy.description, undefined, dualListFilter.filterBy.owner,
-			dualListFilter.filterBy.type, undefined, dualListFilter.filterBy.key).subscribe(resultList => {
+			dualListFilter.filterBy.type, undefined, dualListFilter.filterBy.key, undefined, true).subscribe(resultList => {
 				(dualListFilter.side === Side.RIGHT) ?
 					this.distributionTargetsRight = (resultList._embedded ? resultList._embedded.workbaskets : []) :
 					this.distributionTargetsLeft = (resultList._embedded ? resultList._embedded.workbaskets : []);
