@@ -100,14 +100,14 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
 	private getWorkbasketInformation(workbasketIdSelected: string, copyId: string = undefined) {
 		this.requestInProgress = true;
-		this.service.getWorkBasketsSummary(true).subscribe((workbasketSummary: WorkbasketSummaryResource) => {
+		this.service.getWorkBasketsSummary().subscribe((workbasketSummary: WorkbasketSummaryResource) => {
 			if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
 				this.workbasket = new Workbasket(undefined);
-				this.workbasket._links.self = workbasketSummary._links.self;
+				this.workbasket._links.self = workbasketSummary._links.allWorkbaskets;
 				this.requestInProgress = false;
 			} else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
 				this.workbasket = { ...this.workbasketCopy };
-				this.workbasket._links.self = workbasketSummary._links.self;
+				this.workbasket._links.self = workbasketSummary._links.allWorkbaskets;
 				this.workbasket.workbasketId = undefined;
 				this.requestInProgress = false;
 			}

@@ -7,6 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
+import {Component} from '@angular/core';
+import {Routes} from '@angular/router';
 
 import { Workbasket } from 'app/models/workbasket';
 import { ICONTYPES } from 'app/models/type';
@@ -22,8 +24,6 @@ import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pi
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import {Component} from '@angular/core';
-import {Routes} from '@angular/router';
 
 @Component({
   selector: 'taskana-dummy-detail',

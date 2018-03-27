@@ -1,4 +1,4 @@
-import { Input, Component } from '@angular/core';
+import { Input, Component, SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -24,13 +24,14 @@ import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
 import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
 import { SelectWorkBasketPipe } from 'app/pipes/selectedWorkbasket/seleted-workbasket.pipe';
+import { LinksWorkbasketSummary } from '../../../../models/links-workbasket-summary';
 
 
 const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource({
 	'workbaskets': new Array<WorkbasketSummary>(
 		new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
 		new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', ''))
-}, new Links({ 'href': 'url' }));
+}, new LinksWorkbasketSummary({ 'href': 'url' }));
 
 @Component({
 	selector: 'taskana-filter',
@@ -73,16 +74,18 @@ describe('DistributionTargetsComponent', () => {
 						new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
 						new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
 						new WorkbasketSummary('id3', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
-				}, new Links({ 'href': 'someurl' })))
+				}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 		})
 		spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
 			return Observable.of(new WorkbasketDistributionTargetsResource(
 				{
 					'distributionTargets': new Array<WorkbasketSummary>(
 						new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
-				}, new Links({ 'href': 'someurl' })))
+				}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 		})
-
+		component.ngOnChanges({
+			active: new SimpleChange(undefined, 'distributionTargets', true)
+		});
 		fixture.detectChanges();
 	});
 
@@ -144,7 +147,7 @@ describe('DistributionTargetsComponent', () => {
 					'distributionTargets': new Array<WorkbasketSummary>(
 						new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
 						new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
-				}, new Links({ 'href': 'someurl' })))
+				}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 		})
 		component.onSave();
 		fixture.detectChanges();

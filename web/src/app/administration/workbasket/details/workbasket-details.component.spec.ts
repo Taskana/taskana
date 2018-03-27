@@ -37,6 +37,7 @@ import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/g
 import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
 import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pipe';
 import { SelectWorkBasketPipe } from 'app/pipes/selectedWorkbasket/seleted-workbasket.pipe';
+import { LinksWorkbasketSummary } from '../../../models/links-workbasket-summary';
 
 @Component({
 	selector: 'taskana-filter',
@@ -53,9 +54,7 @@ export class FilterComponent {
 	template: 'dummydetail'
 })
 export class DummyDetailComponent {
-
 }
-
 
 describe('WorkbasketDetailsComponent', () => {
 	let component: WorkbasketDetailsComponent;
@@ -68,7 +67,7 @@ describe('WorkbasketDetailsComponent', () => {
 		new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
 
 	const routes: Routes = [
-		{ path: ':id', component: DummyDetailComponent, outlet: 'detail' }
+		{ path: '*', component: DummyDetailComponent}
 	];
 
 	beforeEach(async(() => {
@@ -100,7 +99,7 @@ describe('WorkbasketDetailsComponent', () => {
 					'workbaskets': new Array<WorkbasketSummary>(
 						new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
 							new Links({ 'href': 'someurl' })))
-				}, new Links({ 'href': 'someurl' })))
+				}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 		})
 
 		spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return Observable.of(workbasket) })
@@ -110,7 +109,7 @@ describe('WorkbasketDetailsComponent', () => {
 		})
 		spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
 			return Observable.of(new WorkbasketSummaryResource(
-				{ 'workbaskets': new Array<WorkbasketSummary>() }, new Links({ 'href': 'url' })))
+				{ 'workbaskets': new Array<WorkbasketSummary>() }, new LinksWorkbasketSummary({ 'href': 'url' })))
 		})
 
 	});

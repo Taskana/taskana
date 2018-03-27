@@ -130,7 +130,6 @@ export class WorkbasketInformationComponent implements OnInit, OnDestroy {
 		const date = datePipe.transform(Date.now(), dateFormat) + 'Z';
 		this.workbasket.created = date;
 		this.workbasket.modified = date;
-
 	}
 
 	ngOnDestroy() {

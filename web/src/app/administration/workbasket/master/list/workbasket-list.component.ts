@@ -1,4 +1,7 @@
-import { Component, OnInit, EventEmitter, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+	Component, OnInit, EventEmitter, OnDestroy,
+	HostListener, ViewChild, ElementRef, AfterViewChecked
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -6,8 +9,10 @@ import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resourc
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { FilterModel } from 'app/models/filter'
 import { SortingModel } from 'app/models/sorting';
+import { Orientation } from 'app/models/orientation';
 
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
+import { OrientationService } from 'app/services/orientation/orientation.service';
 
 @Component({
 	selector: 'taskana-workbasket-list',
@@ -17,37 +22,39 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
 export class WorkbasketListComponent implements OnInit, OnDestroy {
 
 	selectedId = '';
+	workbasketsResource: WorkbasketSummaryResource;
 	workbaskets: Array<WorkbasketSummary> = [];
 	requestInProgress = false;
 
 	sort: SortingModel = new SortingModel();
 	filterBy: FilterModel = new FilterModel();
 
+	@ViewChild('wbToolbar')
+	private toolbarElement: ElementRef;
 	private workBasketSummarySubscription: Subscription;
 	private workbasketServiceSubscription: Subscription;
 	private workbasketServiceSavedSubscription: Subscription;
+	private orientationSubscription: Subscription;
 
 	constructor(
 		private workbasketService: WorkbasketService,
 		private router: Router,
 		private route: ActivatedRoute,
-		private cdRef: ChangeDetectorRef) { }
+		private orientationService: OrientationService) { }
 
 	ngOnInit() {
 		this.requestInProgress = true;
-		this.workBasketSummarySubscription = this.workbasketService.getWorkBasketsSummary().subscribe(resultList => {
-			this.workbaskets = resultList._embedded ? resultList._embedded.workbaskets : [];
-			this.requestInProgress = false;
-		});
-
 		this.workbasketServiceSubscription = this.workbasketService.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
-			this.selectedId = workbasketIdSelected;
-			this.cdRef.detectChanges();
+			//TODO should be done in a different way.
+			setTimeout(() => { this.selectedId = workbasketIdSelected; }, 0);
 		});
 
 		this.workbasketServiceSavedSubscription = this.workbasketService.workbasketSavedTriggered().subscribe(value => {
 			this.performRequest();
 		});
+		this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
+			this.refreshWorkbasketList();
+		})
 	}
 
 	selectWorkbasket(id: string) {
@@ -69,17 +76,34 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 		this.performRequest();
 	}
 
+	changePage(page) {
+		this.workbasketService.page = page;
+		this.performRequest();
+	}
+
+	private refreshWorkbasketList() {
+		const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
+		const cardHeight = 75;
+		const unusedHeight = 140
+		const totalHeight = window.innerHeight;
+		const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
+		this.workbasketService.pageSize = cards;
+		this.performRequest();
+	}
+
 	private performRequest(): void {
 		this.requestInProgress = true;
 		this.workbaskets = [];
-		this.workbasketServiceSubscription.add(this.workbasketService.getWorkBasketsSummary(true, this.sort.sortBy,
-			this.sort.sortDirection, undefined,
+		this.workbasketServiceSubscription = this.workbasketService.getWorkBasketsSummary(
+			true, this.sort.sortBy, this.sort.sortDirection, undefined,
 			this.filterBy.name, this.filterBy.description, undefined, this.filterBy.owner,
-			this.filterBy.type, undefined, this.filterBy.key).subscribe(resultList => {
+			this.filterBy.type, undefined, this.filterBy.key, undefined)
+			.subscribe(resultList => {
+				this.workbasketsResource = resultList;
 				this.workbaskets = resultList._embedded ? resultList._embedded.workbaskets : [];
 				this.requestInProgress = false;
 				this.unSelectWorkbasket();
-			}));
+			});
 	}
 
 
@@ -90,10 +114,10 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.workBasketSummarySubscription.unsubscribe();
-		this.workbasketServiceSubscription.unsubscribe();
-		this.workbasketServiceSavedSubscription.unsubscribe();
+		if (this.workBasketSummarySubscription) { this.workBasketSummarySubscription.unsubscribe(); }
+		if (this.workbasketServiceSubscription) { this.workbasketServiceSubscription.unsubscribe(); }
+		if (this.workbasketServiceSavedSubscription) { this.workbasketServiceSavedSubscription.unsubscribe(); }
+		if (this.orientationSubscription) { this.orientationSubscription.unsubscribe(); }
 
 	}
-
 }

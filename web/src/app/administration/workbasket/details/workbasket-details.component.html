@@ -7,25 +7,25 @@
                 <a (click)="backClicked()">
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
             </li>
-            <li role="presentation" class="active">
+            <li role="presentation" class="active"  (click)="tabSelected = 'information'" >
                 <a href="#work-baskets" aria-controls="work baskets" role="tab" data-toggle="tab" aria-expanded="true">Information</a>
             </li>
-            <li role="presentation" [ngClass]="{'disabled': !workbasket._links?.accessItems}">
+            <li role="presentation" [ngClass]="{'disabled': !workbasket._links?.accessItems}"  (click)="tabSelected = 'accessItems'">
                 <a href="#access-items" aria-controls="Acccess" role="tab" data-toggle="tab" aria-expanded="true">Access</a>
             </li>
-            <li role="presentation" [ngClass]="{'disabled': !workbasket._links?.distributionTargets}">
+            <li role="presentation" [ngClass]="{'disabled': !workbasket._links?.distributionTargets}" (click)="tabSelected = 'distributionTargets'">
                 <a href="#distribution-targets" aria-controls="distribution targets" role="tab" data-toggle="tab" aria-expanded="true">Distribution targets</a>
             </li>
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane fade in active" id="work-baskets">
-                <taskana-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-workbasket-information>
+            <div role="tabpanel" class="tab-pane fade in active"id="work-baskets">
+                <taskana-workbasket-information [workbasket]="workbasket" [action]="action" ></taskana-workbasket-information>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="access-items">
-                <taskana-workbasket-access-items [workbasket]="workbasket" [action]="action"></taskana-workbasket-access-items>
+                <taskana-workbasket-access-items [workbasket]="workbasket" [action]="action" [active] ="tabSelected"></taskana-workbasket-access-items>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="distribution-targets">
-                <taskana-workbaskets-distribution-targets [workbasket]="workbasket" [action]="action"></taskana-workbaskets-distribution-targets>
+                <taskana-workbaskets-distribution-targets [workbasket]="workbasket" [action]="action" [active] ="tabSelected"></taskana-workbaskets-distribution-targets>
             </div>
         </div>
     </div>
