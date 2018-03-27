@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,22 +63,33 @@ public class ClassificationDefinitionController {
     @PostMapping(path = "/import")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<String> importClassifications(
-        @RequestBody List<ClassificationResource> classificationResources) throws NotAuthorizedException,
-        ClassificationNotFoundException, ConcurrencyException, ClassificationAlreadyExistException,
-        DomainNotFoundException {
+        @RequestBody List<ClassificationResource> classificationResources) {
         Map<String, String> systemIds = classificationService.createClassificationQuery()
             .list()
             .stream()
             .collect(Collectors.toMap(i -> i.getKey() + "|||" + i.getDomain(), ClassificationSummary::getId));
 
-        for (ClassificationResource classificationResource : classificationResources) {
-            Classification classification = classificationMapper.toModel(classificationResource);
-            if (systemIds.containsKey(classificationResource.key + "|||" + classificationResource.domain)) {
-                classificationService.updateClassification(classification);
+        try {
+            for (ClassificationResource classificationResource : classificationResources) {
+                if (systemIds.containsKey(classificationResource.key + "|||" + classificationResource.domain)) {
+                    classificationService.updateClassification(classificationMapper.toModel(classificationResource));
 
-            } else {
-                classificationService.createClassification(classification);
+                } else {
+                    classificationResource.classificationId = null;
+                    classificationService.createClassification(classificationMapper.toModel(classificationResource));
+                }
             }
+        } catch (NotAuthorizedException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (ClassificationNotFoundException | DomainNotFoundException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ClassificationAlreadyExistException e) {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            //TODO why is this occuring???
+        } catch (ConcurrencyException e) {
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

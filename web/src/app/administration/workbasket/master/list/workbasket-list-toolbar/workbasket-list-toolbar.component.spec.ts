@@ -25,6 +25,9 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
+import {ImportExportComponent} from '../../../../import-export/import-export.component';
+import {ClassificationService} from '../../../../../services/classification/classification.service';
+import {WorkbasketDefinitionService} from '../../../../../services/workbasket/workbasketDefinition.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -48,8 +51,9 @@ describe('WorkbasketListToolbarComponent', () => {
 			imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, HttpModule,
 				HttpClientModule, RouterTestingModule.withRoutes(routes)],
 			declarations: [WorkbasketListToolbarComponent, SortComponent,
-				FilterComponent, IconTypeComponent, DummyDetailComponent, MapValuesPipe],
-			providers: [ErrorModalService, WorkbasketService, RequestInProgressService, AlertService]
+				FilterComponent, IconTypeComponent, DummyDetailComponent, MapValuesPipe, ImportExportComponent],
+			providers: [ErrorModalService, WorkbasketService, RequestInProgressService, AlertService,
+        ClassificationService, WorkbasketDefinitionService]
 		})
 			.compileComponents();
 	}));

@@ -22,6 +22,20 @@ import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pi
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
+import {Component} from '@angular/core';
+import {Routes} from '@angular/router';
+
+@Component({
+  selector: 'taskana-dummy-detail',
+  template: 'dummydetail'
+})
+export class DummyDetailComponent {
+}
+
+const routes: Routes = [
+  { path: ':id', component: DummyDetailComponent, outlet: 'detail' },
+  { path: 'someNewId', component: DummyDetailComponent }
+];
 
 describe('InformationComponent', () => {
 	let component: WorkbasketInformationComponent;
@@ -31,8 +45,8 @@ describe('InformationComponent', () => {
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
 			declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe,
-				RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent],
-			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, RouterTestingModule],
+				RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent, DummyDetailComponent],
+			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, RouterTestingModule.withRoutes(routes)],
 			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService]
 
 		})
