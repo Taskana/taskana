@@ -54,7 +54,7 @@ import pro.taskana.rest.resource.mapper.WorkbasketSummaryResourcesAssembler;
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 @RequestMapping(path = "/v1/workbaskets", produces = "application/hal+json")
-public class WorkbasketController {
+public class WorkbasketController extends AbstractPagingController {
 
     private static final String LIKE = "%";
     private static final String NAME = "name";
@@ -94,7 +94,7 @@ public class WorkbasketController {
         @RequestParam(value = "type", required = false) String type,
         @RequestParam(value = "requiredPermission", required = false) String requiredPermission,
         @RequestParam(value = "page", required = false) String page,
-        @RequestParam(value = "pagesize", required = false) String pagesize) throws InvalidArgumentException {
+        @RequestParam(value = "pagesize", required = false) String pageSize) throws InvalidArgumentException {
 
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         addSortingToQuery(query, sortBy, order);
@@ -103,13 +103,13 @@ public class WorkbasketController {
 
         PageMetadata pageMetadata = null;
         List<WorkbasketSummary> workbasketSummaries = null;
-        if (page != null && pagesize != null) {
+        if (page != null && pageSize != null) {
             // paging
             long totalElements = query.count();
-            pageMetadata = initPageMetadata(pagesize, page, totalElements);
+            pageMetadata = initPageMetadata(pageSize, page, totalElements);
             workbasketSummaries = query.listPage((int) pageMetadata.getNumber(),
                 (int) pageMetadata.getSize());
-        } else if (page == null && pagesize == null) {
+        } else if (page == null && pageSize == null) {
             // not paging
             workbasketSummaries = query.list();
         } else {
@@ -386,20 +386,6 @@ public class WorkbasketController {
                     throw new InvalidArgumentException("Unknown Workbaskettype '" + type + "'");
             }
         }
-    }
-
-    private PageMetadata initPageMetadata(String pagesizeParam, String pageParam, long totalElements)
-        throws InvalidArgumentException {
-        long pagesize;
-        long page;
-        try {
-            pagesize = Long.valueOf(pagesizeParam);
-            page = Long.valueOf(pageParam);
-        } catch (NumberFormatException e) {
-            throw new InvalidArgumentException("page and pagesize must be a integer value.");
-        }
-        PageMetadata pageMetadata = new PageMetadata(pagesize, page, totalElements, (totalElements / pagesize) + 1);
-        return pageMetadata;
     }
 
 }
