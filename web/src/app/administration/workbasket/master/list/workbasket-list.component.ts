@@ -45,7 +45,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.requestInProgress = true;
 		this.workbasketServiceSubscription = this.workbasketService.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
-			//TODO should be done in a different way.
+			// TODO should be done in a different way.
 			setTimeout(() => { this.selectedId = workbasketIdSelected; }, 0);
 		});
 
