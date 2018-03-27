@@ -538,13 +538,13 @@ public class TaskServiceImpl implements TaskService {
         List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds);
 
         // check source WB (read)+transfer
-        Set<String> workbasketKeys = new HashSet<>();
-        taskSummaries.stream().forEach(t -> workbasketKeys.add(t.getWorkbasketKey()));
+        Set<String> workbasketIds = new HashSet<>();
+        taskSummaries.stream().forEach(t -> workbasketIds.add(t.getWorkbasketId()));
         WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
         query.setUsedToAugmentTasks(true);
         List<WorkbasketSummary> sourceWorkbaskets = query
             .callerHasPermission(WorkbasketPermission.TRANSFER)
-            .keyIn(workbasketKeys.toArray(new String[0]))
+            .idIn(workbasketIds.toArray(new String[0]))
             .list();
         taskIdIterator = taskIds.iterator();
         while (taskIdIterator.hasNext()) {
@@ -558,7 +558,7 @@ public class TaskServiceImpl implements TaskService {
                     new TaskNotFoundException(currentTaskId, "Task with id " + currentTaskId + " was not found."));
                 taskIdIterator.remove();
             } else if (!sourceWorkbaskets.stream()
-                .anyMatch(wb -> taskSummary.getWorkbasketKey().equals(wb.getKey()))) {
+                .anyMatch(wb -> taskSummary.getWorkbasketId().equals(wb.getId()))) {
                 bulkLog.addError(currentTaskId,
                     new NotAuthorizedException(
                         "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId));

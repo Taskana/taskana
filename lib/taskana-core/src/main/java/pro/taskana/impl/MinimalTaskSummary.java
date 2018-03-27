@@ -8,7 +8,7 @@ import pro.taskana.TaskState;
 public class MinimalTaskSummary {
 
     private String taskId;
-    private String workbasketKey;
+    private String workbasketId;
     private TaskState taskState;
 
     MinimalTaskSummary() {
@@ -23,12 +23,12 @@ public class MinimalTaskSummary {
         this.taskId = taskId;
     }
 
-    public String getWorkbasketKey() {
-        return workbasketKey;
+    public String getWorkbasketId() {
+        return workbasketId;
     }
 
-    public void setWorkbasketKey(String workbasketKey) {
-        this.workbasketKey = workbasketKey;
+    public void setWorkbasketId(String workbasketKey) {
+        this.workbasketId = workbasketKey;
     }
 
     public TaskState getTaskState() {
@@ -44,8 +44,8 @@ public class MinimalTaskSummary {
         StringBuilder builder = new StringBuilder();
         builder.append("MinimalTaskSummary [taskId=");
         builder.append(taskId);
-        builder.append(", workbasketKey=");
-        builder.append(workbasketKey);
+        builder.append(", workbasketId=");
+        builder.append(workbasketId);
         builder.append(", taskState=");
         builder.append(taskState);
         builder.append("]");

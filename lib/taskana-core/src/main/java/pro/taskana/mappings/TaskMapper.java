@@ -236,13 +236,13 @@ public interface TaskMapper {
     void updateCompleted(@Param("taskIds") List<String> taskIds,
         @Param("referencetask") TaskSummaryImpl referencetask);
 
-    @Select("<script>SELECT ID, STATE, WORKBASKET_KEY FROM TASK "
+    @Select("<script>SELECT ID, STATE, WORKBASKET_ID FROM TASK "
         + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
         @Result(property = "taskId", column = "ID"),
-        @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
+        @Result(property = "workbasketId", column = "WORKBASKET_ID"),
         @Result(property = "taskState", column = "STATE")})
     List<MinimalTaskSummary> findExistingTasks(@Param("taskIds") List<String> taskIds);
 
