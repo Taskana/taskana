@@ -11,12 +11,19 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AppComponent } from './app.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { WorkbasketComponent } from './workbasket/workbasket.component';
+import { Report } from "./report/report.component";
+import { MapToIterable } from "./pipes/mapToIterable";
+import { OrderBy } from "./pipes/orderBy";
 
 @NgModule({
   declarations: [
     AppComponent,
     TasksComponent,
     WorkbasketComponent,
+    Report,
+    MapToIterable,
+    OrderBy
+
   ],
   imports: [
     BrowserModule,
@@ -31,4 +38,5 @@ import { WorkbasketComponent } from './workbasket/workbasket.component';
   providers: [HttpClientModule],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
