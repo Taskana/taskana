@@ -5,6 +5,7 @@ import { WorkbasketListComponent } from './administration/workbasket/master/list
 import { WorkbasketDetailsComponent } from './administration/workbasket/details/workbasket-details.component';
 import { MasterAndDetailComponent } from './shared/masterAndDetail/master-and-detail.component';
 import { NoAccessComponent } from './administration/workbasket/details/noAccess/no-access.component';
+import {ClassificationListComponent} from './administration/classification/master/list/classification-list.component';
 
 const appRoutes: Routes = [
     {
@@ -29,15 +30,15 @@ const appRoutes: Routes = [
         ]
     },
     {
-        path: 'clasifications',
-        component: MasterAndDetailComponent,
-        children: [
-            {
-                path: '',
-                component: WorkbasketListComponent,
-                outlet: 'detail'
-            }
-        ]
+      path: 'classifications',
+      component: MasterAndDetailComponent,
+      children: [
+        {
+          path: '',
+          component: ClassificationListComponent,
+          outlet: 'master'
+        }
+      ]
     },
     {
         path: '',

@@ -56,6 +56,10 @@ import { SavingWorkbasketService } from './services/saving-workbaskets/saving-wo
 import { MapValuesPipe } from './pipes/mapValues/map-values.pipe';
 import { RemoveNoneTypePipe } from './pipes/removeNoneType/remove-none-type.pipe';
 import { SelectWorkBasketPipe } from './pipes/selectedWorkbasket/seleted-workbasket.pipe';
+import {ClassificationListComponent} from './administration/classification/master/list/classification-list.component';
+import {ClassificationService} from './services/classification/classification.service';
+import {WorkbasketDefinitionService} from './services/workbasket/workbasketDefinition.service';
+import {ImportExportComponent} from './administration/import-export/import-export.component';
 
 const MODULES = [
 	BrowserModule,
@@ -89,7 +93,9 @@ const DECLARATIONS = [
 	DualListComponent,
 	MapValuesPipe,
 	RemoveNoneTypePipe,
-	SelectWorkBasketPipe
+	SelectWorkBasketPipe,
+  ClassificationListComponent,
+  ImportExportComponent
 ];
 
 @NgModule({
@@ -99,6 +105,8 @@ const DECLARATIONS = [
 		WorkbasketService,
 		MasterAndDetailService,
 		PermissionService,
+    ClassificationService,
+    WorkbasketDefinitionService,
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: HttpClientInterceptor,

@@ -27,6 +27,9 @@ import { SortComponent } from 'app/shared/sort/sort.component';
 
 import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pipe';
 import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
+import {ClassificationService} from '../../../../services/classification/classification.service';
+import {WorkbasketDefinitionService} from '../../../../services/workbasket/workbasketDefinition.service';
+import {ImportExportComponent} from '../../../import-export/import-export.component';
 
 
 @Component({
@@ -66,14 +69,15 @@ describe('WorkbasketListComponent', () => {
 		TestBed.configureTestingModule({
 
 			declarations: [WorkbasketListComponent, DummyDetailComponent, SpinnerComponent, FilterComponent, WorkbasketListToolbarComponent,
-				RemoveNoneTypePipe, IconTypeComponent, SortComponent, MapValuesPipe],
+				RemoveNoneTypePipe, IconTypeComponent, SortComponent, MapValuesPipe, ImportExportComponent],
 			imports: [
 				AngularSvgIconModule,
 				HttpModule,
 				HttpClientModule,
 				RouterTestingModule.withRoutes(routes)
 			],
-			providers: [WorkbasketService, ErrorModalService, RequestInProgressService, AlertService]
+			providers: [WorkbasketService, ErrorModalService, RequestInProgressService, AlertService,
+        ClassificationService, WorkbasketDefinitionService]
 		})
 			.compileComponents();
 

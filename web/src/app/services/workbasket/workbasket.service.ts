@@ -113,6 +113,11 @@ export class WorkbasketService {
 		return this.httpClient.put<WorkbasketDistributionTargetsResource>(url, distributionTargetsIds, this.httpOptions);
 	}
 
+  // GET
+  getWorkbasketDomains() {
+    return this.httpClient.get<string[]>(environment.taskanaRestUrl + '/v1/workbaskets/domains', this.httpOptions);
+  }
+
 	// #endregion
 	// #region "Service extras"
 	selectWorkBasket(id: string) {
