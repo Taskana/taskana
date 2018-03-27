@@ -55,7 +55,9 @@ public class SampleLoginModule implements LoginModule {
             default:
                 // necessary for checkstyle
         }
-        subject.getPrincipals().add(new GroupPrincipal("team_" + username.substring(2, 6)));
+        if (username.length() > 6) {
+            subject.getPrincipals().add(new GroupPrincipal("team_" + username.substring(2, 6)));
+        }
     }
 
     private void addUserPrincipalToSubject() {
