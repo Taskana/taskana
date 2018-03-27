@@ -10,9 +10,12 @@
 }
 
 .list-group-search {
-    padding: 10px 15px;
+    padding: 0px 15px;
     border-top: 1px solid #ddd;
 }
 .list-group-search {
     border-top: none;
+}
+row.padding {
+    padding: 1px 0px;
 }

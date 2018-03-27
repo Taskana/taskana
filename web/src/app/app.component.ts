@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { environment } from '../environments/environment';
 import { Router, NavigationStart } from '@angular/router';
 
@@ -6,6 +6,7 @@ import { ErrorModel } from './models/modal-error';
 
 import { ErrorModalService } from './services/errorModal/error-modal.service';
 import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
+import { OrientationService } from './services/orientation/orientation.service';
 
 @Component({
 	selector: 'taskana-root',
@@ -25,10 +26,16 @@ export class AppComponent implements OnInit {
 
 	requestInProgress = false;
 
+	@HostListener('window:resize', ['$event'])
+	onResize(event) {
+		this.orientationService.onResize();
+	}
+
 	constructor(
 		private router: Router,
 		private errorModalService: ErrorModalService,
-		private requestInProgressService: RequestInProgressService) {
+		private requestInProgressService: RequestInProgressService,
+		private orientationService: OrientationService) {
 	}
 
 	ngOnInit() {

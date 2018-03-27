@@ -36,12 +36,19 @@ export class WorkbasketService {
 	// Access
 	readonly REQUIREDPERMISSION = 'requiredPermission';
 
+	// Pagination
+	readonly PAGE = 'page';
+	readonly PAGESIZE = 'pagesize';
+
 	httpOptions = {
 		headers: new HttpHeaders({
 			'Content-Type': 'application/json',
 			'Authorization': 'Basic VEVBTUxFQURfMTpURUFNTEVBRF8x'
 		})
 	};
+
+	page = 1;
+	pageSize = 9;
 
 	private workbasketSummaryRef: Observable<WorkbasketSummaryResource>;
 
@@ -60,13 +67,16 @@ export class WorkbasketService {
 		type: string = undefined,
 		key: string = undefined,
 		keyLike: string = undefined,
-		requiredPermission: string = undefined): Observable<WorkbasketSummaryResource> {
+		requiredPermission: string = undefined,
+		allPages: boolean = false): Observable<WorkbasketSummaryResource> {
 		if (this.workbasketSummaryRef && !forceRequest) {
 			return this.workbasketSummaryRef;
 		}
 		return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
-			`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(sortBy, order, name,
-				nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission)}`, this.httpOptions);
+			`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(
+				sortBy, order, name,
+				nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
+				!allPages ? this.page : undefined, !allPages ? this.pageSize : undefined)}`, this.httpOptions);
 
 	}
 	// GET
@@ -135,6 +145,7 @@ export class WorkbasketService {
 	workbasketSavedTriggered(): Observable<number> {
 		return this.workBasketSaved.asObservable();
 	}
+
 	// #endregion
 
 	// #region private
@@ -148,7 +159,9 @@ export class WorkbasketService {
 		type: string,
 		key: string,
 		keyLike: string,
-		requiredPermission: string): string {
+		requiredPermission: string,
+		page: number,
+		pageSize: number): string {
 		let query = '?';
 		query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
 		query += order ? `${this.ORDER}=${order}&` : '';
@@ -161,6 +174,8 @@ export class WorkbasketService {
 		query += key ? `${this.KEY}=${key}&` : '';
 		query += keyLike ? `${this.KEYLIKE}=${keyLike}&` : '';
 		query += requiredPermission ? `${this.REQUIREDPERMISSION}=${requiredPermission}&` : '';
+		query += page ? `${this.PAGE}=${page}&` : '';
+		query += pageSize ? `${this.PAGESIZE}=${pageSize}&` : '';
 
 		if (query.lastIndexOf('&') === query.length - 1) {
 			query = query.slice(0, query.lastIndexOf('&'))

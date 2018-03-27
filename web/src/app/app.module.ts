@@ -31,6 +31,9 @@ import { IconTypeComponent } from './shared/type-icon/icon-type.component';
 import { AlertComponent } from './shared/alert/alert.component';
 import { SortComponent } from './shared/sort/sort.component';
 import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component';
+import { PaginationComponent } from './administration/workbasket/master/list/pagination/pagination.component';
+import { ClassificationListComponent } from './administration/classification/master/list/classification-list.component';
+import { ImportExportComponent } from './administration/import-export/import-export.component';
 
 // Shared
 import { MasterAndDetailComponent } from './shared/masterAndDetail/master-and-detail.component';
@@ -47,8 +50,9 @@ import { AlertService } from './services/alert/alert.service';
 import { ErrorModalService } from './services/errorModal/error-modal.service';
 import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
 import { SavingWorkbasketService } from './services/saving-workbaskets/saving-workbaskets.service';
-
-
+import { OrientationService } from './services/orientation/orientation.service';
+import { ClassificationService } from './services/classification/classification.service';
+import { WorkbasketDefinitionService } from './services/workbasket/workbasketDefinition.service';
 
 /**
  * Pipes
@@ -56,10 +60,7 @@ import { SavingWorkbasketService } from './services/saving-workbaskets/saving-wo
 import { MapValuesPipe } from './pipes/mapValues/map-values.pipe';
 import { RemoveNoneTypePipe } from './pipes/removeNoneType/remove-none-type.pipe';
 import { SelectWorkBasketPipe } from './pipes/selectedWorkbasket/seleted-workbasket.pipe';
-import {ClassificationListComponent} from './administration/classification/master/list/classification-list.component';
-import {ClassificationService} from './services/classification/classification.service';
-import {WorkbasketDefinitionService} from './services/workbasket/workbasketDefinition.service';
-import {ImportExportComponent} from './administration/import-export/import-export.component';
+import { SpreadNumberPipe } from './pipes/spreadNumber/spread-number';
 
 const MODULES = [
 	BrowserModule,
@@ -91,11 +92,13 @@ const DECLARATIONS = [
 	DistributionTargetsComponent,
 	SortComponent,
 	DualListComponent,
+	PaginationComponent,
+	ClassificationListComponent,
+	ImportExportComponent,
 	MapValuesPipe,
 	RemoveNoneTypePipe,
 	SelectWorkBasketPipe,
-  ClassificationListComponent,
-  ImportExportComponent
+	SpreadNumberPipe
 ];
 
 @NgModule({
@@ -105,8 +108,8 @@ const DECLARATIONS = [
 		WorkbasketService,
 		MasterAndDetailService,
 		PermissionService,
-    ClassificationService,
-    WorkbasketDefinitionService,
+		ClassificationService,
+		WorkbasketDefinitionService,
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: HttpClientInterceptor,
@@ -115,7 +118,8 @@ const DECLARATIONS = [
 		AlertService,
 		ErrorModalService,
 		RequestInProgressService,
-		SavingWorkbasketService
+		SavingWorkbasketService,
+		OrientationService
 	],
 	bootstrap: [AppComponent]
 })

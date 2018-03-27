@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 
@@ -12,38 +12,50 @@ import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { Links } from 'app/models/links';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { FilterModel } from 'app/models/filter';
-
+import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { OrientationService } from 'app/services/orientation/orientation.service';
 
 import { WorkbasketListComponent } from './workbasket-list.component';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar/workbasket-list-toolbar.component';
 import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { SortComponent } from 'app/shared/sort/sort.component';
+import { ImportExportComponent } from '../../../import-export/import-export.component';
 
 import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pipe';
 import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
-import {ClassificationService} from '../../../../services/classification/classification.service';
-import {WorkbasketDefinitionService} from '../../../../services/workbasket/workbasketDefinition.service';
-import {ImportExportComponent} from '../../../import-export/import-export.component';
-
+import { ClassificationService } from '../../../../services/classification/classification.service';
+import { WorkbasketDefinitionService } from '../../../../services/workbasket/workbasketDefinition.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
 	template: 'dummydetail'
 })
-export class DummyDetailComponent {
+class DummyDetailComponent {
+}
+
+@Component({
+	selector: 'taskana-pagination',
+	template: 'dummydetail'
+})
+class PaginationComponent {
+	@Input()
+	workbasketsResource: any;
+	@Output()
+	workbasketsResourceChange = new EventEmitter<any>();
+	@Output() changePage = new EventEmitter<any>();
 }
 
 @Component({
 	selector: 'taskana-filter',
 	template: ''
 })
-export class FilterComponent {
+class FilterComponent {
 
 }
 
@@ -51,7 +63,7 @@ const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSumma
 	'workbaskets': new Array<WorkbasketSummary>(
 		new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
 		new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', ''))
-}, new Links({ 'href': 'url' }));
+}, new LinksWorkbasketSummary({ 'href': 'url' }));
 
 
 describe('WorkbasketListComponent', () => {
@@ -59,9 +71,11 @@ describe('WorkbasketListComponent', () => {
 	let fixture: ComponentFixture<WorkbasketListComponent>;
 	let debugElement: any = undefined;
 	let workbasketService: WorkbasketService;
+	let workbasketSummarySpy;
 
 	const routes: Routes = [
-		{ path: ':id', component: DummyDetailComponent, outlet: 'detail' }
+		{ path: ':id', component: DummyDetailComponent, outlet: 'detail' },
+		{ path: 'workbaskets', component: DummyDetailComponent }
 	];
 
 
@@ -69,7 +83,7 @@ describe('WorkbasketListComponent', () => {
 		TestBed.configureTestingModule({
 
 			declarations: [WorkbasketListComponent, DummyDetailComponent, SpinnerComponent, FilterComponent, WorkbasketListToolbarComponent,
-				RemoveNoneTypePipe, IconTypeComponent, SortComponent, MapValuesPipe, ImportExportComponent],
+				RemoveNoneTypePipe, IconTypeComponent, SortComponent, PaginationComponent, ImportExportComponent, MapValuesPipe],
 			imports: [
 				AngularSvgIconModule,
 				HttpModule,
@@ -77,7 +91,7 @@ describe('WorkbasketListComponent', () => {
 				RouterTestingModule.withRoutes(routes)
 			],
 			providers: [WorkbasketService, ErrorModalService, RequestInProgressService, AlertService,
-        ClassificationService, WorkbasketDefinitionService]
+				ClassificationService, WorkbasketDefinitionService, OrientationService]
 		})
 			.compileComponents();
 
@@ -86,13 +100,14 @@ describe('WorkbasketListComponent', () => {
 		component = fixture.componentInstance;
 		debugElement = fixture.debugElement.nativeElement;
 		workbasketService = TestBed.get(WorkbasketService);
-		spyOn(workbasketService, 'getWorkBasketsSummary').and.returnValue(Observable.of(workbasketSummaryResource));
+		workbasketSummarySpy = spyOn(workbasketService, 'getWorkBasketsSummary').and.returnValue(Observable.of(workbasketSummaryResource));
 		spyOn(workbasketService, 'getSelectedWorkBasket').and.returnValue(Observable.of('2'));
 
 		fixture.detectChanges();
 	}));
 
 	afterEach(() => {
+		fixture.detectChanges()
 		document.body.removeChild(debugElement);
 	})
 
@@ -119,11 +134,16 @@ describe('WorkbasketListComponent', () => {
 			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(2);
 		});
 
-	it('should have two workbasketsummary rows created with the second one selected.', () => {
-		expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(2);
-		expect(debugElement.querySelectorAll('#wb-list-container > li')[0].getAttribute('class')).toBe('list-group-item');
-		expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class')).toBe('list-group-item active');
-	});
+	it('should have two workbasketsummary rows created with the second one selected.', fakeAsync(() => {
+		tick(0);
+		fixture.detectChanges();
+		fixture.whenStable().then(() => {
+			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(2);
+			expect(debugElement.querySelectorAll('#wb-list-container > li')[0].getAttribute('class')).toBe('list-group-item');
+			expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class')).toBe('list-group-item active');
+		})
+
+	}));
 
 	it('should have two workbasketsummary rows created with two different icons: user and users', () => {
 		expect(debugElement.querySelectorAll('#wb-list-container > li')[0]
@@ -145,8 +165,9 @@ describe('WorkbasketListComponent', () => {
 		const type = 'PERSONAL', name = 'someName', description = 'someDescription', owner = 'someOwner', key = 'someKey';
 		const filter = new FilterModel(type, name, description, owner, key);
 		component.performFilter(filter);
-		expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalledWith(true, 'key', 'asc', undefined,
-			name, description, undefined, owner, type, undefined, key);
+
+		expect(workbasketSummarySpy.calls.all()[1].args).toEqual([true, 'key', 'asc',
+			undefined, 'someName', 'someDescription', undefined, 'someOwner', 'PERSONAL', undefined, 'someKey', undefined]);
 
 	}));
 

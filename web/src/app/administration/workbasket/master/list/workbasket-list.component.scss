@@ -15,9 +15,17 @@ a > label{
     height: 2em;
     width: 100%;
 }
+dd, dt {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
 
 dt > i {
     font-weight: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 li > div.row > dl {

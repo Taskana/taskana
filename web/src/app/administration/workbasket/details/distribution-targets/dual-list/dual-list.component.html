@@ -9,30 +9,32 @@
 			<h5>Available distribution targets</h5>
 		</div>
 		<div class="pull-right">
-			<button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWbDta" data-toggle="collapse"
-			[attr.data-target]="'#wb-dta-filter-bar-' + sideNumber"
-			 aria-expanded="false">
+			<button class="btn btn-default" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState">
 				<span class="glyphicon glyphicon-filter blue"></span>
 			</button>
 		</div>
 	</div>
-	<taskana-filter target="wb-dta-filter-bar-{{sideNumber}}" (performFilter)="performAvailableFilter($event)"></taskana-filter>
+	<div [@toggle]="toolbarState" *ngIf="toolbarState" class="row">
+		<taskana-filter class="col-xs-12" (performFilter)="performAvailableFilter($event)"></taskana-filter>
+	</div>
 	<taskana-spinner [isRunning]="requestInProgress" positionClass="centered-spinner" class="centered-horizontally floating"></taskana-spinner>
-	<ul class="list-group ">
-		<li class="list-group-item" *ngFor="let distributionTarget of distributionTargets  | selectWorkbaskets: distributionTargetsSelected: side"
-		 [class.selected]="distributionTarget.selected" type="text" (click)="distributionTarget.selected = !distributionTarget.selected">
-			<div class="row">
-				<dl class="col-xs-1">
-					<dt>
+	<div>
+		<ul class="list-group">
+			<li class="list-group-item" *ngFor="let distributionTarget of distributionTargets  | selectWorkbaskets: distributionTargetsSelected: side"
+			 [class.selected]="distributionTarget.selected" type="text" (click)="distributionTarget.selected = !distributionTarget.selected">
+				<div class="row">
+					<dl class="col-xs-1">
 						<taskana-icon-type class="vertical-align" [type]="distributionTarget.type"></taskana-icon-type>
-					</dt>
-				</dl>
-				<dl class="col-xs-10">
-					<dt>{{distributionTarget.name}} ({{distributionTarget.key}}) </dt>
-					<dd>{{distributionTarget.description}}</dd>
-					<dd>{{distributionTarget.owner}} &nbsp;</dd>
-				</dl>
-			</div>
-		</li>
-	</ul>
+					</dl>
+					<dl class="col-xs-10">
+						<dt>{{distributionTarget.name}},
+							<i>{{distributionTarget.key}} </i>
+						</dt>
+						<dd>{{distributionTarget.description}} &nbsp;</dd>
+						<dd>{{distributionTarget.owner}} &nbsp;</dd>
+					</dl>
+				</div>
+			</li>
+		</ul>
+	</div>
 </div>
