@@ -1,0 +1,23 @@
+<input #selectedFile type="file" (change)="onSelectFile($event)"
+       style="position:absolute;display:none;"/>
+<button class="btn btn-default glyphicon glyphicon-upload" type="button" title="Import" style="top: -0.5px;"
+        (click)="selectedFile.click()"></button>
+
+<div class="dropdown" style="display: inline">
+  <button type="button" title="Export" class="btn btn-default dropdown-toggle"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
+          (click)="updateDomains()">
+    <span class="glyphicon glyphicon-download"></span>
+  </button>
+
+  <ul class="dropdown-menu">
+    <li>
+      <a class="dropdown-item" (click)="exportAll()"><label>All Domains</label></a>
+    </li>
+    <div role="separator" class="divider"></div>
+    <li *ngFor="let domain of (this.currentSelection === 'workbaskets' ? workbasketDomains : classificationDomains)">
+      <a class="dropdown-item"
+         (click)="exportByDomain(domain)"><label>{{domain === '' ? 'Master' : domain}}</label></a>
+    </li>
+  </ul>
+</div>
