@@ -188,15 +188,6 @@ public class WorkbasketController {
         return result;
     }
 
-    @GetMapping(path = "/domains")
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<String>> getDomains() {
-        List<String> domains = new ArrayList<>();
-        WorkbasketQuery workbasketQuery = workbasketService.createWorkbasketQuery();
-        domains = workbasketQuery.listValues("DOMAIN", BaseQuery.SortDirection.ASCENDING);
-        return new ResponseEntity<>(domains, HttpStatus.OK);
-    }
-
     @PutMapping(value = "/{workbasketId}/workbasketAccessItems")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Resources<WorkbasketAccessItemResource>> setWorkbasketAccessItems(

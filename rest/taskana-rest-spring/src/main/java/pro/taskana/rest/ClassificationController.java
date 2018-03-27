@@ -73,15 +73,6 @@ public class ClassificationController {
         return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
     }
 
-    @GetMapping(path = "/domains")
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<String>> getDomains() {
-        List<String> domains = new ArrayList<>();
-        ClassificationQuery classificationQuery = classificationService.createClassificationQuery();
-        domains = classificationQuery.listValues("DOMAIN", BaseQuery.SortDirection.ASCENDING);
-        return new ResponseEntity<>(domains, HttpStatus.OK);
-    }
-
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> createClassification(
