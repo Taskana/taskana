@@ -3,6 +3,8 @@ package pro.taskana.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
@@ -18,6 +20,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.TimeInterval;
 import pro.taskana.WorkbasketPermission;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
@@ -31,7 +34,7 @@ import pro.taskana.impl.util.LoggerUtils;
 public class TaskQueryImpl implements TaskQuery {
 
     private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryTaskSummaries";
-    private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryTasks";
+    private static final String LINK_TO_TASK_COUNT_PER_WORKBASKET = "pro.taskana.mappings.QueryMapper.queryTaskCountPerWorkbasket";
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryTaskColumnValues";
     private static final String TIME_INTERVAL = "TimeInterval ";
     private static final String IS_INVALID = " is invalid.";
@@ -804,12 +807,34 @@ public class TaskQueryImpl implements TaskQuery {
         try {
             taskanaEngine.openConnection();
             checkOpenPermissionForSpecifiedWorkbaskets();
-            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
-            return (rowCount == null) ? 0L : rowCount;
+            List<TaskCountPerWorkbasket> taskCounts = taskanaEngine.getSqlSession()
+                .selectList(LINK_TO_TASK_COUNT_PER_WORKBASKET, this);
+            return countTasksInAuthorizedWorkbaskets(taskCounts);
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
+    }
+
+    private long countTasksInAuthorizedWorkbaskets(List<TaskCountPerWorkbasket> taskCounts) {
+        Set<String> retrievedWorkbasketIds = taskCounts.stream().map(TaskCountPerWorkbasket::getWorkbasketId).collect(
+            Collectors.toSet());
+        // use WorkbasketQuery to filter for authorized WorkBaskets
+        WorkbasketQueryImpl query = (WorkbasketQueryImpl) taskanaEngine.getWorkbasketService().createWorkbasketQuery();
+        query.setUsedToAugmentTasks(true);
+        List<WorkbasketSummary> allowedWorkbaskets = query
+            .idIn(retrievedWorkbasketIds.toArray(new String[0]))
+            .list();
+        Set<String> authorizedWorkbasketIds = allowedWorkbaskets.stream().map(WorkbasketSummary::getId).collect(
+            Collectors.toSet());
+
+        long count = 0;
+        for (TaskCountPerWorkbasket taskCount : taskCounts) {
+            if (authorizedWorkbasketIds.contains(taskCount.getWorkbasketId())) {
+                count += taskCount.getTaskCount().intValue();
+            }
+        }
+        return count;
     }
 
     private void checkOpenPermissionForSpecifiedWorkbaskets() {

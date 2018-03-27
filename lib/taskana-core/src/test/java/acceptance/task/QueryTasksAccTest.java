@@ -24,6 +24,7 @@ import pro.taskana.AttachmentSummary;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.KeyDomain;
 import pro.taskana.Task;
+import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.AttachmentPersistenceException;
@@ -602,6 +603,23 @@ public class QueryTasksAccTest extends AbstractAccTest {
         } finally {
             engineProxy.returnConnection();
         }
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testQueryAndCountMatch() {
+        TaskService taskService = taskanaEngine.getTaskService();
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        List<TaskSummary> tasks = taskQuery
+            .nameIn("Task99", "Task01", "Widerruf")
+            .list();
+        long numberOfTasks = taskQuery
+            .nameIn("Task99", "Task01", "Widerruf")
+            .count();
+        Assert.assertEquals(numberOfTasks, tasks.size());
+
     }
 
 }

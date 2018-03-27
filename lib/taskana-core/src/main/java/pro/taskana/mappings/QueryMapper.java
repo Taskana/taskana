@@ -10,6 +10,7 @@ import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ClassificationSummaryImpl;
 import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
+import pro.taskana.impl.TaskCountPerWorkbasket;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
@@ -347,7 +348,7 @@ public interface QueryMapper {
         @Result(property = "permCustom12", column = "PERM_CUSTOM_12")})
     List<WorkbasketAccessItemImpl> queryWorkbasketAccessItems(WorkbasketAccessItemQueryImpl accessItemQuery);
 
-    @Select("<script>SELECT COUNT(ID) FROM TASK t "
+    @Select("<script> SELECT  COUNT(t.ID) as TASK_COUNT , t.WORKBASKET_ID FROM TASK t "
         + "<where>"
         + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
         + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
@@ -422,10 +423,13 @@ public interface QueryMapper {
         + "<if test='custom16In != null'>AND t.CUSTOM_10 IN(<foreach item='item' collection='custom16In' separator=',' >#{item}</foreach>)</if> "
         + "<if test='custom16Like != null'>AND (<foreach item='item' collection='custom16Like' separator=' OR '>UPPER(t.CUSTOM_10) LIKE #{item}</foreach>)</if> "
         + "</where>"
-        + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
+        + "GROUP BY WORKBASKET_ID "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
-    Long countQueryTasks(TaskQueryImpl taskQuery);
+    @Results(value = {
+        @Result(property = "taskCount", column = "TASK_COUNT"),
+        @Result(property = "workbasketId", column = "WORKBASKET_ID")})
+    List<TaskCountPerWorkbasket> queryTaskCountPerWorkbasket(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT COUNT(ID) FROM CLASSIFICATION "
         + "<where>"
