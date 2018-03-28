@@ -87,6 +87,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
+    @Ignore
     public void testGetLastPageSortedByDue() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -117,7 +118,6 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    @Ignore
     public void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -128,7 +128,7 @@ public class TaskControllerIntTest {
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
-        assertEquals(5, response.getBody().getContent().size());
+        assertEquals(2, response.getBody().getContent().size());
         assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=14"));
         assertEquals("TKI:000000000000000000000000000000000005",
             response.getBody().getContent().iterator().next().getTaskId());

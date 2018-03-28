@@ -20,6 +20,10 @@ public abstract class AbstractPagingController {
             throw new InvalidArgumentException("page and pagesize must be a integer value.");
         }
         PageMetadata pageMetadata = new PageMetadata(pagesize, page, totalElements);
+        if (pageMetadata.getNumber() > pageMetadata.getTotalPages()) {
+            // unfortunately no setter for number
+            pageMetadata = new PageMetadata(pagesize, pageMetadata.getTotalPages(), totalElements);
+        }
         return pageMetadata;
     }
 
