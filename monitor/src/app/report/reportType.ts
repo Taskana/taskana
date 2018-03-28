@@ -1,0 +1,3 @@
+export enum ReportType {
+  WorkbasketStatus
+}
