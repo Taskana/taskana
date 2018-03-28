@@ -4,7 +4,6 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Observable';
 import { State } from '../model/state';
 import { WorkbasketCounter } from '../model/workbasket-counter';
-import { ReportModel } from "../model/report";
 
 @Injectable()
 export class RestConnectorService {
@@ -23,7 +22,7 @@ export class RestConnectorService {
       .map(res => res.json());
   }
 
-  getTaskStatusReport(): Observable<ReportModel> {
+  getTaskStatusReport(): Observable<Object> {
     return this.http.get(environment.taskanaRestUrl + "/v1/monitor/taskStatusReport", this.createAuthorizationHeader())
       .map(res => res.json());
   }
