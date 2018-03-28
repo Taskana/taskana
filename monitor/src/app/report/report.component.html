@@ -1,21 +1,21 @@
-<div class="row" *ngIf="model">
+<div class="row" *ngIf="isDataAvailable">
   <div class="col-sm-12" style="margin-bottom: 10px">
-    <h4>{{model.meta.name}} ({{model.meta.date | date : 'dd.MM.yyyy HH:mm:ss'}})</h4>
+    <h4>{{meta.name}} ({{meta.date | date : 'dd.MM.yyyy HH:mm:ss'}})</h4>
     <table class="table table-responsive table-condensed">
       <tr>
-        <th>{{model.meta.rowDesc}}</th>
-        <th *ngFor="let header of model.meta.header">{{header}}</th>
-        <th>{{model.meta.totalDesc}}</th>
+        <th>{{meta.rowDesc}}</th>
+        <th *ngFor="let header of meta.header">{{header}}</th>
+        <th>{{meta.totalDesc}}</th>
       </tr>
-      <tr *ngFor="let row of model.rows | mapToIterable | orderBy:['key']">
+      <tr *ngFor="let row of rows | mapToIterable | orderBy:['key']">
         <td>{{row.key}}</td>
-        <td *ngFor="let header of model.meta.header">{{row.val.cells[header]}}</td>
+        <td *ngFor="let header of meta.header">{{row.val.cells[header]}}</td>
         <th>{{row.val.total}}</th>
       </tr>
       <tr>
-        <th>{{model.meta.totalDesc}}</th>
-        <th *ngFor="let header of model.meta.header">{{model.sumRow.cells[header]}}</th>
-        <th>{{model.sumRow.total}}</th>
+        <th>{{meta.totalDesc}}</th>
+        <th *ngFor="let header of meta.header">{{sumRow.cells[header]}}</th>
+        <th>{{sumRow.total}}</th>
       </tr>
     </table>
   </div>

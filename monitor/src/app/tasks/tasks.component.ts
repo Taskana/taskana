@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RestConnectorService } from '../service/rest-connector.service';
-import { Report } from "../report/report.component";
-import { ReportModel } from "../model/report";
+import { ReportType } from "../report/reportType";
 
 @Component({
   selector: 'tasks',
@@ -16,8 +15,7 @@ export class TasksComponent implements OnInit {
   pieChartData: number[] = [];
   pieChartType: string = 'pie';
   isDataAvailable: boolean = false;
-  report: Report;
-  taskStatusReport: ReportModel;
+  reportType = ReportType.WorkbasketStatus;
 
   constructor(private restConnectorService: RestConnectorService) {
   }
@@ -39,10 +37,7 @@ export class TasksComponent implements OnInit {
       } else {
         this.pieChartData.push(0);
       }
-    });
-    this.restConnectorService.getTaskStatusReport().subscribe(report => {
-      this.taskStatusReport = report;
       this.isDataAvailable = true;
-    })
+    });
   }
 }
