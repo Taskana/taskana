@@ -1,6 +1,7 @@
 package pro.taskana.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -278,9 +279,9 @@ public class TaskController extends AbstractPagingController {
     }
 
     private String[] extractCommaSeperatedFields(List<String> list) {
-        return list.stream()
-            .map(item -> item.split(","))
-            .toArray(String[]::new);
+        List<String> values = new ArrayList<>();
+        list.forEach(item -> values.addAll(Arrays.asList(item.split(","))));
+        return values.toArray(new String[0]);
     }
 
     private TaskState[] extractStates(MultiValueMap<String, String> params) throws InvalidArgumentException {
