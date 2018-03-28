@@ -1,7 +1,6 @@
 package pro.taskana.rest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -203,28 +202,25 @@ public class TaskController extends AbstractPagingController {
             String[] owners = extractCommaSeperatedFields(params.get(OWNER));
             taskQuery.ownerIn(owners);
         }
-        // objectReference filter
-        if (params.keySet().stream().filter(s -> s.startsWith(POR_PREFIX)).toArray().length > 0) {
-            if (params.containsKey(POR_COMPANY)) {
-                String[] companies = extractCommaSeperatedFields(params.get(POR_COMPANY));
-                taskQuery.primaryObjectReferenceCompanyIn(companies);
-            }
-            if (params.containsKey(POR_SYSTEM)) {
-                String[] systems = extractCommaSeperatedFields(params.get(POR_SYSTEM));
-                taskQuery.primaryObjectReferenceSystemIn(systems);
-            }
-            if (params.containsKey(POR_SYSTEM_INSTANCE)) {
-                String[] systemInstances = extractCommaSeperatedFields(params.get(POR_SYSTEM_INSTANCE));
-                taskQuery.primaryObjectReferenceSystemInstanceIn(systemInstances);
-            }
-            if (params.containsKey(POR_TYPE)) {
-                String[] types = extractCommaSeperatedFields(params.get(POR_TYPE));
-                taskQuery.primaryObjectReferenceTypeIn(types);
-            }
-            if (params.containsKey(POR_VALUE)) {
-                String[] values = extractCommaSeperatedFields(params.get(POR_VALUE));
-                taskQuery.primaryObjectReferenceValueIn(values);
-            }
+        if (params.containsKey(POR_COMPANY)) {
+            String[] companies = extractCommaSeperatedFields(params.get(POR_COMPANY));
+            taskQuery.primaryObjectReferenceCompanyIn(companies);
+        }
+        if (params.containsKey(POR_SYSTEM)) {
+            String[] systems = extractCommaSeperatedFields(params.get(POR_SYSTEM));
+            taskQuery.primaryObjectReferenceSystemIn(systems);
+        }
+        if (params.containsKey(POR_SYSTEM_INSTANCE)) {
+            String[] systemInstances = extractCommaSeperatedFields(params.get(POR_SYSTEM_INSTANCE));
+            taskQuery.primaryObjectReferenceSystemInstanceIn(systemInstances);
+        }
+        if (params.containsKey(POR_TYPE)) {
+            String[] types = extractCommaSeperatedFields(params.get(POR_TYPE));
+            taskQuery.primaryObjectReferenceTypeIn(types);
+        }
+        if (params.containsKey(POR_VALUE)) {
+            String[] values = extractCommaSeperatedFields(params.get(POR_VALUE));
+            taskQuery.primaryObjectReferenceValueIn(values);
         }
         return taskQuery;
     }
@@ -282,9 +278,9 @@ public class TaskController extends AbstractPagingController {
     }
 
     private String[] extractCommaSeperatedFields(List<String> list) {
-        List<String> values = new ArrayList<>();
-        list.forEach(item -> values.addAll(Arrays.asList(item.split(","))));
-        return values.toArray(new String[0]);
+        return list.stream()
+            .map(item -> item.split(","))
+            .toArray(String[]::new);
     }
 
     private TaskState[] extractStates(MultiValueMap<String, String> params) throws InvalidArgumentException {

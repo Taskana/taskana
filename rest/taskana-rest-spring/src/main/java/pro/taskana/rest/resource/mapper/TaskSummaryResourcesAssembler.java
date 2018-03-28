@@ -13,7 +13,7 @@ import pro.taskana.rest.TaskController;
 import pro.taskana.rest.resource.TaskSummaryResource;
 
 /**
- * @author HH
+ * Resources assembler for {@link TaskSummaryResource}.
  */
 public class TaskSummaryResourcesAssembler extends AbstractRessourcesAssembler {
 

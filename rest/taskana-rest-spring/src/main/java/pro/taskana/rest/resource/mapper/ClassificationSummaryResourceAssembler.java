@@ -8,7 +8,7 @@ import pro.taskana.rest.ClassificationController;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
 
 /**
- * @author HH
+ * Resource assembler for {@link ClassificationSummaryResource}.
  */
 public class ClassificationSummaryResourceAssembler
     extends ResourceAssemblerSupport<ClassificationSummary, ClassificationSummaryResource> {
