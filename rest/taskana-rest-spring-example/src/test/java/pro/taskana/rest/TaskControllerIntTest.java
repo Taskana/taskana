@@ -118,6 +118,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
+    @Ignore
     public void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
