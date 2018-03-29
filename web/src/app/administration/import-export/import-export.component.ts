@@ -1,9 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {ActivatedRoute, Router} from '@angular/router';
-import {WorkbasketService} from '../../services/workbasket/workbasket.service';
-import {ClassificationService} from '../../services/classification/classification.service';
-import {WorkbasketDefinitionService} from '../../services/workbasket/workbasketDefinition.service';
+import {ClassificationService} from 'app/services/classification/classification.service';
+import {WorkbasketDefinitionService} from 'app/services/workbasket/workbasketDefinition.service';
+import {DomainService} from '../../services/domains/domain.service';
+import {SelectionToImport} from '../enums/SelectionToImport';
 
 @Component({
   selector: 'taskana-import-export-component',
@@ -12,11 +11,10 @@ import {WorkbasketDefinitionService} from '../../services/workbasket/workbasketD
 })
 export class ImportExportComponent implements OnInit {
 
-  @Input() currentSelection: string;
-  workbasketDomains: string[];
-  classificationDomains: string[];
+  @Input() currentSelection: SelectionToImport;
+  domains: string[] = [];
 
-  constructor(private workbasketService: WorkbasketService, private workbasketDefinitionService: WorkbasketDefinitionService,
+  constructor(private domainService: DomainService, private workbasketDefinitionService: WorkbasketDefinitionService,
               private classificationService: ClassificationService) {
   }
 
@@ -24,18 +22,15 @@ export class ImportExportComponent implements OnInit {
   }
 
   updateDomains() {
-    this.workbasketService.getWorkbasketDomains().subscribe(
-      data => this.workbasketDomains = data
-    );
-    this.classificationService.getClassificationDomains().subscribe(
-      data => this.classificationDomains = data
+    this.domainService.getDomains().subscribe(
+      data => this.domains = data
     );
   }
 
   onSelectFile(event) {
     const file = event.srcElement.files[0];
     const reader = new FileReader();
-    if (this.currentSelection === 'workbaskets') {
+    if (this.currentSelection === SelectionToImport.WORKBASKETS) {
       reader.onload = <Event>(e) => this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
     } else {
       reader.onload = <Event>(e) => this.classificationService.importClassifications(e.target.result);
@@ -43,19 +38,11 @@ export class ImportExportComponent implements OnInit {
     reader.readAsText(file);
   }
 
-  exportAll() {
-    if (this.currentSelection === 'workbaskets') {
-      this.workbasketDefinitionService.exportAllWorkbaskets();
+  export(domain = '') {
+    if (this.currentSelection === SelectionToImport.WORKBASKETS) {
+      this.workbasketDefinitionService.exportWorkbaskets(domain);
     } else {
-      this.classificationService.exportAllClassifications();
-    }
-  }
-
-  exportByDomain(domain: string) {
-    if (this.currentSelection === 'workbaskets') {
-      this.workbasketDefinitionService.exportWorkbasketsByDomain(domain);
-    } else {
-      this.classificationService.exportClassificationsByDomain(domain);
+      this.classificationService.exportClassifications(domain);
     }
   }
 }

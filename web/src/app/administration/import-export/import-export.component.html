@@ -1,6 +1,7 @@
+<!-- TODO: fix position of import button -->
 <input #selectedFile type="file" (change)="onSelectFile($event)"
-       style="position:absolute;display:none;"/>
-<button class="btn btn-default glyphicon glyphicon-upload" type="button" title="Import" style="top: -0.5px;"
+       class="hide"/>
+<button class="btn btn-default glyphicon glyphicon-upload" type="button" title="Import"
         (click)="selectedFile.click()"></button>
 
 <div class="dropdown" style="display: inline">
@@ -12,12 +13,12 @@
 
   <ul class="dropdown-menu">
     <li>
-      <a class="dropdown-item" (click)="exportAll()"><label>All Domains</label></a>
+      <a class="dropdown-item" (click)="export()"><label>All Domains</label></a>
     </li>
     <div role="separator" class="divider"></div>
-    <li *ngFor="let domain of (this.currentSelection === 'workbaskets' ? workbasketDomains : classificationDomains)">
+    <li *ngFor="let domain of domains">
       <a class="dropdown-item"
-         (click)="exportByDomain(domain)"><label>{{domain === '' ? 'Master' : domain}}</label></a>
+         (click)="export(domain)"><label>{{domain === '' ? 'Master' : domain}}</label></a>
     </li>
   </ul>
 </div>

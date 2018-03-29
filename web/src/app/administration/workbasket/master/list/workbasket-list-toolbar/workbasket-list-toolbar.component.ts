@@ -2,17 +2,18 @@ import { Component, OnInit, Input, Output, EventEmitter, AfterViewChecked } from
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { SortingModel } from 'app/models/sorting';
-import { FilterModel } from 'app/models/filter';
-import { Subscription } from 'rxjs/Subscription';
-import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { ErrorModel } from 'app/models/modal-error';
-import { AlertModel, AlertType } from 'app/models/alert';
+import {SortingModel} from 'app/models/sorting';
+import {FilterModel} from 'app/models/filter';
+import {Subscription} from 'rxjs/Subscription';
+import {WorkbasketSummary} from 'app/models/workbasket-summary';
+import {ErrorModel} from 'app/models/modal-error';
+import {AlertModel, AlertType} from 'app/models/alert';
 
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
-import { AlertService } from 'app/services/alert/alert.service';
+import {ErrorModalService} from 'app/services/errorModal/error-modal.service';
+import {RequestInProgressService} from 'app/services/requestInProgress/request-in-progress.service';
+import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
+import {AlertService} from 'app/services/alert/alert.service';
+import {SelectionToImport} from '../../../../enums/SelectionToImport';
 
 @Component({
 	selector: 'taskana-workbasket-list-toolbar',
@@ -42,6 +43,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
 	@Output() performSorting = new EventEmitter<SortingModel>();
 	@Output() performFilter = new EventEmitter<FilterModel>();
 	workbasketServiceSubscription: Subscription;
+  selectionToImport = SelectionToImport.WORKBASKETS;
 	toolbarState = false;
 
 	constructor(

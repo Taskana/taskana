@@ -1,17 +1,14 @@
-import { Injectable } from '@angular/core';
-import { HttpClientModule, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { map } from 'rxjs/operator/map';
-import { environment } from 'app/../environments/environment';
-
-import { WorkbasketSummary } from 'app//models/workbasket-summary';
-import { Workbasket } from 'app/models/workbasket';
-import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
-import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
-import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
-import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
-import { Direction } from 'app/models/sorting';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
+import {environment} from 'app/../environments/environment';
+import {Workbasket} from 'app/models/workbasket';
+import {WorkbasketAccessItems} from 'app/models/workbasket-access-items';
+import {WorkbasketSummaryResource} from 'app/models/workbasket-summary-resource';
+import {WorkbasketAccessItemsResource} from 'app/models/workbasket-access-items-resource';
+import {WorkbasketDistributionTargetsResource} from 'app/models/workbasket-distribution-targets-resource';
+import {Direction} from 'app/models/sorting';
 
 @Injectable()
 export class WorkbasketService {
@@ -122,11 +119,6 @@ export class WorkbasketService {
 		Observable<WorkbasketDistributionTargetsResource> {
 		return this.httpClient.put<WorkbasketDistributionTargetsResource>(url, distributionTargetsIds, this.httpOptions);
 	}
-
-  // GET
-  getWorkbasketDomains() {
-    return this.httpClient.get<string[]>(environment.taskanaRestUrl + '/v1/workbaskets/domains', this.httpOptions);
-  }
 
 	// #endregion
 	// #region "Service extras"
