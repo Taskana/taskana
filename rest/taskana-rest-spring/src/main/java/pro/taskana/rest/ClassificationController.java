@@ -26,6 +26,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
@@ -59,7 +60,7 @@ public class ClassificationController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> getClassification(@PathVariable String classificationId)
         throws ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException,
-        ConcurrencyException, DomainNotFoundException {
+        ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         Classification classification = classificationService.getClassification(classificationId);
         return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
     }
@@ -68,7 +69,7 @@ public class ClassificationController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> getClassification(@PathVariable String classificationKey,
         @PathVariable String domain) throws ClassificationNotFoundException, NotAuthorizedException,
-        ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException {
+        ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         Classification classification = classificationService.getClassification(classificationKey, domain);
         return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
     }
@@ -87,7 +88,7 @@ public class ClassificationController {
     public ResponseEntity<ClassificationResource> createClassification(
         @RequestBody ClassificationResource resource)
         throws NotAuthorizedException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        ConcurrencyException, DomainNotFoundException {
+        ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         Classification classification = classificationMapper.toModel(resource);
         classification = classificationService.createClassification(classification);
         return ResponseEntity.status(HttpStatus.CREATED).body(classificationMapper.toResource(classification));
@@ -97,7 +98,7 @@ public class ClassificationController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> updateClassification(@RequestBody ClassificationResource resource)
         throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
-        ClassificationAlreadyExistException, DomainNotFoundException {
+        ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException {
         Classification classification = classificationMapper.toModel(resource);
         classification = classificationService.updateClassification(classification);
         return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));

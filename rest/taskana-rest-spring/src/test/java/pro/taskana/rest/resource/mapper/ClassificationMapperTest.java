@@ -16,6 +16,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.rest.RestConfiguration;
@@ -37,7 +38,7 @@ public class ClassificationMapperTest {
 
     @Test
     public void classificationToResource() throws ClassificationNotFoundException, NotAuthorizedException,
-        ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException {
+        ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         // given
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("DOMAIN_A",
             "1", "A");
