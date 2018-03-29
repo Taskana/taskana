@@ -1,4 +1,4 @@
-import { TestBed, async, inject, tick, fakeAsync } from '@angular/core/testing';
+import { async, inject, TestBed } from '@angular/core/testing';
 import { Router, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';

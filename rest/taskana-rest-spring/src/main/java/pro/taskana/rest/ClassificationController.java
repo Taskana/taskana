@@ -1,8 +1,5 @@
 package pro.taskana.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,10 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import pro.taskana.BaseQuery;
 import pro.taskana.Classification;
-import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -30,6 +24,8 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
+
+import java.util.List;
 
 /**
  * Controller for all {@link Classification} related endpoints.
@@ -72,15 +68,6 @@ public class ClassificationController {
         ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         Classification classification = classificationService.getClassification(classificationKey, domain);
         return ResponseEntity.status(HttpStatus.OK).body(classificationMapper.toResource(classification));
-    }
-
-    @GetMapping(path = "/domains")
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<String>> getDomains() {
-        List<String> domains = new ArrayList<>();
-        ClassificationQuery classificationQuery = classificationService.createClassificationQuery();
-        domains = classificationQuery.listValues("DOMAIN", BaseQuery.SortDirection.ASCENDING);
-        return new ResponseEntity<>(domains, HttpStatus.OK);
     }
 
     @PostMapping

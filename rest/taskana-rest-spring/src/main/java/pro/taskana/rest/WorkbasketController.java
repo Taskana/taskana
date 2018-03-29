@@ -1,9 +1,5 @@
 package pro.taskana.rest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.BaseQuery;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
@@ -47,6 +42,10 @@ import pro.taskana.rest.resource.mapper.WorkbasketAccessItemListMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketSummaryResourcesAssembler;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Controller for all {@link Workbasket} related endpoints.
@@ -186,15 +185,6 @@ public class WorkbasketController extends AbstractPagingController {
             .toResource(workbasketId, accessItems);
         result = new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
         return result;
-    }
-
-    @GetMapping(path = "/domains")
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<String>> getDomains() {
-        List<String> domains = new ArrayList<>();
-        WorkbasketQuery workbasketQuery = workbasketService.createWorkbasketQuery();
-        domains = workbasketQuery.listValues("DOMAIN", BaseQuery.SortDirection.ASCENDING);
-        return new ResponseEntity<>(domains, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{workbasketId}/workbasketAccessItems")

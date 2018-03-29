@@ -5,11 +5,10 @@ import { Observable } from 'rxjs/Observable';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
-import { Router, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { Links } from 'app/models/links';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { FilterModel } from 'app/models/filter';
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
@@ -31,6 +30,7 @@ import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pi
 import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
 import { ClassificationService } from '../../../../services/classification/classification.service';
 import { WorkbasketDefinitionService } from '../../../../services/workbasket/workbasketDefinition.service';
+import { DomainService } from '../../../../services/domains/domain.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -91,7 +91,7 @@ describe('WorkbasketListComponent', () => {
 				RouterTestingModule.withRoutes(routes)
 			],
 			providers: [WorkbasketService, ErrorModalService, RequestInProgressService, AlertService,
-				ClassificationService, WorkbasketDefinitionService, OrientationService]
+				ClassificationService, WorkbasketDefinitionService, OrientationService, DomainService]
 		})
 			.compileComponents();
 
