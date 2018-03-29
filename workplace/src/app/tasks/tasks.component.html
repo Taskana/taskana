@@ -1,13 +1,14 @@
 <div class="container-fluid">
   <div class="row form-group">
-    <workbasket-selector (tasks) = "loadTasks($event)"></workbasket-selector>
+    <workbasket-selector (tasks)="loadTasks($event)"></workbasket-selector>
   </div>
   <div *ngIf="tasks?.length > 0" class="row form-group">
     <div class="col-md-6">
       <tasklist [tasks]="tasks" (task)="selectTask($event)"></tasklist>
     </div>
     <div class="col-md-6">
-      <taskdetails [task]="task"></taskdetails>
+      <taskdetails [task]="task" *ngIf="taskDetailEnabled"></taskdetails>
+      <div class="overlay" [ngClass]="{overlayActive:taskDetailEnabled}" (click)="taskDetailEnabled = false"></div>
     </div>
   </div>
 </div>
