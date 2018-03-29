@@ -1,11 +1,5 @@
 package pro.taskana.rest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketQuery;
@@ -36,6 +29,12 @@ import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketDefinitionMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Controller for all {@link WorkbasketDefinition} related endpoints.
@@ -181,6 +180,6 @@ public class WorkbasketDefinitionController {
     }
 
     private String logicalId(String key, String domain) {
-        return key + "|||" + domain;
+        return key + "|" + domain;
     }
 }

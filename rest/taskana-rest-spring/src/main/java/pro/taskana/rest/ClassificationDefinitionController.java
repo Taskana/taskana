@@ -1,10 +1,5 @@
 package pro.taskana.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
@@ -29,6 +23,11 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Controller for Importing / Exporting classifications.
@@ -67,11 +66,11 @@ public class ClassificationDefinitionController {
         Map<String, String> systemIds = classificationService.createClassificationQuery()
             .list()
             .stream()
-            .collect(Collectors.toMap(i -> i.getKey() + "|||" + i.getDomain(), ClassificationSummary::getId));
+            .collect(Collectors.toMap(i -> i.getKey() + "|" + i.getDomain(), ClassificationSummary::getId));
 
         try {
             for (ClassificationResource classificationResource : classificationResources) {
-                if (systemIds.containsKey(classificationResource.key + "|||" + classificationResource.domain)) {
+                if (systemIds.containsKey(classificationResource.key + "|" + classificationResource.domain)) {
                     classificationService.updateClassification(classificationMapper.toModel(classificationResource));
 
                 } else {

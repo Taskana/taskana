@@ -1,15 +1,16 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
 import {environment} from '../../../environments/environment';
-import {DatePipe} from '@angular/common';
 import {AlertService} from '../alert/alert.service';
 import {Classification} from '../../models/classification';
 import {AlertModel, AlertType} from '../../models/alert';
 import {saveAs} from 'file-saver/FileSaver';
+import {TaskanaDate} from '../../shared/util/taskana.date';
 
 @Injectable()
 export class ClassificationService {
+
+  url = environment.taskanaRestUrl + '/v1/classificationdefinitions';
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -22,42 +23,22 @@ export class ClassificationService {
   }
 
   // GET
-  getClassificationDomains(): Observable<string[]> {
-    return this.httpClient.get<string[]>(environment.taskanaRestUrl + '/v1/classifications/domains', this.httpOptions);
-  }
-
-  // GET
-  exportAllClassifications() {
-    this.httpClient.get<Classification[]>(environment.taskanaRestUrl + '/v1/classificationdefinitions', this.httpOptions)
+  exportClassifications(domain: string) {
+    domain = (domain === '' ? '' : '?domain=' + domain);
+    this.httpClient.get<Classification[]>(this.url + domain, this.httpOptions)
       .subscribe(
-        response => saveAs(new Blob([JSON.stringify(response)], {type: 'text/plain;charset=utf-8'}), this.generateName())
-      );
-  }
-
-  // GET
-  exportClassificationsByDomain(domain: string) {
-    this.httpClient.get<Classification[]>(environment.taskanaRestUrl + '/v1/classificationdefinitions?domain=' + domain, this.httpOptions)
-      .subscribe(
-        response => saveAs(new Blob([JSON.stringify(response)], {type: 'text/plain;charset=utf-8'}), this.generateName(domain))
+        response => saveAs(new Blob([JSON.stringify(response)], {type: 'text/plain;charset=utf-8'}),
+          'Classifications_' + TaskanaDate.getDate() + '.json')
       );
   }
 
   // POST
   // TODO handle error
   importClassifications(classifications: any) {
-    console.log('importing classifications');
-    this.httpClient.post(environment.taskanaRestUrl + '/v1/classificationdefinitions/import',
+    this.httpClient.post(this.url + '/import',
       JSON.parse(classifications), this.httpOptions).subscribe(
       classificationsUpdated => this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful')),
       error => this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'Import was not successful'))
     );
-  }
-
-  private generateName(domain = ''): string {
-    const dateFormat = 'yyyy-MM-ddTHH:mm:ss';
-    const dateLocale = 'en-US';
-    const datePipe = new DatePipe(dateLocale);
-    const date = datePipe.transform(Date.now(), dateFormat) + 'Z';
-    return 'Classifications_' + date + '.json';
   }
 }
