@@ -27,6 +27,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.mappings.ClassificationMapper;
 
@@ -62,7 +63,7 @@ public class ClassificationServiceImplTest {
     @Test(expected = ClassificationAlreadyExistException.class)
     public void testCreateClassificationAlreadyExisting()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
-        DomainNotFoundException {
+        DomainNotFoundException, InvalidArgumentException {
         Classification classification = createDummyClassification();
         doReturn(classification).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
@@ -85,7 +86,7 @@ public class ClassificationServiceImplTest {
     @Test(expected = ClassificationNotFoundException.class)
     public void testCreateClassificationParentNotExisting()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
-        DomainNotFoundException {
+        DomainNotFoundException, InvalidArgumentException {
         Classification classification = createDummyClassification();
         classification.setParentId("NOT EXISTING ID");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -112,7 +113,7 @@ public class ClassificationServiceImplTest {
     @Test
     public void testCreateClassificationInOwnDomainButExistingInRoot()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, InterruptedException,
-        NotAuthorizedException, DomainNotFoundException {
+        NotAuthorizedException, DomainNotFoundException, InvalidArgumentException {
         Instant beforeTimestamp = Instant.now();
         Thread.sleep(10L);
         Classification classification = createDummyClassification();
@@ -145,7 +146,7 @@ public class ClassificationServiceImplTest {
     @Test
     public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException {
+        DomainNotFoundException, InvalidArgumentException {
         Classification classification = createDummyClassification();
         String domain = classification.getDomain();
         String key = classification.getKey();
@@ -172,7 +173,7 @@ public class ClassificationServiceImplTest {
     @Test
     public void testCreateClassificationIntoRootDomain()
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException {
+        DomainNotFoundException, InvalidArgumentException {
         ClassificationImpl classification = (ClassificationImpl) createDummyClassification();
         classification.setDomain("");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -193,7 +194,7 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testUpdateExistingClassification()
-        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException {
         Instant now = Instant.now();
         Classification classification = createDummyClassification();
         ((ClassificationImpl) classification).setModified(now);
@@ -214,7 +215,7 @@ public class ClassificationServiceImplTest {
     @Test(expected = ClassificationNotFoundException.class)
     public void testUpdateClassificationParentNotExisting()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
-        ConcurrencyException {
+        ConcurrencyException, InvalidArgumentException {
         Instant now = Instant.now();
         ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
         oldClassification.setParentId("SOME ID");

@@ -115,7 +115,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setId("1"); // set id manually for authorization tests
 
         workbasket.setType(WorkbasketType.GROUP);
-        Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "type1");
+        Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
         taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
         taskanaEngineImpl.getClassificationService().createClassification(classification);
         connection.commit();
@@ -189,7 +189,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setName("workbasket99");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket = workBasketServiceImpl.createWorkbasket(workbasket);
-        Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "t1");
+        Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
         classification = classificationServiceImpl.createClassification(classification);
 
         Task task = taskServiceImpl.newTask(workbasket.getId());
@@ -262,7 +262,7 @@ public class TaskServiceImplIntExplicitTest {
 
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("k1", "DOMAIN_A");
         workbasket.setName("workbasket");
-        Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "t1");
+        Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
         classificationService.createClassification(classification);
         workbasket.setId("1"); // set id manually for authorization tests
         workbasket.setType(WorkbasketType.GROUP);
@@ -334,7 +334,7 @@ public class TaskServiceImplIntExplicitTest {
         createWorkbasketWithSecurity(destinationWB, destinationWB.getOwner(), false, true, true, true);
 
         // Classification required for Task
-        classification = (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "t1");
+        classification = (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
         classification.setCategory("Test Classification");
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
@@ -392,7 +392,7 @@ public class TaskServiceImplIntExplicitTest {
         workbasketService = taskanaEngine.getWorkbasketService();
 
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification(
-            "KEY", "DOMAIN_A", "t1");
+            "KEY", "DOMAIN_A", "TASK");
         classification.setCategory("Test Classification");
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
@@ -462,14 +462,14 @@ public class TaskServiceImplIntExplicitTest {
 
     private Task generateDummyTask() throws ClassificationAlreadyExistException, ClassificationNotFoundException,
         WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
-        WorkbasketAlreadyExistException, DomainNotFoundException {
+        WorkbasketAlreadyExistException, DomainNotFoundException, InvalidArgumentException {
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("wb", "DOMAIN_A");
         workbasket.setName("wb");
         workbasket.setId("1"); // set id manually for authorization tests
         workbasket.setType(WorkbasketType.GROUP);
         taskanaEngine.getWorkbasketService().createWorkbasket(workbasket);
 
-        Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "t1");
+        Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
         taskanaEngine.getClassificationService().createClassification(classification);
 
         Task task = taskServiceImpl.newTask(workbasket.getId());

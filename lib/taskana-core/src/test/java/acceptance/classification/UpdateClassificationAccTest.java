@@ -50,7 +50,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testUpdateClassification()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException {
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+        InvalidArgumentException {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
         ClassificationService classificationService = taskanaEngine.getClassificationService();
@@ -88,7 +89,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
     @Test(expected = NotAuthorizedException.class)
     public void testUpdateClassificationFails()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException {
+        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+        InvalidArgumentException {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
         ClassificationService classificationService = taskanaEngine.getClassificationService();
@@ -149,7 +151,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test(expected = ConcurrencyException.class)
     public void testUpdateClassificationNotLatestAnymore()
-        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InterruptedException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InterruptedException,
+        InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification base = classificationService.getClassification("T2100", "DOMAIN_A");
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
@@ -173,7 +176,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     @Test(expected = ClassificationNotFoundException.class)
     public void testUpdateClassificationParentToInvalid()
         throws NotAuthorizedException, ClassificationNotFoundException,
-        ConcurrencyException {
+        ConcurrencyException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         classification.setParentId("ID WHICH CANT BE FOUND");
