@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Task } from '../model/task';
-import { RestConnectorService } from '../services/rest-connector.service';
-import { Workbasket } from '../model/workbasket';
-import { SafeResourceUrl, DomSanitizer} from '@angular/platform-browser';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Task} from '../model/task';
+import {Workbasket} from '../model/workbasket';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {TaskService} from '../services/task.service';
+import {WorkbasketService} from '../services/workbasket.service';
 
 
 @Component({
@@ -15,32 +16,35 @@ export class TaskComponent implements OnInit {
 
   task: Task = null;
   link: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://duckduckgo.com/?q=');
-  autoCompleteData: string[] = new Array;
+  autoCompleteData: string[] = [];
   workbasket: string = null;
   workbasketKey: string;
   workbaskets: Workbasket[];
 
   private sub: any;
 
-  constructor(private restConnectorService: RestConnectorService,
-              private route: ActivatedRoute, private router: Router,
-              private sanitizer: DomSanitizer) { }
+  constructor(private taskService: TaskService,
+              private workbasketService: WorkbasketService,
+              private route: ActivatedRoute,
+              private router: Router,
+              private sanitizer: DomSanitizer) {
+  }
 
   ngOnInit() {
-        const id = this.route.snapshot.params['id'];
-        this.restConnectorService.getTask(id).subscribe(
-                       t =>  {
-                         this.task = t;
-                         this.link = this.sanitizer.bypassSecurityTrustResourceUrl('https://duckduckgo.com/?q=' + this.task.name );
-                         this.restConnectorService.getAllWorkBaskets().subscribe( w => {
-                            this.workbaskets = w;
-                            this.workbaskets.forEach(workbasket => {
-                            if (workbasket.key !== this.task.workbasket) {
-                              this.autoCompleteData.push(workbasket.name);
-                            }
-                          });
-                       });
-    });
+    const id = this.route.snapshot.params['id'];
+    this.taskService.getTask(id).subscribe(
+      t => {
+        this.task = t;
+        this.link = this.sanitizer.bypassSecurityTrustResourceUrl('https://duckduckgo.com/?q=' + this.task.name);
+        this.workbasketService.getAllWorkBaskets().subscribe(w => {
+          this.workbaskets = w['_embedded']['workbaskets'];
+          this.workbaskets.forEach(workbasket => {
+            if (workbasket.key !== this.task.workbasketSummaryResource.key) {
+              this.autoCompleteData.push(workbasket.name);
+            }
+          });
+        });
+      });
   }
 
   transferTask() {
@@ -50,19 +54,23 @@ export class TaskComponent implements OnInit {
           this.workbasketKey = workbasket.key;
         }
       });
-      this.restConnectorService.transferTask(this.task.id, this.workbasketKey).subscribe(
-                       task => {this.task = task});
+      this.taskService.transferTask(this.task.taskId, this.workbasketKey).subscribe(
+        task => {
+          this.task = task
+        });
       this.router.navigate(['tasks/']);
     }
   }
 
-    cancelTask() {
-      this.router.navigate(['tasks/']);
-    }
+  cancelTask() {
+    this.router.navigate(['tasks/']);
+  }
 
-    completeTask() {
-      this.restConnectorService.completeTask(this.task.id).subscribe(
-                       task => {this.task = task});
-      this.router.navigate(['tasks/']);
-    }
+  completeTask() {
+    this.taskService.completeTask(this.task.taskId).subscribe(
+      task => {
+        this.task = task
+      });
+    this.router.navigate(['tasks/']);
+  }
 }

@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Task } from '../model/task';
-import { Router } from '@angular/router';
-import { RestConnectorService } from '../services/rest-connector.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Task} from '../model/task';
+import {Router} from '@angular/router';
+import {TaskService} from '../services/task.service';
 
 @Component({
   selector: 'tasklist',
@@ -17,7 +17,7 @@ export class TasklistComponent implements OnInit {
 
   @Input() tasks: Task[];
 
-  constructor(private restConnectorService: RestConnectorService, private router: Router) {
+  constructor(private taskService: TaskService, private router: Router) {
     this.columnForOrdering = 'id';  // default: order tasks by id
   }
 
@@ -33,7 +33,7 @@ export class TasklistComponent implements OnInit {
   }
 
   openTask(id: string) {
-    this.restConnectorService.claimTask(id).subscribe();
+    this.taskService.claimTask(id).subscribe();
     this.router.navigate(['tasks/', id]);
   }
 }

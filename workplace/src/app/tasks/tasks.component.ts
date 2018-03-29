@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Task } from '../model/task';
-import { environment } from '../../environments/environment';
+import {Component, Input} from '@angular/core';
+import {Task} from '../model/task';
 
 @Component({
   selector: 'app-tasks',
@@ -8,6 +7,8 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./tasks.component.scss']
 })
 export class TasksComponent {
+
+  taskDetailEnabled: boolean;
 
   @Input()
   tasks: Task[];
@@ -20,6 +21,7 @@ export class TasksComponent {
   }
 
   selectTask(task: Task) {
+    this.taskDetailEnabled = true;
     this.task = task;
   }
 

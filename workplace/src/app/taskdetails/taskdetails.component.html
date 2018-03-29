@@ -1,6 +1,6 @@
 <div *ngIf="task != null" class="panel panel-primary">
   <div class="panel-heading">
-    Details for task '{{ task.name }}' (ID={{ task.id }})
+    Details for task '{{ task.name }}' (ID={{ task.taskId }})
   </div>
   <div class="panel-body">
     <p>{{ task.description }}</p>
@@ -13,7 +13,6 @@
     <p><b>Due Date:</b> {{ task.due | date:'medium' }}</p>
     <p><b>Priority:</b> {{ task.priority }}</p>
     <p><b>State:</b> {{ task.state }}</p>
-    <p><b>Type:</b> {{ task.type }}</p>
-    <p><b>Workbasket:</b> {{ task.workbasket }}</p>
+    <p><b>Workbasket:</b> {{ task.workbasketSummaryResource.workbasketId }}</p>
   </div>
 </div>

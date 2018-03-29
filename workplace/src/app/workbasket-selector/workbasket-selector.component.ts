@@ -1,8 +1,9 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { RestConnectorService } from '../services/rest-connector.service';
-import { DataService } from '../services/data.service';
-import { Task } from '../model/task';
-import { Workbasket } from '../model/workbasket';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {DataService} from '../services/data.service';
+import {Task} from '../model/task';
+import {Workbasket} from '../model/workbasket';
+import {TaskService} from '../services/task.service';
+import {WorkbasketService} from '../services/workbasket.service';
 
 @Component({
   selector: 'workbasket-selector',
@@ -11,18 +12,23 @@ import { Workbasket } from '../model/workbasket';
 })
 export class SelectorComponent implements OnInit {
 
-  @Output() tasks = new EventEmitter<Task[]>();
+  @Output('tasks') tasksEmitter = new EventEmitter<Task[]>();
 
-  autoCompleteData: string[] = new Array;
+  tasks: Task[] = [];
+
+  autoCompleteData: string[] = [];
   result: string;
   resultKey: string;
   workbaskets: Workbasket[];
 
-  constructor(private restConnectorService: RestConnectorService, private dataService: DataService) { }
+  constructor(private taskService: TaskService,
+              private workbasketService: WorkbasketService,
+              private dataService: DataService) {
+  }
 
   ngOnInit() {
-    this.restConnectorService.getAllWorkBaskets().subscribe( w => {
-      this.workbaskets = w;
+    this.workbasketService.getAllWorkBaskets().subscribe(w => {
+      this.workbaskets = w['_embedded']['workbaskets'];
       this.workbaskets.forEach(workbasket => {
         this.autoCompleteData.push(workbasket.name);
       });
@@ -37,17 +43,20 @@ export class SelectorComponent implements OnInit {
     if (this.workbaskets) {
       this.workbaskets.forEach(workbasket => {
         if (workbasket.name === this.result) {
-          this.resultKey = workbasket.key;
+          this.resultKey = workbasket.workbasketId;
         }
       });
       this.getTasks(this.resultKey);
       this.dataService.workbasketKey = this.resultKey;
       this.dataService.workbasketName = this.result;
+      this.tasksEmitter.emit(this.tasks);
     }
   }
 
   getTasks(workbasketKey: string) {
-    this.restConnectorService.findTaskWithWorkbaskets(workbasketKey).subscribe(
-                       tasks2 => {this.tasks.next(tasks2)});
+    this.taskService.findTaskWithWorkbaskets(workbasketKey).subscribe(
+      tasks2 => {
+        tasks2['_embedded']['tasks'].forEach(e => this.tasks.push(e));
+      });
   }
 }
