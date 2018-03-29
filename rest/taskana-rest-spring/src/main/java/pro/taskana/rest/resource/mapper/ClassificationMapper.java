@@ -15,6 +15,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.rest.ClassificationController;
@@ -30,7 +31,8 @@ public class ClassificationMapper {
     ClassificationService classificationService;
 
     public ClassificationResource toResource(Classification classification) throws ClassificationNotFoundException,
-        NotAuthorizedException, ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException {
+        NotAuthorizedException, ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException,
+        InvalidArgumentException {
         ClassificationResource resource = new ClassificationResource();
         BeanUtils.copyProperties(classification, resource);
         // need to be set by hand, because they are named different, or have different types
@@ -53,7 +55,7 @@ public class ClassificationMapper {
 
     private ClassificationResource addLinks(ClassificationResource resource, Classification classification)
         throws ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException,
-        ConcurrencyException, DomainNotFoundException {
+        ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         resource.add(
             linkTo(methodOn(ClassificationController.class).getClassification(classification.getId()))
                 .withSelfRel());

@@ -1,6 +1,5 @@
 package pro.taskana.impl;
 
-import java.time.Duration;
 import java.time.Instant;
 
 import pro.taskana.Classification;
@@ -158,11 +157,6 @@ public class ClassificationImpl implements Classification {
 
     @Override
     public void setServiceLevel(String serviceLevel) {
-        try {
-            Duration.parse(serviceLevel);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid duration. Please use the format defined by ISO 8601");
-        }
         this.serviceLevel = serviceLevel;
     }
 

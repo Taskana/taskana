@@ -32,4 +32,13 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
     }
 
+    @Test
+    public void testClassificationTypes() {
+        assertEquals(2, getConfiguration().getClassificationTypes().size());
+        assertTrue(getConfiguration().getClassificationTypes().contains("TASK"));
+        assertTrue(getConfiguration().getClassificationTypes().contains("DOCUMENT"));
+        assertFalse(getConfiguration().getClassificationTypes().contains("document"));
+
+    }
+
 }

@@ -26,6 +26,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.mapper.ClassificationMapper;
@@ -47,7 +48,7 @@ public class ClassificationDefinitionController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<ClassificationResource>> getClassifications(
         @RequestParam(required = false) String domain) throws ClassificationNotFoundException, NotAuthorizedException,
-        ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException {
+        ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         ClassificationQuery query = classificationService.createClassificationQuery();
         List<ClassificationSummary> summaries = domain != null ? query.domainIn(domain).list() : query.list();
         List<ClassificationResource> export = new ArrayList<>();
@@ -63,7 +64,7 @@ public class ClassificationDefinitionController {
     @PostMapping(path = "/import")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<String> importClassifications(
-        @RequestBody List<ClassificationResource> classificationResources) {
+        @RequestBody List<ClassificationResource> classificationResources) throws InvalidArgumentException {
         Map<String, String> systemIds = classificationService.createClassificationQuery()
             .list()
             .stream()
@@ -88,7 +89,7 @@ public class ClassificationDefinitionController {
         } catch (ClassificationAlreadyExistException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
-            //TODO why is this occuring???
+            // TODO why is this occuring???
         } catch (ConcurrencyException e) {
         }
 

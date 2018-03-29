@@ -21,6 +21,7 @@ import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.SystemException;
@@ -52,7 +53,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     @Override
     public Classification createClassification(Classification classification)
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException {
+        DomainNotFoundException, InvalidArgumentException {
         LOGGER.debug("entry to createClassification(classification = {})", classification);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         if (!taskanaEngine.domainExists(classification.getDomain()) && !"".equals(classification.getDomain())) {
@@ -125,7 +126,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public Classification updateClassification(Classification classification)
-        throws NotAuthorizedException, ConcurrencyException, ClassificationNotFoundException {
+        throws NotAuthorizedException, ConcurrencyException, ClassificationNotFoundException, InvalidArgumentException {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         ClassificationImpl classificationImpl = null;
@@ -199,7 +200,7 @@ public class ClassificationServiceImpl implements ClassificationService {
      *
      * @param classification
      */
-    private void initDefaultClassificationValues(ClassificationImpl classification) throws IllegalStateException {
+    private void initDefaultClassificationValues(ClassificationImpl classification) throws InvalidArgumentException {
         Instant now = Instant.now();
         if (classification.getId() == null) {
             classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
@@ -221,16 +222,22 @@ public class ClassificationServiceImpl implements ClassificationService {
             try {
                 Duration.parse(classification.getServiceLevel());
             } catch (Exception e) {
-                throw new IllegalArgumentException("Invalid duration. Please use the format defined by ISO 8601");
+                throw new InvalidArgumentException("Invalid duration. Please use the format defined by ISO 8601");
             }
         }
 
         if (classification.getKey() == null) {
-            throw new IllegalStateException("Classification must contain a key");
+            throw new InvalidArgumentException("Classification must contain a key");
         }
 
         if (classification.getParentId() == null) {
             classification.setParentId("");
+        }
+
+        if (classification.getType() != null
+            && !taskanaEngine.getConfiguration().getClassificationTypes().contains(classification.getType())) {
+            throw new InvalidArgumentException("Given classification type " + classification.getType()
+                + " is not valid according to the configuration.");
         }
 
         if (classification.getDomain().isEmpty()) {

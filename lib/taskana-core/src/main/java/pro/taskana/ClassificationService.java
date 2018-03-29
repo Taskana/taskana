@@ -5,6 +5,7 @@ import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
@@ -73,7 +74,7 @@ public interface ClassificationService {
      */
     Classification createClassification(Classification classification)
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException;
+        DomainNotFoundException, InvalidArgumentException;
 
     /**
      * Updates a Classification.
@@ -89,7 +90,7 @@ public interface ClassificationService {
      *             when the Classification was modified meanwhile and is not latest anymore.
      */
     Classification updateClassification(Classification classification)
-        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException;
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException;
 
     /**
      * This method provides a query builder for quering the database.
