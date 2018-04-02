@@ -100,30 +100,23 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
 	private getWorkbasketInformation(workbasketIdSelected: string, copyId: string = undefined) {
 		this.requestInProgress = true;
-		this.service.getWorkBasketsSummary().subscribe((workbasketSummary: WorkbasketSummaryResource) => {
-			if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
-				this.workbasket = new Workbasket(undefined);
-				this.workbasket._links.self = workbasketSummary._links.allWorkbaskets;
-				this.requestInProgress = false;
-			} else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
-				this.workbasket = { ...this.workbasketCopy };
-				this.workbasket._links.self = workbasketSummary._links.allWorkbaskets;
-				this.workbasket.workbasketId = undefined;
-				this.requestInProgress = false;
-			}
 
-			const workbasketSummarySelected = this.getWorkbasketSummaryById(workbasketSummary._embedded.workbaskets, workbasketIdSelected);
-			if (workbasketSummarySelected && workbasketSummarySelected._links) {
-				this.workbasketSubscription = this.service.getWorkBasket(workbasketSummarySelected._links.self.href).subscribe(workbasket => {
-					this.workbasket = workbasket;
-					this.requestInProgress = false;
-				});
-			}
-		});
-	}
-
-	private getWorkbasketSummaryById(workbasketSummary: Array<WorkbasketSummary>, selectedId: string): WorkbasketSummary {
-		return workbasketSummary.find((summary => summary.workbasketId === selectedId));
+		if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
+			this.workbasket = new Workbasket(undefined);
+			this.workbasket._links.self =  this.workbasket._links.allWorkbasketUrl;
+			this.requestInProgress = false;
+		} else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
+			this.workbasket = { ...this.workbasketCopy };
+			this.workbasket._links.self  = this.workbasket._links.allWorkbasketUrl;
+			this.workbasket.workbasketId = undefined;
+			this.requestInProgress = false;
+		}
+		if (workbasketIdSelected) {
+			this.workbasketSubscription = this.service.getWorkBasket(workbasketIdSelected).subscribe(workbasket => {
+				this.workbasket = workbasket;
+				this.requestInProgress = false;
+			});
+		}
 	}
 
 	ngOnDestroy(): void {

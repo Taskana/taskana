@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ClassificationService} from 'app/services/classification/classification.service';
-import {WorkbasketDefinitionService} from 'app/services/workbasket/workbasketDefinition.service';
-import {DomainService} from '../../services/domains/domain.service';
-import {SelectionToImport} from '../enums/SelectionToImport';
+import { Component, Input, OnInit } from '@angular/core';
+import { ClassificationService } from 'app/services/classification/classification.service';
+import { WorkbasketDefinitionService } from 'app/services/workbasket/workbasketDefinition.service';
+import { DomainService } from 'app/services/domains/domain.service';
+import { ImportType } from 'app/models/import-type';
 
 @Component({
   selector: 'taskana-import-export-component',
@@ -11,11 +11,11 @@ import {SelectionToImport} from '../enums/SelectionToImport';
 })
 export class ImportExportComponent implements OnInit {
 
-  @Input() currentSelection: SelectionToImport;
+  @Input() currentSelection: ImportType;
   domains: string[] = [];
 
   constructor(private domainService: DomainService, private workbasketDefinitionService: WorkbasketDefinitionService,
-              private classificationService: ClassificationService) {
+    private classificationService: ClassificationService) {
   }
 
   ngOnInit() {
@@ -30,7 +30,7 @@ export class ImportExportComponent implements OnInit {
   onSelectFile(event) {
     const file = event.srcElement.files[0];
     const reader = new FileReader();
-    if (this.currentSelection === SelectionToImport.WORKBASKETS) {
+    if (this.currentSelection === ImportType.WORKBASKETS) {
       reader.onload = <Event>(e) => this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
     } else {
       reader.onload = <Event>(e) => this.classificationService.importClassifications(e.target.result);
@@ -39,7 +39,7 @@ export class ImportExportComponent implements OnInit {
   }
 
   export(domain = '') {
-    if (this.currentSelection === SelectionToImport.WORKBASKETS) {
+    if (this.currentSelection === ImportType.WORKBASKETS) {
       this.workbasketDefinitionService.exportWorkbaskets(domain);
     } else {
       this.classificationService.exportClassifications(domain);

@@ -77,8 +77,8 @@ export class WorkbasketService {
 
 	}
 	// GET
-	getWorkBasket(url: string): Observable<Workbasket> {
-		return this.httpClient.get<Workbasket>(url, this.httpOptions);
+	getWorkBasket(id: string): Observable<Workbasket> {
+		return this.httpClient.get<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets/${id}`, this.httpOptions);
 	}
 	// POST
 	createWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {

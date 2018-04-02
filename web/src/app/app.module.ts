@@ -32,7 +32,7 @@ import {SortComponent} from './shared/sort/sort.component';
 import {GeneralMessageModalComponent} from './shared/general-message-modal/general-message-modal.component';
 import {PaginationComponent} from './administration/workbasket/master/list/pagination/pagination.component';
 import {ClassificationListComponent} from './administration/classification/master/list/classification-list.component';
-import {ImportExportComponent} from './administration/import-export/import-export.component';
+import {ImportExportComponent} from './shared/import-export/import-export.component';
 // Shared
 import {MasterAndDetailComponent} from './shared/masterAndDetail/master-and-detail.component';
 /**

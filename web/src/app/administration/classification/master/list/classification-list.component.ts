@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {SelectionToImport} from '../../../enums/SelectionToImport';
+import { Component, OnInit } from '@angular/core';
+import { ImportType } from 'app/models/import-type';
 
 @Component({
   selector: 'taskana-classification-list',
@@ -8,7 +8,7 @@ import {SelectionToImport} from '../../../enums/SelectionToImport';
 })
 export class ClassificationListComponent implements OnInit {
 
-  selectionToImport = SelectionToImport.CLASSIFICATIONS;
+  selectionToImport = ImportType.CLASSIFICATIONS;
   requestInProgress = false;
 
   constructor() {

@@ -7,8 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
-import {Component} from '@angular/core';
-import {Routes} from '@angular/router';
+import { Component } from '@angular/core';
+import { Routes } from '@angular/router';
 
 import { Workbasket } from 'app/models/workbasket';
 import { ICONTYPES } from 'app/models/type';
@@ -26,15 +26,15 @@ import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-
 import { AlertService } from 'app/services/alert/alert.service';
 
 @Component({
-  selector: 'taskana-dummy-detail',
-  template: 'dummydetail'
+	selector: 'taskana-dummy-detail',
+	template: 'dummydetail'
 })
 export class DummyDetailComponent {
 }
 
 const routes: Routes = [
-  { path: ':id', component: DummyDetailComponent, outlet: 'detail' },
-  { path: 'someNewId', component: DummyDetailComponent }
+	{ path: ':id', component: DummyDetailComponent, outlet: 'detail' },
+	{ path: 'someNewId', component: DummyDetailComponent }
 ];
 
 describe('InformationComponent', () => {
@@ -94,7 +94,9 @@ describe('InformationComponent', () => {
 		expect(component.workbasketClone).toBeUndefined();
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2', 'orgLevel3', 'orgLevel4', null);
-		component.ngOnInit();
+		component.ngOnChanges(
+			undefined
+		);
 		fixture.detectChanges();
 		expect(component.workbasket.workbasketId).toEqual(component.workbasketClone.workbasketId);
 	});

@@ -51,7 +51,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		private savingWorkbaskets: SavingWorkbasketService) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.active.currentValue === 'accessItems' && !this.initialized) {
+		if (!this.initialized && changes.active && changes.active.currentValue === 'accessItems') {
 			this.init();
 		}
 	}
