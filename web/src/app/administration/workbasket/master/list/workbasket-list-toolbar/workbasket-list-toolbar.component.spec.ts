@@ -18,6 +18,7 @@ import { SortComponent } from 'app/shared/sort/sort.component';
 import { FilterComponent } from 'app/shared/filter/filter.component';
 import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
+import { ImportExportComponent } from 'app/shared/import-export/import-export.component';
 
 import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
 
@@ -25,10 +26,9 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import {ImportExportComponent} from '../../../../import-export/import-export.component';
-import {ClassificationService} from '../../../../../services/classification/classification.service';
-import {WorkbasketDefinitionService} from '../../../../../services/workbasket/workbasketDefinition.service';
-import {DomainService} from '../../../../../services/domains/domain.service';
+import { ClassificationService } from 'app/services/classification/classification.service';
+import { WorkbasketDefinitionService } from 'app/services/workbasket/workbasketDefinition.service';
+import { DomainService } from 'app/services/domains/domain.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -54,7 +54,7 @@ describe('WorkbasketListToolbarComponent', () => {
 			declarations: [WorkbasketListToolbarComponent, SortComponent,
 				FilterComponent, IconTypeComponent, DummyDetailComponent, MapValuesPipe, ImportExportComponent],
 			providers: [ErrorModalService, WorkbasketService, RequestInProgressService, AlertService,
-        ClassificationService, WorkbasketDefinitionService, DomainService]
+				ClassificationService, WorkbasketDefinitionService, DomainService]
 		})
 			.compileComponents();
 	}));

@@ -1,7 +1,6 @@
 <li id="wb-action-toolbar" class="list-group-item tab-align">
     <div class="row">
         <div class="col-xs-9">
-            <taskana-import-export-component [currentSelection]="selectionToImport"></taskana-import-export-component>
             <button type="button" (click)="addWorkbasket()" data-toggle="tooltip" title="Add" class="btn btn-default">
                 <span class="glyphicon glyphicon-plus green" aria-hidden="true"></span>
             </button>
@@ -14,16 +13,15 @@
             <button *ngIf="workbasketIdSelected" type="button" (click)="removeWorkbasket()" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </button>
-            <taskana-import-export-component [currentSelection]="'workbaskets'"></taskana-import-export-component>            
+            <taskana-import-export-component [currentSelection]="'workbaskets'"></taskana-import-export-component>
         </div>
         <div class="pull-right margin-right">
             <taskana-sort (performSorting)="sorting($event)"></taskana-sort>
-            <div class="clearfix btn-group">
-                <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState">
-                    <span class="glyphicon glyphicon-filter blue"></span>
-                </button>
-            </div>
+            <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState">
+                <span class="glyphicon glyphicon-filter blue"></span>
+            </button>
         </div>
+
     </div>
     <div [@toggle]="toolbarState" *ngIf="toolbarState" class="row no-overflow">
         <taskana-filter (performFilter)="filtering($event)"></taskana-filter>

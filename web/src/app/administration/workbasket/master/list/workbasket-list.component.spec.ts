@@ -24,13 +24,13 @@ import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar/workba
 import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { SortComponent } from 'app/shared/sort/sort.component';
-import { ImportExportComponent } from '../../../import-export/import-export.component';
+import { ImportExportComponent } from 'app/shared/import-export/import-export.component';
 
 import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pipe';
 import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
-import { ClassificationService } from '../../../../services/classification/classification.service';
-import { WorkbasketDefinitionService } from '../../../../services/workbasket/workbasketDefinition.service';
-import { DomainService } from '../../../../services/domains/domain.service';
+import { WorkbasketDefinitionService } from 'app/services/workbasket/workbasketDefinition.service';
+import { ClassificationService } from 'app/services/classification/classification.service';
+import { DomainService } from 'app/services/domains/domain.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -91,7 +91,7 @@ describe('WorkbasketListComponent', () => {
 				RouterTestingModule.withRoutes(routes)
 			],
 			providers: [WorkbasketService, ErrorModalService, RequestInProgressService, AlertService,
-				ClassificationService, WorkbasketDefinitionService, OrientationService, DomainService]
+				WorkbasketDefinitionService, OrientationService, DomainService, ClassificationService]
 		})
 			.compileComponents();
 
@@ -131,24 +131,24 @@ describe('WorkbasketListComponent', () => {
 			expect(debugElement.querySelector('#wb-list-container')).toBeDefined();
 			expect(debugElement.querySelector('#collapsedMenufilterWb')).toBeDefined();
 			expect(debugElement.querySelector('taskana-filter')).toBeDefined();
-			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(2);
+			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
 		});
 
 	it('should have two workbasketsummary rows created with the second one selected.', fakeAsync(() => {
 		tick(0);
 		fixture.detectChanges();
 		fixture.whenStable().then(() => {
-			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(2);
-			expect(debugElement.querySelectorAll('#wb-list-container > li')[0].getAttribute('class')).toBe('list-group-item');
-			expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class')).toBe('list-group-item active');
+			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
+			expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class')).toBe('list-group-item');
+			expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class')).toBe('list-group-item active');
 		})
 
 	}));
 
 	it('should have two workbasketsummary rows created with two different icons: user and users', () => {
-		expect(debugElement.querySelectorAll('#wb-list-container > li')[0]
-			.querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
 		expect(debugElement.querySelectorAll('#wb-list-container > li')[1]
+			.querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
+		expect(debugElement.querySelectorAll('#wb-list-container > li')[2]
 			.querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
 	});
 

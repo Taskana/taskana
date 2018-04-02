@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -23,7 +23,7 @@ const dateLocale = 'en-US';
 	templateUrl: './workbasket-information.component.html',
 	styleUrls: ['./workbasket-information.component.scss']
 })
-export class WorkbasketInformationComponent implements OnInit, OnDestroy {
+export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 
 	@Input()
 	workbasket: Workbasket;
@@ -50,7 +50,7 @@ export class WorkbasketInformationComponent implements OnInit, OnDestroy {
 		this.allTypes = IconTypeComponent.allTypes;
 	}
 
-	ngOnInit() {
+	ngOnChanges(changes: SimpleChanges): void {
 		this.workbasketClone = { ...this.workbasket };
 		if (this.action === ACTION.CREATE) {
 			this.badgeMessage = 'Creating new workbasket';

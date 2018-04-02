@@ -60,7 +60,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 		private errorModalService: ErrorModalService) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.active.currentValue === 'distributionTargets' && !this.initialized) {
+		if (!this.initialized && changes.active && changes.active.currentValue === 'distributionTargets' ) {
 			this.init();
 		}
 	}

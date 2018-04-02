@@ -33,15 +33,4 @@ describe('ImportExportComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // TODO add tests for inport/export
-  /*
-  it('should update domains', () => {
-    let domains = [];
-    domainService.getDomains().subscribe(
-      result => domains = result
-    );
-    component.updateDomains();
-    expect(component.domains).toEqual(domains);
-  })
-  */
 });

@@ -1,6 +1,6 @@
 import {
 	Component, OnInit, EventEmitter, OnDestroy,
-	HostListener, ViewChild, ElementRef, AfterViewChecked
+	HostListener, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -40,7 +40,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 		private workbasketService: WorkbasketService,
 		private router: Router,
 		private route: ActivatedRoute,
-		private orientationService: OrientationService) { }
+		private orientationService: OrientationService,
+		private cd: ChangeDetectorRef) { }
 
 	ngOnInit() {
 		this.requestInProgress = true;
@@ -59,10 +60,6 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
 	selectWorkbasket(id: string) {
 		this.selectedId = id;
-		if (!this.selectedId) {
-			this.router.navigate(['/workbaskets']);
-			return
-		}
 		this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
 	}
 
@@ -84,7 +81,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 	private refreshWorkbasketList() {
 		const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
 		const cardHeight = 75;
-		const unusedHeight = 140
+		const unusedHeight = 145
 		const totalHeight = window.innerHeight;
 		const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
 		this.workbasketService.pageSize = cards;
@@ -102,15 +99,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 				this.workbasketsResource = resultList;
 				this.workbaskets = resultList._embedded ? resultList._embedded.workbaskets : [];
 				this.requestInProgress = false;
-				this.unSelectWorkbasket();
 			});
-	}
-
-
-	private unSelectWorkbasket(): void {
-		if (!this.workbaskets.find(wb => wb.workbasketId === this.selectedId)) {
-			this.selectWorkbasket(undefined);
-		}
 	}
 
 	ngOnDestroy() {
