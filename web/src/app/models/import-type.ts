@@ -1,4 +1,4 @@
-export enum SelectionToImport {
+export enum ImportType {
   WORKBASKETS,
   CLASSIFICATIONS
 }
