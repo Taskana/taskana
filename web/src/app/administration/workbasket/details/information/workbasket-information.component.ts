@@ -104,8 +104,7 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 
 	private postNewWorkbasket() {
 		this.addDateToWorkbasket();
-		this.workbasketService.createWorkbasket(this.workbasket._links.self.href,
-			this.workbasket)
+		this.workbasketService.createWorkbasket(this.workbasket)
 			.subscribe((workbasketUpdated: Workbasket) => {
 				this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket ${workbasketUpdated.key} was created successfully`))
 				this.workbasket = workbasketUpdated;
@@ -120,7 +119,8 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 						new SavingInformation(this.workbasket._links.accessItems.href, this.workbasket.workbasketId));
 				}
 			}, error => {
-				this.errorModalService.triggerError(new ErrorModel('There was an error creating a workbasket', error.error.message))
+				this.errorModalService.triggerError(new ErrorModel('There was an error creating a workbasket',
+					error.error ? error.error.message : error))
 				this.requestInProgress = false;
 			});
 	}
