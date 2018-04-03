@@ -103,11 +103,9 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
 		if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
 			this.workbasket = new Workbasket(undefined);
-			this.workbasket._links.self =  this.workbasket._links.allWorkbasketUrl;
 			this.requestInProgress = false;
 		} else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
 			this.workbasket = { ...this.workbasketCopy };
-			this.workbasket._links.self  = this.workbasket._links.allWorkbasketUrl;
 			this.workbasket.workbasketId = undefined;
 			this.requestInProgress = false;
 		}
