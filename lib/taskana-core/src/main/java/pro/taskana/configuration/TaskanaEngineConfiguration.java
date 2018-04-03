@@ -46,6 +46,7 @@ public class TaskanaEngineConfiguration {
     private static final String TASKANA_ROLES_SEPARATOR = "|";
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
+    private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";
 
     // Taskana properties file
     protected String propertiesFileName = TASKANA_PROPERTIES;
@@ -72,6 +73,9 @@ public class TaskanaEngineConfiguration {
 
     // List of configured classification types
     protected List<String> classificationTypes = new ArrayList<String>();
+
+    // List of configured classification categories
+    protected List<String> classificationCategories = new ArrayList<String>();
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions)
         throws SQLException {
@@ -115,6 +119,7 @@ public class TaskanaEngineConfiguration {
         initTaskanaRoles(props, rolesSeparator);
         initDomains(props);
         initClassificationTypes(props);
+        initClassificationCategories(props);
     }
 
     private void initDomains(Properties props) {
@@ -134,6 +139,17 @@ public class TaskanaEngineConfiguration {
             StringTokenizer st = new StringTokenizer(classificationTypesNames, ",");
             while (st.hasMoreTokens()) {
                 classificationTypes.add(st.nextToken().trim().toUpperCase());
+            }
+        }
+        LOGGER.debug("Configured domains: {}", domains);
+    }
+
+    private void initClassificationCategories(Properties props) {
+        String classificationCategoryNames = props.getProperty(TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY);
+        if (classificationCategoryNames != null && !classificationCategoryNames.isEmpty()) {
+            StringTokenizer st = new StringTokenizer(classificationCategoryNames, ",");
+            while (st.hasMoreTokens()) {
+                classificationCategories.add(st.nextToken().trim().toUpperCase());
             }
         }
         LOGGER.debug("Configured domains: {}", domains);
@@ -306,6 +322,14 @@ public class TaskanaEngineConfiguration {
 
     public void setClassificationTypes(List<String> classificationTypes) {
         this.classificationTypes = classificationTypes;
+    }
+
+    public List<String> getClassificationCategories() {
+        return classificationCategories;
+    }
+
+    public void setClassificationCategories(List<String> classificationCategories) {
+        this.classificationCategories = classificationCategories;
     }
 
     /**

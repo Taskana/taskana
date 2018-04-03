@@ -249,7 +249,7 @@ public class TaskServiceImplIntAutocommitTest {
 
         // Classification required for Task
         classification = (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
-        classification.setCategory("Test Classification");
+        classification.setCategory("EXTERNAL");
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
 
@@ -302,7 +302,7 @@ public class TaskServiceImplIntAutocommitTest {
 
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("KEY",
             "DOMAIN_A", "TASK");
-        classification.setCategory("Test Classification");
+        classification.setCategory("EXTERNAL");
         classification.setName("Transfert-Task Classification");
         classificationService.createClassification(classification);
 

@@ -128,7 +128,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
         Classification classification = taskanaEngine.getClassificationService()
             .getClassification(beforeTask.getClassificationSummary().getKey(), beforeTask.getDomain());
-        classification.setCategory("NEW CATEGORY");
+        classification.setCategory("PROCESS");
         Instant createdBefore = classification.getCreated();
         Instant modifiedBefore = classification.getModified();
         classification = taskanaEngine.getClassificationService().updateClassification(classification);
@@ -138,9 +138,9 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         assertThat(updatedTask.getClassificationCategory(), not(equalTo(beforeTask.getClassificationCategory())));
         assertThat(updatedTask.getClassificationSummary().getCategory(),
             not(equalTo(beforeTask.getClassificationSummary().getCategory())));
-        assertThat(updatedTask.getClassificationCategory(), equalTo("NEW CATEGORY"));
+        assertThat(updatedTask.getClassificationCategory(), equalTo("PROCESS"));
         assertThat(updatedTask.getClassificationSummary().getCategory(),
-            equalTo("NEW CATEGORY"));
+            equalTo("PROCESS"));
 
         assertThat(classification.getCreated(), equalTo(createdBefore));
         assertTrue(modifiedBefore.isBefore(classification.getModified()));

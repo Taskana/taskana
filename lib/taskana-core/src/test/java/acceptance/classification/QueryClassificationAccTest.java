@@ -115,14 +115,14 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .keyIn("T2100", "L10000")
-            .categoryIn("EXTERN", "MANUAL")
+            .categoryIn("EXTERNAL", "MANUAL")
             .list();
 
         assertNotNull(classifications);
         assertEquals(5, classifications.size());
 
         List<ClassificationSummary> externCategory = classifications.stream()
-            .filter(c -> c.getCategory().equals("EXTERN"))
+            .filter(c -> c.getCategory().equals("EXTERNAL"))
             .collect(
                 Collectors.toList());
         assertEquals(2, externCategory.size());
@@ -140,7 +140,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .keyIn("A12", "A13")
-            .categoryIn("EXTERN", "MANUAL")
+            .categoryIn("EXTERNAL", "MANUAL")
             .parentIdIn("CLI:100000000000000000000000000000000014")
             .list();
 
@@ -149,7 +149,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
 
         classifications = classificationService.createClassificationQuery()
             .keyIn("A12", "A13")
-            .categoryIn("EXTERN", "MANUAL", "AUTOMATIC")
+            .categoryIn("EXTERNAL", "MANUAL", "AUTOMATIC")
             .parentIdIn("CLI:100000000000000000000000000000000014", "CLI:100000000000000000000000000000000010",
                 "CLI:100000000000000000000000000000000011")
             .domainIn("DOMAIN_A")
