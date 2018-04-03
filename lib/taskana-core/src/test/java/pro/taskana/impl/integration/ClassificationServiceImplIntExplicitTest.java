@@ -253,18 +253,18 @@ public class ClassificationServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
-        classification1.setCategory("category1");
+        classification1.setCategory("EXTERNAL");
         classificationService.createClassification(classification1);
         Classification classification2 = this.createNewClassificationWithUniqueKey("DOMAIN_B", "TASK");
-        classification2.setCategory("category1");
+        classification2.setCategory("EXTERNAL");
         classificationService.createClassification(classification2);
 
         Classification classification3 = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
-        classification3.setCategory("category2");
+        classification3.setCategory("MANUAL");
         classificationService.createClassification(classification3);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
-            .categoryIn("category1")
+            .categoryIn("EXTERNAL")
             .domainIn("DOMAIN_A")
             .list();
         Assert.assertEquals(1, list.size());
@@ -281,22 +281,22 @@ public class ClassificationServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "TASK");
         classification1.setDescription("DESC1");
-        classification1.setCategory("category1");
+        classification1.setCategory("EXTERNAL");
         classificationService.createClassification(classification1);
         Classification classification2 = this.createNewClassificationWithUniqueKey("", "TASK");
         classification2.setDescription("DESC1");
         classification2.setCustom1("custom1");
-        classification2.setCategory("category1");
+        classification2.setCategory("EXTERNAL");
         classificationService.createClassification(classification2);
         Classification classification3 = this.createNewClassificationWithUniqueKey("", "TASK");
         classification3.setCustom1("custom2");
         classification3.setCustom2("custom1");
-        classification3.setCategory("category2");
+        classification3.setCategory("MANUAL");
         classificationService.createClassification(classification3);
         Classification classification4 = this.createNewClassificationWithUniqueKey("", "TASK");
         classification4.setDescription("description2");
         classification4.setCustom8("custom2");
-        classification4.setCategory("category1");
+        classification4.setCategory("EXTERNAL");
         classificationService.createClassification(classification4);
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
@@ -308,7 +308,7 @@ public class ClassificationServiceImplIntExplicitTest {
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery()
             .descriptionLike("DESC1")
-            .categoryIn("category1")
+            .categoryIn("EXTERNAL")
             .list();
         Assert.assertEquals(2, list.size());
         connection.commit();

@@ -300,7 +300,6 @@ public class ClassificationServiceImplTest {
         ClassificationImpl classificationImpl = new ClassificationImpl();
         classificationImpl.setDescription("A DUMMY FOR TESTING A SERVICE");
         classificationImpl.setName("SERVICE-DUMMY");
-        classificationImpl.setCategory("dummy-category");
         classificationImpl.setDomain("DOMAIN_A");
         classificationImpl.setServiceLevel("P2D");
         classificationImpl.setId("ID: 1");
