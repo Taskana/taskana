@@ -29,7 +29,6 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
         assertTrue(getConfiguration().getDomains().contains("DOMAIN_A"));
         assertTrue(getConfiguration().getDomains().contains("DOMAIN_B"));
         assertFalse(getConfiguration().getDomains().contains("Domain_A"));
-
     }
 
     @Test
@@ -38,7 +37,16 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
         assertTrue(getConfiguration().getClassificationTypes().contains("TASK"));
         assertTrue(getConfiguration().getClassificationTypes().contains("DOCUMENT"));
         assertFalse(getConfiguration().getClassificationTypes().contains("document"));
+    }
 
+    @Test
+    public void testClassificationCategories() {
+        assertEquals(4, getConfiguration().getClassificationCategories().size());
+        assertTrue(getConfiguration().getClassificationCategories().contains("EXTERNAL"));
+        assertTrue(getConfiguration().getClassificationCategories().contains("MANUAL"));
+        assertTrue(getConfiguration().getClassificationCategories().contains("AUTOMATIC"));
+        assertTrue(getConfiguration().getClassificationCategories().contains("PROCESS"));
+        assertFalse(getConfiguration().getClassificationCategories().contains("manual"));
     }
 
 }
