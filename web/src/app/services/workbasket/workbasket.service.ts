@@ -1,14 +1,14 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
-import {environment} from 'app/../environments/environment';
-import {Workbasket} from 'app/models/workbasket';
-import {WorkbasketAccessItems} from 'app/models/workbasket-access-items';
-import {WorkbasketSummaryResource} from 'app/models/workbasket-summary-resource';
-import {WorkbasketAccessItemsResource} from 'app/models/workbasket-access-items-resource';
-import {WorkbasketDistributionTargetsResource} from 'app/models/workbasket-distribution-targets-resource';
-import {Direction} from 'app/models/sorting';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { environment } from 'app/../environments/environment';
+import { Workbasket } from 'app/models/workbasket';
+import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
+import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
+import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
+import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
+import { Direction } from 'app/models/sorting';
 
 @Injectable()
 export class WorkbasketService {
@@ -81,9 +81,10 @@ export class WorkbasketService {
 		return this.httpClient.get<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets/${id}`, this.httpOptions);
 	}
 	// POST
-	createWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {
+	createWorkbasket(workbasket: Workbasket): Observable<Workbasket> {
 		return this.httpClient
-			.post<Workbasket>(url, workbasket, this.httpOptions);
+			.post<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets`, workbasket, this.httpOptions);
+
 	}
 	// PUT
 	updateWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {
