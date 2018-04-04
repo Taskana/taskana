@@ -19,7 +19,7 @@ import pro.taskana.impl.ClassificationSummaryImpl;
 public interface ClassificationMapper {
 
     @Select("<script> SELECT ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
-        + "FROM CLASSIFICATION "
+        + "FROM TASKANA.CLASSIFICATION "
         + "WHERE KEY = #{key}"
         + "AND DOMAIN = #{domain}"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
@@ -49,7 +49,7 @@ public interface ClassificationMapper {
     ClassificationImpl findByKeyAndDomain(@Param("key") String key, @Param("domain") String domain);
 
     @Select("<script>SELECT ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
-        + "FROM CLASSIFICATION "
+        + "FROM TASKANA.CLASSIFICATION "
         + "WHERE ID = #{id}"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
@@ -77,14 +77,14 @@ public interface ClassificationMapper {
         @Result(property = "custom8", column = "CUSTOM_8")})
     ClassificationImpl findById(@Param("id") String id);
 
-    @Insert("INSERT INTO CLASSIFICATION (ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8) VALUES (#{classification.id}, #{classification.key}, #{classification.parentId}, #{classification.category}, #{classification.type}, #{classification.domain}, #{classification.isValidInDomain}, #{classification.created}, #{classification.modified}, #{classification.name}, #{classification.description}, #{classification.priority}, #{classification.serviceLevel}, #{classification.applicationEntryPoint}, #{classification.custom1}, #{classification.custom2}, #{classification.custom3}, #{classification.custom4}, #{classification.custom5}, #{classification.custom6}, #{classification.custom7}, #{classification.custom8})")
+    @Insert("INSERT INTO TASKANA.CLASSIFICATION (ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8) VALUES (#{classification.id}, #{classification.key}, #{classification.parentId}, #{classification.category}, #{classification.type}, #{classification.domain}, #{classification.isValidInDomain}, #{classification.created}, #{classification.modified}, #{classification.name}, #{classification.description}, #{classification.priority}, #{classification.serviceLevel}, #{classification.applicationEntryPoint}, #{classification.custom1}, #{classification.custom2}, #{classification.custom3}, #{classification.custom4}, #{classification.custom5}, #{classification.custom6}, #{classification.custom7}, #{classification.custom8})")
     void insert(@Param("classification") ClassificationImpl classification);
 
     @Update(
-        value = "UPDATE CLASSIFICATION SET KEY = #{classification.key}, PARENT_ID = #{classification.parentId}, CATEGORY = #{classification.category}, TYPE = #{classification.type}, MODIFIED = #{classification.modified}, NAME = #{classification.name}, DESCRIPTION = #{classification.description}, PRIORITY = #{classification.priority}, SERVICE_LEVEL = #{classification.serviceLevel}, DOMAIN = #{classification.domain}, VALID_IN_DOMAIN = #{classification.isValidInDomain}, APPLICATION_ENTRY_POINT = #{classification.applicationEntryPoint}, CUSTOM_1 = #{classification.custom1}, CUSTOM_2 = #{classification.custom2}, CUSTOM_3 = #{classification.custom3}, CUSTOM_4 = #{classification.custom4}, CUSTOM_5 = #{classification.custom5}, CUSTOM_6 = #{classification.custom6}, CUSTOM_7 = #{classification.custom7}, CUSTOM_8 = #{classification.custom8} WHERE ID = #{classification.id}")
+        value = "UPDATE TASKANA.CLASSIFICATION SET KEY = #{classification.key}, PARENT_ID = #{classification.parentId}, CATEGORY = #{classification.category}, TYPE = #{classification.type}, MODIFIED = #{classification.modified}, NAME = #{classification.name}, DESCRIPTION = #{classification.description}, PRIORITY = #{classification.priority}, SERVICE_LEVEL = #{classification.serviceLevel}, DOMAIN = #{classification.domain}, VALID_IN_DOMAIN = #{classification.isValidInDomain}, APPLICATION_ENTRY_POINT = #{classification.applicationEntryPoint}, CUSTOM_1 = #{classification.custom1}, CUSTOM_2 = #{classification.custom2}, CUSTOM_3 = #{classification.custom3}, CUSTOM_4 = #{classification.custom4}, CUSTOM_5 = #{classification.custom5}, CUSTOM_6 = #{classification.custom6}, CUSTOM_7 = #{classification.custom7}, CUSTOM_8 = #{classification.custom8} WHERE ID = #{classification.id}")
     void update(@Param("classification") ClassificationImpl classification);
 
-    @Delete("DELETE FROM CLASSIFICATION "
+    @Delete("DELETE FROM TASKANA.CLASSIFICATION "
         + "WHERE KEY = #{classificationKey}"
         + "AND DOMAIN = #{domain}")
     void deleteClassificationInDomain(@Param("classificationKey") String classificationKey,
@@ -92,7 +92,7 @@ public interface ClassificationMapper {
 
     @Select("<script>"
         + "SELECT ID, KEY, CATEGORY, TYPE, DOMAIN, NAME, PARENT_ID "
-        + "FROM CLASSIFICATION "
+        + "FROM TASKANA.CLASSIFICATION "
         + "WHERE KEY = #{key} "
         + "AND DOMAIN = #{domain}"
         + "ORDER BY KEY DESC "
@@ -110,14 +110,14 @@ public interface ClassificationMapper {
 
     @Select("<script>"
         + "SELECT DOMAIN "
-        + "FROM CLASSIFICATION "
+        + "FROM TASKANA.CLASSIFICATION "
         + "WHERE KEY = #{classification_key} "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> getDomainsForClassification(@Param("classification_key") String classificationKey);
 
     @Select("<script>SELECT KEY "
-        + "FROM CLASSIFICATION "
+        + "FROM TASKANA.CLASSIFICATION "
         + "WHERE PARENT_ID = #{parentId} "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
