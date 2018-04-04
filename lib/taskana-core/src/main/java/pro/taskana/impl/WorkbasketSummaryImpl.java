@@ -5,8 +5,6 @@ import pro.taskana.WorkbasketType;
 
 /**
  * This entity contains the most important information about a workbasket.
- *
- * @author bbr
  */
 public class WorkbasketSummaryImpl implements WorkbasketSummary {
 
@@ -23,7 +21,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     private String orgLevel4;
 
     WorkbasketSummaryImpl() {
-
     }
 
     /*
@@ -195,7 +192,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof WorkbasketSummaryImpl)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         WorkbasketSummaryImpl other = (WorkbasketSummaryImpl) obj;

@@ -428,4 +428,119 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         builder.append("]");
         return builder.toString();
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((accessId == null) ? 0 : accessId.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + (permAppend ? 1231 : 1237);
+        result = prime * result + (permCustom1 ? 1231 : 1237);
+        result = prime * result + (permCustom10 ? 1231 : 1237);
+        result = prime * result + (permCustom11 ? 1231 : 1237);
+        result = prime * result + (permCustom12 ? 1231 : 1237);
+        result = prime * result + (permCustom2 ? 1231 : 1237);
+        result = prime * result + (permCustom3 ? 1231 : 1237);
+        result = prime * result + (permCustom4 ? 1231 : 1237);
+        result = prime * result + (permCustom5 ? 1231 : 1237);
+        result = prime * result + (permCustom6 ? 1231 : 1237);
+        result = prime * result + (permCustom7 ? 1231 : 1237);
+        result = prime * result + (permCustom8 ? 1231 : 1237);
+        result = prime * result + (permCustom9 ? 1231 : 1237);
+        result = prime * result + (permDistribute ? 1231 : 1237);
+        result = prime * result + (permOpen ? 1231 : 1237);
+        result = prime * result + (permRead ? 1231 : 1237);
+        result = prime * result + (permTransfer ? 1231 : 1237);
+        result = prime * result + ((workbasketId == null) ? 0 : workbasketId.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        WorkbasketAccessItemImpl other = (WorkbasketAccessItemImpl) obj;
+        if (accessId == null) {
+            if (other.accessId != null) {
+                return false;
+            }
+        } else if (!accessId.equals(other.accessId)) {
+            return false;
+        }
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        if (permAppend != other.permAppend) {
+            return false;
+        }
+        if (permCustom1 != other.permCustom1) {
+            return false;
+        }
+        if (permCustom10 != other.permCustom10) {
+            return false;
+        }
+        if (permCustom11 != other.permCustom11) {
+            return false;
+        }
+        if (permCustom12 != other.permCustom12) {
+            return false;
+        }
+        if (permCustom2 != other.permCustom2) {
+            return false;
+        }
+        if (permCustom3 != other.permCustom3) {
+            return false;
+        }
+        if (permCustom4 != other.permCustom4) {
+            return false;
+        }
+        if (permCustom5 != other.permCustom5) {
+            return false;
+        }
+        if (permCustom6 != other.permCustom6) {
+            return false;
+        }
+        if (permCustom7 != other.permCustom7) {
+            return false;
+        }
+        if (permCustom8 != other.permCustom8) {
+            return false;
+        }
+        if (permCustom9 != other.permCustom9) {
+            return false;
+        }
+        if (permDistribute != other.permDistribute) {
+            return false;
+        }
+        if (permOpen != other.permOpen) {
+            return false;
+        }
+        if (permRead != other.permRead) {
+            return false;
+        }
+        if (permTransfer != other.permTransfer) {
+            return false;
+        }
+        if (workbasketId == null) {
+            if (other.workbasketId != null) {
+                return false;
+            }
+        } else if (!workbasketId.equals(other.workbasketId)) {
+            return false;
+        }
+        return true;
+    }
+
 }
