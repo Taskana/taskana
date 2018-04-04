@@ -26,8 +26,8 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { ClassificationService } from 'app/services/classification/classification.service';
-import { WorkbasketDefinitionService } from 'app/services/workbasket/workbasketDefinition.service';
+import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
+import { WorkbasketDefinitionService } from 'app/services/workbasket-definition/workbasket-definition.service';
 import { DomainService } from 'app/services/domains/domain.service';
 
 @Component({
@@ -54,7 +54,7 @@ describe('WorkbasketListToolbarComponent', () => {
 			declarations: [WorkbasketListToolbarComponent, SortComponent,
 				FilterComponent, IconTypeComponent, DummyDetailComponent, MapValuesPipe, ImportExportComponent],
 			providers: [ErrorModalService, WorkbasketService, RequestInProgressService, AlertService,
-				ClassificationService, WorkbasketDefinitionService, DomainService]
+				ClassificationDefinitionService, WorkbasketDefinitionService, DomainService]
 		})
 			.compileComponents();
 	}));

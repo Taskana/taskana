@@ -28,8 +28,8 @@ import { ImportExportComponent } from 'app/shared/import-export/import-export.co
 
 import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pipe';
 import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
-import { WorkbasketDefinitionService } from 'app/services/workbasket/workbasketDefinition.service';
-import { ClassificationService } from 'app/services/classification/classification.service';
+import { WorkbasketDefinitionService } from 'app/services/workbasket-definition/workbasket-definition.service';
+import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domains/domain.service';
 
 @Component({
@@ -91,7 +91,7 @@ describe('WorkbasketListComponent', () => {
 				RouterTestingModule.withRoutes(routes)
 			],
 			providers: [WorkbasketService, ErrorModalService, RequestInProgressService, AlertService,
-				WorkbasketDefinitionService, OrientationService, DomainService, ClassificationService]
+				WorkbasketDefinitionService, OrientationService, DomainService, ClassificationDefinitionService]
 		})
 			.compileComponents();
 

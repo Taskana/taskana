@@ -1,4 +1,3 @@
-
 .placeholder {
     margin-bottom: 20px;
 }
@@ -70,38 +69,58 @@
  }
 
 .blue{
-    color: #337ab7;
+    color: $blue;
     & svg {
-        fill: #337ab7;
+        fill: $blue;
     }
 }
 
 .green {
-    color: green;
+    color: $green;
     & svg {
-        fill: green;
+        fill: $green;
     }
 }
 
 .grey {
-    color:grey;
+    color:$grey;
     & svg {
-        fill: grey;
+        fill: $grey;
     }
 }
 
 .brown {
-    color: #f0ad4e;
+    color: $brown;
     & svg {
-        fill: #f0ad4e;
+        fill: $brown;
     }
 }
 
-
-.panel-default > .panel-heading .badge.warning {
-    background-color: #f0ad4e;
+.red {
+    color: crimson;
+    & svg {
+        fill: crimson;
+    }
 }
 
+.green-blue {
+    color: $blue-green;
+    & svg {
+        fill: $blue-green;
+    }
+}
+
+svg-icon.fa-fw > svg {
+    text-align: center;
+    width: 1.25em;
+}
+
+.panel-default > .panel-heading .badge.warning {
+    background-color: $brown;
+}
+.badge.priority {
+    background-color: #e1e1e1;
+}
 
 
 /*
@@ -246,4 +265,9 @@ taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbas
             overflow-y: auto;
         }
     }
+}
+
+tree-viewport {
+    border-top: 1px solid #ddd;
+    height: calc(100vh - 110px);   
 }

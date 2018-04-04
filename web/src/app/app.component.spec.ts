@@ -9,6 +9,7 @@ import { ErrorModalService } from './services/errorModal/error-modal.service';
 import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
 import { AlertService } from './services/alert/alert.service';
 import { OrientationService } from './services/orientation/orientation.service';
+import { SelectedRouteService } from './services/selected-route/selected-route';
 
 import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component'
 import { SpinnerComponent } from './shared/spinner/spinner.component'
@@ -20,7 +21,7 @@ describe('AppComponent', () => {
 	let app, fixture, debugElement;
 
 	const routes: Routes = [
-		{ path: 'categories', component: AppComponent }
+		{ path: 'classifications', component: AppComponent }
 	];
 
 	beforeEach(async(() => {
@@ -33,7 +34,7 @@ describe('AppComponent', () => {
 				RouterTestingModule.withRoutes(routes),
 				HttpClientModule
 			],
-			providers: [ErrorModalService, RequestInProgressService, AlertService, OrientationService]
+			providers: [ErrorModalService, RequestInProgressService, AlertService, OrientationService, SelectedRouteService]
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(AppComponent);
@@ -59,11 +60,11 @@ describe('AppComponent', () => {
 		expect(debugElement.querySelector('ul p a').textContent).toContain('Taskana administration');
 	}));
 
-	it('should call Router.navigateByUrl("categories") and workbasketRoute should be false', (inject([Router], (router: Router) => {
+	it('should call Router.navigateByUrl("classifications") and workbasketRoute should be false', (inject([Router], (router: Router) => {
 
 		expect(app.workbasketsRoute).toBe(true);
 		fixture.detectChanges();
-		router.navigateByUrl(`/categories`);
+		router.navigateByUrl(`/classifications`);
 		expect(app.workbasketsRoute).toBe(false);
 
 	})));
