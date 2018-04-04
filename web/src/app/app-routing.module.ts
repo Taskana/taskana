@@ -3,13 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { WorkbasketListComponent } from './administration/workbasket/master/list/workbasket-list.component';
 import { WorkbasketDetailsComponent } from './administration/workbasket/details/workbasket-details.component';
-import { MasterAndDetailComponent } from './shared/masterAndDetail/master-and-detail.component';
+import { MasterAndDetailComponent } from './shared/master-and-detail/master-and-detail.component';
 import { NoAccessComponent } from './administration/workbasket/details/noAccess/no-access.component';
 import {ClassificationListComponent} from './administration/classification/master/list/classification-list.component';
 
 const appRoutes: Routes = [
     {
-        path: 'workbaskets',
+        path: 'administration/workbaskets',
         component: MasterAndDetailComponent,
         children: [
             {
@@ -30,7 +30,7 @@ const appRoutes: Routes = [
         ]
     },
     {
-      path: 'classifications',
+      path: 'administration/classifications',
       component: MasterAndDetailComponent,
       children: [
         {
@@ -42,7 +42,7 @@ const appRoutes: Routes = [
     },
     {
         path: '',
-        redirectTo: 'workbaskets',
+        redirectTo: 'administration/workbaskets',
         pathMatch: 'full'
     }
 ];

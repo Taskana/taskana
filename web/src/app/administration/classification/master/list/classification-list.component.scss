@@ -2,21 +2,15 @@
   height: calc(100vh - 55px);
 }
 
-.row.list-group {
-  margin-left: 2px;
+.list-group-item {
+  padding: 5px 0px;
+  border: none;
 }
 
-.list-group > li {
-  border-left: none;
-  border-right: none;
-}
+.tab-align{
+  margin-bottom: 0px;
 
-a > label {
-  height: 2em;
-  width: 100%;
-}
-
-.tab-align {
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 12px;
+  &>div{
+   margin: 6px 0px;
+  }
 }

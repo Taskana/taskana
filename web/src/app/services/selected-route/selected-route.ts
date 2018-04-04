@@ -1,0 +1,39 @@
+import { Injectable, OnInit } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
+
+@Injectable()
+export class SelectedRouteService {
+
+    public selectedRouteTriggered = new Subject<string>();
+
+    private detailRoutes: Array<string> = ['workbaskets', 'classifications'];
+
+    constructor(private route: ActivatedRoute, private router: Router) { }
+
+
+    selectRoute(value) {
+        this.selectedRouteTriggered.next(this.getRoute(value));
+    }
+
+    getSelectedRoute(): Observable<string> {
+        return this.selectedRouteTriggered.asObservable();
+    }
+
+    private getRoute(event): string {
+        if (event === undefined) {
+            return this.checkUrl(this.router.url);
+        }
+        return this.checkUrl(event.url)
+    }
+
+    private checkUrl(url: string): string {
+        for (const routeDetail of this.detailRoutes) {
+            if (url.indexOf(routeDetail) !== -1) {
+                return routeDetail;
+            }
+        }
+        return '';
+    }
+}

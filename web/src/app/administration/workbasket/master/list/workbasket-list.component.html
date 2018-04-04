@@ -7,7 +7,7 @@
         <taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
         <div>
             <ul #wbList id="wb-list-container" class="list-group">
-                <li class="list-group-item no-border">
+                <li class="list-group-item no-space">
                     <div class="row"></div>
                 </li>
                 <li class="list-group-item" *ngFor="let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId"
