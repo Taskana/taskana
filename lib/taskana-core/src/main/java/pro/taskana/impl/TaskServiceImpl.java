@@ -292,7 +292,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
+        TaskAlreadyExistException, InvalidArgumentException {
         LOGGER.debug("entry to createTask(task = {})", taskToCreate);
         TaskImpl task = (TaskImpl) taskToCreate;
         try {
