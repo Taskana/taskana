@@ -153,14 +153,12 @@ public interface TaskService {
      *             thrown if the work basket referenced by the task is not found
      * @throws ClassificationNotFoundException
      *             thrown if the {@link Classification} referenced by the task is not found
-     * @throws InvalidWorkbasketException
-     *             thrown if the referenced Workbasket has missing required properties
      * @throws InvalidArgumentException
      *             thrown if the primary ObjectReference is invalid
      */
     Task createTask(Task taskToCreate)
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException;
+        TaskAlreadyExistException, InvalidArgumentException;
 
     /**
      * Get the details of a task by Id without checking permissions.
