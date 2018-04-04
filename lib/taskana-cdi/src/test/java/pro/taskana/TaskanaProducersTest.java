@@ -57,8 +57,10 @@ public class TaskanaProducersTest {
 
         Class.forName("org.h2.Driver");
         int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
-            ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASK");
+        try (Connection conn = DriverManager.getConnection(
+            "jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA",
+            "SA", "SA")) {
+            ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASKANA.TASK");
 
             while (rs.next()) {
                 resultCount++;
@@ -74,8 +76,10 @@ public class TaskanaProducersTest {
 
         Class.forName("org.h2.Driver");
         int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
-            ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASK");
+        try (Connection conn = DriverManager.getConnection(
+            "jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA",
+            "SA", "SA")) {
+            ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASKANA.TASK");
 
             while (rs.next()) {
                 resultCount++;
