@@ -545,4 +545,32 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals(workbasket.getDomain(), createdTask.getDomain());
     }
 
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testCreatedTaskObjectEqualsReadTaskObject()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setClassificationKey("T2100");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        for (int i = 1; i < 16; i++) {
+            newTask.setCustomAttribute(Integer.toString(i), "VALUE " + i);
+        }
+        newTask.setCustomAttributes(createSimpleCustomProperties(5));
+        newTask.setDescription("Description of test task");
+        newTask.setNote("My note");
+        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+        Task createdTask = taskService.createTask(newTask);
+        Task readTask = taskService.getTask(createdTask.getId());
+
+        assertEquals(createdTask, readTask);
+    }
+
 }
