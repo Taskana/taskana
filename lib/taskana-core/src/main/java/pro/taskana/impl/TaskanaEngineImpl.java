@@ -377,6 +377,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      * Returns true if the given domain does exist in the configuration.
      *
      * @param domain
+     *            the domain specified in the configuration
      * @return <code>true</code> if the domain exists
      */
     public boolean domainExists(String domain) {

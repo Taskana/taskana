@@ -71,6 +71,8 @@ public interface ClassificationService {
      *             if the current parentId is not NULL/EMPTY and can not be found.
      * @throws DomainNotFoundException
      *             if the domain does not exist in the configuration
+     * @throws InvalidArgumentException
+     *             if the ServiceLevel property does not comply with the ISO 8601 specification
      */
     Classification createClassification(Classification classification)
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
@@ -88,6 +90,8 @@ public interface ClassificationService {
      *             when the caller got no ADMIN or BUSINESS_ADMIN permissions.
      * @throws ConcurrencyException
      *             when the Classification was modified meanwhile and is not latest anymore.
+     * @throws InvalidArgumentException
+     *             if the ServiceLevel property does not comply with the ISO 8601 specification
      */
     Classification updateClassification(Classification classification)
         throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException;

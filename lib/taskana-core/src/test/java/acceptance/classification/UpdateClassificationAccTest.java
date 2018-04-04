@@ -209,7 +209,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
             .getClassification("CLI:100000000000000000000000000000000003");
         assertNotNull(updatedClassification);
 
-        assertTrue(modifiedBefore.isBefore(updatedClassification.getModified()));
+        assertTrue(!modifiedBefore.isAfter(updatedClassification.getModified()));
         List<String> affectedTasks = new ArrayList<>(
             Arrays.asList("TKI:000000000000000000000000000000000000", "TKI:000000000000000000000000000000000003",
                 "TKI:000000000000000000000000000000000004", "TKI:000000000000000000000000000000000005",

@@ -82,7 +82,7 @@ public class TaskanaEngineConfigurationTest {
         // ds.setUser("sa");
 
         String jdbcDriver = "org.h2.Driver";
-        String jdbcUrl = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0";
+        String jdbcUrl = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA";
         String dbUserName = "sa";
         String dbPassword = "sa";
         DataSource ds = new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver,

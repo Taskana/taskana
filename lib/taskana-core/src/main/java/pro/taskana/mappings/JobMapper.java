@@ -19,12 +19,12 @@ import pro.taskana.impl.persistence.MapTypeHandler;
  */
 public interface JobMapper {
 
-    @Insert("INSERT INTO JOB (JOB_ID, CREATED, STARTED, COMPLETED, STATE, EXECUTOR, ARGUMENTS) "
-        + "VALUES (NEXT VALUE FOR JOB_SEQ, #{job.created}, #{job.started}, #{job.completed}, #{job.state}, #{job.executor}, #{job.arguments,jdbcType=CLOB, javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )")
+    @Insert("INSERT INTO TASKANA.JOB (JOB_ID, CREATED, STARTED, COMPLETED, STATE, EXECUTOR, ARGUMENTS) "
+        + "VALUES (NEXT VALUE FOR TASKANA.JOB_SEQ, #{job.created}, #{job.started}, #{job.completed}, #{job.state}, #{job.executor}, #{job.arguments,jdbcType=CLOB, javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )")
     void insertJob(@Param("job") Job job);
 
     @Select("SELECT   JOB_ID, CREATED, STARTED, COMPLETED, STATE, EXECUTOR, ARGUMENTS "
-        + "FROM JOB "
+        + "FROM TASKANA.JOB "
         + "WHERE STATE IN ( 'READY') "
         + "ORDER BY JOB_ID ")
     @Results(value = {
@@ -40,7 +40,7 @@ public interface JobMapper {
     List<Job> findJobsToRun();
 
     @Update(
-        value = "UPDATE JOB SET CREATED = #{created}, STARTED = #{started}, COMPLETED = #{completed}, STATE = #{state}, EXECUTOR = #{executor}, "
+        value = "UPDATE TASKANA.JOB SET CREATED = #{created}, STARTED = #{started}, COMPLETED = #{completed}, STATE = #{state}, EXECUTOR = #{executor}, "
             + "ARGUMENTS = #{arguments,jdbcType=CLOB ,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} "
             + "where JOB_ID = #{jobId}")
     void update(Job job);
