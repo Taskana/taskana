@@ -1,0 +1,19 @@
+<div class="dropdown clearfix btn-group">
+
+  <button type="button" class="btn btn-default">  {{classificationTypeSelected}}</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <div class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown">
+    <li *ngFor="let classificationType of classificationTypes | mapValues">
+      <a (click)="select(classificationType.key)">
+        <label>
+          <span class="glyphicon {{classificationTypeSelected === classificationType.key? 'glyphicon-check': 'glyphicon-unchecked'}} blue"
+            aria-hidden="true"></span>
+          {{classificationType.key}}
+        </label>
+      </a>
+    </li>
+  </div>
+</div>

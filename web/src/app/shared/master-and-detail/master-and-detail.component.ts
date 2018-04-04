@@ -9,7 +9,7 @@ import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-
 
 })
 export class MasterAndDetailComponent implements OnInit {
-    private detailRoutes: Array<string> = ['/workbaskets/(detail', 'classifications'];
+    private detailRoutes: Array<string> = ['/workbaskets/(detail', 'classifications/(detail'];
     private sub: any;
 
     showDetail: Boolean = false;

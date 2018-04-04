@@ -2,13 +2,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {AlertService} from '../alert/alert.service';
-import {Classification} from '../../models/classification';
+import {ClassificationDefinition} from '../../models/classification-definition';
 import {AlertModel, AlertType} from '../../models/alert';
 import {saveAs} from 'file-saver/FileSaver';
 import {TaskanaDate} from '../../shared/util/taskana.date';
 
 @Injectable()
-export class ClassificationService {
+export class ClassificationDefinitionService {
 
   url = environment.taskanaRestUrl + '/v1/classificationdefinitions';
 
@@ -25,7 +25,7 @@ export class ClassificationService {
   // GET
   exportClassifications(domain: string) {
     domain = (domain === '' ? '' : '?domain=' + domain);
-    this.httpClient.get<Classification[]>(this.url + domain, this.httpOptions)
+    this.httpClient.get<ClassificationDefinition[]>(this.url + domain, this.httpOptions)
       .subscribe(
         response => saveAs(new Blob([JSON.stringify(response)], {type: 'text/plain;charset=utf-8'}),
           'Classifications_' + TaskanaDate.getDate() + '.json')

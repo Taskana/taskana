@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ClassificationService } from 'app/services/classification/classification.service';
-import { WorkbasketDefinitionService } from 'app/services/workbasket/workbasketDefinition.service';
+import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
+import { WorkbasketDefinitionService } from 'app/services/workbasket-definition/workbasket-definition.service';
 import { DomainService } from 'app/services/domains/domain.service';
 import { ImportType } from 'app/models/import-type';
 
@@ -15,7 +15,7 @@ export class ImportExportComponent implements OnInit {
   domains: string[] = [];
 
   constructor(private domainService: DomainService, private workbasketDefinitionService: WorkbasketDefinitionService,
-    private classificationService: ClassificationService) {
+    private classificationDefinitionService: ClassificationDefinitionService) {
   }
 
   ngOnInit() {
@@ -33,7 +33,7 @@ export class ImportExportComponent implements OnInit {
     if (this.currentSelection === ImportType.WORKBASKETS) {
       reader.onload = <Event>(e) => this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
     } else {
-      reader.onload = <Event>(e) => this.classificationService.importClassifications(e.target.result);
+      reader.onload = <Event>(e) => this.classificationDefinitionService.importClassifications(e.target.result);
     }
     reader.readAsText(file);
   }
@@ -42,7 +42,7 @@ export class ImportExportComponent implements OnInit {
     if (this.currentSelection === ImportType.WORKBASKETS) {
       this.workbasketDefinitionService.exportWorkbaskets(domain);
     } else {
-      this.classificationService.exportClassifications(domain);
+      this.classificationDefinitionService.exportClassifications(domain);
     }
   }
 }

@@ -1,40 +1,20 @@
 <div class="classification-list-full-height">
-  <ul id="cl-list-container" class="list-group footer-space">
-    <li id="cl-action-toolbar" class="list-group-item tab-align">
-      <div class="row">
-        <div class="col-xs-9">
-          <taskana-import-export-component [currentSelection]="selectionToImport"></taskana-import-export-component>
-        </div>
-      </div>
-    </li>
-    <taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
+	<li id="wb-action-toolbar" class="list-group-item tab-align">
+		<div class="row">
+			<div class="col-xs-12">
+				<button type="button" (click)="addClassification()" data-toggle="tooltip" title="Add" class="btn btn-default">
+					<span class="glyphicon glyphicon-plus green" aria-hidden="true"></span>
+				</button>
+				<button type="button" (click)="removeClassification()" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
+					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+				</button>
+				<taskana-import-export-component [currentSelection]="selectionToImport"></taskana-import-export-component>
+				<taskana-classification-types-selector class="pull-right" [classificationTypes]="classificationsTypes" [(classificationTypeSelected)]="classificationTypeSelected"
+				 (classificationTypeChanged)=selectClassificationType($event)></taskana-classification-types-selector>
+			</div>
+		</div>
+	</li>
+	<taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
+	<taskana-tree [treeNodes]="classifications"></taskana-tree>
 
-  </ul>
-  <ul id="wb-pagination" class="pagination vertical-center">
-    <li>
-      <a href="#" aria-label="Previous">
-        <span aria-hidden="true">«</span>
-      </a>
-    </li>
-    <li>
-      <a href="">1</a>
-    </li>
-    <li>
-      <a href="">2</a>
-    </li>
-    <li>
-      <a href="">3</a>
-    </li>
-    <li>
-      <a href="">4</a>
-    </li>
-    <li>
-      <a href="">5</a>
-    </li>
-    <li>
-      <a href="#" aria-label="Next">
-        <span aria-hidden="true">»</span>
-      </a>
-    </li>
-  </ul>
 </div>

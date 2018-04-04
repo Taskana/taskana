@@ -1,0 +1,14 @@
+<tree-root [nodes]="treeNodes" [state]="state" [options]="options">
+    <ng-template #treeNodeTemplate let-node let-index="index">
+        <span class="text-top">
+            <svg-icon class="blue small fa-fw" src="./assets/icons/{{node.data.category === 'EXTERN'? 'external':
+                node.data.category === 'AUTOMATIC'? 'automatic':
+                node.data.category === 'MANUAL'? 'manual':
+                'closed'}}.svg"></svg-icon>
+        </span>
+        <span>
+            <strong>{{ node.data.key }}</strong>
+        </span>
+        <span> - {{ node.data.name }}</span>
+    </ng-template>
+</tree-root>
