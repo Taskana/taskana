@@ -10,7 +10,6 @@ import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ClassificationSummaryImpl;
 import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
-import pro.taskana.impl.TaskCountPerWorkbasket;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
@@ -31,6 +30,12 @@ public interface QueryMapper {
     @Select("<script>SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.CREATOR, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.CLASSIFICATION_CATEGORY, t.CLASSIFICATION_ID, t.WORKBASKET_ID, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10 "
         + "FROM TASKANA.TASK t "
         + "<where>"
+        + "<if test='accessIdIn != null'> "
+        + "AND t.WORKBASKET_ID IN ( "
+        + "select WID from (select WORKBASKET_ID as WID, max(PERM_READ) as MAX_READ FROM TASKANA.WORKBASKET_ACCESS_LIST where "
+        + "ACCESS_ID IN (<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
+        + "group by WORKBASKET_ID ) where max_read = 1 ) "
+        + "</if> "
         + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
         + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
         + "<if test='claimedIn !=null'> AND ( <foreach item='item' collection='claimedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CLAIMED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CLAIMED &lt;=#{item.end} </if>)</foreach>)</if> "
@@ -348,8 +353,14 @@ public interface QueryMapper {
         @Result(property = "permCustom12", column = "PERM_CUSTOM_12")})
     List<WorkbasketAccessItemImpl> queryWorkbasketAccessItems(WorkbasketAccessItemQueryImpl accessItemQuery);
 
-    @Select("<script> SELECT  COUNT(t.ID) as TASK_COUNT , t.WORKBASKET_ID FROM TASKANA.TASK t "
+    @Select("<script>SELECT COUNT(ID) FROM TASKANA.TASK t "
         + "<where>"
+        + "<if test='accessIdIn != null'> "
+        + "AND t.WORKBASKET_ID IN ( "
+        + "select WID from (select WORKBASKET_ID as WID, max(PERM_READ) as MAX_READ FROM TASKANA.WORKBASKET_ACCESS_LIST where "
+        + "ACCESS_ID IN (<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
+        + "group by WORKBASKET_ID ) where max_read = 1 ) "
+        + "</if> "
         + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
         + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
         + "<if test='claimedIn !=null'> AND ( <foreach item='item' collection='claimedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CLAIMED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CLAIMED &lt;=#{item.end} </if>)</foreach>)</if> "
@@ -423,13 +434,10 @@ public interface QueryMapper {
         + "<if test='custom16In != null'>AND t.CUSTOM_16 IN(<foreach item='item' collection='custom16In' separator=',' >#{item}</foreach>)</if> "
         + "<if test='custom16Like != null'>AND (<foreach item='item' collection='custom16Like' separator=' OR '>UPPER(t.CUSTOM_16) LIKE #{item}</foreach>)</if> "
         + "</where>"
-        + "GROUP BY WORKBASKET_ID "
+        + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
-    @Results(value = {
-        @Result(property = "taskCount", column = "TASK_COUNT"),
-        @Result(property = "workbasketId", column = "WORKBASKET_ID")})
-    List<TaskCountPerWorkbasket> queryTaskCountPerWorkbasket(TaskQueryImpl taskQuery);
+    Long countQueryTasks(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT COUNT(ID) FROM TASKANA.CLASSIFICATION "
         + "<where>"
@@ -568,6 +576,12 @@ public interface QueryMapper {
     @Select("<script>SELECT DISTINCT ${columnName} "
         + "FROM TASKANA.TASK t "
         + "<where>"
+        + "<if test='accessIdIn != null'> "
+        + "AND t.WORKBASKET_ID IN ( "
+        + "select WID from (select WORKBASKET_ID as WID, max(PERM_READ) as MAX_READ FROM TASKANA.WORKBASKET_ACCESS_LIST where "
+        + "ACCESS_ID IN (<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
+        + "group by WORKBASKET_ID ) where max_read = 1 ) "
+        + "</if> "
         + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
         + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
         + "<if test='claimedIn !=null'> AND ( <foreach item='item' collection='claimedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CLAIMED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CLAIMED &lt;=#{item.end} </if>)</foreach>)</if> "
