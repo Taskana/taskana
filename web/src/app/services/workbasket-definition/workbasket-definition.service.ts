@@ -6,6 +6,8 @@ import {AlertService} from '../alert/alert.service';
 import {WorkbasketDefinition} from '../../models/workbasket-definition';
 import {AlertModel, AlertType} from '../../models/alert';
 import {TaskanaDate} from '../../shared/util/taskana.date';
+import {ErrorModel} from '../../models/modal-error';
+import {ErrorModalService} from '../errorModal/error-modal.service';
 
 
 @Injectable()
@@ -20,7 +22,8 @@ export class WorkbasketDefinitionService {
   };
 
 
-  constructor(private httpClient: HttpClient, private alertService: AlertService) {
+  constructor(private httpClient: HttpClient, private alertService: AlertService,
+              private errorModalService: ErrorModalService) {
   }
 
   // GET
@@ -35,12 +38,12 @@ export class WorkbasketDefinitionService {
   }
 
   // POST
-  // TODO handle error
   importWorkbasketDefinitions(workbasketDefinitions: any) {
     this.httpClient.post(environment.taskanaRestUrl + '/v1/workbasketdefinitions/import',
       JSON.parse(workbasketDefinitions), this.httpOptions).subscribe(
       workbasketsUpdated => this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful')),
-      error => this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'Import was not successful'))
+      error => this.errorModalService.triggerError(new ErrorModel(
+        `There was an error importing workbaskets`, error.message))
     );
   }
 }

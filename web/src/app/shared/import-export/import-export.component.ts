@@ -28,7 +28,7 @@ export class ImportExportComponent implements OnInit {
   }
 
   onSelectFile(event) {
-    const file = event.srcElement.files[0];
+    const file = event.target.files[0];
     const reader = new FileReader();
     if (this.currentSelection === ImportType.WORKBASKETS) {
       reader.onload = <Event>(e) => this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
