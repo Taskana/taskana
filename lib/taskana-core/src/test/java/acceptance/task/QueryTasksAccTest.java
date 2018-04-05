@@ -622,4 +622,26 @@ public class QueryTasksAccTest extends AbstractAccTest {
 
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"businessadmin"})
+    @Test
+    public void testQueryAllPaged() {
+        TaskService taskService = taskanaEngine.getTaskService();
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        long numberOfTasks = taskQuery.count();
+        Assert.assertEquals(22, numberOfTasks);
+        List<TaskSummary> tasks = taskQuery
+            .orderByDue(SortDirection.DESCENDING)
+            .list();
+        List<TaskSummary> tasksp = taskQuery
+            .orderByDue(SortDirection.DESCENDING)
+            .listPage(4, 5);
+        Assert.assertEquals(5, tasksp.size());
+        tasksp = taskQuery
+            .orderByDue(SortDirection.DESCENDING)
+            .listPage(5, 5);
+        Assert.assertEquals(2, tasksp.size());
+    }
+
 }
