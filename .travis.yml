@@ -14,6 +14,7 @@ cache:
 before_install:
   - nvm install $NODE_VERSION
   - npm install -g @angular/cli >/dev/null 2>&1
+  - lib/deployment/change_version.sh rest/ lib/
 install:
   - (cd workplace && npm install --no-progress && ng build --environment=prod --no-progress)
     && (cd web && npm install --no-progress && npm run build:prod)
