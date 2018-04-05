@@ -118,26 +118,34 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    @Ignore
     public void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
+
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=due&order=desc&page=14&pageSize=5", HttpMethod.GET,
+            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=due&order=desc", HttpMethod.GET,
+            request,
+            new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+            });
+        int size = response.getBody().getContent().size();
+        assertEquals(22, response.getBody().getContent().size());
+
+        response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=due&order=desc&page=5&pageSize=5", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
         assertEquals(2, response.getBody().getContent().size());
-        assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=14"));
-        assertEquals("TKI:000000000000000000000000000000000005",
+        assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=5"));
+        assertEquals("TKI:000000000000000000000000000000000023",
             response.getBody().getContent().iterator().next().getTaskId());
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?sortBy=due&order=desc&page=2&pageSize=5"));
+            .endsWith("/v1/tasks?sortBy=due&order=desc&page=5&pageSize=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")
@@ -145,7 +153,6 @@ public class TaskControllerIntTest {
             .endsWith("/v1/tasks"));
         assertNotNull(response.getBody().getLink(Link.REL_FIRST));
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
-        assertNotNull(response.getBody().getLink(Link.REL_NEXT));
         assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
     }
 
