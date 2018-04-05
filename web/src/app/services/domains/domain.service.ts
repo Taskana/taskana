@@ -18,7 +18,6 @@ export class DomainService {
   constructor(private httpClient: HttpClient) {
   }
 
-  // TODO how to enable hateoas support?
   // GET
   getDomains(): Observable<string[]> {
     return this.httpClient.get<string[]>(this.url, this.httpOptions);

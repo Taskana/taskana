@@ -7,6 +7,8 @@ import {WorkbasketDefinitionService} from '../../services/workbasket-definition/
 import {AlertService} from '../../services/alert/alert.service';
 import {HttpClientModule} from '@angular/common/http';
 import {DomainService} from '../../services/domains/domain.service';
+import {Observable} from 'rxjs/Observable';
+import {ErrorModalService} from '../../services/errorModal/error-modal.service';
 
 describe('ImportExportComponent', () => {
   let component: ImportExportComponent;
@@ -17,7 +19,8 @@ describe('ImportExportComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ImportExportComponent],
       imports: [HttpClientModule],
-      providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, AlertService, DomainService]
+      providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, AlertService, DomainService,
+        ErrorModalService]
     })
       .compileComponents();
   }));
@@ -25,7 +28,6 @@ describe('ImportExportComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ImportExportComponent);
     component = fixture.componentInstance;
-    domainService = TestBed.get(DomainService);
     fixture.detectChanges();
   });
 
@@ -33,4 +35,10 @@ describe('ImportExportComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should update domains', () => {
+    domainService = TestBed.get(DomainService);
+    spyOn(domainService, 'getDomains').and.returnValue(Observable.of(['A', 'B']));
+    component.updateDomains();
+    expect(domainService.getDomains).toHaveBeenCalled();
+  });
 });

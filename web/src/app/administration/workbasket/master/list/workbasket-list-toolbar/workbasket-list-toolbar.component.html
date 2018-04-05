@@ -4,7 +4,7 @@
             <button type="button" (click)="addWorkbasket()" data-toggle="tooltip" title="Add" class="btn btn-default">
                 <span class="glyphicon glyphicon-plus green" aria-hidden="true"></span>
             </button>
-            <taskana-import-export-component [currentSelection]="'workbaskets'"></taskana-import-export-component>
+            <taskana-import-export-component [currentSelection]="selectionToImport"></taskana-import-export-component>
         </div>
         <div class="pull-right margin-right">
             <taskana-sort (performSorting)="sorting($event)"></taskana-sort>

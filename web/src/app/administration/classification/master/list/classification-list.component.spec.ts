@@ -18,6 +18,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domains/domain.service';
+import {ErrorModalService} from '../../../../services/errorModal/error-modal.service';
 
 @Component({
   selector: 'taskana-tree',
@@ -55,8 +56,8 @@ describe('ClassificationListComponent', () => {
         TaskanaTreeComponent, DummyDetailComponent],
       imports: [HttpClientModule, RouterTestingModule.withRoutes(routes)],
       providers: [
-        HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService
-
+        HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
+        ErrorModalService
       ]
     })
       .compileComponents();
