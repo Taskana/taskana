@@ -273,14 +273,6 @@ function main {
         branch="BRANCH"
         echo "!!! - Skipping automatic detection of tag branch. Instead using '$branch'"
     fi
-
-    if [[ -n "$PARENT_DIR" ]]; then
-      change_version "$PARENT_DIR" "${TRAVIS_TAG##v}"
-    else
-      for dir in ${MODULES[@]}; do
-        change_version "$dir" "${TRAVIS_TAG##v}"
-      done
-    fi
   else
     if [[ "$TRAVIS_BRANCH" != 'master' ]]; then
       echo "Skipping release to sonatype because this branch is not permitted"
