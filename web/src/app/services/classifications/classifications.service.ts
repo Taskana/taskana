@@ -3,7 +3,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 import { Classification } from 'app/models/classification';
-import { TreeNode } from 'app/models/tree-node';
+import { TreeNodeModel } from 'app/models/tree-node';
+import { ClassificationDefinition } from 'app/models/classification-definition';
+
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
@@ -11,6 +13,7 @@ import { Subject } from 'rxjs/Subject';
 export class ClassificationsService {
 
   url = environment.taskanaRestUrl + '/v1/classifications';
+  classificationSelected = new Subject<string>();
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -26,7 +29,7 @@ export class ClassificationsService {
   }
 
   // GET
-  getClassifications(forceRequest = false, type = 'TASK', domain = ''): Observable<Array<TreeNode>> {
+  getClassifications(forceRequest = false, type = 'TASK', domain = ''): Observable<Array<TreeNodeModel>> {
     if (!forceRequest && this.classificationRef) {
       return this.classificationRef.map((response: Array<Classification>) => {
         return this.buildHierarchy(response, type, domain);
@@ -40,17 +43,34 @@ export class ClassificationsService {
     });
   }
 
-  getClassificationTypes(): Observable<Map<string, string>> {
-    const typesSubject = new Subject<Map<string, string>>();
+  // GET
+  getClassification(id: string): Observable<ClassificationDefinition> {
+    return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`, this.httpOptions);
+  }
+
+  getClassificationTypes(): Observable<Array<string>> {
+    const typesSubject = new Subject<Array<string>>();
     this.classificationRef.subscribe((classifications: Array<Classification>) => {
       const types = new Map<string, string>();
       classifications.forEach(element => {
         types.set(element.type, element.type);
       });
-      typesSubject.next(types);
+
+      typesSubject.next(this.map2Array(types));
     });
     return typesSubject.asObservable();
   }
+
+  // #region "Service extras"
+  selectClassification(id: string) {
+    this.classificationSelected.next(id);
+  }
+
+  getSelectedClassification(): Observable<string> {
+    return this.classificationSelected.asObservable();
+  }
+
+  // #endregion
 
   private buildHierarchy(classifications: Array<Classification>, type: string, domain: string) {
     const roots = []
@@ -79,6 +99,16 @@ export class ClassificationsService {
         this.findChildren(parent.children[index], children);
       }
     }
+  }
+
+  private map2Array(map: Map<string, string>): Array<string> {
+    const returnArray = [];
+
+    map.forEach((entryVal, entryKey) => {
+      returnArray.push(entryKey);
+    });
+
+    return returnArray;
   }
 }
 

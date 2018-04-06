@@ -1,9 +1,9 @@
 <taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
 	<div class="panel-heading">
-		<div class="btn-group pull-right">
+		<div class="pull-right">
 			<button type="button" (click)="onSave()" [disabled]="!AccessItemsForm.form.valid || action === 'COPY'" class="btn btn-default btn-primary">Save</button>
-			<button type="button" (click)="clear()" class="btn btn-default">Undo changes</button>
+			<button type="button" (click)="clear()" class="btn btn-default">Undo</button>
 		</div>
 		<h4 class="panel-header">{{workbasket.name}}
 			<span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>

@@ -24,6 +24,7 @@ import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pi
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -47,7 +48,7 @@ describe('InformationComponent', () => {
 			declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe,
 				RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent, DummyDetailComponent],
 			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, RouterTestingModule.withRoutes(routes)],
-			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService]
+			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService]
 
 		})
 			.compileComponents();
@@ -161,5 +162,16 @@ describe('InformationComponent', () => {
 			expect(savingWorkbasketService.triggerDistributionTargetSaving).toHaveBeenCalled();
 			expect(savingWorkbasketService.triggerAccessItemsSaving).toHaveBeenCalled();
 		});
+
+
+	// it('should call to workbasket service to remove workbasket after click on remove workbasket', () => {
+	// 	const spy = spyOn(router, 'navigate');
+	// 	component.removeWorkbasket();
+	// 	expect(requestInProgressService.setRequestInProgress).toHaveBeenCalledWith(true);
+	// 	expect(workbasketService.deleteWorkbasket).toHaveBeenCalledWith('selfLink');
+	// 	expect(requestInProgressService.setRequestInProgress).toHaveBeenCalledWith(false);
+	// 	expect(workbasketService.triggerWorkBasketSaved).toHaveBeenCalled();
+	// 	expect(spy.calls.first().args[0][0]).toBe('/workbaskets');
+	// });
 
 });

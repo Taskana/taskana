@@ -16,12 +16,12 @@ import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-item
 import { ICONTYPES } from 'app/models/type';
 import { Links } from 'app/models/links';
 import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
+import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { PermissionService } from 'app/services/permission/permission.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService } from 'app/services/saving-workbaskets/saving-workbaskets.service';
 
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
@@ -37,7 +37,9 @@ import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/g
 import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
 import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pipe';
 import { SelectWorkBasketPipe } from 'app/pipes/selectedWorkbasket/seleted-workbasket.pipe';
-import { LinksWorkbasketSummary } from '../../../models/links-workbasket-summary';
+import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+
 
 @Component({
 	selector: 'taskana-filter',
@@ -76,8 +78,8 @@ describe('WorkbasketDetailsComponent', () => {
 			declarations: [WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent,
 				IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
 				DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent, SelectWorkBasketPipe],
-			providers: [WorkbasketService, MasterAndDetailService, PermissionService,
-				AlertService, ErrorModalService, SavingWorkbasketService]
+			providers: [WorkbasketService, MasterAndDetailService, PermissionService, ErrorModalService, RequestInProgressService,
+				AlertService, SavingWorkbasketService]
 		})
 			.compileComponents();
 	}));

@@ -1,0 +1,11 @@
+
+.classification.panel{
+    border: none;
+    box-shadow: none;
+    margin-bottom: 0px;
+    &> .panel-body {
+        height: 80vh;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+}

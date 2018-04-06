@@ -60,8 +60,11 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 		private errorModalService: ErrorModalService) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (!this.initialized && changes.active && changes.active.currentValue === 'distributionTargets' ) {
+		if (!this.initialized && changes.active && changes.active.currentValue === 'distributionTargets') {
 			this.init();
+		}
+		if (changes.action) {
+			this.setBadge();
 		}
 	}
 
@@ -97,9 +100,6 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 				}
 			});
 
-		if (this.action === ACTION.COPY) {
-			this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
-		}
 	}
 
 	moveDistributionTargets(side: number) {
@@ -160,6 +160,12 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 					this.distributionTargetsLeft = (resultList._embedded ? resultList._embedded.workbaskets : []);
 				this.onRequest(dualListFilter.side, true);
 			});
+	}
+
+	private setBadge() {
+		if (this.action === ACTION.COPY) {
+			this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
+		}
 	}
 
 	private getSelectedItems(originList: any, destinationList: any): Array<any> {

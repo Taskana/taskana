@@ -1,8 +1,7 @@
 <div class="workbasket-list-full-height">
     <div class="footer-space">
         <div #wbToolbar>
-            <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)" (performSorting)="performSorting ($event)"
-                [(workbasketIdSelected)]="selectedId"></taskana-workbasket-list-toolbar>
+            <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)" (performSorting)="performSorting ($event)"></taskana-workbasket-list-toolbar>
         </div>
         <taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
         <div>

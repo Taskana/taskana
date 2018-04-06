@@ -38,8 +38,6 @@ export class WorkbasketListToolbarComponent implements OnInit {
 
 
 	@Input() workbaskets: Array<WorkbasketSummary>;
-	@Input() workbasketIdSelected: string;
-	@Output() workbasketIdSelectedChanged: string;
 	@Output() performSorting = new EventEmitter<SortingModel>();
 	@Output() performFilter = new EventEmitter<FilterModel>();
 	workbasketServiceSubscription: Subscription;
@@ -66,31 +64,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
 	}
 
 	addWorkbasket() {
-		this.workbasketIdSelected = undefined;
+		this.workbasketService.selectWorkBasket(undefined);
 		this.router.navigate([{ outlets: { detail: ['new-workbasket'] } }], { relativeTo: this.route });
-	}
-
-	removeWorkbasket() {
-		this.requestInProgressService.setRequestInProgress(true);
-		this.workbasketService.deleteWorkbasket(this.findWorkbasketSelectedObject()._links.self.href).subscribe(response => {
-			this.requestInProgressService.setRequestInProgress(false);
-			this.workbasketService.triggerWorkBasketSaved();
-			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
-				`Workbasket ${this.workbasketIdSelected} was removed successfully`))
-			this.router.navigate(['/workbaskets']);
-		}, error => {
-			this.requestInProgressService.setRequestInProgress(false);
-			this.errorModalService.triggerError(new ErrorModel(
-				`There was an error deleting workbasket ${this.workbasketIdSelected}`, error.error.message))
-		});
-	}
-
-	copyWorkbasket() {
-		this.workbasketIdSelected = undefined;
-		this.router.navigate([{ outlets: { detail: ['copy-workbasket'] } }], { relativeTo: this.route });
-	}
-
-	private findWorkbasketSelectedObject() {
-		return this.workbaskets.find(element => element.workbasketId === this.workbasketIdSelected);
 	}
 }
