@@ -37,7 +37,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         columnValueList = classificationService.createClassificationQuery()
             .listValues("TYPE", null);
         assertNotNull(columnValueList);
-        assertEquals(3, columnValueList.size());
+        assertEquals(2, columnValueList.size());
 
         columnValueList = classificationService.createClassificationQuery()
             .domainIn("")
@@ -180,7 +180,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .typeIn("TASK")
             .list();
         assertNotNull(classifications);
-        assertEquals(12, classifications.size());
+        assertEquals(13, classifications.size());
     }
 
     @Test

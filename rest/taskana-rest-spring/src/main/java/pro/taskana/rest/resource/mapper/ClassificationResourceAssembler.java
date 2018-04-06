@@ -25,7 +25,7 @@ import pro.taskana.rest.resource.ClassificationResource;
  * Transforms {@link Classification} to its resource counterpart {@link ClassificationResource} and vice versa.
  */
 @Component
-public class ClassificationMapper {
+public class ClassificationResourceAssembler {
 
     @Autowired
     ClassificationService classificationService;
@@ -60,17 +60,8 @@ public class ClassificationMapper {
             linkTo(methodOn(ClassificationController.class).getClassification(classification.getId()))
                 .withSelfRel());
         resource.add(
-            linkTo(methodOn(ClassificationController.class).getClassification(classification.getKey(),
-                classification.getDomain()))
-                    .withRel("getClassificationByKeyAndDomain"));
-        resource.add(
-            linkTo(methodOn(ClassificationController.class).getClassifications()).withRel("getAllClassifications"));
-        resource.add(
-            linkTo(methodOn(ClassificationController.class).createClassification(resource))
-                .withRel("createClassification"));
-        resource.add(
-            linkTo(methodOn(ClassificationController.class).updateClassification(resource))
-                .withRel("updateClassification"));
+            linkTo(methodOn(ClassificationController.class).getClassifications(null, null, null, null, null, null, null,
+                null, null, null)).withRel("getAllClassifications"));
         return resource;
     }
 }
