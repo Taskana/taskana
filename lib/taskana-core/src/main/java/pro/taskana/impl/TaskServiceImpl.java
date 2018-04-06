@@ -368,14 +368,7 @@ public class TaskServiceImpl implements TaskService {
                 }
 
                 List<ClassificationSummary> classifications;
-                try {
-                    classifications = findClassificationForTaskImplAndAttachments(resultTask, attachmentImpls);
-                } catch (NotAuthorizedException e1) {
-                    LOGGER.error(
-                        "ClassificationQuery unexpectedly returned NotauthorizedException. Throwing SystemException ");
-                    throw new SystemException("ClassificationQuery unexpectedly returned NotauthorizedException.");
-                }
-
+                classifications = findClassificationForTaskImplAndAttachments(resultTask, attachmentImpls);
                 List<Attachment> attachments = addClassificationSummariesToAttachments(resultTask, attachmentImpls,
                     classifications);
                 resultTask.setAttachments(attachments);
@@ -699,8 +692,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries)
-        throws NotAuthorizedException {
+    List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries) {
         LOGGER.debug("entry to augmentTaskSummariesByContainedSummaries()");
         List<TaskSummary> result = new ArrayList<>();
         if (taskSummaries == null || taskSummaries.isEmpty()) {
@@ -750,8 +742,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private List<ClassificationSummary> findClassificationsForTasksAndAttachments(
-        List<TaskSummaryImpl> taskSummaries, List<AttachmentSummaryImpl> attachmentSummaries)
-        throws NotAuthorizedException {
+        List<TaskSummaryImpl> taskSummaries, List<AttachmentSummaryImpl> attachmentSummaries) {
         LOGGER.debug("entry to getClassificationsForTasksAndAttachments()");
         if (taskSummaries == null || taskSummaries.isEmpty()) {
             return new ArrayList<>();
@@ -769,7 +760,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private List<ClassificationSummary> findClassificationForTaskImplAndAttachments(TaskImpl task,
-        List<AttachmentImpl> attachmentImpls) throws NotAuthorizedException {
+        List<AttachmentImpl> attachmentImpls) {
 
         Set<String> classificationIdSet = new HashSet<>(Arrays.asList(task.getClassificationSummary().getId()));
         if (attachmentImpls != null && !attachmentImpls.isEmpty()) {
@@ -782,8 +773,7 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
-    private List<ClassificationSummary> queryClassificationsForTasksAndAttachments(Set<String> classificationIdSet)
-        throws NotAuthorizedException {
+    private List<ClassificationSummary> queryClassificationsForTasksAndAttachments(Set<String> classificationIdSet) {
 
         String[] classificationIdArray = classificationIdSet.toArray(new String[0]);
 
@@ -794,8 +784,7 @@ public class TaskServiceImpl implements TaskService {
             .list();
     }
 
-    private void addWorkbasketSummariesToTaskSummaries(List<TaskSummaryImpl> taskSummaries)
-        throws NotAuthorizedException {
+    private void addWorkbasketSummariesToTaskSummaries(List<TaskSummaryImpl> taskSummaries) {
         LOGGER.debug("entry to addWorkbasketSummariesToTaskSummaries()");
         if (taskSummaries == null || taskSummaries.isEmpty()) {
             return;
@@ -1128,7 +1117,7 @@ public class TaskServiceImpl implements TaskService {
     private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
         PrioDurationHolder prioDurationFromAttachments)
         throws InvalidArgumentException, ConcurrencyException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, NotAuthorizedException {
+        ClassificationNotFoundException {
         validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
         if (oldTaskImpl.getModified() != null && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
             || oldTaskImpl.getClaimed() != null && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
@@ -1157,7 +1146,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void updateClassificationRelatedProperties(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
         PrioDurationHolder prioDurationFromAttachments)
-        throws NotAuthorizedException, ClassificationNotFoundException {
+        throws ClassificationNotFoundException {
         // insert Classification specifications if Classification is given.
         ClassificationSummary oldClassificationSummary = oldTaskImpl.getClassificationSummary();
         ClassificationSummary newClassificationSummary = newTaskImpl.getClassificationSummary();
@@ -1411,7 +1400,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     BulkOperationResults<String, Exception> classificationChanged(String taskId, String classificationId)
-        throws TaskNotFoundException, NotAuthorizedException, ClassificationNotFoundException {
+        throws TaskNotFoundException, ClassificationNotFoundException {
         LOGGER.debug("entry to classificationChanged(taskId = {} , classificationId = {} )", taskId, classificationId);
         TaskImpl task = null;
         BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();
