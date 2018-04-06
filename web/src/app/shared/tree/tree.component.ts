@@ -1,16 +1,23 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { TreeNode } from 'app/models/tree-node';
-import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions, ITreeState } from 'angular-tree-component';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked } from '@angular/core';
+import { TreeNodeModel } from 'app/models/tree-node';
+
+import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions, ITreeState, TreeComponent, TreeNode } from 'angular-tree-component';
 
 @Component({
   selector: 'taskana-tree',
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss']
 })
-export class TreeComponent implements OnInit {
+export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
 
-  @Input() treeNodes: TreeNode;
-  @Output() treeNodesChange = new EventEmitter<Array<TreeNode>>();
+
+  @ViewChild('tree')
+  private tree: TreeComponent;
+
+  @Input() treeNodes: TreeNodeModel;
+  @Output() treeNodesChange = new EventEmitter<Array<TreeNodeModel>>();
+  @Input() selectNodeId: string;
+  @Output() selectNodeIdChanged = new EventEmitter<string>();
 
   options: ITreeOptions = {
     displayField: 'name',
@@ -27,14 +34,40 @@ export class TreeComponent implements OnInit {
     levelPadding: 20
   }
 
-  state: ITreeState = {
-    activeNodeIds: { ['']: true },
-  }
-
   constructor() { }
 
   ngOnInit() {
+    this.selectNode(this.selectNodeId);
+  }
 
+  ngAfterViewChecked(): void {
+    if (this.selectNodeId && !this.tree.treeModel.getActiveNode()) {
+      this.selectNode(this.selectNodeId);
+    } else if (!this.selectNodeId && this.tree.treeModel.getActiveNode()) {
+      this.unSelectActiveNode();
+    }
+  }
+
+  onActivate(treeNode: any) {
+    this.selectNodeIdChanged.emit(treeNode.node.data.id + '');
+  }
+  private selectNode(nodeId: string) {
+    if (nodeId) {
+      const selectedNode = this.getSelectedNode(nodeId)
+      if (selectedNode) {
+        selectedNode.setIsActive(true)
+      }
+    }
+  }
+
+  private unSelectActiveNode() {
+    const activeNode = this.tree.treeModel.getActiveNode();
+    activeNode.setIsActive(false);
+    activeNode.blur();
+  }
+
+  private getSelectedNode(nodeId: string) {
+    return this.tree.treeModel.getNodeById(nodeId);
   }
 
 }

@@ -1,6 +1,6 @@
 import { Classification } from 'app/models/classification';
 
-export class TreeNode extends Classification {
+export class TreeNodeModel extends Classification {
   constructor(public id: string = '',
     public key: string = '',
     public category: string = '',
@@ -10,7 +10,7 @@ export class TreeNode extends Classification {
     public parentId: string = '',
     public priority: number = 0,
     public serviceLevel: string = '',
-    public children: Array<TreeNode> = undefined) {
+    public children: Array<TreeNodeModel> = undefined) {
     super(id, key, category, type, domain, name, parentId, priority, serviceLevel);
   }
 }
