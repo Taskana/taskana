@@ -23,7 +23,7 @@ import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.ClassificationResource;
 
 /**
- * Test for {@link ClassificationMapper}.
+ * Test for {@link ClassificationResourceAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RestConfiguration.class})
@@ -31,7 +31,7 @@ import pro.taskana.rest.resource.ClassificationResource;
 public class ClassificationMapperTest {
 
     @Autowired
-    private ClassificationMapper classificationMapper;
+    private ClassificationResourceAssembler classificationMapper;
 
     @Autowired
     private ClassificationService classificationService;

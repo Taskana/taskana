@@ -23,7 +23,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
-import pro.taskana.rest.resource.mapper.ClassificationMapper;
+import pro.taskana.rest.resource.mapper.ClassificationResourceAssembler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class ClassificationDefinitionController {
     private ClassificationService classificationService;
 
     @Autowired
-    private ClassificationMapper classificationMapper;
+    private ClassificationResourceAssembler classificationMapper;
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
