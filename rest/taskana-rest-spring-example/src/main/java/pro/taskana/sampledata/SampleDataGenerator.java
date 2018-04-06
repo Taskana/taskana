@@ -1,8 +1,10 @@
 package pro.taskana.sampledata;
 
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -45,12 +47,18 @@ public class SampleDataGenerator {
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
 
-        runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(WORKBASKET)));
-        runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DISTRIBUTION_TARGETS)));
-        runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(CLASSIFICATION)));
-        runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(TASK)));
-        runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(WORKBASKET_ACCESS_LIST)));
-        runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(OBJECT_REFERENCE)));
+        runner.runScript(new BufferedReader(
+            new InputStreamReader(this.getClass().getResourceAsStream(WORKBASKET), StandardCharsets.UTF_8)));
+        runner.runScript(new BufferedReader(
+            new InputStreamReader(this.getClass().getResourceAsStream(DISTRIBUTION_TARGETS), StandardCharsets.UTF_8)));
+        runner.runScript(new BufferedReader(
+            new InputStreamReader(this.getClass().getResourceAsStream(CLASSIFICATION), StandardCharsets.UTF_8)));
+        runner.runScript(new BufferedReader(
+            new InputStreamReader(this.getClass().getResourceAsStream(TASK), StandardCharsets.UTF_8)));
+        runner.runScript(new BufferedReader(new InputStreamReader(
+            this.getClass().getResourceAsStream(WORKBASKET_ACCESS_LIST), StandardCharsets.UTF_8)));
+        runner.runScript(new BufferedReader(
+            new InputStreamReader(this.getClass().getResourceAsStream(OBJECT_REFERENCE), StandardCharsets.UTF_8)));
 
         runner.closeConnection();
 
