@@ -711,8 +711,6 @@ public class TaskQueryImpl implements TaskQuery {
             }
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
-        } catch (NotAuthorizedException e) {
-            throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -780,8 +778,6 @@ public class TaskQueryImpl implements TaskQuery {
                 throw ex;
             }
             throw e;
-        } catch (NotAuthorizedException e) {
-            throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -810,8 +806,6 @@ public class TaskQueryImpl implements TaskQuery {
             result = augmentedList.get(0);
 
             return result;
-        } catch (NotAuthorizedException e) {
-            throw new NotAuthorizedToQueryWorkbasketException(e.getMessage());
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from single(). Returning result {} ", result);
