@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -8,13 +9,14 @@ import { ICONTYPES } from 'app/models/type';
 import { ErrorModel } from 'app/models/modal-error';
 import { ACTION } from 'app/models/action';
 import { Workbasket } from 'app/models/workbasket';
+import { AlertModel, AlertType } from 'app/models/alert';
 
 import { AlertService } from 'app/services/alert/alert.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { FormGroup } from '@angular/forms';
 import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
-import { AlertModel, AlertType } from 'app/models/alert';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+
 
 const dateFormat = 'yyyy-MM-ddTHH:mm:ss';
 const dateLocale = 'en-US';
@@ -46,7 +48,8 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 		private route: ActivatedRoute,
 		private router: Router,
 		private errorModalService: ErrorModalService,
-		private savingWorkbasket: SavingWorkbasketService) {
+		private savingWorkbasket: SavingWorkbasketService,
+		private requestInProgressService: RequestInProgressService) {
 		this.allTypes = IconTypeComponent.allTypes;
 	}
 
@@ -91,13 +94,33 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 		this.hasChanges = false;
 	}
 
+	removeWorkbasket() {
+		this.requestInProgressService.setRequestInProgress(true);
+		this.workbasketService.deleteWorkbasket(this.workbasket._links.self.href).subscribe(response => {
+			this.requestInProgressService.setRequestInProgress(false);
+			this.workbasketService.triggerWorkBasketSaved();
+			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
+				`Workbasket ${this.workbasket.workbasketId} was removed successfully`))
+			this.router.navigate(['administration/workbaskets']);
+		}, error => {
+			this.requestInProgressService.setRequestInProgress(false);
+			this.errorModalService.triggerError(new ErrorModel(
+				`There was an error deleting workbasket ${this.workbasket.workbasketId}`, error.error.message))
+		});
+	}
+
+	copyWorkbasket() {
+		this.router.navigate([{ outlets: { detail: ['copy-workbasket'] } }], { relativeTo: this.route.parent });
+	}
+
+
 	private beforeRequest() {
-		this.requestInProgress = true;
+		this.requestInProgressService.setRequestInProgress(true);
 		this.modalSpinner = true;
 	}
 
 	private afterRequest() {
-		this.requestInProgress = false;
+		this.requestInProgressService.setRequestInProgress(false);
 		this.workbasketService.triggerWorkBasketSaved();
 
 	}

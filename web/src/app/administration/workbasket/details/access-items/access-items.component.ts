@@ -54,6 +54,9 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		if (!this.initialized && changes.active && changes.active.currentValue === 'accessItems') {
 			this.init();
 		}
+		if (changes.action) {
+			this.setBadge();
+		}
 	}
 	private init() {
 		this.initialized = true;
@@ -75,9 +78,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 					this.onSave();
 				}
 			})
-		if (this.action === ACTION.COPY) {
-			this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
-		}
+
 	}
 
 	addAccessItem() {
@@ -112,6 +113,11 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 				return false;
 			})
 		return false;
+	}
+	private setBadge() {
+		if (this.action === ACTION.COPY) {
+			this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
+		}
 	}
 
 	private cloneAccessItems(inputaccessItem): Array<WorkbasketAccessItems> {
