@@ -1,7 +1,7 @@
 import { Input, Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TreeComponent } from './tree.component';
+import { TaskanaTreeComponent } from './tree.component';
 
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
@@ -16,23 +16,26 @@ class TreeVendorComponent {
   @Input() options;
   @Input() state;
   @Input() nodes;
+  treeModel = {
+    getActiveNode() { }
+  }
 }
-
 // tslint:enable:component-selector
-fdescribe('TreeComponent', () => {
-  let component: TreeComponent;
-  let fixture: ComponentFixture<TreeComponent>;
+
+describe('TaskanaTreeComponent', () => {
+  let component: TaskanaTreeComponent;
+  let fixture: ComponentFixture<TaskanaTreeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [TreeComponent, TreeVendorComponent]
+      declarations: [TaskanaTreeComponent, TreeVendorComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TreeComponent);
+    fixture = TestBed.createComponent(TaskanaTreeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

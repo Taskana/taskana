@@ -1,0 +1,133 @@
+<div class="container-scrollable">
+  <div id="classification-details" *ngIf="classification && !requestInProgress">
+    <ul class="nav nav-tabs" role="tablist">
+      <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
+        <a (click)="backClicked()">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
+      </li>
+
+    </ul>
+    <taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
+    <div *ngIf="classification" id="classification" class="panel panel-default classification">
+      <div class="panel-heading">
+        <div class="pull-right">
+          <button type="button" [disabled]="!ClassificationForm.form.valid" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
+          <button type="button" (click)="onClear()" class="btn btn-default">Undo</button>
+          <button type="button" (click)="removeClassification()" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          </button>
+        </div>
+        <h4 class="panel-header">{{classification.name}}&nbsp;
+          <span *ngIf="!classification.classificationId" class="badge warning"> {{badgeMessage}}</span>
+        </h4>
+      </div>
+      <div class="panel-body">
+        <form #ClassificationForm="ngForm">
+          <div class="col-md-6">
+            <div class="form-group required">
+              <label for="classification-key" class="control-label">Key</label>
+              <input type="text" required #key="ngModel" class="form-control" id="classification-key" placeholder="Key" [(ngModel)]="classification.key"
+                name="classification.key">
+              <div [hidden]="key.valid" class="required-text">
+                * Key is required
+              </div>
+            </div>
+            <div class="form-group required">
+              <label for="classification-name" class="control-label">Name</label>
+              <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name" [(ngModel)]="classification.name"
+                name="classification.name">
+              <div [hidden]="name.valid" class="required-text">
+                * Name is required
+              </div>
+            </div>
+            <div class="form-group required">
+              <label for="classification-domain" class="control-label">Domain</label>
+              <input type="text" required #domain="ngModel" class="form-control" id="classification-domain" placeholder="Domain" [(ngModel)]="classification.domain"
+                name="classification.domain">
+              <div [hidden]="domain.valid" class="required-text">
+                * Domain is required
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="classification-type" class="control-label">Type</label>
+              <div class="dropdown clearfix btn-group">
+                <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  {{classification.type}}
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
+                  <li *ngFor="let type of classificationTypes" (click)="selectType(type)">
+                    <a>
+                      <label>
+                        {{type}}
+                      </label>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="classification-description" class="control-label">Description</label>
+              <textarea class="form-control" rows="5" id="classification-description" placeholder="Description" [(ngModel)]="classification.description"
+                name="classification.description"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="classification-service-level" class="control-label">Service Level</label>
+              <input type="text" class="form-control" id="classification-service-level" placeholder="Service Level" [(ngModel)]="classification.serviceLevel"
+                name="classification.serviceLevel">
+            </div>
+
+            <div class="form-group">
+              <label for="classification-application-entry-point" class="control-label">Application entry point</label>
+              <input type="text" class="form-control" id="classification-application-entry-point" placeholder="Application entry point"
+                [(ngModel)]="classification.applicationEntryPoint" name="classification.applicationEntryPoint">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="classification-custom-1" class="control-label">Custom 1</label>
+              <input type="text" class="form-control" id="classification-custom-1" placeholder="Custom 1" [(ngModel)]="classification.custom1"
+                name="classification.custom1">
+            </div>
+            <div class="form-group">
+              <label for="classification-custom-2" class="control-label">Custom 2</label>
+              <input type="text" class="form-control" id="classification-custom-2" placeholder="Custom 2" [(ngModel)]="classification.custom2"
+                name="classification.custom2">
+            </div>
+            <div class="form-group">
+              <label for="classification-custom-3" class="control-label">Custom 3</label>
+              <input type="text" class="form-control" id="classification-custom-3" placeholder="Custom 3" [(ngModel)]="classification.custom3"
+                name="classification.custom3">
+            </div>
+            <div class="form-group">
+              <label for="classification-custom-4" class="control-label">Custom 4</label>
+              <input type="text" class="form-control" id="classification-custom-4" placeholder="Custom 4" [(ngModel)]="classification.custom4"
+                name="classification.custom4">
+            </div>
+            <div class="form-group">
+              <label for="classification-custom-5" class="control-label">Custom 5</label>
+              <input type="text" class="form-control" id="classification-custom-5" placeholder="Custom 5" [(ngModel)]="classification.custom5"
+                name="classification.custom5">
+            </div>
+            <div class="form-group">
+              <label for="classification-custom-6" class="control-label">Custom 6</label>
+              <input type="text" class="form-control" id="classification-custom-6" placeholder="Custom 6" [(ngModel)]="classification.custom6"
+                name="classification.custom6">
+            </div>
+            <div class="form-group">
+              <label for="classification-custom-7" class="control-label">Custom 7</label>
+              <input type="text" class="form-control" id="classification-custom-7" placeholder="Custom 7" [(ngModel)]="classification.custom7"
+                name="classification.custom7">
+            </div>
+            <div class="form-group">
+              <label for="classification-custom-8" class="control-label">Custom 8</label>
+              <input type="text" class="form-control" id="classification-custom-8" placeholder="Custom 8" [(ngModel)]="classification.custom8"
+                name="classification.custom8">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -41,8 +41,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		private route: ActivatedRoute,
 		private router: Router,
 		private masterAndDetailService: MasterAndDetailService,
-		private permissionService: PermissionService,
-		private errorModalService: ErrorModalService) { }
+		private permissionService: PermissionService) { }
 
 
 

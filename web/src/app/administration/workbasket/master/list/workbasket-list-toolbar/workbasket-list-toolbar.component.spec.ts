@@ -73,7 +73,6 @@ describe('WorkbasketListToolbarComponent', () => {
 		component.workbaskets = new Array<WorkbasketSummary>(
 			new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1',
 				undefined, undefined, undefined, undefined, undefined, undefined, undefined, new Links({ 'href': 'selfLink' })));
-		component.workbasketIdSelected = '1';
 
 		fixture.detectChanges();
 	});
@@ -92,23 +91,6 @@ describe('WorkbasketListToolbarComponent', () => {
 		expect(spy.calls.first().args[0][0].outlets.detail[0]).toBe('new-workbasket');
 	});
 
-
-	it('should navigate to copy-workbasket when click on add copy workbasket', () => {
-		const spy = spyOn(router, 'navigate');
-		component.copyWorkbasket();
-		expect(spy.calls.first().args[0][0].outlets.detail[0]).toBe('copy-workbasket');
-	});
-
-
-	it('should call to workbasket service to remove workbasket after click on remove workbasket', () => {
-		const spy = spyOn(router, 'navigate');
-		component.removeWorkbasket();
-		expect(requestInProgressService.setRequestInProgress).toHaveBeenCalledWith(true);
-		expect(workbasketService.deleteWorkbasket).toHaveBeenCalledWith('selfLink');
-		expect(requestInProgressService.setRequestInProgress).toHaveBeenCalledWith(false);
-		expect(workbasketService.triggerWorkBasketSaved).toHaveBeenCalled();
-		expect(spy.calls.first().args[0][0]).toBe('/workbaskets');
-	});
 
 	it('should emit performSorting when sorting is triggered', () => {
 		let sort: SortingModel;
