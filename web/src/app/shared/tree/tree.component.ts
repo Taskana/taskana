@@ -21,7 +21,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
 
   options: ITreeOptions = {
     displayField: 'name',
-    idField: 'id',
+    idField: 'classificationId',
     actionMapping: {
       keys: {
         [KEYS.ENTER]: (tree, node, $event) => {
@@ -49,8 +49,9 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
   }
 
   onActivate(treeNode: any) {
-    this.selectNodeIdChanged.emit(treeNode.node.data.id + '');
+    this.selectNodeIdChanged.emit(treeNode.node.data.classificationId + '');
   }
+
   private selectNode(nodeId: string) {
     if (nodeId) {
       const selectedNode = this.getSelectedNode(nodeId)

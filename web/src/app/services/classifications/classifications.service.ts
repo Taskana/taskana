@@ -8,6 +8,7 @@ import { ClassificationDefinition } from 'app/models/classification-definition';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { ClassificationResource } from '../../models/classification-resource';
 
 @Injectable()
 export class ClassificationsService {
@@ -22,7 +23,7 @@ export class ClassificationsService {
     })
   };
 
-  private classificationRef: Observable<Array<Classification>>;
+  private classificationRef: Observable<ClassificationResource>;
   private classificationTypes: Array<string>;
 
   constructor(private httpClient: HttpClient) {
@@ -31,15 +32,21 @@ export class ClassificationsService {
   // GET
   getClassifications(forceRequest = false, type = 'TASK', domain = ''): Observable<Array<TreeNodeModel>> {
     if (!forceRequest && this.classificationRef) {
-      return this.classificationRef.map((response: Array<Classification>) => {
-        return this.buildHierarchy(response, type, domain);
+      return this.classificationRef.map((response: ClassificationResource) => {
+        if (!response._embedded) {
+          return [];
+        }
+        return this.buildHierarchy(response._embedded.classificationSummaryResourceList, type, domain);
       });
     }
-    this.classificationRef = this.httpClient.get<Array<Classification>>(`${environment.taskanaRestUrl}/v1/classifications`,
+    this.classificationRef = this.httpClient.get<ClassificationResource>(`${environment.taskanaRestUrl}/v1/classifications`,
       this.httpOptions);
 
-    return this.classificationRef.map((response: Array<Classification>) => {
-      return this.buildHierarchy(response, type, domain);
+    return this.classificationRef.map((response: ClassificationResource) => {
+      if (!response._embedded) {
+        return [];
+      }
+      return this.buildHierarchy(response._embedded.classificationSummaryResourceList, type, domain);
     });
   }
 
@@ -50,9 +57,12 @@ export class ClassificationsService {
 
   getClassificationTypes(): Observable<Array<string>> {
     const typesSubject = new Subject<Array<string>>();
-    this.classificationRef.subscribe((classifications: Array<Classification>) => {
+    this.classificationRef.subscribe((classifications: ClassificationResource) => {
+      if (!classifications._embedded) {
+        return typesSubject;
+      }
       const types = new Map<string, string>();
-      classifications.forEach(element => {
+      classifications._embedded.classificationSummaryResourceList.forEach(element => {
         types.set(element.type, element.type);
       });
 
@@ -93,8 +103,8 @@ export class ClassificationsService {
 
 
   private findChildren(parent: any, children: Array<any>) {
-    if (children[parent.id]) {
-      parent.children = children[parent.id];
+    if (children[parent.classificationId]) {
+      parent.children = children[parent.classificationId];
       for (let index = 0, len = parent.children.length; index < len; ++index) {
         this.findChildren(parent.children[index], children);
       }
