@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ClassificationTypesSelectorComponent } from './classification-types-selector.component';
-import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
 
 describe('ClassificationTypesSelectorComponent', () => {
   let component: ClassificationTypesSelectorComponent;
@@ -9,9 +8,9 @@ describe('ClassificationTypesSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ClassificationTypesSelectorComponent, MapValuesPipe ]
+      declarations: [ClassificationTypesSelectorComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

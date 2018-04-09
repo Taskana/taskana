@@ -32,10 +32,11 @@ import { SortComponent } from './shared/sort/sort.component';
 import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component';
 import { PaginationComponent } from './administration/workbasket/master/list/pagination/pagination.component';
 import { ClassificationListComponent } from './administration/classification/master/list/classification-list.component';
+import { ClassificationDetailsComponent } from './administration/classification/details/classification-details.component';
 import { ImportExportComponent } from './shared/import-export/import-export.component';
 import { MasterAndDetailComponent } from './shared/master-and-detail/master-and-detail.component';
 import { ClassificationTypesSelectorComponent } from './shared/classification-types-selector/classification-types-selector.component';
-import { TreeComponent } from './shared/tree/tree.component';
+import { TaskanaTreeComponent } from './shared/tree/tree.component';
 
 /**
  * Services
@@ -96,8 +97,9 @@ const DECLARATIONS = [
   PaginationComponent,
   ClassificationListComponent,
   ImportExportComponent,
-  TreeComponent,
+  TaskanaTreeComponent,
   ClassificationTypesSelectorComponent,
+  ClassificationDetailsComponent,
   MapValuesPipe,
   RemoveNoneTypePipe,
   SelectWorkBasketPipe,
