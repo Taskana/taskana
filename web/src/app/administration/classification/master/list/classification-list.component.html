@@ -5,9 +5,6 @@
 				<button type="button" (click)="addClassification()" data-toggle="tooltip" title="Add" class="btn btn-default">
 					<span class="glyphicon glyphicon-plus green" aria-hidden="true"></span>
 				</button>
-				<button type="button" (click)="removeClassification()" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
-					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-				</button>
 				<taskana-import-export-component [currentSelection]="selectionToImport"></taskana-import-export-component>
 				<taskana-classification-types-selector class="pull-right" [classificationTypes]="classificationsTypes" [(classificationTypeSelected)]="classificationTypeSelected"
 				 (classificationTypeChanged)=selectClassificationType($event)></taskana-classification-types-selector>
@@ -15,6 +12,6 @@
 		</div>
 	</li>
 	<taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
-	<taskana-tree [treeNodes]="classifications"></taskana-tree>
+	<taskana-tree [treeNodes]="classifications" [selectNodeId] ="selectedId" (selectNodeIdChanged) ="selectClassification($event)"></taskana-tree>
 
 </div>

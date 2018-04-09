@@ -7,7 +7,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class ClassificationTypesSelectorComponent implements OnInit {
 
-  @Input() classificationTypes: Map<string, string> = new Map<string, string>();
+  @Input() classificationTypes: Array<string> = [];
   @Input()
   classificationTypeSelected: string = undefined;
   @Output()
