@@ -19,7 +19,6 @@ public class AttachmentImpl implements Attachment {
     private String taskId;
     private Instant created;
     private Instant modified;
-    private String classificationKey;
     private ClassificationSummary classificationSummary;
     private ObjectReference objectReference;
     private String channel;
@@ -142,7 +141,6 @@ public class AttachmentImpl implements Attachment {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((channel == null) ? 0 : channel.hashCode());
-        result = prime * result + ((classificationKey == null) ? 0 : classificationKey.hashCode());
         result = prime * result + ((classificationSummary == null) ? 0 : classificationSummary.hashCode());
         result = prime * result + ((created == null) ? 0 : created.hashCode());
         result = prime * result + ((customAttributes == null) ? 0 : customAttributes.hashCode());
@@ -171,13 +169,6 @@ public class AttachmentImpl implements Attachment {
                 return false;
             }
         } else if (!channel.equals(other.channel)) {
-            return false;
-        }
-        if (classificationKey == null) {
-            if (other.classificationKey != null) {
-                return false;
-            }
-        } else if (!classificationKey.equals(other.classificationKey)) {
             return false;
         }
         if (classificationSummary == null) {
@@ -250,8 +241,6 @@ public class AttachmentImpl implements Attachment {
         builder.append(created);
         builder.append(", modified=");
         builder.append(modified);
-        builder.append(", classificationKey=");
-        builder.append(classificationKey);
         builder.append(", classificationSummary=");
         builder.append(classificationSummary);
         builder.append(", objectReference=");

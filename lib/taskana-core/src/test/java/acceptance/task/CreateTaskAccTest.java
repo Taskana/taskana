@@ -202,6 +202,14 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertNotNull(readTask.getAttachments().get(0).getModified());
         assertEquals(readTask.getAttachments().get(0).getCreated(), readTask.getAttachments().get(0).getModified());
         assertNotNull(readTask.getAttachments().get(0).getClassificationSummary());
+        assertNotNull(readTask.getAttachments().get(0).getClassificationSummary().getId());
+        assertNotNull(readTask.getAttachments().get(0).getClassificationSummary().getKey());
+        assertNotNull(readTask.getAttachments().get(0).getClassificationSummary().getType());
+        assertNotNull(readTask.getAttachments().get(0).getClassificationSummary().getCategory());
+        assertNotNull(readTask.getAttachments().get(0).getClassificationSummary().getDomain());
+        assertNotNull(readTask.getAttachments().get(0).getClassificationSummary().getServiceLevel());
+        assertNotNull(readTask.getAttachments().get(0).getReceived());
+        assertNotNull(readTask.getAttachments().get(0).getChannel());
         assertNotNull(readTask.getAttachments().get(0).getObjectReference());
         // verify that the map is correctly retrieved from the database
         Map<String, String> customAttributesFromDb = readTask.getAttachments().get(0).getCustomAttributes();
