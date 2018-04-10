@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   taskanaWorkplaceUrl: 'http://localhost:4200',
-  taskanaAdminUrl: 'http://localhost:8080',
+  taskanaAdminUrl: 'http://localhost:4201',
   taskanaMonitorUrl: 'http://localhost:4202',
   taskanaRestUrl: 'http://localhost:8080'
 };
