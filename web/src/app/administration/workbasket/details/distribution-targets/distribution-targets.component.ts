@@ -144,10 +144,6 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 		this.distributionTargetsSelected = Object.assign([], this.distributionTargetsSelectedClone);
 	}
 
-	requestTimeoutExceeded(message: string) {
-		this.modalErrorMessage = message;
-	}
-
 	performFilter(dualListFilter: any) {
 
 		dualListFilter.side === Side.RIGHT ? this.distributionTargetsRight = undefined : this.distributionTargetsLeft = undefined;
