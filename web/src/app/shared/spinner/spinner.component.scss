@@ -128,5 +128,9 @@
     z-index: 10;
 }
 .spinner-centered {
-  margin-top: calc(50vh - 100px);
+  margin-top: calc(50vh - 150px);
+}
+
+.no-display{
+  display: none;
 }

@@ -13,6 +13,8 @@ import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import { TreeNodeModel } from 'app/models/tree-node';
+import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 
 @Component({
@@ -39,7 +41,7 @@ describe('ClassificationDetailsComponent', () => {
     TestBed.configureTestingModule({
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
       declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
-      providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient]
+      providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService]
     })
       .compileComponents();
   }));

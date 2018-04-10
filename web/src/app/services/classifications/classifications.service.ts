@@ -1,20 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import { Classification } from 'app/models/classification';
 import { TreeNodeModel } from 'app/models/tree-node';
 import { ClassificationDefinition } from 'app/models/classification-definition';
 
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { ClassificationResource } from '../../models/classification-resource';
 
 @Injectable()
 export class ClassificationsService {
 
-  url = environment.taskanaRestUrl + '/v1/classifications';
-  classificationSelected = new Subject<string>();
+  private url = environment.taskanaRestUrl + '/v1/classifications';
+  private classificationSelected = new Subject<string>();
+  private classificationSaved = new Subject<number>();
+  private classificationTypeSelectedValue = 'TASK';
+  private classificationTypeSelected = new BehaviorSubject<string>(this.classificationTypeSelectedValue);
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -30,13 +34,14 @@ export class ClassificationsService {
   }
 
   // GET
-  getClassifications(forceRequest = false, type = 'TASK', domain = ''): Observable<Array<TreeNodeModel>> {
+  getClassifications(forceRequest = false, domain = ''): Observable<Array<TreeNodeModel>> {
+
     if (!forceRequest && this.classificationRef) {
       return this.classificationRef.map((response: ClassificationResource) => {
         if (!response._embedded) {
           return [];
         }
-        return this.buildHierarchy(response._embedded.classificationSummaryResourceList, type, domain);
+        return this.buildHierarchy(response._embedded.classificationSummaryResourceList, this.classificationTypeSelectedValue, domain);
       });
     }
     this.classificationRef = this.httpClient.get<ClassificationResource>(`${environment.taskanaRestUrl}/v1/classifications`,
@@ -46,13 +51,18 @@ export class ClassificationsService {
       if (!response._embedded) {
         return [];
       }
-      return this.buildHierarchy(response._embedded.classificationSummaryResourceList, type, domain);
+      return this.buildHierarchy(response._embedded.classificationSummaryResourceList, this.classificationTypeSelectedValue, domain);
     });
   }
 
   // GET
   getClassification(id: string): Observable<ClassificationDefinition> {
-    return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`, this.httpOptions);
+    return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`, this.httpOptions)
+      .do((classification: ClassificationDefinition) => {
+        if (classification) {
+          this.selectClassificationType(classification.type);
+        }
+      });
   }
 
   getClassificationTypes(): Observable<Array<string>> {
@@ -71,6 +81,22 @@ export class ClassificationsService {
     return typesSubject.asObservable();
   }
 
+  // POST
+  postClassification(classification: Classification): Observable<Classification> {
+    return this.httpClient.post<Classification>(`${environment.taskanaRestUrl}/v1/classifications`, classification,
+      this.httpOptions);
+  }
+
+  // PUT
+  putClassification(url: string, classification: Classification): Observable<Classification> {
+    return this.httpClient.put<Classification>(url, classification, this.httpOptions);
+  }
+
+  // DELETE
+  deleteClassification(url: string, domain: string): Observable<string> {
+    return this.httpClient.delete<string>(`${url}/${domain}`, this.httpOptions);
+  }
+
   // #region "Service extras"
   selectClassification(id: string) {
     this.classificationSelected.next(id);
@@ -78,6 +104,23 @@ export class ClassificationsService {
 
   getSelectedClassification(): Observable<string> {
     return this.classificationSelected.asObservable();
+  }
+
+  triggerClassificationSaved() {
+    this.classificationSaved.next(Date.now());
+  }
+
+  classificationSavedTriggered(): Observable<number> {
+    return this.classificationSaved.asObservable();
+  }
+
+  selectClassificationType(id: string) {
+    this.classificationTypeSelectedValue = id;
+    this.classificationTypeSelected.next(id);
+  }
+
+  getSelectedClassificationType(): Observable<string> {
+    return this.classificationTypeSelected.asObservable();
   }
 
   // #endregion

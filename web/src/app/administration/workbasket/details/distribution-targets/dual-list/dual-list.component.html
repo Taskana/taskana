@@ -17,7 +17,7 @@
 	<div [@toggle]="toolbarState" *ngIf="toolbarState" class="row">
 		<taskana-filter class="col-xs-12" (performFilter)="performAvailableFilter($event)"></taskana-filter>
 	</div>
-	<taskana-spinner [isRunning]="requestInProgress" positionClass="centered-spinner" class="centered-horizontally floating"></taskana-spinner>
+	<taskana-spinner [isRunning]="requestInProgress" positionClass="centered-spinner" class="floating"></taskana-spinner>
 	<div>
 		<ul class="list-group">
 			<li class="list-group-item" *ngFor="let distributionTarget of distributionTargets  | selectWorkbaskets: distributionTargetsSelected: side"

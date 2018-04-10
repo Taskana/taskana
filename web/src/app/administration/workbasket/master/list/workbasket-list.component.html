@@ -3,7 +3,6 @@
         <div #wbToolbar>
             <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)" (performSorting)="performSorting ($event)"></taskana-workbasket-list-toolbar>
         </div>
-        <taskana-spinner [isRunning]="requestInProgress" class="centered-horizontally"></taskana-spinner>
         <div>
             <ul #wbList id="wb-list-container" class="list-group">
                 <li class="list-group-item no-space">
@@ -26,6 +25,8 @@
                 </li>
             </ul>
         </div>
+        <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
+        
     </div>
     <taskana-pagination [(workbasketsResource)]="workbasketsResource" (changePage)="changePage($event)"></taskana-pagination>
 </div>

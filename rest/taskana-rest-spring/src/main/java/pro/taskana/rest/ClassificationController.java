@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -135,6 +136,16 @@ public class ClassificationController extends AbstractPagingController {
                     + "') of the URI is not identical with the classificationId ('"
                     + resource.getClassificationId() + "') of the object in the payload.");
         }
+        return result;
+    }
+
+    @DeleteMapping(path = "/{classificationId}/{domain}")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<?> deleteWorkbasket(@PathVariable(value = "classificationId") String classificationId,
+                                              @PathVariable(value = "domain") String domain)
+            throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        ResponseEntity<?> result = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        classificationService.deleteClassification(classificationId, domain);
         return result;
     }
 
