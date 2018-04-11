@@ -4,14 +4,21 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import { ErrorModel } from 'app/models/modal-error';
+
 import { PermissionService } from 'app/services/permission/permission.service';
+import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 @Injectable()
 export class HttpClientInterceptor implements HttpInterceptor {
-	permissionService: PermissionService;
 
-	constructor(permissionService: PermissionService) {
-		this.permissionService = permissionService;
+	constructor(
+		private permissionService: PermissionService,
+		private errorModalService: ErrorModalService,
+		private requestInProgressService: RequestInProgressService) {
+
 	}
 
 	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -19,8 +26,12 @@ export class HttpClientInterceptor implements HttpInterceptor {
 			this.permissionService.setPermission(true);
 
 		}, err => {
+			this.requestInProgressService.setRequestInProgress(false);
 			if (err instanceof HttpErrorResponse && (err.status === 401 || err.status === 403)) {
 				this.permissionService.setPermission(false)
+			} else {
+				this.errorModalService.triggerError(
+					new ErrorModel('There was error, please contact with your administrator ', err))
 			}
 		});
 	}

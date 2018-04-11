@@ -25,6 +25,11 @@ const appRoutes: Routes = [
                 outlet: 'detail'
             },
             {
+                path: 'new-classification/:id',
+                component: WorkbasketDetailsComponent,
+                outlet: 'detail'
+            },
+            {
                 path: ':id',
                 component: WorkbasketDetailsComponent,
                 outlet: 'detail'

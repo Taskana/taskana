@@ -11,6 +11,7 @@ import { ClassificationListComponent } from './classification-list.component';
 import { ImportExportComponent } from 'app/shared/import-export/import-export.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { ClassificationTypesSelectorComponent } from 'app/shared/classification-types-selector/classification-types-selector.component';
+import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { WorkbasketDefinitionService } from 'app/services/workbasket-definition/workbasket-definition.service';
@@ -18,6 +19,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domains/domain.service';
+import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 
 @Component({
   selector: 'taskana-tree',
@@ -55,8 +57,8 @@ describe('ClassificationListComponent', () => {
         TaskanaTreeComponent, DummyDetailComponent],
       imports: [HttpClientModule, RouterTestingModule.withRoutes(routes)],
       providers: [
-        HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService
-
+        HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
+        ErrorModalService
       ]
     })
       .compileComponents();

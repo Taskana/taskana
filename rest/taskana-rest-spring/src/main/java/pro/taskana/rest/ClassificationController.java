@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,12 +25,7 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.ConcurrencyException;
-import pro.taskana.exceptions.DomainNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.*;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
 import pro.taskana.rest.resource.mapper.ClassificationResourceAssembler;
@@ -135,6 +131,16 @@ public class ClassificationController extends AbstractPagingController {
                     + "') of the URI is not identical with the classificationId ('"
                     + resource.getClassificationId() + "') of the object in the payload.");
         }
+        return result;
+    }
+
+    @DeleteMapping(path = "/{classificationId}/{domain}")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<?> deleteWorkbasket(@PathVariable(value = "classificationId") String classificationId,
+                                              @PathVariable(value = "domain") String domain)
+            throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        ResponseEntity<?> result = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        classificationService.deleteClassification(classificationId, domain);
         return result;
     }
 

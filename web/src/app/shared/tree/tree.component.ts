@@ -57,6 +57,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
       const selectedNode = this.getSelectedNode(nodeId)
       if (selectedNode) {
         selectedNode.setIsActive(true)
+        this.expandParent(selectedNode);
       }
     }
   }
@@ -69,6 +70,14 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
 
   private getSelectedNode(nodeId: string) {
     return this.tree.treeModel.getNodeById(nodeId);
+  }
+
+  private expandParent(node: TreeNode) {
+    if (!node.parent) {
+      return
+    }
+    node.parent.expand();
+    this.expandParent(node.parent);
   }
 
 }

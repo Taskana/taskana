@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -10,6 +9,7 @@ import { ErrorModel } from 'app/models/modal-error';
 import { ACTION } from 'app/models/action';
 import { Workbasket } from 'app/models/workbasket';
 import { AlertModel, AlertType } from 'app/models/alert';
+import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { AlertService } from 'app/services/alert/alert.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
@@ -17,9 +17,6 @@ import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
-
-const dateFormat = 'yyyy-MM-ddTHH:mm:ss';
-const dateLocale = 'en-US';
 @Component({
 	selector: 'taskana-workbasket-information',
 	templateUrl: './workbasket-information.component.html',
@@ -35,8 +32,6 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 
 	allTypes: Map<string, string>;
 	requestInProgress = false;
-	modalSpinner = false;
-	hasChanges = false;
 	badgeMessage = '';
 
 
@@ -91,7 +86,6 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 	onClear() {
 		this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'))
 		this.workbasket = { ...this.workbasketClone };
-		this.hasChanges = false;
 	}
 
 	removeWorkbasket() {
@@ -105,7 +99,7 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 		}, error => {
 			this.requestInProgressService.setRequestInProgress(false);
 			this.errorModalService.triggerError(new ErrorModel(
-				`There was an error deleting workbasket ${this.workbasket.workbasketId}`, error.error.message))
+				`There was an error deleting workbasket ${this.workbasket.workbasketId}`, error))
 		});
 	}
 
@@ -116,7 +110,6 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 
 	private beforeRequest() {
 		this.requestInProgressService.setRequestInProgress(true);
-		this.modalSpinner = true;
 	}
 
 	private afterRequest() {
@@ -142,15 +135,13 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 						new SavingInformation(this.workbasket._links.accessItems.href, this.workbasket.workbasketId));
 				}
 			}, error => {
-				this.errorModalService.triggerError(new ErrorModel('There was an error creating a workbasket',
-					error.error ? error.error.message : error))
-				this.requestInProgress = false;
+				this.errorModalService.triggerError(new ErrorModel('There was an error creating a workbasket', error))
+				this.requestInProgressService.setRequestInProgress(false);
 			});
 	}
 
 	private addDateToWorkbasket() {
-		const datePipe = new DatePipe(dateLocale);
-		const date = datePipe.transform(Date.now(), dateFormat) + 'Z';
+		const date = TaskanaDate.getDate();
 		this.workbasket.created = date;
 		this.workbasket.modified = date;
 	}

@@ -9,7 +9,7 @@ export class ClassificationDefinition {
     public type: string = undefined,
     public isValidInDomain: boolean = undefined,
     public created: string = undefined,
-    public modifies: string = undefined,
+    public modified: string = undefined,
     public name: string = undefined,
     public description: string = undefined,
     public priority: number = undefined,
