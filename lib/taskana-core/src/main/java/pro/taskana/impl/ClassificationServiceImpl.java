@@ -7,12 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
@@ -23,10 +25,7 @@ import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
-import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.ClassificationMapper;
 import pro.taskana.mappings.JobMapper;
 import pro.taskana.mappings.TaskMapper;
@@ -222,7 +221,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             try {
                 Duration.parse(classification.getServiceLevel());
             } catch (Exception e) {
-                throw new InvalidArgumentException("Invalid duration. Please use the format defined by ISO 8601");
+                throw new InvalidArgumentException("Invalid service level. Please use the format defined by ISO 8601");
             }
         }
 
@@ -342,50 +341,61 @@ public class ClassificationServiceImpl implements ClassificationService {
                 throw new ClassificationNotFoundException(classificationKey, domain,
                     "The classification " + classificationKey + "wasn't found in the domain " + domain);
             }
+            deleteClassification(classification.getId());
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from deleteClassification(key,domain)");
+        }
+    }
 
-            List<AttachmentSummaryImpl> attachments = taskanaEngine.getSqlSession()
-                .getMapper(AttachmentMapper.class)
-                .findAttachmentSummariesByClassificationId(classification.getId());
-            if (!attachments.isEmpty()) {
-                throw new ClassificationInUseException("Classification " + classification.getId()
-                    + " is used by Attachment " + attachments.get(0).getId());
+    @Override
+    public void deleteClassification(String classificationId)
+        throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException {
+        LOGGER.debug("entry to deleteClassification(id = {})", classificationId);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+        try {
+            taskanaEngine.openConnection();
+            Classification classification = this.classificationMapper.findById(classificationId);
+            if (classification == null) {
+                throw new ClassificationNotFoundException(classificationId,
+                    "The classification " + classificationId + "wasn't found");
             }
 
-            if (domain.equals("")) {
+            if (classification.getDomain().equals("")) {
                 // master mode - delete all associated classifications in every domain.
-                List<String> domains = this.classificationMapper.getDomainsForClassification(classificationKey);
-                domains.remove("");
-                for (String classificationDomain : domains) {
-                    deleteClassification(classificationKey, classificationDomain);
+                List<ClassificationSummary> classificationsInDomain = createClassificationQuery()
+                    .keyIn(classification.getKey()).list();
+                for (ClassificationSummary classificationInDomain : classificationsInDomain) {
+                    if (!"".equals(classificationInDomain.getDomain())) {
+                        deleteClassification(classificationInDomain.getId());
+                    }
                 }
             }
 
-            TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
+            List<ClassificationSummary> childClassifications = createClassificationQuery().parentIdIn(classificationId)
+                .list();
+            for (ClassificationSummary child : childClassifications) {
+                this.deleteClassification(child.getId());
+            }
+
             try {
-                List<TaskSummary> classificationTasks = taskService.createTaskQuery()
-                    .classificationKeyIn(classificationKey)
-                    .list();
-                if (classificationTasks.stream()
-                    .anyMatch(t -> domain.equals(t.getClassificationSummary().getDomain()))) {
-                    throw new ClassificationInUseException(
-                        "There are Tasks that belong to this classification or a child classification. Please complete them and try again.");
+                this.classificationMapper.deleteClassification(classificationId);
+            } catch (PersistenceException e) {
+                if (isReferentialIntegrityConstraintViolation(e)) {
+                    throw new ClassificationInUseException("The classification " + classificationId
+                        + " is in use and cannot be deleted. There are either tasks or attachments associated with the classification.");
                 }
-            } catch (NotAuthorizedToQueryWorkbasketException e) {
-                LOGGER.error(
-                    "ClassificationQuery unexpectedly returned NotauthorizedException. Throwing SystemException ");
-                throw new SystemException("ClassificationQuery unexpectedly returned NotauthorizedException.");
             }
-
-            List<String> childKeys = this.classificationMapper
-                .getChildrenOfClassification(classification.getId());
-            for (String key : childKeys) {
-                this.deleteClassification(key, domain);
-            }
-
-            this.classificationMapper.deleteClassificationInDomain(classificationKey, domain);
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from deleteClassification()");
         }
     }
+
+    private boolean isReferentialIntegrityConstraintViolation(PersistenceException e) {
+        // DB2 check missing
+        return (e.getCause().getClass().getName().equals("org.h2.jdbc.JdbcSQLException")
+            && e.getMessage().contains("23503"));
+    }
+
 }

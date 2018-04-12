@@ -19,11 +19,13 @@ import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -115,6 +117,29 @@ public class ClassificationControllerIntTest {
             new ParameterizedTypeReference<ClassificationSummaryResource>() {
             });
         assertEquals("Zustimmungserklärung", response.getBody().name);
+    }
+
+    @Test(expected = HttpClientErrorException.class)
+    public void testDeleteClassification() {
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+
+        ResponseEntity<ClassificationSummaryResource> response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/classifications/CLI:200000000000000000000000000000000004",
+            HttpMethod.DELETE,
+            request,
+            new ParameterizedTypeReference<ClassificationSummaryResource>() {
+            });
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/classifications/CLI:200000000000000000000000000000000004",
+            HttpMethod.GET,
+            request,
+            new ParameterizedTypeReference<ClassificationSummaryResource>() {
+            });
     }
 
     /**

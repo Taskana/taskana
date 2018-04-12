@@ -41,6 +41,21 @@ public interface ClassificationService {
     /**
      * Delete a classification with all child classifications.
      *
+     * @param id
+     *            the id of the searched-for classifications
+     * @throws ClassificationInUseException
+     *             if there are Task existing, which refer to this classification.
+     * @throws ClassificationNotFoundException
+     *             if for an domain no classification specification is found.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
+     */
+    void deleteClassification(String id)
+        throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException;
+
+    /**
+     * Delete a classification with all child classifications.
+     *
      * @param classificationKey
      *            the key of the classification you want to delete.
      * @param domain
