@@ -85,10 +85,8 @@ public interface ClassificationMapper {
     void update(@Param("classification") ClassificationImpl classification);
 
     @Delete("DELETE FROM TASKANA.CLASSIFICATION "
-        + "WHERE KEY = #{classificationKey}"
-        + "AND DOMAIN = #{domain}")
-    void deleteClassificationInDomain(@Param("classificationKey") String classificationKey,
-        @Param("domain") String domain);
+        + "WHERE ID = #{classificationId}")
+    void deleteClassification(@Param("classificationId") String classificationId);
 
     @Select("<script>"
         + "SELECT ID, KEY, CATEGORY, TYPE, DOMAIN, NAME, PARENT_ID "
@@ -108,18 +106,4 @@ public interface ClassificationMapper {
     List<ClassificationSummaryImpl> getAllClassificationsWithKey(@Param("key") String key,
         @Param("domain") String domain);
 
-    @Select("<script>"
-        + "SELECT DOMAIN "
-        + "FROM TASKANA.CLASSIFICATION "
-        + "WHERE KEY = #{classification_key} "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>")
-    List<String> getDomainsForClassification(@Param("classification_key") String classificationKey);
-
-    @Select("<script>SELECT KEY "
-        + "FROM TASKANA.CLASSIFICATION "
-        + "WHERE PARENT_ID = #{parentId} "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>")
-    List<String> getChildrenOfClassification(@Param("parentId") String parentId);
 }
