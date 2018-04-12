@@ -24,7 +24,7 @@ export class WorkbasketDefinitionService {
 
   constructor(private httpClient: HttpClient, private alertService: AlertService,
               private errorModalService: ErrorModalService) {
-  }
+              }
 
   // GET
   exportWorkbaskets(domain: string) {

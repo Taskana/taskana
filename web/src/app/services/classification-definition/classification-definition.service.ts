@@ -6,8 +6,6 @@ import {ClassificationDefinition} from '../../models/classification-definition';
 import {AlertModel, AlertType} from '../../models/alert';
 import {saveAs} from 'file-saver/FileSaver';
 import {TaskanaDate} from '../../shared/util/taskana.date';
-import {ErrorModel} from '../../models/modal-error';
-import {ErrorModalService} from '../errorModal/error-modal.service';
 
 @Injectable()
 export class ClassificationDefinitionService {
@@ -21,8 +19,7 @@ export class ClassificationDefinitionService {
     })
   };
 
-  constructor(private httpClient: HttpClient, private alertService: AlertService,
-              private errorModalService: ErrorModalService) {
+  constructor(private httpClient: HttpClient, private alertService: AlertService) {
   }
 
   // GET
@@ -41,8 +38,7 @@ export class ClassificationDefinitionService {
     this.httpClient.post(this.url + '/import',
       JSON.parse(classifications), this.httpOptions).subscribe(
       classificationsUpdated => this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful')),
-      error => this.errorModalService.triggerError(new ErrorModel(
-        `There was an error importing classifications`, error.message))
+      error => this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'Import was not successful'))
     );
   }
 }

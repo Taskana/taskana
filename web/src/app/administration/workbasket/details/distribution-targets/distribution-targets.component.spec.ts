@@ -17,6 +17,7 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 import { DualListComponent } from './dual-list/dual-list.component';
 import { DistributionTargetsComponent, Side } from './distribution-targets.component';
@@ -44,7 +45,6 @@ export class FilterComponent {
 	target: string;
 }
 
-
 describe('DistributionTargetsComponent', () => {
 	let component: DistributionTargetsComponent;
 	let fixture: ComponentFixture<DistributionTargetsComponent>;
@@ -57,7 +57,7 @@ describe('DistributionTargetsComponent', () => {
 			imports: [AngularSvgIconModule, HttpClientModule, HttpModule, JsonpModule],
 			declarations: [DistributionTargetsComponent, SpinnerComponent, GeneralMessageModalComponent,
 				FilterComponent, SelectWorkBasketPipe, IconTypeComponent, DualListComponent],
-			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService]
+			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService]
 		})
 			.compileComponents();
 	}));
