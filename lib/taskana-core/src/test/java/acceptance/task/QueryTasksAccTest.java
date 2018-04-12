@@ -154,7 +154,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .classificationKeyLike("L10%")
             .list();
-        assertThat(results.size(), equalTo(65));
+        assertThat(results.size(), equalTo(64));
 
         String[] ids = results.stream()
             .map(t -> t.getClassificationSummary().getKey())
@@ -164,7 +164,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .classificationKeyIn(ids)
             .list();
-        assertThat(result2.size(), equalTo(65));
+        assertThat(result2.size(), equalTo(64));
     }
 
     @WithAccessId(

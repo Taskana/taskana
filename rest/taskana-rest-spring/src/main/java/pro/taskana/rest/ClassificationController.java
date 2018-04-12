@@ -10,6 +10,7 @@ import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
@@ -136,6 +138,14 @@ public class ClassificationController extends AbstractPagingController {
                     + resource.getClassificationId() + "') of the object in the payload.");
         }
         return result;
+    }
+
+    @DeleteMapping(path = "/{classificationId}")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    public ResponseEntity<?> deleteClassification(@PathVariable String classificationId)
+        throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
+        classificationService.deleteClassification(classificationId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private void addSortingToQuery(ClassificationQuery query, String sortBy, String order)
