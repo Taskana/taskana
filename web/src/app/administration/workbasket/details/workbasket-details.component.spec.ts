@@ -40,7 +40,6 @@ import { SelectWorkBasketPipe } from 'app/pipes/selectedWorkbasket/seleted-workb
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
-
 @Component({
 	selector: 'taskana-filter',
 	template: ''

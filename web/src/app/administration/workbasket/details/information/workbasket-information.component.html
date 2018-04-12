@@ -1,4 +1,4 @@
-<taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
+<taskana-spinner [isRunning]="requestInProgress" class="floating"></taskana-spinner>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
     <div class="panel-heading">
         <div class="pull-right">
@@ -22,7 +22,7 @@
                     <label for="wb-key" class="control-label">Key</label>
                     <input type="text" required #key="ngModel" class="form-control" id="wb-key" placeholder="Key" [(ngModel)]="workbasket.key"
                         name="workbasket.key">
-                    <div [hidden]="key.valid" class="required-text">
+                    <div *ngIf="!key.valid" class="required-text">
                         * Key is required
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     <label for="wb-name" class="control-label">Name</label>
                     <input type="text" required #name="ngModel" class="form-control" id="wb-name" placeholder="Name" [(ngModel)]="workbasket.name"
                         name="workbasket.name">
-                    <div [hidden]="name.valid" class="required-text">
+                    <div *ngIf="!name.valid" class="required-text">
                         * Name is required
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                     <label for="wb-owner" class="control-label">Owner</label>
                     <input type="text" required #owner="ngModel" class="form-control" id="wb-owner" placeholder="Owner" [(ngModel)]="workbasket.owner"
                         name="workbasket.owner">
-                    <div [hidden]="owner.valid" class="required-text">
+                    <div *ngIf="!owner.valid" class="required-text">
                         * Owner is required
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                     <label for="wb-domain" class="control-label">Domain</label>
                     <input type="text" required #domain="ngModel" class="form-control" id="wb-domain" placeholder="Domain" [(ngModel)]="workbasket.domain"
                         name="workbasket.domain">
-                    <div [hidden]="domain.valid" class="required-text">
+                    <div *ngIf="!domain.valid" class="required-text">
                         * Domain is required
                     </div>
                 </div>

@@ -14,6 +14,7 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 export enum Side {
 	LEFT,
@@ -57,7 +58,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 		private workbasketService: WorkbasketService,
 		private alertService: AlertService,
 		private savingWorkbaskets: SavingWorkbasketService,
-		private errorModalService: ErrorModalService) { }
+		private errorModalService: ErrorModalService,
+		private requestInProgressService: RequestInProgressService) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (!this.initialized && changes.active && changes.active.currentValue === 'distributionTargets') {
@@ -116,6 +118,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 	}
 
 	onSave() {
+		this.requestInProgressService.setRequestInProgress(true);
 		this.requestInProgress = true;
 		this.workbasketService.updateWorkBasketsDistributionTargets(
 			this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()).subscribe(response => {
@@ -142,10 +145,6 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 		this.distributionTargetsLeft = Object.assign([], this.distributionTargetsClone);
 		this.distributionTargetsRight = Object.assign([], this.distributionTargetsSelectedClone);
 		this.distributionTargetsSelected = Object.assign([], this.distributionTargetsSelectedClone);
-	}
-
-	requestTimeoutExceeded(message: string) {
-		this.modalErrorMessage = message;
 	}
 
 	performFilter(dualListFilter: any) {

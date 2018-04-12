@@ -1,4 +1,5 @@
 <div class="container-scrollable">
+  <taskana-spinner [isRunning]="requestInProgress" class="floating"></taskana-spinner>
   <div id="classification-details" *ngIf="classification && !requestInProgress">
     <ul class="nav nav-tabs" role="tablist">
       <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
@@ -7,7 +8,6 @@
       </li>
 
     </ul>
-    <taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
     <div *ngIf="classification" id="classification" class="panel panel-default classification">
       <div class="panel-heading">
         <div class="pull-right">
@@ -28,7 +28,7 @@
               <label for="classification-key" class="control-label">Key</label>
               <input type="text" required #key="ngModel" class="form-control" id="classification-key" placeholder="Key" [(ngModel)]="classification.key"
                 name="classification.key">
-              <div [hidden]="key.valid" class="required-text">
+              <div *ngIf="!key.valid" class="required-text">
                 * Key is required
               </div>
             </div>
@@ -36,7 +36,7 @@
               <label for="classification-name" class="control-label">Name</label>
               <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name" [(ngModel)]="classification.name"
                 name="classification.name">
-              <div [hidden]="name.valid" class="required-text">
+              <div *ngIf="!name.valid" class="required-text">
                 * Name is required
               </div>
             </div>
@@ -44,27 +44,28 @@
               <label for="classification-domain" class="control-label">Domain</label>
               <input type="text" required #domain="ngModel" class="form-control" id="classification-domain" placeholder="Domain" [(ngModel)]="classification.domain"
                 name="classification.domain">
-              <div [hidden]="domain.valid" class="required-text">
+              <div *ngIf="!domain.valid" class="required-text">
                 * Domain is required
               </div>
             </div>
-            <div class="form-group">
-              <label for="classification-type" class="control-label">Type</label>
-              <div class="dropdown clearfix btn-group">
-                <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  {{classification.type}}
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-                  <li *ngFor="let type of classificationTypes" (click)="selectType(type)">
-                    <a>
-                      <label>
-                        {{type}}
-                      </label>
-                    </a>
-                  </li>
-                </ul>
+            <div class="form-group required">
+              <label for="classification-category" class="control-label">Category</label>
+              <input type="text" required #category="ngModel" class="form-control" id="classification-category" placeholder="category"
+                [(ngModel)]="classification.category" name="classification.category">
+              <div *ngIf="!category.valid" class="required-text">
+                * Category is required
               </div>
+            </div>
+            <div class="form-group">
+              <fieldset disabled>
+                <label for="classification-type" class="control-label">Type</label>
+                <div class="dropdown clearfix btn-group disabled">
+                  <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    {{classification.type}}
+                    <span class="caret"></span>
+                  </button>
+                </div>
+              </fieldset>
             </div>
             <div class="form-group">
               <label for="classification-description" class="control-label">Description</label>

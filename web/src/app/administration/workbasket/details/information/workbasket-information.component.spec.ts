@@ -109,7 +109,6 @@ describe('InformationComponent', () => {
 		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(Observable.of(component.workbasket));
 		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(Observable.of(component.workbasket));
 		component.onSave();
-		expect(component.modalSpinner).toBeTruthy();
 		expect(component.requestInProgress).toBeFalsy();
 
 	}));

@@ -55,7 +55,11 @@ export class AppComponent implements OnInit, OnDestroy {
 			}
 		});
 		this.errorModalSubscription = this.errorModalService.getError().subscribe((error: ErrorModel) => {
-			this.modalErrorMessage = error.message;
+			if (typeof error.message === 'string') {
+				this.modalErrorMessage = error.message
+			} else {
+				this.modalErrorMessage = error.message.error ? (error.message.error.error + ' ' + error.message.error.message) : error.message.message;
+			}
 			this.modalTitle = error.title;
 		})
 
