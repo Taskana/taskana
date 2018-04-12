@@ -1,3 +1,4 @@
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -20,9 +21,7 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { SimpleChange } from '@angular/core';
-
-
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 describe('AccessItemsComponent', () => {
 	let component: AccessItemsComponent;
@@ -33,7 +32,7 @@ describe('AccessItemsComponent', () => {
 		TestBed.configureTestingModule({
 			declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent],
 			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
-			providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService]
+			providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService]
 
 		})
 			.compileComponents();

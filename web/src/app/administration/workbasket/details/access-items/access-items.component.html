@@ -1,4 +1,3 @@
-<taskana-spinner [isRunning]="requestInProgress" [isModal]="modalSpinner" class="centered-horizontally floating"></taskana-spinner>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
@@ -112,5 +111,6 @@
 			</span>
 			Add new access
 		</button>
-	</div>
+		<taskana-spinner [isRunning]="requestInProgress" [positionClass]=""></taskana-spinner>
+	</div>	
 </div>
