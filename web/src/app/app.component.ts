@@ -1,5 +1,4 @@
 import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
-import { environment } from '../environments/environment';
 import { Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -16,11 +15,7 @@ import { SelectedRouteService } from './services/selected-route/selected-route';
 	styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-	title = 'Taskana administration';
 
-	adminUrl: string = environment.taskanaAdminUrl;
-	monitorUrl: string = environment.taskanaMonitorUrl;
-	workplaceUrl: string = environment.taskanaWorkplaceUrl;
 	workbasketsRoute = true;
 
 	modalErrorMessage = '';

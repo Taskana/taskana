@@ -14,6 +14,7 @@ import { SelectedRouteService } from './services/selected-route/selected-route';
 import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component'
 import { SpinnerComponent } from './shared/spinner/spinner.component'
 import { AlertComponent } from './shared/alert/alert.component';
+import { NavBarComponent } from './shared/nav-bar/nav-bar.component';
 
 
 describe('AppComponent', () => {
@@ -27,7 +28,7 @@ describe('AppComponent', () => {
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
 			declarations: [
-				AppComponent, GeneralMessageModalComponent, SpinnerComponent, AlertComponent
+				AppComponent, GeneralMessageModalComponent, SpinnerComponent, AlertComponent, NavBarComponent
 			],
 			imports: [
 				AngularSvgIconModule,
@@ -51,9 +52,6 @@ describe('AppComponent', () => {
 		expect(app).toBeTruthy();
 	}));
 
-	it(`should have as title 'Taskana administration'`, (() => {
-		expect(app.title).toEqual('Taskana administration');
-	}));
 
 	it('should render title in a <a> tag', (() => {
 		fixture.detectChanges();

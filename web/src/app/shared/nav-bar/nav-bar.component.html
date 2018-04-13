@@ -1,0 +1,51 @@
+<nav class="navbar navbar-fixed-top">
+  <div class="navbar no-border-radius navbar-inverse no-gutter col-xs-12">
+    <div class="col-xs-2 col-md-5">
+      <button type="button" *ngIf="!showNavbar" class="btn btn-default navbar-toggle show pull-left" (click)="toogleNavBar();"
+        aria-expanded="true" aria-controls="navbar">
+        <span class="glyphicon glyphicon-arrow-right white"></span>
+      </button>
+      <span>&nbsp;</span>
+    </div>
+    <div class="col-xs-1"></div>
+    <div class="col-xs-9 col-md-7">
+      <ul class="nav logo">
+        <svg-icon class="logo white" src="./assets/icons/logo.svg"></svg-icon>
+        <p class="navbar-brand no-margin">
+            <a [href]="adminUrl">{{title}}</a>
+          </p>
+      </ul>
+    </div>
+  </div>
+  <div [@toggle]="showNavbar" *ngIf="showNavbar" class="navbar-inverse sidenav full-height col-xs-6 col-md-3" data-html="false"
+    aria-expanded="true">
+    <div class="col-xs-12">
+      <div class="row">
+        <button type="button" *ngIf="showNavbar" class="btn btn-default navbar-toggle show pull-right" (click)="toogleNavBar();"
+          aria-expanded="true" aria-controls="navbar">
+          <span class="glyphicon glyphicon-arrow-left white"></span>
+        </button>
+      </div>
+      <div class="row menu">
+        <span routerLink="administration/workbaskets" aria-controls="administration" routerLinkActive="active">Administration</span>
+        <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('workbaskets') !== -1}">
+          <span class="col-xs-6" routerLink="administration/workbaskets" aria-controls="Workbaskets" routerLinkActive="active">Workbaskets</span>
+        </div>
+        <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('classifications') !== -1}">
+          <span class="col-xs-6" routerLink="administration/classifications" aria-controls="Classifications" routerLinkActive="active">Classifications</span>
+        </div>
+      </div>
+      <div class="row menu">
+        <span>
+          <a [href]="monitorUrl"> Monitor</a>
+        </span>
+      </div>
+      <div class="row menu">
+        <span>
+          <a [href]="workplaceUrl"> Workplace</a>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showNavbar" class="navbar-backdrop" (click)="toogleNavBar()"></div>
+</nav>
