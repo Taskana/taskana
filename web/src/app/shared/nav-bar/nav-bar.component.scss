@@ -1,0 +1,111 @@
+$background-color: #224562;
+$background-color-sidenav: #263847;
+.navbar-inverse {
+    border:none;
+    background-color: $background-color;
+}
+
+.navbar-inverse .navbar-toggle, .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+    border: none;
+    background-color: transparent;
+}
+
+svg-icon.logo {
+    float: left;
+    width: 55px;
+    height: 55px;
+    padding:2px;
+}
+
+.logo-container {
+    padding-left: 0px;
+}
+
+p.navbar-brand >a{
+    vertical-align: middle;
+    text-decoration: none;
+    color: #9d9d9d;
+    &:hover {
+        color: white;
+    }
+}
+
+.navbar-backdrop{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    z-index: 990;
+
+}
+ 
+/*
+ * All side bar links styling.
+*/
+.nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+
+.menu > span:hover,
+.submenu > span:hover
+ {
+    color: white;
+    cursor: pointer;
+}
+
+.sidenav {
+    position:fixed;
+    border-right: 1px solid grey;
+    z-index:999;
+    margin-top: -1px;
+    box-shadow: none;
+    height: 100%;
+    background-color: $background-color-sidenav;
+    &> div {
+        margin-bottom: 20px;
+    }
+}
+
+.navbar {
+    margin-bottom: 0px;
+}
+
+.menu,.submenu > span {
+    margin-top: 15px;
+    font-size: 20px;
+    
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.menu,.submenu > span {
+    padding-left: 12px;
+    color: #9d9d9d;
+    outline: none;
+    
+}
+.menu.selected,.submenu.selected {
+    background-color: transparent;
+     &> span{
+        padding-left: 10px;
+        border-left: #22a39f 5px solid;
+        
+        color: white;
+    }
+}
+
+.menu > .submenu{   
+    margin-left: 30px;
+}
+
+a {
+    color: #9d9d9d;
+    &:hover{
+        color:white;
+    }
+    text-decoration: none
+}
