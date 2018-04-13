@@ -18,6 +18,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +31,9 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
+import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
@@ -81,6 +84,9 @@ public class TaskController extends AbstractPagingController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private TaskResourceAssembler taskResourceAssembler;
+
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<TaskSummaryResource>> getTasks(
@@ -120,7 +126,6 @@ public class TaskController extends AbstractPagingController {
     public ResponseEntity<TaskResource> getTask(@PathVariable String taskId)
         throws TaskNotFoundException, NotAuthorizedException {
         Task task = taskService.getTask(taskId);
-        TaskResourceAssembler taskResourceAssembler = new TaskResourceAssembler();
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(task),
             HttpStatus.OK);
         return result;
@@ -133,7 +138,6 @@ public class TaskController extends AbstractPagingController {
         // TODO verify user
         taskService.claim(taskId);
         Task updatedTask = taskService.getTask(taskId);
-        TaskResourceAssembler taskResourceAssembler = new TaskResourceAssembler();
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
         return result;
@@ -145,7 +149,6 @@ public class TaskController extends AbstractPagingController {
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
         taskService.completeTask(taskId, true);
         Task updatedTask = taskService.getTask(taskId);
-        TaskResourceAssembler taskResourceAssembler = new TaskResourceAssembler();
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
         return result;
@@ -157,7 +160,6 @@ public class TaskController extends AbstractPagingController {
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
         Task createdTask = taskService.createTask(task);
-        TaskResourceAssembler taskResourceAssembler = new TaskResourceAssembler();
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(createdTask),
             HttpStatus.CREATED);
         return result;
@@ -168,9 +170,30 @@ public class TaskController extends AbstractPagingController {
     public ResponseEntity<TaskResource> transferTask(@PathVariable String taskId, @PathVariable String workbasketKey)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
         Task updatedTask = taskService.transfer(taskId, workbasketKey);
-        TaskResourceAssembler taskResourceAssembler = new TaskResourceAssembler();
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
+        return result;
+    }
+
+    @PutMapping(path = "/{taskId}")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<TaskResource> updateTask(
+        @PathVariable(value = "taskId") String taskId,
+        @RequestBody TaskResource taskResource) throws TaskNotFoundException, WorkbasketNotFoundException,
+        ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
+        NotAuthorizedException, AttachmentPersistenceException {
+        ResponseEntity<TaskResource> result;
+        if (taskId.equals(taskResource.getTaskId())) {
+            Task task = taskResourceAssembler.toModel(taskResource);
+            task = taskService.updateTask(task);
+            result = ResponseEntity.ok(taskResourceAssembler.toResource(task));
+        } else {
+            throw new InvalidArgumentException(
+                "TaskId ('" + taskId
+                    + "') is not identical with the taskId of to object in the payload which should be updated. ID=('"
+                    + taskResource.getTaskId() + "')");
+        }
+
         return result;
     }
 

@@ -1,12 +1,19 @@
 package pro.taskana.rest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Collections;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,7 +58,7 @@ public class TaskControllerIntTest {
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
-        assertEquals(22, response.getBody().getContent().size());
+        assertEquals(23, response.getBody().getContent().size());
     }
 
     @Test
@@ -65,7 +72,7 @@ public class TaskControllerIntTest {
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
-        assertEquals(70, response.getBody().getContent().size());
+        assertEquals(71, response.getBody().getContent().size());
     }
 
     @Test
@@ -87,26 +94,25 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    @Ignore
     public void testGetLastPageSortedByDue() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // Role Admin
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=due&order=desc&page=14&pageSize=5", HttpMethod.GET,
+            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=por.value&order=desc&page=15&pageSize=5", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
-        assertEquals(5, response.getBody().getContent().size());
-        assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=14"));
-        assertEquals("TKI:000000000000000000000000000000000004",
+        assertEquals(1, response.getBody().getContent().size());
+        assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=15"));
+        assertEquals("TKI:100000000000000000000000000000000000",
             response.getBody().getContent().iterator().next().getTaskId());
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?sortBy=due&order=desc&page=14&pageSize=5"));
+            .endsWith("/v1/tasks?sortBy=por.value&order=desc&page=15&pageSize=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")
@@ -129,15 +135,14 @@ public class TaskControllerIntTest {
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
-        int size = response.getBody().getContent().size();
-        assertEquals(22, response.getBody().getContent().size());
+        assertEquals(23, response.getBody().getContent().size());
 
         response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=due&order=desc&page=5&pageSize=5", HttpMethod.GET,
+            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=por.value&order=desc&page=5&pageSize=5", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
-        assertEquals(2, response.getBody().getContent().size());
+        assertEquals(3, response.getBody().getContent().size());
         assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=5"));
         assertEquals("TKI:000000000000000000000000000000000023",
             response.getBody().getContent().iterator().next().getTaskId());
@@ -145,7 +150,7 @@ public class TaskControllerIntTest {
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?sortBy=due&order=desc&page=5&pageSize=5"));
+            .endsWith("/v1/tasks?sortBy=por.value&order=desc&page=5&pageSize=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")
@@ -157,7 +162,6 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    @Ignore
     public void testGetQueryByPorSecondPageSortedByType() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -165,18 +169,20 @@ public class TaskControllerIntTest {
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
             "http://127.0.0.1:" + port
-                + "/v1/tasks?porCompany=00&porSystem=PASystem&porInstance=00&porType=VNR&porValue=22334455&sortBy=porType&order=asc&page=2&pageSize=5",
+                + "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sortBy=por.type&order=asc&page=2&pageSize=5",
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
-        assertEquals(5, response.getBody().getContent().size());
-        assertEquals("USER_1_1", response.getBody().getContent().iterator().next().getTaskId());
+        assertEquals(1, response.getBody().getContent().size());
+        assertEquals("TKI:000000000000000000000000000000000013",
+            response.getBody().getContent().iterator().next().getTaskId());
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?sortBy=due&order=desc&page=2&pageSize=5"));
+            .endsWith(
+                "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sortBy=por.type&order=asc&page=2&pageSize=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")
@@ -184,8 +190,60 @@ public class TaskControllerIntTest {
             .endsWith("/v1/tasks"));
         assertNotNull(response.getBody().getLink(Link.REL_FIRST));
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
-        assertNotNull(response.getBody().getLink(Link.REL_NEXT));
         assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+    }
+
+    @Test
+    public void testGetAndUpdateTask() throws IOException {
+        URL url = new URL("http://127.0.0.1:" + port + "/v1/tasks/TKI:100000000000000000000000000000000000");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        assertEquals(200, con.getResponseCode());
+
+        BufferedReader in = new BufferedReader(
+            new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+        String originalTask = content.toString();
+
+        con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("PUT");
+        con.setDoOutput(true);
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setRequestProperty("Content-Type", "application/json");
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(content.toString());
+        out.flush();
+        out.close();
+        assertEquals(200, con.getResponseCode());
+        con.disconnect();
+
+        url = new URL("http://127.0.0.1:" + port + "/v1/tasks/TKI:100000000000000000000000000000000000");
+        con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        assertEquals(200, con.getResponseCode());
+
+        in = new BufferedReader(
+            new InputStreamReader(con.getInputStream()));
+        content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+        String updatedTask = content.toString();
+
+        assertNotEquals(
+            originalTask.substring(originalTask.indexOf("modified"), originalTask.indexOf("modified") + 30),
+            updatedTask.substring(updatedTask.indexOf("modified"), updatedTask.indexOf("modified") + 30));
+
     }
 
     /**
@@ -200,6 +258,7 @@ public class TaskControllerIntTest {
 
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
+        // converter.setSupportedMediaTypes(ImmutableList.of(MediaTypes.HAL_JSON));
         converter.setObjectMapper(mapper);
 
         RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
