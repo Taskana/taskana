@@ -216,19 +216,34 @@ public interface Task {
     boolean isTransferred();
 
     /**
-     * Returns a collection of customAttributes with a max. amount of 10 entries.
+     * Returns a Map of custom Attributes.
      *
      * @return customAttributes as {@link Map}
      */
     Map<String, String> getCustomAttributes();
 
     /**
-     * Sets a collection of customAttributes.
+     * Sets a Map of custom Attributes.
      *
      * @param customAttributes
      *            a {@link Map} that contains the custom attributes
      */
     void setCustomAttributes(Map<String, String> customAttributes);
+
+    /**
+     * Returns a Map of Callback info.
+     *
+     * @return callbackInfo as {@link Map}
+     */
+    Map<String, String> getCallbackInfo();
+
+    /**
+     * Sets a Map of callback info.
+     *
+     * @param callbackInfo
+     *            a {@link Map} that contains the callback info
+     */
+    void setCallbackInfo(Map<String, String> callbackInfo);
 
     /**
      * Return the value for custom Attribute number num.

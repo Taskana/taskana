@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -364,7 +365,8 @@ public class ClassificationServiceImpl implements ClassificationService {
             if (classification.getDomain().equals("")) {
                 // master mode - delete all associated classifications in every domain.
                 List<ClassificationSummary> classificationsInDomain = createClassificationQuery()
-                    .keyIn(classification.getKey()).list();
+                    .keyIn(classification.getKey())
+                    .list();
                 for (ClassificationSummary classificationInDomain : classificationsInDomain) {
                     if (!"".equals(classificationInDomain.getDomain())) {
                         deleteClassification(classificationInDomain.getId());
@@ -393,9 +395,10 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     private boolean isReferentialIntegrityConstraintViolation(PersistenceException e) {
-        // DB2 check missing
-        return (e.getCause().getClass().getName().equals("org.h2.jdbc.JdbcSQLException")
-            && e.getMessage().contains("23503"));
+        return ((e.getCause().getClass().getName().equals("org.h2.jdbc.JdbcSQLException")
+            && e.getMessage().contains("23503"))
+            || (e.getCause() instanceof SQLIntegrityConstraintViolationException
+                && e.getMessage().contains("-532")));
     }
 
 }

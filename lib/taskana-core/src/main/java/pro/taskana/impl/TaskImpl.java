@@ -44,6 +44,7 @@ public class TaskImpl implements Task {
     private boolean isTransferred;
     // All objects have to be serializable
     private Map<String, String> customAttributes = Collections.emptyMap();
+    private Map<String, String> callbackInfo = Collections.emptyMap();
     private List<Attachment> attachments = new ArrayList<>();
     private String custom1;
     private String custom2;
@@ -309,6 +310,16 @@ public class TaskImpl implements Task {
     @Override
     public void setCustomAttributes(Map<String, String> customAttributes) {
         this.customAttributes = customAttributes;
+    }
+
+    @Override
+    public Map<String, String> getCallbackInfo() {
+        return callbackInfo;
+    }
+
+    @Override
+    public void setCallbackInfo(Map<String, String> callbackInfo) {
+        this.callbackInfo = callbackInfo;
     }
 
     @Override
@@ -718,6 +729,8 @@ public class TaskImpl implements Task {
         builder.append(isTransferred);
         builder.append(", customAttributes=");
         builder.append(customAttributes);
+        builder.append(", callbackInfo=");
+        builder.append(callbackInfo);
         builder.append(", attachments=");
         builder.append(attachments);
         builder.append(", custom1=");
@@ -784,6 +797,7 @@ public class TaskImpl implements Task {
         result = prime * result + ((custom8 == null) ? 0 : custom8.hashCode());
         result = prime * result + ((custom9 == null) ? 0 : custom9.hashCode());
         result = prime * result + ((customAttributes == null) ? 0 : customAttributes.hashCode());
+        result = prime * result + ((callbackInfo == null) ? 0 : callbackInfo.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((due == null) ? 0 : due.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -980,6 +994,13 @@ public class TaskImpl implements Task {
                 return false;
             }
         } else if (!customAttributes.equals(other.customAttributes)) {
+            return false;
+        }
+        if (callbackInfo == null) {
+            if (other.callbackInfo != null) {
+                return false;
+            }
+        } else if (!callbackInfo.equals(other.callbackInfo)) {
             return false;
         }
         if (description == null) {
