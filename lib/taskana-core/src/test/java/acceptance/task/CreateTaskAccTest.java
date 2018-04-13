@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.ibatis.session.Configuration;
@@ -579,6 +580,46 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task readTask = taskService.getTask(createdTask.getId());
 
         assertEquals(createdTask, readTask);
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testCreateSimpleTaskWithCallbackInfo()
+        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setClassificationKey("T2100");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+
+        HashMap<String, String> callbackInfo = new HashMap<>();
+        for (int i = 1; i <= 10; i++) {
+            callbackInfo.put("info_" + i, "Value of info_" + i);
+        }
+        newTask.setCallbackInfo(callbackInfo);
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask);
+        assertEquals("1234567", createdTask.getPrimaryObjRef().getValue());
+        assertNotNull(createdTask.getCreated());
+        assertNotNull(createdTask.getModified());
+        assertNotNull(createdTask.getBusinessProcessId());
+        assertEquals(null, createdTask.getClaimed());
+        assertEquals(null, createdTask.getCompleted());
+        assertEquals(createdTask.getCreated(), createdTask.getModified());
+        assertEquals(createdTask.getCreated(), createdTask.getPlanned());
+        assertEquals(TaskState.READY, createdTask.getState());
+        assertEquals(null, createdTask.getParentBusinessProcessId());
+        assertEquals(2, createdTask.getPriority());
+        assertEquals(false, createdTask.isRead());
+        assertEquals(false, createdTask.isTransferred());
+
+        Task retrievedTask = taskService.getTask(createdTask.getId());
+        assertEquals(callbackInfo, retrievedTask.getCallbackInfo());
+
     }
 
 }

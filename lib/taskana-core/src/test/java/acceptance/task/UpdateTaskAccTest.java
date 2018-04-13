@@ -23,6 +23,7 @@ import acceptance.AbstractAccTest;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.TaskState;
 import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
@@ -264,6 +265,51 @@ public class UpdateTaskAccTest extends AbstractAccTest {
             assertEquals("This is modifiedValue 16", task.getCustomAttribute("16"));
             assertNull(task.getCustomAttribute("14"));
         }
+
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testUpdateCallbackInfoOfSimpleTask()
+        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
+        InvalidWorkbasketException, AttachmentPersistenceException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setClassificationKey("T2100");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask);
+        assertEquals("1234567", createdTask.getPrimaryObjRef().getValue());
+        assertNotNull(createdTask.getCreated());
+        assertNotNull(createdTask.getModified());
+        assertNotNull(createdTask.getBusinessProcessId());
+        assertEquals(null, createdTask.getClaimed());
+        assertEquals(null, createdTask.getCompleted());
+        assertEquals(createdTask.getCreated(), createdTask.getModified());
+        assertEquals(createdTask.getCreated(), createdTask.getPlanned());
+        assertEquals(TaskState.READY, createdTask.getState());
+        assertEquals(null, createdTask.getParentBusinessProcessId());
+        assertEquals(2, createdTask.getPriority());
+        assertEquals(false, createdTask.isRead());
+        assertEquals(false, createdTask.isTransferred());
+
+        Task retrievedTask = taskService.getTask(createdTask.getId());
+
+        HashMap<String, String> callbackInfo = new HashMap<>();
+        for (int i = 1; i <= 10; i++) {
+            callbackInfo.put("info_" + i, "Value of info_" + i);
+        }
+        retrievedTask.setCallbackInfo(callbackInfo);
+        taskService.updateTask(retrievedTask);
+
+        Task retrievedUpdatedTask = taskService.getTask(createdTask.getId());
+
+        assertEquals(callbackInfo, retrievedUpdatedTask.getCallbackInfo());
 
     }
 
