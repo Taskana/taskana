@@ -434,7 +434,6 @@ public interface QueryMapper {
         + "<if test='custom16In != null'>AND t.CUSTOM_16 IN(<foreach item='item' collection='custom16In' separator=',' >#{item}</foreach>)</if> "
         + "<if test='custom16Like != null'>AND (<foreach item='item' collection='custom16Like' separator=' OR '>UPPER(t.CUSTOM_16) LIKE #{item}</foreach>)</if> "
         + "</where>"
-        + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     Long countQueryTasks(TaskQueryImpl taskQuery);

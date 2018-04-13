@@ -12,7 +12,7 @@ import pro.taskana.TaskState;
 import pro.taskana.impl.ObjectReference;
 
 /**
- * Resource class for {@link pro.taskana.WorkbasketSummary}.
+ * Resource class for {@link pro.taskana.Task}.
  */
 public class TaskResource extends ResourceSupport {
 
