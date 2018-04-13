@@ -37,6 +37,7 @@ import { ImportExportComponent } from './shared/import-export/import-export.comp
 import { MasterAndDetailComponent } from './shared/master-and-detail/master-and-detail.component';
 import { ClassificationTypesSelectorComponent } from './shared/classification-types-selector/classification-types-selector.component';
 import { TaskanaTreeComponent } from './shared/tree/tree.component';
+import { NavBarComponent } from './shared/nav-bar/nav-bar.component';
 
 /**
  * Services
@@ -100,6 +101,7 @@ const DECLARATIONS = [
   TaskanaTreeComponent,
   ClassificationTypesSelectorComponent,
   ClassificationDetailsComponent,
+  NavBarComponent,
   MapValuesPipe,
   RemoveNoneTypePipe,
   SelectWorkBasketPipe,
