@@ -3,10 +3,12 @@ package acceptance.task;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
@@ -181,6 +183,31 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         assertEquals(task.getPlanned(), updatedTask.getPlanned());
         assertEquals(task.getName(), updatedTask.getName());
         assertEquals(task.getDescription(), updatedTask.getDescription());
+    }
+
+    @WithAccessId(
+        userName = "user_1_2",
+        groupNames = {"group_1"})
+    @Test
+    public void testUpdateReadFlagOfTask()
+        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
+        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
+        AttachmentPersistenceException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        taskService.setTaskRead("TKI:000000000000000000000000000000000030", true);
+        Task updatedTask = taskService.getTask("TKI:000000000000000000000000000000000030");
+        assertNotNull(updatedTask);
+        assertTrue(updatedTask.isRead());
+        assertFalse(updatedTask.getCreated().equals(updatedTask.getModified()));
+
+        taskService.setTaskRead("TKI:000000000000000000000000000000000030", false);
+        Task updatedTask2 = taskService.getTask("TKI:000000000000000000000000000000000030");
+        assertNotNull(updatedTask2);
+        assertFalse(updatedTask2.isRead());
+        assertFalse(updatedTask2.getModified().equals(updatedTask.getModified()));
+
     }
 
     @WithAccessId(
