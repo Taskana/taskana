@@ -137,13 +137,14 @@ public interface WorkbasketService {
      * @param workbasketId
      *            the id of the workbasket we want to access
      * @param permission
-     *            the needed {@link WorkbasketPermission}
+     *            the needed {@link WorkbasketPermission} If more than one permission is specified, the current user
+     *            needs all of them.
      * @throws NotAuthorizedException
      *             if the current user has not the requested authorization for the specified workbasket
      * @throws WorkbasketNotFoundException
      *             if the workbasket cannot be found for the given ID.
      */
-    void checkAuthorization(String workbasketId, WorkbasketPermission permission)
+    void checkAuthorization(String workbasketId, WorkbasketPermission... permission)
         throws NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
@@ -154,13 +155,14 @@ public interface WorkbasketService {
      * @param domain
      *            the domain of the workbasket we want to access
      * @param permission
-     *            the needed {@link WorkbasketPermission}
+     *            the needed {@link WorkbasketPermission}. If more than one permission is specified, the current user
+     *            needs all of them.
      * @throws NotAuthorizedException
      *             if the current user has not the requested permission for the specified workbasket
      * @throws WorkbasketNotFoundException
      *             if no workbasket can be found for the given key+domain values.
      */
-    void checkAuthorization(String workbasketKey, String domain, WorkbasketPermission permission)
+    void checkAuthorization(String workbasketKey, String domain, WorkbasketPermission... permission)
         throws NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
