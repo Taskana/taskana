@@ -55,6 +55,7 @@ import { ClassificationDefinitionService } from './services/classification-defin
 import { WorkbasketDefinitionService } from './services/workbasket-definition/workbasket-definition.service';
 import { SelectedRouteService } from './services/selected-route/selected-route';
 import { ClassificationsService } from './services/classifications/classifications.service';
+import { TreeService } from './services/tree/tree.service';
 
 /**
  * Pipes
@@ -129,7 +130,8 @@ const DECLARATIONS = [
     SavingWorkbasketService,
     OrientationService,
     SelectedRouteService,
-    ClassificationsService
+    ClassificationsService,
+    TreeService
   ],
   bootstrap: [AppComponent]
 })
