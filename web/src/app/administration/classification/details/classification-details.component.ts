@@ -16,6 +16,7 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
+import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -48,12 +49,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private errorModalService: ErrorModalService,
     private requestInProgressService: RequestInProgressService,
     private alertService: AlertService,
-    private treeService: TreeService) { }
+    private treeService: TreeService,
+    private classificationTypeService: ClassificationTypesService) { }
 
 
   ngOnInit() {
 
-    this.classificationsService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
+    this.classificationTypeService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
       this.classificationTypes = classificationTypes;
     })
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
@@ -161,7 +163,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private getClassificationInformation(classificationIdSelected: string) {
     if (this.action === ACTION.CREATE) { // CREATE
       this.classification = new ClassificationDefinition();
-      this.selectedClassificationSubscription = this.classificationsService.getSelectedClassificationType().subscribe(value => {
+      this.selectedClassificationSubscription = this.classificationTypeService.getSelectedClassificationType().subscribe(value => {
         if (this.classification) { this.classification.type = value; }
       });
       this.addDateToClassification();
