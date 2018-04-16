@@ -7,6 +7,7 @@ import { Classification } from 'app/models/classification';
 import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ClassificationsService } from 'app/services/classifications/classifications.service';
+import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
 
 @Component({
 	selector: 'taskana-classification-list',
@@ -33,7 +34,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	constructor(
 		private classificationService: ClassificationsService,
 		private router: Router,
-		private route: ActivatedRoute) {
+		private route: ActivatedRoute,
+		private classificationTypeService: ClassificationTypesService) {
 	}
 
 	ngOnInit() {
@@ -42,7 +44,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 			.subscribe(value => {
 				this.performRequest(true);
 			})
-		this.selectedClassificationSubscription = this.classificationService.getSelectedClassificationType().subscribe(value => {
+		this.selectedClassificationSubscription = this.classificationTypeService.getSelectedClassificationType().subscribe(value => {
 			this.classificationTypeSelected = value;
 			this.performRequest();
 		})
@@ -51,7 +53,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	selectClassificationType(classificationTypeSelected: string) {
 		this.classifications = [];
 		this.requestInProgress = true;
-		this.classificationService.selectClassificationType(classificationTypeSelected);
+		this.classificationTypeService.selectClassificationType(classificationTypeSelected);
 		this.classificationService.getClassifications(true, classificationTypeSelected)
 			.subscribe((classifications: Array<TreeNodeModel>) => {
 				this.classifications = classifications;
@@ -86,7 +88,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 					return null;
 				}
 				this.classifications = classifications;
-				this.classificationTypeServiceSubscription = this.classificationService.getClassificationTypes()
+				this.classificationTypeServiceSubscription = this.classificationTypeService.getClassificationTypes()
 					.subscribe((classificationsTypes: Array<string>) => {
 						this.classificationsTypes = classificationsTypes;
 					});
