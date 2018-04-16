@@ -39,14 +39,3 @@ INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000025', 'WBI:100000000000000000000000000000000014',    'group_2', true, true, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000026', 'WBI:100000000000000000000000000000000015',    'group_2', true, true, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
 
--- Access to workbaskets for sorting test
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('900', '900', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('901', '901', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('902', '902', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('903', '903', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('904', '904', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('905', '905', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('906', '906', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('907', '907', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('908', '908', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('909', '909', 'max', true, true, true, true, true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true);

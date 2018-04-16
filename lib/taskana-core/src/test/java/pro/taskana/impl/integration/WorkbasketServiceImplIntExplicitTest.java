@@ -25,8 +25,12 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
@@ -120,27 +124,36 @@ public class WorkbasketServiceImplIntExplicitTest {
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
-    public void testInsertWorkbasketAccessUser() throws NotAuthorizedException, SQLException, InvalidArgumentException {
+    public void testInsertWorkbasketAccessUser()
+        throws NotAuthorizedException, SQLException, InvalidArgumentException, WorkbasketNotFoundException,
+        DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
+        Workbasket wb = createTestWorkbasket("id1", "key1", "DOMAIN_A", "name", WorkbasketType.CLEARANCE);
+        workBasketService.createWorkbasket(wb);
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
-            "Key1",
+            "id1",
             "Arthur Dent");
         accessItem.setPermOpen(true);
         accessItem.setPermRead(true);
         workBasketService.createWorkbasketAccessItem(accessItem);
 
-        Assert.assertEquals(1, workBasketService.getWorkbasketAccessItems("Key1").size());
+        Assert.assertEquals(1, workBasketService.getWorkbasketAccessItems("id1").size());
         connection.commit();
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
-    public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException, SQLException, InvalidArgumentException {
+    public void testUpdateWorkbasketAccessUser()
+        throws NotAuthorizedException, SQLException, InvalidArgumentException, WorkbasketNotFoundException,
+        DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
+
+        Workbasket wb = createTestWorkbasket("key2", "kkey2", "DOMAIN_A", "name", WorkbasketType.CLEARANCE);
+        workBasketService.createWorkbasket(wb);
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
             "key2",
             "Zaphod Beeblebrox");
@@ -155,7 +168,7 @@ public class WorkbasketServiceImplIntExplicitTest {
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
         boolean permRead, boolean permAppend, boolean permTransfer)
-        throws InvalidArgumentException, NotAuthorizedException {
+        throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
             wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);

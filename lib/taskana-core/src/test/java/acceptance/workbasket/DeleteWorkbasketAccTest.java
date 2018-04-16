@@ -1,11 +1,13 @@
 package acceptance.workbasket;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +15,7 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.DomainNotFoundException;
@@ -154,6 +157,37 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    @WithAccessId(userName = "teamlead_2", groupNames = {"businessadmin"})
+    @Test
+    public void testCascadingDeleteOfAccessItems()
+        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
+        Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
+        String wbId = wb.getId();
+        // create 2 access Items
+        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wbId, "teamlead_2");
+        accessItem.setPermAppend(true);
+        accessItem.setPermRead(true);
+        accessItem.setPermOpen(true);
+        workbasketService.createWorkbasketAccessItem(accessItem);
+        accessItem = workbasketService.newWorkbasketAccessItem(wbId, "elena");
+        accessItem.setPermAppend(true);
+        accessItem.setPermRead(true);
+        accessItem.setPermOpen(true);
+        workbasketService.createWorkbasketAccessItem(accessItem);
+        List<WorkbasketAccessItem> accessItemsBefore = workbasketService.getWorkbasketAccessItems(wbId);
+        assertEquals(5, accessItemsBefore.size());
+        workbasketService.deleteWorkbasket(wbId);
+        try {
+            workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
+            fail("There should be no result for a deleted Workbasket.");
+        } catch (WorkbasketNotFoundException e) {
+            // Workbasket is deleted
+        }
+
+        List<WorkbasketAccessItem> accessItemsAfter = workbasketService.getWorkbasketAccessItems(wbId);
+        assertEquals(0, accessItemsAfter.size());
     }
 
 }

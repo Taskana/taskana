@@ -47,10 +47,11 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testUpdateWorkbasketAccessItemSucceeds() throws InvalidArgumentException, NotAuthorizedException {
+    public void testUpdateWorkbasketAccessItemSucceeds()
+        throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItem accessItem = workbasketService
-            .newWorkbasketAccessItem("key1000000000000000000000000000000000000", "user1");
+            .newWorkbasketAccessItem("WBI:100000000000000000000000000000000002", "user1");
         accessItem.setPermAppend(true);
         accessItem.setPermCustom11(true);
         accessItem.setPermRead(true);
@@ -76,7 +77,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         InvalidWorkbasketException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItem accessItem = workbasketService
-            .newWorkbasketAccessItem("1000000000000000000000000000000000000000", "user1");
+            .newWorkbasketAccessItem("WBI:100000000000000000000000000000000001", "user1");
         accessItem.setPermAppend(true);
         accessItem.setPermCustom11(true);
         accessItem.setPermRead(true);

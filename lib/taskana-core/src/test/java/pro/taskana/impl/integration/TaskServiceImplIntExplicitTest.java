@@ -107,16 +107,20 @@ public class TaskServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
-        generateSampleAccessItems();
-
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("k1", "DOMAIN_A");
         workbasket.setName("workbasket");
-        // workbasket.setId("1 "); // set id manually for authorization tests
         workbasket.setId("1"); // set id manually for authorization tests
 
         workbasket.setType(WorkbasketType.GROUP);
         Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
         taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
+
+        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
+        accessItem.setPermAppend(true);
+        accessItem.setPermRead(true);
+        accessItem.setPermOpen(true);
+        workbasketService.createWorkbasketAccessItem(accessItem);
+
         taskanaEngineImpl.getClassificationService().createClassification(classification);
         connection.commit();
         Task task = taskServiceImpl.newTask(workbasket.getId());
@@ -143,12 +147,10 @@ public class TaskServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
-        generateSampleAccessItems();
-
         Task task = this.generateDummyTask();
         connection.commit();
 
-        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("wb", "Elena");
+        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
         accessItem.setPermAppend(true);
         accessItem.setPermRead(true);
         accessItem.setPermOpen(true);
@@ -213,9 +215,6 @@ public class TaskServiceImplIntExplicitTest {
         InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-
-        generateSampleAccessItems();
-
         Task test = this.generateDummyTask();
         ((WorkbasketSummaryImpl) (test.getWorkbasketSummary())).setId("2");
         taskServiceImpl.createTask(test);
@@ -230,8 +229,6 @@ public class TaskServiceImplIntExplicitTest {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
 
-        generateSampleAccessItems();
-
         Workbasket wb = workbasketService.newWorkbasket("WB NR.1", "DOMAIN_A");
         wb.setName("dummy-WB");
         wb.setType(WorkbasketType.PERSONAL);
@@ -244,7 +241,7 @@ public class TaskServiceImplIntExplicitTest {
         classification.setName("not persisted - so not found.");
 
         Task task = this.generateDummyTask();
-        ((TaskImpl) task).setWorkbasketKey(wb.getKey());
+        ((TaskImpl) task).setWorkbasketSummary(wb.asSummary());
         task.setClassificationKey(classification.getKey());
         taskServiceImpl.createTask(task);
     }
@@ -257,9 +254,6 @@ public class TaskServiceImplIntExplicitTest {
         WorkbasketAlreadyExistException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
-
-        generateSampleAccessItems();
-
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("k1", "DOMAIN_A");
         workbasket.setName("workbasket");
         Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
@@ -267,6 +261,12 @@ public class TaskServiceImplIntExplicitTest {
         workbasket.setId("1"); // set id manually for authorization tests
         workbasket.setType(WorkbasketType.GROUP);
         workbasket = (WorkbasketImpl) workbasketService.createWorkbasket(workbasket);
+
+        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
+        accessItem.setPermAppend(true);
+        accessItem.setPermRead(true);
+        accessItem.setPermOpen(true);
+        workbasketService.createWorkbasketAccessItem(accessItem);
 
         Task task = taskServiceImpl.newTask(workbasket.getId());
         task.setName("Unit Test Task");
@@ -477,22 +477,9 @@ public class TaskServiceImplIntExplicitTest {
         return task;
     }
 
-    private void generateSampleAccessItems() throws InvalidArgumentException, NotAuthorizedException {
-        WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
-        accessItem.setPermAppend(true);
-        accessItem.setPermRead(true);
-        accessItem.setPermOpen(true);
-        workbasketService.createWorkbasketAccessItem(accessItem);
-
-        WorkbasketAccessItem accessItem2 = workbasketService.newWorkbasketAccessItem("2", "DummyGroup");
-        accessItem.setPermRead(true);
-        accessItem2.setPermOpen(true);
-        workbasketService.createWorkbasketAccessItem(accessItem2);
-    }
-
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
         boolean permRead, boolean permAppend, boolean permTransfer)
-        throws InvalidArgumentException, NotAuthorizedException {
+        throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
