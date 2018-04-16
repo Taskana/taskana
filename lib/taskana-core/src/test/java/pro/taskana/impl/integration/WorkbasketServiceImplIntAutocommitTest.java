@@ -31,9 +31,11 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
@@ -136,7 +138,13 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
-    public void testInsertWorkbasketAccessUser() throws NotAuthorizedException, InvalidArgumentException {
+    public void testInsertWorkbasketAccessUser() throws NotAuthorizedException, InvalidArgumentException,
+        DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
+        WorkbasketNotFoundException {
+
+        Workbasket wb = createTestWorkbasket("k100000000000000000000000000000000000000", "key1", "DOMAIN_A", "name",
+            WorkbasketType.PERSONAL);
+        workBasketService.createWorkbasket(wb);
         WorkbasketAccessItem accessItem = workBasketService
             .newWorkbasketAccessItem("k100000000000000000000000000000000000000", "Arthur Dent");
         accessItem.setPermOpen(true);
@@ -149,7 +157,16 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
-    public void testUpdateWorkbasketAccessUser() throws NotAuthorizedException, InvalidArgumentException {
+    public void testUpdateWorkbasketAccessUser()
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException, DomainNotFoundException,
+        InvalidWorkbasketException, WorkbasketAlreadyExistException {
+        WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket("key", "DOMAIN_A");
+        wb.setId("k200000000000000000000000000000000000000");
+        wb.setName("name");
+        wb.setDescription("Description of a Workbasket...");
+        wb.setType(WorkbasketType.GROUP);
+        workBasketService.createWorkbasket(wb);
+
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(
             "k200000000000000000000000000000000000000",
             "Zaphod Beeblebrox");
@@ -198,7 +215,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,
         boolean permRead, boolean permAppend, boolean permTransfer)
-        throws InvalidArgumentException, NotAuthorizedException {
+        throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketAccessItem accessItem = workBasketService.newWorkbasketAccessItem(wb.getId(), accessId);
         accessItem.setPermOpen(permOpen);
         accessItem.setPermRead(permRead);
