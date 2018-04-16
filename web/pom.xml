@@ -26,6 +26,12 @@
     </developer>
   </developers>
 
+  <scm>
+    <connection>scm:git:git://github.com/taskana/taskana.git</connection>
+    <developerConnection>scm:git:ssh://github.com:taskana/taskana.git</developerConnection>
+    <url>http://github.com/taskana/taskana/tree/master</url>
+  </scm>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
