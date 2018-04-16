@@ -9,7 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.TaskanaRole;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.rest.resource.TaskanaUserInfoResource;
+import pro.taskana.security.CurrentUserContext;
 
 /**
  * Controller for TaskanaEngine related tasks.
@@ -19,6 +23,9 @@ public class TaskanaEngineController {
 
     @Autowired
     TaskanaEngineConfiguration taskanaEngineConfiguration;
+
+    @Autowired
+    TaskanaEngineImpl taskanaEngineImpl;
 
     @GetMapping(path = "/v1/domains", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<String>> getDomains() {
@@ -34,4 +41,18 @@ public class TaskanaEngineController {
     public ResponseEntity<List<String>> getClassificationTypes() {
         return new ResponseEntity<>(taskanaEngineConfiguration.getClassificationTypes(), HttpStatus.OK);
     }
+
+    @GetMapping(path = "/v1/current-user-info", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<TaskanaUserInfoResource> getCurrentUserInfo() {
+        TaskanaUserInfoResource resource = new TaskanaUserInfoResource();
+        resource.setUserId(CurrentUserContext.getUserid());
+        resource.setGroupIds(CurrentUserContext.getGroupIds());
+        for (TaskanaRole role : taskanaEngineConfiguration.getRoleMap().keySet()) {
+            if (taskanaEngineImpl.isUserInRole(role)) {
+                resource.getRoles().add(role);
+            }
+        }
+        return new ResponseEntity<>(resource, HttpStatus.OK);
+    }
+
 }

@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -26,6 +27,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import pro.taskana.TaskanaRole;
+import pro.taskana.rest.resource.TaskanaUserInfoResource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -78,6 +82,22 @@ public class TaskanaEngineControllerIntTest {
         assertTrue(response.getBody().contains("AUTOMATIC"));
         assertTrue(response.getBody().contains("PROCESS"));
         assertFalse(response.getBody().contains("UNKNOWN"));
+    }
+
+    @Test
+    public void testGetCurrentUserInfo() {
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        ResponseEntity<TaskanaUserInfoResource> response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/current-user-info", HttpMethod.GET, request,
+            new ParameterizedTypeReference<TaskanaUserInfoResource>() {
+            });
+        assertEquals("teamlead_1", response.getBody().getUserId());
+        assertTrue(response.getBody().getGroupIds().contains("businessadmin"));
+        assertTrue(response.getBody().getRoles().contains(TaskanaRole.BUSINESS_ADMIN));
+        assertFalse(response.getBody().getRoles().contains(TaskanaRole.ADMIN));
     }
 
     /**
