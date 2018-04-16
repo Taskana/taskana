@@ -585,7 +585,7 @@ public class TaskServiceImpl implements TaskService {
         try {
             taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
-            task.setRead(true);
+            task.setRead(isRead);
             task.setModified(Instant.now());
             taskMapper.update(task);
             LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", task, isRead);
