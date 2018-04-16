@@ -252,7 +252,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      *            The roles that are checked for membership of the current user
      * @return true if the current user is a member of at least one of the specified groups
      */
-    boolean isUserInRole(TaskanaRole... roles) {
+    public boolean isUserInRole(TaskanaRole... roles) {
         if (!getConfiguration().isSecurityEnabled()) {
             return true;
         } else {
