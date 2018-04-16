@@ -355,14 +355,14 @@ public class WorkbasketServiceImplTest {
         Workbasket actualWb = cutSpy.createWorkbasket(expectedWb);
         cutSpy.setDistributionTargets(expectedWb.getId(), null);
 
-        verify(taskanaEngineImplMock, times(3)).openConnection();
+        verify(taskanaEngineImplMock, times(4)).openConnection();
         verify(taskanaEngineImplMock, times(1)).getConfiguration();
         verify(taskanaEngineConfigurationMock, times(1)).isSecurityEnabled();
         verify(workbasketMapperMock, times(1)).insert(expectedWb);
         verify(workbasketMapperMock, times(1)).findByKeyAndDomain(any(), any());
         verify(workbasketMapperMock, times(2)).findById(expectedWb.getId());
         verify(workbasketMapperMock, times(1)).update(any());
-        verify(taskanaEngineImplMock, times(3)).returnConnection();
+        verify(taskanaEngineImplMock, times(4)).returnConnection();
         verify(taskanaEngineImplMock, times(2)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(1)).isUserInRole(any());
         verify(taskanaEngineImplMock, times(1)).domainExists(any());

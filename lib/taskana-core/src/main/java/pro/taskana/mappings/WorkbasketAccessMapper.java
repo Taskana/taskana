@@ -120,78 +120,34 @@ public interface WorkbasketAccessMapper {
     WorkbasketAccessItemImpl findByWorkbasketAndAccessId(
         @Param("workbasketId") String workbasketId, @Param("accessIds") List<String> accessIds);
 
-    @Select("<script>SELECT a.ID, a.WORKBASKET_ID, a.ACCESS_ID, a.PERM_READ, a.PERM_OPEN, a.PERM_APPEND, a.PERM_TRANSFER, a.PERM_DISTRIBUTE, a.PERM_CUSTOM_1, a.PERM_CUSTOM_2, a.PERM_CUSTOM_3, a.PERM_CUSTOM_4, a.PERM_CUSTOM_5, a.PERM_CUSTOM_6, a.PERM_CUSTOM_7, a.PERM_CUSTOM_8, a.PERM_CUSTOM_9, a.PERM_CUSTOM_10, a.PERM_CUSTOM_11, a.PERM_CUSTOM_12 "
-        + "FROM TASKANA.WORKBASKET_ACCESS_LIST a LEFT OUTER JOIN TASKANA.WORKBASKET w on w.ID = a.WORKBASKET_ID "
-        + "WHERE w.KEY = #{workbasketKey} AND w.DOMAIN = #{domain} "
-        + "AND ACCESS_ID IN(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>)"
-        + "AND <if test=\"authorization == 'OPEN'\">a.PERM_OPEN</if>"
-        + "<if test=\"authorization == 'READ'\">a.PERM_READ</if>"
-        + "<if test=\"authorization == 'APPEND'\">a.PERM_APPEND</if>"
-        + "<if test=\"authorization == 'TRANSFER'\">a.PERM_TRANSFER</if>"
-        + "<if test=\"authorization == 'DISTRIBUTE'\">a.PERM_DISTRIBUTE</if>"
-        + "<if test=\"authorization == 'CUSTOM_1'\">a.PERM_CUSTOM_1</if>"
-        + "<if test=\"authorization == 'CUSTOM_2'\">a.PERM_CUSTOM_2</if>"
-        + "<if test=\"authorization == 'CUSTOM_3'\">a.PERM_CUSTOM_3</if>"
-        + "<if test=\"authorization == 'CUSTOM_4'\">a.PERM_CUSTOM_4</if>"
-        + "<if test=\"authorization == 'CUSTOM_5'\">a.PERM_CUSTOM_5</if>"
-        + "<if test=\"authorization == 'CUSTOM_6'\">a.PERM_CUSTOM_6</if>"
-        + "<if test=\"authorization == 'CUSTOM_7'\">a.PERM_CUSTOM_7</if>"
-        + "<if test=\"authorization == 'CUSTOM_8'\">a.PERM_CUSTOM_8</if>"
-        + "<if test=\"authorization == 'CUSTOM_9'\">a.PERM_CUSTOM_9</if>"
-        + "<if test=\"authorization == 'CUSTOM_10'\">a.PERM_CUSTOM_10</if>"
-        + "<if test=\"authorization == 'CUSTOM_11'\">a.PERM_CUSTOM_11</if>"
-        + "<if test=\"authorization == 'CUSTOM_12'\">a.PERM_CUSTOM_12</if> = 1 "
+    @Select("<script>SELECT MAX(PERM_READ) AS P_READ, MAX(PERM_OPEN) AS P_OPEN, MAX(PERM_APPEND) AS P_APPEND, MAX(PERM_TRANSFER) AS P_TRANSFER, MAX(PERM_DISTRIBUTE) AS P_DISTRIBUTE, MAX(PERM_CUSTOM_1) AS P_CUSTOM_1, MAX(PERM_CUSTOM_2) AS P_CUSTOM_2, MAX(PERM_CUSTOM_3) AS P_CUSTOM_3, MAX(PERM_CUSTOM_4) AS P_CUSTOM_4, MAX(PERM_CUSTOM_5) AS P_CUSTOM_5, MAX(PERM_CUSTOM_6) AS P_CUSTOM_6, MAX(PERM_CUSTOM_7) AS P_CUSTOM_7, MAX(PERM_CUSTOM_8) AS P_CUSTOM_8, MAX(PERM_CUSTOM_9) AS P_CUSTOM_9, MAX(PERM_CUSTOM_10) AS P_CUSTOM_10, MAX(PERM_CUSTOM_11) AS P_CUSTOM_11, MAX(PERM_CUSTOM_12) AS P_CUSTOM_12 "
+        + "FROM TASKANA.WORKBASKET_ACCESS_LIST "
+        + "WHERE WORKBASKET_ID in (SELECT ID FROM TASKANA.WORKBASKET WHERE KEY = #{workbasketKey} AND DOMAIN = #{domain} )  "
+        + "AND ACCESS_ID IN(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>) "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
-        @Result(property = "id", column = "ID"),
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
         @Result(property = "accessId", column = "ACCESS_ID"),
-        @Result(property = "permRead", column = "PERM_READ"),
-        @Result(property = "permOpen", column = "PERM_OPEN"),
-        @Result(property = "permAppend", column = "PERM_APPEND"),
-        @Result(property = "permTransfer", column = "PERM_TRANSFER"),
-        @Result(property = "permDistribute", column = "PERM_DISTRIBUTE"),
-        @Result(property = "permCustom1", column = "PERM_CUSTOM_1"),
-        @Result(property = "permCustom2", column = "PERM_CUSTOM_2"),
-        @Result(property = "permCustom3", column = "PERM_CUSTOM_3"),
-        @Result(property = "permCustom4", column = "PERM_CUSTOM_4"),
-        @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
-        @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
-        @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-        @Result(property = "permCustom8", column = "PERM_CUSTOM_8"),
-        @Result(property = "permCustom9", column = "PERM_CUSTOM_9"),
-        @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
-        @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
-        @Result(property = "permCustom12", column = "PERM_CUSTOM_12")})
-    List<WorkbasketAccessItemImpl> findByWorkbasketAccessByWorkbasketKeyDomainAndAuthorization(
+        @Result(property = "permRead", column = "P_READ"),
+        @Result(property = "permOpen", column = "P_OPEN"),
+        @Result(property = "permAppend", column = "P_APPEND"),
+        @Result(property = "permTransfer", column = "P_TRANSFER"),
+        @Result(property = "permDistribute", column = "P_DISTRIBUTE"),
+        @Result(property = "permCustom1", column = "P_CUSTOM_1"),
+        @Result(property = "permCustom2", column = "P_CUSTOM_2"),
+        @Result(property = "permCustom3", column = "P_CUSTOM_3"),
+        @Result(property = "permCustom4", column = "P_CUSTOM_4"),
+        @Result(property = "permCustom5", column = "P_CUSTOM_5"),
+        @Result(property = "permCustom6", column = "P_CUSTOM_6"),
+        @Result(property = "permCustom7", column = "P_CUSTOM_7"),
+        @Result(property = "permCustom8", column = "P_CUSTOM_8"),
+        @Result(property = "permCustom9", column = "P_CUSTOM_9"),
+        @Result(property = "permCustom10", column = "P_CUSTOM_10"),
+        @Result(property = "permCustom11", column = "P_CUSTOM_11"),
+        @Result(property = "permCustom12", column = "P_CUSTOM_12")})
+    WorkbasketAccessItemImpl findByWorkbasketKeyDomainAndAccessId(
         @Param("workbasketKey") String workbasketKey, @Param("domain") String domain,
-        @Param("accessIds") List<String> accessIds, @Param("authorization") String authorization);
+        @Param("accessIds") List<String> accessIds);
 
-    @Select("<script>SELECT ID, WORKBASKET_ID, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
-        + "FROM TASKANA.WORKBASKET_ACCESS_LIST "
-        + "WHERE WORKBASKET_ID = #{workbasketId} "
-        + "AND ACCESS_ID IN(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>)"
-        + "AND <if test=\"authorization == 'OPEN'\">PERM_OPEN</if>"
-        + "<if test=\"authorization == 'READ'\">PERM_READ</if>"
-        + "<if test=\"authorization == 'APPEND'\">PERM_APPEND</if>"
-        + "<if test=\"authorization == 'TRANSFER'\">PERM_TRANSFER</if>"
-        + "<if test=\"authorization == 'DISTRIBUTE'\">PERM_DISTRIBUTE</if>"
-        + "<if test=\"authorization == 'CUSTOM_1'\">PERM_CUSTOM_1</if>"
-        + "<if test=\"authorization == 'CUSTOM_2'\">PERM_CUSTOM_2</if>"
-        + "<if test=\"authorization == 'CUSTOM_3'\">PERM_CUSTOM_3</if>"
-        + "<if test=\"authorization == 'CUSTOM_4'\">PERM_CUSTOM_4</if>"
-        + "<if test=\"authorization == 'CUSTOM_5'\">PERM_CUSTOM_5</if>"
-        + "<if test=\"authorization == 'CUSTOM_6'\">PERM_CUSTOM_6</if>"
-        + "<if test=\"authorization == 'CUSTOM_7'\">PERM_CUSTOM_7</if>"
-        + "<if test=\"authorization == 'CUSTOM_8'\">PERM_CUSTOM_8</if>"
-        + "<if test=\"authorization == 'CUSTOM_9'\">PERM_CUSTOM_9</if>"
-        + "<if test=\"authorization == 'CUSTOM_10'\">PERM_CUSTOM_10</if>"
-        + "<if test=\"authorization == 'CUSTOM_11'\">PERM_CUSTOM_11</if>"
-        + "<if test=\"authorization == 'CUSTOM_12'\">PERM_CUSTOM_12</if> = 1 "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>")
-    List<WorkbasketAccessItemImpl> findByWorkbasketAndAccessIdAndAuthorizationsById(
-        @Param("workbasketId") String workbasketId, @Param("accessIds") List<String> accessIds,
-        @Param("authorization") String authorization);
 }

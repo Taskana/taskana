@@ -56,6 +56,9 @@ public class QueryTasksAccTest extends AbstractAccTest {
         super();
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"admin"})
     @Test
     public void testQueryTaskValuesForColumnName() {
         TaskService taskService = taskanaEngine.getTaskService();

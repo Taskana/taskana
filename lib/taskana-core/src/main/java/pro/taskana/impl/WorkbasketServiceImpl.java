@@ -2,6 +2,7 @@ package pro.taskana.impl;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,6 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -305,28 +305,120 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public void checkAuthorization(String workbasketId,
-        WorkbasketPermission workbasketPermission) throws NotAuthorizedException, WorkbasketNotFoundException {
-        if (workbasketMapper.findById(workbasketId) == null) {
-            LOGGER.error("Throwing WorkbasketNotFoundException because workbasket with id {} does not exist",
-                workbasketId);
-            throw new WorkbasketNotFoundException(workbasketId,
-                "Workbasket with id " + workbasketId + " was not found.");
+        WorkbasketPermission... requestedPermissions) throws NotAuthorizedException, WorkbasketNotFoundException {
+        boolean isAuthorized = true;
+        try {
+            taskanaEngine.openConnection();
+
+            if (workbasketMapper.findById(workbasketId) == null) {
+                LOGGER.error("Throwing WorkbasketNotFoundException because workbasket with id {} does not exist",
+                    workbasketId);
+                throw new WorkbasketNotFoundException(workbasketId,
+                    "Workbasket with id " + workbasketId + " was not found.");
+            }
+
+            if (skipAuthorizationCheck()) {
+                return;
+            }
+
+            List<String> accessIds = CurrentUserContext.getAccessIds();
+            List<WorkbasketPermission> grantedPermissions = new ArrayList<>();
+            WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketAndAccessId(workbasketId,
+                accessIds);
+            if (wbAcc == null) {
+                LOGGER.error(
+                    "AccessIds {} do not have permission {} on workbasket with id {}. Throwing NotAuthorizedException.",
+                    LoggerUtils.listToString(accessIds), Arrays.toString(requestedPermissions), workbasketId);
+                throw new NotAuthorizedException(
+                    "Not authorized. Permission '" + Arrays.toString(requestedPermissions) + "' on workbasket '"
+                        + workbasketId
+                        + "' is needed.");
+            }
+
+            this.addWorkbasketAccessItemValuesToPermissionSet(wbAcc, grantedPermissions);
+
+            for (WorkbasketPermission perm : requestedPermissions) {
+                if (!grantedPermissions.contains(perm)) {
+                    isAuthorized = false;
+                    LOGGER.error(
+                        "AccessIds {} do not have permission {} on workbasket with id {}. Throwing NotAuthorizedException.",
+                        LoggerUtils.listToString(accessIds), perm.name(), workbasketId);
+                    throw new NotAuthorizedException(
+                        "Not authorized. Permission '" + perm.name() + "' on workbasket '" + workbasketId
+                            + "' is needed.");
+                }
+            }
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from checkAuthorization(). User is authorized = {}.", isAuthorized);
         }
-        checkAuthorization(null, null, workbasketId, workbasketPermission);
     }
 
     @Override
     public void checkAuthorization(String workbasketKey, String domain,
-        WorkbasketPermission workbasketPermission)
+        WorkbasketPermission... requestedPermissions)
         throws NotAuthorizedException, WorkbasketNotFoundException {
-        if (workbasketMapper.findByKeyAndDomain(workbasketKey, domain) == null) {
-            LOGGER.error(
-                "Throwing WorkbasketNotFoundException because workbasket with key {} and domain {} does not exist",
-                workbasketKey, domain);
-            throw new WorkbasketNotFoundException(workbasketKey, domain,
-                "Workbasket with key " + workbasketKey + " and domain " + domain + " was not found");
+        boolean isAuthorized = true;
+        try {
+            taskanaEngine.openConnection();
+
+            if (workbasketMapper.findByKeyAndDomain(workbasketKey, domain) == null) {
+                LOGGER.error(
+                    "Throwing WorkbasketNotFoundException because workbasket with key {} and domain {} does not exist",
+                    workbasketKey, domain);
+                throw new WorkbasketNotFoundException(workbasketKey, domain,
+                    "Workbasket with key " + workbasketKey + " and domain " + domain + " was not found");
+            }
+            if (skipAuthorizationCheck()) {
+                return;
+            }
+            List<String> accessIds = CurrentUserContext.getAccessIds();
+            List<WorkbasketPermission> grantedPermissions = new ArrayList<>();
+            WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketKeyDomainAndAccessId(
+                workbasketKey, domain, accessIds);
+            if (wbAcc == null) {
+                LOGGER.error(
+                    "AccessIds {} do not have permission {} on workbasket with key {} and domain {}. Throwing NotAuthorizedException.",
+                    LoggerUtils.listToString(accessIds), Arrays.toString(requestedPermissions), workbasketKey, domain);
+                throw new NotAuthorizedException(
+                    "Not authorized. Permission '" + Arrays.toString(requestedPermissions)
+                        + "' on workbasket with key '"
+                        + workbasketKey
+                        + "' and domain '" + domain + "' is needed.");
+            }
+            this.addWorkbasketAccessItemValuesToPermissionSet(wbAcc, grantedPermissions);
+
+            for (WorkbasketPermission perm : requestedPermissions) {
+                if (!grantedPermissions.contains(perm)) {
+                    isAuthorized = false;
+                    LOGGER.error(
+                        "AccessIds {} do not have permission {} on workbasket with key {} and domain {}. Throwing NotAuthorizedException.",
+                        LoggerUtils.listToString(accessIds), perm.name(), workbasketKey, domain);
+                    throw new NotAuthorizedException(
+                        "Not authorized. Permission '" + perm.name() + "' on workbasket with key '" + workbasketKey
+                            + "' and domain '" + domain + "' is needed.");
+                }
+            }
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from checkAuthorization(). User is authorized = {}.", isAuthorized);
         }
-        checkAuthorization(workbasketKey, domain, null, workbasketPermission);
+    }
+
+    private boolean skipAuthorizationCheck() {
+
+        // Skip permission check is security is not enabled
+        if (!taskanaEngine.getConfiguration().isSecurityEnabled()) {
+            LOGGER.debug("Skipping permissions check since security is disabled.");
+            return true;
+        }
+
+        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
+            LOGGER.debug("Skipping permissions check since user is in role ADMIN.");
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -729,77 +821,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws NotAuthorizedException {
         taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
         return new WorkbasketAccessItemQueryImpl(this.taskanaEngine);
-    }
-
-    private void checkAuthorization(String workbasketKey, String domain, String workbasketId,
-        WorkbasketPermission workbasketPermission)
-        throws NotAuthorizedException {
-        LOGGER.debug("entry to checkAuthorization(workbasketId = {}, workbasketPermission = {})", workbasketKey,
-            workbasketPermission);
-        if (workbasketPermission == null) {
-            throw new SystemException("checkAuthorization was called with an invalid parameter combination");
-        }
-
-        // Skip permission check is security is not enabled
-        if (!taskanaEngine.getConfiguration().isSecurityEnabled()) {
-            LOGGER.debug("Skipping permissions check since security is disabled.");
-            return;
-        }
-
-        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
-            LOGGER.debug("Skipping permissions check since user is in role ADMIN.");
-            return;
-        }
-
-        boolean isAuthorized = false;
-        try {
-            taskanaEngine.openConnection();
-
-            List<String> accessIds = CurrentUserContext.getAccessIds();
-            LOGGER.debug("checkAuthorization: Verifying that {} has the permission {} on workbasket {}",
-                CurrentUserContext.getUserid(),
-                workbasketPermission.name(), workbasketKey);
-
-            List<WorkbasketAccessItemImpl> accessItems;
-
-            if (workbasketKey != null) {
-                accessItems = workbasketAccessMapper
-                    .findByWorkbasketAccessByWorkbasketKeyDomainAndAuthorization(workbasketKey, domain, accessIds,
-                        workbasketPermission.name());
-            } else if (workbasketId != null) {
-                accessItems = workbasketAccessMapper
-                    .findByWorkbasketAndAccessIdAndAuthorizationsById(workbasketId, accessIds,
-                        workbasketPermission.name());
-            } else {
-                LOGGER.error(
-                    "Throwing SystemException because an internal error occurred. Workbasket key and id were null in checkAuthorization");
-                throw new SystemException(
-                    "checkAuthorizationImpl was called with both workbasketKey and workbasketId set to null");
-            }
-
-            if (accessItems.isEmpty()) {
-                if (workbasketId != null) {
-                    LOGGER.error(
-                        "AccessIds {} do not have permission {} on workbasket with id {}. Throwing NotAuthorizedException.",
-                        LoggerUtils.listToString(accessIds), workbasketPermission.name(), workbasketId);
-                    throw new NotAuthorizedException("Not authorized. Permission '" + workbasketPermission.name()
-                        + "' on workbasket '" + workbasketId + "' is needed.");
-                } else {
-                    LOGGER.error(
-                        "AccessIds {} do not have permission {} on workbasket with key {} and domain {}. Throwing NotAuthorizedException.",
-                        LoggerUtils.listToString(accessIds), workbasketPermission.name(), workbasketKey, domain);
-                    throw new NotAuthorizedException("Not authorized. Permission '" + workbasketPermission.name()
-                        + "' on workbasket with key '" + workbasketKey + "' and domain '" + domain
-                        + "' is needed.");
-                }
-            }
-
-            isAuthorized = true;
-
-        } finally {
-            taskanaEngine.returnConnection();
-            LOGGER.debug("exit from checkAuthorization(). User is authorized = {}.", isAuthorized);
-        }
     }
 
 }

@@ -107,6 +107,7 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] custom16In;
     private String[] custom16Like;
     private String[] accessIdIn;
+    private boolean filterByAccessIdIn;
     private TimeInterval[] createdIn;
     private TimeInterval[] claimedIn;
     private TimeInterval[] completedIn;
@@ -119,6 +120,7 @@ public class TaskQueryImpl implements TaskQuery {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
         this.orderBy = new ArrayList<>();
+        this.filterByAccessIdIn = true;
     }
 
     @Override
@@ -701,7 +703,7 @@ public class TaskQueryImpl implements TaskQuery {
         try {
             LOGGER.debug("entry to list(), this = {}", this);
             taskanaEngine.openConnection();
-            checkOpenPermissionForSpecifiedWorkbaskets();
+            checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             List<TaskSummaryImpl> tasks = new ArrayList<>();
             setupAccessIds();
             tasks = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
@@ -722,7 +724,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     private void setupAccessIds() {
-        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
+        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN) || !filterByAccessIdIn) {
             this.accessIdIn = null;
         } else if (this.accessIdIn == null) {
             String[] accessIds = new String[0];
@@ -746,6 +748,8 @@ public class TaskQueryImpl implements TaskQuery {
             this.columnName = columnName;
             this.orderBy.clear();
             this.addOrderCriteria(columnName, sortDirection);
+            checkOpenAndReadPermissionForSpecifiedWorkbaskets();
+            setupAccessIds();
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
             return result;
         } finally {
@@ -764,9 +768,9 @@ public class TaskQueryImpl implements TaskQuery {
         List<TaskSummary> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
-            checkOpenPermissionForSpecifiedWorkbaskets();
-            RowBounds rowBounds = new RowBounds(offset, limit);
+            checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
+            RowBounds rowBounds = new RowBounds(offset, limit);
             List<TaskSummaryImpl> tasks = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
             result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
             return result;
@@ -794,7 +798,7 @@ public class TaskQueryImpl implements TaskQuery {
         TaskSummary result = null;
         try {
             taskanaEngine.openConnection();
-            checkOpenPermissionForSpecifiedWorkbaskets();
+            checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
             TaskSummaryImpl taskSummaryImpl = taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
             if (taskSummaryImpl == null) {
@@ -818,7 +822,7 @@ public class TaskQueryImpl implements TaskQuery {
         Long rowCount = null;
         try {
             taskanaEngine.openConnection();
-            checkOpenPermissionForSpecifiedWorkbaskets();
+            checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
             rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
             return (rowCount == null) ? 0L : rowCount;
@@ -828,20 +832,22 @@ public class TaskQueryImpl implements TaskQuery {
         }
     }
 
-    private void checkOpenPermissionForSpecifiedWorkbaskets() {
+    private void checkOpenAndReadPermissionForSpecifiedWorkbaskets() {
         if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
             LOGGER.debug("Skipping permissions check since user is in role ADMIN.");
             return;
         }
         try {
             if (this.workbasketIdIn != null && this.workbasketIdIn.length > 0) {
+                filterByAccessIdIn = false;
                 for (String workbasketId : workbasketIdIn) {
-                    checkOpenPermissionById(workbasketId);
+                    checkOpenAndReadPermissionById(workbasketId);
                 }
             }
             if (workbasketKeyDomainIn != null && workbasketKeyDomainIn.length > 0) {
+                filterByAccessIdIn = false;
                 for (KeyDomain keyDomain : workbasketKeyDomainIn) {
-                    checkOpenPermissionByKeyDomain(keyDomain);
+                    checkOpenAndReadPermissionByKeyDomain(keyDomain);
                 }
             }
         } catch (NotAuthorizedException e) {
@@ -849,19 +855,19 @@ public class TaskQueryImpl implements TaskQuery {
         }
     }
 
-    private void checkOpenPermissionById(String workbasketId) throws NotAuthorizedException {
+    private void checkOpenAndReadPermissionById(String workbasketId) throws NotAuthorizedException {
         try {
             taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId,
-                WorkbasketPermission.OPEN);
+                WorkbasketPermission.OPEN, WorkbasketPermission.READ);
         } catch (WorkbasketNotFoundException e) {
             LOGGER.warn("The workbasket with the ID '" + workbasketId + "' does not exist.", e);
         }
     }
 
-    private void checkOpenPermissionByKeyDomain(KeyDomain keyDomain) throws NotAuthorizedException {
+    private void checkOpenAndReadPermissionByKeyDomain(KeyDomain keyDomain) throws NotAuthorizedException {
         try {
             taskanaEngine.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
-                keyDomain.getDomain(), WorkbasketPermission.OPEN);
+                keyDomain.getDomain(), WorkbasketPermission.OPEN, WorkbasketPermission.READ);
         } catch (WorkbasketNotFoundException e) {
             LOGGER.warn("The workbasket with the KEY '" + keyDomain.getKey() + "' and DOMAIN '"
                 + keyDomain.getDomain() + "'does not exist.", e);
@@ -1192,11 +1198,7 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TaskQueryImpl [taskanaEngine=");
-        builder.append(taskanaEngine);
-        builder.append(", taskService=");
-        builder.append(taskService);
-        builder.append(", columnName=");
+        builder.append("TaskQueryImpl [columnName=");
         builder.append(columnName);
         builder.append(", nameIn=");
         builder.append(Arrays.toString(nameIn));
@@ -1220,12 +1222,12 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(workbasketIdIn));
         builder.append(", stateIn=");
         builder.append(Arrays.toString(stateIn));
+        builder.append(", classificationIdIn=");
+        builder.append(Arrays.toString(classificationIdIn));
         builder.append(", classificationKeyIn=");
         builder.append(Arrays.toString(classificationKeyIn));
         builder.append(", classificationKeyLike=");
         builder.append(Arrays.toString(classificationKeyLike));
-        builder.append(", classificationIdIn=");
-        builder.append(Arrays.toString(classificationIdIn));
         builder.append(", classificationCategoryIn=");
         builder.append(Arrays.toString(classificationCategoryIn));
         builder.append(", classificationCategoryLike=");
@@ -1330,6 +1332,10 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(custom16In));
         builder.append(", custom16Like=");
         builder.append(Arrays.toString(custom16Like));
+        builder.append(", accessIdIn=");
+        builder.append(Arrays.toString(accessIdIn));
+        builder.append(", filterByAccessIdIn=");
+        builder.append(filterByAccessIdIn);
         builder.append(", createdIn=");
         builder.append(Arrays.toString(createdIn));
         builder.append(", claimedIn=");
