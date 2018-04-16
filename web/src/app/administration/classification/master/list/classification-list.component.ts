@@ -33,7 +33,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	constructor(
 		private classificationService: ClassificationsService,
 		private router: Router,
-		private route: ActivatedRoute, ) {
+		private route: ActivatedRoute) {
 	}
 
 	ngOnInit() {

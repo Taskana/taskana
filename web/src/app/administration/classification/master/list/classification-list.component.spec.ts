@@ -18,7 +18,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domains/domain.service';
-import {ErrorModalService} from 'app/services/errorModal/error-modal.service';
+import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 
 @Component({
   selector: 'taskana-tree',
@@ -37,8 +37,8 @@ class DummyDetailComponent {
 }
 
 const routes: Routes = [
-  { path: ':id', component: DummyDetailComponent, outlet: 'detail' },
-  { path: 'classifications', component: DummyDetailComponent }
+
+  { path: ':id', component: DummyDetailComponent }
 ];
 
 
@@ -66,6 +66,7 @@ describe('ClassificationListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ClassificationListComponent);
     component = fixture.componentInstance;
+
     classificationsService = TestBed.get(ClassificationsService);
     classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
     classificationsTypesSpy = spyOn(classificationsService, 'getClassificationTypes').and.returnValue(Observable.of(classificationTypes));

@@ -8,14 +8,16 @@ import { Observable } from 'rxjs/Observable';
 
 import { ClassificationDetailsComponent } from './classification-details.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
+import { ClassificationDefinition } from 'app/models/classification-definition';
+import { LinksClassification } from 'app/models/links-classfication';
 
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import { TreeNodeModel } from 'app/models/tree-node';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { AlertService } from '../../../services/alert/alert.service';
-
+import { AlertService } from 'app/services/alert/alert.service';
+import { TreeService } from 'app/services/tree/tree.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -25,8 +27,7 @@ class DummyDetailComponent {
 }
 
 const routes: Routes = [
-  { path: ':id', component: DummyDetailComponent, outlet: 'detail' },
-  { path: 'classifications', component: DummyDetailComponent }
+  { path: 'administration/classifications', component: DummyDetailComponent }
 ];
 
 describe('ClassificationDetailsComponent', () => {
@@ -36,12 +37,14 @@ describe('ClassificationDetailsComponent', () => {
   const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
   let classificationsSpy, classificationsTypesSpy;
   let classificationsService;
+  let treeService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
       declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
-      providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService]
+      providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
+        TreeService]
     })
       .compileComponents();
   }));
@@ -52,10 +55,22 @@ describe('ClassificationDetailsComponent', () => {
     classificationsService = TestBed.get(ClassificationsService);
     classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
     classificationsTypesSpy = spyOn(classificationsService, 'getClassificationTypes').and.returnValue(Observable.of(classificationTypes));
+    spyOn(classificationsService, 'deleteClassification').and.returnValue(Observable.of(true));
+
+    treeService = TestBed.get(TreeService);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should trigger treeService remove node id after removing a node', () => {
+    const treeServiceSpy = spyOn(treeService, 'setRemovedNodeId');
+    component.classification = new ClassificationDefinition('id1', undefined, undefined, undefined, undefined, undefined, undefined,
+      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+      undefined, undefined, undefined, new LinksClassification({ 'self': '' }));
+    component.removeClassification();
+    expect(treeServiceSpy).toHaveBeenCalledWith('id1');
   });
 });
