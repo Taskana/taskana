@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked, OnChanges, SimpleChanges } from '@angular/core';
 import { TreeNodeModel } from 'app/models/tree-node';
 
 import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions, ITreeState, TreeComponent, TreeNode } from 'angular-tree-component';
+import { TreeService } from '../../services/tree/tree.service';
 
 @Component({
   selector: 'taskana-tree',
@@ -34,11 +35,18 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
     levelPadding: 20
   }
 
-  constructor() { }
+  constructor(private treeService: TreeService) { }
 
   ngOnInit() {
     this.selectNode(this.selectNodeId);
+    this.treeService.getRemovedNodeId().subscribe(value => {
+      const removedNode = this.getNode(value);
+      if (removedNode.parent) {
+        removedNode.parent.collapse();
+      }
+    });
   }
+
 
   ngAfterViewChecked(): void {
     if (this.selectNodeId && !this.tree.treeModel.getActiveNode()) {
@@ -58,7 +66,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
 
   private selectNode(nodeId: string) {
     if (nodeId) {
-      const selectedNode = this.getSelectedNode(nodeId)
+      const selectedNode = this.getNode(nodeId)
       if (selectedNode) {
         selectedNode.setIsActive(true)
         this.expandParent(selectedNode);
@@ -72,7 +80,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
     activeNode.blur();
   }
 
-  private getSelectedNode(nodeId: string) {
+  private getNode(nodeId: string) {
     return this.tree.treeModel.getNodeById(nodeId);
   }
 

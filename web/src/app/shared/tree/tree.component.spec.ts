@@ -1,11 +1,12 @@
 import { Input, Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TaskanaTreeComponent } from './tree.component';
-
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+
+import { TaskanaTreeComponent } from './tree.component';
+
+import { TreeService } from 'app/services/tree/tree.service';
 
 // tslint:disable:component-selector
 @Component({
@@ -29,7 +30,8 @@ describe('TaskanaTreeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [TaskanaTreeComponent, TreeVendorComponent]
+      declarations: [TaskanaTreeComponent, TreeVendorComponent],
+      providers: [TreeService]
     })
       .compileComponents();
   }));

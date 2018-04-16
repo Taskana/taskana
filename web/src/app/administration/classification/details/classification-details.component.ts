@@ -15,6 +15,7 @@ import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
+import { TreeService } from 'app/services/tree/tree.service';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -46,7 +47,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private masterAndDetailService: MasterAndDetailService,
     private errorModalService: ErrorModalService,
     private requestInProgressService: RequestInProgressService,
-    private alertService: AlertService) { }
+    private alertService: AlertService,
+    private treeService: TreeService) { }
 
 
   ngOnInit() {
@@ -97,6 +99,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   removeClassification() {
     this.requestInProgressService.setRequestInProgress(true);
+    this.treeService.setRemovedNodeId(this.classification.classificationId);
+
     this.classificationRemoveSubscription = this.classificationsService
       .deleteClassification(this.classification._links.self.href)
       .subscribe(() => {
