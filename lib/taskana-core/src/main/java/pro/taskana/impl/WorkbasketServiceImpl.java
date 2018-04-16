@@ -199,7 +199,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
-        throws InvalidArgumentException, NotAuthorizedException {
+        throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
         LOGGER.debug("entry to createWorkbasketAccessItemn(workbasketAccessItem = {})", workbasketAccessItem);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         WorkbasketAccessItemImpl accessItem = (WorkbasketAccessItemImpl) workbasketAccessItem;
@@ -213,6 +213,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 throw new InvalidArgumentException(
                     "Checking the preconditions of the current WorkbasketAccessItem failed. WorkbasketAccessItem="
                         + workbasketAccessItem.toString());
+            }
+            WorkbasketImpl wb = workbasketMapper.findById(workbasketAccessItem.getWorkbasketId());
+            if (wb == null) {
+                throw new WorkbasketNotFoundException(workbasketAccessItem.getWorkbasketId(),
+                    "WorkbasketAccessItem " + workbasketAccessItem + " refers to a not existing workbasket");
             }
             workbasketAccessMapper.insert(accessItem);
             LOGGER.debug("Method createWorkbasketAccessItem() created workbaskteAccessItem {}",

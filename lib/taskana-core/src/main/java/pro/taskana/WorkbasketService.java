@@ -101,9 +101,11 @@ public interface WorkbasketService {
      *             when the preconditions dont match the required ones.
      * @throws NotAuthorizedException
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
+     * @throws WorkbasketNotFoundException
+     *             if the workbasketAccessItem refers to a not existing workbasket
      */
     WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
-        throws InvalidArgumentException, NotAuthorizedException;
+        throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException;
 
     /**
      * This method updates a {@link WorkbasketAccessItem}.
