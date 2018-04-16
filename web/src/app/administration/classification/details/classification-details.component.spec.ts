@@ -18,6 +18,8 @@ import { TreeNodeModel } from 'app/models/tree-node';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
+import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
+
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -36,7 +38,7 @@ describe('ClassificationDetailsComponent', () => {
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
   const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
   let classificationsSpy, classificationsTypesSpy;
-  let classificationsService;
+  let classificationsService, classificationTypesService;
   let treeService;
 
   beforeEach(async(() => {
@@ -44,7 +46,7 @@ describe('ClassificationDetailsComponent', () => {
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
       declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
       providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
-        TreeService]
+        TreeService, ClassificationTypesService]
     })
       .compileComponents();
   }));
@@ -53,8 +55,10 @@ describe('ClassificationDetailsComponent', () => {
     fixture = TestBed.createComponent(ClassificationDetailsComponent);
     component = fixture.componentInstance;
     classificationsService = TestBed.get(ClassificationsService);
+    classificationTypesService = TestBed.get(ClassificationTypesService);
     classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
-    classificationsTypesSpy = spyOn(classificationsService, 'getClassificationTypes').and.returnValue(Observable.of(classificationTypes));
+    classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes')
+      .and.returnValue(Observable.of(classificationTypes));
     spyOn(classificationsService, 'deleteClassification').and.returnValue(Observable.of(true));
 
     treeService = TestBed.get(TreeService);

@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { environment } from 'environments/environment';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/observable/forkJoin';
+import 'rxjs/add/observable/combineLatest';
 
 import { Classification } from 'app/models/classification';
 import { TreeNodeModel } from 'app/models/tree-node';
 import { ClassificationDefinition } from 'app/models/classification-definition';
 
 import { ClassificationResource } from '../../models/classification-resource';
+import { ClassificationTypesService } from '../classification-types/classification-types.service';
 
 @Injectable()
 export class ClassificationsService {
@@ -17,8 +20,6 @@ export class ClassificationsService {
   private url = environment.taskanaRestUrl + '/v1/classifications';
   private classificationSelected = new Subject<string>();
   private classificationSaved = new Subject<number>();
-  private classificationTypeSelectedValue = 'TASK';
-  private classificationTypeSelected = new BehaviorSubject<string>(this.classificationTypeSelectedValue);
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -30,29 +31,20 @@ export class ClassificationsService {
   private classificationRef: Observable<ClassificationResource>;
   private classificationTypes: Array<string>;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private classificationTypeService: ClassificationTypesService) {
   }
 
   // GET
-  getClassifications(forceRequest = false, domain = ''): Observable<Array<TreeNodeModel>> {
+  getClassifications(forceRequest = false, domain = ''): Observable<any> {
 
+    const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
     if (!forceRequest && this.classificationRef) {
-      return this.classificationRef.map((response: ClassificationResource) => {
-        if (!response._embedded) {
-          return [];
-        }
-        return this.buildHierarchy(response._embedded.classificationSummaryResourceList, this.classificationTypeSelectedValue, domain);
-      });
+      return this.getClassificationObservable(domain, this.classificationRef)
     }
     this.classificationRef = this.httpClient.get<ClassificationResource>(`${environment.taskanaRestUrl}/v1/classifications`,
       this.httpOptions);
+    return this.getClassificationObservable(domain, this.classificationRef)
 
-    return this.classificationRef.map((response: ClassificationResource) => {
-      if (!response._embedded) {
-        return [];
-      }
-      return this.buildHierarchy(response._embedded.classificationSummaryResourceList, this.classificationTypeSelectedValue, domain);
-    });
   }
 
   // GET
@@ -60,26 +52,11 @@ export class ClassificationsService {
     return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`, this.httpOptions)
       .do((classification: ClassificationDefinition) => {
         if (classification) {
-          this.selectClassificationType(classification.type);
+          this.classificationTypeService.selectClassificationType(classification.type);
         }
       });
   }
 
-  getClassificationTypes(): Observable<Array<string>> {
-    const typesSubject = new Subject<Array<string>>();
-    this.classificationRef.subscribe((classifications: ClassificationResource) => {
-      if (!classifications._embedded) {
-        return typesSubject;
-      }
-      const types = new Map<string, string>();
-      classifications._embedded.classificationSummaryResourceList.forEach(element => {
-        types.set(element.type, element.type);
-      });
-
-      typesSubject.next(this.map2Array(types));
-    });
-    return typesSubject.asObservable();
-  }
 
   // POST
   postClassification(classification: Classification): Observable<Classification> {
@@ -114,16 +91,22 @@ export class ClassificationsService {
     return this.classificationSaved.asObservable();
   }
 
-  selectClassificationType(id: string) {
-    this.classificationTypeSelectedValue = id;
-    this.classificationTypeSelected.next(id);
-  }
-
-  getSelectedClassificationType(): Observable<string> {
-    return this.classificationTypeSelected.asObservable();
-  }
-
   // #endregion
+
+  private getClassificationObservable(domain: string, clasisficationRef: Observable<any>): Observable<any> {
+    const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
+    return Observable.combineLatest(
+      clasisficationRef,
+      classificationTypes
+
+    ).map((data: any[]) => {
+      if (!data[0]._embedded) {
+        return [];
+      }
+      return this.buildHierarchy(data[0]._embedded.classificationSummaryResourceList, data[1], domain);
+    })
+
+  }
 
   private buildHierarchy(classifications: Array<Classification>, type: string, domain: string) {
     const roots = []

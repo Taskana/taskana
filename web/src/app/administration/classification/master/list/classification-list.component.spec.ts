@@ -19,6 +19,7 @@ import { ClassificationsService } from 'app/services/classifications/classificat
 import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domains/domain.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
 
 @Component({
   selector: 'taskana-tree',
@@ -48,7 +49,7 @@ describe('ClassificationListComponent', () => {
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
   const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
   let classificationsSpy, classificationsTypesSpy;
-  let classificationsService;
+  let classificationsService, classificationTypesService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -57,7 +58,7 @@ describe('ClassificationListComponent', () => {
       imports: [HttpClientModule, RouterTestingModule.withRoutes(routes)],
       providers: [
         HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
-        ErrorModalService
+        ErrorModalService, ClassificationTypesService
       ]
     })
       .compileComponents();
@@ -68,8 +69,10 @@ describe('ClassificationListComponent', () => {
     component = fixture.componentInstance;
 
     classificationsService = TestBed.get(ClassificationsService);
+    classificationTypesService = TestBed.get(ClassificationTypesService);
     classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
-    classificationsTypesSpy = spyOn(classificationsService, 'getClassificationTypes').and.returnValue(Observable.of(classificationTypes));
+    classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes')
+      .and.returnValue(Observable.of(classificationTypes));
     fixture.detectChanges();
   });
 
