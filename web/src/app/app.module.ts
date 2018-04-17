@@ -57,6 +57,7 @@ import { SelectedRouteService } from './services/selected-route/selected-route';
 import { ClassificationsService } from './services/classifications/classifications.service';
 import { TreeService } from './services/tree/tree.service';
 import { ClassificationTypesService } from './services/classification-types/classification-types.service';
+import { ClassificationCategoriesService } from 'app/services/classification-categories-service/classification-categories.service';
 
 /**
  * Pipes
@@ -133,7 +134,8 @@ const DECLARATIONS = [
     SelectedRouteService,
     ClassificationsService,
     TreeService,
-    ClassificationTypesService
+    ClassificationTypesService,
+    ClassificationCategoriesService
   ],
   bootstrap: [AppComponent]
 })
