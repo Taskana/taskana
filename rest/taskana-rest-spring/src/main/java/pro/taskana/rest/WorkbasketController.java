@@ -1,5 +1,9 @@
 package pro.taskana.rest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
@@ -9,6 +13,7 @@ import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pro.taskana.BaseQuery;
+
+import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketPermission;
@@ -43,10 +49,6 @@ import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketMapper;
 import pro.taskana.rest.resource.mapper.WorkbasketSummaryResourcesAssembler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Controller for all {@link Workbasket} related endpoints.
  */
@@ -57,11 +59,20 @@ public class WorkbasketController extends AbstractPagingController {
 
     private static final String LIKE = "%";
     private static final String NAME = "name";
+    private static final String NAME_LIKE = "nameLike";
     private static final String KEY = "key";
-    private static final String DESCRIPTION = "description";
+    private static final String KEY_LIKE = "keyLike";
     private static final String OWNER = "owner";
+    private static final String OWNER_LIKE = "ownerLike";
+    private static final String DESCRIPTION_LIKE = "descriptionLike";
+    private static final String REQUIRED_PERMISSION = "requiredPermission";
     private static final String TYPE = "type";
-    private static final String DESC = "desc";
+
+    private static final String SORT_BY = "sortBy";
+    private static final String SORT_DIRECTION = "order";
+
+    private static final String PAGING_PAGE = "page";
+    private static final String PAGING_PAGE_SIZE = "page-size";
 
     @Autowired
     private WorkbasketService workbasketService;
@@ -81,27 +92,19 @@ public class WorkbasketController extends AbstractPagingController {
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<WorkbasketSummaryResource>> getWorkbaskets(
-        @RequestParam(value = "sortBy", defaultValue = "name", required = false) String sortBy,
-        @RequestParam(value = "order", defaultValue = "asc", required = false) String order,
-        @RequestParam(value = "name", required = false) String name,
-        @RequestParam(value = "nameLike", required = false) String nameLike,
-        @RequestParam(value = "key", required = false) String key,
-        @RequestParam(value = "keyLike", required = false) String keyLike,
-        @RequestParam(value = "descLike", required = false) String descLike,
-        @RequestParam(value = "owner", required = false) String owner,
-        @RequestParam(value = "ownerLike", required = false) String ownerLike,
-        @RequestParam(value = "type", required = false) String type,
-        @RequestParam(value = "requiredPermission", required = false) String requiredPermission,
-        @RequestParam(value = "page", required = false) String page,
-        @RequestParam(value = "pagesize", required = false) String pageSize) throws InvalidArgumentException {
+        @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
 
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
-        addSortingToQuery(query, sortBy, order);
-        addAttributeFilter(query, name, nameLike, key, keyLike, descLike, owner, ownerLike, type);
-        addAuthorizationFilter(query, requiredPermission);
+        query = applySortingParams(query, params);
+        query = applyFilterParams(query, params);
 
         PageMetadata pageMetadata = null;
         List<WorkbasketSummary> workbasketSummaries = null;
+        String page = params.getFirst(PAGING_PAGE);
+        String pageSize = params.getFirst(PAGING_PAGE_SIZE);
+        params.remove(PAGING_PAGE);
+        params.remove(PAGING_PAGE_SIZE);
+        validateNoInvalidParameterIsLeft(params);
         if (page != null && pageSize != null) {
             // paging
             long totalElements = query.count();
@@ -236,130 +239,74 @@ public class WorkbasketController extends AbstractPagingController {
         return new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
     }
 
-    private void addAuthorizationFilter(WorkbasketQuery query, String requiredPermission)
-        throws InvalidArgumentException {
-        if (requiredPermission == null) {
-            return;
-        }
-
-        for (String authorization : Arrays.asList(requiredPermission.split(","))) {
-            switch (authorization.trim()) {
-                case "READ":
-                    query.callerHasPermission(WorkbasketPermission.READ);
+    private WorkbasketQuery applySortingParams(WorkbasketQuery query, MultiValueMap<String, String> params)
+        throws IllegalArgumentException {
+        // sorting
+        String sortBy = params.getFirst(SORT_BY);
+        if (sortBy != null) {
+            SortDirection sortDirection;
+            if (params.getFirst(SORT_DIRECTION) != null && "desc".equals(params.getFirst(SORT_DIRECTION))) {
+                sortDirection = SortDirection.DESCENDING;
+            } else {
+                sortDirection = SortDirection.ASCENDING;
+            }
+            switch (sortBy) {
+                case (NAME):
+                    query = query.orderByName(sortDirection);
                     break;
-                case "OPEN":
-                    query.callerHasPermission(WorkbasketPermission.OPEN);
+                case (KEY):
+                    query = query.orderByKey(sortDirection);
                     break;
-                case "APPEND":
-                    query.callerHasPermission(WorkbasketPermission.APPEND);
+                case (OWNER):
+                    query = query.orderByOwner(sortDirection);
                     break;
-                case "TRANSFER":
-                    query.callerHasPermission(WorkbasketPermission.TRANSFER);
-                    break;
-                case "DISTRIBUTE":
-                    query.callerHasPermission(WorkbasketPermission.DISTRIBUTE);
-                    break;
-                case "CUSTOM_1":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_1);
-                    break;
-                case "CUSTOM_2":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_2);
-                    break;
-                case "CUSTOM_3":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_3);
-                    break;
-                case "CUSTOM_4":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_4);
-                    break;
-                case "CUSTOM_5":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_5);
-                    break;
-                case "CUSTOM_6":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_6);
-                    break;
-                case "CUSTOM_7":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_7);
-                    break;
-                case "CUSTOM_8":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_8);
-                    break;
-                case "CUSTOM_9":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_9);
-                    break;
-                case "CUSTOM_10":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_10);
-                    break;
-                case "CUSTOM_11":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_11);
-                    break;
-                case "CUSTOM_12":
-                    query.callerHasPermission(WorkbasketPermission.CUSTOM_12);
+                case (TYPE):
+                    query = query.orderByType(sortDirection);
                     break;
                 default:
-                    throw new InvalidArgumentException("Unknown authorization '" + authorization + "'");
+                    throw new IllegalArgumentException("Unknown order '" + sortBy + "'");
             }
         }
+        params.remove(SORT_BY);
+        params.remove(SORT_DIRECTION);
+        return query;
     }
 
-    private void addSortingToQuery(WorkbasketQuery query, String sortBy, String order) throws IllegalArgumentException {
-        BaseQuery.SortDirection sortDirection = getSortDirection(order);
-
-        switch (sortBy) {
-            case NAME:
-                query.orderByName(sortDirection);
-                break;
-            case KEY:
-                query.orderByKey(sortDirection);
-                break;
-            case DESCRIPTION:
-                query.orderByDescription(sortDirection);
-                break;
-            case OWNER:
-                query.orderByOwner(sortDirection);
-                break;
-            case TYPE:
-                query.orderByType(sortDirection);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown order '" + sortBy + "'");
+    private WorkbasketQuery applyFilterParams(WorkbasketQuery query,
+        MultiValueMap<String, String> params) throws InvalidArgumentException {
+        if (params.containsKey(NAME)) {
+            String[] names = extractCommaSeparatedFields(params.get(NAME));
+            query.nameIn(names);
+            params.remove(NAME);
         }
-    }
-
-    private BaseQuery.SortDirection getSortDirection(String order) {
-        if (order.equals(DESC)) {
-            return BaseQuery.SortDirection.DESCENDING;
+        if (params.containsKey(NAME_LIKE)) {
+            query.nameLike(LIKE + params.get(NAME_LIKE) + LIKE);
+            params.remove(NAME_LIKE);
         }
-        return BaseQuery.SortDirection.ASCENDING;
-    }
-
-    private void addAttributeFilter(WorkbasketQuery query,
-        String name, String nameLike,
-        String key, String keyLike,
-        String descLike, String owner,
-        String ownerLike, String type) throws InvalidArgumentException {
-        if (name != null) {
-            query.nameIn(name);
+        if (params.containsKey(KEY)) {
+            String[] names = extractCommaSeparatedFields(params.get(KEY));
+            query.keyIn(names);
+            params.remove(KEY);
         }
-        if (nameLike != null) {
-            query.nameLike(LIKE + nameLike + LIKE);
+        if (params.containsKey(KEY_LIKE)) {
+            query.keyLike(LIKE + params.get(KEY_LIKE) + LIKE);
+            params.remove(KEY_LIKE);
         }
-        if (key != null) {
-            query.keyIn(key);
+        if (params.containsKey(OWNER)) {
+            String[] names = extractCommaSeparatedFields(params.get(OWNER));
+            query.ownerIn(names);
+            params.remove(OWNER);
         }
-        if (keyLike != null) {
-            query.keyLike(LIKE + keyLike + LIKE);
+        if (params.containsKey(OWNER_LIKE)) {
+            query.ownerLike(LIKE + params.get(OWNER_LIKE) + LIKE);
+            params.remove(OWNER_LIKE);
         }
-        if (owner != null) {
-            query.ownerIn(owner);
+        if (params.containsKey(DESCRIPTION_LIKE)) {
+            query.descriptionLike(LIKE + params.get(DESCRIPTION_LIKE) + LIKE);
+            params.remove(DESCRIPTION_LIKE);
         }
-        if (ownerLike != null) {
-            query.ownerLike(LIKE + ownerLike + LIKE);
-        }
-        if (descLike != null) {
-            query.descriptionLike(LIKE + descLike + LIKE);
-        }
-        if (type != null) {
-            switch (type) {
+        if (params.containsKey(TYPE)) {
+            switch (params.getFirst(TYPE)) {
                 case "PERSONAL":
                     query.typeIn(WorkbasketType.PERSONAL);
                     break;
@@ -373,9 +320,71 @@ public class WorkbasketController extends AbstractPagingController {
                     query.typeIn(WorkbasketType.TOPIC);
                     break;
                 default:
-                    throw new InvalidArgumentException("Unknown Workbaskettype '" + type + "'");
+                    throw new InvalidArgumentException("Unknown Workbaskettype '" + params.getFirst(TYPE) + "'");
             }
+            params.remove(TYPE);
         }
+        if (params.containsKey(REQUIRED_PERMISSION)) {
+            for (String authorization : Arrays.asList(params.getFirst(REQUIRED_PERMISSION).split(","))) {
+                switch (authorization.trim()) {
+                    case "READ":
+                        query.callerHasPermission(WorkbasketPermission.READ);
+                        break;
+                    case "OPEN":
+                        query.callerHasPermission(WorkbasketPermission.OPEN);
+                        break;
+                    case "APPEND":
+                        query.callerHasPermission(WorkbasketPermission.APPEND);
+                        break;
+                    case "TRANSFER":
+                        query.callerHasPermission(WorkbasketPermission.TRANSFER);
+                        break;
+                    case "DISTRIBUTE":
+                        query.callerHasPermission(WorkbasketPermission.DISTRIBUTE);
+                        break;
+                    case "CUSTOM_1":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_1);
+                        break;
+                    case "CUSTOM_2":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_2);
+                        break;
+                    case "CUSTOM_3":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_3);
+                        break;
+                    case "CUSTOM_4":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_4);
+                        break;
+                    case "CUSTOM_5":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_5);
+                        break;
+                    case "CUSTOM_6":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_6);
+                        break;
+                    case "CUSTOM_7":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_7);
+                        break;
+                    case "CUSTOM_8":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_8);
+                        break;
+                    case "CUSTOM_9":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_9);
+                        break;
+                    case "CUSTOM_10":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_10);
+                        break;
+                    case "CUSTOM_11":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_11);
+                        break;
+                    case "CUSTOM_12":
+                        query.callerHasPermission(WorkbasketPermission.CUSTOM_12);
+                        break;
+                    default:
+                        throw new InvalidArgumentException("Unknown authorization '" + authorization + "'");
+                }
+            }
+            params.remove(REQUIRED_PERMISSION);
+        }
+        return query;
     }
 
 }
