@@ -1,7 +1,6 @@
 package pro.taskana.rest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -66,7 +65,6 @@ public class TaskController extends AbstractPagingController {
     private static final String OWNER = "owner";
     private static final String WORKBASKET_ID = "workbasketId";
     private static final String CLASSIFICATION_KEY = "classification.key";
-    private static final String POR_PREFIX = "por.";
     private static final String POR_VALUE = "por.value";
     private static final String POR_TYPE = "por.type";
     private static final String POR_SYSTEM_INSTANCE = "por.instance";
@@ -79,7 +77,7 @@ public class TaskController extends AbstractPagingController {
     private static final String SORT_DIRECTION = "order";
 
     private static final String PAGING_PAGE = "page";
-    private static final String PAGING_PAGE_SIZE = "pageSize";
+    private static final String PAGING_PAGE_SIZE = "page-size";
 
     @Autowired
     private TaskService taskService;
@@ -100,6 +98,9 @@ public class TaskController extends AbstractPagingController {
         List<TaskSummary> taskSummaries = null;
         String page = params.getFirst(PAGING_PAGE);
         String pageSize = params.getFirst(PAGING_PAGE_SIZE);
+        params.remove(PAGING_PAGE);
+        params.remove(PAGING_PAGE_SIZE);
+        validateNoInvalidParameterIsLeft(params);
         if (page != null && pageSize != null) {
             // paging
             long totalElements = query.count();
@@ -202,49 +203,60 @@ public class TaskController extends AbstractPagingController {
 
         // apply filters
         if (params.containsKey(NAME)) {
-            String[] names = extractCommaSeperatedFields(params.get(NAME));
+            String[] names = extractCommaSeparatedFields(params.get(NAME));
             taskQuery.nameIn(names);
+            params.remove(NAME);
         }
         if (params.containsKey(PRIORITY)) {
-            String[] prioritesInString = extractCommaSeperatedFields(params.get(PRIORITY));
+            String[] prioritesInString = extractCommaSeparatedFields(params.get(PRIORITY));
             int[] priorites = extractPriorities(prioritesInString);
             taskQuery.priorityIn(priorites);
+            params.remove(PRIORITY);
         }
         if (params.containsKey(STATE)) {
             TaskState[] states = extractStates(params);
             taskQuery.stateIn(states);
+            params.remove(STATE);
         }
         if (params.containsKey(CLASSIFICATION_KEY)) {
-            String[] classificationKeys = extractCommaSeperatedFields(params.get(CLASSIFICATION_KEY));
+            String[] classificationKeys = extractCommaSeparatedFields(params.get(CLASSIFICATION_KEY));
             taskQuery.classificationKeyIn(classificationKeys);
+            params.remove(CLASSIFICATION_KEY);
         }
         if (params.containsKey(WORKBASKET_ID)) {
-            String[] workbaskets = extractCommaSeperatedFields(params.get(WORKBASKET_ID));
+            String[] workbaskets = extractCommaSeparatedFields(params.get(WORKBASKET_ID));
             taskQuery.workbasketIdIn(workbaskets);
+            params.remove(WORKBASKET_ID);
         }
         if (params.containsKey(OWNER)) {
-            String[] owners = extractCommaSeperatedFields(params.get(OWNER));
+            String[] owners = extractCommaSeparatedFields(params.get(OWNER));
             taskQuery.ownerIn(owners);
+            params.remove(OWNER);
         }
         if (params.containsKey(POR_COMPANY)) {
-            String[] companies = extractCommaSeperatedFields(params.get(POR_COMPANY));
+            String[] companies = extractCommaSeparatedFields(params.get(POR_COMPANY));
             taskQuery.primaryObjectReferenceCompanyIn(companies);
+            params.remove(POR_COMPANY);
         }
         if (params.containsKey(POR_SYSTEM)) {
-            String[] systems = extractCommaSeperatedFields(params.get(POR_SYSTEM));
+            String[] systems = extractCommaSeparatedFields(params.get(POR_SYSTEM));
             taskQuery.primaryObjectReferenceSystemIn(systems);
+            params.remove(POR_SYSTEM);
         }
         if (params.containsKey(POR_SYSTEM_INSTANCE)) {
-            String[] systemInstances = extractCommaSeperatedFields(params.get(POR_SYSTEM_INSTANCE));
+            String[] systemInstances = extractCommaSeparatedFields(params.get(POR_SYSTEM_INSTANCE));
             taskQuery.primaryObjectReferenceSystemInstanceIn(systemInstances);
+            params.remove(POR_SYSTEM_INSTANCE);
         }
         if (params.containsKey(POR_TYPE)) {
-            String[] types = extractCommaSeperatedFields(params.get(POR_TYPE));
+            String[] types = extractCommaSeparatedFields(params.get(POR_TYPE));
             taskQuery.primaryObjectReferenceTypeIn(types);
+            params.remove(POR_TYPE);
         }
         if (params.containsKey(POR_VALUE)) {
-            String[] values = extractCommaSeperatedFields(params.get(POR_VALUE));
+            String[] values = extractCommaSeparatedFields(params.get(POR_VALUE));
             taskQuery.primaryObjectReferenceValueIn(values);
+            params.remove(POR_VALUE);
         }
         return taskQuery;
     }
@@ -290,6 +302,8 @@ public class TaskController extends AbstractPagingController {
                     throw new InvalidArgumentException("Unknown filter attribute: " + sortBy);
             }
         }
+        params.remove(SORT_BY);
+        params.remove(SORT_DIRECTION);
         return taskQuery;
     }
 
@@ -299,12 +313,6 @@ public class TaskController extends AbstractPagingController {
             priorites[i] = Integer.getInteger(prioritesInString[i]);
         }
         return priorites;
-    }
-
-    private String[] extractCommaSeperatedFields(List<String> list) {
-        List<String> values = new ArrayList<>();
-        list.forEach(item -> values.addAll(Arrays.asList(item.split(","))));
-        return values.toArray(new String[0]);
     }
 
     private TaskState[] extractStates(MultiValueMap<String, String> params) throws InvalidArgumentException {
