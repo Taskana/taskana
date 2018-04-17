@@ -48,12 +48,21 @@
                 * Domain is required
               </div>
             </div>
+
             <div class="form-group required">
               <label for="classification-category" class="control-label">Category</label>
-              <input type="text" required #category="ngModel" class="form-control" id="classification-category" placeholder="category"
-                [(ngModel)]="classification.category" name="classification.category">
-              <div *ngIf="!category.valid" class="required-text">
-                * Category is required
+              <div class="dropdown clearfix btn-group">
+                <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  {{classification.category}}
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
+                  <li>
+                    <a *ngFor="let category of categories" (click)="selectCategory(category)">
+                      {{category}}
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
             <div class="form-group">
