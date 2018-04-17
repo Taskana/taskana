@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -27,11 +28,13 @@ import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -94,13 +97,32 @@ public class TaskControllerIntTest {
     }
 
     @Test
+    public void testThrowsExceptionIfInvalidFilterIsUsed() {
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        try {
+            template.exchange(
+                "http://127.0.0.1:" + port + "/v1/tasks?invalid=VNR",
+                HttpMethod.GET, request,
+                new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+                });
+            fail();
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            assertTrue(e.getResponseBodyAsString().contains("[invalid]"));
+        }
+    }
+
+    @Test
     public void testGetLastPageSortedByDue() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // Role Admin
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=por.value&order=desc&page=15&pageSize=5", HttpMethod.GET,
+            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=por.value&order=desc&page=15&page-size=5", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
@@ -112,7 +134,7 @@ public class TaskControllerIntTest {
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?sortBy=por.value&order=desc&page=15&pageSize=5"));
+            .endsWith("/v1/tasks?sortBy=por.value&order=desc&page=15&page-size=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")
@@ -138,7 +160,7 @@ public class TaskControllerIntTest {
         assertEquals(23, response.getBody().getContent().size());
 
         response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=por.value&order=desc&page=5&pageSize=5", HttpMethod.GET,
+            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=por.value&order=desc&page=5&page-size=5", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
@@ -150,7 +172,7 @@ public class TaskControllerIntTest {
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?sortBy=por.value&order=desc&page=5&pageSize=5"));
+            .endsWith("/v1/tasks?sortBy=por.value&order=desc&page=5&page-size=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")
@@ -169,7 +191,7 @@ public class TaskControllerIntTest {
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
             "http://127.0.0.1:" + port
-                + "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sortBy=por.type&order=asc&page=2&pageSize=5",
+                + "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sortBy=por.type&order=asc&page=2&page-size=5",
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
@@ -182,7 +204,7 @@ public class TaskControllerIntTest {
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith(
-                "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sortBy=por.type&order=asc&page=2&pageSize=5"));
+                "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sortBy=por.type&order=asc&page=2&page-size=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")

@@ -1,6 +1,11 @@
 package pro.taskana.rest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.hateoas.PagedResources.PageMetadata;
+import org.springframework.util.MultiValueMap;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 
@@ -25,6 +30,19 @@ public abstract class AbstractPagingController {
             pageMetadata = new PageMetadata(pagesize, pageMetadata.getTotalPages(), totalElements);
         }
         return pageMetadata;
+    }
+
+    protected String[] extractCommaSeparatedFields(List<String> list) {
+        List<String> values = new ArrayList<>();
+        list.forEach(item -> values.addAll(Arrays.asList(item.split(","))));
+        return values.toArray(new String[0]);
+    }
+
+    protected void validateNoInvalidParameterIsLeft(MultiValueMap<String, String> params)
+        throws InvalidArgumentException {
+        if (!params.isEmpty()) {
+            throw new InvalidArgumentException("Invalid parameter specified: " + params.keySet());
+        }
     }
 
 }
