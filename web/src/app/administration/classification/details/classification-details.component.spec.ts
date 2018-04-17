@@ -19,6 +19,7 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
+import { ClassificationCategoriesService } from 'app/services/classification-categories-service/classification-categories.service';
 
 
 @Component({
@@ -32,13 +33,13 @@ const routes: Routes = [
   { path: 'administration/classifications', component: DummyDetailComponent }
 ];
 
-describe('ClassificationDetailsComponent', () => {
+fdescribe('ClassificationDetailsComponent', () => {
   let component: ClassificationDetailsComponent;
   let fixture: ComponentFixture<ClassificationDetailsComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
   const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
   let classificationsSpy, classificationsTypesSpy;
-  let classificationsService, classificationTypesService;
+  let classificationsService, classificationTypesService, classificationCategoriesService;
   let treeService;
 
   beforeEach(async(() => {
@@ -46,7 +47,7 @@ describe('ClassificationDetailsComponent', () => {
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
       declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
       providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
-        TreeService, ClassificationTypesService]
+        TreeService, ClassificationTypesService, ClassificationCategoriesService]
     })
       .compileComponents();
   }));
@@ -56,11 +57,14 @@ describe('ClassificationDetailsComponent', () => {
     component = fixture.componentInstance;
     classificationsService = TestBed.get(ClassificationsService);
     classificationTypesService = TestBed.get(ClassificationTypesService);
+    classificationCategoriesService = TestBed.get(ClassificationCategoriesService);
     classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
-    classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes')
-      .and.returnValue(Observable.of(classificationTypes));
+    classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes').and.returnValue(Observable.of([]));
+    spyOn(classificationCategoriesService, 'getCategories').and.returnValue(Observable.of(['firstCategory', 'secondCategory']));
     spyOn(classificationsService, 'deleteClassification').and.returnValue(Observable.of(true));
-
+    component.classification = new ClassificationDefinition('id1', undefined, undefined, undefined, undefined, undefined, undefined,
+      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+      undefined, undefined, undefined, new LinksClassification({ 'self': '' }));
     treeService = TestBed.get(TreeService);
     fixture.detectChanges();
   });
@@ -71,10 +75,12 @@ describe('ClassificationDetailsComponent', () => {
 
   it('should trigger treeService remove node id after removing a node', () => {
     const treeServiceSpy = spyOn(treeService, 'setRemovedNodeId');
-    component.classification = new ClassificationDefinition('id1', undefined, undefined, undefined, undefined, undefined, undefined,
-      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-      undefined, undefined, undefined, new LinksClassification({ 'self': '' }));
+
     component.removeClassification();
     expect(treeServiceSpy).toHaveBeenCalledWith('id1');
+  });
+
+  it('should selected first classificationCategory if is defined', () => {
+    expect(component.classification.category).toBe('firstCategory');
   });
 });

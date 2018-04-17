@@ -17,6 +17,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
+import { ClassificationCategoriesService } from 'app/services/classification-categories-service/classification-categories.service';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -32,6 +33,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   classificationTypes: Array<string> = [];
   badgeMessage = '';
   requestInProgress = false;
+  categories: Array<string> = [];
+  categorySelected: string;
   private action: any;
   private classificationServiceSubscription: Subscription;
   private classificationSelectedSubscription: Subscription;
@@ -40,7 +43,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private classificationSavingSubscription: Subscription;
   private classificationRemoveSubscription: Subscription;
   private selectedClassificationSubscription: Subscription;
-
+  private categoriesSubscription: Subscription;
 
   constructor(private classificationsService: ClassificationsService,
     private route: ActivatedRoute,
@@ -50,11 +53,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private requestInProgressService: RequestInProgressService,
     private alertService: AlertService,
     private treeService: TreeService,
-    private classificationTypeService: ClassificationTypesService) { }
-
+    private classificationTypeService: ClassificationTypesService,
+    private categoryService: ClassificationCategoriesService) { }
 
   ngOnInit() {
-
     this.classificationTypeService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
       this.classificationTypes = classificationTypes;
     })
@@ -87,8 +89,15 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe(showDetail => {
       this.showDetail = showDetail;
     });
-  }
 
+
+    this.categoriesSubscription = this.categoryService.getCategories().subscribe((categories: Array<string>) => {
+      this.categories = categories;
+      if (categories.length > 0) {
+        this.classification.category = categories[0];
+      }
+    });
+  }
 
   backClicked(): void {
     this.classificationsService.selectClassification(undefined);
@@ -150,6 +159,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classification = { ...this.classificationClone };
   }
 
+
+  selectCategory(category: string) {
+    this.classification.category = category;
+  }
+
   private afterRequest() {
     this.requestInProgressService.setRequestInProgress(false);
     this.classificationsService.triggerClassificationSaved();
@@ -162,13 +176,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   private getClassificationInformation(classificationIdSelected: string) {
     if (this.action === ACTION.CREATE) { // CREATE
-      this.classification = new ClassificationDefinition();
-      this.selectedClassificationSubscription = this.classificationTypeService.getSelectedClassificationType().subscribe(value => {
-        if (this.classification) { this.classification.type = value; }
-      });
-      this.addDateToClassification();
-      this.classification.parentId = classificationIdSelected;
-      this.classificationClone = { ...this.classification };
+      this.initClassificationCreation(classificationIdSelected);
     } else {
       this.requestInProgress = true;
       this.classificationServiceSubscription = this.classificationsService.getClassification(classificationIdSelected)
@@ -186,7 +194,19 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classification.modified = date;
   }
 
+  private initClassificationCreation(classificationIdSelected: string) {
+    this.classification = new ClassificationDefinition();
+    this.selectedClassificationSubscription = this.classificationTypeService.getSelectedClassificationType().subscribe(value => {
+      if (this.classification) { this.classification.type = value; }
+    });
+    this.classification.category = this.categories[0];
+    this.addDateToClassification();
+    this.classification.parentId = classificationIdSelected;
+    this.classificationClone = { ...this.classification };
+  }
+
   ngOnDestroy(): void {
+
     if (this.masterAndDetailSubscription) { this.masterAndDetailSubscription.unsubscribe(); }
     if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
     if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe(); }
@@ -194,6 +214,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     if (this.classificationSavingSubscription) { this.classificationSavingSubscription.unsubscribe(); }
     if (this.classificationRemoveSubscription) { this.classificationRemoveSubscription.unsubscribe(); }
     if (this.selectedClassificationSubscription) { this.selectedClassificationSubscription.unsubscribe(); }
+    if (this.categoriesSubscription) { this.categoriesSubscription.unsubscribe(); }
 
   }
 }

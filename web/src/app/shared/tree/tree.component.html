@@ -1,7 +1,7 @@
 <tree-root #tree [nodes]="treeNodes" [options]="options" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
     <ng-template #treeNodeTemplate let-node let-index="index">
         <span class="text-top">
-            <svg-icon class="blue small fa-fw" src="./assets/icons/{{node.data.category === 'EXTERN'? 'external':
+            <svg-icon class="blue small fa-fw" src="./assets/icons/{{node.data.category === 'EXTERNAL'? 'external':
                 node.data.category === 'AUTOMATIC'? 'automatic':
                 node.data.category === 'MANUAL'? 'manual':
                 'closed'}}.svg"></svg-icon>
