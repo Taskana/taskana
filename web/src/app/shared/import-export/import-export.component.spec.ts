@@ -6,9 +6,10 @@ import {ClassificationDefinitionService} from '../../services/classification-def
 import {WorkbasketDefinitionService} from '../../services/workbasket-definition/workbasket-definition.service';
 import {AlertService} from '../../services/alert/alert.service';
 import {HttpClientModule} from '@angular/common/http';
-import {DomainService} from '../../services/domains/domain.service';
+import {DomainService} from 'app/services/domain/domain.service';
 import {Observable} from 'rxjs/Observable';
 import {ErrorModalService} from '../../services/errorModal/error-modal.service';
+import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 
 describe('ImportExportComponent', () => {
   let component: ImportExportComponent;
@@ -19,7 +20,10 @@ describe('ImportExportComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ImportExportComponent],
       imports: [HttpClientModule],
-      providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, AlertService, DomainService,
+      providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, AlertService,  {
+        provide: DomainService,
+        useClass: DomainServiceMock
+      },
         ErrorModalService]
     })
       .compileComponents();

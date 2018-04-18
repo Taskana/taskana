@@ -10,6 +10,9 @@ import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-item
 import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
 import { Direction } from 'app/models/sorting';
 
+import { DomainService } from 'app/services/domain/domain.service';
+import { RequestInProgressService } from '../requestInProgress/request-in-progress.service';
+
 @Injectable()
 export class WorkbasketService {
 
@@ -17,25 +20,28 @@ export class WorkbasketService {
 	public workBasketSaved = new Subject<number>();
 
 	// Sorting
-	readonly SORTBY = 'sortBy';
+	readonly SORTBY = 'sort-by';
 	readonly ORDER = 'order';
 
 	// Filtering
 	readonly NAME = 'name';
-	readonly NAMELIKE = 'nameLike';
-	readonly DESCLIKE = 'descLike';
+	readonly NAMELIKE = 'name-like';
+	readonly DESCLIKE = 'description-like';
 	readonly OWNER = 'owner';
-	readonly OWNERLIKE = 'ownerLike';
+	readonly OWNERLIKE = 'owner-like';
 	readonly TYPE = 'type';
 	readonly KEY = 'key';
-	readonly KEYLIKE = 'keyLike';
+	readonly KEYLIKE = 'key-like';
 
 	// Access
-	readonly REQUIREDPERMISSION = 'requiredPermission';
+	readonly REQUIREDPERMISSION = 'required-permission';
 
 	// Pagination
 	readonly PAGE = 'page';
-	readonly PAGESIZE = 'pagesize';
+	readonly PAGESIZE = 'page-size';
+
+	// Domain
+	readonly DOMAIN = 'domain';
 
 	httpOptions = {
 		headers: new HttpHeaders({
@@ -47,9 +53,13 @@ export class WorkbasketService {
 	page = 1;
 	pageSize = 9;
 
-	private workbasketSummaryRef: Observable<WorkbasketSummaryResource>;
+	private workbasketSummaryRef: Observable<WorkbasketSummaryResource> = new Observable();
 
-	constructor(private httpClient: HttpClient) { }
+	constructor(
+		private httpClient: HttpClient,
+		private domainService: DomainService,
+		private requestInProgressService: RequestInProgressService
+	) { }
 
 	// #region "REST calls"
 	// GET
@@ -65,16 +75,24 @@ export class WorkbasketService {
 		key: string = undefined,
 		keyLike: string = undefined,
 		requiredPermission: string = undefined,
-		allPages: boolean = false): Observable<WorkbasketSummaryResource> {
+		allPages: boolean = false) {
+
 		if (this.workbasketSummaryRef && !forceRequest) {
 			return this.workbasketSummaryRef;
 		}
-		return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
-			`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(
-				sortBy, order, name,
-				nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
-				!allPages ? this.page : undefined, !allPages ? this.pageSize : undefined)}`, this.httpOptions);
 
+		return this.domainService.getSelectedDomain().mergeMap(domain => {
+			return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
+				`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(
+					sortBy, order, name,
+					nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
+					!allPages ? this.page : undefined, !allPages ? this.pageSize : undefined, domain)}`, this.httpOptions)
+				.do(workbaskets => {
+					return workbaskets;
+				});
+		}).do(() => {
+			this.domainService.domainChangedComplete();
+		});
 	}
 	// GET
 	getWorkBasket(id: string): Observable<Workbasket> {
@@ -154,7 +172,8 @@ export class WorkbasketService {
 		keyLike: string,
 		requiredPermission: string,
 		page: number,
-		pageSize: number): string {
+		pageSize: number,
+		domain: string): string {
 		let query = '?';
 		query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
 		query += order ? `${this.ORDER}=${order}&` : '';
@@ -169,6 +188,7 @@ export class WorkbasketService {
 		query += requiredPermission ? `${this.REQUIREDPERMISSION}=${requiredPermission}&` : '';
 		query += page ? `${this.PAGE}=${page}&` : '';
 		query += pageSize ? `${this.PAGESIZE}=${pageSize}&` : '';
+		query += domain ? `${this.DOMAIN}=${domain}&` : '';
 
 		if (query.lastIndexOf('&') === query.length - 1) {
 			query = query.slice(0, query.lastIndexOf('&'))

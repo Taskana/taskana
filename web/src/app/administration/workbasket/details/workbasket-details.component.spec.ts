@@ -39,6 +39,8 @@ import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pi
 import { SelectWorkBasketPipe } from 'app/pipes/selectedWorkbasket/seleted-workbasket.pipe';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { DomainService } from 'app/services/domain/domain.service';
+import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 
 @Component({
 	selector: 'taskana-filter',
@@ -68,7 +70,7 @@ describe('WorkbasketDetailsComponent', () => {
 		new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
 
 	const routes: Routes = [
-		{ path: '*', component: DummyDetailComponent}
+		{ path: '*', component: DummyDetailComponent }
 	];
 
 	beforeEach(async(() => {
@@ -78,7 +80,10 @@ describe('WorkbasketDetailsComponent', () => {
 				IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
 				DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent, SelectWorkBasketPipe],
 			providers: [WorkbasketService, MasterAndDetailService, PermissionService, ErrorModalService, RequestInProgressService,
-				AlertService, SavingWorkbasketService]
+				AlertService, SavingWorkbasketService, {
+					provide: DomainService,
+					useClass: DomainServiceMock
+				}]
 		})
 			.compileComponents();
 	}));

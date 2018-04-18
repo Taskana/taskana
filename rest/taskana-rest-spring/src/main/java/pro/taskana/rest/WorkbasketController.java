@@ -59,16 +59,17 @@ public class WorkbasketController extends AbstractPagingController {
 
     private static final String LIKE = "%";
     private static final String NAME = "name";
-    private static final String NAME_LIKE = "nameLike";
+    private static final String NAME_LIKE = "name-like";
     private static final String KEY = "key";
-    private static final String KEY_LIKE = "keyLike";
+    private static final String KEY_LIKE = "key-like";
     private static final String OWNER = "owner";
-    private static final String OWNER_LIKE = "ownerLike";
-    private static final String DESCRIPTION_LIKE = "descriptionLike";
-    private static final String REQUIRED_PERMISSION = "requiredPermission";
+    private static final String OWNER_LIKE = "owner-like";
+    private static final String DESCRIPTION_LIKE = "description-like";
+    private static final String DOMAIN = "domain";
+    private static final String REQUIRED_PERMISSION = "required-permission";
     private static final String TYPE = "type";
 
-    private static final String SORT_BY = "sortBy";
+    private static final String SORT_BY = "sort-by";
     private static final String SORT_DIRECTION = "order";
 
     private static final String PAGING_PAGE = "page";
@@ -280,7 +281,7 @@ public class WorkbasketController extends AbstractPagingController {
             params.remove(NAME);
         }
         if (params.containsKey(NAME_LIKE)) {
-            query.nameLike(LIKE + params.get(NAME_LIKE) + LIKE);
+            query.nameLike(LIKE + params.get(NAME_LIKE).get(0) + LIKE);
             params.remove(NAME_LIKE);
         }
         if (params.containsKey(KEY)) {
@@ -289,7 +290,7 @@ public class WorkbasketController extends AbstractPagingController {
             params.remove(KEY);
         }
         if (params.containsKey(KEY_LIKE)) {
-            query.keyLike(LIKE + params.get(KEY_LIKE) + LIKE);
+            query.keyLike(LIKE + params.get(KEY_LIKE).get(0) + LIKE);
             params.remove(KEY_LIKE);
         }
         if (params.containsKey(OWNER)) {
@@ -298,12 +299,16 @@ public class WorkbasketController extends AbstractPagingController {
             params.remove(OWNER);
         }
         if (params.containsKey(OWNER_LIKE)) {
-            query.ownerLike(LIKE + params.get(OWNER_LIKE) + LIKE);
+            query.ownerLike(LIKE + params.get(OWNER_LIKE).get(0) + LIKE);
             params.remove(OWNER_LIKE);
         }
         if (params.containsKey(DESCRIPTION_LIKE)) {
-            query.descriptionLike(LIKE + params.get(DESCRIPTION_LIKE) + LIKE);
+            query.descriptionLike(LIKE + params.get(DESCRIPTION_LIKE).get(0) + LIKE);
             params.remove(DESCRIPTION_LIKE);
+        }
+        if (params.containsKey(DOMAIN)) {
+            query.domainIn(extractCommaSeparatedFields(params.get(DOMAIN)));
+            params.remove(DOMAIN);
         }
         if (params.containsKey(TYPE)) {
             switch (params.getFirst(TYPE)) {
@@ -320,7 +325,7 @@ public class WorkbasketController extends AbstractPagingController {
                     query.typeIn(WorkbasketType.TOPIC);
                     break;
                 default:
-                    throw new InvalidArgumentException("Unknown Workbaskettype '" + params.getFirst(TYPE) + "'");
+                    throw new InvalidArgumentException("Unknown Workbasket type '" + params.getFirst(TYPE) + "'");
             }
             params.remove(TYPE);
         }

@@ -13,6 +13,7 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
 import { PermissionService } from 'app/services/permission/permission.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
+import { DomainService } from 'app/services/domain/domain.service';
 
 
 @Component({
@@ -41,7 +42,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		private route: ActivatedRoute,
 		private router: Router,
 		private masterAndDetailService: MasterAndDetailService,
-		private permissionService: PermissionService) { }
+		private permissionService: PermissionService,
+		private domainService: DomainService) { }
 
 
 
@@ -102,6 +104,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
 		if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
 			this.workbasket = new Workbasket(undefined);
+			this.workbasket.domain = this.domainService.getSelectedDomainValue();
 			this.requestInProgress = false;
 		} else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
 			this.workbasket = { ...this.workbasketCopy };

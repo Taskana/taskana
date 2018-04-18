@@ -26,6 +26,8 @@ import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/g
 import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
 import { SelectWorkBasketPipe } from 'app/pipes/selectedWorkbasket/seleted-workbasket.pipe';
 import { LinksWorkbasketSummary } from '../../../../models/links-workbasket-summary';
+import { DomainService } from 'app/services/domain/domain.service';
+import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 
 
 const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource({
@@ -57,7 +59,11 @@ describe('DistributionTargetsComponent', () => {
 			imports: [AngularSvgIconModule, HttpClientModule, HttpModule, JsonpModule],
 			declarations: [DistributionTargetsComponent, SpinnerComponent, GeneralMessageModalComponent,
 				FilterComponent, SelectWorkBasketPipe, IconTypeComponent, DualListComponent],
-			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService]
+			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
+				{
+					provide: DomainService,
+					useClass: DomainServiceMock
+				  }]
 		})
 			.compileComponents();
 	}));
