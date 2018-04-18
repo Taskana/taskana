@@ -189,9 +189,12 @@ public interface TaskService {
      *             Thrown if the current user is not authorized to transfer this {@link Task} to the target work basket
      * @throws InvalidWorkbasketException
      *             Thrown if either the source or the target workbasket has a missing required property
+     * @throws InvalidStateException
+     *             Thrown if the task is in a state which does not allow transferring
      */
     Task transfer(String taskId, String destinationWorkbasketId)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException;
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        InvalidStateException;
 
     /**
      * Transfer a task to another work basket. The transfer sets the transferred flag and resets the read flag.
@@ -211,9 +214,12 @@ public interface TaskService {
      *             Thrown if the current user is not authorized to transfer this {@link Task} to the target work basket
      * @throws InvalidWorkbasketException
      *             Thrown if either the source or the target workbasket has a missing required property
+     * @throws InvalidStateException
+     *             Thrown if the task is in a state which does not allow transferring
      */
     Task transfer(String taskId, String workbasketKey, String domain)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException;
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        InvalidStateException;
 
     /**
      * Marks a task as read.

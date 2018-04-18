@@ -909,7 +909,8 @@ public class TaskServiceImplTest {
     @Test
     public void testTransferTaskToDestinationWorkbasketWithoutSecurity()
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-        ClassificationAlreadyExistException, InvalidWorkbasketException, ClassificationNotFoundException {
+        ClassificationAlreadyExistException, InvalidWorkbasketException, ClassificationNotFoundException,
+        InvalidStateException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Workbasket destinationWorkbasket = createWorkbasket("2", "k1");
         Workbasket sourceWorkbasket = createWorkbasket("47", "key47");
@@ -951,7 +952,8 @@ public class TaskServiceImplTest {
     @Test
     public void testTransferTaskToDestinationWorkbasketUsingSecurityTrue()
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-        ClassificationAlreadyExistException, InvalidWorkbasketException, ClassificationNotFoundException {
+        ClassificationAlreadyExistException, InvalidWorkbasketException, ClassificationNotFoundException,
+        InvalidStateException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Workbasket destinationWorkbasket = createWorkbasket("2", "k2");
         Classification dummyClassification = createDummyClassification();

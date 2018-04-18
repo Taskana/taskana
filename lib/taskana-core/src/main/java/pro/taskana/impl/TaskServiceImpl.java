@@ -398,12 +398,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task transfer(String taskId, String destinationWorkbasketId)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        InvalidStateException {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketId = {})", taskId, destinationWorkbasketId);
         TaskImpl task = null;
         try {
             taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
+
+            if (task.getState() == TaskState.COMPLETED) {
+                throw new InvalidStateException("Completed task with id " + task.getId() + " cannot be transferred.");
+            }
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
             workbasketService.checkAuthorization(destinationWorkbasketId, WorkbasketPermission.APPEND);
@@ -433,13 +438,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task transfer(String taskId, String destinationWorkbasketKey, String domain)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        InvalidStateException {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketKey = {}, domain = {})", taskId,
             destinationWorkbasketKey, domain);
         TaskImpl task = null;
         try {
             taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
+
+            if (task.getState() == TaskState.COMPLETED) {
+                throw new InvalidStateException("Completed task with id " + task.getId() + " cannot be transferred.");
+            }
 
             // transfer requires TRANSFER in source and APPEND on destination workbasket
             workbasketService.checkAuthorization(destinationWorkbasketKey, domain, WorkbasketPermission.APPEND);
@@ -549,6 +559,10 @@ public class TaskServiceImpl implements TaskService {
             if (taskSummary == null) {
                 bulkLog.addError(currentTaskId,
                     new TaskNotFoundException(currentTaskId, "Task with id " + currentTaskId + " was not found."));
+                taskIdIterator.remove();
+            } else if (taskSummary.getTaskState() == TaskState.COMPLETED) {
+                bulkLog.addError(currentTaskId,
+                    new InvalidStateException("Completed task with id " + currentTaskId + " cannot be transferred."));
                 taskIdIterator.remove();
             } else if (!sourceWorkbaskets.stream()
                 .anyMatch(wb -> taskSummary.getWorkbasketId().equals(wb.getId()))) {
