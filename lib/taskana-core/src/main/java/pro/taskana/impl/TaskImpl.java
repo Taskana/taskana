@@ -487,6 +487,12 @@ public class TaskImpl implements Task {
         taskSummary.setCustom8(custom8);
         taskSummary.setCustom9(custom9);
         taskSummary.setCustom10(custom10);
+        taskSummary.setCustom11(custom11);
+        taskSummary.setCustom12(custom12);
+        taskSummary.setCustom13(custom13);
+        taskSummary.setCustom14(custom14);
+        taskSummary.setCustom15(custom15);
+        taskSummary.setCustom16(custom16);
         taskSummary.setDue(due);
         taskSummary.setTaskId(id);
         taskSummary.setModified(modified);

@@ -514,8 +514,15 @@ public class TaskSummaryImpl implements TaskSummary {
         result = prime * result + ((classificationSummary == null) ? 0 : classificationSummary.hashCode());
         result = prime * result + ((completed == null) ? 0 : completed.hashCode());
         result = prime * result + ((created == null) ? 0 : created.hashCode());
+        result = prime * result + ((creator == null) ? 0 : creator.hashCode());
         result = prime * result + ((custom1 == null) ? 0 : custom1.hashCode());
         result = prime * result + ((custom10 == null) ? 0 : custom10.hashCode());
+        result = prime * result + ((custom11 == null) ? 0 : custom11.hashCode());
+        result = prime * result + ((custom12 == null) ? 0 : custom12.hashCode());
+        result = prime * result + ((custom13 == null) ? 0 : custom13.hashCode());
+        result = prime * result + ((custom14 == null) ? 0 : custom14.hashCode());
+        result = prime * result + ((custom15 == null) ? 0 : custom15.hashCode());
+        result = prime * result + ((custom16 == null) ? 0 : custom16.hashCode());
         result = prime * result + ((custom2 == null) ? 0 : custom2.hashCode());
         result = prime * result + ((custom3 == null) ? 0 : custom3.hashCode());
         result = prime * result + ((custom4 == null) ? 0 : custom4.hashCode());
@@ -525,12 +532,10 @@ public class TaskSummaryImpl implements TaskSummary {
         result = prime * result + ((custom8 == null) ? 0 : custom8.hashCode());
         result = prime * result + ((custom9 == null) ? 0 : custom9.hashCode());
         result = prime * result + ((due == null) ? 0 : due.hashCode());
-        result = prime * result + ((taskId == null) ? 0 : taskId.hashCode());
         result = prime * result + (isRead ? 1231 : 1237);
         result = prime * result + (isTransferred ? 1231 : 1237);
         result = prime * result + ((modified == null) ? 0 : modified.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((creator == null) ? 0 : creator.hashCode());
         result = prime * result + ((note == null) ? 0 : note.hashCode());
         result = prime * result + ((owner == null) ? 0 : owner.hashCode());
         result = prime * result + ((parentBusinessProcessId == null) ? 0 : parentBusinessProcessId.hashCode());
@@ -538,6 +543,7 @@ public class TaskSummaryImpl implements TaskSummary {
         result = prime * result + ((primaryObjRef == null) ? 0 : primaryObjRef.hashCode());
         result = prime * result + priority;
         result = prime * result + ((state == null) ? 0 : state.hashCode());
+        result = prime * result + ((taskId == null) ? 0 : taskId.hashCode());
         result = prime * result + ((workbasketSummary == null) ? 0 : workbasketSummary.hashCode());
         return result;
     }
@@ -550,7 +556,7 @@ public class TaskSummaryImpl implements TaskSummary {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof TaskSummaryImpl)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         TaskSummaryImpl other = (TaskSummaryImpl) obj;
@@ -596,6 +602,13 @@ public class TaskSummaryImpl implements TaskSummary {
         } else if (!created.equals(other.created)) {
             return false;
         }
+        if (creator == null) {
+            if (other.creator != null) {
+                return false;
+            }
+        } else if (!creator.equals(other.creator)) {
+            return false;
+        }
         if (custom1 == null) {
             if (other.custom1 != null) {
                 return false;
@@ -608,6 +621,48 @@ public class TaskSummaryImpl implements TaskSummary {
                 return false;
             }
         } else if (!custom10.equals(other.custom10)) {
+            return false;
+        }
+        if (custom11 == null) {
+            if (other.custom11 != null) {
+                return false;
+            }
+        } else if (!custom11.equals(other.custom11)) {
+            return false;
+        }
+        if (custom12 == null) {
+            if (other.custom12 != null) {
+                return false;
+            }
+        } else if (!custom12.equals(other.custom12)) {
+            return false;
+        }
+        if (custom13 == null) {
+            if (other.custom13 != null) {
+                return false;
+            }
+        } else if (!custom13.equals(other.custom13)) {
+            return false;
+        }
+        if (custom14 == null) {
+            if (other.custom14 != null) {
+                return false;
+            }
+        } else if (!custom14.equals(other.custom14)) {
+            return false;
+        }
+        if (custom15 == null) {
+            if (other.custom15 != null) {
+                return false;
+            }
+        } else if (!custom15.equals(other.custom15)) {
+            return false;
+        }
+        if (custom16 == null) {
+            if (other.custom16 != null) {
+                return false;
+            }
+        } else if (!custom16.equals(other.custom16)) {
             return false;
         }
         if (custom2 == null) {
@@ -673,13 +728,6 @@ public class TaskSummaryImpl implements TaskSummary {
         } else if (!due.equals(other.due)) {
             return false;
         }
-        if (taskId == null) {
-            if (other.taskId != null) {
-                return false;
-            }
-        } else if (!taskId.equals(other.taskId)) {
-            return false;
-        }
         if (isRead != other.isRead) {
             return false;
         }
@@ -698,13 +746,6 @@ public class TaskSummaryImpl implements TaskSummary {
                 return false;
             }
         } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (creator == null) {
-            if (other.creator != null) {
-                return false;
-            }
-        } else if (!creator.equals(other.creator)) {
             return false;
         }
         if (note == null) {
@@ -746,6 +787,13 @@ public class TaskSummaryImpl implements TaskSummary {
             return false;
         }
         if (state != other.state) {
+            return false;
+        }
+        if (taskId == null) {
+            if (other.taskId != null) {
+                return false;
+            }
+        } else if (!taskId.equals(other.taskId)) {
             return false;
         }
         if (workbasketSummary == null) {
