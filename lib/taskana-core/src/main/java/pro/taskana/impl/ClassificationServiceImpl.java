@@ -202,7 +202,7 @@ public class ClassificationServiceImpl implements ClassificationService {
      */
     private void initDefaultClassificationValues(ClassificationImpl classification) throws InvalidArgumentException {
         Instant now = Instant.now();
-        if (classification.getId() == null) {
+        if (classification.getId() == null || "".equals(classification.getId())) {
             classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
         }
 
