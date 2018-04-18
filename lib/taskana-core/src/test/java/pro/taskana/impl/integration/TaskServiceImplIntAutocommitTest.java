@@ -36,6 +36,7 @@ import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
@@ -221,7 +222,8 @@ public class TaskServiceImplIntAutocommitTest {
     public void shouldTransferTaskToOtherWorkbasket()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         ClassificationAlreadyExistException, TaskNotFoundException, InterruptedException, TaskAlreadyExistException,
-        InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException {
+        InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
+        InvalidStateException {
         Workbasket sourceWB;
         Workbasket destinationWB;
         WorkbasketImpl wb;
@@ -278,7 +280,7 @@ public class TaskServiceImplIntAutocommitTest {
     @Test(expected = TaskNotFoundException.class)
     public void shouldNotTransferAnyTask()
         throws WorkbasketNotFoundException, NotAuthorizedException, TaskNotFoundException, InvalidWorkbasketException,
-        ClassificationNotFoundException {
+        ClassificationNotFoundException, InvalidStateException {
         taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
     }
 
@@ -287,7 +289,7 @@ public class TaskServiceImplIntAutocommitTest {
     public void shouldNotTransferByFailingSecurity() throws WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException, SQLException,
         TaskNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
-        WorkbasketAlreadyExistException, DomainNotFoundException {
+        WorkbasketAlreadyExistException, DomainNotFoundException, InvalidStateException {
         final String user = CurrentUserContext.getUserid();
 
         // Set up Security for this Test

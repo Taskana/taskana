@@ -1,4 +1,4 @@
--- KSC authorizations (                    ID,                                                                             WB_ID,    ACCESS_ID, READ, OPEN, APPEND, TRANSFER, DISTRIBUTE, C1, .., C12)
+-- KSC authorizations                             (ID                                        , WB_ID                                     ,    ACCESS_ID, READ, OPEN, APPEND, TRANSFER, DISTRIBUTE, C1, .., C12)
 -- PPKs
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000001', 'WBI:100000000000000000000000000000000004', 'teamlead_1', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000002', 'WBI:100000000000000000000000000000000005', 'teamlead_2', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
@@ -15,11 +15,11 @@ INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000012', 'WBI:100000000000000000000000000000000009',    'group_2', true, true, true,   true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
 -- teamlead substitution
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000013', 'WBI:100000000000000000000000000000000004', 'teamlead_2', true, true, true,   true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000014', 'WBI:100000000000000000000000000000000005', 'teamlead_1', true, true, true,   true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
+INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000014', 'WBI:100000000000000000000000000000000005', 'teamlead_1', true, true, true,   false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
 -- cross team tranfers
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000015', 'WBI:100000000000000000000000000000000006',    'group_2', true, false, true,  false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000016', 'WBI:100000000000000000000000000000000007',    'group_2', true, false, true,  false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
-INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000017', 'WBI:100000000000000000000000000000000008',    'group_1', true, false, false,  false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
+INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000017', 'WBI:100000000000000000000000000000000008',    'group_1', true, false, false, false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000018', 'WBI:100000000000000000000000000000000009',    'group_1', true, false, true,  false,    false,      false, false, false, false, false, false, false, false, false, false, false, false);
 -- Team GPK access
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000019', 'WBI:100000000000000000000000000000000002',    'group_1', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
