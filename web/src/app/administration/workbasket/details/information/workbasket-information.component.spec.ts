@@ -4,7 +4,7 @@ import { WorkbasketInformationComponent } from './workbasket-information.compone
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule, JsonpModule } from '@angular/http';
+import { HttpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
 import { Component } from '@angular/core';
@@ -25,6 +25,8 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { DomainService } from 'app/services/domain/domain.service';
+import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -48,7 +50,11 @@ describe('InformationComponent', () => {
 			declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe,
 				RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent, DummyDetailComponent],
 			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, RouterTestingModule.withRoutes(routes)],
-			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService]
+			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
+				{
+					provide: DomainService,
+					useClass: DomainServiceMock
+				}]
 
 		})
 			.compileComponents();

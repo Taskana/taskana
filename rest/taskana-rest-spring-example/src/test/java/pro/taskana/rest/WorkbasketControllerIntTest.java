@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Collections;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,18 +39,24 @@ import pro.taskana.rest.resource.WorkbasketSummaryResource;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Import(RestConfiguration.class)
 public class WorkbasketControllerIntTest {
-
+    String url = "http://127.0.0.1:";
+    RestTemplate template;
+    HttpEntity<String> request;
     @LocalServerPort
     int port;
 
-    @Test
-    public void testGetAllWorkbaskets() {
-        RestTemplate template = getRestTemplate();
+    @Before
+    public void before() {
+        template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
+        request = new HttpEntity<String>(headers);
+    }
+
+    @Test
+    public void testGetAllWorkbaskets() {
         ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/workbaskets", HttpMethod.GET, request,
+                url + port + "/v1/workbaskets", HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
@@ -57,30 +64,23 @@ public class WorkbasketControllerIntTest {
 
     @Test
     public void testGetAllWorkbasketsKeepingFilters() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
+        String parameters = "/v1/workbaskets?type=PERSONAL&sort-by=key&order=desc";
         ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/workbaskets?type=PERSONAL&sortBy=key&order=desc", HttpMethod.GET, request,
+                url + port + parameters, HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/workbaskets?type=PERSONAL&sortBy=key&order=desc"));
+            .endsWith(parameters));
     }
 
     @Test
     public void testThrowsExceptionIfInvalidFilterIsUsed() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         try {
             template.exchange(
-                "http://127.0.0.1:" + port + "/v1/workbaskets?invalid=PERSONAL", HttpMethod.GET, request,
+                    url + port + "/v1/workbaskets?invalid=PERSONAL", HttpMethod.GET, request,
                 new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
                 });
             fail();
@@ -92,13 +92,10 @@ public class WorkbasketControllerIntTest {
 
     @Test
     public void testGetSecondPageSortedByKey() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
+
+        String parameters = "/v1/workbaskets?sort-by=key&order=desc&page=2&page-size=5";
         ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/workbaskets?sortBy=key&order=desc&page=2&page-size=5", HttpMethod.GET,
-            request,
+                url + port + parameters, HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
             });
         assertEquals(5, response.getBody().getContent().size());
@@ -107,7 +104,7 @@ public class WorkbasketControllerIntTest {
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/workbaskets?sortBy=key&order=desc&page=2&page-size=5"));
+            .endsWith(parameters));
         assertNotNull(response.getBody().getLink("allWorkbaskets"));
         assertTrue(response.getBody()
             .getLink("allWorkbaskets")

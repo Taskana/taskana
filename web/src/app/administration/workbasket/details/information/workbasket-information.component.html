@@ -42,13 +42,10 @@
                         * Owner is required
                     </div>
                 </div>
-                <div class="form-group required">
+                <div class="form-group ">
                     <label for="wb-domain" class="control-label">Domain</label>
-                    <input type="text" required #domain="ngModel" class="form-control" id="wb-domain" placeholder="Domain" [(ngModel)]="workbasket.domain"
+                    <input type="text" #domain="ngModel" class="form-control" disabled id="wb-domain" placeholder="Domain" [(ngModel)]="workbasket.domain"
                         name="workbasket.domain">
-                    <div *ngIf="!domain.valid" class="required-text">
-                        * Domain is required
-                    </div>
                 </div>
                 <div class="form-group">
                     <label for="wb-type" class="control-label">Type</label>

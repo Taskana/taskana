@@ -6,6 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { NavBarComponent } from './nav-bar.component';
 
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
+import { DomainService } from 'app/services/domain/domain.service';
+import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 
 describe('NavBarComponent', () => {
   let component: NavBarComponent;
@@ -24,7 +26,10 @@ describe('NavBarComponent', () => {
         HttpClientModule,
         RouterTestingModule.withRoutes(routes),
       ],
-      providers: [SelectedRouteService]
+      providers: [SelectedRouteService, {
+        provide: DomainService,
+        useClass: DomainServiceMock
+      }]
     })
       .compileComponents();
   }));

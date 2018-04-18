@@ -28,7 +28,8 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/services/workbasket-definition/workbasket-definition.service';
-import { DomainService } from 'app/services/domains/domain.service';
+import { DomainService } from 'app/services/domain/domain.service';
+import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -54,7 +55,10 @@ describe('WorkbasketListToolbarComponent', () => {
 			declarations: [WorkbasketListToolbarComponent, SortComponent,
 				FilterComponent, IconTypeComponent, DummyDetailComponent, MapValuesPipe, ImportExportComponent],
 			providers: [ErrorModalService, WorkbasketService, RequestInProgressService, AlertService,
-				ClassificationDefinitionService, WorkbasketDefinitionService, DomainService]
+				ClassificationDefinitionService, WorkbasketDefinitionService, {
+					provide: DomainService,
+					useClass: DomainServiceMock
+				}]
 		})
 			.compileComponents();
 	}));

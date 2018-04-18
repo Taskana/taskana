@@ -1,8 +1,18 @@
 $background-color: #224562;
 $background-color-sidenav: #263847;
+$selected-border-color: #22a39f;
 .navbar-inverse {
     border:none;
     background-color: $background-color;
+}
+
+.navbar-toggle{
+    margin-right: 0px;
+}
+ul.nav > p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 0px;
 }
 
 .navbar-inverse .navbar-toggle, .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
@@ -25,6 +35,7 @@ p.navbar-brand >a{
     vertical-align: middle;
     text-decoration: none;
     color: #9d9d9d;
+    font-size: 20px;
     &:hover {
         color: white;
     }
@@ -38,6 +49,29 @@ p.navbar-brand >a{
     top: 0;
     z-index: 990;
 
+}
+
+.domain-form {
+    margin: 13px;
+    color: white;
+    font-size: 18px;
+    > div{
+        cursor: pointer;
+        > button {
+            color: white;
+            background-color: $background-color;
+            border: none;
+            font-size: 16px;
+            border-bottom: 1px solid grey;
+            margin-left:5px;
+        }
+    }
+}
+
+
+.nav-content{
+    margin-top: 25px;
+    margin-left: 8px;
 }
  
 /*
@@ -64,9 +98,6 @@ p.navbar-brand >a{
     box-shadow: none;
     height: 100%;
     background-color: $background-color-sidenav;
-    &> div {
-        margin-bottom: 20px;
-    }
 }
 
 .navbar {
@@ -92,7 +123,7 @@ p.navbar-brand >a{
     background-color: transparent;
      &> span{
         padding-left: 10px;
-        border-left: #22a39f 5px solid;
+        border-left: $selected-border-color 5px solid;
         
         color: white;
     }
