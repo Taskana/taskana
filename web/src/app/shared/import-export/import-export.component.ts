@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/services/workbasket-definition/workbasket-definition.service';
-import { DomainService } from 'app/services/domains/domain.service';
+import { DomainService } from 'app/services/domain/domain.service';
 import { ImportType } from 'app/models/import-type';
 
 @Component({

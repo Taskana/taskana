@@ -5,6 +5,7 @@ import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { ClassificationDetailsComponent } from './classification-details.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
@@ -20,6 +21,8 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
 import { ClassificationCategoriesService } from 'app/services/classification-categories-service/classification-categories.service';
+import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
+import { DomainService } from 'app/services/domain/domain.service';
 
 
 @Component({
@@ -33,7 +36,7 @@ const routes: Routes = [
   { path: 'administration/classifications', component: DummyDetailComponent }
 ];
 
-fdescribe('ClassificationDetailsComponent', () => {
+describe('ClassificationDetailsComponent', () => {
   let component: ClassificationDetailsComponent;
   let fixture: ComponentFixture<ClassificationDetailsComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
@@ -44,10 +47,13 @@ fdescribe('ClassificationDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
+      imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
       declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
       providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
-        TreeService, ClassificationTypesService, ClassificationCategoriesService]
+        TreeService, ClassificationTypesService, ClassificationCategoriesService,  {
+          provide: DomainService,
+          useClass: DomainServiceMock
+        }]
     })
       .compileComponents();
   }));

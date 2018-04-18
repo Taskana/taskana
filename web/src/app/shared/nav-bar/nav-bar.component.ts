@@ -3,6 +3,7 @@ import { environment } from 'environments/environment';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
 import { Subscription } from 'rxjs/Subscription';
 import { trigger, state, style, transition, keyframes, animate } from '@angular/animations';
+import { DomainService } from 'app/services/domain/domain.service';
 
 @Component({
   selector: 'taskana-nav-bar',
@@ -27,27 +28,41 @@ export class NavBarComponent implements OnInit, OnDestroy {
   route: string;
   title = 'Taskana administration';
   showNavbar = false;
+  domains: Array<string> = [];
+  selectedDomain: string;
 
   adminUrl: string = environment.taskanaAdminUrl;
   monitorUrl: string = environment.taskanaMonitorUrl;
   workplaceUrl: string = environment.taskanaWorkplaceUrl;
 
-  selectedRouteSubscription: Subscription
+  selectedRouteSubscription: Subscription;
 
-  constructor(private selectedRouteService: SelectedRouteService) { }
+  constructor(
+    private selectedRouteService: SelectedRouteService,
+    private domainService: DomainService) { }
 
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
       this.selectedRoute = value;
-    })
+    });
+    this.domainService.getDomains().subscribe(domains => {
+      this.domains = domains;
+    });
+
+    this.domainService.getSelectedDomain().subscribe(domain => {
+      this.selectedDomain = domain;
+    });
   }
 
-  ngOnDestroy(): void {
-    if (this.selectedRouteSubscription) { this.selectedRouteSubscription.unsubscribe(); }
+  selectDomain(domain) {
+    this.domainService.selectDomain(domain);
   }
 
   toogleNavBar() {
     this.showNavbar = !this.showNavbar;
   }
 
+  ngOnDestroy(): void {
+    if (this.selectedRouteSubscription) { this.selectedRouteSubscription.unsubscribe(); }
+  }
 }

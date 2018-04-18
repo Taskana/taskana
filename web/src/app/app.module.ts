@@ -66,7 +66,7 @@ import { MapValuesPipe } from './pipes/mapValues/map-values.pipe';
 import { RemoveNoneTypePipe } from './pipes/removeNoneType/remove-none-type.pipe';
 import { SelectWorkBasketPipe } from './pipes/selectedWorkbasket/seleted-workbasket.pipe';
 import { SpreadNumberPipe } from './pipes/spreadNumber/spread-number';
-import { DomainService } from './services/domains/domain.service';
+import { DomainService } from './services/domain/domain.service';
 
 const MODULES = [
   BrowserModule,

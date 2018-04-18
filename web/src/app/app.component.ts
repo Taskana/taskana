@@ -43,7 +43,6 @@ export class AppComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-
 		this.routerSubscription = this.router.events.subscribe(event => {
 			if (event instanceof NavigationStart) {
 				this.selectedRouteService.selectRoute(event);

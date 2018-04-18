@@ -4,8 +4,8 @@ import { environment } from 'environments/environment';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/operator/map'
 
 import { Classification } from 'app/models/classification';
 import { TreeNodeModel } from 'app/models/tree-node';
@@ -13,11 +13,12 @@ import { ClassificationDefinition } from 'app/models/classification-definition';
 
 import { ClassificationResource } from '../../models/classification-resource';
 import { ClassificationTypesService } from '../classification-types/classification-types.service';
+import { DomainService } from '../domain/domain.service';
 
 @Injectable()
 export class ClassificationsService {
 
-  private url = environment.taskanaRestUrl + '/v1/classifications';
+  private url = environment.taskanaRestUrl + '/v1/classifications/';
   private classificationSelected = new Subject<string>();
   private classificationSaved = new Subject<number>();
 
@@ -31,20 +32,28 @@ export class ClassificationsService {
   private classificationRef: Observable<ClassificationResource>;
   private classificationTypes: Array<string>;
 
-  constructor(private httpClient: HttpClient, private classificationTypeService: ClassificationTypesService) {
+  constructor(
+    private httpClient: HttpClient,
+    private classificationTypeService: ClassificationTypesService,
+    private domainService: DomainService) {
   }
 
   // GET
-  getClassifications(forceRequest = false, domain = ''): Observable<any> {
+  getClassifications(forceRequest = false): Observable<any> {
+    return this.domainService.getSelectedDomain().mergeMap(domain => {
+      const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
+      if (!forceRequest && this.classificationRef) {
+        return this.getClassificationObservable(this.classificationRef)
+      }
+      this.classificationRef = this.httpClient.get<ClassificationResource>(
+        `${environment.taskanaRestUrl}/v1/classifications/?domain=${domain}`,
+        this.httpOptions)
 
-    const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
-    if (!forceRequest && this.classificationRef) {
-      return this.getClassificationObservable(domain, this.classificationRef)
-    }
-    this.classificationRef = this.httpClient.get<ClassificationResource>(`${environment.taskanaRestUrl}/v1/classifications`,
-      this.httpOptions);
-    return this.getClassificationObservable(domain, this.classificationRef)
+      return this.getClassificationObservable(this.classificationRef);
 
+    }).do(() => {
+      this.domainService.domainChangedComplete();
+    });
   }
 
   // GET
@@ -81,6 +90,7 @@ export class ClassificationsService {
 
   getSelectedClassification(): Observable<string> {
     return this.classificationSelected.asObservable();
+
   }
 
   triggerClassificationSaved() {
@@ -93,7 +103,7 @@ export class ClassificationsService {
 
   // #endregion
 
-  private getClassificationObservable(domain: string, clasisficationRef: Observable<any>): Observable<any> {
+  private getClassificationObservable(clasisficationRef: Observable<any>): Observable<any> {
     const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
     return Observable.combineLatest(
       clasisficationRef,
@@ -103,12 +113,12 @@ export class ClassificationsService {
       if (!data[0]._embedded) {
         return [];
       }
-      return this.buildHierarchy(data[0]._embedded.classificationSummaryResourceList, data[1], domain);
+      return this.buildHierarchy(data[0]._embedded.classificationSummaryResourceList, data[1]);
     })
 
   }
 
-  private buildHierarchy(classifications: Array<Classification>, type: string, domain: string) {
+  private buildHierarchy(classifications: Array<Classification>, type: string) {
     const roots = []
     const children = new Array<any>();
 
@@ -146,5 +156,6 @@ export class ClassificationsService {
 
     return returnArray;
   }
+
 }
 

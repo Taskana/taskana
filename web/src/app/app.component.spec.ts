@@ -15,6 +15,8 @@ import { GeneralMessageModalComponent } from './shared/general-message-modal/gen
 import { SpinnerComponent } from './shared/spinner/spinner.component'
 import { AlertComponent } from './shared/alert/alert.component';
 import { NavBarComponent } from './shared/nav-bar/nav-bar.component';
+import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
+import { DomainService } from 'app/services/domain/domain.service';
 
 
 describe('AppComponent', () => {
@@ -35,7 +37,11 @@ describe('AppComponent', () => {
 				RouterTestingModule.withRoutes(routes),
 				HttpClientModule
 			],
-			providers: [ErrorModalService, RequestInProgressService, AlertService, OrientationService, SelectedRouteService]
+			providers: [ErrorModalService, RequestInProgressService, AlertService, OrientationService, SelectedRouteService,
+				{
+					provide: DomainService,
+					useClass: DomainServiceMock
+				}]
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(AppComponent);

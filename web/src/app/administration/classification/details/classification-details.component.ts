@@ -18,6 +18,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
 import { ClassificationCategoriesService } from 'app/services/classification-categories-service/classification-categories.service';
+import { DomainService } from 'app/services/domain/domain.service';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -54,7 +55,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private treeService: TreeService,
     private classificationTypeService: ClassificationTypesService,
-    private categoryService: ClassificationCategoriesService) { }
+    private categoryService: ClassificationCategoriesService,
+    private domainService: DomainService) { }
 
   ngOnInit() {
     this.classificationTypeService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
@@ -93,7 +95,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
     this.categoriesSubscription = this.categoryService.getCategories().subscribe((categories: Array<string>) => {
       this.categories = categories;
-      if (categories.length > 0) {
+      if (categories.length > 0 && this.classification) {
         this.classification.category = categories[0];
       }
     });
@@ -199,6 +201,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.selectedClassificationSubscription = this.classificationTypeService.getSelectedClassificationType().subscribe(value => {
       if (this.classification) { this.classification.type = value; }
     });
+    this.classification.domain = this.domainService.getSelectedDomainValue();
     this.classification.category = this.categories[0];
     this.addDateToClassification();
     this.classification.parentId = classificationIdSelected;
