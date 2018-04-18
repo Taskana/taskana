@@ -4,6 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -102,6 +107,38 @@ public class ClassificationControllerIntTest {
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertNotNull(response.getBody().getLink(Link.REL_NEXT));
         assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+    }
+
+    @Test
+    public void testCreateClassification() throws IOException {
+        String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+        // {"classificationId": "","key": "aaaaa","parentId": "","category": "EXTERN","type": "TASK","domain": ""
+        URL url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(newClassification);
+        out.flush();
+        out.close();
+        assertEquals(201, con.getResponseCode());
+        con.disconnect();
+
+        newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+        url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
+        con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
+        out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(newClassification);
+        out.flush();
+        out.close();
+        assertEquals(201, con.getResponseCode());
+        con.disconnect();
     }
 
     @Test
