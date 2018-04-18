@@ -48,8 +48,12 @@ public class ClassificationResourceAssembler {
         BeanUtils.copyProperties(classificationResource, classification);
 
         classification.setId(classificationResource.getClassificationId());
-        classification.setCreated(Instant.parse(classificationResource.getCreated()));
-        classification.setModified(Instant.parse(classificationResource.getModified()));
+        if (classificationResource.getCreated() != null) {
+            classification.setCreated(Instant.parse(classificationResource.getCreated()));
+        }
+        if (classificationResource.getModified() != null) {
+            classification.setModified(Instant.parse(classificationResource.getModified()));
+        }
         return classification;
     }
 
