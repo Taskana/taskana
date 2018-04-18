@@ -36,7 +36,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueIn("11223344", "22334455")
             .list();
-        Assert.assertEquals(32L, results.size());
+        Assert.assertEquals(33L, results.size());
     }
 
     @WithAccessId(

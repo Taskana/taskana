@@ -49,11 +49,11 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
     @Test
     public void testDeleteWorkbasket()
         throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
-        Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
+        Workbasket wb = workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
         workbasketService.deleteWorkbasket(wb.getId());
 
         try {
-            workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
+            workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
             fail("There should be no result for a deleted Workbasket.");
         } catch (WorkbasketNotFoundException e) {
             // Workbasket is deleted

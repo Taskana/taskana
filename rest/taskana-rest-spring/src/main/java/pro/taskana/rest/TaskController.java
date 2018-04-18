@@ -168,7 +168,8 @@ public class TaskController extends AbstractPagingController {
     @RequestMapping(path = "/{taskId}/transfer/{workbasketKey}")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> transferTask(@PathVariable String taskId, @PathVariable String workbasketKey)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
+        InvalidStateException {
         Task updatedTask = taskService.transfer(taskId, workbasketKey);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
