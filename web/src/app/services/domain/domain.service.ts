@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { RequestInProgressService } from '../requestInProgress/request-in-progress.service';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class DomainService {
@@ -19,6 +20,7 @@ export class DomainService {
   };
   private domainSelectedValue;
   private domainSelected = new BehaviorSubject<string>('');
+  private domainSwitched = new Subject<string>();
 
   constructor(
     private httpClient: HttpClient,
@@ -40,11 +42,20 @@ export class DomainService {
     return this.domainSelected.asObservable();
   }
 
+  getSwitchedDomain(): Observable<string> {
+    return this.domainSwitched.asObservable();
+  }
+
   selectDomain(value: string) {
     this.requestInProgressService.setRequestInProgress(true);
-    // this.router.navigate(['']);
     this.domainSelectedValue = value;
     this.domainSelected.next(value);
+  }
+
+  switchDomain(value: string) {
+    this.selectDomain(value);
+    this.domainSwitched.next(value);
+    this.router.navigate([this.getNavigationUrl()]);
   }
 
   domainChangedComplete() {
@@ -53,5 +64,13 @@ export class DomainService {
 
   getSelectedDomainValue() {
     return this.domainSelectedValue;
+  }
+
+  private getNavigationUrl(): string {
+    if (this.router.url.indexOf('workbaskets') !== -1) {
+      return 'administration/workbaskets';
+    } else if (this.router.url.indexOf('classifications') !== -1) {
+      return 'administration/classifications';
+    }
   }
 }

@@ -6,7 +6,7 @@ import { ErrorModel } from 'app/models/modal-error';
 @Injectable()
 export class ErrorModalService {
 
-	public errorTriggered = new Subject<ErrorModel>();
+	private errorTriggered = new Subject<ErrorModel>();
 
 	constructor() { }
 

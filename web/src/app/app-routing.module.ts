@@ -9,12 +9,13 @@ import { NoAccessComponent } from './administration/workbasket/details/noAccess/
 import { ClassificationListComponent } from './administration/classification/master/list/classification-list.component';
 import { ClassificationDetailsComponent } from 'app/administration/classification/details/classification-details.component';
 import { EnvironmentUrlGuard } from 'app/guards/environment-url-guard';
+import { DomainGuard } from 'app/guards/domain-guard';
 
 const appRoutes: Routes = [
     {
         path: 'administration/workbaskets',
         component: MasterAndDetailComponent,
-        canActivate: [EnvironmentUrlGuard],
+        canActivate: [EnvironmentUrlGuard, DomainGuard],
         children: [
             {
                 path: '',
@@ -41,7 +42,7 @@ const appRoutes: Routes = [
     {
         path: 'administration/classifications',
         component: MasterAndDetailComponent,
-        canActivate: [EnvironmentUrlGuard],
+        canActivate: [EnvironmentUrlGuard, DomainGuard],
         children: [
             {
                 path: '',

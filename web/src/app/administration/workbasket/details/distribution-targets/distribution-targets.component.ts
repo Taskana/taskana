@@ -47,7 +47,6 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 	distributionTargetsClone: Array<WorkbasketSummary>;
 	distributionTargetsSelectedClone: Array<WorkbasketSummary>;
 
-	requestInProgress = false;
 	requestInProgressLeft = false;
 	requestInProgressRight = false;
 	modalErrorMessage: string;
@@ -119,10 +118,9 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 
 	onSave() {
 		this.requestInProgressService.setRequestInProgress(true);
-		this.requestInProgress = true;
 		this.workbasketService.updateWorkBasketsDistributionTargets(
 			this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()).subscribe(response => {
-				this.requestInProgress = false;
+				this.requestInProgressService.setRequestInProgress(false);
 				this.distributionTargetsSelected = response._embedded ? response._embedded.distributionTargets : [];
 				this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
 				this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
@@ -132,7 +130,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 			},
 				error => {
 					this.errorModalService.triggerError(new ErrorModel(`There was error while saving your workbasket's distribution targets`, error))
-					this.requestInProgress = false;
+					this.requestInProgressService.setRequestInProgress(false);
 					return false;
 				}
 			)

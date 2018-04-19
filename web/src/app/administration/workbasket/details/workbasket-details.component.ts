@@ -37,6 +37,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 	private routeSubscription: Subscription;
 	private masterAndDetailSubscription: Subscription;
 	private permissionSubscription: Subscription;
+	private domainSubscription: Subscription;
 
 	constructor(private service: WorkbasketService,
 		private route: ActivatedRoute,
@@ -104,7 +105,9 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
 		if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
 			this.workbasket = new Workbasket(undefined);
-			this.workbasket.domain = this.domainService.getSelectedDomainValue();
+			this.domainSubscription = this.domainService.getSelectedDomain().subscribe(domain => {
+				this.workbasket.domain = domain;
+			});
 			this.requestInProgress = false;
 		} else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
 			this.workbasket = { ...this.workbasketCopy };
@@ -115,8 +118,17 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 			this.workbasketSubscription = this.service.getWorkBasket(workbasketIdSelected).subscribe(workbasket => {
 				this.workbasket = workbasket;
 				this.requestInProgress = false;
+				this.checkDomainAndRedirect();
 			});
 		}
+	}
+
+	private checkDomainAndRedirect() {
+		this.domainSubscription = this.domainService.getSelectedDomain().subscribe(domain => {
+			if (this.workbasket && this.workbasket.domain !== domain) {
+				this.backClicked();
+			}
+		});
 	}
 
 	ngOnDestroy(): void {
@@ -125,5 +137,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
 		if (this.masterAndDetailSubscription) { this.masterAndDetailSubscription.unsubscribe(); }
 		if (this.permissionSubscription) { this.permissionSubscription.unsubscribe(); }
+		if (this.domainSubscription) { this.domainSubscription.unsubscribe(); }
 	}
 }
