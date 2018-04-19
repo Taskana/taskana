@@ -84,9 +84,6 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 		this.classificationServiceSubscription = this.classificationService.getClassifications(true)
 			.subscribe((classifications: Array<TreeNodeModel>) => {
 				this.requestInProgress = false;
-				if (!classifications.length) {
-					return null;
-				}
 				this.classifications = classifications;
 				this.classificationTypeServiceSubscription = this.classificationTypeService.getClassificationTypes()
 					.subscribe((classificationsTypes: Array<string>) => {

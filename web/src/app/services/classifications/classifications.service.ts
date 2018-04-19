@@ -29,7 +29,6 @@ export class ClassificationsService {
     })
   };
 
-  private classificationRef: Observable<ClassificationResource>;
   private classificationTypes: Array<string>;
 
   constructor(
@@ -42,14 +41,9 @@ export class ClassificationsService {
   getClassifications(forceRequest = false): Observable<any> {
     return this.domainService.getSelectedDomain().mergeMap(domain => {
       const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
-      if (!forceRequest && this.classificationRef) {
-        return this.getClassificationObservable(this.classificationRef)
-      }
-      this.classificationRef = this.httpClient.get<ClassificationResource>(
+      return this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
         `${environment.taskanaRestUrl}/v1/classifications/?domain=${domain}`,
-        this.httpOptions)
-
-      return this.getClassificationObservable(this.classificationRef);
+        this.httpOptions));
 
     }).do(() => {
       this.domainService.domainChangedComplete();

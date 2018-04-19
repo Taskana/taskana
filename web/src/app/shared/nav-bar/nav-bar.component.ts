@@ -54,8 +54,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectDomain(domain) {
-    this.domainService.selectDomain(domain);
+  switchDomain(domain) {
+    this.domainService.switchDomain(domain);
   }
 
   toogleNavBar() {
