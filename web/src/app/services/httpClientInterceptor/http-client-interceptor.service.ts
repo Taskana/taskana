@@ -29,6 +29,8 @@ export class HttpClientInterceptor implements HttpInterceptor {
 			this.requestInProgressService.setRequestInProgress(false);
 			if (err instanceof HttpErrorResponse && (err.status === 401 || err.status === 403)) {
 				this.permissionService.setPermission(false)
+			} else if (err instanceof HttpErrorResponse && (err.status === 404) && err.url.indexOf('environment-information.json')) {
+				// ignore this error message
 			} else {
 				this.errorModalService.triggerError(
 					new ErrorModel('There was error, please contact with your administrator ', err))

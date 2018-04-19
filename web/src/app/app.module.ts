@@ -59,6 +59,7 @@ import { TreeService } from './services/tree/tree.service';
 import { ClassificationTypesService } from './services/classification-types/classification-types.service';
 import { ClassificationCategoriesService } from 'app/services/classification-categories-service/classification-categories.service';
 
+
 /**
  * Pipes
  */
@@ -67,6 +68,11 @@ import { RemoveNoneTypePipe } from './pipes/removeNoneType/remove-none-type.pipe
 import { SelectWorkBasketPipe } from './pipes/selectedWorkbasket/seleted-workbasket.pipe';
 import { SpreadNumberPipe } from './pipes/spreadNumber/spread-number';
 import { DomainService } from './services/domain/domain.service';
+
+/**
+ * Guards
+ */
+import { EnvironmentUrlGuard } from './guards/environment-url-guard';
 
 const MODULES = [
   BrowserModule,
@@ -135,7 +141,8 @@ const DECLARATIONS = [
     ClassificationsService,
     TreeService,
     ClassificationTypesService,
-    ClassificationCategoriesService
+    ClassificationCategoriesService,
+    EnvironmentUrlGuard
   ],
   bootstrap: [AppComponent]
 })
