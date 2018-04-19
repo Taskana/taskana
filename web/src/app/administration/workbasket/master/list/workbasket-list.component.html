@@ -15,18 +15,18 @@
                             <taskana-icon-type class="vertical-align" [type]="workbasket.type" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
                         </dl>
                         <dl class="col-xs-10">
-                            <dt>{{workbasket.name}},
-                                <i>{{workbasket.key}} </i>
+                            <dt data-toggle="tooltip" title="{{workbasket.name}}">{{workbasket.name}},
+                                <i data-toggle="tooltip" title="{{workbasket.key}}">{{workbasket.key}} </i>
                             </dt>
-                            <dd>{{workbasket.description}} &nbsp;</dd>
-                            <dd>{{workbasket.owner}} &nbsp;</dd>
+                            <dd data-toggle="tooltip" title="{{workbasket.description}}">{{workbasket.description}} &nbsp;</dd>
+                            <dd data-toggle="tooltip" title="{{workbasket.owner}}">{{workbasket.owner}} &nbsp;</dd>
                         </dl>
                     </div>
                 </li>
             </ul>
         </div>
         <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
-        
+
     </div>
     <taskana-pagination [(workbasketsResource)]="workbasketsResource" (changePage)="changePage($event)"></taskana-pagination>
 </div>

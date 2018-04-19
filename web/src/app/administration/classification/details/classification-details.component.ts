@@ -45,6 +45,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private classificationRemoveSubscription: Subscription;
   private selectedClassificationSubscription: Subscription;
   private categoriesSubscription: Subscription;
+  private domainSubscription: Subscription;
 
   constructor(private classificationsService: ClassificationsService,
     private route: ActivatedRoute,
@@ -66,7 +67,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(classificationIdSelected => {
         this.classification = undefined;
         if (classificationIdSelected) {
-          this.getClassificationInformation(classificationIdSelected);
+          this.fillClassificationInformation(classificationIdSelected);
         }
       });
 
@@ -80,7 +81,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         if (id === 'undefined') {
           id = undefined;
         }
-        this.getClassificationInformation(id);
+        this.fillClassificationInformation(id);
       }
 
       if (id && id !== '') {
@@ -111,6 +112,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   removeClassification() {
+    if (!this.classification || !this.classification.classificationId) {
+      this.errorModalService.triggerError(
+        new ErrorModel('There is no classification selected', 'Please check if you are creating a classification'));
+      return false;
+    }
     this.requestInProgressService.setRequestInProgress(true);
     this.treeService.setRemovedNodeId(this.classification.classificationId);
 
@@ -147,6 +153,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         .putClassification(this.classification._links.self.href, this.classification)
         .subscribe((classification: ClassificationDefinition) => {
           this.classification = classification;
+          this.classificationsService.selectClassification(classification.classificationId);
           this.afterRequest();
           this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
         }, error => {
@@ -176,7 +183,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classificationsService.selectClassification(id);
   }
 
-  private getClassificationInformation(classificationIdSelected: string) {
+  private fillClassificationInformation(classificationIdSelected: string) {
     if (this.action === ACTION.CREATE) { // CREATE
       this.initClassificationCreation(classificationIdSelected);
     } else {
@@ -186,6 +193,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.classification = classification;
           this.classificationClone = { ...this.classification };
           this.requestInProgress = false;
+          this.checkDomainAndRedirect();
         });
     }
   }
@@ -208,6 +216,14 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classificationClone = { ...this.classification };
   }
 
+  private checkDomainAndRedirect() {
+    this.domainSubscription = this.domainService.getSelectedDomain().subscribe(domain => {
+      if (this.classification && this.classification.domain !== domain) {
+        this.backClicked();
+      }
+    });
+  }
+
   ngOnDestroy(): void {
 
     if (this.masterAndDetailSubscription) { this.masterAndDetailSubscription.unsubscribe(); }
@@ -218,6 +234,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     if (this.classificationRemoveSubscription) { this.classificationRemoveSubscription.unsubscribe(); }
     if (this.selectedClassificationSubscription) { this.selectedClassificationSubscription.unsubscribe(); }
     if (this.categoriesSubscription) { this.categoriesSubscription.unsubscribe(); }
-
+    if (this.domainSubscription) { this.domainSubscription.unsubscribe(); }
   }
 }
