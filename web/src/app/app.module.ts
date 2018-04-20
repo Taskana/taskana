@@ -73,6 +73,7 @@ import { DomainService } from './services/domain/domain.service';
  * Guards
  */
 import { EnvironmentUrlGuard } from './guards/environment-url-guard';
+import { DomainGuard } from './guards/domain-guard';
 
 const MODULES = [
   BrowserModule,
@@ -142,7 +143,8 @@ const DECLARATIONS = [
     TreeService,
     ClassificationTypesService,
     ClassificationCategoriesService,
-    EnvironmentUrlGuard
+    EnvironmentUrlGuard,
+    DomainGuard
   ],
   bootstrap: [AppComponent]
 })

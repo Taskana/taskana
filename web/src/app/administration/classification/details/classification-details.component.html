@@ -26,9 +26,9 @@
           <div class="col-md-6">
             <div class="form-group required">
               <label for="classification-key" class="control-label">Key</label>
-              <input type="text" required #key="ngModel" class="form-control" id="classification-key" placeholder="Key" [(ngModel)]="classification.key"
-                name="classification.key">
-              <div *ngIf="!key.valid" class="required-text">
+              <input type="text" required #key="ngModel" [disabled]="action!== 'CREATE'? true : false" class="form-control" id="classification-key"
+                placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
+              <div *ngIf="!key.valid && action === 'CREATE'" class="required-text">
                 * Key is required
               </div>
             </div>
