@@ -3,7 +3,7 @@
  * Modules
  */
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -58,6 +58,7 @@ import { ClassificationsService } from './services/classifications/classificatio
 import { TreeService } from './services/tree/tree.service';
 import { ClassificationTypesService } from './services/classification-types/classification-types.service';
 import { ClassificationCategoriesService } from 'app/services/classification-categories-service/classification-categories.service';
+import { StartupService } from 'app/services/startup-service/startup.service';
 
 
 /**
@@ -72,7 +73,6 @@ import { DomainService } from './services/domain/domain.service';
 /**
  * Guards
  */
-import { EnvironmentUrlGuard } from './guards/environment-url-guard';
 import { DomainGuard } from './guards/domain-guard';
 
 const MODULES = [
@@ -118,6 +118,10 @@ const DECLARATIONS = [
   SpreadNumberPipe
 ];
 
+export function startupServiceFactory(startupService: StartupService): Function {
+  return () => startupService.load();
+}
+
 @NgModule({
   declarations: DECLARATIONS,
   imports: MODULES,
@@ -143,8 +147,14 @@ const DECLARATIONS = [
     TreeService,
     ClassificationTypesService,
     ClassificationCategoriesService,
-    EnvironmentUrlGuard,
-    DomainGuard
+    DomainGuard,
+    StartupService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: startupServiceFactory,
+      deps: [StartupService],
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

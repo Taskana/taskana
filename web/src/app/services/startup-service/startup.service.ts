@@ -5,10 +5,9 @@ import { environment } from 'app/../environments/environment';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class EnvironmentUrlGuard implements CanActivate {
+export class StartupService {
     constructor(private httpClient: HttpClient) { }
-
-    canActivate() {
+    load(): Promise<any> {
         return this.httpClient.get<any>('environments/data-sources/environment-information.json').map(jsonFile => {
             if (jsonFile) {
                 environment.taskanaWorkplaceUrl = jsonFile.taskanaWorkplaceUrl === '' ?
@@ -20,9 +19,9 @@ export class EnvironmentUrlGuard implements CanActivate {
                 environment.taskanaRestUrl = jsonFile.taskanaRestUrl === '' ?
                     environment.taskanaRestUrl : jsonFile.taskanaRestUrl;
             }
-            return true;
-        }).catch(() => {
-            return Observable.of(true)
-        });
+        }).toPromise()
+            .catch(() => {
+                return Observable.of(true)
+            })
     }
 }

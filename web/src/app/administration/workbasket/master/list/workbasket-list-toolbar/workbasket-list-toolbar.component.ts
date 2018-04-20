@@ -19,16 +19,14 @@ import { ImportType } from 'app/models/import-type';
 	selector: 'taskana-workbasket-list-toolbar',
 	animations: [
 		trigger('toggle', [
-			state('*', style({ opacity: '1' })),
-			state('void', style({ opacity: '0' })),
 			transition('void => *', animate('300ms ease-in', keyframes([
-				style({ opacity: 0, height: '0px' }),
-				style({ opacity: 0.5, height: '50px' }),
-				style({ opacity: 1, height: '*' })]))),
+				style({ height: '0px' }),
+				style({ height: '50px' }),
+				style({ height: '*' })]))),
 			transition('* => void', animate('300ms ease-out', keyframes([
-				style({ opacity: 1, height: '*' }),
-				style({ opacity: 0.5, height: '50px' }),
-				style({ opacity: 0, height: '0px' })])))
+				style({ height: '*' }),
+				style({ height: '50px' }),
+				style({ height: '0px' })])))
 		]
 		)],
 	templateUrl: './workbasket-list-toolbar.component.html',

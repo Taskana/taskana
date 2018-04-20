@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { RequestInProgressService } from '../requestInProgress/request-in-progress.service';
 import { Subject } from 'rxjs/Subject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 @Injectable()
 export class DomainService {
@@ -21,6 +22,7 @@ export class DomainService {
   private domainSelectedValue;
   private domainSelected = new BehaviorSubject<string>('');
   private domainSwitched = new Subject<string>();
+  private dataObs$ = new ReplaySubject<Array<string>>(1);
 
   constructor(
     private httpClient: HttpClient,
@@ -29,13 +31,24 @@ export class DomainService {
   }
 
   // GET
-  getDomains(): Observable<string[]> {
-    return this.httpClient.get<string[]>(this.url, this.httpOptions).do(domains => {
-      if (!this.domainSelectedValue && domains && domains.length > 0) {
-        this.domainSelectedValue = domains[0];
-        this.selectDomain(domains[0]);
-      }
-    });
+  getDomains(forceRefresh = false): Observable<string[]> {
+    if (!this.dataObs$.observers.length || forceRefresh) {
+      this.httpClient.get<string[]>(this.url, this.httpOptions).subscribe(
+        domains => {
+          this.dataObs$.next(domains);
+          if (!this.domainSelectedValue && domains && domains.length > 0) {
+            this.domainSelectedValue = domains[0];
+            this.selectDomain(domains[0]);
+          }
+        },
+        error => {
+          this.dataObs$.error(error);
+          this.dataObs$ = new ReplaySubject(1);
+        }
+      );
+    }
+
+    return this.dataObs$;
   }
 
   getSelectedDomain(): Observable<string> {
