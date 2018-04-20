@@ -141,8 +141,9 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       this.classificationSavingSubscription = this.classificationsService.postClassification(this.classification)
         .subscribe((classification: ClassificationDefinition) => {
           this.classification = classification;
-          this.afterRequest();
+          this.classificationsService.selectClassification(classification.classificationId);
           this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
+          this.afterRequest();
         },
           error => {
             this.errorModalService.triggerError(new ErrorModel('There was an error creating a classification', error))
@@ -153,7 +154,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         .putClassification(this.classification._links.self.href, this.classification)
         .subscribe((classification: ClassificationDefinition) => {
           this.classification = classification;
-          this.classificationsService.selectClassification(classification.classificationId);
           this.afterRequest();
           this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
         }, error => {
