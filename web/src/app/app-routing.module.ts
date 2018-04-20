@@ -8,14 +8,13 @@ import { MasterAndDetailComponent } from './shared/master-and-detail/master-and-
 import { NoAccessComponent } from './administration/workbasket/details/noAccess/no-access.component';
 import { ClassificationListComponent } from './administration/classification/master/list/classification-list.component';
 import { ClassificationDetailsComponent } from 'app/administration/classification/details/classification-details.component';
-import { EnvironmentUrlGuard } from 'app/guards/environment-url-guard';
 import { DomainGuard } from 'app/guards/domain-guard';
 
 const appRoutes: Routes = [
     {
         path: 'administration/workbaskets',
         component: MasterAndDetailComponent,
-        canActivate: [EnvironmentUrlGuard, DomainGuard],
+        canActivate: [DomainGuard],
         children: [
             {
                 path: '',
@@ -42,7 +41,7 @@ const appRoutes: Routes = [
     {
         path: 'administration/classifications',
         component: MasterAndDetailComponent,
-        canActivate: [EnvironmentUrlGuard, DomainGuard],
+        canActivate: [DomainGuard],
         children: [
             {
                 path: '',
