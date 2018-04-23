@@ -49,7 +49,7 @@
     <div class="nav-content">
       <div class="row menu">
         <span routerLink="administration/workbaskets" aria-controls="administration" routerLinkActive="active">Administration</span>
-        <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('workbaskets') !== -1}">
+        <div class="row submenu" [ngClass]="{'selected': (selectedRoute.indexOf('workbaskets') !== -1 || selectedRoute === '')}">
           <span class="col-xs-6" routerLink="administration/workbaskets" aria-controls="Workbaskets" routerLinkActive="active">Workbaskets</span>
         </div>
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('classifications') !== -1}">
