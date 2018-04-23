@@ -484,9 +484,10 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngine.openConnection();
             LOGGER.debug("entry to transferBulk(targetWbId = {}, taskIds = {})", destinationWorkbasketId, taskIds);
             // Check pre-conditions with trowing Exceptions
-            if (destinationWorkbasketId == null || taskIds == null) {
+            if (destinationWorkbasketId == null || destinationWorkbasketId.isEmpty() || taskIds == null
+                || taskIds.isEmpty()) {
                 throw new InvalidArgumentException(
-                    "DestinationWorkbasketId or TaskIds can´t be used as NULL-Parameter.");
+                    "DestinationWorkbasketId or TaskIds must not be null or empty.");
             }
             Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketId);
 
@@ -521,9 +522,17 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private BulkOperationResults<String, TaskanaException> transferTasks(List<String> taskIds,
+    private BulkOperationResults<String, TaskanaException> transferTasks(List<String> taskIdsToBeTransferred,
         Workbasket destinationWorkbasket) throws InvalidArgumentException {
         BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+
+        // convert to ArrayList<String> if necessary to prevent a UnsupportedOperationException while removing
+        ArrayList<String> taskIds;
+        if (!(taskIdsToBeTransferred instanceof ArrayList)) {
+            taskIds = new ArrayList<>(taskIdsToBeTransferred);
+        } else {
+            taskIds = (ArrayList<String>) taskIdsToBeTransferred;
+        }
 
         // check tasks Ids exist and not empty - log and remove
         Iterator<String> taskIdIterator = taskIds.iterator();
