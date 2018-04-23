@@ -12,6 +12,8 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -249,6 +251,34 @@ public class TransferTaskAccTest extends AbstractAccTest {
         assertNotNull(transferredTask);
         assertFalse(transferredTask.isTransferred());
         assertEquals("TEAMLEAD_1", transferredTask.getWorkbasketKey());
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testTransferTasksWithListNotSupportingRemove()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        InvalidStateException, InvalidOwnerException {
+        TaskService taskService = taskanaEngine.getTaskService();
+        List<String> taskIds = Collections.singletonList("");
+        taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test(expected = InvalidArgumentException.class)
+    public void testThrowsExceptionIfEmptyListIsSupplied()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        InvalidStateException, InvalidOwnerException {
+        TaskService taskService = taskanaEngine.getTaskService();
+        List<String> taskIds = new ArrayList<>();
+        taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+
     }
 
 }
