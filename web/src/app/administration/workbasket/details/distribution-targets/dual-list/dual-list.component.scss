@@ -88,3 +88,10 @@ dt > i {
 li > div.row > dl {
     margin-bottom: 0px;
 }
+
+li.list-group-item:hover, {
+    color: #555;
+    text-decoration: none;
+    background-color: #f5f5f5;
+}
+

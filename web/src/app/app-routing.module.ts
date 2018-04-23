@@ -59,6 +59,10 @@ const appRoutes: Routes = [
         path: '',
         redirectTo: 'administration/workbaskets',
         pathMatch: 'full'
+    },
+    {
+        path: 'administration',
+        redirectTo: 'administration/workbaskets',
     }
 ];
 @NgModule({
