@@ -41,7 +41,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(NotAuthorizedException.class)
     protected ResponseEntity<Object> handleNotAuthorized(NotAuthorizedException ex, WebRequest req) {
-        return buildResponse(ex, req, HttpStatus.UNAUTHORIZED);
+        return buildResponse(ex, req, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(TaskNotFoundException.class)
