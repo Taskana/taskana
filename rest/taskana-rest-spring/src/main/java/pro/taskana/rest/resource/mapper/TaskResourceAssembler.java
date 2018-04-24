@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.rest.TaskController;
 import pro.taskana.rest.resource.TaskResource;
@@ -59,7 +60,8 @@ public class TaskResourceAssembler
         return resource;
     }
 
-    public Task toModel(TaskResource resource) {
+    public Task toModel(TaskResource resource) throws InvalidArgumentException {
+        validateTaskResource(resource);
         TaskImpl task = (TaskImpl) taskService.newTask(resource.getWorkbasketSummaryResource().getWorkbasketId());
         task.setId(resource.getTaskId());
         BeanUtils.copyProperties(resource, task);
@@ -81,6 +83,21 @@ public class TaskResourceAssembler
         task.setClassificationSummary(classificationAssembler.toModel(resource.getClassificationSummaryResource()));
         task.setWorkbasketSummary(workbasketAssembler.toModel(resource.getWorkbasketSummaryResource()));
         return task;
+    }
+
+    private void validateTaskResource(TaskResource resource) throws InvalidArgumentException {
+        if (resource.getWorkbasketSummaryResource() == null
+            || resource.getWorkbasketSummaryResource().getWorkbasketId() == null
+            || resource.getWorkbasketSummaryResource().getWorkbasketId().isEmpty()) {
+            throw new InvalidArgumentException(
+                "TaskResource must have a workbasket summary with a valid workbasketId.");
+        }
+        if (resource.getClassificationSummaryResource() == null
+            || resource.getClassificationSummaryResource().getKey() == null
+            || resource.getClassificationSummaryResource().getKey().isEmpty()) {
+            throw new InvalidArgumentException(
+                "TaskResource must have a classification summary with a valid classification key.");
+        }
     }
 
 }

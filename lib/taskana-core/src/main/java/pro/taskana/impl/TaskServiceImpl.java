@@ -316,6 +316,9 @@ public class TaskServiceImpl implements TaskService {
 
                 workbasketService.checkAuthorization(task.getWorkbasketSummary().getId(),
                     WorkbasketPermission.APPEND);
+
+                // we do use the key and not the ID to make sure that we use the classification from the right domain.
+                // otherwise we would have to check the classification and its domain for validity.
                 String classificationKey = task.getClassificationKey();
                 if (classificationKey == null || classificationKey.length() == 0) {
                     throw new InvalidArgumentException("classificationKey of task must not be empty");
