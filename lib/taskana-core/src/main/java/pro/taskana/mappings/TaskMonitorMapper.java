@@ -1,6 +1,7 @@
 package pro.taskana.mappings;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
@@ -267,5 +268,40 @@ public interface TaskMonitorMapper {
     })
     List<TaskQueryItem> getTasksCountByState(@Param("domains") List<String> domains,
         @Param("states") List<TaskState> states);
+
+    @Select("<script>"
+        + "SELECT DISTINCT ${customAttributeName} "
+        + "FROM TASKANA.TASK "
+        + "<where>"
+        + "<if test='workbasketIds != null'>"
+        + "WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
+        + "</if>"
+        + "<if test='states != null'>"
+        + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
+        + "</if>"
+        + "<if test='categories != null'>"
+        + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+        + "</if>"
+        + "<if test='domains != null'>"
+        + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
+        + "</if>"
+        + "<if test='classificationIds != null'>"
+        + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+        + "</if>"
+        + "<if test='excludedClassificationIds != null'>"
+        + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+        + "</if>"
+        + "<if test='customAttributeFilter != null'>"
+        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(CUSTOM_${key} = '${customAttributeFilter.get(key)}')</foreach>) "
+        + "</if>"
+        + "</where>"
+        + "</script>")
+    List<String> getCustomAttributeValuesForReport(@Param("workbasketIds") List<String> workbasketIds,
+        @Param("states") List<TaskState> states,
+        @Param("categories") List<String> categories, @Param("domains") List<String> domains,
+        @Param("classificationIds") List<String> classificationIds,
+        @Param("excludedClassificationIds") List<String> excludedClassificationIds,
+        @Param("customAttributeFilter") Map<String, String> customAttributeFilter,
+        @Param("customAttributeName") String customAttributeName);
 
 }
