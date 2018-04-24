@@ -14,13 +14,15 @@ import { LinksClassification } from 'app/models/links-classfication';
 
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { ClassificationsService } from 'app/services/classifications/classifications.service';
+import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
 import { TreeNodeModel } from 'app/models/tree-node';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
-import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
-import { ClassificationCategoriesService } from 'app/services/classification-categories-service/classification-categories.service';
+import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
+// tslint:disable:max-line-length
+import { ClassificationCategoriesService } from 'app/administration/services/classification-categories-service/classification-categories.service';
+// tslint:enable:max-line-length
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { DomainService } from 'app/services/domain/domain.service';
 
@@ -50,7 +52,7 @@ describe('ClassificationDetailsComponent', () => {
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
       declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
       providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
-        TreeService, ClassificationTypesService, ClassificationCategoriesService,  {
+        TreeService, ClassificationTypesService, ClassificationCategoriesService, {
           provide: DomainService,
           useClass: DomainServiceMock
         }]

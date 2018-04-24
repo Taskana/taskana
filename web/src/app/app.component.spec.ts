@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
+import { SharedModule } from 'app/shared/shared.module';
 
 import { ErrorModalService } from './services/errorModal/error-modal.service';
 import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
@@ -11,10 +12,7 @@ import { AlertService } from './services/alert/alert.service';
 import { OrientationService } from './services/orientation/orientation.service';
 import { SelectedRouteService } from './services/selected-route/selected-route';
 
-import { GeneralMessageModalComponent } from './shared/general-message-modal/general-message-modal.component'
-import { SpinnerComponent } from './shared/spinner/spinner.component'
-import { AlertComponent } from './shared/alert/alert.component';
-import { NavBarComponent } from './shared/nav-bar/nav-bar.component';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { DomainService } from 'app/services/domain/domain.service';
 
@@ -30,12 +28,13 @@ describe('AppComponent', () => {
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
 			declarations: [
-				AppComponent, GeneralMessageModalComponent, SpinnerComponent, AlertComponent, NavBarComponent
+				AppComponent, NavBarComponent
 			],
 			imports: [
 				AngularSvgIconModule,
 				RouterTestingModule.withRoutes(routes),
-				HttpClientModule
+				HttpClientModule,
+				SharedModule
 			],
 			providers: [ErrorModalService, RequestInProgressService, AlertService, OrientationService, SelectedRouteService,
 				{

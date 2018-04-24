@@ -16,20 +16,20 @@ import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 
 import { WorkbasketListComponent } from './workbasket-list.component';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar/workbasket-list-toolbar.component';
-import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
+import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
-import { SortComponent } from 'app/shared/sort/sort.component';
-import { ImportExportComponent } from 'app/shared/import-export/import-export.component';
+import { SortComponent } from 'app/administration/components/sort/sort.component';
+import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
-import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pipe';
-import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
-import { WorkbasketDefinitionService } from 'app/services/workbasket-definition/workbasket-definition.service';
-import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
+import { RemoveNoneTypePipe } from 'app/shared/pipes/removeNoneType/remove-none-type.pipe';
+import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
+import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
+import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 

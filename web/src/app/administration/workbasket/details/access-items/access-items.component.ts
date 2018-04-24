@@ -8,9 +8,9 @@ import { ErrorModel } from 'app/models/modal-error';
 import { ACTION } from 'app/models/action';
 import { AlertModel, AlertType } from 'app/models/alert';
 
-import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
