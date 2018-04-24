@@ -14,20 +14,20 @@ import { Links } from 'app/models/links';
 import { FilterModel } from 'app/models/filter';
 import { SortingModel } from 'app/models/sorting';
 
-import { SortComponent } from 'app/shared/sort/sort.component';
-import { FilterComponent } from 'app/shared/filter/filter.component';
-import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
+import { SortComponent } from 'app/administration/components/sort/sort.component';
+import { FilterComponent } from 'app/administration/components/filter/filter.component';
+import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
-import { ImportExportComponent } from 'app/shared/import-export/import-export.component';
+import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
-import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
+import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
-import { WorkbasketDefinitionService } from 'app/services/workbasket-definition/workbasket-definition.service';
+import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
+import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 

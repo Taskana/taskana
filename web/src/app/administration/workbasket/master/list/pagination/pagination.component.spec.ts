@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { PaginationComponent } from './pagination.component';
-import { SpreadNumberPipe } from 'app/pipes/spreadNumber/spread-number';
+import { SpreadNumberPipe } from 'app/shared/pipes/spreadNumber/spread-number';
 import { WorkbasketSummaryResource } from '../../../../../models/workbasket-summary-resource';
 import { Page } from '../../../../../models/page';
 
