@@ -2,6 +2,7 @@ package pro.taskana.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,8 +64,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getWorkbasketLevelReport(workbasketIds = {}, states = {}, categories = {}, "
-                    + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
-                    + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
+                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
@@ -110,8 +111,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays) throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getCategoryReport(workbasketIds = {}, states = {}, categories = {}, "
-                    + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
-                    + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
+                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
@@ -158,8 +159,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getClassificationReport(workbasketIds = {}, states = {}, categories = {}, "
-                    + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
-                    + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
+                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
@@ -208,8 +209,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getDetailedClassificationReport(workbasketIds = {}, states = {}, "
-                    + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
-                    + "columnHeaders = {}, inWorkingDays = {})", LoggerUtils.listToString(workbasketIds),
+                + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
+                + "columnHeaders = {}, inWorkingDays = {})", LoggerUtils.listToString(workbasketIds),
                 LoggerUtils.listToString(states), LoggerUtils.listToString(categories),
                 LoggerUtils.listToString(domains), customField, LoggerUtils.listToString(customFieldValues),
                 LoggerUtils.listToString(columnHeaders), inWorkingDays);
@@ -258,8 +259,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getCustomFieldValueReport(workbasketIds = {}, states = {}, categories = {}, "
-                    + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
-                    + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
+                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
@@ -303,8 +304,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         List<SelectedItem> selectedItems) throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getTaskIdsOfCategoryReportLineItems(workbasketIds = {}, states = {}, "
-                    + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
-                    + "columnHeaders = {}, inWorkingDays = {}, selectedItems = {})",
+                + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
+                + "columnHeaders = {}, inWorkingDays = {}, selectedItems = {})",
                 LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
                 LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
@@ -335,6 +336,39 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from getTaskIdsOfCategoryReportLineItems().");
+        }
+    }
+
+    @Override
+    public List<String> getCustomAttributeValuesForReport(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories, List<String> domains, List<String> classificationIds,
+        List<String> excludedClassificationIds, Map<String, String> customAttributeFilter,
+        String customAttributeName) throws InvalidArgumentException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getCustomAttributeValuesForReport(workbasketIds = {}, states = {}, "
+                + "categories = {}, domains = {}, classificationIds = {}, excludedClassificationIds = {}, customAttributeName = {})",
+                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains),
+                LoggerUtils.listToString(classificationIds), LoggerUtils.listToString(excludedClassificationIds),
+                customAttributeName);
+        }
+        try {
+            taskanaEngineImpl.openConnection();
+
+            if (customAttributeName == null || customAttributeName.isEmpty()) {
+                throw new InvalidArgumentException("customAttributeName must not be null.");
+            }
+
+            List<String> customAttributeValues = taskMonitorMapper.getCustomAttributeValuesForReport(workbasketIds,
+                states,
+                categories, domains, classificationIds, excludedClassificationIds, customAttributeFilter,
+                "CUSTOM_" + customAttributeName);
+
+            return customAttributeValues;
+
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getCustomAttributeValuesForReport().");
         }
     }
 
