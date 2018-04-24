@@ -155,12 +155,21 @@ public class TaskController extends AbstractPagingController {
         return result;
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{taskId}")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<TaskResource> deleteTask(@PathVariable String taskId)
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+        taskService.deleteTask(taskId, true);
+        ResponseEntity<TaskResource> result = new ResponseEntity<>(HttpStatus.OK);
+        return result;
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<TaskResource> createTask(@RequestBody Task task)
+    public ResponseEntity<TaskResource> createTask(@RequestBody TaskResource taskResource)
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
-        Task createdTask = taskService.createTask(task);
+        Task createdTask = taskService.createTask(taskResourceAssembler.toModel(taskResource));
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(createdTask),
             HttpStatus.CREATED);
         return result;

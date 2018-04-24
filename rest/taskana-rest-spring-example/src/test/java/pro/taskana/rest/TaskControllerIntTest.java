@@ -268,6 +268,87 @@ public class TaskControllerIntTest {
 
     }
 
+    @Test
+    public void testCreateAndDeleteTask() throws IOException {
+        String taskToCreateJson = "{\"classificationSummaryResource\":{\"key\":\"L11010\"}," +
+            "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"}," +
+            "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+
+        URL url = new URL("http://127.0.0.1:" + port + "/v1/tasks");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setDoOutput(true);
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setRequestProperty("Content-Type", "application/json");
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(taskToCreateJson);
+        out.flush();
+        out.close();
+        assertEquals(201, con.getResponseCode());
+        // con.disconnect();
+
+        BufferedReader in = new BufferedReader(
+            new InputStreamReader(con.getInputStream()));
+        StringBuffer responsePayload = new StringBuffer();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            responsePayload.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+        String createdTask = responsePayload.toString();
+        String taskIdOfCreatedTask = createdTask.substring(11, 51);
+        assertNotNull(taskIdOfCreatedTask);
+        assertTrue(taskIdOfCreatedTask.startsWith("TKI:"));
+
+        // delete task again to clean test data
+        url = new URL("http://127.0.0.1:" + port + "/v1/tasks/" + taskIdOfCreatedTask);
+        con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("DELETE");
+        con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4="); // admin
+        assertEquals(200, con.getResponseCode());
+        con.disconnect();
+    }
+
+    @Test
+    public void testCreateTaskWithInvalidParameter() throws IOException {
+        String taskToCreateJson = "{\"classificationKey\":\"L11010\"," +
+            "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"}," +
+            "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+
+        URL url = new URL("http://127.0.0.1:" + port + "/v1/tasks");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setDoOutput(true);
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setRequestProperty("Content-Type", "application/json");
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(taskToCreateJson);
+        out.flush();
+        out.close();
+        assertEquals(400, con.getResponseCode());
+        con.disconnect();
+
+        taskToCreateJson = "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
+            +
+            "\"workbasketSummaryResource\":{\"workbasketId\":\"\"}," +
+            "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+
+        url = new URL("http://127.0.0.1:" + port + "/v1/tasks");
+        con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setDoOutput(true);
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setRequestProperty("Content-Type", "application/json");
+        out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(taskToCreateJson);
+        out.flush();
+        out.close();
+        assertEquals(400, con.getResponseCode());
+        con.disconnect();
+
+    }
+
     /**
      * Return a REST template which is capable of dealing with responses in HAL format
      *
