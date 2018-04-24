@@ -13,19 +13,19 @@ import { FilterModel } from 'app/models/filter';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
 
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 import { DualListComponent } from './dual-list/dual-list.component';
 import { DistributionTargetsComponent, Side } from './distribution-targets.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
-import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
-import { SelectWorkBasketPipe } from 'app/pipes/selectedWorkbasket/seleted-workbasket.pipe';
-import { LinksWorkbasketSummary } from '../../../../models/links-workbasket-summary';
+import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
+import { SelectWorkBasketPipe } from 'app/shared/pipes/selectedWorkbasket/seleted-workbasket.pipe';
+import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 

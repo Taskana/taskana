@@ -8,18 +8,18 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ClassificationListComponent } from './classification-list.component';
-import { ImportExportComponent } from 'app/shared/import-export/import-export.component';
+import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { ClassificationTypesSelectorComponent } from 'app/shared/classification-types-selector/classification-types-selector.component';
 
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
-import { WorkbasketDefinitionService } from 'app/services/workbasket-definition/workbasket-definition.service';
+import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
+import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { ClassificationsService } from 'app/services/classifications/classifications.service';
-import { ClassificationDefinitionService } from 'app/services/classification-definition/classification-definition.service';
+import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
+import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
+import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 @Component({

@@ -10,14 +10,16 @@ import { AlertModel, AlertType } from 'app/models/alert';
 
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
-import { ClassificationsService } from 'app/services/classifications/classifications.service';
+import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
-import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
-import { ClassificationCategoriesService } from 'app/services/classification-categories-service/classification-categories.service';
+import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
+// tslint:disable:max-line-length
+import { ClassificationCategoriesService } from 'app/administration/services/classification-categories-service/classification-categories.service';
+// tslint:enable:max-line-length
 import { DomainService } from 'app/services/domain/domain.service';
 
 @Component({

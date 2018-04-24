@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
-import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
+import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { ICONTYPES } from 'app/models/type';
 import { ErrorModel } from 'app/models/modal-error';
 import { ACTION } from 'app/models/action';
@@ -13,8 +13,8 @@ import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { AlertService } from 'app/services/alert/alert.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 @Component({

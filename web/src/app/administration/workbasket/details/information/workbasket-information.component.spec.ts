@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -15,14 +15,14 @@ import { ICONTYPES } from 'app/models/type';
 import { ACTION } from 'app/models/action';
 import { Links } from 'app/models/links';
 
-import { IconTypeComponent } from 'app/shared/type-icon/icon-type.component';
+import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
-import { MapValuesPipe } from 'app/pipes/mapValues/map-values.pipe';
-import { RemoveNoneTypePipe } from 'app/pipes/removeNoneType/remove-none-type.pipe';
+import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
+import { RemoveNoneTypePipe } from 'app/shared/pipes/removeNoneType/remove-none-type.pipe';
 
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { SavingWorkbasketService, SavingInformation } from 'app/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { DomainService } from 'app/services/domain/domain.service';

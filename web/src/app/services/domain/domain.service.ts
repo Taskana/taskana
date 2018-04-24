@@ -60,7 +60,7 @@ export class DomainService {
   }
 
   selectDomain(value: string) {
-    this.requestInProgressService.setRequestInProgress(true);
+    // this.requestInProgressService.setRequestInProgress(true);
     this.domainSelectedValue = value;
     this.domainSelected.next(value);
   }

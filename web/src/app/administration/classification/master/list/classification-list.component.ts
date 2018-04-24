@@ -6,8 +6,8 @@ import { ImportType } from 'app/models/import-type';
 import { Classification } from 'app/models/classification';
 import { TreeNodeModel } from 'app/models/tree-node';
 
-import { ClassificationsService } from 'app/services/classifications/classifications.service';
-import { ClassificationTypesService } from 'app/services/classification-types/classification-types.service';
+import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
+import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
 
 @Component({
 	selector: 'taskana-classification-list',
