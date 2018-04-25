@@ -460,8 +460,8 @@ public class TaskMonitorServiceImplTest {
         List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
 
         List<String> expectedResult = Collections.singletonList("TKI:000000000000000000000000000000000001");
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskIdsOfCategoriesBySelectedItems(workbasketIds,
-            states, categories, domains, customField, customFieldValues, selectedItems);
+        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskIdsForSelectedItems(workbasketIds,
+            states, categories, domains, customField, customFieldValues, "CLASSIFICATION_CATEGORY", selectedItems);
 
         List<String> actualResult = cut.getTaskIdsOfCategoryReportLineItems(workbasketIds, states, categories, domains,
             customField, customFieldValues, reportLineItemDefinitions, selectedItems);
@@ -471,7 +471,7 @@ public class TaskMonitorServiceImplTest {
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1))
-            .getTaskIdsOfCategoriesBySelectedItems(any(), any(), any(), any(), any(), any(), any());
+            .getTaskIdsForSelectedItems(any(), any(), any(), any(), any(), any(), any(), any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
@@ -481,7 +481,7 @@ public class TaskMonitorServiceImplTest {
 
     @Test
     public void testGetTaskStateReportWithoutFilters() {
-        //given
+        // given
         TaskQueryItem queryItem1 = new TaskQueryItem();
         queryItem1.setCount(50);
         queryItem1.setState(TaskState.READY);
@@ -493,10 +493,10 @@ public class TaskMonitorServiceImplTest {
         List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
         when(taskMonitorMapperMock.getTasksCountByState(null, null)).thenReturn(queryItems);
 
-        //when
+        // when
         TaskStatusReport report = cut.getTaskStatusReport();
 
-        //then
+        // then
         InOrder inOrder = inOrder(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineImplMock);
         inOrder.verify(taskanaEngineImplMock).openConnection();
         inOrder.verify(taskMonitorMapperMock).getTasksCountByState(eq(null), eq(null));
@@ -512,7 +512,7 @@ public class TaskMonitorServiceImplTest {
 
     @Test
     public void testGetTotalNumberOfTaskStateReport() {
-        //given
+        // given
         TaskQueryItem queryItem1 = new TaskQueryItem();
         queryItem1.setCount(50);
         queryItem1.setState(TaskState.READY);
@@ -524,10 +524,10 @@ public class TaskMonitorServiceImplTest {
         List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
         when(taskMonitorMapperMock.getTasksCountByState(eq(null), eq(Collections.emptyList()))).thenReturn(queryItems);
 
-        //when
+        // when
         TaskStatusReport report = cut.getTaskStatusReport(null, Collections.emptyList());
 
-        //then
+        // then
         InOrder inOrder = inOrder(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineImplMock);
         inOrder.verify(taskanaEngineImplMock).openConnection();
         inOrder.verify(taskMonitorMapperMock).getTasksCountByState(eq(null), eq(Collections.emptyList()));

@@ -227,7 +227,7 @@ public interface TaskMonitorMapper {
         + "</if>"
         + "AND DUE IS NOT NULL AND ( "
         + "<foreach collection='selectedItems' item='selectedItem' separator=' OR '>"
-        + "#{selectedItem.key} = CLASSIFICATION_CATEGORY AND "
+        + "#{selectedItem.key} = ${groupedBy} AND "
         + "<if test=\"_databaseId == 'db2'\">"
         + "#{selectedItem.upperAgeLimit} >= (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) AND "
         + "#{selectedItem.lowerAgeLimit} &lt;= (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) "
@@ -240,13 +240,11 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
-    List<String> getTaskIdsOfCategoriesBySelectedItems(@Param("workbasketIds") List<String> workbasketIds,
+    List<String> getTaskIdsForSelectedItems(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
-        @Param("categories") List<String> categories,
-        @Param("domains") List<String> domains,
-        @Param("customField") CustomField customField,
-        @Param("customFieldValues") List<String> customFieldValues,
-        @Param("selectedItems") List<SelectedItem> selectedItems);
+        @Param("categories") List<String> categories, @Param("domains") List<String> domains,
+        @Param("customField") CustomField customField, @Param("customFieldValues") List<String> customFieldValues,
+        @Param("groupedBy") String groupedBy, @Param("selectedItems") List<SelectedItem> selectedItems);
 
     @Select("<script>"
         + "SELECT DOMAIN, STATE, COUNT(STATE) as COUNT "
