@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 
 @Component({
@@ -6,7 +6,7 @@ import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resourc
 	templateUrl: './pagination.component.html',
 	styleUrls: ['./pagination.component.scss']
 })
-export class PaginationComponent implements OnInit {
+export class PaginationComponent implements OnInit, OnChanges {
 
 	@Input()
 	workbasketsResource: WorkbasketSummaryResource;
@@ -19,6 +19,11 @@ export class PaginationComponent implements OnInit {
 
 	constructor() { }
 
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes.workbasketsResource.currentValue && changes.workbasketsResource.currentValue.page) {
+			this.pageSelected = changes.workbasketsResource.currentValue.page.number;
+		}
+	}
 	ngOnInit() {
 	}
 
@@ -30,7 +35,6 @@ export class PaginationComponent implements OnInit {
 		if (this.previousPageSelected !== page) {
 			this.changePage.emit(page);
 			this.previousPageSelected = page;
-			this.pageSelected = page;
 		}
 	}
 }

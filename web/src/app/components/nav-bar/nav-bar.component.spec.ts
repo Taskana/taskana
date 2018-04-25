@@ -12,7 +12,7 @@ import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
-  let navBar;
+  let debugElement, navBar;
 
   const routes: Routes = [
     { path: 'classifications', component: NavBarComponent }
@@ -37,8 +37,14 @@ describe('NavBarComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NavBarComponent);
     component = fixture.componentInstance;
+    debugElement = fixture.debugElement.nativeElement;
     navBar = fixture.debugElement.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.detectChanges()
+    document.body.removeChild(debugElement);
   });
 
   it('should create', () => {

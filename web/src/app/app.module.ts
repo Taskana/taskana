@@ -43,6 +43,7 @@ import { NavBarComponent } from 'app/components/nav-bar/nav-bar.component';
  * Guards
  */
 import { DomainGuard } from './guards/domain-guard';
+import { APP_BASE_HREF } from '@angular/common';
 
 
 const MODULES = [
@@ -72,6 +73,7 @@ export function startupServiceFactory(startupService: StartupService): Function 
   declarations: DECLARATIONS,
   imports: MODULES,
   providers: [
+    { provide: APP_BASE_HREF, useValue: '/' },
     DomainService,
     {
       provide: HTTP_INTERCEPTORS,

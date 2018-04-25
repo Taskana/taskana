@@ -21,18 +21,18 @@
 /*
  * Base structure
  */
-/* Move down content because we have a fixed navbar that is 55px tall */
+/* Move down content because we have a fixed navbar that is 57px tall */
 
 .container-main {
-    margin-top: 55px;
+    margin-top: 57px;
     overflow-y: hidden;
     /*Min mobile view size*/
     min-width: 420px;
 }
 
 .container-scrollable {
-    max-height: calc(100vh - 55px);
-    height: calc(100vh - 55px);
+    max-height: calc(100vh - 57px);
+    height: calc(100vh - 57px);
     overflow: hidden;
 }
 
@@ -226,7 +226,7 @@ svg-icon.fa-fw > svg {
     transition: opacity 300ms ease, visibility 300ms ease;
 }
 .vertical-align{
-    vertical-align: middle;
+    vertical-align: sub;
 }
 
 .panel-heading{
