@@ -7,31 +7,24 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from 'app/shared/shared.module';
+import { AppModule } from 'app/app.module';
 
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { FilterModel } from 'app/models/filter';
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { AlertService } from 'app/services/alert/alert.service';
-import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
-import { OrientationService } from 'app/services/orientation/orientation.service';
 
 import { WorkbasketListComponent } from './workbasket-list.component';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar/workbasket-list-toolbar.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
-import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { SortComponent } from 'app/administration/components/sort/sort.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
-import { RemoveNoneTypePipe } from 'app/shared/pipes/removeNoneType/remove-none-type.pipe';
-import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
-import { DomainService } from 'app/services/domain/domain.service';
-import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
+import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -83,19 +76,21 @@ describe('WorkbasketListComponent', () => {
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
 
-			declarations: [WorkbasketListComponent, DummyDetailComponent, SpinnerComponent, FilterComponent, WorkbasketListToolbarComponent,
-				RemoveNoneTypePipe, IconTypeComponent, SortComponent, PaginationComponent, ImportExportComponent, MapValuesPipe],
+			declarations: [WorkbasketListComponent, DummyDetailComponent, FilterComponent, WorkbasketListToolbarComponent,
+				IconTypeComponent, SortComponent, PaginationComponent, ImportExportComponent],
 			imports: [
 				AngularSvgIconModule,
 				HttpModule,
 				HttpClientModule,
-				RouterTestingModule.withRoutes(routes)
+				RouterTestingModule.withRoutes(routes),
+				SharedModule,
+				AppModule
 			],
-			providers: [WorkbasketService, ErrorModalService, RequestInProgressService, AlertService,
-				WorkbasketDefinitionService, OrientationService, {
-					provide: DomainService,
-					useClass: DomainServiceMock
-				}, ClassificationDefinitionService]
+			providers: [
+				WorkbasketService,
+				WorkbasketDefinitionService,
+				ClassificationDefinitionService
+			]
 		})
 			.compileComponents();
 
@@ -143,8 +138,10 @@ describe('WorkbasketListComponent', () => {
 		fixture.detectChanges();
 		fixture.whenStable().then(() => {
 			expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
-			expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class')).toBe('list-group-item');
-			expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class')).toBe('list-group-item active');
+			expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class'))
+				.toBe('list-group-item ng-star-inserted');
+			expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class'))
+				.toBe('list-group-item ng-star-inserted active');
 		})
 
 	}));

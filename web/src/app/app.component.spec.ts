@@ -17,7 +17,7 @@ import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { DomainService } from 'app/services/domain/domain.service';
 
 
-describe('AppComponent', () => {
+fdescribe('AppComponent', () => {
 
 	let app, fixture, debugElement;
 

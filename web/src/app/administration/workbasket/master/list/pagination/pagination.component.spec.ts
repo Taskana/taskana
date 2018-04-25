@@ -1,19 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SimpleChange } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from 'app/shared/shared.module';
+
 import { PaginationComponent } from './pagination.component';
-import { SpreadNumberPipe } from 'app/shared/pipes/spreadNumber/spread-number';
-import { WorkbasketSummaryResource } from '../../../../../models/workbasket-summary-resource';
-import { Page } from '../../../../../models/page';
+import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
+import { Page } from 'app/models/page';
 
 describe('PaginationComponent', () => {
 	let component: PaginationComponent;
 	let fixture: ComponentFixture<PaginationComponent>;
 	let debugElement;
-
 	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [PaginationComponent, SpreadNumberPipe],
-			imports: [FormsModule]
+		return TestBed.configureTestingModule({
+			declarations: [
+				PaginationComponent
+			],
+			imports: [FormsModule, SharedModule]
 		})
 			.compileComponents();
 	}));
@@ -79,6 +82,16 @@ describe('PaginationComponent', () => {
 			expect(value).toBe(1)
 		})
 		component.changeToPage(0);
+	});
+
+	it('should change pageSelected onChanges', () => {
+		expect(component.pageSelected).toBe(1);
+		component.ngOnChanges({
+			workbasketsResource: new SimpleChange(null, new WorkbasketSummaryResource(undefined, undefined, new Page(6, 3, 3, 2)), true)
+		});
+		fixture.detectChanges();
+		expect(component.pageSelected).toBe(2);
+
 	});
 
 });
