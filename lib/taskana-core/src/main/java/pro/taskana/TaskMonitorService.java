@@ -129,6 +129,46 @@ public interface TaskMonitorService {
         throws InvalidArgumentException;
 
     /**
+     * Returns a list of all task ids in the selected items of a {@link pro.taskana.impl.report.Report}. By default the
+     * age of the tasks is counted in working days. The tasks of the report are filtered by workbaskets, states,
+     * categories, domains and values of a custom field. If no filter is required, the respective parameter should be
+     * null. Tasks with Timestamp DUE = null are not considered.
+     *
+     * @param workbasketIds
+     *            a list of workbasket ids objects to filter by workbaskets. To omit this filter, use null for this
+     *            parameter
+     * @param states
+     *            a list of states objects to filter by states. To omit this filter, use null for this parameter
+     * @param categories
+     *            a list of categories to filter by categories. To omit this filter, use null for this parameter
+     * @param domains
+     *            a list of domains to filter by domains. To omit this filter, use null for this parameter
+     * @param customField
+     *            a custom field to filter by the values of the custom field. To omit this filter, use null for this
+     *            parameter
+     * @param customFieldValues
+     *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
+     *            null for this parameter
+     * @param columnHeaders
+     *            a list of columnHeaders that specify the subdivision into different cluster of due dates. Days in past
+     *            are represented as negative values and days in the future are represented as positive values. To avoid
+     *            tasks are counted multiple times or not be listed in the report, these columnHeaders should not
+     *            overlap and should not have gaps. If the ReportLineDefinition should represent a single day,
+     *            lowerLimit and upperLimit have to be equal. The outer cluster of a report should have open ends. These
+     *            open ends are represented with Integer.MIN_VALUE and Integer.MAX_VALUE.
+     * @param inWorkingDays
+     *            a boolean parameter that specifies whether the age of the tasks should be counted in days or in
+     *            working days
+     * @return the report
+     * @throws InvalidArgumentException
+     *             thrown if DaysToWorkingDaysConverter is initialized with null
+     */
+    List<String> getTaskIdsOfWorkbasketLevelReportLineItems(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays, List<SelectedItem> selectedItems)
+        throws InvalidArgumentException;
+
+    /**
      * Returns a {@link CategoryReport} grouped by categories. The report contains the total numbers of tasks of the
      * respective category as well as the total number of all tasks. The tasks of the report are filtered by
      * workbaskets, states, categories, domains and values of a custom field and values of a custom field. If no filter
