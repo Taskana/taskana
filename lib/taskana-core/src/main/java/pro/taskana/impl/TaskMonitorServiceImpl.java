@@ -328,8 +328,11 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 selectedItems = convertWorkingDaysToDays(selectedItems, columnHeaders);
             }
 
-            List<String> taskIds = taskMonitorMapper.getTaskIdsOfCategoriesBySelectedItems(workbasketIds, states,
-                categories, domains, customField, customFieldValues, selectedItems);
+            // List<String> taskIds = taskMonitorMapper.getTaskIdsOfCategoriesBySelectedItems(workbasketIds, states,
+            // categories, domains, customField, customFieldValues, selectedItems);
+
+            List<String> taskIds = taskMonitorMapper.getTaskIdsForSelectedItems(workbasketIds, states,
+                categories, domains, customField, customFieldValues, "CLASSIFICATION_CATEGORY", selectedItems);
 
             return taskIds;
 
@@ -369,6 +372,51 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         } finally {
             taskanaEngineImpl.returnConnection();
             LOGGER.debug("exit from getCustomAttributeValuesForReport().");
+        }
+    }
+
+    @Override
+    public List<String> getTaskIdsOfWorkbasketLevelReportLineItems(List<String> workbasketIds, List<TaskState> states,
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays, List<SelectedItem> selectedItems)
+        throws InvalidArgumentException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to getTaskIdsOfWorkbasketLevelReportLineItems(workbasketIds = {}, states = {}, "
+                + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
+                + "columnHeaders = {}, inWorkingDays = {}, selectedItems = {})",
+                LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
+                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
+                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
+                inWorkingDays, LoggerUtils.listToString(selectedItems));
+        }
+        try {
+            taskanaEngineImpl.openConnection();
+            if (columnHeaders == null) {
+                throw new InvalidArgumentException("ReportLineItemDefinitions can´t be used as NULL-Parameter");
+            }
+            if (selectedItems == null || selectedItems.size() == 0) {
+                throw new InvalidArgumentException(
+                    "SelectedItems can´t be used as NULL-Parameter and should not be empty");
+            }
+
+            configureDaysToWorkingDaysConverter();
+
+            if (inWorkingDays) {
+                selectedItems = convertWorkingDaysToDays(selectedItems, columnHeaders);
+            }
+
+            // List<String> taskIds = taskMonitorMapper.getTaskIdsOfWorkbasketLevelBySelectedItems(workbasketIds,
+            // states,
+            // categories, domains, customField, customFieldValues, selectedItems);
+
+            List<String> taskIds = taskMonitorMapper.getTaskIdsForSelectedItems(workbasketIds, states,
+                categories, domains, customField, customFieldValues, "WORKBASKET_KEY", selectedItems);
+
+            return taskIds;
+
+        } finally {
+            taskanaEngineImpl.returnConnection();
+            LOGGER.debug("exit from getTaskIdsOfWorkbasketLevelReportLineItems().");
         }
     }
 
@@ -415,4 +463,5 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(
             this.taskanaEngineImpl.getConfiguration().isGermanPublicHolidaysEnabled());
     }
+
 }
