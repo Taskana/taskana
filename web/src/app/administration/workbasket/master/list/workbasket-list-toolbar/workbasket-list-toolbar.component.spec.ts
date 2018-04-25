@@ -8,6 +8,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from 'app/shared/shared.module';
+import { AppModule } from 'app/app.module';
 
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { Links } from 'app/models/links';
@@ -20,16 +22,9 @@ import { IconTypeComponent } from 'app/administration/components/type-icon/icon-
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
-import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
-
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
-import { DomainService } from 'app/services/domain/domain.service';
-import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -42,7 +37,7 @@ export class DummyDetailComponent {
 describe('WorkbasketListToolbarComponent', () => {
 	let component: WorkbasketListToolbarComponent;
 	let fixture: ComponentFixture<WorkbasketListToolbarComponent>;
-	let debugElement, workbasketService, requestInProgressService, router;
+	let debugElement, workbasketService, router;
 
 	const routes: Routes = [
 		{ path: ':id', component: DummyDetailComponent, outlet: 'detail' }
@@ -51,14 +46,14 @@ describe('WorkbasketListToolbarComponent', () => {
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
 			imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, HttpModule,
-				HttpClientModule, RouterTestingModule.withRoutes(routes)],
+				HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule, AppModule],
 			declarations: [WorkbasketListToolbarComponent, SortComponent,
-				FilterComponent, IconTypeComponent, DummyDetailComponent, MapValuesPipe, ImportExportComponent],
-			providers: [ErrorModalService, WorkbasketService, RequestInProgressService, AlertService,
-				ClassificationDefinitionService, WorkbasketDefinitionService, {
-					provide: DomainService,
-					useClass: DomainServiceMock
-				}]
+				FilterComponent, IconTypeComponent, DummyDetailComponent, ImportExportComponent],
+			providers: [
+				WorkbasketService,
+				ClassificationDefinitionService,
+				WorkbasketDefinitionService,
+			]
 		})
 			.compileComponents();
 	}));
@@ -66,11 +61,9 @@ describe('WorkbasketListToolbarComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
 		workbasketService = TestBed.get(WorkbasketService);
-		requestInProgressService = TestBed.get(RequestInProgressService);
 		router = TestBed.get(Router);
 		spyOn(workbasketService, 'deleteWorkbasket').and.returnValue(Observable.of(''));
 		spyOn(workbasketService, 'triggerWorkBasketSaved');
-		spyOn(requestInProgressService, 'setRequestInProgress');
 
 		debugElement = fixture.debugElement.nativeElement;
 		component = fixture.componentInstance;
