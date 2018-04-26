@@ -7,6 +7,7 @@ package pro.taskana.impl;
 public class SelectedItem {
 
     private String key;
+    private String subKey;
     private int upperAgeLimit;
     private int lowerAgeLimit;
 
@@ -16,6 +17,14 @@ public class SelectedItem {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getSubKey() {
+        return subKey;
+    }
+
+    public void setSubKey(String subKey) {
+        this.subKey = subKey;
     }
 
     public int getUpperAgeLimit() {
@@ -36,7 +45,8 @@ public class SelectedItem {
 
     @Override
     public String toString() {
-        return "Key: " + this.key + ", Limits: (" + this.lowerAgeLimit + "," + this.getUpperAgeLimit() + ")";
+        return "Key: " + this.key + ", SubKey: " + this.subKey + ", Limits: (" + this.lowerAgeLimit + ","
+            + this.getUpperAgeLimit() + ")";
     }
 
 }
