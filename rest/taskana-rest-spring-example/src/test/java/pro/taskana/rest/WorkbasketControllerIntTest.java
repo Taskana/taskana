@@ -1,11 +1,13 @@
 package pro.taskana.rest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,12 +36,14 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.rest.resource.DistributionTargetResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Import(RestConfiguration.class)
 public class WorkbasketControllerIntTest {
+
     String url = "http://127.0.0.1:";
     RestTemplate template;
     HttpEntity<String> request;
@@ -56,7 +61,7 @@ public class WorkbasketControllerIntTest {
     @Test
     public void testGetAllWorkbaskets() {
         ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = template.exchange(
-                url + port + "/v1/workbaskets", HttpMethod.GET, request,
+            url + port + "/v1/workbaskets", HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
@@ -66,7 +71,7 @@ public class WorkbasketControllerIntTest {
     public void testGetAllWorkbasketsKeepingFilters() {
         String parameters = "/v1/workbaskets?type=PERSONAL&sort-by=key&order=desc";
         ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = template.exchange(
-                url + port + parameters, HttpMethod.GET, request,
+            url + port + parameters, HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
@@ -80,7 +85,7 @@ public class WorkbasketControllerIntTest {
     public void testThrowsExceptionIfInvalidFilterIsUsed() {
         try {
             template.exchange(
-                    url + port + "/v1/workbaskets?invalid=PERSONAL", HttpMethod.GET, request,
+                url + port + "/v1/workbaskets?invalid=PERSONAL", HttpMethod.GET, request,
                 new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
                 });
             fail();
@@ -95,7 +100,7 @@ public class WorkbasketControllerIntTest {
 
         String parameters = "/v1/workbaskets?sort-by=key&order=desc&page=2&page-size=5";
         ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = template.exchange(
-                url + port + parameters, HttpMethod.GET, request,
+            url + port + parameters, HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
             });
         assertEquals(5, response.getBody().getContent().size());
@@ -114,6 +119,26 @@ public class WorkbasketControllerIntTest {
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertNotNull(response.getBody().getLink(Link.REL_NEXT));
         assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+    }
+
+    @Test
+    public void testRemoveWorkbasketAsDistributionTarget() {
+        String parameters = "/v1/workbaskets/distribution-targets/WBI:100000000000000000000000000000000007";
+        ResponseEntity<?> response = template.exchange(
+            url + port + parameters, HttpMethod.DELETE, request,
+            Void.class);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        ResponseEntity<Resources<DistributionTargetResource>> response2 = template.exchange(
+            url + port + "/v1/workbaskets/WBI:100000000000000000000000000000000002/distribution-targets",
+            HttpMethod.GET, request,
+            new ParameterizedTypeReference<Resources<DistributionTargetResource>>() {
+            });
+        assertEquals(HttpStatus.OK, response2.getStatusCode());
+        Iterator<DistributionTargetResource> iterator = response2.getBody().getContent().iterator();
+        while (iterator.hasNext()) {
+            assertNotEquals("WBI:100000000000000000000000000000000007", iterator.next().workbasketId);
+        }
     }
 
     /**
