@@ -18,6 +18,10 @@ import pro.taskana.impl.report.impl.WorkbasketLevelReport;
  */
 public interface TaskMonitorService {
 
+    String DIMENSION_CLASSIFICATION_CATEGORY = "CLASSIFICATION_CATEGORY";
+    String DIMENSION_CLASSIFICATION_KEY = "CLASSIFICATION_KEY";
+    String DIMENSION_WORKBASKET_KEY = "WORKBASKET_KEY";
+
     /**
      * Returns a {@link WorkbasketLevelReport} grouped by workbaskets. The report contains the total numbers of tasks of
      * the respective workbasket as well as the total number of all tasks. If no filter is required, the respective
@@ -126,46 +130,6 @@ public interface TaskMonitorService {
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException;
-
-    /**
-     * Returns a list of all task ids in the selected items of a {@link pro.taskana.impl.report.Report}. By default the
-     * age of the tasks is counted in working days. The tasks of the report are filtered by workbaskets, states,
-     * categories, domains and values of a custom field. If no filter is required, the respective parameter should be
-     * null. Tasks with Timestamp DUE = null are not considered.
-     *
-     * @param workbasketIds
-     *            a list of workbasket ids objects to filter by workbaskets. To omit this filter, use null for this
-     *            parameter
-     * @param states
-     *            a list of states objects to filter by states. To omit this filter, use null for this parameter
-     * @param categories
-     *            a list of categories to filter by categories. To omit this filter, use null for this parameter
-     * @param domains
-     *            a list of domains to filter by domains. To omit this filter, use null for this parameter
-     * @param customField
-     *            a custom field to filter by the values of the custom field. To omit this filter, use null for this
-     *            parameter
-     * @param customFieldValues
-     *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
-     *            null for this parameter
-     * @param columnHeaders
-     *            a list of columnHeaders that specify the subdivision into different cluster of due dates. Days in past
-     *            are represented as negative values and days in the future are represented as positive values. To avoid
-     *            tasks are counted multiple times or not be listed in the report, these columnHeaders should not
-     *            overlap and should not have gaps. If the ReportLineDefinition should represent a single day,
-     *            lowerLimit and upperLimit have to be equal. The outer cluster of a report should have open ends. These
-     *            open ends are represented with Integer.MIN_VALUE and Integer.MAX_VALUE.
-     * @param inWorkingDays
-     *            a boolean parameter that specifies whether the age of the tasks should be counted in days or in
-     *            working days
-     * @return the report
-     * @throws InvalidArgumentException
-     *             thrown if DaysToWorkingDaysConverter is initialized with null
-     */
-    List<String> getTaskIdsOfWorkbasketLevelReportLineItems(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays, List<SelectedItem> selectedItems)
         throws InvalidArgumentException;
 
     /**
@@ -623,45 +587,10 @@ public interface TaskMonitorService {
      *            a list of categories to filter by categories. To omit this filter, use null for this parameter
      * @param domains
      *            a list of domains to filter by domains. To omit this filter, use null for this parameter
-     * @param customField
-     *            a custom field to filter by the values of the custom field. To omit this filter, use null for this
-     *            parameter
-     * @param customFieldValues
-     *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
-     *            null for this parameter
-     * @param columnHeaders
-     *            a list of columnHeaders that specify the subdivision into different cluster of due dates. Days in past
-     *            are represented as negative values and days in the future are represented as positive values. To avoid
-     *            tasks are counted multiple times or not be listed in the report, these columnHeaders should not
-     *            overlap and should not have gaps. If the ReportLineDefinition should represent a single day,
-     *            lowerLimit and upperLimit have to be equal. The outer cluster of a report should have open ends. These
-     *            open ends are represented with Integer.MIN_VALUE and Integer.MAX_VALUE.
-     * @param selectedItems
-     *            a list of {@link SelectedItem}s that are selected from the report whose task ids should be determined.
-     * @return the list of task ids
-     * @throws InvalidArgumentException
-     *             thrown if columnHeaders is null or if selectedItems is empty or null
-     */
-    List<String> getTaskIdsOfCategoryReportLineItems(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders, List<SelectedItem> selectedItems)
-        throws InvalidArgumentException;
-
-    /**
-     * Returns a list of all task ids in the selected items of a {@link pro.taskana.impl.report.Report}. By default the
-     * age of the tasks is counted in working days. The tasks of the report are filtered by workbaskets, states,
-     * categories, domains and values of a custom field. If no filter is required, the respective parameter should be
-     * null. Tasks with Timestamp DUE = null are not considered.
-     *
-     * @param workbasketIds
-     *            a list of workbasket ids objects to filter by workbaskets. To omit this filter, use null for this
-     *            parameter
-     * @param states
-     *            a list of states objects to filter by states. To omit this filter, use null for this parameter
-     * @param categories
-     *            a list of categories to filter by categories. To omit this filter, use null for this parameter
-     * @param domains
-     *            a list of domains to filter by domains. To omit this filter, use null for this parameter
+     * @param classificationKeys
+     *            a list of task classification key to filter. To omit this filter, use null for this parameter
+     * @param excludedClassificationKeys
+     *            a list of task classification key to exclude. To omit this filter, use null for this parameter
      * @param customField
      *            a custom field to filter by the values of the custom field. To omit this filter, use null for this
      *            parameter
@@ -680,14 +609,18 @@ public interface TaskMonitorService {
      *            working days
      * @param selectedItems
      *            a list of {@link SelectedItem}s that are selected from the report whose task ids should be determined.
+     * @param dimension
+     *            defines the meaning of the key in the {@link SelectedItem}s.
      * @return the list of task ids
      * @throws InvalidArgumentException
      *             thrown if columnHeaders is null or if selectedItems is empty or null
      */
-    List<String> getTaskIdsOfCategoryReportLineItems(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays,
-        List<SelectedItem> selectedItems) throws InvalidArgumentException;
+    List<String> getTaskIdsForSelectedItems(List<String> workbasketIds, List<TaskState> states, List<String> categories,
+        List<String> domains, List<String> classificationKeys,
+        List<String> excludedClassificationKeys, CustomField customField, List<String> customFieldValues,
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays, List<SelectedItem> selectedItems,
+        String dimension)
+        throws InvalidArgumentException;
 
     /**
      * Returns a list of distinct custom attribute values for the selection from the entire task pool.

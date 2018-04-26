@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -27,9 +26,9 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 
 /**
- * Acceptance test for all "get task ids of workbasket report" scenarios.
+ * Acceptance test for all "get task ids of classification report" scenarios.
  */
-public class GetTaskIdsOfWorkbasketReportAccTest {
+public class GetTaskIdsOfClassificationReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
@@ -54,7 +53,7 @@ public class GetTaskIdsOfWorkbasketReportAccTest {
     }
 
     @Test
-    public void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException {
+    public void testGetTaskIdsOfClassificationReport() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -62,39 +61,38 @@ public class GetTaskIdsOfWorkbasketReportAccTest {
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
-        s1.setKey("USER_1_1");
+        s1.setKey("L10000");
         s1.setLowerAgeLimit(0);
         s1.setUpperAgeLimit(0);
         selectedItems.add(s1);
 
         SelectedItem s2 = new SelectedItem();
-        s2.setKey("USER_1_1");
+        s2.setKey("L10000");
         s2.setLowerAgeLimit(Integer.MIN_VALUE);
         s2.setUpperAgeLimit(-11);
         selectedItems.add(s2);
 
         SelectedItem s3 = new SelectedItem();
-        s3.setKey("USER_1_2");
-        s3.setLowerAgeLimit(1000);
-        s3.setUpperAgeLimit(Integer.MAX_VALUE);
+        s3.setKey("L30000");
+        s3.setLowerAgeLimit(Integer.MIN_VALUE);
+        s3.setUpperAgeLimit(-11);
         selectedItems.add(s3);
 
         List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
             null, null, null,
-            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_WORKBASKET_KEY);
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_KEY);
 
-        assertEquals(7, ids.size());
+        assertEquals(6, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000004"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000009"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000007"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000010"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000050"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000033"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
     }
 
     @Test
-    public void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications() throws InvalidArgumentException {
+    public void testGetTaskIdsOfClassificationReportWithAttachments() throws InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -102,32 +100,72 @@ public class GetTaskIdsOfWorkbasketReportAccTest {
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
-        s1.setKey("USER_1_1");
+        s1.setKey("L10000");
+        s1.setSubKey("L11000");
         s1.setLowerAgeLimit(0);
         s1.setUpperAgeLimit(0);
         selectedItems.add(s1);
 
         SelectedItem s2 = new SelectedItem();
-        s2.setKey("USER_1_1");
+        s2.setKey("L10000");
+        s2.setSubKey("L11000");
         s2.setLowerAgeLimit(Integer.MIN_VALUE);
         s2.setUpperAgeLimit(-11);
         selectedItems.add(s2);
 
         SelectedItem s3 = new SelectedItem();
-        s3.setKey("USER_1_2");
-        s3.setLowerAgeLimit(1000);
-        s3.setUpperAgeLimit(Integer.MAX_VALUE);
+        s3.setKey("L30000");
+        s3.setLowerAgeLimit(Integer.MIN_VALUE);
+        s3.setUpperAgeLimit(-11);
         selectedItems.add(s3);
 
         List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
-            Collections.singletonList("CLI:000000000000000000000000000000000001"), null, null,
-            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_WORKBASKET_KEY);
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_KEY);
 
-        assertEquals(4, ids.size());
+        assertEquals(2, ids.size());
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000033"));
+    }
+
+    @Test
+    public void testGetTaskIdsOfClassificationReportWithDomainFilter() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+        List<SelectedItem> selectedItems = new ArrayList<>();
+
+        SelectedItem s1 = new SelectedItem();
+        s1.setKey("L10000");
+        s1.setLowerAgeLimit(0);
+        s1.setUpperAgeLimit(0);
+        selectedItems.add(s1);
+
+        SelectedItem s2 = new SelectedItem();
+        s2.setKey("L10000");
+        s2.setLowerAgeLimit(Integer.MIN_VALUE);
+        s2.setUpperAgeLimit(-11);
+        selectedItems.add(s2);
+
+        SelectedItem s3 = new SelectedItem();
+        s3.setKey("L30000");
+        s3.setLowerAgeLimit(Integer.MIN_VALUE);
+        s3.setUpperAgeLimit(-11);
+        selectedItems.add(s3);
+
+        List<String> domains = new ArrayList<>();
+        domains.add("DOMAIN_B");
+        domains.add("DOMAIN_C");
+
+        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, domains, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_KEY);
+
+        assertEquals(3, ids.size());
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000004"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000009"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000050"));
     }
 
     private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {
