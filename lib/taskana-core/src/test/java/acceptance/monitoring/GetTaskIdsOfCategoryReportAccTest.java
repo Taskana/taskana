@@ -82,8 +82,9 @@ public class GetTaskIdsOfCategoryReportAccTest {
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, null, null, null, null, null,
-            columnHeaders, selectedItems);
+        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
 
         assertEquals(11, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
@@ -126,8 +127,9 @@ public class GetTaskIdsOfCategoryReportAccTest {
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(workbasketIds, null, null, null, null,
-            null, columnHeaders, selectedItems);
+        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(workbasketIds, null, null, null, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
 
         assertEquals(4, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
@@ -163,8 +165,9 @@ public class GetTaskIdsOfCategoryReportAccTest {
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, states, null, null, null, null,
-            columnHeaders, selectedItems);
+        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, states, null, null, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
 
         assertEquals(11, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
@@ -201,8 +204,9 @@ public class GetTaskIdsOfCategoryReportAccTest {
         s2.setUpperAgeLimit(0);
         selectedItems.add(s2);
 
-        List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, null, categories, null, null,
-            null, columnHeaders, selectedItems);
+        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, categories, null, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
 
         assertEquals(3, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
@@ -237,8 +241,9 @@ public class GetTaskIdsOfCategoryReportAccTest {
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, null, null, domains, null, null,
-            columnHeaders, selectedItems);
+        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, domains, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
 
         assertEquals(4, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
@@ -275,8 +280,10 @@ public class GetTaskIdsOfCategoryReportAccTest {
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.getTaskIdsOfCategoryReportLineItems(null, null, null, null, customField,
-            customFieldValues, columnHeaders, selectedItems);
+        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null, null,
+            customField,
+            customFieldValues,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
 
         assertEquals(5, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
@@ -284,6 +291,26 @@ public class GetTaskIdsOfCategoryReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000027"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void testThrowsExceptionIfSubKeysAreUsed() throws InvalidArgumentException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+        List<SelectedItem> selectedItems = new ArrayList<>();
+
+        SelectedItem s1 = new SelectedItem();
+        s1.setKey("EXTERN");
+        s1.setSubKey("INVALID");
+        s1.setLowerAgeLimit(-5);
+        s1.setUpperAgeLimit(-2);
+        selectedItems.add(s1);
+
+        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
     }
 
     private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

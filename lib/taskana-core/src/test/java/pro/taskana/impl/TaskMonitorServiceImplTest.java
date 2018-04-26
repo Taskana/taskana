@@ -28,6 +28,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.CustomField;
+import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -443,11 +444,13 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetTaskIdsOfCategoryReportLineItems() throws InvalidArgumentException {
+    public void testGetTaskIdsForSelectedItems() throws InvalidArgumentException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
         List<String> domains = Collections.singletonList("DOMAIN_A");
+        List<String> classificationIds = Collections.singletonList("L10000");
+        List<String> excludedClassificationIds = Collections.singletonList("L20000");
         CustomField customField = CustomField.CUSTOM_1;
         List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
         List<TimeIntervalColumnHeader> reportLineItemDefinitions = Collections.singletonList(
@@ -460,18 +463,22 @@ public class TaskMonitorServiceImplTest {
         List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
 
         List<String> expectedResult = Collections.singletonList("TKI:000000000000000000000000000000000001");
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskIdsForSelectedItems(workbasketIds,
-            states, categories, domains, customField, customFieldValues, "CLASSIFICATION_CATEGORY", selectedItems);
+        when(taskMonitorMapperMock.getTaskIdsForSelectedItems(workbasketIds,
+            states, categories, domains, classificationIds, excludedClassificationIds, customField, customFieldValues,
+            "CLASSIFICATION_CATEGORY", selectedItems, false)).thenReturn(expectedResult);
 
-        List<String> actualResult = cut.getTaskIdsOfCategoryReportLineItems(workbasketIds, states, categories, domains,
-            customField, customFieldValues, reportLineItemDefinitions, selectedItems);
+        List<String> actualResult = cut.getTaskIdsForSelectedItems(workbasketIds, states, categories, domains,
+            classificationIds, excludedClassificationIds,
+            customField, customFieldValues, reportLineItemDefinitions, true, selectedItems,
+            TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1))
-            .getTaskIdsForSelectedItems(any(), any(), any(), any(), any(), any(), any(), any());
+            .getTaskIdsForSelectedItems(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(),
+                eq(false));
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
