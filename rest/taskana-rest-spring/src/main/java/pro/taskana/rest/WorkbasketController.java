@@ -212,7 +212,7 @@ public class WorkbasketController extends AbstractPagingController {
         return new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{workbasketId}/distributiontargets")
+    @GetMapping(path = "/{workbasketId}/distribution-targets")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<Resources<DistributionTargetResource>> getDistributionTargets(
         @PathVariable(value = "workbasketId") String workbasketId)
@@ -226,7 +226,7 @@ public class WorkbasketController extends AbstractPagingController {
         return result;
     }
 
-    @PutMapping(path = "/{workbasketId}/distributiontargets")
+    @PutMapping(path = "/{workbasketId}/distribution-targets")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Resources<DistributionTargetResource>> setDistributionTargetsForWorkbasketId(
         @PathVariable(value = "workbasketId") String sourceWorkbasketId,
@@ -238,6 +238,19 @@ public class WorkbasketController extends AbstractPagingController {
             .toResource(sourceWorkbasketId, distributionTargets);
 
         return new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/distribution-targets/{workbasketId}")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<Resources<DistributionTargetResource>> setDistributionTargetsForWorkbasketId(
+        @PathVariable(value = "workbasketId") String targetWorkbasketId)
+        throws WorkbasketNotFoundException, NotAuthorizedException {
+        List<WorkbasketSummary> sourceWorkbaskets = workbasketService.getDistributionSources(targetWorkbasketId);
+        for (WorkbasketSummary source : sourceWorkbaskets) {
+            workbasketService.removeDistributionTarget(source.getId(), targetWorkbasketId);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     private WorkbasketQuery applySortingParams(WorkbasketQuery query, MultiValueMap<String, String> params)
