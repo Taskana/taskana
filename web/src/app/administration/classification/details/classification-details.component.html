@@ -102,44 +102,44 @@
             </div>
           </div>
           <div class="col-md-6">
-            <div class="form-group">
-              <label for="classification-custom-1" class="control-label">Custom 1</label>
-              <input type="text" class="form-control" id="classification-custom-1" placeholder="Custom 1" [(ngModel)]="classification.custom1"
+            <div *ngIf="custom1Field.visible" class="form-group">
+              <label for="classification-custom-1" class="control-label">{{custom1Field.field}}</label>
+              <input type="text" class="form-control" id="classification-custom-1" placeholder="{{custom1Field.field}}" [(ngModel)]="classification.custom1"
                 name="classification.custom1">
             </div>
-            <div class="form-group">
-              <label for="classification-custom-2" class="control-label">Custom 2</label>
-              <input type="text" class="form-control" id="classification-custom-2" placeholder="Custom 2" [(ngModel)]="classification.custom2"
+            <div *ngIf="custom2Field.visible" class="form-group">
+              <label for="classification-custom-2" class="control-label">{{custom2Field.field}}</label>
+              <input type="text" class="form-control" id="classification-custom-2" placeholder="{{custom2Field.field}}" [(ngModel)]="classification.custom2"
                 name="classification.custom2">
             </div>
-            <div class="form-group">
-              <label for="classification-custom-3" class="control-label">Custom 3</label>
-              <input type="text" class="form-control" id="classification-custom-3" placeholder="Custom 3" [(ngModel)]="classification.custom3"
+            <div *ngIf="custom3Field.visible" class="form-group">
+              <label for="classification-custom-3" class="control-label">{{custom3Field.field}}</label>
+              <input type="text" class="form-control" id="classification-custom-3" placeholder="{{custom3Field.field}}" [(ngModel)]="classification.custom3"
                 name="classification.custom3">
             </div>
-            <div class="form-group">
-              <label for="classification-custom-4" class="control-label">Custom 4</label>
-              <input type="text" class="form-control" id="classification-custom-4" placeholder="Custom 4" [(ngModel)]="classification.custom4"
+            <div *ngIf="custom4Field.visible" class="form-group">
+              <label for="classification-custom-4" class="control-label">{{custom4Field.field}}</label>
+              <input type="text" class="form-control" id="classification-custom-4" placeholder="{{custom4Field.field}}" [(ngModel)]="classification.custom4"
                 name="classification.custom4">
             </div>
-            <div class="form-group">
-              <label for="classification-custom-5" class="control-label">Custom 5</label>
-              <input type="text" class="form-control" id="classification-custom-5" placeholder="Custom 5" [(ngModel)]="classification.custom5"
+            <div *ngIf="custom5Field.visible" class="form-group">
+              <label for="classification-custom-5" class="control-label">{{custom5Field.field}}</label>
+              <input type="text" class="form-control" id="classification-custom-5" placeholder="{{custom5Field.field}}" [(ngModel)]="classification.custom5"
                 name="classification.custom5">
             </div>
-            <div class="form-group">
-              <label for="classification-custom-6" class="control-label">Custom 6</label>
-              <input type="text" class="form-control" id="classification-custom-6" placeholder="Custom 6" [(ngModel)]="classification.custom6"
+            <div *ngIf="custom6Field.visible" class="form-group">
+              <label for="classification-custom-6" class="control-label">{{custom6Field.field}}</label>
+              <input type="text" class="form-control" id="classification-custom-6" placeholder="{{custom6Field.field}}" [(ngModel)]="classification.custom6"
                 name="classification.custom6">
             </div>
-            <div class="form-group">
-              <label for="classification-custom-7" class="control-label">Custom 7</label>
-              <input type="text" class="form-control" id="classification-custom-7" placeholder="Custom 7" [(ngModel)]="classification.custom7"
+            <div *ngIf="custom7Field.visible" class="form-group">
+              <label for="classification-custom-7" class="control-label">{{custom7Field.field}}</label>
+              <input type="text" class="form-control" id="classification-custom-7" placeholder="{{custom7Field.field}}" [(ngModel)]="classification.custom7"
                 name="classification.custom7">
             </div>
-            <div class="form-group">
-              <label for="classification-custom-8" class="control-label">Custom 8</label>
-              <input type="text" class="form-control" id="classification-custom-8" placeholder="Custom 8" [(ngModel)]="classification.custom8"
+            <div *ngIf="custom8Field.visible" class="form-group">
+              <label for="classification-custom-8" class="control-label">{{custom8Field.field}}</label>
+              <input type="text" class="form-control" id="classification-custom-8" placeholder="{{custom8Field.field}}" [(ngModel)]="classification.custom8"
                 name="classification.custom8">
             </div>
           </div>

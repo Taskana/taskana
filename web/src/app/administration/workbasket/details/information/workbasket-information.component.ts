@@ -16,13 +16,16 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { TitlesService } from 'app/services/titles/titles.service';
+import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 
 @Component({
 	selector: 'taskana-workbasket-information',
 	templateUrl: './workbasket-information.component.html',
 	styleUrls: ['./workbasket-information.component.scss']
 })
-export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
+export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDestroy {
+
 
 	@Input()
 	workbasket: Workbasket;
@@ -34,6 +37,11 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 	requestInProgress = false;
 	badgeMessage = '';
 
+	custom1Field = this.customFieldsService.getCustomField('Custom 1', 'workbaskets.information.custom1');
+	custom2Field = this.customFieldsService.getCustomField('Custom 2', 'workbaskets.information.custom2');
+	custom3Field = this.customFieldsService.getCustomField('Custom 3', 'workbaskets.information.custom3');
+	custom4Field = this.customFieldsService.getCustomField('Custom 4', 'workbaskets.information.custom4');
+
 
 	private workbasketSubscription: Subscription;
 	private routeSubscription: Subscription;
@@ -44,8 +52,13 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 		private router: Router,
 		private errorModalService: ErrorModalService,
 		private savingWorkbasket: SavingWorkbasketService,
-		private requestInProgressService: RequestInProgressService) {
+		private requestInProgressService: RequestInProgressService,
+		private customFieldsService: CustomFieldsService) {
 		this.allTypes = IconTypeComponent.allTypes;
+	}
+
+	ngOnInit(): void {
+
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -55,7 +68,6 @@ export class WorkbasketInformationComponent implements OnChanges, OnDestroy {
 		} else if (this.action === ACTION.COPY) {
 			this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
 		}
-
 	}
 
 	selectType(type: ICONTYPES) {

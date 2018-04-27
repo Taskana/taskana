@@ -23,6 +23,7 @@ import { SpreadNumberPipe } from './pipes/spreadNumber/spread-number';
 import { OrderBy } from './pipes/orderBy/orderBy';
 import { MapToIterable } from './pipes/mapToIterable/mapToIterable';
 
+
 const MODULES = [
   CommonModule,
   FormsModule,

@@ -24,6 +24,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
+import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 
 describe('AccessItemsComponent', () => {
 	let component: AccessItemsComponent;
@@ -38,7 +39,8 @@ describe('AccessItemsComponent', () => {
 				{
 					provide: DomainService,
 					useClass: DomainServiceMock
-				}]
+				},
+				CustomFieldsService]
 
 		})
 			.compileComponents();

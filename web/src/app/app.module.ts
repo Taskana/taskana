@@ -30,6 +30,8 @@ import { StartupService } from 'app/services/startup-service/startup.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { TreeService } from 'app/services/tree/tree.service';
+import { TitlesService } from 'app/services/titles/titles.service';
+import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 
 
 /**
@@ -95,7 +97,9 @@ export function startupServiceFactory(startupService: StartupService): Function 
     AlertService,
     PermissionService,
     MasterAndDetailService,
-    TreeService
+    TreeService,
+    TitlesService,
+    CustomFieldsService
   ],
   bootstrap: [AppComponent]
 })
