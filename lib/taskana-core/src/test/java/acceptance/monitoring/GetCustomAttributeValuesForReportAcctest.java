@@ -16,8 +16,7 @@ import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.runner.RunWith;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
@@ -25,15 +24,18 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "classification report" scenarios.
  */
+@RunWith(JAASRunner.class)
 public class GetCustomAttributeValuesForReportAcctest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GetCustomAttributeValuesForReportAcctest.class);
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
 
@@ -56,8 +58,20 @@ public class GetCustomAttributeValuesForReportAcctest {
         testDataGenerator.generateMonitoringTestData(dataSource);
     }
 
+    @Test(expected = NotAuthorizedException.class)
+    public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        taskMonitorService.getCustomAttributeValuesForReport(
+            Collections.singletonList("WBI:000000000000000000000000000000000001"), null,
+            null, null, null, null, null,
+            "2");
+    }
+
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForOneWorkbasket() throws InvalidArgumentException {
+    public void testGetCustomAttributeValuesForOneWorkbasket() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> values = taskMonitorService.getCustomAttributeValuesForReport(
@@ -71,8 +85,10 @@ public class GetCustomAttributeValuesForReportAcctest {
         assertTrue(values.contains("Teilkasko"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForOneDomain() throws InvalidArgumentException {
+    public void testGetCustomAttributeValuesForOneDomain() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> values = taskMonitorService.getCustomAttributeValuesForReport(
@@ -84,8 +100,11 @@ public class GetCustomAttributeValuesForReportAcctest {
         assertEquals(26, values.size());
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForCustomAttribute() throws InvalidArgumentException {
+    public void testGetCustomAttributeValuesForCustomAttribute()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         Map<String, String> props = new HashMap<>();
@@ -100,8 +119,11 @@ public class GetCustomAttributeValuesForReportAcctest {
         assertEquals(12, values.size());
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForExcludedClassifications() throws InvalidArgumentException {
+    public void testGetCustomAttributeValuesForExcludedClassifications()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> domains = new ArrayList<>();

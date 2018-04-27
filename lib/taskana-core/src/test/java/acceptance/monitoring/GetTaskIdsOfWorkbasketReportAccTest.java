@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
@@ -20,15 +21,19 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get task ids of workbasket report" scenarios.
  */
+@RunWith(JAASRunner.class)
 public class GetTaskIdsOfWorkbasketReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -53,8 +58,23 @@ public class GetTaskIdsOfWorkbasketReportAccTest {
         testDataGenerator.generateMonitoringTestData(dataSource);
     }
 
+    @Test(expected = NotAuthorizedException.class)
+    public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+        List<SelectedItem> selectedItems = new ArrayList<>();
+
+        taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_WORKBASKET_KEY);
+    }
+
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException {
+    public void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -93,8 +113,11 @@ public class GetTaskIdsOfWorkbasketReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000050"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications() throws InvalidArgumentException {
+    public void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();

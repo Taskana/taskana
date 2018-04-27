@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
@@ -19,15 +20,19 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get task ids of classification report" scenarios.
  */
+@RunWith(JAASRunner.class)
 public class GetTaskIdsOfClassificationReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -52,8 +57,41 @@ public class GetTaskIdsOfClassificationReportAccTest {
         testDataGenerator.generateMonitoringTestData(dataSource);
     }
 
+    @Test(expected = NotAuthorizedException.class)
+    public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+        List<SelectedItem> selectedItems = new ArrayList<>();
+
+        SelectedItem s1 = new SelectedItem();
+        s1.setKey("L10000");
+        s1.setLowerAgeLimit(0);
+        s1.setUpperAgeLimit(0);
+        selectedItems.add(s1);
+
+        SelectedItem s2 = new SelectedItem();
+        s2.setKey("L10000");
+        s2.setLowerAgeLimit(Integer.MIN_VALUE);
+        s2.setUpperAgeLimit(-11);
+        selectedItems.add(s2);
+
+        SelectedItem s3 = new SelectedItem();
+        s3.setKey("L30000");
+        s3.setLowerAgeLimit(Integer.MIN_VALUE);
+        s3.setUpperAgeLimit(-11);
+        selectedItems.add(s3);
+
+        taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_KEY);
+    }
+
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfClassificationReport() throws InvalidArgumentException {
+    public void testGetTaskIdsOfClassificationReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -91,8 +129,11 @@ public class GetTaskIdsOfClassificationReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfClassificationReportWithAttachments() throws InvalidArgumentException {
+    public void testGetTaskIdsOfClassificationReportWithAttachments()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -128,8 +169,11 @@ public class GetTaskIdsOfClassificationReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000033"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfClassificationReportWithDomainFilter() throws InvalidArgumentException {
+    public void testGetTaskIdsOfClassificationReportWithDomainFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
