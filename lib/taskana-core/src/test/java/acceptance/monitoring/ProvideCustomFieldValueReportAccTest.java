@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,14 +27,18 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.report.impl.CustomFieldValueReport;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "classification report" scenarios.
  */
+@RunWith(JAASRunner.class)
 public class ProvideCustomFieldValueReportAccTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProvideCustomFieldValueReportAccTest.class);
@@ -59,8 +64,22 @@ public class ProvideCustomFieldValueReportAccTest {
         testDataGenerator.generateMonitoringTestData(dataSource);
     }
 
+    @Test(expected = NotAuthorizedException.class)
+    public void testRoleCheck()
+        throws InvalidArgumentException, NotAuthorizedException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        CustomField customField = CustomField.CUSTOM_1;
+
+        taskMonitorService.getCustomFieldValueReport(null, null, null, null,
+            customField, null);
+    }
+
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1() throws InvalidArgumentException {
+    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
@@ -85,8 +104,11 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(50, report.getSumRow().getTotalValue());
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2() throws InvalidArgumentException {
+    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_2;
@@ -110,8 +132,11 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(50, report.getSumRow().getTotalValue());
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetCustomFieldValueReportWithReportLineItemDefinitions() throws InvalidArgumentException {
+    public void testGetCustomFieldValueReportWithReportLineItemDefinitions()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
@@ -137,8 +162,10 @@ public class ProvideCustomFieldValueReportAccTest {
         assertEquals(50, report.getSumRow().getTotalValue());
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReport() throws InvalidArgumentException {
+    public void testEachItemOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
@@ -165,8 +192,11 @@ public class ProvideCustomFieldValueReportAccTest {
         assertArrayEquals(new int[] {3, 4, 1, 1, 6}, row3);
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportNotInWorkingDays() throws InvalidArgumentException {
+    public void testEachItemOfCustomFieldValueReportNotInWorkingDays()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
@@ -193,8 +223,11 @@ public class ProvideCustomFieldValueReportAccTest {
         assertArrayEquals(new int[] {7, 0, 1, 0, 7}, row3);
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithWorkbasketFilter() throws InvalidArgumentException {
+    public void testEachItemOfCustomFieldValueReportWithWorkbasketFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
@@ -222,8 +255,11 @@ public class ProvideCustomFieldValueReportAccTest {
         assertArrayEquals(new int[] {3, 1, 0, 0, 1}, row3);
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithStateFilter() throws InvalidArgumentException {
+    public void testEachItemOfCustomFieldValueReportWithStateFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TaskState> states = Collections.singletonList(TaskState.READY);
@@ -251,8 +287,11 @@ public class ProvideCustomFieldValueReportAccTest {
         assertArrayEquals(new int[] {3, 4, 1, 1, 0}, row3);
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithCategoryFilter() throws InvalidArgumentException {
+    public void testEachItemOfCustomFieldValueReportWithCategoryFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
@@ -281,8 +320,11 @@ public class ProvideCustomFieldValueReportAccTest {
         assertArrayEquals(new int[] {0, 2, 0, 0, 4}, row3);
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithDomainFilter() throws InvalidArgumentException {
+    public void testEachItemOfCustomFieldValueReportWithDomainFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> domains = Collections.singletonList("DOMAIN_A");
@@ -310,8 +352,11 @@ public class ProvideCustomFieldValueReportAccTest {
         assertArrayEquals(new int[] {1, 1, 1, 0, 3}, row3);
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter() throws InvalidArgumentException {
+    public void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;

@@ -32,6 +32,7 @@ import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.impl.CategoryReport;
 import pro.taskana.impl.report.impl.ClassificationReport;
 import pro.taskana.impl.report.impl.CustomFieldValueReport;
@@ -74,7 +75,7 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfWorkbasketLevelReport() throws InvalidArgumentException {
+    public void testGetTotalNumbersOfWorkbasketLevelReport() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -94,6 +95,7 @@ public class TaskMonitorServiceImplTest {
             customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -109,7 +111,8 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetWorkbasketLevelReportWithReportLineItemDefinitions() throws InvalidArgumentException {
+    public void testGetWorkbasketLevelReportWithReportLineItemDefinitions()
+        throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -132,6 +135,7 @@ public class TaskMonitorServiceImplTest {
             customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -147,7 +151,7 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfCatgoryReport() throws InvalidArgumentException {
+    public void testGetTotalNumbersOfCatgoryReport() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -167,6 +171,7 @@ public class TaskMonitorServiceImplTest {
             customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -180,7 +185,8 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetCategoryReportWithReportLineItemDefinitions() throws InvalidArgumentException {
+    public void testGetCategoryReportWithReportLineItemDefinitions()
+        throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -203,6 +209,7 @@ public class TaskMonitorServiceImplTest {
             customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -217,7 +224,7 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfClassificationReport() throws InvalidArgumentException {
+    public void testGetTotalNumbersOfClassificationReport() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -237,6 +244,7 @@ public class TaskMonitorServiceImplTest {
             customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -251,7 +259,8 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetClassificationReportWithReportLineItemDefinitions() throws InvalidArgumentException {
+    public void testGetClassificationReportWithReportLineItemDefinitions()
+        throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -275,6 +284,7 @@ public class TaskMonitorServiceImplTest {
             customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -290,7 +300,8 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfDetailedClassificationReport() throws InvalidArgumentException {
+    public void testGetTotalNumbersOfDetailedClassificationReport()
+        throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -311,6 +322,7 @@ public class TaskMonitorServiceImplTest {
             categories, domains, customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -327,7 +339,8 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetDetailedClassificationReportWithReportLineItemDefinitions() throws InvalidArgumentException {
+    public void testGetDetailedClassificationReportWithReportLineItemDefinitions()
+        throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -351,6 +364,7 @@ public class TaskMonitorServiceImplTest {
             categories, domains, customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -370,7 +384,7 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfCustomFieldValueReport() throws InvalidArgumentException {
+    public void testGetTotalNumbersOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -391,6 +405,7 @@ public class TaskMonitorServiceImplTest {
             customField, customFieldValues);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -405,7 +420,8 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetCustomFieldValueReportWithReportLineItemDefinitions() throws InvalidArgumentException {
+    public void testGetCustomFieldValueReportWithReportLineItemDefinitions()
+        throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -429,6 +445,7 @@ public class TaskMonitorServiceImplTest {
             customField, customFieldValues, reportLineItemDefinitions);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -444,7 +461,7 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetTaskIdsForSelectedItems() throws InvalidArgumentException {
+    public void testGetTaskIdsForSelectedItems() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -473,6 +490,7 @@ public class TaskMonitorServiceImplTest {
             TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
 
         verify(taskanaEngineImplMock, times(1)).openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(2)).getConfiguration();
         verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
         verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
@@ -487,7 +505,7 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetTaskStateReportWithoutFilters() {
+    public void testGetTaskStateReportWithoutFilters() throws NotAuthorizedException {
         // given
         TaskQueryItem queryItem1 = new TaskQueryItem();
         queryItem1.setCount(50);
@@ -518,7 +536,7 @@ public class TaskMonitorServiceImplTest {
     }
 
     @Test
-    public void testGetTotalNumberOfTaskStateReport() {
+    public void testGetTotalNumberOfTaskStateReport() throws NotAuthorizedException {
         // given
         TaskQueryItem queryItem1 = new TaskQueryItem();
         queryItem1.setCount(50);

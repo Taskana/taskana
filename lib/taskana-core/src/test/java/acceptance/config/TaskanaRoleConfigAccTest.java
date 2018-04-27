@@ -46,6 +46,11 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
         assertTrue(businessAdmins.contains("max"));
         assertTrue(businessAdmins.contains("moritz"));
 
+        Set<String> monitorAccessIds = getConfiguration().getRoleMap().get(TaskanaRole.MONITOR);
+        assertTrue(monitorAccessIds.contains("john"));
+        assertTrue(monitorAccessIds.contains("teamlead_2"));
+        assertTrue(monitorAccessIds.contains("monitor"));
+
     }
 
     @Test

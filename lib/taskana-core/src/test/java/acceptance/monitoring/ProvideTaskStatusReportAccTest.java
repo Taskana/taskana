@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,16 +23,20 @@ import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.report.ReportRow;
 import pro.taskana.impl.report.impl.TaskQueryItem;
 import pro.taskana.impl.report.impl.TaskStatusColumnHeader;
 import pro.taskana.impl.report.impl.TaskStatusReport;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "task status report" scenarios.
  */
+@RunWith(JAASRunner.class)
 public class ProvideTaskStatusReportAccTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProvideWorkbasketLevelReportAccTest.class);
@@ -57,13 +62,21 @@ public class ProvideTaskStatusReportAccTest {
         testDataGenerator.generateMonitoringTestData(dataSource);
     }
 
-    @Test
-    public void testCompleteTaskStatusReport() {
-        //given
+    @Test(expected = NotAuthorizedException.class)
+    public void testRoleCheck() throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
-        //when
+        taskMonitorService.getTaskStatusReport();
+    }
+
+    @WithAccessId(
+        userName = "monitor")
+    @Test
+    public void testCompleteTaskStatusReport() throws NotAuthorizedException {
+        // given
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+        // when
         TaskStatusReport report = taskMonitorService.getTaskStatusReport();
-        //then
+        // then
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
         }
@@ -87,13 +100,23 @@ public class ProvideTaskStatusReportAccTest {
         assertEquals(50, sumRow.getTotalValue());
     }
 
+    @WithAccessId(
+        userName = "admin")
     @Test
-    public void testCompleteTaskStatusReportWithDomainFilter() {
-        //given
+    public void testCompleteTaskStatusReportAsAdmin() throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
-        //when
+        taskMonitorService.getTaskStatusReport();
+    }
+
+    @WithAccessId(
+        userName = "monitor")
+    @Test
+    public void testCompleteTaskStatusReportWithDomainFilter() throws NotAuthorizedException {
+        // given
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+        // when
         TaskStatusReport report = taskMonitorService.getTaskStatusReport(asList("DOMAIN_C", "DOMAIN_A"));
-        //then
+        // then
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
         }
@@ -113,14 +136,16 @@ public class ProvideTaskStatusReportAccTest {
         assertEquals(38, sumRow.getTotalValue());
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testCompleteTaskStatusReportWithStateFilter() {
-        //given
+    public void testCompleteTaskStatusReportWithStateFilter() throws NotAuthorizedException {
+        // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
-        //when
+        // when
         TaskStatusReport report = taskMonitorService.getTaskStatusReport(null,
             Collections.singletonList(TaskState.READY));
-        //then
+        // then
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
         }
