@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.impl.CategoryReport;
 import pro.taskana.impl.report.impl.ClassificationReport;
@@ -48,7 +49,7 @@ public interface TaskMonitorService {
      */
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link WorkbasketLevelReport} grouped by workbaskets. For each workbasket the report contains the total
@@ -87,7 +88,7 @@ public interface TaskMonitorService {
      */
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link WorkbasketLevelReport} grouped by workbaskets. For each workbasket the report contains the total
@@ -130,7 +131,7 @@ public interface TaskMonitorService {
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link CategoryReport} grouped by categories. The report contains the total numbers of tasks of the
@@ -157,7 +158,8 @@ public interface TaskMonitorService {
      *             thrown if DaysToWorkingDaysConverter is initialized with null
      */
     CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
-        List<String> domains, CustomField customField, List<String> customFieldValues) throws InvalidArgumentException;
+        List<String> domains, CustomField customField, List<String> customFieldValues)
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link CategoryReport} grouped by categories. For each category the report contains the total number of
@@ -196,7 +198,7 @@ public interface TaskMonitorService {
      */
     CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link CategoryReport} grouped by categories. For each category the report contains the total number of
@@ -239,7 +241,7 @@ public interface TaskMonitorService {
     CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link ClassificationReport} grouped by classifications. The report contains the total numbers of tasks
@@ -267,7 +269,7 @@ public interface TaskMonitorService {
      */
     ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link ClassificationReport} grouped by classifications. For each classification the report contains
@@ -306,7 +308,7 @@ public interface TaskMonitorService {
      */
     ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link ClassificationReport} grouped by classification. For each classification the report contains the
@@ -349,7 +351,7 @@ public interface TaskMonitorService {
     ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link DetailedClassificationReport}. The report contains the total numbers of tasks of the respective
@@ -378,7 +380,7 @@ public interface TaskMonitorService {
      */
     DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link DetailedClassificationReport}. For each classification the report contains the total number of
@@ -418,7 +420,7 @@ public interface TaskMonitorService {
      */
     DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link DetailedClassificationReport}. For each classification the report contains the total number of
@@ -462,7 +464,7 @@ public interface TaskMonitorService {
     DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link CustomFieldValueReport} grouped by the value of a certain {@link CustomField}. The report
@@ -489,7 +491,7 @@ public interface TaskMonitorService {
      */
     CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link CustomFieldValueReport} grouped by the value of a certain {@link CustomField}. For each value of
@@ -527,7 +529,7 @@ public interface TaskMonitorService {
      */
     CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException;
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link CustomFieldValueReport} grouped by the value of a certain {@link CustomField}. For each value of
@@ -570,7 +572,7 @@ public interface TaskMonitorService {
         List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a list of all task ids in the selected items of a {@link pro.taskana.impl.report.Report}. By default the
@@ -587,10 +589,6 @@ public interface TaskMonitorService {
      *            a list of categories to filter by categories. To omit this filter, use null for this parameter
      * @param domains
      *            a list of domains to filter by domains. To omit this filter, use null for this parameter
-     * @param classificationKeys
-     *            a list of task classification key to filter. To omit this filter, use null for this parameter
-     * @param excludedClassificationKeys
-     *            a list of task classification key to exclude. To omit this filter, use null for this parameter
      * @param customField
      *            a custom field to filter by the values of the custom field. To omit this filter, use null for this
      *            parameter
@@ -620,7 +618,7 @@ public interface TaskMonitorService {
         List<String> excludedClassificationKeys, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays, List<SelectedItem> selectedItems,
         String dimension)
-        throws InvalidArgumentException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a list of distinct custom attribute values for the selection from the entire task pool.
@@ -650,14 +648,14 @@ public interface TaskMonitorService {
     List<String> getCustomAttributeValuesForReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<String> classificationIds,
         List<String> excludedClassificationIds, Map<String, String> customAttributeFilter,
-        String customAttributeName) throws InvalidArgumentException;
+        String customAttributeName) throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Overloaded method for {@link #getTaskStatusReport(List, List)}. This method omits all filters.
      *
      * @return the {@link TaskStatusReport}
      */
-    TaskStatusReport getTaskStatusReport();
+    TaskStatusReport getTaskStatusReport() throws NotAuthorizedException;
 
     /**
      * Overloaded method for {@link #getTaskStatusReport(List, List)}. This method applies a domain filter and omits the
@@ -667,7 +665,7 @@ public interface TaskMonitorService {
      *            a list of domains to filter by domains. To omit this filter, use null for this parameter
      * @return the {@link TaskStatusReport}
      */
-    TaskStatusReport getTaskStatusReport(List<String> domains);
+    TaskStatusReport getTaskStatusReport(List<String> domains) throws NotAuthorizedException;
 
     /**
      * Returns a {@link TaskStatusReport}. For each domain the report contains the total number of tasks, clustered in
@@ -680,6 +678,6 @@ public interface TaskMonitorService {
      *            a list of domains to filter by domains. To omit this filter, use null for this parameter
      * @return the {@link TaskStatusReport}
      */
-    TaskStatusReport getTaskStatusReport(List<String> domains, List<TaskState> states);
+    TaskStatusReport getTaskStatusReport(List<String> domains, List<TaskState> states) throws NotAuthorizedException;
 
 }

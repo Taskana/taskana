@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
@@ -23,15 +24,19 @@ import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get task ids of category report" scenarios.
  */
+@RunWith(JAASRunner.class)
 public class GetTaskIdsOfCategoryReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -56,8 +61,22 @@ public class GetTaskIdsOfCategoryReportAccTest {
         testDataGenerator.generateMonitoringTestData(dataSource);
     }
 
+    @Test(expected = NotAuthorizedException.class)
+    public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+        List<SelectedItem> selectedItems = new ArrayList<>();
+        taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
+            null, null, null,
+            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
+    }
+
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReport() throws InvalidArgumentException {
+    public void testGetTaskIdsOfCategoryReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -100,8 +119,11 @@ public class GetTaskIdsOfCategoryReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithWorkbasketFilter() throws InvalidArgumentException {
+    public void testGetTaskIdsOfCategoryReportWithWorkbasketFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
@@ -138,8 +160,11 @@ public class GetTaskIdsOfCategoryReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithStateFilter() throws InvalidArgumentException {
+    public void testGetTaskIdsOfCategoryReportWithStateFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TaskState> states = Collections.singletonList(TaskState.READY);
@@ -183,8 +208,11 @@ public class GetTaskIdsOfCategoryReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithCategoryFilter() throws InvalidArgumentException {
+    public void testGetTaskIdsOfCategoryReportWithCategoryFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
@@ -214,8 +242,11 @@ public class GetTaskIdsOfCategoryReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithDomainFilter() throws InvalidArgumentException {
+    public void testGetTaskIdsOfCategoryReportWithDomainFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> domains = Collections.singletonList("DOMAIN_A");
@@ -252,8 +283,11 @@ public class GetTaskIdsOfCategoryReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000028"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter() throws InvalidArgumentException {
+    public void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter()
+        throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         CustomField customField = CustomField.CUSTOM_1;
@@ -293,8 +327,10 @@ public class GetTaskIdsOfCategoryReportAccTest {
         assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
     }
 
+    @WithAccessId(
+        userName = "monitor")
     @Test(expected = InvalidArgumentException.class)
-    public void testThrowsExceptionIfSubKeysAreUsed() throws InvalidArgumentException {
+    public void testThrowsExceptionIfSubKeysAreUsed() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -308,7 +344,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
         s1.setUpperAgeLimit(-2);
         selectedItems.add(s1);
 
-        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
+        taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
             null, null, null,
             columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_CATEGORY);
     }

@@ -6,7 +6,8 @@ package pro.taskana;
 public enum TaskanaRole {
     USER("taskana.roles.user"),
     BUSINESS_ADMIN("taskana.roles.businessadmin"),
-    ADMIN("taskana.roles.admin");
+    ADMIN("taskana.roles.admin"),
+    MONITOR("taskana.roles.monitor");
 
     private final String propertyName;
 
@@ -21,6 +22,8 @@ public enum TaskanaRole {
             return TaskanaRole.BUSINESS_ADMIN;
         } else if (ADMIN.propertyName.equalsIgnoreCase(name)) {
             return TaskanaRole.ADMIN;
+        } else if (MONITOR.propertyName.equalsIgnoreCase(name)) {
+            return TaskanaRole.MONITOR;
         } else {
             return null;
         }

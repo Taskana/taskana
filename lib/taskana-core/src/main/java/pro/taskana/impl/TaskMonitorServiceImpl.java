@@ -11,7 +11,9 @@ import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.impl.CategoryReport;
 import pro.taskana.impl.report.impl.ClassificationReport;
 import pro.taskana.impl.report.impl.CustomFieldValueReport;
@@ -44,7 +46,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
         return getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField, customFieldValues,
             Collections.emptyList(), false);
     }
@@ -52,7 +54,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException {
         return getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField, customFieldValues,
             columnHeaders, true);
     }
@@ -61,7 +63,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     public WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getWorkbasketLevelReport(workbasketIds = {}, states = {}, categories = {}, "
                 + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
@@ -70,6 +72,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
         }
+        taskanaEngineImpl.checkRoleMembership(TaskanaRole.MONITOR);
         try {
             taskanaEngineImpl.openConnection();
 
@@ -91,7 +94,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
-        List<String> domains, CustomField customField, List<String> customFieldValues) throws InvalidArgumentException {
+        List<String> domains, CustomField customField, List<String> customFieldValues)
+        throws InvalidArgumentException, NotAuthorizedException {
         return getCategoryReport(workbasketIds, states, categories, domains, customField, customFieldValues,
             Collections.emptyList(),
             false);
@@ -100,7 +104,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException {
         return getCategoryReport(workbasketIds, states, categories, domains, customField, customFieldValues,
             columnHeaders, true);
     }
@@ -108,7 +112,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays) throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
+        throws InvalidArgumentException, NotAuthorizedException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getCategoryReport(workbasketIds = {}, states = {}, categories = {}, "
                 + "domains = {}, customField = {}, customFieldValues = {}, reportLineItemDefinitions = {}, "
@@ -117,6 +122,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
         }
+        taskanaEngineImpl.checkRoleMembership(TaskanaRole.MONITOR);
         try {
             taskanaEngineImpl.openConnection();
 
@@ -139,7 +145,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
         return getClassificationReport(workbasketIds, states, categories, domains, customField, customFieldValues,
             Collections.emptyList(), false);
     }
@@ -147,7 +153,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException {
         return getClassificationReport(workbasketIds, states, categories, domains, customField, customFieldValues,
             columnHeaders, true);
     }
@@ -156,7 +162,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     public ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getClassificationReport(workbasketIds = {}, states = {}, categories = {}, "
                 + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
@@ -165,6 +171,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
         }
+        taskanaEngineImpl.checkRoleMembership(TaskanaRole.MONITOR);
         try {
             taskanaEngineImpl.openConnection();
 
@@ -187,7 +194,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
         List<TaskState> states, List<String> categories, List<String> domains, CustomField customField,
-        List<String> customFieldValues) throws InvalidArgumentException {
+        List<String> customFieldValues) throws InvalidArgumentException, NotAuthorizedException {
         return getDetailedClassificationReport(workbasketIds, states, categories, domains, customField,
             customFieldValues, Collections.emptyList(), false);
     }
@@ -196,7 +203,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
         List<TaskState> states, List<String> categories, List<String> domains, CustomField customField,
         List<String> customFieldValues, List<TimeIntervalColumnHeader> columnHeaders)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
         return getDetailedClassificationReport(workbasketIds, states, categories, domains, customField,
             customFieldValues, columnHeaders, true);
     }
@@ -205,7 +212,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     public DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds,
         List<TaskState> states, List<String> categories, List<String> domains, CustomField customField,
         List<String> customFieldValues, List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getDetailedClassificationReport(workbasketIds = {}, states = {}, "
@@ -215,6 +222,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 LoggerUtils.listToString(domains), customField, LoggerUtils.listToString(customFieldValues),
                 LoggerUtils.listToString(columnHeaders), inWorkingDays);
         }
+        taskanaEngineImpl.checkRoleMembership(TaskanaRole.MONITOR);
         try {
             taskanaEngineImpl.openConnection();
 
@@ -239,7 +247,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
         return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField, customFieldValues,
             Collections.emptyList(), false);
     }
@@ -247,7 +255,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException {
+        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException {
         return getCustomFieldValueReport(workbasketIds, states, categories, domains, customField, customFieldValues,
             columnHeaders, true);
     }
@@ -256,7 +264,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     public CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException {
+        throws InvalidArgumentException, NotAuthorizedException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getCustomFieldValueReport(workbasketIds = {}, states = {}, categories = {}, "
                 + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
@@ -265,6 +273,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
         }
+        taskanaEngineImpl.checkRoleMembership(TaskanaRole.MONITOR);
         try {
             taskanaEngineImpl.openConnection();
 
@@ -292,7 +301,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     public List<String> getCustomAttributeValuesForReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<String> classificationIds,
         List<String> excludedClassificationIds, Map<String, String> customAttributeFilter,
-        String customAttributeName) throws InvalidArgumentException {
+        String customAttributeName) throws InvalidArgumentException, NotAuthorizedException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getCustomAttributeValuesForReport(workbasketIds = {}, states = {}, "
                 + "categories = {}, domains = {}, classificationIds = {}, excludedClassificationIds = {}, customAttributeName = {})",
@@ -301,6 +310,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 LoggerUtils.listToString(classificationIds), LoggerUtils.listToString(excludedClassificationIds),
                 customAttributeName);
         }
+        taskanaEngineImpl.checkRoleMembership(TaskanaRole.MONITOR);
         try {
             taskanaEngineImpl.openConnection();
 
@@ -326,7 +336,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
         List<String> categories, List<String> domains, List<String> classificationIds,
         List<String> excludedClassificationIds, CustomField customField, List<String> customFieldValues,
         List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays,
-        List<SelectedItem> selectedItems, String dimension) throws InvalidArgumentException {
+        List<SelectedItem> selectedItems, String dimension) throws InvalidArgumentException, NotAuthorizedException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getTaskIdsForSelectedItems(workbasketIds = {}, states = {}, "
                 + "categories = {}, domains = {}, customField = {}, customFieldValues = {}, "
@@ -338,6 +348,7 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
                 LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays, LoggerUtils.listToString(selectedItems), dimension);
         }
+        taskanaEngineImpl.checkRoleMembership(TaskanaRole.MONITOR);
         try {
             taskanaEngineImpl.openConnection();
             if (columnHeaders == null) {
@@ -371,17 +382,19 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public TaskStatusReport getTaskStatusReport() {
+    public TaskStatusReport getTaskStatusReport() throws NotAuthorizedException {
         return getTaskStatusReport(null, null);
     }
 
     @Override
-    public TaskStatusReport getTaskStatusReport(List<String> domains) {
+    public TaskStatusReport getTaskStatusReport(List<String> domains) throws NotAuthorizedException {
         return getTaskStatusReport(domains, null);
     }
 
     @Override
-    public TaskStatusReport getTaskStatusReport(List<String> domains, List<TaskState> states) {
+    public TaskStatusReport getTaskStatusReport(List<String> domains, List<TaskState> states)
+        throws NotAuthorizedException {
+        taskanaEngineImpl.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
         try {
             taskanaEngineImpl.openConnection();
 
