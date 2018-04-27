@@ -230,7 +230,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      * @throws NotAuthorizedException
      *             If the current user is not member of any specified role
      */
-    void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
+    @Override
+    public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
         if (isUserInRole(roles)) {
             return;
         } else {
@@ -252,6 +253,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      *            The roles that are checked for membership of the current user
      * @return true if the current user is a member of at least one of the specified groups
      */
+    @Override
     public boolean isUserInRole(TaskanaRole... roles) {
         if (!getConfiguration().isSecurityEnabled()) {
             return true;
