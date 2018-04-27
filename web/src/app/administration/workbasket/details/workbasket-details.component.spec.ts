@@ -41,7 +41,7 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
-
+import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 @Component({
 	selector: 'taskana-filter',
 	template: ''
@@ -83,7 +83,8 @@ describe('WorkbasketDetailsComponent', () => {
 				AlertService, SavingWorkbasketService, {
 					provide: DomainService,
 					useClass: DomainServiceMock
-				}]
+				},
+				CustomFieldsService]
 		})
 			.compileComponents();
 	}));

@@ -1,6 +1,53 @@
 {
-    "taskanaAdminUrl": "",
-    "taskanaWorkplaceUrl": "",
-    "taskanaMonitorUrl": "",
-    "taskanaRestUrl": ""
+	"taskanaRestUrl": "",
+	"customizedFields": {
+		"EN": {
+			"workbaskets": {
+				"information": {
+					"custom1": {
+						"field": "Customized field 1 title",
+						"visible": true
+					},
+					"custom3": {
+						"field": "",
+						"visible": false
+					}
+				},
+				"access-items": {
+					"custom3": {
+						"field": "",
+						"visible": false
+					},
+					"custom9": {
+						"field": "Some custom field",
+						"visible": true
+					},
+					"custom10": {
+						"field": "",
+						"visible": false
+					},
+					"custom11": {
+						"field": "",
+						"visible": false
+					},
+					"custom12": {
+						"field": "",
+						"visible": false
+					}
+				}
+			},
+			"classifications": {
+				"information": {
+					"custom1": {
+						"field": "Classification custom 1",
+						"visible": true
+					},
+					"custom3": {
+						"field": "",
+						"visible": false
+					}
+				}
+			}
+		}
+	}
 }

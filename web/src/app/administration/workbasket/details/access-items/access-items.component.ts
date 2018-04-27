@@ -13,6 +13,8 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { TitlesService } from 'app/services/titles/titles.service';
+import { CustomFieldsService } from '../../../../services/custom-fields/custom-fields.service';
 
 declare var $: any;
 
@@ -32,6 +34,19 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	active: string;
 	badgeMessage = '';
 
+	custom1Field = this.customFieldService.getCustomField('Custom 1', 'workbaskets.access-items.custom1');
+	custom2Field = this.customFieldService.getCustomField('Custom 2', 'workbaskets.access-items.custom2');
+	custom3Field = this.customFieldService.getCustomField('Custom 3', 'workbaskets.access-items.custom3');
+	custom4Field = this.customFieldService.getCustomField('Custom 4', 'workbaskets.access-items.custom4');
+	custom5Field = this.customFieldService.getCustomField('Custom 5', 'workbaskets.access-items.custom5');
+	custom6Field = this.customFieldService.getCustomField('Custom 6', 'workbaskets.access-items.custom6');
+	custom7Field = this.customFieldService.getCustomField('Custom 7', 'workbaskets.access-items.custom7');
+	custom8Field = this.customFieldService.getCustomField('Custom 8', 'workbaskets.access-items.custom8');
+	custom9Field = this.customFieldService.getCustomField('Custom 9', 'workbaskets.access-items.custom9');
+	custom10Field = this.customFieldService.getCustomField('Custom 10', 'workbaskets.access-items.custom10');
+	custom11Field = this.customFieldService.getCustomField('Custom 11', 'workbaskets.access-items.custom11');
+	custom12Field = this.customFieldService.getCustomField('Custom 12', 'workbaskets.access-items.custom12');
+
 	accessItemsResource: WorkbasketAccessItemsResource;
 	accessItems: Array<WorkbasketAccessItems>;
 	accessItemsClone: Array<WorkbasketAccessItems>;
@@ -49,7 +64,8 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		private alertService: AlertService,
 		private errorModalService: ErrorModalService,
 		private savingWorkbaskets: SavingWorkbasketService,
-		private requestInProgressService: RequestInProgressService) { }
+		private requestInProgressService: RequestInProgressService,
+		private customFieldService: CustomFieldsService) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (!this.initialized && changes.active && changes.active.currentValue === 'accessItems') {
@@ -108,7 +124,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 				this.accessItemsResetClone = this.cloneAccessItems(this.accessItems);
 				this.alertService.triggerAlert(new AlertModel(
 					AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
-					this.requestInProgressService.setRequestInProgress(false);
+				this.requestInProgressService.setRequestInProgress(false);
 				return true;
 			}, error => {
 				this.errorModalService.triggerError(new ErrorModel(`There was error while saving your workbasket's access items`, error))

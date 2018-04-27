@@ -21,6 +21,7 @@ import { ClassificationTypesService } from 'app/administration/services/classifi
 import { ClassificationCategoriesService } from 'app/administration/services/classification-categories-service/classification-categories.service';
 // tslint:enable:max-line-length
 import { DomainService } from 'app/services/domain/domain.service';
+import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -38,6 +39,15 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   requestInProgress = false;
   categories: Array<string> = [];
   categorySelected: string;
+  custom1Field = this.customFieldsService.getCustomField('Custom 1', 'classifications.information.custom1');
+  custom2Field = this.customFieldsService.getCustomField('Custom 2', 'classifications.information.custom2');
+  custom3Field = this.customFieldsService.getCustomField('Custom 3', 'classifications.information.custom3');
+  custom4Field = this.customFieldsService.getCustomField('Custom 4', 'classifications.information.custom4');
+  custom5Field = this.customFieldsService.getCustomField('Custom 5', 'classifications.information.custom5');
+  custom6Field = this.customFieldsService.getCustomField('Custom 6', 'classifications.information.custom6');
+  custom7Field = this.customFieldsService.getCustomField('Custom 7', 'classifications.information.custom7');
+  custom8Field = this.customFieldsService.getCustomField('Custom 8', 'classifications.information.custom8');
+
   private action: any;
   private classificationServiceSubscription: Subscription;
   private classificationSelectedSubscription: Subscription;
@@ -59,7 +69,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private treeService: TreeService,
     private classificationTypeService: ClassificationTypesService,
     private categoryService: ClassificationCategoriesService,
-    private domainService: DomainService) { }
+    private domainService: DomainService,
+    private customFieldsService: CustomFieldsService) { }
 
   ngOnInit() {
     this.classificationTypeService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {

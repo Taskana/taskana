@@ -88,21 +88,22 @@
                     <label for="wb-org-level-4" class="control-label">OrgLevel 4</label>
                     <input type="text" class="form-control" id="wb-org-level-4" placeholder="OrgLevel 4" [(ngModel)]="workbasket.orgLevel4" name="workbasket.orgLevel4">
                 </div>
-                <div class="form-group">
-                    <label for="wb-custom-1" class="control-label">Custom 1</label>
-                    <input type="text" class="form-control" id="wb-custom-1" placeholder="Custom 1" [(ngModel)]="workbasket.custom1" name="workbasket.custom1">
+                <div *ngIf="custom1Field.visible" class="form-group">
+                    <label for="wb-custom-1" class="control-label">{{custom1Field.field}}</label>
+                    <input type="text" class="form-control" id="wb-custom-1" [placeholder]="custom1Field.field" [(ngModel)]="workbasket.custom1"
+                        name="workbasket.custom1">
                 </div>
-                <div class="form-group">
-                    <label for="wb-custom-2" class="control-label">Custom 2</label>
-                    <input type="text" class="form-control" id="wb-custom-2" placeholder="Custom 2" [(ngModel)]="workbasket.custom2" name="workbasket.custom2">
+                <div *ngIf="custom2Field.visible" class="form-group">
+                    <label for="wb-custom-2" class="control-label">{{custom2Field.field}}</label>
+                    <input type="text" class="form-control" id="wb-custom-2" [placeholder]="custom2Field.field" [(ngModel)]="workbasket.custom2" name="workbasket.custom2">
                 </div>
-                <div class="form-group">
-                    <label for="wb-custom-3" class="control-label">Custom 3</label>
-                    <input type="text" class="form-control" id="wb-custom-3" placeholder="Custom 3" [(ngModel)]="workbasket.custom3" name="workbasket.custom3">
+                <div *ngIf="custom3Field.visible" class="form-group">
+                    <label for="wb-custom-3" class="control-label">{{custom3Field.field}}</label>
+                    <input type="text" class="form-control" id="wb-custom-3" [placeholder]="custom3Field.field" [(ngModel)]="workbasket.custom3" name="workbasket.custom3">
                 </div>
-                <div class="form-group">
-                    <label for="wb-custom-4" class="control-label">Custom 4</label>
-                    <input type="text" class="form-control" id="wb-custom-4" placeholder="Custom 4" [(ngModel)]="workbasket.custom4" name="workbasket.custom4">
+                <div *ngIf="custom4Field.visible" class="form-group">
+                    <label for="wb-custom-4" class="control-label">{{custom4Field.field}}</label>
+                    <input type="text" class="form-control" id="wb-custom-4" [placeholder]="custom4Field.field" [(ngModel)]="workbasket.custom4" name="workbasket.custom4">
                 </div>
             </div>
         </form>

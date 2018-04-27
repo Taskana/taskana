@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { AppModule } from 'app/app.module'
 
 import { ClassificationDetailsComponent } from './classification-details.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
@@ -25,7 +26,7 @@ import { ClassificationCategoriesService } from 'app/administration/services/cla
 // tslint:enable:max-line-length
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { DomainService } from 'app/services/domain/domain.service';
-
+import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -55,7 +56,8 @@ describe('ClassificationDetailsComponent', () => {
         TreeService, ClassificationTypesService, ClassificationCategoriesService, {
           provide: DomainService,
           useClass: DomainServiceMock
-        }]
+        },
+        CustomFieldsService]
     })
       .compileComponents();
   }));
