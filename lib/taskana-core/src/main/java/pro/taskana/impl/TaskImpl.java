@@ -251,6 +251,7 @@ public class TaskImpl implements Task {
         return businessProcessId;
     }
 
+    @Override
     public void setBusinessProcessId(String businessProcessId) {
         this.businessProcessId = businessProcessId;
     }
@@ -260,6 +261,7 @@ public class TaskImpl implements Task {
         return parentBusinessProcessId;
     }
 
+    @Override
     public void setParentBusinessProcessId(String parentBusinessProcessId) {
         this.parentBusinessProcessId = parentBusinessProcessId;
     }

@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -63,17 +62,21 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         Instant modifiedOriginal = task.getModified();
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "7654321"));
+        task.setBusinessProcessId("MY_PROCESS_ID");
+        task.setParentBusinessProcessId("MY_PARENT_PROCESS_ID");
         Task updatedTask = taskService.updateTask(task);
         updatedTask = taskService.getTask(updatedTask.getId());
 
-        Assert.assertNotNull(updatedTask);
-        Assert.assertEquals("7654321", updatedTask.getPrimaryObjRef().getValue());
-        Assert.assertNotNull(updatedTask.getCreated());
-        Assert.assertNotNull(updatedTask.getModified());
-        Assert.assertFalse(modifiedOriginal.isAfter(updatedTask.getModified()));
-        Assert.assertNotEquals(updatedTask.getCreated(), updatedTask.getModified());
-        Assert.assertEquals(task.getCreated(), updatedTask.getCreated());
-        Assert.assertEquals(task.isRead(), updatedTask.isRead());
+        assertNotNull(updatedTask);
+        assertEquals("7654321", updatedTask.getPrimaryObjRef().getValue());
+        assertNotNull(updatedTask.getCreated());
+        assertNotNull(updatedTask.getModified());
+        assertFalse(modifiedOriginal.isAfter(updatedTask.getModified()));
+        assertNotEquals(updatedTask.getCreated(), updatedTask.getModified());
+        assertEquals(task.getCreated(), updatedTask.getCreated());
+        assertEquals(task.isRead(), updatedTask.isRead());
+        assertEquals("MY_PROCESS_ID", updatedTask.getBusinessProcessId());
+        assertEquals("MY_PARENT_PROCESS_ID", updatedTask.getParentBusinessProcessId());
     }
 
     @WithAccessId(
