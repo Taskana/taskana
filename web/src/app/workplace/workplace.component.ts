@@ -1,5 +1,4 @@
 import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
-import { RestConnectorService } from './services/rest-connector.service';
 
 @Component({
     selector: 'taskana-workplace',

@@ -8,8 +8,6 @@ import {Task} from '../models/task';
 })
 export class TasksComponent {
 
-  taskDetailEnabled: boolean;
-
   @Input()
   tasks: Task[];
 
@@ -21,7 +19,6 @@ export class TasksComponent {
   }
 
   selectTask(task: Task) {
-    this.taskDetailEnabled = true;
     this.task = task;
   }
 

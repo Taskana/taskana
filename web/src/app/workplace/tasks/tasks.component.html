@@ -6,9 +6,5 @@
     <div class="col-md-6">
       <taskana-task-list [tasks]="tasks" (task)="selectTask($event)"></taskana-task-list>
     </div>
-    <div class="col-md-6">
-      <taskana-task-details [task]="task" *ngIf="taskDetailEnabled"></taskana-task-details>
-      <div class="overlay" [ngClass]="{overlayActive:taskDetailEnabled}" (click)="taskDetailEnabled = false"></div>
-    </div>
   </div>
 </div>

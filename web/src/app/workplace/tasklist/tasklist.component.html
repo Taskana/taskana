@@ -20,10 +20,10 @@
               (click)="openTask(task.taskId)">
         <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
       </button>
-      <button type="button" title="View details for task" class="btn btn-default" aria-label="Left Align"
-              (click)="selectTask(task)">
+      <a type="button" title="View details for task" class="btn btn-default" aria-label="Left Align"
+         routerLink="taskdetail/{{task.taskId}}">
         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-      </button>
+      </a>
     </td>
   </tr>
 </table>
