@@ -16,7 +16,6 @@ import { TasksComponent } from './tasks/tasks.component';
 
 import { OrderTasksByPipe } from './util/orderTasksBy.pipe';
 
-import { RestConnectorService } from './services/rest-connector.service';
 import { DataService } from './services/data.service';
 import { TaskService } from './services/task.service';
 import { WorkbasketService } from './services/workbasket.service';
@@ -45,7 +44,6 @@ const DECLARATIONS = [
   declarations: DECLARATIONS,
   imports: MODULES,
   providers: [
-    RestConnectorService,
     DataService,
     TaskService,
     WorkbasketService

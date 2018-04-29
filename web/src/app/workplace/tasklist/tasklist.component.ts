@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Task } from '../models/task';
-import { Router, ActivatedRoute } from '@angular/router';
-import { TaskService } from '../services/task.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {Task} from '../models/task';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'taskana-task-list',
@@ -12,23 +11,14 @@ export class TasklistComponent implements OnInit {
 
   private columnForOrdering: string;
 
-  @Output()
-  task = new EventEmitter<Task>();
-
   @Input() tasks: Task[];
 
-  constructor(
-    private taskService: TaskService,
-    private router: Router,
-    private route: ActivatedRoute) {
+  constructor(private router: Router,
+              private route: ActivatedRoute) {
     this.columnForOrdering = 'id';  // default: order tasks by id
   }
 
   ngOnInit() {
-  }
-
-  selectTask(task: Task) {
-    this.task.next(task);
   }
 
   orderTasks(column: string) {
@@ -36,7 +26,6 @@ export class TasklistComponent implements OnInit {
   }
 
   openTask(id: string) {
-    this.taskService.claimTask(id).subscribe();
-    this.router.navigate(['tasks/', id], { relativeTo: this.route.parent });
+    this.router.navigate(['tasks/', id], {relativeTo: this.route.parent});
   }
 }

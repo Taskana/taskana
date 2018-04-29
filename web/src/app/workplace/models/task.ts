@@ -17,10 +17,11 @@ export class Task {
               public description: string,
               public note: string,
               public state: any,
-              public isRead: boolean,
-              public isTransferred: boolean,
+              public read: boolean,
+              public transferred: boolean,
               public priority: number,
               public classificationSummaryResource: Classification,
-              public workbasketSummaryResource: Workbasket) {
+              public workbasketSummaryResource: Workbasket,
+              public custom1: any) {
   }
 }

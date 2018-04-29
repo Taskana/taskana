@@ -17,7 +17,7 @@ export class SelectorComponent implements OnInit {
   tasks: Task[] = [];
 
   autoCompleteData: string[] = [];
-  result: string;
+  result = '';
   resultKey: string;
   workbaskets: Workbasket[];
 
