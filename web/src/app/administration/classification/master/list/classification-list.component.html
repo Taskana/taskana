@@ -11,6 +11,10 @@
 			</div>
 		</div>
 	</li>
-	<taskana-spinner [isRunning]="requestInProgress" ></taskana-spinner>
-	<taskana-tree *ngIf="classifications" [treeNodes]="classifications" [selectNodeId] ="selectedId" (selectNodeIdChanged) ="selectClassification($event)"></taskana-tree>
+	<div  class="col-xs-12">
+		<input class="filter-input" [ngModel]="inputValue" (ngModelChange)="inputValue = $event" placeholder="Filter classifications">
+	</div>
+	<taskana-spinner class="col-xs-12" [isRunning]="requestInProgress"></taskana-spinner>
+	<taskana-tree class="col-xs-12" *ngIf="classifications" [treeNodes]="classifications" [selectNodeId]="selectedId" [filterText]="inputValue"
+	 (selectNodeIdChanged)="selectClassification($event)"></taskana-tree>
 </div>

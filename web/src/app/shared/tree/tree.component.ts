@@ -19,6 +19,9 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
   @Output() treeNodesChange = new EventEmitter<Array<TreeNodeModel>>();
   @Input() selectNodeId: string;
   @Output() selectNodeIdChanged = new EventEmitter<string>();
+  @Input() filterText: string;
+
+  private filterTextOld: string
 
   options: ITreeOptions = {
     displayField: 'name',
@@ -53,6 +56,10 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
       this.selectNode(this.selectNodeId);
     } else if (!this.selectNodeId && this.tree.treeModel.getActiveNode()) {
       this.unSelectActiveNode();
+    }
+    if (this.filterTextOld !== this.filterText) {
+      this.filterTextOld = this.filterText;
+      this.filterNodes(this.filterText)
     }
   }
 
@@ -90,6 +97,13 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
     }
     node.parent.expand();
     this.expandParent(node.parent);
+  }
+
+  private filterNodes(text) {
+    this.tree.treeModel.filterNodes((node) => {
+      return (node.data.name.toUpperCase().includes(text.toUpperCase())
+           || node.data.key.toUpperCase().includes(text.toUpperCase()));
+    });
   }
 
 }
