@@ -48,19 +48,19 @@
     </div>
     <div class="nav-content">
       <div class="row menu">
-        <span routerLink="administration/workbaskets" aria-controls="administration" routerLinkActive="active">Administration</span>
+        <span (click)="toogleNavBar()" routerLink="administration/workbaskets" aria-controls="administration" routerLinkActive="active">Administration</span>
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('workbaskets') !== -1 }">
-          <span class="col-xs-6" routerLink="administration/workbaskets" aria-controls="Workbaskets" routerLinkActive="active">Workbaskets</span>
+          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="administration/workbaskets" aria-controls="Workbaskets" routerLinkActive="active">Workbaskets</span>
         </div>
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('classifications') !== -1}">
-          <span class="col-xs-6" routerLink="administration/classifications" aria-controls="Classifications" routerLinkActive="active">Classifications</span>
+          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="administration/classifications" aria-controls="Classifications" routerLinkActive="active">Classifications</span>
         </div>
       </div>
       <div class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('monitor') !== -1}">
-        <span routerLink="{{monitorUrl}}" aria-controls="Monitor" routerLinkActive="active">Monitor</span>
+        <span (click)="toogleNavBar()" routerLink="{{monitorUrl}}" aria-controls="Monitor" routerLinkActive="active">Monitor</span>
       </div>
       <div class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('workplace') !== -1 || selectedRoute === ''}">
-        <span routerLink="{{workplaceUrl}}" aria-controls="Workplace" routerLinkActive="active">Workplace</span>
+        <span (click)="toogleNavBar()" routerLink="{{workplaceUrl}}" aria-controls="Workplace" routerLinkActive="active">Workplace</span>
       </div>
     </div>
   </div>
