@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.type.ClobTypeHandler;
-import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
@@ -20,7 +19,7 @@ public interface TaskTestMapper {
 
     @Select("select CUSTOM_ATTRIBUTES from TASKANA.TASK where id = #{taskId}")
     @Results(value = {
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES",
             javaType = String.class, typeHandler = ClobTypeHandler.class)
     })
     String getCustomAttributesAsString(@Param("taskId") String taskId);
@@ -56,7 +55,7 @@ public interface TaskTestMapper {
         @Result(property = "primaryObjRef.value", column = "POR_VALUE"),
         @Result(property = "isRead", column = "IS_READ"),
         @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES",
             javaType = Map.class, typeHandler = MapTypeHandler.class),
         @Result(property = "custom1", column = "CUSTOM_1"),
         @Result(property = "custom2", column = "CUSTOM_2"),

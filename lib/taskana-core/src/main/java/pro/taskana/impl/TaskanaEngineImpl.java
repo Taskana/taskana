@@ -62,14 +62,54 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
 
-    public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-        return new TaskanaEngineImpl(taskanaEngineConfiguration);
-    }
-
     protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();
+    }
+
+    public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+        return new TaskanaEngineImpl(taskanaEngineConfiguration);
+    }
+
+    /**
+     * With sessionStack, we maintain a Stack of SqlSessionManager objects on a per thread basis. SqlSessionManager is
+     * the MyBatis object that wraps database connections. The purpose of this stack is to keep track of nested calls.
+     * Each external API call is wrapped into taskanaEngineImpl.openConnection(); .....
+     * taskanaEngineImpl.returnConnection(); calls. In order to avoid duplicate opening / closing of connections, we use
+     * the sessionStack in the following way: Each time, an openConnection call is received, we push the current
+     * sessionManager onto the stack. On the first call to openConnection, we call sessionManager.startManagedSession()
+     * to open a database connection. On each call to returnConnection() we pop one instance of sessionManager from the
+     * stack. When the stack becomes empty, we close the database connection by calling sessionManager.close()
+     *
+     * @return Stack of SqlSessionManager
+     */
+    protected static Deque<SqlSessionManager> getSessionStack() {
+        Deque<SqlSessionManager> stack = sessionStack.get();
+        if (stack == null) {
+            stack = new ArrayDeque<>();
+            sessionStack.set(stack);
+        }
+        return stack;
+    }
+
+    protected static SqlSessionManager getSessionFromStack() {
+        Deque<SqlSessionManager> stack = getSessionStack();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        return stack.peek();
+    }
+
+    protected static void pushSessionToStack(SqlSessionManager session) {
+        getSessionStack().push(session);
+    }
+
+    protected static void popSessionFromStack() {
+        Deque<SqlSessionManager> stack = getSessionStack();
+        if (!stack.isEmpty()) {
+            stack.pop();
+        }
     }
 
     @Override
@@ -140,17 +180,15 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      *            The connection that passed into TaskanaEngine
      */
     @Override
-    public void setConnection(java.sql.Connection connection) {
+    public void setConnection(java.sql.Connection connection) throws SQLException {
         if (connection != null) {
             this.connection = connection;
+            // disabling auto commit for passed connection in order to gain full control over the connection management
+            connection.setAutoCommit(false);
             mode = ConnectionManagementMode.EXPLICIT;
             sessionManager.startManagedSession(connection);
         } else if (this.connection != null) {
-            this.connection = null;
-            if (sessionManager.isManagedSessionStarted()) {
-                sessionManager.close();
-            }
-            mode = ConnectionManagementMode.PARTICIPATE;
+            closeConnection();
         }
     }
 
@@ -291,6 +329,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
                 configuration.setDatabaseId("db2");
             } else if (databaseProductName.contains("H2")) {
                 configuration.setDatabaseId("h2");
+            } else if (databaseProductName.equals("PostgreSQL")) {
+                configuration.setDatabaseId("postgres");
             } else {
                 LOGGER.error(
                     "Method createSqlSessionManager() didn't find database with name {}. Throwing UnsupportedDatabaseException",
@@ -332,46 +372,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             this.transactionFactory = new ManagedTransactionFactory();
         } else {
             this.transactionFactory = new JdbcTransactionFactory();
-        }
-    }
-
-    /**
-     * With sessionStack, we maintain a Stack of SqlSessionManager objects on a per thread basis. SqlSessionManager is
-     * the MyBatis object that wraps database connections. The purpose of this stack is to keep track of nested calls.
-     * Each external API call is wrapped into taskanaEngineImpl.openConnection(); .....
-     * taskanaEngineImpl.returnConnection(); calls. In order to avoid duplicate opening / closing of connections, we use
-     * the sessionStack in the following way: Each time, an openConnection call is received, we push the current
-     * sessionManager onto the stack. On the first call to openConnection, we call sessionManager.startManagedSession()
-     * to open a database connection. On each call to returnConnection() we pop one instance of sessionManager from the
-     * stack. When the stack becomes empty, we close the database connection by calling sessionManager.close()
-     *
-     * @return Stack of SqlSessionManager
-     */
-    protected static Deque<SqlSessionManager> getSessionStack() {
-        Deque<SqlSessionManager> stack = sessionStack.get();
-        if (stack == null) {
-            stack = new ArrayDeque<>();
-            sessionStack.set(stack);
-        }
-        return stack;
-    }
-
-    protected static SqlSessionManager getSessionFromStack() {
-        Deque<SqlSessionManager> stack = getSessionStack();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        return stack.peek();
-    }
-
-    protected static void pushSessionToStack(SqlSessionManager session) {
-        getSessionStack().push(session);
-    }
-
-    protected static void popSessionFromStack() {
-        Deque<SqlSessionManager> stack = getSessionStack();
-        if (!stack.isEmpty()) {
-            stack.pop();
         }
     }
 

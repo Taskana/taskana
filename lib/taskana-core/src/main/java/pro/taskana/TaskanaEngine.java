@@ -60,27 +60,13 @@ public interface TaskanaEngine {
      * @param connection
      *            - The java.sql.Connection that is controlled by the client
      */
-    void setConnection(java.sql.Connection connection);
+    void setConnection(java.sql.Connection connection) throws java.sql.SQLException;
 
     /**
      * Closes the client's connection, sets it to null and switches to mode PARTICIPATE. Only applicable in mode
      * EXPLICIT. Has the same effect as setConnection(null).
      */
     void closeConnection();
-
-    /**
-     * Connection management mode. Controls the connection handling of taskana
-     * <ul>
-     * <li>PARTICIPATE - taskana participates in global transaction. This is the default mode</li>
-     * <li>AUTOCOMMIT - taskana commits each API call separately</li>
-     * <li>EXPLICIT - commit processing is managed explicitly by the client</li>
-     * </ul>
-     */
-    enum ConnectionManagementMode {
-        PARTICIPATE,
-        AUTOCOMMIT,
-        EXPLICIT
-    }
 
     /**
      * check whether the current user is member of one of the roles specified.
@@ -100,4 +86,18 @@ public interface TaskanaEngine {
      *             If the current user is not member of any specified role
      */
     void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException;
+
+    /**
+     * Connection management mode. Controls the connection handling of taskana
+     * <ul>
+     * <li>PARTICIPATE - taskana participates in global transaction. This is the default mode</li>
+     * <li>AUTOCOMMIT - taskana commits each API call separately</li>
+     * <li>EXPLICIT - commit processing is managed explicitly by the client</li>
+     * </ul>
+     */
+    enum ConnectionManagementMode {
+        PARTICIPATE,
+        AUTOCOMMIT,
+        EXPLICIT
+    }
 }
