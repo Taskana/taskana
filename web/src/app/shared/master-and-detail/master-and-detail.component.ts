@@ -11,7 +11,8 @@ import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-
 export class MasterAndDetailComponent implements OnInit {
     private classifications = 'classifications';
     private workbaskets = 'workbaskets';
-    private detailRoutes: Array<string> = ['/workbaskets/(detail', 'classifications/(detail'];
+    private tasks = 'tasks';
+    private detailRoutes: Array<string> = ['/workbaskets/(detail', 'classifications/(detail', 'tasks/(detail'];
     private sub: any;
 
     showDetail: Boolean = false;
@@ -56,6 +57,8 @@ export class MasterAndDetailComponent implements OnInit {
             this.currentRoute = this.workbaskets;
         } else if (url.indexOf(this.classifications) !== -1) {
             this.currentRoute = this.classifications;
+        } else if (url.indexOf(this.tasks) !== -1) {
+            this.currentRoute = this.tasks;
         }
     }
 }

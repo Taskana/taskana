@@ -22,6 +22,21 @@ export class Task {
               public priority: number,
               public classificationSummaryResource: Classification,
               public workbasketSummaryResource: Workbasket,
-              public custom1: any) {
+              public custom1: string,
+              public custom2: string,
+              public custom3: string,
+              public custom4: string,
+              public custom5: string,
+              public custom6: string,
+              public custom7: string,
+              public custom8: string,
+              public custom9: string,
+              public custom10: string,
+              public custom11: string,
+              public custom12: string,
+              public custom13: string,
+              public custom14: string,
+              public custom15: string,
+              public custom16: string) {
   }
 }

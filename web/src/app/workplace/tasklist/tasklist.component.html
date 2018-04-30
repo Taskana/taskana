@@ -1,29 +1,22 @@
-<table class="table table-hover">
-  <thead>
-  <tr>
-    <th class="clickable" (click)="orderTasks('id')">ID</th>
-    <th class="clickable" (click)="orderTasks('name')">Name</th>
-    <th class="clickable" (click)="orderTasks('due')">Due Date</th>
-    <th class="clickable" (click)="orderTasks('priority')">Priority</th>
-    <th class="clickable" (click)="orderTasks('state')">State</th>
-    <th>Actions</th>
-  </tr>
-  </thead>
-  <tr *ngFor="let task of tasks">
-    <td>{{ task.taskId }}</td>
-    <td>{{ task.name }}</td>
-    <td>{{ task.due | date:'medium' }}</td>
-    <td>{{ task.priority }}</td>
-    <td>{{ task.state }}</td>
-    <td>
-      <button type="button" title="Open task to work on it" class="btn btn-default" aria-label="Left Align"
-              (click)="openTask(task.taskId)">
-        <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
-      </button>
-      <a type="button" title="View details for task" class="btn btn-default" aria-label="Left Align"
-         routerLink="taskdetail/{{task.taskId}}">
-        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-      </a>
-    </td>
-  </tr>
-</table>
+<div class="task-list-full-height">
+    <taskana-workbasket-selector (tasksChanged)="loadTasks($event)"></taskana-workbasket-selector>
+    <!--TODO: add toolbar for sorting, also add pagination-->
+  <div>
+    <ul #taskList id="task-list-container" class="list-group">
+      <li class="list-group-item" *ngIf="tasks === undefined || tasks.length === 0" type="text"> There are no Tasks for this workbasket </li>
+      <li class="list-group-item" *ngFor="let task of tasks" [class.active]="task.taskId == selectedId"
+          type="text" (click)="selectTask(task.taskId)">
+        <div class="row">
+          <dl class="col-xs-10">
+            <dt data-toggle="tooltip" title="{{task.name}}">{{task.name}},
+              <i data-toggle="tooltip" title="{{task.taskId}}">{{task.taskId}} </i>
+            </dt>
+            <dd data-toggle="tooltip" title="{{task.due}}">Due: {{task.due}} &nbsp;</dd>
+            <dd data-toggle="tooltip" title="{{task.priority}}">Priority: {{task.priority}} &nbsp;</dd>
+            <dd data-toggle="tooltip" title="{{task.state}}">State: {{task.state}} &nbsp;</dd>
+          </dl>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

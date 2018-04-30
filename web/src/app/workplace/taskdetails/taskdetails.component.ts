@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Task} from '../models/task';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {TaskService} from '../services/task.service';
-import {Location} from '@angular/common';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'taskana-task-details',
@@ -11,24 +11,39 @@ import {Location} from '@angular/common';
 })
 export class TaskdetailsComponent implements OnInit {
   task: Task = null;
+  requestInProgress = false;
+
+  private routeSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
               private taskService: TaskService,
-              private location: Location) {
+              private router: Router) {
   }
 
   ngOnInit() {
-    this.getTask();
-  }
-
-  getTask(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.taskService.getTask(id).subscribe(task => {
-      this.task = task
+    this.routeSubscription = this.route.params.subscribe(params => {
+      const id = params['id'];
+      this.getTask(id);
     });
   }
 
-  goBack(): void {
-    this.location.back();
+  getTask(id: string): void {
+    this.requestInProgress = true;
+    this.taskService.getTask(id).subscribe(task => {
+      this.requestInProgress = false;
+      this.task = task;
+    });
+  }
+
+  updateTask() {
+    this.requestInProgress = true;
+    this.taskService.updateTask(this.task).subscribe(task => {
+      this.requestInProgress = false;
+      this.task = task;
+    });
+  }
+
+  openTask(taskId: string) {
+    this.router.navigate([{outlets: {detail: `task/${taskId}`}}], {relativeTo: this.route.parent});
   }
 }

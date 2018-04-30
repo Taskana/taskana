@@ -1,21 +1,52 @@
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <p>
-        <a class="navbar-brand" href="#">
-          {{ task?.name }}
-        </a>
-      </p>
+<taskana-spinner [isRunning]="requestInProgress" ></taskana-spinner>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="pull-right">
+      <div class="col-md-6">
+        <input class="form-control" auto-complete [(ngModel)]="workbasket" [source]="autoCompleteData"
+               placeholder="Transfer ..."/>
+      </div>
+      <button (click)="transferTask()" class="btn-link"><span title="Transfer task to another workbasket"
+                                                              class="glyphicon glyphicon-new-window text-muted"></span>
+      </button>
+      <button (click)="cancelTask()" class="btn-link"><span title="Cancel task and return to task list"
+                                                            class="glyphicon glyphicon-remove-circle text-muted"></span>
+      </button>
+      <button (click)="completeTask()" class="btn-link"><span title="Complete task and return to task list"
+                                                              class="glyphicon glyphicon-ok-circle text-success"></span>
+      </button>
     </div>
-    <ul class="nav navbar-nav navbar-right">
-      <li><input class="form-control" auto-complete [(ngModel)]="workbasket" [source]="autoCompleteData" placeholder="Transfer ..." style="margin-top:10px;"/></li>
-      <li><a><button (click)="transferTask()" class="btn-link"><span title="Transfer task to another workbasket" class="glyphicon glyphicon-new-window text-muted"></span></button></a></li>
-      <li><a><button (click)="cancelTask()" class="btn-link"><span title="Cancel task and return to task list" class="glyphicon glyphicon-remove-circle text-muted"></span></button></a></li>
-      <li><a><button (click)="completeTask()" class="btn-link"><span title="Complete task and return to task list" class="glyphicon glyphicon-ok-circle text-success"></span></button></a></li>
-    </ul>
+    <h4 class="panel-header"><b>{{task?.name}}</b></h4>
   </div>
-</nav>
 
-<div class="container-fluid">
-  <iframe [src]="link"></iframe>
+  <div class="panel-body" *ngIf="task">
+    <form #TaskForm="ngForm">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="task-description" class="control-label">Description</label>
+          <textarea class="form-control" disabled rows="5" id="task-description" placeholder="Description"
+                    [(ngModel)]="task.description"
+                    name="task.description"></textarea>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="task-note" class="control-label">Note</label>
+          <input type="text" disabled class="form-control" id="task-note" placeholder="Task has no Note"
+                 [(ngModel)]="task.note"
+                 name="task.note">
+        </div>
+        <div class="form-group">
+          <label for="task-due" class="control-label">Due Date</label>
+          <input type="text" disabled class="form-control" id="task-due" placeholder="No deadline set"
+                 [(ngModel)]="task.due"
+                 name="task.due">
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
+
+<iframe [src]="link"></iframe>
+
+
