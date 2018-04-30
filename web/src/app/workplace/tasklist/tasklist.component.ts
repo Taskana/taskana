@@ -11,6 +11,7 @@ export class TasklistComponent implements OnInit {
 
   private columnForOrdering: string;
 
+  selectedId = '';
   @Input() tasks: Task[];
 
   constructor(private router: Router,
@@ -25,7 +26,12 @@ export class TasklistComponent implements OnInit {
     this.columnForOrdering = column;
   }
 
-  openTask(id: string) {
-    this.router.navigate(['tasks/', id], {relativeTo: this.route.parent});
+  loadTasks(tasks: Task[]) {
+    this.tasks = tasks;
+  }
+
+  selectTask(taskId: string) {
+    this.selectedId = taskId;
+    this.router.navigate([{outlets: {detail: `taskdetail/${this.selectedId}`}}], {relativeTo: this.route});
   }
 }

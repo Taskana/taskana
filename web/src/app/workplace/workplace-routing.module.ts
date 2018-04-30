@@ -1,36 +1,42 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {WorkplaceComponent} from './workplace.component'
-import {TasksComponent} from 'app/workplace/tasks/tasks.component';
-import {TaskComponent} from 'app/workplace/task/task.component';
+import {MasterAndDetailComponent} from '../shared/master-and-detail/master-and-detail.component';
+import {WorkplaceComponent} from './workplace.component';
+import {TaskComponent} from './task/task.component';
 import {TaskdetailsComponent} from './taskdetails/taskdetails.component';
+import {TasklistComponent} from './tasklist/tasklist.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: WorkplaceComponent,
-    redirectTo: 'tasks',
-    pathMatch: 'full'
-  },
-  {
-    path: '',
-    component: WorkplaceComponent,
-    children: [
-      {
-        path: 'tasks',
-        component: TasksComponent
-      },
-      {
-        path: 'tasks/:id',
-        component: TaskComponent
-      },
-      {
-        path: 'tasks/taskdetail/:id',
-        component: TaskdetailsComponent
-      }
-    ]
-  }
-];
+    {
+      path: 'tasks',
+      component: MasterAndDetailComponent,
+      children: [
+        {
+          path: '',
+          component: TasklistComponent,
+          outlet: 'master'
+        },
+        {
+          path: 'taskdetail/:id',
+          component: TaskdetailsComponent,
+          outlet: 'detail'
+        },
+        {
+          path: 'task/:id',
+          component: TaskComponent,
+          outlet: 'detail'
+        }
+      ]
+    },
+    {
+      path: '',
+      component: WorkplaceComponent,
+      redirectTo: 'tasks',
+      pathMatch: 'full'
+    }
+
+  ]
+;
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
