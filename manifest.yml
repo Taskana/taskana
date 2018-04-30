@@ -5,20 +5,8 @@ applications:
   buildpack: https://github.com/cloudfoundry/java-buildpack.git#v3.10
   memory: 512M
   disk_quota: 256M
-- name: taskana-workplace
-  path: workplace/dist
-  buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git#v1.3.16
-  memory: 16M
-  disk_quota: 64M
-- name: taskana-admin
+- name: taskana-web
   path: web/dist
   buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git#v1.3.16
   memory: 16M
   disk_quota: 64M
-- name: taskana-monitor
-  path: monitor/dist
-  buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git#v1.3.16
-  memory: 16M
-  disk_quota: 64M
-
-
