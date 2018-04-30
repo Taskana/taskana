@@ -21,6 +21,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	selectionToImport = ImportType.CLASSIFICATIONS;
 	requestInProgress = false;
 	initialized = false;
+	inputValue: string;
 
 	classifications: Array<Classification> = [];
 	classificationsTypes: Array<string> = [];
