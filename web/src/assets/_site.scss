@@ -18,6 +18,8 @@
 .no-border-radius {
     border-radius: 0px;
 }
+
+
 /*
  * Base structure
  */
@@ -249,10 +251,6 @@ svg-icon.fa-fw > svg {
     margin-top: 4px;
 }
 
-.navbar-inverse {
-    box-shadow: 0px 1px 10px -1px rgb(51, 93, 125);
-    border: none;
-}
 
 taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets {
     &> .panel{
@@ -269,4 +267,19 @@ taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbas
 
 tree-viewport {
     height: calc(100vh - 165px);   
+}
+
+li.list-group-item.active:hover, {
+    color: #fff;
+    background-color: $green;
+    border-color: $green;
+}
+
+.list-group-item.active{
+    background-color: $green;
+}
+li.list-group-item:hover, {
+    color: #555;
+    text-decoration: none;
+    background-color: #f5f5f5;
 }

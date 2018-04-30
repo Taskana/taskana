@@ -26,10 +26,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   selectedRoute = '';
   route: string;
-  titleAdministration = 'Taskana administration';
-  titleMonitor = 'Taskana monitor';
-  titleWorkplace = 'Taskana workplace';
-  title = 'Taskana administration';
+  titleAdministration = 'Administration';
+  titleMonitor = 'Monitor';
+  titleWorkplace = 'Workplace';
+  title = 'Administration';
   showNavbar = false;
   domains: Array<string> = [];
   selectedDomain: string;
