@@ -436,7 +436,7 @@ public class ClassificationServiceImplIntExplicitTest {
     }
 
     @After
-    public void cleanUp() {
+    public void cleanUp() throws SQLException {
         taskanaEngineImpl.setConnection(null);
     }
 

@@ -23,7 +23,6 @@ import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ObjectReference;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 
@@ -51,7 +50,7 @@ public abstract class AbstractAccTest {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
-        ((TaskanaEngineImpl) taskanaEngine).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+        taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         cleaner.clearDb(dataSource, false);
         TestDataGenerator testDataGenerator = new TestDataGenerator();
         testDataGenerator.generateTestData(dataSource);

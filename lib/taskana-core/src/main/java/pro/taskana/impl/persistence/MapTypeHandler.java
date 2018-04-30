@@ -1,7 +1,6 @@
 package pro.taskana.impl.persistence;
 
 import java.sql.CallableStatement;
-import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,9 +29,7 @@ public class MapTypeHandler extends BaseTypeHandler<Map> {
             LOGGER.debug("Input-Map before serializing: ", parameter);
             // Convert Map to JSON string
             JSONObject jsonObj = new JSONObject(parameter);
-            Clob content = ps.getConnection().createClob();
-            content.setString(1, jsonObj.toString());
-            ps.setClob(i, content);
+            ps.setString(i, jsonObj.toString());
         } else {
             ps.setNull(i, Types.BLOB);
         }
@@ -40,36 +37,34 @@ public class MapTypeHandler extends BaseTypeHandler<Map> {
 
     @Override
     public Map getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        Clob fieldValue = rs.getClob(columnName);
+        String fieldValue = rs.getString(columnName);
         if (fieldValue != null) {
-            return convertClobToMap(fieldValue);
+            return convertToMap(fieldValue);
         }
         return null;
     }
 
     @Override
     public Map getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        Clob fieldValue = rs.getClob(columnIndex);
+        String fieldValue = rs.getString(columnIndex);
         if (fieldValue != null) {
-            return convertClobToMap(fieldValue);
+            return convertToMap(fieldValue);
         }
         return null;
     }
 
     @Override
     public Map getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        Clob fieldValue = cs.getClob(columnIndex);
+        String fieldValue = cs.getString(columnIndex);
         if (fieldValue != null) {
-            return convertClobToMap(fieldValue);
+            return convertToMap(fieldValue);
         }
         return null;
     }
 
-    private Map convertClobToMap(Clob fieldValue) throws SQLException {
-        String content = fieldValue.getSubString(1L, (int) fieldValue.length());
-        JSONObject jsonObj = new JSONObject(content);
-        Map result = jsonObj.toMap();
-        return result;
+    private Map convertToMap(String fieldValue) throws SQLException {
+        JSONObject jsonObj = new JSONObject(fieldValue);
+        return jsonObj.toMap();
     }
 
 }

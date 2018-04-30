@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.ClobTypeHandler;
-import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.impl.AttachmentImpl;
 import pro.taskana.impl.AttachmentSummaryImpl;
@@ -46,7 +45,7 @@ public interface AttachmentMapper {
         @Result(property = "objectReference.value", column = "REF_VALUE"),
         @Result(property = "channel", column = "CHANNEL"),
         @Result(property = "received", column = "RECEIVED"),
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES",
             javaType = Map.class, typeHandler = MapTypeHandler.class)
     })
     List<AttachmentImpl> findAttachmentsByTaskId(@Param("taskId") String taskId);
@@ -70,7 +69,7 @@ public interface AttachmentMapper {
         @Result(property = "objectReference.value", column = "REF_VALUE"),
         @Result(property = "channel", column = "CHANNEL"),
         @Result(property = "received", column = "RECEIVED"),
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES",
             javaType = Map.class, typeHandler = MapTypeHandler.class)
     })
     AttachmentImpl getAttachment(@Param("attachmentId") String attachmentId);
@@ -107,7 +106,7 @@ public interface AttachmentMapper {
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES",
             javaType = String.class, typeHandler = ClobTypeHandler.class)
     })
     String getCustomAttributesAsString(@Param("attachmentId") String attachmentId);

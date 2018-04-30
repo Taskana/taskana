@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Duration;
 import java.time.Instant;
@@ -395,10 +396,8 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     private boolean isReferentialIntegrityConstraintViolation(PersistenceException e) {
-        return ((e.getCause().getClass().getName().equals("org.h2.jdbc.JdbcSQLException")
-            && e.getMessage().contains("23503"))
-            || (e.getCause() instanceof SQLIntegrityConstraintViolationException
-                && e.getMessage().contains("-532")));
+        return e.getCause() instanceof SQLException && ((SQLException) e.getCause()).getSQLState().equals("23503")
+            || e.getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("-532");
     }
 
 }
