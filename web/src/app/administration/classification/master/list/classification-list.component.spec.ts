@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
@@ -29,6 +30,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 class TaskanaTreeComponent {
   @Input() treeNodes;
   @Input() selectNodeId;
+  @Input() filterText;
 }
 
 @Component({
@@ -56,7 +58,7 @@ describe('ClassificationListComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ClassificationListComponent, ImportExportComponent, SpinnerComponent, ClassificationTypesSelectorComponent,
         TaskanaTreeComponent, DummyDetailComponent],
-      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes)],
+      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule],
       providers: [
         HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
         ErrorModalService, ClassificationTypesService, RequestInProgressService

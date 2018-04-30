@@ -1,5 +1,5 @@
 .classification-list-full-height {
-  height: calc(100vh - 57px);
+  height: calc(100vh - 55px);
 }
 
 .list-group-item {
@@ -13,4 +13,10 @@
   &>div{
    margin: 6px 0px;
   }
+}
+
+input.filter-input {
+  margin: 10px 0px;
+  height: 32px;
+  padding-left: 10px;
 }
