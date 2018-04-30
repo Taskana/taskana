@@ -218,7 +218,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2", "businessadmin"})
     @Test
     public void testSetDistributionTargets()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, SQLException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket sourceWorkbasket = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
@@ -232,8 +232,9 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
             .list();
         assertEquals(2, newDistributionTargets.size());
 
-        List<String> newDistributionTargetIds = newDistributionTargets.stream().map(t -> t.getId()).collect(
-            Collectors.toList());
+        List<String> newDistributionTargetIds = newDistributionTargets.stream()
+            .map(WorkbasketSummary::getId)
+            .collect(Collectors.toList());
 
         workbasketService.setDistributionTargets(sourceWorkbasket.getId(), newDistributionTargetIds);
         List<WorkbasketSummary> changedTargets = workbasketService.getDistributionTargets(sourceWorkbasket.getId());

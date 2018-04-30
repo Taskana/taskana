@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.impl.MinimalTaskSummary;
 import pro.taskana.impl.TaskImpl;
@@ -59,9 +58,9 @@ public interface TaskMapper {
         @Result(property = "primaryObjRef.value", column = "POR_VALUE"),
         @Result(property = "isRead", column = "IS_READ"),
         @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
-        @Result(property = "callbackInfo", column = "CALLBACK_INFO", jdbcType = JdbcType.CLOB,
+        @Result(property = "callbackInfo", column = "CALLBACK_INFO",
             javaType = Map.class, typeHandler = MapTypeHandler.class),
-        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES", jdbcType = JdbcType.CLOB,
+        @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES",
             javaType = Map.class, typeHandler = MapTypeHandler.class),
         @Result(property = "custom1", column = "CUSTOM_1"),
         @Result(property = "custom2", column = "CUSTOM_2"),
@@ -184,7 +183,9 @@ public interface TaskMapper {
         @Param("referencetask") TaskSummaryImpl referencetask);
 
     @Select("<script>SELECT ID, STATE, WORKBASKET_ID FROM TASKANA.TASK "
-        + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
+        + "<if test=\" taskIds != null and !taskIds.isEmpty() \">"
+        + "WHERE ID IN( <foreach item='item' collection='taskIds' separator=',' >#{item}</foreach> ) "
+        + "</if>"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {

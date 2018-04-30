@@ -20,6 +20,7 @@ public class DbSchemaCreator {
     private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
     private static final String SQL = "/sql";
     private static final String DB_SCHEMA = SQL + "/taskana-schema.sql";
+    private static final String DB_SCHEMA_POSTGRES = SQL + "/taskana-schema-postgres.sql";
     private static final String DB_SCHEMA_DETECTION = SQL + "/schema-detection.sql";
     private DataSource dataSource;
     private StringWriter outWriter = new StringWriter();
@@ -30,6 +31,10 @@ public class DbSchemaCreator {
     public DbSchemaCreator(DataSource dataSource) {
         super();
         this.dataSource = dataSource;
+    }
+
+    private static String selectDbScriptFileName(String dbProductName) {
+        return "PostgreSQL".equals(dbProductName) ? DB_SCHEMA_POSTGRES : DB_SCHEMA;
     }
 
     /**
@@ -48,7 +53,8 @@ public class DbSchemaCreator {
         runner.setErrorLogWriter(errorLogWriter);
         try {
             if (!isSchemaPreexisting(runner)) {
-                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_SCHEMA)));
+                runner.runScript(new InputStreamReader(this.getClass()
+                    .getResourceAsStream(selectDbScriptFileName(connection.getMetaData().getDatabaseProductName()))));
             }
         } finally {
             runner.closeConnection();

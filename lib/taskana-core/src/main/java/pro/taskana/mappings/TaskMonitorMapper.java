@@ -23,6 +23,7 @@ public interface TaskMonitorMapper {
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT WORKBASKET_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "<if test=\"_databaseId == 'h2'\">SELECT WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'postgres'\">SELECT WORKBASKET_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "FROM TASKANA.TASK "
         + "<where>"
         + "<if test=\"workbasketIds != null\">"
@@ -44,6 +45,7 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY WORKBASKET_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'postgres'\">GROUP BY WORKBASKET_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP)</if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
@@ -60,6 +62,7 @@ public interface TaskMonitorMapper {
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_CATEGORY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_CATEGORY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_CATEGORY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "FROM TASKANA.TASK "
         + "<where>"
         + "<if test=\"workbasketIds != null\">"
@@ -81,6 +84,7 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY CLASSIFICATION_CATEGORY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY CLASSIFICATION_CATEGORY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'postgres'\">GROUP BY CLASSIFICATION_CATEGORY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP)</if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
@@ -97,6 +101,7 @@ public interface TaskMonitorMapper {
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "FROM TASKANA.TASK "
         + "<where>"
         + "<if test=\"workbasketIds != null\">"
@@ -118,6 +123,7 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'postgres'\">GROUP BY CLASSIFICATION_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP)</if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
@@ -134,6 +140,7 @@ public interface TaskMonitorMapper {
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "<if test=\"_databaseId == 'h2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'postgres'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "FROM TASKANA.TASK AS T LEFT JOIN TASKANA.ATTACHMENT AS A ON T.ID = A.TASK_ID "
         + "<where>"
         + "<if test=\"workbasketIds != null\">"
@@ -155,6 +162,7 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY T.CLASSIFICATION_KEY, A.CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY T.CLASSIFICATION_KEY, A.CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'postgres'\">GROUP BY T.CLASSIFICATION_KEY, A.CLASSIFICATION_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP)</if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
@@ -173,6 +181,7 @@ public interface TaskMonitorMapper {
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT ${customField} as CUSTOM_FIELD, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "<if test=\"_databaseId == 'h2'\">SELECT ${customField} as CUSTOM_FIELD, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'postgres'\">SELECT ${customField} as CUSTOM_FIELD, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
         + "FROM TASKANA.TASK "
         + "<where>"
         + "<if test=\"workbasketIds != null\">"
@@ -194,6 +203,7 @@ public interface TaskMonitorMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">GROUP BY ${customField}, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
         + "<if test=\"_databaseId == 'h2'\">GROUP BY ${customField}, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
+        + "<if test=\"_databaseId == 'postgres'\">GROUP BY ${customField}, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP)</if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
@@ -247,6 +257,10 @@ public interface TaskMonitorMapper {
         + "<if test=\"_databaseId == 'h2'\">"
         + "#{selectedItem.upperAgeLimit} >= DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) AND "
         + "#{selectedItem.lowerAgeLimit} &lt;= DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) "
+        + "</if> "
+        + "<if test=\"_databaseId == 'postgres'\">"
+        + "#{selectedItem.upperAgeLimit} >= DATE_PART('day', DUE - CURRENT_TIMESTAMP ) AND "
+        + "#{selectedItem.lowerAgeLimit} &lt;= DATE_PART('day', DUE - CURRENT_TIMESTAMP ) "
         + "</if> "
         + "</foreach>) "
         + "</where>"

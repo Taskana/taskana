@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.impl.Job;
 import pro.taskana.impl.persistence.MapTypeHandler;
@@ -19,8 +18,19 @@ import pro.taskana.impl.persistence.MapTypeHandler;
  */
 public interface JobMapper {
 
-    @Insert("INSERT INTO TASKANA.JOB (JOB_ID, CREATED, STARTED, COMPLETED, STATE, EXECUTOR, ARGUMENTS) "
-        + "VALUES (NEXT VALUE FOR TASKANA.JOB_SEQ, #{job.created}, #{job.started}, #{job.completed}, #{job.state}, #{job.executor}, #{job.arguments,jdbcType=CLOB, javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )")
+    @Insert("<script>"
+        + "INSERT INTO TASKANA.JOB (JOB_ID, CREATED, STARTED, COMPLETED, STATE, EXECUTOR, ARGUMENTS) "
+        + "VALUES ("
+        + "<choose>"
+        + "<when test=\"_databaseId == 'db2'\">"
+        + "NEXT VALUE FOR TASKANA.JOB_SEQ"
+        + "</when>"
+        + "<otherwise>"
+        + "nextval('TASKANA.JOB_SEQ')"
+        + "</otherwise>"
+        + "</choose>"
+        + ", #{job.created}, #{job.started}, #{job.completed}, #{job.state}, #{job.executor}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )"
+        + "</script>")
     void insertJob(@Param("job") Job job);
 
     @Select("SELECT   JOB_ID, CREATED, STARTED, COMPLETED, STATE, EXECUTOR, ARGUMENTS "
@@ -34,7 +44,7 @@ public interface JobMapper {
         @Result(property = "completed", column = "COMPLETED"),
         @Result(property = "state", column = "STATE"),
         @Result(property = "executor", column = "EXECUTOR"),
-        @Result(property = "arguments", column = "ARGUMENTS", jdbcType = JdbcType.CLOB,
+        @Result(property = "arguments", column = "ARGUMENTS",
             javaType = Map.class, typeHandler = MapTypeHandler.class)
     })
     List<Job> findJobsToRun();
