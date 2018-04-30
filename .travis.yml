@@ -12,7 +12,7 @@ cache:
 before_install:
   - nvm install $NODE_VERSION
   - npm install -g @angular/cli >/dev/null 2>&1
-  - lib/deployment/change_version.sh rest/ lib/ web/
+  - lib/deployment/change_version.sh -m "rest/ lib/ web/" -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
 install:
   - (cd web && npm install --no-progress && npm run build:prod)
     && mvn clean install -q -f lib/ -DskipTests=true -Dmaven.javadoc.skip=true -B
