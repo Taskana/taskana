@@ -1,3 +1,5 @@
+$selected-item: #e3f3f5;
+
 .dual-list {
     min-height: 290px;
     padding: 0px;
@@ -46,7 +48,7 @@ ul>li {
     border-color: #ddd;
     }
     &.list-group-item.selected {
-        background-color: #e9f2fc;
+        background-color: $selected-item;
     }
 }
 

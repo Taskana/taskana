@@ -1,9 +1,11 @@
 $background-color: #224562;
-$background-color-sidenav: #263847;
+$background-color-sidenav: #175263;
 $selected-border-color: #22a39f;
 .navbar-inverse {
     border:none;
     background-color: $background-color;
+    box-shadow: 0px 1px 10px -1px $background-color;
+    
 }
 
 .navbar-toggle{
@@ -22,23 +24,21 @@ ul.nav > p {
 
 svg-icon.logo {
     float: left;
-    width: 55px;
+    width: 150px;
     height: 55px;
-    padding:2px;
+    padding: 6px 5px 5px 5px;
 }
 
 .logo-container {
     padding-left: 0px;
 }
 
-p.navbar-brand >a{
+h2.navbar-brand{
     vertical-align: middle;
     text-decoration: none;
-    color: #9d9d9d;
+    color: white;
+    padding: 17px 0px 0px 0px;
     font-size: 20px;
-    &:hover {
-        color: white;
-    }
 }
 
 .navbar-backdrop{
@@ -92,15 +92,16 @@ p.navbar-brand >a{
 
 .sidenav {
     position:fixed;
-    border-right: 1px solid grey;
     z-index:999;
     margin-top: -1px;
     box-shadow: none;
     height: 100%;
     background-color: $background-color-sidenav;
+    box-shadow: 3px 0px 10px -1px $background-color;
 }
 
 .navbar {
+    height: 55px;
     margin-bottom: 0px;
 }
 
