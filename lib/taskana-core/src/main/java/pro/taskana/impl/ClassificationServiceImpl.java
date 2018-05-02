@@ -396,8 +396,15 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     private boolean isReferentialIntegrityConstraintViolation(PersistenceException e) {
-        return e.getCause() instanceof SQLException && ((SQLException) e.getCause()).getSQLState().equals("23503")
-            || e.getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("-532");
+        return isH2OrPostgresIntegrityConstraintViolation(e) || isDb2IntegrityConstraintViolation(e);
+    }
+
+    private boolean isDb2IntegrityConstraintViolation(PersistenceException e) {
+        return e.getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("-532");
+    }
+
+    private boolean isH2OrPostgresIntegrityConstraintViolation(PersistenceException e) {
+        return e.getCause() instanceof SQLException && ((SQLException) e.getCause()).getSQLState().equals("23503");
     }
 
 }

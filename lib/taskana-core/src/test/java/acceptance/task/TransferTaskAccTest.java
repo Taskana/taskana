@@ -193,9 +193,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
     @WithAccessId(userName = "teamlead_1", groupNames = {"group_1"})
     @Test
     public void testBulkTransferTaskWithExceptions()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket("USER_1_1", "DOMAIN_A");
         Instant before = Instant.now();
@@ -203,7 +201,6 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskIdList.add("TKI:000000000000000000000000000000000006"); // working
         taskIdList.add("TKI:000000000000000000000000000000000041"); // NotAuthorized READ
         taskIdList.add("TKI:200000000000000000000000000000000006"); // NotAuthorized TRANSFER
-        taskIdList.add("");     // InvalidArgument
         taskIdList.add(null);   // InvalidArgument (added with ""), duplicate
         taskIdList.add("TKI:000000000000000000000000000000000099"); // TaskNotFound
         taskIdList.add("TKI:100000000000000000000000000000000006"); // already completed
@@ -257,14 +254,11 @@ public class TransferTaskAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testTransferTasksWithListNotSupportingRemove()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+    public void testTransferTasksWithListNotSupportingRemove() throws NotAuthorizedException, InvalidArgumentException,
+        WorkbasketNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
-        List<String> taskIds = Collections.singletonList("");
+        List<String> taskIds = Collections.singletonList("TKI:000000000000000000000000000000000006");
         taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
-
     }
 
     @WithAccessId(

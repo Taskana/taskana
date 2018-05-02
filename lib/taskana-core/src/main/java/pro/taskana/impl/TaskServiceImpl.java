@@ -487,10 +487,9 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngine.openConnection();
             LOGGER.debug("entry to transferBulk(targetWbId = {}, taskIds = {})", destinationWorkbasketId, taskIds);
             // Check pre-conditions with trowing Exceptions
-            if (destinationWorkbasketId == null || destinationWorkbasketId.isEmpty() || taskIds == null
-                || taskIds.isEmpty()) {
+            if (destinationWorkbasketId == null || destinationWorkbasketId.isEmpty()) {
                 throw new InvalidArgumentException(
-                    "DestinationWorkbasketId or TaskIds must not be null or empty.");
+                    "DestinationWorkbasketId must not be null or empty.");
             }
             Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketId);
 
@@ -510,9 +509,9 @@ public class TaskServiceImpl implements TaskService {
             LOGGER.debug("entry to transferBulk(targetWbKey = {}, domain = {}, taskIds = {})", destinationWorkbasketKey,
                 destinationWorkbasketDomain, taskIds);
             // Check pre-conditions with trowing Exceptions
-            if (destinationWorkbasketKey == null || destinationWorkbasketDomain == null || taskIds == null) {
+            if (destinationWorkbasketKey == null || destinationWorkbasketDomain == null) {
                 throw new InvalidArgumentException(
-                    "DestinationWorkbasketKey or domain or TaskIds can´t be used as NULL-Parameter.");
+                    "DestinationWorkbasketKey or domain can´t be used as NULL-Parameter.");
             }
             Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketKey,
                 destinationWorkbasketDomain);
@@ -527,6 +526,12 @@ public class TaskServiceImpl implements TaskService {
 
     private BulkOperationResults<String, TaskanaException> transferTasks(List<String> taskIdsToBeTransferred,
         Workbasket destinationWorkbasket) throws InvalidArgumentException {
+        // Check pre-conditions with trowing Exceptions
+        if (taskIdsToBeTransferred == null
+            || taskIdsToBeTransferred.isEmpty() || taskIdsToBeTransferred.contains("")) {
+            throw new InvalidArgumentException(
+                "TaskIds must not be null,empty or an empty string.");
+        }
         BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
         // convert to ArrayList<String> if necessary to prevent a UnsupportedOperationException while removing
@@ -558,7 +563,7 @@ public class TaskServiceImpl implements TaskService {
         }
         // check source WB (read)+transfer
         Set<String> workbasketIds = new HashSet<>();
-        taskSummaries.stream().forEach(t -> workbasketIds.add(t.getWorkbasketId()));
+        taskSummaries.forEach(t -> workbasketIds.add(t.getWorkbasketId()));
         WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
         query.setUsedToAugmentTasks(true);
         List<WorkbasketSummary> sourceWorkbaskets;
@@ -585,8 +590,8 @@ public class TaskServiceImpl implements TaskService {
                 bulkLog.addError(currentTaskId,
                     new InvalidStateException("Completed task with id " + currentTaskId + " cannot be transferred."));
                 taskIdIterator.remove();
-            } else if (!sourceWorkbaskets.stream()
-                .anyMatch(wb -> taskSummary.getWorkbasketId().equals(wb.getId()))) {
+            } else if (sourceWorkbaskets.stream()
+                .noneMatch(wb -> taskSummary.getWorkbasketId().equals(wb.getId()))) {
                 bulkLog.addError(currentTaskId,
                     new NotAuthorizedException(
                         "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId));
@@ -1397,43 +1402,6 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    /**
-     * hold a pair of priority and Duration.
-     *
-     * @author bbr
-     */
-    static class PrioDurationHolder {
-
-        private Duration duration;
-
-        private int prio;
-
-        PrioDurationHolder(Duration duration, int prio) {
-            super();
-            this.duration = duration;
-            this.prio = prio;
-        }
-
-        public Duration getDuration() {
-            return duration;
-        }
-
-        public int getPrio() {
-            return prio;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("PrioDurationHolder [duration=");
-            builder.append(duration);
-            builder.append(", prio=");
-            builder.append(prio);
-            builder.append("]");
-            return builder.toString();
-        }
-    }
-
     BulkOperationResults<String, Exception> classificationChanged(String taskId, String classificationId)
         throws TaskNotFoundException, ClassificationNotFoundException {
         LOGGER.debug("entry to classificationChanged(taskId = {} , classificationId = {} )", taskId, classificationId);
@@ -1499,6 +1467,43 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return result;
+    }
+
+    /**
+     * hold a pair of priority and Duration.
+     *
+     * @author bbr
+     */
+    static class PrioDurationHolder {
+
+        private Duration duration;
+
+        private int prio;
+
+        PrioDurationHolder(Duration duration, int prio) {
+            super();
+            this.duration = duration;
+            this.prio = prio;
+        }
+
+        public Duration getDuration() {
+            return duration;
+        }
+
+        public int getPrio() {
+            return prio;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("PrioDurationHolder [duration=");
+            builder.append(duration);
+            builder.append(", prio=");
+            builder.append(prio);
+            builder.append("]");
+            return builder.toString();
+        }
     }
 
 }
