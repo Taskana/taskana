@@ -55,6 +55,7 @@ public class WorkbasketMapper {
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
             .withRel("accessItems"));
         resource.add(linkTo(WorkbasketController.class).withRel("allWorkbaskets"));
+        resource.add(linkTo(methodOn(WorkbasketController.class).removeDistributionTargetForWorkbasketId(wb.getId())).withRel("removeDistributionTargets"));
         return resource;
     }
 }

@@ -242,7 +242,7 @@ public class WorkbasketController extends AbstractPagingController {
 
     @DeleteMapping(path = "/distribution-targets/{workbasketId}")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<Resources<DistributionTargetResource>> setDistributionTargetsForWorkbasketId(
+    public ResponseEntity<Resources<DistributionTargetResource>> removeDistributionTargetForWorkbasketId(
         @PathVariable(value = "workbasketId") String targetWorkbasketId)
         throws WorkbasketNotFoundException, NotAuthorizedException {
         List<WorkbasketSummary> sourceWorkbaskets = workbasketService.getDistributionSources(targetWorkbasketId);

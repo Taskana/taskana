@@ -138,6 +138,11 @@ export class WorkbasketService {
 		Observable<WorkbasketDistributionTargetsResource> {
 		return this.httpClient.put<WorkbasketDistributionTargetsResource>(url, distributionTargetsIds, this.httpOptions);
 	}
+	// DELETE
+	removeDistributionTarget(url: string) {
+		return this.httpClient.delete<string>(url, this.httpOptions);
+	}
+
 
 	// #endregion
 	// #region "Service extras"
