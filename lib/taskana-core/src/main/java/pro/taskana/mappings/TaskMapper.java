@@ -183,9 +183,7 @@ public interface TaskMapper {
         @Param("referencetask") TaskSummaryImpl referencetask);
 
     @Select("<script>SELECT ID, STATE, WORKBASKET_ID FROM TASKANA.TASK "
-        + "<if test=\" taskIds != null and !taskIds.isEmpty() \">"
         + "WHERE ID IN( <foreach item='item' collection='taskIds' separator=',' >#{item}</foreach> ) "
-        + "</if>"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
