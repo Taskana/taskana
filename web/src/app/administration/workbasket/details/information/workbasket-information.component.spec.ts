@@ -45,7 +45,7 @@ const routes: Routes = [
 describe('InformationComponent', () => {
 	let component: WorkbasketInformationComponent;
 	let fixture: ComponentFixture<WorkbasketInformationComponent>;
-	let debugElement, workbasketService, alertService, savingWorkbasketService;
+	let debugElement, workbasketService, alertService, savingWorkbasketService, requestInProgressService;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
@@ -71,6 +71,8 @@ describe('InformationComponent', () => {
 		workbasketService = TestBed.get(WorkbasketService);
 		alertService = TestBed.get(AlertService);
 		savingWorkbasketService = TestBed.get(SavingWorkbasketService);
+		requestInProgressService = TestBed.get(RequestInProgressService);
+
 		spyOn(alertService, 'triggerAlert');
 	}));
 
@@ -175,15 +177,24 @@ describe('InformationComponent', () => {
 			expect(savingWorkbasketService.triggerAccessItemsSaving).toHaveBeenCalled();
 		});
 
+	it('should trigger requestInProgress service true before  and requestInProgress false after remove a workbasket', () => {
+		const workbasket = new Workbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC,
+			'modified', 'name', 'description', 'owner', 'custom1', 'custom2',
+			'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
+			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }, undefined, undefined, undefined, { 'href': 'someUrl' }));
+		component.workbasket = workbasket;
+		spyOn(workbasketService, 'removeDistributionTarget').and.returnValue(Observable.of(''));
+		const requestInProgressServiceSpy = spyOn(requestInProgressService, 'setRequestInProgress');
 
-	// it('should call to workbasket service to remove workbasket after click on remove workbasket', () => {
-	// 	const spy = spyOn(router, 'navigate');
-	// 	component.removeWorkbasket();
-	// 	expect(requestInProgressService.setRequestInProgress).toHaveBeenCalledWith(true);
-	// 	expect(workbasketService.deleteWorkbasket).toHaveBeenCalledWith('selfLink');
-	// 	expect(requestInProgressService.setRequestInProgress).toHaveBeenCalledWith(false);
-	// 	expect(workbasketService.triggerWorkBasketSaved).toHaveBeenCalled();
-	// 	expect(spy.calls.first().args[0][0]).toBe('/workbaskets');
-	// });
+
+		component.removeDistributionTargets();
+		expect(requestInProgressServiceSpy).toHaveBeenCalledWith(true);
+		workbasketService.removeDistributionTarget().subscribe(() => {
+
+		}, error => { }, complete => {
+			expect(requestInProgressServiceSpy).toHaveBeenCalledWith(false);
+		});
+	})
+
 
 });

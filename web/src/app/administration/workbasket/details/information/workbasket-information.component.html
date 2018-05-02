@@ -4,6 +4,9 @@
         <div class="pull-right">
             <button type="button" [disabled]="!WorkbasketForm.form.valid" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
             <button type="button" (click)="onClear()" class="btn btn-default">Undo</button>
+            <button type="button" (click)="removeDistributionTargets()" data-toggle="tooltip" title="remove distribuition target" class="btn btn-default remove">
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+            </button>        
             <button type="button" (click)="copyWorkbasket()" data-toggle="tooltip" title="copy" class="btn btn-default">
                 <span class="glyphicon glyphicon-copy green-blue" aria-hidden="true"></span>
             </button>

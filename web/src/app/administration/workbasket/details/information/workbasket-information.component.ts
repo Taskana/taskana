@@ -119,6 +119,19 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 		this.router.navigate([{ outlets: { detail: ['copy-workbasket'] } }], { relativeTo: this.route.parent });
 	}
 
+	removeDistributionTargets() {
+		this.requestInProgressService.setRequestInProgress(true);
+		this.workbasketService.removeDistributionTarget(this.workbasket._links.removeDistributionTargets.href).subscribe(reponse => {
+			this.requestInProgressService.setRequestInProgress(false);
+			this.alertService.triggerAlert(
+				new AlertModel(AlertType.SUCCESS, `DistributionTarget for workbasketID: ${this.workbasket.workbasketId} was removed successfully`))
+		}, error => {
+			this.errorModalService.triggerError(
+				new ErrorModel(`There was an error removing distribution target for ${this.workbasket.workbasketId}.`, error))
+			this.requestInProgressService.setRequestInProgress(false);
+		});
+	}
+
 
 	private beforeRequest() {
 		this.requestInProgressService.setRequestInProgress(true);
