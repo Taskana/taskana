@@ -22,6 +22,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
   @Input() filterText: string;
 
   private filterTextOld: string
+  private beforeFilteringState: ITreeState;
 
   options: ITreeOptions = {
     displayField: 'name',
@@ -59,7 +60,8 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
     }
     if (this.filterTextOld !== this.filterText) {
       this.filterTextOld = this.filterText;
-      this.filterNodes(this.filterText)
+      this.filterNodes(this.filterText);
+      this.manageTreeState();
     }
   }
 
@@ -102,8 +104,13 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
   private filterNodes(text) {
     this.tree.treeModel.filterNodes((node) => {
       return (node.data.name.toUpperCase().includes(text.toUpperCase())
-           || node.data.key.toUpperCase().includes(text.toUpperCase()));
+        || node.data.key.toUpperCase().includes(text.toUpperCase()));
     });
+  }
+  private manageTreeState() {
+    if (this.filterText === '') {
+      this.tree.treeModel.collapseAll();
+    }
   }
 
 }
