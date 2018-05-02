@@ -311,7 +311,7 @@ function main {
     done
 
     if [[ -n "$SWARM" ]]; then
-        $debug sed -i "s/pro.taskana:taskana-core.*-SNAPSHOT/pro.taskana:taskana-core:$newVersion-SNAPSHOT/" "$SWARM"
+        $debug sed -i "s/pro.taskana:taskana-core.*${TRAVIS_TAG##v}/pro.taskana:taskana-core:$newVersion-SNAPSHOT/" "$SWARM"
     fi
 
     if [[ -n "$MANIFEST" ]]; then
