@@ -7,14 +7,14 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,13 +23,11 @@ import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.Workbasket;
-import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -52,8 +50,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testTransferTaskToWorkbasketId()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
@@ -74,8 +71,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testTransferTaskToWorkbasketKeyDomain()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
@@ -96,8 +92,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testDomainChangingWhenTransferTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -114,8 +109,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testThrowsExceptionIfTransferWithNoTransferAuthorization()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000001");
@@ -128,8 +122,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = InvalidStateException.class)
     public void testThrowsExceptionIfTaskIsAlreadyCompleted()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:100000000000000000000000000000000006");
@@ -142,8 +135,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testThrowsExceptionIfTransferWithNoAppendAuthorization()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         InvalidStateException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000002");
@@ -156,9 +148,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testBulkTransferTaskToWorkbasketById()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException, TaskNotFoundException {
         Instant before = Instant.now();
         TaskService taskService = taskanaEngine.getTaskService();
         ArrayList<String> taskIdList = new ArrayList<>();
@@ -201,29 +191,27 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskIdList.add("TKI:000000000000000000000000000000000006"); // working
         taskIdList.add("TKI:000000000000000000000000000000000041"); // NotAuthorized READ
         taskIdList.add("TKI:200000000000000000000000000000000006"); // NotAuthorized TRANSFER
+        taskIdList.add("");     // InvalidArgument
         taskIdList.add(null);   // InvalidArgument (added with ""), duplicate
         taskIdList.add("TKI:000000000000000000000000000000000099"); // TaskNotFound
         taskIdList.add("TKI:100000000000000000000000000000000006"); // already completed
 
         BulkOperationResults<String, TaskanaException> results = taskService
             .transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
+        // check for exceptions in bulk
         assertTrue(results.containsErrors());
         assertThat(results.getErrorMap().values().size(), equalTo(5));
-        // react to result
-        for (String taskId : results.getErrorMap().keySet()) {
-            TaskanaException ex = results.getErrorForId(taskId);
-            if (ex instanceof NotAuthorizedException) {
-                System.out.println("NotAuthorizedException on bulkTransfer for taskId=" + taskId);
-            } else if (ex instanceof InvalidArgumentException) {
-                System.out.println("InvalidArgumentException on bulkTransfer for EMPTY/NULL taskId='" + taskId + "'");
-            } else if (ex instanceof TaskNotFoundException) {
-                System.out.println("TaskNotFoundException on bulkTransfer for taskId=" + taskId);
-            } else if (ex instanceof InvalidStateException) {
-                System.out.println("InvalidStateException on bulkTransfer for taskId=" + taskId);
-            } else {
-                fail("Impossible failure Entry registered");
-            }
-        }
+        assertEquals(results.getErrorForId("TKI:000000000000000000000000000000000041").getClass(),
+            NotAuthorizedException.class);
+        assertEquals(results.getErrorForId("TKI:200000000000000000000000000000000006").getClass(),
+            InvalidStateException.class);
+        assertEquals(results.getErrorForId("").getClass(), InvalidArgumentException.class);
+        assertEquals(results.getErrorForId("TKI:000000000000000000000000000000000099").getClass(),
+            TaskNotFoundException.class);
+        assertEquals(results.getErrorForId("TKI:100000000000000000000000000000000006").getClass(),
+            InvalidStateException.class);
+
+        // verify valid requests
         Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000006");
         assertNotNull(transferredTask);
         assertTrue(transferredTask.isTransferred());
@@ -264,15 +252,36 @@ public class TransferTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
+    @Test
+    public void testTransferTasksWithInvalidTasksIdList() throws NotAuthorizedException, WorkbasketNotFoundException {
+        TaskService taskService = taskanaEngine.getTaskService();
+        // test with invalid list
+        try {
+            taskService.transferTasks("WBI:100000000000000000000000000000000006", null);
+            Assert.fail("exception was excepted to be thrown");
+        } catch (InvalidArgumentException e) {
+            Assert.assertEquals(e.getMessage(), "TaskIds must not be null.");
+        }
+
+        // test with list containing only invalid arguments
+        try {
+            List<String> taskIds = Arrays.asList("", "", "", null);
+            taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+            Assert.fail("exception was excepted to be thrown");
+        } catch (InvalidArgumentException e) {
+            Assert.assertEquals(e.getMessage(), "TaskIds must not contain only invalid arguments.");
+        }
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
     @Test(expected = InvalidArgumentException.class)
     public void testThrowsExceptionIfEmptyListIsSupplied()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> taskIds = new ArrayList<>();
         taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
-
     }
 
 }
