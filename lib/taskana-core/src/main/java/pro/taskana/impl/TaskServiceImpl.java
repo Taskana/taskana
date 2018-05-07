@@ -527,20 +527,13 @@ public class TaskServiceImpl implements TaskService {
     private BulkOperationResults<String, TaskanaException> transferTasks(List<String> taskIdsToBeTransferred,
         Workbasket destinationWorkbasket) throws InvalidArgumentException {
         // Check pre-conditions with trowing Exceptions
-        if (taskIdsToBeTransferred == null
-            || taskIdsToBeTransferred.isEmpty() || taskIdsToBeTransferred.contains("")) {
-            throw new InvalidArgumentException(
-                "TaskIds must not be null,empty or an empty string.");
+        if (taskIdsToBeTransferred == null) {
+            throw new InvalidArgumentException("TaskIds must not be null.");
         }
         BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
         // convert to ArrayList<String> if necessary to prevent a UnsupportedOperationException while removing
-        ArrayList<String> taskIds;
-        if (!(taskIdsToBeTransferred instanceof ArrayList)) {
-            taskIds = new ArrayList<>(taskIdsToBeTransferred);
-        } else {
-            taskIds = (ArrayList<String>) taskIdsToBeTransferred;
-        }
+        List<String> taskIds = new ArrayList<>(taskIdsToBeTransferred);
 
         // check tasks Ids exist and not empty - log and remove
         Iterator<String> taskIdIterator = taskIds.iterator();
@@ -551,6 +544,11 @@ public class TaskServiceImpl implements TaskService {
                     new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
                 taskIdIterator.remove();
             }
+        }
+
+        // Check pre-conditions with trowing Exceptions after removing invalid invalid arguments.
+        if (taskIds.isEmpty()) {
+            throw new InvalidArgumentException("TaskIds must not contain only invalid arguments.");
         }
 
         // query for existing tasks. use taskMapper.findExistingTasks because this method
