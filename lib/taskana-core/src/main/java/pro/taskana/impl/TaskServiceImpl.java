@@ -550,17 +550,26 @@ public class TaskServiceImpl implements TaskService {
 
         // query for existing tasks. use taskMapper.findExistingTasks because this method
         // returns only the required information.
-        List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds);
-
+        List<MinimalTaskSummary> taskSummaries;
+        if (taskIds.isEmpty()) {
+            taskSummaries = new ArrayList<>();
+        } else {
+            taskSummaries = taskMapper.findExistingTasks(taskIds);
+        }
         // check source WB (read)+transfer
         Set<String> workbasketIds = new HashSet<>();
         taskSummaries.stream().forEach(t -> workbasketIds.add(t.getWorkbasketId()));
         WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
         query.setUsedToAugmentTasks(true);
-        List<WorkbasketSummary> sourceWorkbaskets = query
-            .callerHasPermission(WorkbasketPermission.TRANSFER)
-            .idIn(workbasketIds.toArray(new String[0]))
-            .list();
+        List<WorkbasketSummary> sourceWorkbaskets;
+        if (taskSummaries.isEmpty()) {
+            sourceWorkbaskets = new ArrayList<>();
+        } else {
+            sourceWorkbaskets = query
+                .callerHasPermission(WorkbasketPermission.TRANSFER)
+                .idIn(workbasketIds.toArray(new String[0]))
+                .list();
+        }
         taskIdIterator = taskIds.iterator();
         while (taskIdIterator.hasNext()) {
             String currentTaskId = taskIdIterator.next();
