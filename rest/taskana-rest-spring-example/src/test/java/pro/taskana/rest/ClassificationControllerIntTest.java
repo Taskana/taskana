@@ -60,13 +60,28 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
+    public void testGetAllClassificationsFilterByCustomAttribute() {
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&custom-1-like=RVNR", HttpMethod.GET,
+            request,
+            new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
+            });
+        assertNotNull(response.getBody().getLink(Link.REL_SELF));
+        assertEquals(13, response.getBody().getContent().size());
+    }
+
+    @Test
     public void testGetAllClassificationsKeepingFilters() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&sortBy=key&order=asc", HttpMethod.GET,
+            "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
             });
@@ -74,7 +89,7 @@ public class ClassificationControllerIntTest {
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/classifications?domain=DOMAIN_A&sortBy=key&order=asc"));
+            .endsWith("/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc"));
         assertEquals(17, response.getBody().getContent().size());
         assertEquals("A12", response.getBody().getContent().iterator().next().key);
     }
@@ -86,7 +101,7 @@ public class ClassificationControllerIntTest {
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&sortBy=key&order=asc&page=2&pagesize=5",
+            "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5",
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
@@ -97,7 +112,7 @@ public class ClassificationControllerIntTest {
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/classifications?domain=DOMAIN_A&sortBy=key&order=asc&page=2&pagesize=5"));
+            .endsWith("/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5"));
         assertNotNull(response.getBody().getLink("allClassifications"));
         assertTrue(response.getBody()
             .getLink("allClassifications")
@@ -112,7 +127,6 @@ public class ClassificationControllerIntTest {
     @Test
     public void testCreateClassification() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
-        // {"classificationId": "","key": "aaaaa","parentId": "","category": "EXTERN","type": "TASK","domain": ""
         URL url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
