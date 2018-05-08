@@ -19,14 +19,14 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
-import pro.taskana.rest.RestConfiguration;
+import pro.taskana.rest.TestConfiguration;
 import pro.taskana.rest.resource.ClassificationResource;
 
 /**
  * Test for {@link ClassificationResourceAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {RestConfiguration.class})
+@ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
 public class ClassificationMapperTest {
 

@@ -12,14 +12,14 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.rest.RestConfiguration;
+import pro.taskana.rest.TestConfiguration;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
 /**
  * Test for {@link WorkbasketAccessItemMapper}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {RestConfiguration.class})
+@ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
 public class WorkbasketAccessItemMapperTest {
 
