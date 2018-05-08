@@ -63,9 +63,6 @@ public class ClassificationResourceAssembler {
         resource.add(
             linkTo(methodOn(ClassificationController.class).getClassification(classification.getId()))
                 .withSelfRel());
-        resource.add(
-            linkTo(methodOn(ClassificationController.class).getClassifications(null, null, null, null, null, null, null,
-                null, null, null)).withRel("getAllClassifications"));
         return resource;
     }
 }
