@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.BaseQuery.SortDirection;
+import pro.taskana.KeyDomain;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
@@ -63,7 +64,9 @@ public class TaskController extends AbstractPagingController {
     private static final String PRIORITY = "priority";
     private static final String NAME = "name";
     private static final String OWNER = "owner";
-    private static final String WORKBASKET_ID = "workbasketId";
+    private static final String DOMAIN = "domain";
+    private static final String WORKBASKET_ID = "workbasket-id";
+    private static final String WORKBASKET_KEY = "workbasket-key";
     private static final String CLASSIFICATION_KEY = "classification.key";
     private static final String POR_VALUE = "por.value";
     private static final String POR_TYPE = "por.type";
@@ -237,6 +240,23 @@ public class TaskController extends AbstractPagingController {
             String[] workbaskets = extractCommaSeparatedFields(params.get(WORKBASKET_ID));
             taskQuery.workbasketIdIn(workbaskets);
             params.remove(WORKBASKET_ID);
+        }
+        if (params.containsKey(WORKBASKET_KEY)) {
+            String[] domains = null;
+            if (params.get(DOMAIN) != null) {
+                domains = extractCommaSeparatedFields(params.get(DOMAIN));
+            }
+            if (domains == null || domains.length != 1) {
+                throw new InvalidArgumentException("workbasket-key requires excactly one domain as second parameter.");
+            }
+            String[] workbasketKeys = extractCommaSeparatedFields(params.get(WORKBASKET_KEY));
+            KeyDomain[] keyDomains = new KeyDomain[workbasketKeys.length];
+            for (int i = 0; i < workbasketKeys.length; i++) {
+                keyDomains[i] = new KeyDomain(workbasketKeys[i], domains[0]);
+            }
+            taskQuery.workbasketKeyDomainIn(keyDomains);
+            params.remove(WORKBASKET_KEY);
+            params.remove(DOMAIN);
         }
         if (params.containsKey(OWNER)) {
             String[] owners = extractCommaSeparatedFields(params.get(OWNER));

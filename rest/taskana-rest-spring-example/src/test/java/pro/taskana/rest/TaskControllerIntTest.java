@@ -65,6 +65,54 @@ public class TaskControllerIntTest {
     }
 
     @Test
+    public void testGetAllTasksByWorkbasketId() {
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/tasks?workbasket-id=WBI:100000000000000000000000000000000007",
+            HttpMethod.GET, request,
+            new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+            });
+        assertNotNull(response.getBody().getLink(Link.REL_SELF));
+        assertEquals(20, response.getBody().getContent().size());
+    }
+
+    @Test
+    public void testGetAllTasksByWorkbasketKeyAndDomain() {
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/tasks?workbasket-key=USER_1_2&domain=DOMAIN_A",
+            HttpMethod.GET, request,
+            new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+            });
+        assertNotNull(response.getBody().getLink(Link.REL_SELF));
+        assertEquals(20, response.getBody().getContent().size());
+    }
+
+    @Test
+    public void testExceptionIfKeyIsSetButDomainIsMissing() {
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        try {
+            ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
+                "http://127.0.0.1:" + port + "/v1/tasks?workbasket-key=USER_1_2",
+                HttpMethod.GET, request,
+                new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+                });
+            fail();
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
+    }
+
+    @Test
     public void testGetAllTasksWithAdminRole() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
