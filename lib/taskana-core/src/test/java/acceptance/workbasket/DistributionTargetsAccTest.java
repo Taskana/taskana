@@ -197,6 +197,32 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_2_2",
+        groupNames = {"businessadmin"})
+    @Test
+    public void testAddAndRemoveDistributionTargetsOnWorkbasketWithoutReadPermission()
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        Workbasket workbasket = workbasketService.getWorkbasket("GPK_B_KSC_2", "DOMAIN_B");
+
+        List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
+        assertEquals(0, distributionTargets.size());
+
+        // add a new distribution target
+        Workbasket newTarget = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
+        workbasketService.addDistributionTarget(workbasket.getId(), newTarget.getId());
+
+        distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
+        assertEquals(1, distributionTargets.size());
+
+        // remove the new target
+        workbasketService.removeDistributionTarget(workbasket.getId(), newTarget.getId());
+        distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
+        assertEquals(0, distributionTargets.size());
+
+    }
+
+    @WithAccessId(
+        userName = "user_2_2",
         groupNames = {"group_1", "group_2"})
     @Test(expected = NotAuthorizedException.class)
     public void testAddDistributionTargetsFailsNotAuthorized()
