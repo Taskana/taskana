@@ -721,9 +721,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
             // check existence of source workbasket
             WorkbasketImpl sourceWorkbasket = (WorkbasketImpl) getWorkbasket(sourceWorkbasketId);
-            // check esistence of target workbasket
+            // check existence of target workbasket
             getWorkbasket(targetWorkbasketId);
-            checkAuthorization(sourceWorkbasketId, WorkbasketPermission.READ);
             // check whether the target is already set as target
             int numOfDistTargets = distributionTargetMapper.getNumberOfDistributionTargets(sourceWorkbasketId,
                 targetWorkbasketId);
