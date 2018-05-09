@@ -15,5 +15,7 @@
         <modules>
                 <module>taskana-rest-spring</module>
                 <module>taskana-rest-spring-example</module>
+                <module>taskana-rest-spring1.5.12-for-wildfly</module>
+                <module>taskana-rest-spring1.5.12-example-for-wildfly</module>
         </modules>
 </project>
