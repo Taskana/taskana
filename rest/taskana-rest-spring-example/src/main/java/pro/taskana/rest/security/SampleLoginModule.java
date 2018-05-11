@@ -10,19 +10,21 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pro.taskana.security.GroupPrincipal;
 import pro.taskana.security.UserPrincipal;
 
 /**
  * TODO.
  */
-public class SampleLoginModule implements LoginModule {
+public class SampleLoginModule extends UsernamePasswordAuthenticationFilter implements LoginModule {
 
     private NameCallback nameCallback;
 
     private PasswordCallback passwordCallback;
 
     private Subject subject;
+
 
     @Override
     public boolean abort() throws LoginException {

@@ -2,9 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { RolesGuard } from 'app/guards/roles-guard';
 
 const appRoutes: Routes = [
     {
+        canActivate: [RolesGuard],
         path: 'administration',
         loadChildren: './administration/administration.module#AdministrationModule',
     },

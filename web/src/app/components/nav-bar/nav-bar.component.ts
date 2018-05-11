@@ -4,7 +4,8 @@ import { SelectedRouteService } from 'app/services/selected-route/selected-route
 import { Subscription } from 'rxjs/Subscription';
 import { trigger, state, style, transition, keyframes, animate } from '@angular/animations';
 import { DomainService } from 'app/services/domain/domain.service';
-
+import { RolesGuard } from 'app/guards/roles-guard';
+import { WindowRefService } from 'app/services/window/window.service';
 @Component({
   selector: 'taskana-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -38,11 +39,15 @@ export class NavBarComponent implements OnInit, OnDestroy {
   monitorUrl = './monitor';
   workplaceUrl = './workplace';
 
+  administrationAccess = false;
+
   selectedRouteSubscription: Subscription;
 
   constructor(
     private selectedRouteService: SelectedRouteService,
-    private domainService: DomainService) { }
+    private domainService: DomainService,
+    private roleGuard: RolesGuard,
+    private window: WindowRefService) { }
 
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
@@ -56,6 +61,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.domainService.getSelectedDomain().subscribe(domain => {
       this.selectedDomain = domain;
     });
+
+    this.roleGuard.canActivate().subscribe(hasAccess => {
+      this.administrationAccess = hasAccess
+    });
   }
 
   switchDomain(domain) {
@@ -65,6 +74,12 @@ export class NavBarComponent implements OnInit, OnDestroy {
   toogleNavBar() {
     this.showNavbar = !this.showNavbar;
   }
+
+
+  logout() {
+    this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login?logout';
+  }
+
   private setTitle(value: string = 'workbaskets') {
     if (value.indexOf('workbaskets') === 0 || value.indexOf('classifications') === 0) {
       this.title = this.titleAdministration;

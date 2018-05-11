@@ -19,8 +19,6 @@ import { SharedModule } from 'app/shared/shared.module';
  * Services
  */
 
-import { HttpClientInterceptor } from 'app/services/httpClientInterceptor/http-client-interceptor.service';
-import { PermissionService } from 'app/services/permission/permission.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
@@ -32,19 +30,21 @@ import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-
 import { TreeService } from 'app/services/tree/tree.service';
 import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
-
+import { WindowRefService } from 'app/services/window/window.service';
+import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 
 /**
  * Components
  */
 import { AppComponent } from './app.component';
 import { NavBarComponent } from 'app/components/nav-bar/nav-bar.component';
-
+import { UserInformationComponent } from 'app/components/user-information/user-information.component';
 
 /**
  * Guards
  */
 import { DomainGuard } from './guards/domain-guard';
+import { RolesGuard } from './guards/roles-guard';
 import { APP_BASE_HREF } from '@angular/common';
 
 
@@ -64,29 +64,30 @@ const MODULES = [
 
 const DECLARATIONS = [
   AppComponent,
-  NavBarComponent
+  NavBarComponent,
+  UserInformationComponent
 ];
 
-export function startupServiceFactory(startupService: StartupService): Function {
-  return () => startupService.load();
+export function startupServiceFactory(startupService: StartupService): () => Promise<any> {
+  return (): Promise<any> => {
+    return startupService.load();
+  };
 }
+
 
 @NgModule({
   declarations: DECLARATIONS,
   imports: MODULES,
   providers: [
+    WindowRefService,
     { provide: APP_BASE_HREF, useValue: '/' },
     DomainService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpClientInterceptor,
-      multi: true
-    },
     ErrorModalService,
     RequestInProgressService,
     OrientationService,
     SelectedRouteService,
     DomainGuard,
+    RolesGuard,
     StartupService,
     {
       provide: APP_INITIALIZER,
@@ -95,11 +96,11 @@ export function startupServiceFactory(startupService: StartupService): Function 
       multi: true
     },
     AlertService,
-    PermissionService,
     MasterAndDetailService,
     TreeService,
     TitlesService,
-    CustomFieldsService
+    CustomFieldsService,
+    TaskanaEngineService
   ],
   bootstrap: [AppComponent]
 })

@@ -20,7 +20,6 @@ import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 
 import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { PermissionService } from 'app/services/permission/permission.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 
@@ -79,7 +78,7 @@ describe('WorkbasketDetailsComponent', () => {
 			declarations: [WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent,
 				IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
 				DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent, SelectWorkBasketPipe],
-			providers: [WorkbasketService, MasterAndDetailService, PermissionService, ErrorModalService, RequestInProgressService,
+			providers: [WorkbasketService, MasterAndDetailService, ErrorModalService, RequestInProgressService,
 				AlertService, SavingWorkbasketService, {
 					provide: DomainService,
 					useClass: DomainServiceMock
@@ -92,7 +91,6 @@ describe('WorkbasketDetailsComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(WorkbasketDetailsComponent);
 		component = fixture.componentInstance;
-		component.hasPermission = false;
 		debugElement = fixture.debugElement.nativeElement;
 		router = TestBed.get(Router)
 		fixture.detectChanges();
@@ -129,16 +127,10 @@ describe('WorkbasketDetailsComponent', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('should has created taskana-no-access if workbasket is not defined and hasPermission is false', () => {
-		expect(component.workbasket).toBeUndefined();
-		component.hasPermission = false;
-		fixture.detectChanges();
-		expect(debugElement.querySelector('taskana-no-access')).toBeTruthy();
-	});
+
 
 	it('should has created taskana-workbasket-details if workbasket is defined and taskana-no-access should dissapear', () => {
 		expect(component.workbasket).toBeUndefined();
-		component.hasPermission = false;
 		fixture.detectChanges();
 		expect(debugElement.querySelector('taskana-no-access')).toBeTruthy();
 

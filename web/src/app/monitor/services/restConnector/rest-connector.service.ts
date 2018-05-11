@@ -7,29 +7,22 @@ import { WorkbasketCounter } from 'app/monitor/models/workbasket-counter';
 
 @Injectable()
 export class RestConnectorService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/hal+json',
-      'Authorization': 'Basic VEVBTUxFQURfMTpURUFNTEVBRF8x'
-    })
-  };
+
   constructor(private httpClient: HttpClient) {
   }
 
   getTaskStatistics(): Observable<State[]> {
-    return this.httpClient.get<Array<State>>(environment.taskanaRestUrl + '/v1/monitor/countByState?states=READY,CLAIMED,COMPLETED',
-      this.httpOptions)
+    return this.httpClient.get<Array<State>>(environment.taskanaRestUrl + '/v1/monitor/countByState?states=READY,CLAIMED,COMPLETED')
   }
 
 
   getWorkbasketStatistics(): Observable<WorkbasketCounter> {
     return this.httpClient.get<WorkbasketCounter>(environment.taskanaRestUrl
-      + '/v1/monitor/taskcountByWorkbasketDaysAndState?daysInPast=5&states=READY,CLAIMED,COMPLETED',
-      this.httpOptions)
+      + '/v1/monitor/taskcountByWorkbasketDaysAndState?daysInPast=5&states=READY,CLAIMED,COMPLETED')
   }
 
   getTaskStatusReport(): Observable<Object> {
-    return this.httpClient.get(environment.taskanaRestUrl + '/v1/monitor/taskStatusReport', this.httpOptions)
+    return this.httpClient.get(environment.taskanaRestUrl + '/v1/monitor/taskStatusReport')
   }
 
 }
