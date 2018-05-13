@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,15 +16,15 @@ import pro.taskana.rest.TestConfiguration;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
 /**
- * Test for {@link WorkbasketAccessItemMapper}.
+ * Test for {@link WorkbasketAccessItemAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class WorkbasketAccessItemMapperTest {
+public class WorkbasketAccessItemAssemblerTest {
 
     @Autowired
-    WorkbasketAccessItemMapper workbasketAccessItemMapper;
+    WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
     @Autowired
     WorkbasketService workbasketService;
 
@@ -51,7 +51,7 @@ public class WorkbasketAccessItemMapperTest {
         accessItem.setPermCustom11(true);
         accessItem.setPermCustom12(true);
         // when
-        WorkbasketAccessItemResource resource = workbasketAccessItemMapper.toResource(
+        WorkbasketAccessItemResource resource = workbasketAccessItemAssembler.toResource(
             accessItem);
         // then
         testEquality(accessItem, resource);
@@ -82,7 +82,7 @@ public class WorkbasketAccessItemMapperTest {
         resource.setPermCustom11(true);
         resource.setPermCustom12(false);
         // when
-        WorkbasketAccessItem accessItem = workbasketAccessItemMapper.toModel(resource);
+        WorkbasketAccessItem accessItem = workbasketAccessItemAssembler.toModel(resource);
         // then
         testEquality(accessItem, resource);
     }

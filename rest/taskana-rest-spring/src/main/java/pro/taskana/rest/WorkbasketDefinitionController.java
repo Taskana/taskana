@@ -26,9 +26,9 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 import pro.taskana.rest.resource.WorkbasketDefinition;
 import pro.taskana.rest.resource.WorkbasketResource;
-import pro.taskana.rest.resource.mapper.WorkbasketAccessItemMapper;
-import pro.taskana.rest.resource.mapper.WorkbasketDefinitionMapper;
-import pro.taskana.rest.resource.mapper.WorkbasketMapper;
+import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
+import pro.taskana.rest.resource.assembler.WorkbasketDefinitionAssembler;
+import pro.taskana.rest.resource.assembler.WorkbasketAssembler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,13 +47,13 @@ public class WorkbasketDefinitionController {
     private WorkbasketService workbasketService;
 
     @Autowired
-    private WorkbasketDefinitionMapper workbasketDefinitionMapper;
+    private WorkbasketDefinitionAssembler workbasketDefinitionAssembler;
 
     @Autowired
-    private WorkbasketMapper workbasketMapper;
+    private WorkbasketAssembler workbasketAssembler;
 
     @Autowired
-    private WorkbasketAccessItemMapper workbasketAccessItemMapper;
+    private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -66,7 +66,7 @@ public class WorkbasketDefinitionController {
             List<WorkbasketDefinition> basketExports = new ArrayList<>();
             for (WorkbasketSummary summary : workbasketSummaryList) {
                 Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
-                basketExports.add(workbasketDefinitionMapper.toResource(workbasket));
+                basketExports.add(workbasketDefinitionAssembler.toResource(workbasket));
             }
             return new ResponseEntity<>(basketExports, HttpStatus.OK);
         } catch (WorkbasketNotFoundException e) {
@@ -110,11 +110,11 @@ public class WorkbasketDefinitionController {
                 if (systemIds.containsKey(logicalId(res))) {
                     res.workbasketId = systemIds.get(logicalId(res));
                     workbasket = workbasketService.updateWorkbasket(
-                        workbasketMapper.toModel(res));
+                        workbasketAssembler.toModel(res));
                 } else {
                     res.workbasketId = null;
                     workbasket = workbasketService.createWorkbasket(
-                        workbasketMapper.toModel(res));
+                        workbasketAssembler.toModel(res));
                 }
                 res.workbasketId = oldId;
 
@@ -125,7 +125,7 @@ public class WorkbasketDefinitionController {
                 }
                 for (WorkbasketAccessItemResource authorization : definition.authorizations) {
                     workbasketService.createWorkbasketAccessItem(
-                        workbasketAccessItemMapper.toModel(authorization));
+                        workbasketAccessItemAssembler.toModel(authorization));
                 }
                 idConversion.put(definition.workbasketResource.workbasketId, workbasket.getId());
             }

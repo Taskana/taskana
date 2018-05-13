@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -27,16 +27,16 @@ import pro.taskana.rest.resource.WorkbasketDefinition;
  * containing all additional information about that workbasket.
  */
 @Component
-public class WorkbasketDefinitionMapper {
+public class WorkbasketDefinitionAssembler {
 
     @Autowired
     private WorkbasketService workbasketService;
 
     @Autowired
-    private WorkbasketMapper workbasketMapper;
+    private WorkbasketAssembler workbasketAssembler;
 
     @Autowired
-    private WorkbasketAccessItemMapper workbasketAccessItemMapper;
+    private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
 
     /**
      * maps the distro targets to their id to remove overhead.
@@ -54,13 +54,13 @@ public class WorkbasketDefinitionMapper {
         throws NotAuthorizedException, WorkbasketNotFoundException {
         List<WorkbasketAccessItemResource> authorizations = new ArrayList<>();
         for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(basket.getKey())) {
-            authorizations.add(workbasketAccessItemMapper.toResource(accessItem));
+            authorizations.add(workbasketAccessItemAssembler.toResource(accessItem));
         }
         Set<String> distroTargets = workbasketService.getDistributionTargets(basket.getId())
             .stream()
             .map(WorkbasketSummary::getId)
             .collect(Collectors.toSet());
-        WorkbasketDefinition resource = new WorkbasketDefinition(workbasketMapper.toResource(basket), distroTargets,
+        WorkbasketDefinition resource = new WorkbasketDefinition(workbasketAssembler.toResource(basket), distroTargets,
             authorizations);
         return addLinks(resource, basket);
     }

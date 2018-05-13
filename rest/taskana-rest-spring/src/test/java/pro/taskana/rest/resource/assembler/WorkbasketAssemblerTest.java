@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import java.time.Instant;
 
@@ -20,17 +20,17 @@ import pro.taskana.rest.TestConfiguration;
 import pro.taskana.rest.resource.WorkbasketResource;
 
 /**
- * Test for {@link WorkbasketMapper}.
+ * Test for {@link WorkbasketAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class WorkbasketMapperTest {
+public class WorkbasketAssemblerTest {
 
     @Autowired
     WorkbasketService workbasketService;
     @Autowired
-    WorkbasketMapper workbasketMapper;
+    WorkbasketAssembler workbasketAssembler;
 
     @Test
     public void workbasketToResource() throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -52,7 +52,7 @@ public class WorkbasketMapperTest {
         ((WorkbasketImpl) workbasket).setCreated(Instant.parse("2010-01-01T12:00:00Z"));
         ((WorkbasketImpl) workbasket).setModified(Instant.parse("2010-01-01T12:00:00Z"));
         // when
-        WorkbasketResource workbasketResource = workbasketMapper.toResource(workbasket);
+        WorkbasketResource workbasketResource = workbasketAssembler.toResource(workbasket);
         // then
         testEquality(workbasket, workbasketResource);
     }
@@ -79,7 +79,7 @@ public class WorkbasketMapperTest {
         workbasketResource.setOwner("Lars");
         workbasketResource.setType(WorkbasketType.PERSONAL);
         // when
-        Workbasket workbasket = workbasketMapper.toModel(workbasketResource);
+        Workbasket workbasket = workbasketAssembler.toModel(workbasketResource);
         // then
         testEquality(workbasket, workbasketResource);
     }

@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -10,17 +10,17 @@ import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.WorkbasketController;
-import pro.taskana.rest.resource.WorkbasketSummaryResource;
+import pro.taskana.rest.resource.DistributionTargetResource;
 
 /**
- * Transforms {@link WorkbasketSummary} to its resource counterpart {@link WorkbasketSummaryResource} and vice versa.
+ * Transforms WorkbasketSummary to its resource counterpart DistributionTargerResource and vice versa.
  */
 @Component
-public class WorkbasketSummaryMapper {
+public class DistributionTargetAssembler {
 
-    public WorkbasketSummaryResource toResource(WorkbasketSummary summary)
+    public DistributionTargetResource toResource(WorkbasketSummary summary)
         throws WorkbasketNotFoundException, NotAuthorizedException {
-        WorkbasketSummaryResource resource = new WorkbasketSummaryResource();
+        DistributionTargetResource resource = new DistributionTargetResource();
         BeanUtils.copyProperties(summary, resource);
         // named different so needs to be set by hand
         resource.setWorkbasketId(summary.getId());
@@ -28,7 +28,7 @@ public class WorkbasketSummaryMapper {
         return addLinks(resource, summary);
     }
 
-    private WorkbasketSummaryResource addLinks(WorkbasketSummaryResource resource, WorkbasketSummary summary)
+    private DistributionTargetResource addLinks(DistributionTargetResource resource, WorkbasketSummary summary)
         throws WorkbasketNotFoundException, NotAuthorizedException {
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(summary.getId())).withSelfRel());
         return resource;

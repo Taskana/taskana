@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -21,16 +21,16 @@ import pro.taskana.rest.resource.DistributionTargetResource;
  * Mapper to convert from a list of WorkbasketSummary to a workbasket list resource.
  */
 @Component
-public class DistributionTargetListMapper {
+public class DistributionTargetListAssembler {
 
     @Autowired
-    private DistributionTargetMapper distributionTargetMapper;
+    private DistributionTargetAssembler distributionTargetAssembler;
 
     public Resources<DistributionTargetResource> toResource(String workbasketId,
         Collection<WorkbasketSummary> distributionTargets) throws WorkbasketNotFoundException, NotAuthorizedException {
         List<DistributionTargetResource> resourceList = new ArrayList<>();
         for (WorkbasketSummary wb : distributionTargets) {
-            resourceList.add(distributionTargetMapper.toResource(wb));
+            resourceList.add(distributionTargetAssembler.toResource(wb));
         }
         Resources<DistributionTargetResource> distributionTargetListResource = new Resources<>(resourceList);
 

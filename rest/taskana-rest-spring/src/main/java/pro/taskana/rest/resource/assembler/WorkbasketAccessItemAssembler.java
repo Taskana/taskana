@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -20,7 +20,7 @@ import pro.taskana.rest.resource.WorkbasketAccessItemResource;
  * versa.
  */
 @Component
-public class WorkbasketAccessItemMapper {
+public class WorkbasketAccessItemAssembler {
 
     @Autowired
     private WorkbasketService workbasketService;

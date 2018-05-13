@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -25,7 +25,7 @@ import pro.taskana.rest.resource.ReportResource;
  * Transforms any {@link Report} into its {@link ReportResource}.
  */
 @Component
-public class ReportMapper {
+public class ReportAssembler {
 
     public ReportResource toResource(TaskStatusReport report, List<String> domains, List<TaskState> states)
         throws NotAuthorizedException {
