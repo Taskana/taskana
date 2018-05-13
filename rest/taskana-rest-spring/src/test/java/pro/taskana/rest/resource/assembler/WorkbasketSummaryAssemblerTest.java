@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,15 +17,15 @@ import pro.taskana.rest.TestConfiguration;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 
 /**
- * Test for {@link WorkbasketSummaryMapper}.
+ * Test for {@link WorkbasketSummaryAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class WorkbasketSummaryMapperTest {
+public class WorkbasketSummaryAssemblerTest {
 
     @Autowired
-    WorkbasketSummaryMapper workbasketSummaryMapper;
+    WorkbasketSummaryAssembler workbasketSummaryAssembler;
     @Autowired
     WorkbasketService workbasketService;
 
@@ -44,7 +44,7 @@ public class WorkbasketSummaryMapperTest {
         workbasketSummary.setOwner("Lars");
         workbasketSummary.setType(WorkbasketType.PERSONAL);
         // when
-        WorkbasketSummaryResource workbasketSummaryResource = workbasketSummaryMapper.toResource(workbasketSummary);
+        WorkbasketSummaryResource workbasketSummaryResource = workbasketSummaryAssembler.toResource(workbasketSummary);
         // then
         Assert.assertEquals(workbasketSummary.getDescription(), workbasketSummaryResource.description);
         Assert.assertEquals(workbasketSummary.getDomain(), workbasketSummaryResource.domain);

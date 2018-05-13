@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import java.time.Instant;
 
@@ -28,10 +28,10 @@ import pro.taskana.rest.resource.ClassificationResource;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class ClassificationMapperTest {
+public class ClassificationAssemblerTest {
 
     @Autowired
-    private ClassificationResourceAssembler classificationMapper;
+    private ClassificationResourceAssembler classificationResourceAssembler;
 
     @Autowired
     private ClassificationService classificationService;
@@ -62,7 +62,7 @@ public class ClassificationMapperTest {
         classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
         classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
         // when
-        ClassificationResource classificationResource = classificationMapper.toResource(classification);
+        ClassificationResource classificationResource = classificationResourceAssembler.toResource(classification);
         // then
         testEquality(classification, classificationResource);
     }
@@ -95,7 +95,7 @@ public class ClassificationMapperTest {
         classificationResource.setServiceLevel("P1D");
         classificationResource.setDescription("Test");
         // when
-        ClassificationImpl classification = (ClassificationImpl) classificationMapper.toModel(classificationResource);
+        ClassificationImpl classification = (ClassificationImpl) classificationResourceAssembler.toModel(classificationResource);
         // then
         testEquality(classification, classificationResource);
     }

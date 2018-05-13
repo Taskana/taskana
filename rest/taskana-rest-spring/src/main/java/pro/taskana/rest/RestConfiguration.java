@@ -73,7 +73,7 @@ public class RestConfiguration {
         return b;
     }
 
-    //Needed for injection into jackson deserilizer.
+    //Needed for injection into jackson deserializer.
     @Bean
     public HandlerInstantiator handlerInstantiator(ApplicationContext context) {
         return new SpringHandlerInstantiator(context.getAutowireCapableBeanFactory());

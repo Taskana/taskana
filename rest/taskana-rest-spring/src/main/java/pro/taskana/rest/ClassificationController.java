@@ -35,8 +35,8 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
-import pro.taskana.rest.resource.mapper.ClassificationResourceAssembler;
-import pro.taskana.rest.resource.mapper.ClassificationSummaryResourcesAssembler;
+import pro.taskana.rest.resource.assembler.ClassificationResourceAssembler;
+import pro.taskana.rest.resource.assembler.ClassificationSummaryResourcesAssembler;
 
 /**
  * Controller for all {@link Classification} related endpoints.
