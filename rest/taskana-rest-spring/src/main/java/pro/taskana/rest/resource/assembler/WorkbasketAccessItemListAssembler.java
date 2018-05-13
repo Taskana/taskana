@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -21,16 +21,16 @@ import pro.taskana.rest.resource.WorkbasketAccessItemResource;
  * Mapper to convert from a list of WorkbasketAccessItem to a WorkbasketAccessItemResource.
  */
 @Component
-public class WorkbasketAccessItemListMapper {
+public class WorkbasketAccessItemListAssembler {
 
     @Autowired
-    private WorkbasketAccessItemMapper workbasketAccessItemMapper;
+    private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
 
     public Resources<WorkbasketAccessItemResource> toResource(String workbasketId,
         Collection<WorkbasketAccessItem> accessItems) throws NotAuthorizedException, WorkbasketNotFoundException {
         List<WorkbasketAccessItemResource> resourceList = new ArrayList<>();
         for (WorkbasketAccessItem accessItem : accessItems) {
-            resourceList.add(workbasketAccessItemMapper.toResource(accessItem));
+            resourceList.add(workbasketAccessItemAssembler.toResource(accessItem));
         }
 
         Resources<WorkbasketAccessItemResource> accessItemListResource = new Resources<>(resourceList);

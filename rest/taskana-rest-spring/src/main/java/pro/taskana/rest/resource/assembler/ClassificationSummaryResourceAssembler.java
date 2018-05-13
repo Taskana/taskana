@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource.mapper;
+package pro.taskana.rest.resource.assembler;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

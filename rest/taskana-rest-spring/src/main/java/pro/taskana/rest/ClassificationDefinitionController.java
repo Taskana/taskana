@@ -23,7 +23,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
-import pro.taskana.rest.resource.mapper.ClassificationResourceAssembler;
+import pro.taskana.rest.resource.assembler.ClassificationResourceAssembler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class ClassificationDefinitionController {
     private ClassificationService classificationService;
 
     @Autowired
-    private ClassificationResourceAssembler classificationMapper;
+    private ClassificationResourceAssembler classificationResourceAssembler;
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -55,7 +55,7 @@ public class ClassificationDefinitionController {
         for (ClassificationSummary summary : summaries) {
             Classification classification = classificationService.getClassification(summary.getKey(),
                 summary.getDomain());
-            export.add(classificationMapper.toResource(classification));
+            export.add(classificationResourceAssembler.toResource(classification));
         }
         return new ResponseEntity<>(export, HttpStatus.OK);
     }
@@ -72,11 +72,11 @@ public class ClassificationDefinitionController {
         try {
             for (ClassificationResource classificationResource : classificationResources) {
                 if (systemIds.containsKey(classificationResource.key + "|" + classificationResource.domain)) {
-                    classificationService.updateClassification(classificationMapper.toModel(classificationResource));
+                    classificationService.updateClassification(classificationResourceAssembler.toModel(classificationResource));
 
                 } else {
                     classificationResource.classificationId = null;
-                    classificationService.createClassification(classificationMapper.toModel(classificationResource));
+                    classificationService.createClassification(classificationResourceAssembler.toModel(classificationResource));
                 }
             }
         } catch (NotAuthorizedException e) {
