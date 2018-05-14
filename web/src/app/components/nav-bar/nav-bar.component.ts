@@ -4,7 +4,8 @@ import { SelectedRouteService } from 'app/services/selected-route/selected-route
 import { Subscription } from 'rxjs/Subscription';
 import { trigger, state, style, transition, keyframes, animate } from '@angular/animations';
 import { DomainService } from 'app/services/domain/domain.service';
-import { RolesGuard } from 'app/guards/roles-guard';
+import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
+import { MonitorGuard } from 'app/guards/monitor-guard';
 import { WindowRefService } from 'app/services/window/window.service';
 @Component({
   selector: 'taskana-nav-bar',
@@ -40,13 +41,15 @@ export class NavBarComponent implements OnInit, OnDestroy {
   workplaceUrl = './workplace';
 
   administrationAccess = false;
+  monitorAccess = false;
 
   selectedRouteSubscription: Subscription;
 
   constructor(
     private selectedRouteService: SelectedRouteService,
     private domainService: DomainService,
-    private roleGuard: RolesGuard,
+    private businessAdminGuard: BusinessAdminGuard,
+    private monitorGuard: MonitorGuard,
     private window: WindowRefService) { }
 
   ngOnInit() {
@@ -62,8 +65,11 @@ export class NavBarComponent implements OnInit, OnDestroy {
       this.selectedDomain = domain;
     });
 
-    this.roleGuard.canActivate().subscribe(hasAccess => {
+    this.businessAdminGuard.canActivate().subscribe(hasAccess => {
       this.administrationAccess = hasAccess
+    });
+    this.monitorGuard.canActivate().subscribe(hasAccess => {
+      this.monitorAccess = hasAccess
     });
   }
 

@@ -8,7 +8,7 @@ import { ErrorModel } from 'app/models/modal-error';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class MonitorGuard implements CanActivate {
     constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) { }
 
     canActivate() {
@@ -17,7 +17,7 @@ export class RolesGuard implements CanActivate {
                 return this.navigateToWorplace();
             }
             const adminRole = userInfo.roles.find(role => {
-                if (role === 'BUSINESS_ADMIN') {
+                if (role === 'MONITOR' || role === 'ADMIN' ) {
                     return true;
                 }
             });

@@ -44,7 +44,8 @@ import { UserInformationComponent } from 'app/components/user-information/user-i
  * Guards
  */
 import { DomainGuard } from './guards/domain-guard';
-import { RolesGuard } from './guards/roles-guard';
+import { BusinessAdminGuard } from './guards/business-admin-guard';
+import { MonitorGuard } from './guards/monitor-guard';
 import { APP_BASE_HREF } from '@angular/common';
 
 
@@ -87,7 +88,8 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     OrientationService,
     SelectedRouteService,
     DomainGuard,
-    RolesGuard,
+    BusinessAdminGuard,
+    MonitorGuard,
     StartupService,
     {
       provide: APP_INITIALIZER,

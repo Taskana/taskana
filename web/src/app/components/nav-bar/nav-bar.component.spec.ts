@@ -12,7 +12,8 @@ import { UserInformationComponent } from 'app/components/user-information/user-i
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
-import { RolesGuard } from 'app/guards/roles-guard';
+import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
+import { MonitorGuard } from 'app/guards/monitor-guard';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from 'app/services/window/window.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
@@ -42,7 +43,8 @@ describe('NavBarComponent', () => {
         provide: DomainService,
         useClass: DomainServiceMock
       },
-        RolesGuard,
+        BusinessAdminGuard,
+        MonitorGuard,
         TaskanaEngineService,
         WindowRefService,
         ErrorModalService,
