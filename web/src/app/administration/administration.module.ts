@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
-import { HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AlertModule } from 'ngx-bootstrap';
 import { SharedModule } from 'app/shared/shared.module';
@@ -45,11 +44,10 @@ const MODULES = [
   CommonModule,
   FormsModule,
   Ng2AutoCompleteModule,
-  HttpClientModule,
   AngularSvgIconModule,
   AlertModule,
   SharedModule,
-  AdministrationRoutingModule,
+  AdministrationRoutingModule
 ];
 
 const DECLARATIONS = [

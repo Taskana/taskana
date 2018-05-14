@@ -11,7 +11,6 @@ import { ACTION } from 'app/models/action';
 
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service'
-import { PermissionService } from 'app/services/permission/permission.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
 import { DomainService } from 'app/services/domain/domain.service';
 
@@ -28,7 +27,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 	workbasketCopy: Workbasket;
 	selectedId: string = undefined;
 	showDetail = false;
-	hasPermission = true;
 	requestInProgress = false;
 	action: string;
 
@@ -43,7 +41,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		private route: ActivatedRoute,
 		private router: Router,
 		private masterAndDetailService: MasterAndDetailService,
-		private permissionService: PermissionService,
 		private domainService: DomainService) { }
 
 
@@ -80,14 +77,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe(showDetail => {
 			this.showDetail = showDetail;
 		});
-
-		this.permissionSubscription = this.permissionService.hasPermission().subscribe(permission => {
-			this.hasPermission = permission;
-			if (!this.hasPermission) {
-				this.requestInProgress = false;
-			}
-		})
-
 	}
 
 	backClicked(): void {

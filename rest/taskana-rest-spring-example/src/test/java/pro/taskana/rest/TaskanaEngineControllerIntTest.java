@@ -32,7 +32,7 @@ import pro.taskana.TaskanaRole;
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
 @Import(RestConfiguration.class)
 public class TaskanaEngineControllerIntTest {
 

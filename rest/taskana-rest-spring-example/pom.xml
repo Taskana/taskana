@@ -52,7 +52,16 @@
 			<artifactId>h2</artifactId>
 			<version>1.4.197</version>
 		</dependency>
-
+		<!--
+	      Since taskana-web packs its content in /static, we do not have to unpack it again.
+	      However, when any local change has to be done to that folder you have to copy
+	      target/classes/static manually from taskana-web.
+	    -->
+		<dependency>
+			<groupId>pro.taskana</groupId>
+			<artifactId>taskana-web</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -60,7 +69,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -69,4 +77,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

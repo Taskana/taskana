@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { environment } from 'app/../environments/environment';
@@ -43,12 +43,6 @@ export class WorkbasketService {
 	// Domain
 	readonly DOMAIN = 'domain';
 
-	httpOptions = {
-		headers: new HttpHeaders({
-			'Content-Type': 'application/json',
-			'Authorization': 'Basic VEVBTUxFQURfMTpURUFNTEVBRF8x'
-		})
-	};
 
 	page = 1;
 	pageSize = 9;
@@ -86,7 +80,7 @@ export class WorkbasketService {
 				`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(
 					sortBy, order, name,
 					nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
-					!allPages ? this.page : undefined, !allPages ? this.pageSize : undefined, domain)}`, this.httpOptions)
+					!allPages ? this.page : undefined, !allPages ? this.pageSize : undefined, domain)}`)
 				.do(workbaskets => {
 					return workbaskets;
 				});
@@ -96,51 +90,50 @@ export class WorkbasketService {
 	}
 	// GET
 	getWorkBasket(id: string): Observable<Workbasket> {
-		return this.httpClient.get<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets/${id}`, this.httpOptions);
+		return this.httpClient.get<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets/${id}`);
 	}
 	// POST
 	createWorkbasket(workbasket: Workbasket): Observable<Workbasket> {
 		return this.httpClient
-			.post<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets`, workbasket, this.httpOptions);
+			.post<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets`, workbasket);
 
 	}
 	// PUT
 	updateWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {
 		return this.httpClient
-			.put<Workbasket>(url, workbasket, this.httpOptions)
+			.put<Workbasket>(url, workbasket)
 			.catch(this.handleError);
 	}
 	// DELETE
 	deleteWorkbasket(url: string) {
-		return this.httpClient.delete(url, this.httpOptions);
+		return this.httpClient.delete(url);
 	}
 	// GET
 	getWorkBasketAccessItems(url: string): Observable<WorkbasketAccessItemsResource> {
-		return this.httpClient.get<WorkbasketAccessItemsResource>(url, this.httpOptions);
+		return this.httpClient.get<WorkbasketAccessItemsResource>(url);
 	}
 	// POST
 	createWorkBasketAccessItem(url: string, workbasketAccessItem: WorkbasketAccessItems): Observable<WorkbasketAccessItems> {
-		return this.httpClient.post<WorkbasketAccessItems>(url, workbasketAccessItem, this.httpOptions);
+		return this.httpClient.post<WorkbasketAccessItems>(url, workbasketAccessItem);
 	}
 	// PUT
 	updateWorkBasketAccessItem(url: string, workbasketAccessItem: Array<WorkbasketAccessItems>): Observable<string> {
 		return this.httpClient.put<string>(url,
-			workbasketAccessItem,
-			this.httpOptions);
+			workbasketAccessItem);
 	}
 	// GET
 	getWorkBasketsDistributionTargets(url: string): Observable<WorkbasketDistributionTargetsResource> {
-		return this.httpClient.get<WorkbasketDistributionTargetsResource>(url, this.httpOptions);
+		return this.httpClient.get<WorkbasketDistributionTargetsResource>(url);
 	}
 
 	// PUT
 	updateWorkBasketsDistributionTargets(url: string, distributionTargetsIds: Array<string>):
 		Observable<WorkbasketDistributionTargetsResource> {
-		return this.httpClient.put<WorkbasketDistributionTargetsResource>(url, distributionTargetsIds, this.httpOptions);
+		return this.httpClient.put<WorkbasketDistributionTargetsResource>(url, distributionTargetsIds);
 	}
 	// DELETE
 	removeDistributionTarget(url: string) {
-		return this.httpClient.delete<string>(url, this.httpOptions);
+		return this.httpClient.delete<string>(url);
 	}
 
 
@@ -213,6 +206,7 @@ export class WorkbasketService {
 		console.error(errMsg);
 		return Observable.throw(errMsg);
 	}
+
 
 	// #endregion
 }
