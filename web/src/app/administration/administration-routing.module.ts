@@ -41,7 +41,7 @@ const routes: Routes = [
     {
         path: 'classifications',
         component: MasterAndDetailComponent,
-        canActivate: [DomainGuard],
+         canActivate: [DomainGuard],
         children: [
             {
                 path: '',

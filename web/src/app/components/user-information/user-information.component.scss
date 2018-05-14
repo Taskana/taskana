@@ -1,0 +1,68 @@
+.big {
+    width: 64px;
+    height: 64px;
+}
+
+.user-info {
+    margin-top:85px;
+    > span {
+        margin: 0 15px 0 15px;
+        font-size: 20px;
+        font-family: inherit;
+        font-weight: 500;
+        line-height: 1.1;
+    }
+   
+}
+
+.icon,  { 
+    width: 100%; 
+    position: relative;
+    & > .icon-wrap {
+        border-radius: 50%;
+        border: solid 3px #22a39f;
+        width: 74px;
+        height: 74px;
+        overflow: hidden;
+        background-color: #175263;
+        position: absolute;
+        -webkit-box-shadow: 0px 3px 3px #416b6a;
+        -moz-box-shadow: 0px 3px 3px #416b6a;
+        box-shadow: 0px 3px 3px #416b6a;
+
+         &> svg-icon { 
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: white;
+        position: absolute;
+        margin:2px
+    }
+    }
+}
+
+.icon:before { content: '';
+    position: absolute;
+    border-bottom: solid 3px #22a39f;
+    width: 100%;
+    height: 60px;
+    transform: translateY(-33%);
+    -webkit-box-shadow: 0px 3px 3px #416b6a;
+    -moz-box-shadow: 0px 3px 3px #416b6a;
+    box-shadow: 0px 3px 3px #416b6a;
+}
+
+button.transparent, {
+    border: none;
+    background-color: transparent;
+    &:hover{
+        border: none;
+        background-color: transparent;
+        color:#22a39f
+    }
+    &:focus{
+        border: none;
+        background-color: transparent;
+        outline: none;
+        color:white
+    }
+}

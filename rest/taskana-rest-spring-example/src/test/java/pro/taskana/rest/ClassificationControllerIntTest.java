@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
 @Import(RestConfiguration.class)
 public class ClassificationControllerIntTest {
 

@@ -1,6 +1,6 @@
 <div class="container-scrollable">
     <taskana-spinner [isRunning]="requestInProgress" ></taskana-spinner>
-    <taskana-no-access *ngIf="!requestInProgress && (!hasPermission && !workbasket || !workbasket && selectedId)"></taskana-no-access>
+    <taskana-no-access *ngIf="!requestInProgress && (!workbasket || !workbasket && selectedId)"></taskana-no-access>
     <div id="workbasket-details" *ngIf="workbasket && !requestInProgress">
         <ul class="nav nav-tabs" role="tablist">
             <li *ngIf="showDetail" class="visible-xs visible-sm hidden">

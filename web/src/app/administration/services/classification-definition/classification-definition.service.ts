@@ -11,21 +11,16 @@ import { TaskanaDate } from 'app/shared/util/taskana.date';
 export class ClassificationDefinitionService {
 
   url = environment.taskanaRestUrl + '/v1/classificationdefinitions';
-
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Basic VEVBTUxFQURfMTpURUFNTEVBRF8x'
-    })
-  };
-
-  constructor(private httpClient: HttpClient, private alertService: AlertService) {
+  constructor(
+    private httpClient: HttpClient,
+    private alertService: AlertService
+  ) {
   }
 
   // GET
   exportClassifications(domain: string) {
     domain = (domain === '' ? '' : '?domain=' + domain);
-    this.httpClient.get<ClassificationDefinition[]>(this.url + domain, this.httpOptions)
+    this.httpClient.get<ClassificationDefinition[]>(this.url + domain)
       .subscribe(
         response => saveAs(new Blob([JSON.stringify(response)], { type: 'text/plain;charset=utf-8' }),
           'Classifications_' + TaskanaDate.getDate() + '.json')
@@ -36,7 +31,7 @@ export class ClassificationDefinitionService {
   // TODO handle error
   importClassifications(classifications: any) {
     this.httpClient.post(this.url + '/import',
-      JSON.parse(classifications), this.httpOptions).subscribe(
+      JSON.parse(classifications)).subscribe(
         classificationsUpdated => this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful')),
         error => this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'Import was not successful'))
       );

@@ -13,12 +13,6 @@ export class DomainService {
 
   url = environment.taskanaRestUrl + '/v1/domains';
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Basic VEVBTUxFQURfMTpURUFNTEVBRF8x'
-    })
-  };
   private domainSelectedValue;
   private domainSelected = new BehaviorSubject<string>('');
   private domainSwitched = new Subject<string>();
@@ -33,7 +27,7 @@ export class DomainService {
   // GET
   getDomains(forceRefresh = false): Observable<string[]> {
     if (!this.dataObs$.observers.length || forceRefresh) {
-      this.httpClient.get<string[]>(this.url, this.httpOptions).subscribe(
+      this.httpClient.get<string[]>(this.url).subscribe(
         domains => {
           this.dataObs$.next(domains);
           if (!this.domainSelectedValue && domains && domains.length > 0) {

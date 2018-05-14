@@ -77,6 +77,13 @@
     }
 }
 
+.blue-green{
+    color: $blue-green;
+    & svg {
+        fill: $blue-green;
+    }
+}
+
 .green {
     color: $green;
     & svg {
@@ -109,6 +116,13 @@
     color: $blue-green;
     & svg {
         fill: $blue-green;
+    }
+}
+
+.aquamarine {
+    color: $aquamarine;
+    & svg {
+        fill: $aquamarine;
     }
 }
 
@@ -283,3 +297,4 @@ li.list-group-item:hover, {
     text-decoration: none;
     background-color: #f5f5f5;
 }
+
