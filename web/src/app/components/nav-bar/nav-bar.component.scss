@@ -10,6 +10,10 @@ $selected-border-color: #22a39f;
 
 .navbar-toggle{
     margin-right: 0px;
+    
+}
+button.navbar-toggle:hover > span{
+    color:$selected-border-color;
 }
 ul.nav > p {
     white-space: nowrap;
@@ -28,7 +32,6 @@ svg-icon.logo {
     height: 55px;
     padding: 6px 5px 5px 5px;
 }
-
 
 h2.navbar-brand{
     vertical-align: middle;
@@ -67,8 +70,7 @@ h2.navbar-brand{
 
 
 .nav-content{
-    margin-top: 25px;
-    margin-left: 8px;
+    margin-top: 5px;
 }
  
 /*

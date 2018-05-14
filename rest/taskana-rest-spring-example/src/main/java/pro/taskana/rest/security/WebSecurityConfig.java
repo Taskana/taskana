@@ -1,5 +1,6 @@
 package pro.taskana.rest.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,13 +12,16 @@ import org.springframework.security.authentication.jaas.JaasAuthenticationProvid
 import org.springframework.security.authentication.jaas.JaasNameCallbackHandler;
 import org.springframework.security.authentication.jaas.JaasPasswordCallbackHandler;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.jaasapi.JaasApiIntegrationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -28,26 +32,43 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Value("${devMode}")
+    private boolean devMode;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http.csrf()
-            .disable()
-            .authenticationProvider(jaasAuthProvider())
-            .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/**")
-            .authenticated()
-            .and()
-            .httpBasic()
-            .and()
-            .addFilter(new JaasApiIntegrationFilter());
+                .disable()
+                .authenticationProvider(jaasAuthProvider())
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/**")
+                .authenticated()
+                .and()
+                .httpBasic()
+                .and()
+                .addFilter(new JaasApiIntegrationFilter());
+
+        if (devMode) {
+            return;
+        }
+        http
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll();
     }
 
     @Bean
     public JaasAuthenticationProvider jaasAuthProvider() {
         JaasAuthenticationProvider authenticationProvider = new JaasAuthenticationProvider();
-        authenticationProvider.setAuthorityGranters(new AuthorityGranter[] {new SampleRoleGranter()});
-        authenticationProvider.setCallbackHandlers(new JaasAuthenticationCallbackHandler[] {
-            new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()});
+        authenticationProvider.setAuthorityGranters(new AuthorityGranter[]{new SampleRoleGranter()});
+        authenticationProvider.setCallbackHandlers(new JaasAuthenticationCallbackHandler[]{
+                new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()});
         authenticationProvider.setLoginContextName("taskana");
         authenticationProvider.setLoginConfig(new ClassPathResource("pss_jaas.config"));
         return authenticationProvider;
@@ -72,6 +93,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+        config.addAllowedMethod("POST");
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);

@@ -9,22 +9,17 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 @Injectable()
 export class ClassificationTypesService {
   private url = environment.taskanaRestUrl + '/v1/classification-types';
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Basic VEVBTUxFQURfMTpURUFNTEVBRF8x'
-    })
-  };
   private classificationTypeSelectedValue = 'TASK';
   private classificationTypeSelected = new BehaviorSubject<string>(this.classificationTypeSelectedValue);
   private dataObs$ = new ReplaySubject<Array<string>>(1);
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient
+  ) { }
 
   getClassificationTypes(forceRefresh = false): Observable<Array<string>> {
 
     if (!this.dataObs$.observers.length || forceRefresh) {
-      this.httpClient.get<Array<string>>(this.url, this.httpOptions).subscribe(
+      this.httpClient.get<Array<string>>(this.url).subscribe(
         data => this.dataObs$.next(data),
         error => {
           this.dataObs$.error(error);

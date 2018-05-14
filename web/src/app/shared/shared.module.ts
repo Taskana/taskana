@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AlertModule } from 'ngx-bootstrap';
 import { RouterModule } from '@angular/router';
@@ -22,6 +22,7 @@ import { SelectWorkBasketPipe } from './pipes/selectedWorkbasket/seleted-workbas
 import { SpreadNumberPipe } from './pipes/spreadNumber/spread-number';
 import { OrderBy } from './pipes/orderBy/orderBy';
 import { MapToIterable } from './pipes/mapToIterable/mapToIterable';
+import { HttpClientInterceptor } from './services/httpClientInterceptor/http-client-interceptor.service';
 
 
 const MODULES = [
@@ -51,7 +52,14 @@ const DECLARATIONS = [
 @NgModule({
   declarations: DECLARATIONS,
   imports: MODULES,
-  exports: DECLARATIONS
+  exports: DECLARATIONS,
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpClientInterceptor,
+      multi: true
+    }
+  ]
 })
 export class SharedModule {
 }
