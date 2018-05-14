@@ -27,6 +27,8 @@ INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000
 -- Cross team GPK access
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000021', 'WBI:100000000000000000000000000000000001', 'teamlead_1', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000022', 'WBI:100000000000000000000000000000000001', 'teamlead_2', true, true, true,   true,     true,       true, true, true, true, true, true, true, true, true, true, true, true);
+-- TPK access
+INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000123', 'WBI:100000000000000000000000000000000010', 'teamlead_1', true, false, false,   false,     false,      false, false, false, false, false, false, false, false, false, false, false, false);
 
 -- Access to other domains
 INSERT INTO TASKANA.WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000023', 'WBI:100000000000000000000000000000000012',    'group_1', true, false, true,  true,     false,      false, false, false, false, false, false, false, false, false, false, false, false);

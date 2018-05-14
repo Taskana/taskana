@@ -44,7 +44,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         List<String> columnValueList = workbasketService.createWorkbasketAccessItemQuery()
             .listValues("WORKBASKET_ID", null);
         assertNotNull(columnValueList);
-        assertEquals(23, columnValueList.size());
+        assertEquals(24, columnValueList.size());
 
         columnValueList = workbasketService.createWorkbasketAccessItemQuery()
             .listValues("ACCESS_ID", null);
