@@ -238,6 +238,24 @@ public class TransferTaskAccTest extends AbstractAccTest {
         assertEquals("TEAMLEAD_1", transferredTask.getWorkbasketKey());
     }
 
+    @WithAccessId(userName = "teamlead_1")
+    @Test(expected = NotAuthorizedException.class)
+    public void testBulkTransferTaskWithoutAppendPermissionOnTarget()
+        throws InvalidArgumentException, WorkbasketNotFoundException, TaskNotFoundException, NotAuthorizedException {
+        TaskService taskService = taskanaEngine.getTaskService();
+        ArrayList<String> taskIdList = new ArrayList<>();
+        taskIdList.add("TKI:000000000000000000000000000000000006"); // working
+        taskIdList.add("TKI:000000000000000000000000000000000041"); // NotAuthorized READ
+
+        try {
+            taskService
+                .transferTasks("WBI:100000000000000000000000000000000010", taskIdList);
+        } catch (NotAuthorizedException e) {
+            assertTrue(e.getMessage().contains("APPEND"));
+            throw e;
+        }
+    }
+
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})

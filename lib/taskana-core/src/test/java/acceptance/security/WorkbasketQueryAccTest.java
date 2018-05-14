@@ -80,7 +80,7 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
             .list();
-        Assert.assertEquals(24L, results.size());
+        Assert.assertEquals(25L, results.size());
 
         results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
@@ -101,7 +101,7 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
             .list();
-        Assert.assertEquals(24L, results.size());
+        Assert.assertEquals(25L, results.size());
 
         results = workbasketService.createWorkbasketQuery()
             .nameLike("%")

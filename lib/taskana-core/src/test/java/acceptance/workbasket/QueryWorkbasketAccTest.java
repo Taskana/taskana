@@ -44,7 +44,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         long count = query.count();
-        assertEquals(3, count);
+        assertEquals(4, count);
         List<WorkbasketSummary> workbaskets = query.list();
         assertNotNull(workbaskets);
         assertEquals(count, workbaskets.size());
@@ -61,7 +61,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         long count = query.count();
-        assertTrue(count == 24);
+        assertTrue(count == 25);
         List<WorkbasketSummary> workbaskets = query.list();
         assertNotNull(workbaskets);
         assertEquals(count, workbaskets.size());
@@ -78,7 +78,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         long count = query.count();
-        assertTrue(count == 24);
+        assertTrue(count == 25);
         List<WorkbasketSummary> workbaskets = query.list();
         assertNotNull(workbaskets);
         assertEquals(count, workbaskets.size());
@@ -96,14 +96,14 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<String> columnValueList = workbasketService.createWorkbasketQuery()
             .listValues("NAME", null);
         assertNotNull(columnValueList);
-        assertEquals(9, columnValueList.size());
+        assertEquals(10, columnValueList.size());
 
         columnValueList = workbasketService.createWorkbasketQuery()
             .nameLike("%korb%")
             .orderByName(asc)
             .listValues("NAME", SortDirection.DESCENDING);  // will override
         assertNotNull(columnValueList);
-        assertEquals(3, columnValueList.size());
+        assertEquals(4, columnValueList.size());
     }
 
     @WithAccessId(
@@ -395,7 +395,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .createdWithin(todaysInterval())
             .list();
-        Assert.assertEquals(8L, results.size());
+        Assert.assertEquals(9L, results.size());
     }
 
     @WithAccessId(
@@ -408,7 +408,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .modifiedWithin(todaysInterval())
             .list();
-        Assert.assertEquals(8L, results.size());
+        Assert.assertEquals(9L, results.size());
     }
 
     @WithAccessId(
@@ -422,7 +422,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .nameLike("%")
             .orderByName(desc)
             .list();
-        Assert.assertEquals(24L, results.size());
+        Assert.assertEquals(25L, results.size());
         // check sort order is correct
         WorkbasketSummary previousSummary = null;
         for (WorkbasketSummary wbSummary : results) {

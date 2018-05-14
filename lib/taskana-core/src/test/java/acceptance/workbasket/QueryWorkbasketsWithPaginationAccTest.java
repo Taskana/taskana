@@ -52,7 +52,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .list(5, 5);
-        assertThat(results.size(), equalTo(3));
+        assertThat(results.size(), equalTo(4));
     }
 
     @WithAccessId(
@@ -110,7 +110,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-        assertThat(results.size(), equalTo(8));
+        assertThat(results.size(), equalTo(9));
 
         // Getting last results on multiple pages
         pageNumber = 2;
@@ -118,7 +118,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-        assertThat(results.size(), equalTo(3));
+        assertThat(results.size(), equalTo(4));
     }
 
     @WithAccessId(
@@ -151,7 +151,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-        assertThat(results.size(), equalTo(8));
+        assertThat(results.size(), equalTo(9));
     }
 
     /**
@@ -184,7 +184,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         long count = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .count();
-        assertThat(count, equalTo(8L));
+        assertThat(count, equalTo(9L));
     }
 
     @WithAccessId(
@@ -197,7 +197,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         List<WorkbasketSummary> result = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
             .list();
-        assertThat(result.size(), equalTo(8));
+        assertThat(result.size(), equalTo(9));
     }
 
 }
