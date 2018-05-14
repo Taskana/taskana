@@ -525,7 +525,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private BulkOperationResults<String, TaskanaException> transferTasks(List<String> taskIdsToBeTransferred,
-        Workbasket destinationWorkbasket) throws InvalidArgumentException {
+        Workbasket destinationWorkbasket)
+        throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
+
+        workbasketService.checkAuthorization(destinationWorkbasket.getId(), WorkbasketPermission.APPEND);
+
         // Check pre-conditions with trowing Exceptions
         if (taskIdsToBeTransferred == null) {
             throw new InvalidArgumentException("TaskIds must not be null.");
