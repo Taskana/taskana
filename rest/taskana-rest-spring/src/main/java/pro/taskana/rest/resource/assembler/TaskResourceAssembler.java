@@ -54,6 +54,9 @@ public class TaskResourceAssembler
         if (task.getDue() != null) {
             resource.setDue(task.getDue().toString());
         }
+        if (task.getPlanned() != null) {
+            resource.setPlanned(task.getPlanned().toString());
+        }
         resource.setClassificationSummaryResource(
             classificationAssembler.toResource(task.getClassificationSummary()));
         resource.setWorkbasketSummaryResource(workbasketAssembler.toResource(task.getWorkbasketSummary()));
@@ -69,16 +72,19 @@ public class TaskResourceAssembler
             task.setCreated(Instant.parse(resource.getCreated()));
         }
         if (resource.getModified() != null) {
-            task.setModified(Instant.parse(resource.getModified().toString()));
+            task.setModified(Instant.parse(resource.getModified()));
         }
         if (resource.getClaimed() != null) {
-            task.setClaimed(Instant.parse(resource.getClaimed().toString()));
+            task.setClaimed(Instant.parse(resource.getClaimed()));
         }
         if (resource.getCompleted() != null) {
-            task.setCompleted(Instant.parse(resource.getCompleted().toString()));
+            task.setCompleted(Instant.parse(resource.getCompleted()));
         }
         if (resource.getDue() != null) {
-            task.setDue(Instant.parse(resource.getDue().toString()));
+            task.setDue(Instant.parse(resource.getDue()));
+        }
+        if (resource.getPlanned() != null) {
+            task.setPlanned(Instant.parse(resource.getPlanned()));
         }
         task.setClassificationSummary(classificationAssembler.toModel(resource.getClassificationSummaryResource()));
         task.setWorkbasketSummary(workbasketAssembler.toModel(resource.getWorkbasketSummaryResource()));

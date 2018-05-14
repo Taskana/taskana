@@ -26,8 +26,8 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 import pro.taskana.rest.resource.WorkbasketDefinition;
 import pro.taskana.rest.resource.WorkbasketResource;
-import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketDefinitionAssembler;
+import pro.taskana.rest.resource.assembler.WorkbasketAccessItemResourceAssembler;
+import pro.taskana.rest.resource.assembler.WorkbasketDefinitionResourceAssembler;
 import pro.taskana.rest.resource.assembler.WorkbasketAssembler;
 
 import java.util.ArrayList;
@@ -47,13 +47,13 @@ public class WorkbasketDefinitionController {
     private WorkbasketService workbasketService;
 
     @Autowired
-    private WorkbasketDefinitionAssembler workbasketDefinitionAssembler;
+    private WorkbasketDefinitionResourceAssembler workbasketDefinitionResourceAssembler;
 
     @Autowired
     private WorkbasketAssembler workbasketAssembler;
 
     @Autowired
-    private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
+    private WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler;
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -66,7 +66,7 @@ public class WorkbasketDefinitionController {
             List<WorkbasketDefinition> basketExports = new ArrayList<>();
             for (WorkbasketSummary summary : workbasketSummaryList) {
                 Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
-                basketExports.add(workbasketDefinitionAssembler.toResource(workbasket));
+                basketExports.add(workbasketDefinitionResourceAssembler.toResource(workbasket));
             }
             return new ResponseEntity<>(basketExports, HttpStatus.OK);
         } catch (WorkbasketNotFoundException e) {
@@ -125,7 +125,7 @@ public class WorkbasketDefinitionController {
                 }
                 for (WorkbasketAccessItemResource authorization : definition.authorizations) {
                     workbasketService.createWorkbasketAccessItem(
-                        workbasketAccessItemAssembler.toModel(authorization));
+                        workbasketAccessItemResourceAssembler.toModel(authorization));
                 }
                 idConversion.put(definition.workbasketResource.workbasketId, workbasket.getId());
             }

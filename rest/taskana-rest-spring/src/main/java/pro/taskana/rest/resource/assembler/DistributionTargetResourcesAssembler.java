@@ -21,16 +21,16 @@ import pro.taskana.rest.resource.DistributionTargetResource;
  * Mapper to convert from a list of WorkbasketSummary to a workbasket list resource.
  */
 @Component
-public class DistributionTargetListAssembler {
+public class DistributionTargetResourcesAssembler {
 
     @Autowired
-    private DistributionTargetAssembler distributionTargetAssembler;
+    private DistributionTargetResourceAssembler distributionTargetResourceAssembler;
 
     public Resources<DistributionTargetResource> toResource(String workbasketId,
         Collection<WorkbasketSummary> distributionTargets) throws WorkbasketNotFoundException, NotAuthorizedException {
         List<DistributionTargetResource> resourceList = new ArrayList<>();
         for (WorkbasketSummary wb : distributionTargets) {
-            resourceList.add(distributionTargetAssembler.toResource(wb));
+            resourceList.add(distributionTargetResourceAssembler.toResource(wb));
         }
         Resources<DistributionTargetResource> distributionTargetListResource = new Resources<>(resourceList);
 

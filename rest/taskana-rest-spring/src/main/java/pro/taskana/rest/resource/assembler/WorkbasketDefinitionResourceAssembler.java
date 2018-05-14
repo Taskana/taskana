@@ -27,7 +27,7 @@ import pro.taskana.rest.resource.WorkbasketDefinition;
  * containing all additional information about that workbasket.
  */
 @Component
-public class WorkbasketDefinitionAssembler {
+public class WorkbasketDefinitionResourceAssembler {
 
     @Autowired
     private WorkbasketService workbasketService;
@@ -36,7 +36,7 @@ public class WorkbasketDefinitionAssembler {
     private WorkbasketAssembler workbasketAssembler;
 
     @Autowired
-    private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
+    private WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler;
 
     /**
      * maps the distro targets to their id to remove overhead.
@@ -54,7 +54,7 @@ public class WorkbasketDefinitionAssembler {
         throws NotAuthorizedException, WorkbasketNotFoundException {
         List<WorkbasketAccessItemResource> authorizations = new ArrayList<>();
         for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(basket.getKey())) {
-            authorizations.add(workbasketAccessItemAssembler.toResource(accessItem));
+            authorizations.add(workbasketAccessItemResourceAssembler.toResource(accessItem));
         }
         Set<String> distroTargets = workbasketService.getDistributionTargets(basket.getId())
             .stream()
