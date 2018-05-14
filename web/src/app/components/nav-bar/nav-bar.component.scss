@@ -10,6 +10,10 @@ $selected-border-color: #22a39f;
 
 .navbar-toggle{
     margin-right: 0px;
+    
+}
+button.navbar-toggle:hover > span{
+    color:$selected-border-color;
 }
 ul.nav > p {
     white-space: nowrap;
