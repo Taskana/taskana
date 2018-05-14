@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="icon">
+    <div class="icon-wrap col-xs-offset-5">
+      <svg-icon class="blue big" src="./assets/icons/user.svg"></svg-icon>
+    </div>
+  </div>
+  <div class="user-info white">
+    <span>Logged as: {{userInformation.userId}}</span>
+    <button type="button" class="btn btn-default white pull-right transparent" (click)="toogleRoles();" aria-expanded="true" aria-controls="roles">
+      <span>Roles</span>
+    </button>
+  </div>
+  <div class="white pull-right roles col-xs-12" [@toggle]="showRoles" *ngIf="showRoles">
+    <span><i>{{roles}}</i></span>
+  </div>
+</div>

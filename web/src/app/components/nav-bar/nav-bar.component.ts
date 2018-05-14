@@ -4,7 +4,9 @@ import { SelectedRouteService } from 'app/services/selected-route/selected-route
 import { Subscription } from 'rxjs/Subscription';
 import { trigger, state, style, transition, keyframes, animate } from '@angular/animations';
 import { DomainService } from 'app/services/domain/domain.service';
-
+import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
+import { MonitorGuard } from 'app/guards/monitor-guard';
+import { WindowRefService } from 'app/services/window/window.service';
 @Component({
   selector: 'taskana-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -38,11 +40,17 @@ export class NavBarComponent implements OnInit, OnDestroy {
   monitorUrl = './monitor';
   workplaceUrl = './workplace';
 
+  administrationAccess = false;
+  monitorAccess = false;
+
   selectedRouteSubscription: Subscription;
 
   constructor(
     private selectedRouteService: SelectedRouteService,
-    private domainService: DomainService) { }
+    private domainService: DomainService,
+    private businessAdminGuard: BusinessAdminGuard,
+    private monitorGuard: MonitorGuard,
+    private window: WindowRefService) { }
 
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
@@ -56,6 +64,13 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.domainService.getSelectedDomain().subscribe(domain => {
       this.selectedDomain = domain;
     });
+
+    this.businessAdminGuard.canActivate().subscribe(hasAccess => {
+      this.administrationAccess = hasAccess
+    });
+    this.monitorGuard.canActivate().subscribe(hasAccess => {
+      this.monitorAccess = hasAccess
+    });
   }
 
   switchDomain(domain) {
@@ -65,6 +80,12 @@ export class NavBarComponent implements OnInit, OnDestroy {
   toogleNavBar() {
     this.showNavbar = !this.showNavbar;
   }
+
+
+  logout() {
+    this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login?logout';
+  }
+
   private setTitle(value: string = 'workbaskets') {
     if (value.indexOf('workbaskets') === 0 || value.indexOf('classifications') === 0) {
       this.title = this.titleAdministration;

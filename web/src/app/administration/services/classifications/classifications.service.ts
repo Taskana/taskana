@@ -22,13 +22,6 @@ export class ClassificationsService {
   private classificationSelected = new Subject<string>();
   private classificationSaved = new Subject<number>();
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Basic VEVBTUxFQURfMTpURUFNTEVBRF8x'
-    })
-  };
-
   private classificationTypes: Array<string>;
 
   constructor(
@@ -42,8 +35,7 @@ export class ClassificationsService {
     return this.domainService.getSelectedDomain().mergeMap(domain => {
       const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
       return this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
-        `${environment.taskanaRestUrl}/v1/classifications/?domain=${domain}`,
-        this.httpOptions));
+        `${environment.taskanaRestUrl}/v1/classifications/?domain=${domain}`));
 
     }).do(() => {
       this.domainService.domainChangedComplete();
@@ -52,7 +44,7 @@ export class ClassificationsService {
 
   // GET
   getClassification(id: string): Observable<ClassificationDefinition> {
-    return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`, this.httpOptions)
+    return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`)
       .do((classification: ClassificationDefinition) => {
         if (classification) {
           this.classificationTypeService.selectClassificationType(classification.type);
@@ -63,18 +55,17 @@ export class ClassificationsService {
 
   // POST
   postClassification(classification: Classification): Observable<Classification> {
-    return this.httpClient.post<Classification>(`${environment.taskanaRestUrl}/v1/classifications`, classification,
-      this.httpOptions);
+    return this.httpClient.post<Classification>(`${environment.taskanaRestUrl}/v1/classifications`, classification);
   }
 
   // PUT
   putClassification(url: string, classification: Classification): Observable<Classification> {
-    return this.httpClient.put<Classification>(url, classification, this.httpOptions);
+    return this.httpClient.put<Classification>(url, classification);
   }
 
   // DELETE
   deleteClassification(url: string): Observable<string> {
-    return this.httpClient.delete<string>(url, this.httpOptions);
+    return this.httpClient.delete<string>(url);
   }
 
   // #region "Service extras"

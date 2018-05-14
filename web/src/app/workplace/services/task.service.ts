@@ -8,35 +8,27 @@ import { environment } from 'app/../environments/environment';
 export class TaskService {
   url = environment.taskanaRestUrl + '/v1/tasks';
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/hal+json',
-      'Authorization': 'Basic YWRtaW46YWRtaW4=',
-      'user': 'user_1_1'
-    })
-  };
-
   constructor(private httpClient: HttpClient) {
   }
 
   findTaskWithWorkbaskets(basketKey: string): Observable<Task[]> {
-    return this.httpClient.get<Task[]>(this.url + '?workbasketId=' + basketKey, this.httpOptions);
+    return this.httpClient.get<Task[]>(this.url + '?workbasketId=' + basketKey);
   }
 
   getTask(id: string): Observable<Task> {
-    return this.httpClient.get<Task>(this.url + '/' + id, this.httpOptions);
+    return this.httpClient.get<Task>(this.url + '/' + id);
   }
 
   completeTask(id: string): Observable<Task> {
-    return this.httpClient.post<Task>(this.url + '/' + id + '/complete', '', this.httpOptions);
+    return this.httpClient.post<Task>(this.url + '/' + id + '/complete', '');
   }
 
   claimTask(id: string): Observable<Task> {
-    return this.httpClient.post<Task>(this.url + '/' + id + '/claim', 'test', this.httpOptions);
+    return this.httpClient.post<Task>(this.url + '/' + id + '/claim', 'test');
   }
 
   transferTask(taskId: string, workbasketKey: string): Observable<Task> {
     return this.httpClient.post<Task>(this.url + '/' + taskId
-      + '/transfer/' + workbasketKey, '', this.httpOptions);
+      + '/transfer/' + workbasketKey, '');
   }
 }

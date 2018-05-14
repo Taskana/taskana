@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { WorkplaceRoutingModule } from './workplace-routing.module';
 import { AlertModule } from 'ngx-bootstrap';
+import { SharedModule } from 'app/shared/shared.module';
 
 import { WorkplaceComponent } from './workplace.component';
 import { SelectorComponent } from './workbasket-selector/workbasket-selector.component';
@@ -19,6 +20,8 @@ import { OrderTasksByPipe } from './util/orderTasksBy.pipe';
 import { DataService } from './services/data.service';
 import { TaskService } from './services/task.service';
 import { WorkbasketService } from './services/workbasket.service';
+import { CustomHttpClientInterceptor } from './services/custom-http-interceptor/custom-http-interceptor.service';
+
 
 const MODULES = [
   CommonModule,
@@ -27,7 +30,8 @@ const MODULES = [
   HttpClientModule,
   AngularSvgIconModule,
   WorkplaceRoutingModule,
-  AlertModule
+  AlertModule,
+  SharedModule
 ];
 
 const DECLARATIONS = [
@@ -46,7 +50,12 @@ const DECLARATIONS = [
   providers: [
     DataService,
     TaskService,
-    WorkbasketService
+    WorkbasketService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomHttpClientInterceptor,
+      multi: true
+    },
   ]
 })
 export class WorkplaceModule {
