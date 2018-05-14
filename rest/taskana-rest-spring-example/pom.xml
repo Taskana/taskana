@@ -73,7 +73,7 @@
                 <executions>
                     <execution>
                         <id>unpack</id>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
