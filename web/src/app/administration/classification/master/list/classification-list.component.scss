@@ -9,15 +9,33 @@
 
 .tab-align{
   margin-bottom: 0px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px dotted #ddd;
   &>div{
    margin: 6px 0px;
   }
 }
 
 input.filter-input {
+  border: solid 1px grey;
   margin: 10px 2px;
   height: 32px;
   width: 100%;
   padding-left: 10px;
+}
+
+.category-filter {
+    margin: 7px 2px;
+}
+
+.dropdown-menu-classification{
+  margin-left: 15px;
+  min-width: 0px;
+}
+
+.btn-classification-list {
+  border: 0px solid transparent;
+}
+
+.container-no-items {
+  top: 20vh;
 }
