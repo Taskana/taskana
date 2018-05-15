@@ -6,14 +6,14 @@
         <router-outlet name="detail">
         </router-outlet>
     </div>
-    <div class="{{showDetail? 'hidden': 'hidden-xs hidden-sm col-md-8 container-no-detail'}}">
+    <div class="{{showDetail? 'hidden': 'hidden-xs hidden-sm col-md-8 container-no-items'}}">
         <div *ngIf="currentRoute === 'workbaskets'" class="center-block no-detail">
             <h3 class="grey">Select a worbasket</h3>
-            <svg-icon class="img-responsive no-detail-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
+            <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
         </div>
         <div *ngIf="currentRoute === 'classifications'" class="center-block no-detail">
             <h3 class="grey">Select a classification</h3>
-            <svg-icon class="img-responsive no-detail-icon" src="./assets/icons/classification-empty.svg"></svg-icon>
+            <svg-icon class="img-responsive empty-icon" src="./assets/icons/classification-empty.svg"></svg-icon>
         </div>
     </div>    
 </div>

@@ -1,14 +1,8 @@
 <input #selectedFile type="file" (change)="onSelectFile($event)" class="hide" />
-<button class="btn btn-default" type="button" title="Import" (click)="selectedFile.click()">
-    <span class="glyphicon glyphicon-upload blue"></span>
-</button>
-
+<svg-icon class="btn btn-default green-blue" src="./assets/icons/import.svg" title="Import" (click)="selectedFile.click()"></svg-icon>
 <div class="dropdown" style="display: inline">
-  <button type="button" title="Export" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-    aria-expanded="true" (click)="updateDomains()">
-    <span class="glyphicon glyphicon-download blue"></span>
-  </button>
-
+  <svg-icon class="btn btn-default red dropdown-toggle" title="Export" src="./assets/icons/export.svg" data-toggle="dropdown"
+    aria-expanded="true" (click)="updateDomains()"></svg-icon>
   <ul class="dropdown-menu">
     <li>
       <a class="dropdown-item" (click)="export()">

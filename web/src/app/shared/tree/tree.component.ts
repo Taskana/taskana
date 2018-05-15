@@ -20,8 +20,11 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
   @Input() selectNodeId: string;
   @Output() selectNodeIdChanged = new EventEmitter<string>();
   @Input() filterText: string;
+  @Input() filterIcon: string;
+
 
   private filterTextOld: string
+  private filterIconOld: string
   private beforeFilteringState: ITreeState;
 
   options: ITreeOptions = {
@@ -58,11 +61,18 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
     } else if (!this.selectNodeId && this.tree.treeModel.getActiveNode()) {
       this.unSelectActiveNode();
     }
+
     if (this.filterTextOld !== this.filterText) {
       this.filterTextOld = this.filterText;
       this.filterNodes(this.filterText);
       this.manageTreeState();
     }
+    if (this.filterIconOld !== this.filterIcon) {
+      this.filterIconOld = this.filterIcon;
+      this.filterNodes(this.filterIcon);
+      this.manageTreeState();
+    }
+
   }
 
   onActivate(treeNode: any) {
@@ -104,9 +114,11 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
   private filterNodes(text) {
     this.tree.treeModel.filterNodes((node) => {
       return (node.data.name.toUpperCase().includes(text.toUpperCase())
-        || node.data.key.toUpperCase().includes(text.toUpperCase()));
+        || node.data.key.toUpperCase().includes(text.toUpperCase())
+        || node.data.category.toUpperCase().includes(text.toUpperCase()));
     });
   }
+
   private manageTreeState() {
     if (this.filterText === '') {
       this.tree.treeModel.collapseAll();

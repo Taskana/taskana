@@ -298,3 +298,26 @@ li.list-group-item:hover, {
     background-color: #f5f5f5;
 }
 
+.vertical-right-divider {
+    border-right: 1px solid #ccc;
+}
+.horizontal-bottom-divider {
+    border-bottom: 1px solid #ccc;
+}
+
+.empty-icon {
+    display: block;
+    width: 150px;
+    height: 150px;
+    fill: grey;
+    margin: 20px auto;
+}
+
+.container-no-items {
+    top:30vh;
+    height: 65vh;
+}
+
+.center-block {
+    text-align: center;
+}

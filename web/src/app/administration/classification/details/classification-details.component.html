@@ -17,7 +17,7 @@
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
           </button>
         </div>
-        <h4 class="panel-header">{{classification.name}}&nbsp;
+        <h4 class="panel-header">{{classification.name}}&nbsp; [{{classification.type}}]
           <span *ngIf="!classification.classificationId" class="badge warning"> {{badgeMessage}}</span>
         </h4>
       </div>
@@ -74,31 +74,24 @@
               </div>
             </div>
             <div class="form-group">
-              <fieldset disabled>
-                <label for="classification-type" class="control-label">Type</label>
-                <div class="dropdown clearfix btn-group disabled">
-                  <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    {{classification.type}}
-                    <span class="caret"></span>
-                  </button>
-                </div>
-              </fieldset>
-            </div>
-            <div class="form-group">
-              <label for="classification-description" class="control-label">Description</label>
-              <textarea class="form-control" rows="5" id="classification-description" placeholder="Description" [(ngModel)]="classification.description"
-                name="classification.description"></textarea>
+              <label for="classification-priority" class="control-label">Priority</label>
+              <input type="text" class="form-control" id="classification-priority" placeholder="Priority" [(ngModel)]="classification.priority"
+                name="classification.priority">
             </div>
             <div class="form-group">
               <label for="classification-service-level" class="control-label">Service Level</label>
               <input type="text" class="form-control" id="classification-service-level" placeholder="Service Level" [(ngModel)]="classification.serviceLevel"
                 name="classification.serviceLevel">
             </div>
-
             <div class="form-group">
               <label for="classification-application-entry-point" class="control-label">Application entry point</label>
               <input type="text" class="form-control" id="classification-application-entry-point" placeholder="Application entry point"
                 [(ngModel)]="classification.applicationEntryPoint" name="classification.applicationEntryPoint">
+            </div>
+            <div class="form-group">
+              <label for="classification-description" class="control-label">Description</label>
+              <textarea class="form-control" rows="5" id="classification-description" placeholder="Description" [(ngModel)]="classification.description"
+                name="classification.description"></textarea>
             </div>
           </div>
           <div class="col-md-6">

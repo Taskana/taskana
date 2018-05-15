@@ -17,11 +17,15 @@ import { ClassificationTypesService } from 'app/administration/services/classifi
 export class ClassificationListComponent implements OnInit, OnDestroy {
 
 
+	selectedCategory = '';
 	selectedId: string;
 	selectionToImport = ImportType.CLASSIFICATIONS;
 	requestInProgress = false;
 	initialized = false;
 	inputValue: string;
+
+	allCategories: Map<string, string> = new Map([['', 'None'], ['EXTERNAL', 'External'],
+	['AUTOMATIC', 'Automatic'], ['MANUAL', 'manual'], ['CLOSED', 'closed']]);
 
 	classifications: Array<Classification> = [];
 	classificationsTypes: Array<string> = [];
@@ -73,6 +77,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
 	addClassification() {
 		this.router.navigate([{ outlets: { detail: [`new-classification/${this.selectedId}`] } }], { relativeTo: this.route });
+	}
+
+	selectCategory(category: string) {
+		this.selectedCategory = category;
 	}
 
 	private performRequest(forceRequest = false) {

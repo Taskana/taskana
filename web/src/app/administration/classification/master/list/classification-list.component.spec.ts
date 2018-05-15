@@ -5,6 +5,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { HttpModule } from '@angular/http';
 
 import { TreeNodeModel } from 'app/models/tree-node';
 
@@ -12,6 +14,8 @@ import { ClassificationListComponent } from './classification-list.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { ClassificationTypesSelectorComponent } from 'app/shared/classification-types-selector/classification-types-selector.component';
+import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
+import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 
 import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
@@ -31,6 +35,7 @@ class TaskanaTreeComponent {
   @Input() treeNodes;
   @Input() selectNodeId;
   @Input() filterText;
+  @Input() filterIcon;
 }
 
 @Component({
@@ -57,8 +62,8 @@ describe('ClassificationListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ClassificationListComponent, ImportExportComponent, SpinnerComponent, ClassificationTypesSelectorComponent,
-        TaskanaTreeComponent, DummyDetailComponent],
-      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule],
+        TaskanaTreeComponent, DummyDetailComponent, IconTypeComponent, MapValuesPipe],
+      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpModule],
       providers: [
         HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
         ErrorModalService, ClassificationTypesService, RequestInProgressService

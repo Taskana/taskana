@@ -1,4 +1,4 @@
 <div *ngIf="type === ''; else customIcon" class = "glyphicon glyphicon-asterisk blue"></div>
 <ng-template #customIcon>
-        <svg-icon class="{{selected? 'white': 'blue' }} small" src="./assets/icons/{{type === 'PERSONAL'? 'user.svg': type === 'GROUP'? 'users.svg' : type === 'TOPIC'? 'topic.svg' : 'clearance.svg'}}"></svg-icon>
+        <svg-icon class="{{selected? 'white': 'blue' }} small" src="./assets/icons/{{getIconPath(type)}}"></svg-icon>
 </ng-template>
