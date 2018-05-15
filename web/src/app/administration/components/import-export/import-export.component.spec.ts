@@ -10,6 +10,8 @@ import {DomainService} from 'app/services/domain/domain.service';
 import {Observable} from 'rxjs/Observable';
 import {ErrorModalService} from 'app/services/errorModal/error-modal.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { HttpModule } from '@angular/http';
 
 describe('ImportExportComponent', () => {
   let component: ImportExportComponent;
@@ -19,7 +21,7 @@ describe('ImportExportComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ImportExportComponent],
-      imports: [HttpClientModule],
+      imports: [HttpClientModule, AngularSvgIconModule, HttpModule],
       providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, AlertService,  {
         provide: DomainService,
         useClass: DomainServiceMock
