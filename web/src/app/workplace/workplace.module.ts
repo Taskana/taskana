@@ -14,6 +14,8 @@ import { TasklistComponent } from './tasklist/tasklist.component';
 import { TaskdetailsComponent } from './taskdetails/taskdetails.component';
 import { TaskComponent } from './task/task.component';
 import { TasksComponent } from './tasks/tasks.component';
+import { CodeComponent } from './components/code/code.component';
+
 
 import { OrderTasksByPipe } from './util/orderTasksBy.pipe';
 
@@ -41,6 +43,7 @@ const DECLARATIONS = [
   TaskdetailsComponent,
   TaskComponent,
   TasksComponent,
+  CodeComponent,
   OrderTasksByPipe
 ];
 

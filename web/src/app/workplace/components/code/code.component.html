@@ -1,0 +1,5 @@
+<div [@toggle]="showCode" *ngIf="showCode" >
+  <div class="code">
+      <img *ngFor= "let i of images" src='./assets/icons/code/image{{i}}.gif'>
+  </div>
+</div>
