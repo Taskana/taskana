@@ -209,7 +209,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task updatedTask2 = taskService.getTask("TKI:000000000000000000000000000000000030");
         assertNotNull(updatedTask2);
         assertFalse(updatedTask2.isRead());
-        assertFalse(updatedTask2.getModified().equals(updatedTask.getModified()));
+        assertFalse(updatedTask2.getModified().isBefore(updatedTask.getModified()));
 
     }
 
