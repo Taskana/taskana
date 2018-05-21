@@ -29,7 +29,8 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import pro.taskana.rest.resource.AccessIdValidationResource;
+import pro.taskana.ldap.LdapCacheTestImpl;
+import pro.taskana.rest.resource.AccessIdResource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
@@ -41,19 +42,21 @@ public class AccessIdValidationControllerTest {
 
     @Test
     public void testGetMatches() {
+        AccessIdController.setLdapCache(new LdapCacheTestImpl());
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
-        ResponseEntity<List<AccessIdValidationResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/validate-access-id?search=ali", HttpMethod.GET, request,
-            new ParameterizedTypeReference<List<AccessIdValidationResource>>() {
+        ResponseEntity<List<AccessIdResource>> response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/access-ids?searchFor=ali", HttpMethod.GET, request,
+            new ParameterizedTypeReference<List<AccessIdResource>>() {
             });
-        List<AccessIdValidationResource> body = response.getBody();
+        List<AccessIdResource> body = response.getBody();
         assertNotNull(body);
-        List<String> expectedIds = new ArrayList<>(Arrays.asList("user008", "user009", "user248"));
-        for (AccessIdValidationResource accessId : body) {
-            assertTrue(expectedIds.contains(accessId.getAccessId()));
+        assertTrue(3 == body.size());
+        List<String> expectedIds = new ArrayList<>(Arrays.asList("Tralisch, Thea", "Bert, Ali", "Mente, Ali"));
+        for (AccessIdResource accessId : body) {
+            assertTrue(expectedIds.contains(accessId.getName()));
         }
     }
 

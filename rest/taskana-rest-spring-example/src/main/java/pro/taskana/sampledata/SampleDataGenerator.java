@@ -21,6 +21,7 @@ public class SampleDataGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(SampleDataGenerator.class);
     private static final String SQL = "/sql";
     private static final String TEST_DATA = "/sample-data";
+    private static final String CLEAR = SQL + TEST_DATA + "/clear-db.sql";
     private static final String TASK = SQL + TEST_DATA + "/task.sql";
     private static final String WORKBASKET = SQL + TEST_DATA + "/workbasket.sql";
     private static final String DISTRIBUTION_TARGETS = SQL + TEST_DATA + "/distribution-targets.sql";
@@ -42,6 +43,13 @@ public class SampleDataGenerator {
 
         StringWriter errorWriter = new StringWriter();
         PrintWriter errorLogWriter = new PrintWriter(errorWriter);
+        try {
+            runner.setStopOnError(false);
+            runner.runScript(new BufferedReader(
+                new InputStreamReader(this.getClass().getResourceAsStream(CLEAR), StandardCharsets.UTF_8)));
+        } catch (Exception e) {
+            LOGGER.error("caught Exception {}", e);
+        }
 
         runner.setStopOnError(true);
         runner.setLogWriter(logWriter);
