@@ -6,12 +6,14 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AlertModule } from 'ngx-bootstrap';
 import { RouterModule } from '@angular/router';
 import { TreeModule } from 'angular-tree-component';
+import { TypeaheadModule } from 'ngx-bootstrap';
 
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { AlertComponent } from 'app/shared/alert/alert.component';
 import { MasterAndDetailComponent } from 'app/shared/master-and-detail/master-and-detail.component';
 import { TaskanaTreeComponent } from 'app/shared/tree/tree.component';
+import { TypeAheadComponent } from 'app/shared/type-ahead/type-ahead.component';
 
 /**
  * Pipes
@@ -22,17 +24,24 @@ import { SelectWorkBasketPipe } from './pipes/selectedWorkbasket/seleted-workbas
 import { SpreadNumberPipe } from './pipes/spreadNumber/spread-number';
 import { OrderBy } from './pipes/orderBy/orderBy';
 import { MapToIterable } from './pipes/mapToIterable/mapToIterable';
+
+/**
+ * Services
+ */
 import { HttpClientInterceptor } from './services/httpClientInterceptor/http-client-interceptor.service';
+import { AccessIdsService } from './services/access-ids/access-ids.service';
+
 
 
 const MODULES = [
   CommonModule,
   FormsModule,
   AlertModule.forRoot(),
+  TypeaheadModule.forRoot(),
   AngularSvgIconModule,
   HttpClientModule,
   RouterModule,
-  TreeModule
+  TreeModule,
 ];
 
 const DECLARATIONS = [
@@ -41,6 +50,7 @@ const DECLARATIONS = [
   AlertComponent,
   MasterAndDetailComponent,
   TaskanaTreeComponent,
+  TypeAheadComponent,
   MapValuesPipe,
   RemoveNoneTypePipe,
   SelectWorkBasketPipe,
@@ -58,7 +68,8 @@ const DECLARATIONS = [
       provide: HTTP_INTERCEPTORS,
       useClass: HttpClientInterceptor,
       multi: true
-    }
+    },
+    AccessIdsService
   ]
 })
 export class SharedModule {

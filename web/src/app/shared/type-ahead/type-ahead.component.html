@@ -1,0 +1,38 @@
+<div *ngIf="dataSource" class="custom-form-control">
+  <ng-template class="wrapper-text" #customItemTemplate let-model="item" let-index="indexTemplate" let-query="query">
+    <div (mousedown)="typeaheadOnSelect({'item':model})">
+      <div>
+        <span [innerHTML]="join(model.accessId, query)">
+        </span>
+      </div>
+      <div>
+        <span [innerHTML]="join(model.name, query)">
+        </span>
+      </div>
+    </div>
+  </ng-template>
+  <div [ngClass]="{'hidden': !dataSource.selected || typing}" class="wrapper-text" (click)="setTyping(true)">
+    <span>
+      <label>
+        {{dataSource.selected?.accessId}}
+      </label>
+    </span>
+    <div>{{dataSource.selected?.name}}</div>
+  </div>
+  <div [ngClass]="{'hidden': dataSource.selected && !typing}">
+    <span  class="field-label-wrapper">
+      <label>
+        {{dataSource.selected?.name}}
+      </label>
+    </span>
+    <div *ngIf="typeaheadLoading" class="loading">
+      <taskana-spinner [isRunning]="typeaheadLoading" positionClass="type-ahead-spinner"></taskana-spinner>
+    </div>
+    <input #inputTypeAhead class=" form-control input-text" (blur)="typeaheadOnSelect({'item':dataSource.selected})" name="accessItem-{{index}}"
+      required #accessItemName="ngModel" [(ngModel)]="value" [typeahead]="dataSource" typeaheadOptionField="name" [typeaheadItemTemplate]="customItemTemplate"
+      (typeaheadOnSelect)="typeaheadOnSelect($event, index)" [typeaheadScrollable]="true" [typeaheadOptionsInScrollableView]="typeaheadOptionsInScrollableView"
+      [typeaheadMinLength]="typeaheadMinLength" [typeaheadWaitMs]="typeaheadWaitMs" (typeaheadLoading)="changeTypeaheadLoading($event)"
+      placeholder="{{accessItemName.invalid? placeHolderMessage: ''}}">
+
+  </div>
+</div>

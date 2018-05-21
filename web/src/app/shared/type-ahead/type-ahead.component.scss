@@ -1,0 +1,47 @@
+$blue: #2e9eca;
+$grey: #ddd;
+.wrapper-text {
+    height: 47px;
+    & label {
+        width: 100%;
+        margin-bottom: 0px;
+     }
+    & div {
+        width: 100%;
+        border-bottom: 1px solid $grey;
+        margin-top:6px;
+    }
+}
+
+.input-text {
+    background: none;
+    box-shadow: none;
+    border: none;
+    padding: 0px;
+    border-radius: 0px;
+    //margin-top: 18px;
+    height: 22px;
+    border-bottom: 1px solid $grey;
+    &:focus{
+        border-bottom: 1px solid $blue;
+    }
+    
+}
+
+.field-label-wrapper{
+    position: relative;
+    //left: 8px;
+    box-sizing: content-box;
+    overflow: hidden;
+    pointer-events: none;    
+}
+
+
+.form-control:focus {
+    border-color: none;
+    box-shadow: none;
+}
+.loading {
+    position: absolute;
+    right: 0;
+}

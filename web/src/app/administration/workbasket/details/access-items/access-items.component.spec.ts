@@ -1,6 +1,6 @@
-import { SimpleChange } from '@angular/core';
+import { SimpleChange, Component, forwardRef, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -26,6 +26,37 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 
+
+@Component({
+	selector: 'taskana-type-ahead',
+	template: 'dummydetail',
+	providers: [
+		{
+			provide: NG_VALUE_ACCESSOR,
+			multi: true,
+			useExisting: forwardRef(() => TaskanaTypeAheadComponent),
+		}
+	]
+})
+export class TaskanaTypeAheadComponent implements ControlValueAccessor {
+	@Input()
+	placeHolderMessage;
+
+	writeValue(obj: any): void {
+
+	}
+	registerOnChange(fn: any): void {
+
+	}
+	registerOnTouched(fn: any): void {
+
+	}
+	setDisabledState?(isDisabled: boolean): void {
+
+	}
+
+}
+
 describe('AccessItemsComponent', () => {
 	let component: AccessItemsComponent;
 	let fixture: ComponentFixture<AccessItemsComponent>;
@@ -33,7 +64,7 @@ describe('AccessItemsComponent', () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent],
+			declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent, TaskanaTypeAheadComponent],
 			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
 			providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService,
 				{

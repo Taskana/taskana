@@ -42,7 +42,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 	custom3Field = this.customFieldsService.getCustomField('Custom 3', 'workbaskets.information.custom3');
 	custom4Field = this.customFieldsService.getCustomField('Custom 4', 'workbaskets.information.custom4');
 
-
 	private workbasketSubscription: Subscription;
 	private routeSubscription: Subscription;
 
@@ -131,7 +130,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 			this.requestInProgressService.setRequestInProgress(false);
 		});
 	}
-
 
 	private beforeRequest() {
 		this.requestInProgressService.setRequestInProgress(true);

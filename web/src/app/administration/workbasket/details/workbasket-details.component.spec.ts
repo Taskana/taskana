@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { async, ComponentFixture, TestBed, } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router, Routes } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -58,6 +58,37 @@ export class FilterComponent {
 export class DummyDetailComponent {
 }
 
+@Component({
+	selector: 'taskana-type-ahead',
+	template: 'dummydetail',
+	providers: [
+		{
+			provide: NG_VALUE_ACCESSOR,
+			multi: true,
+			useExisting: forwardRef(() => TaskanaTypeAheadComponent),
+		}
+	]
+})
+export class TaskanaTypeAheadComponent implements ControlValueAccessor {
+
+	@Input()
+	placeHolderMessage;
+
+	writeValue(obj: any): void {
+
+	}
+	registerOnChange(fn: any): void {
+
+	}
+	registerOnTouched(fn: any): void {
+
+	}
+	setDisabledState?(isDisabled: boolean): void {
+
+	}
+
+}
+
 describe('WorkbasketDetailsComponent', () => {
 	let component: WorkbasketDetailsComponent;
 	let fixture: ComponentFixture<WorkbasketDetailsComponent>;
@@ -77,7 +108,8 @@ describe('WorkbasketDetailsComponent', () => {
 			imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
 			declarations: [WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent,
 				IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
-				DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent, SelectWorkBasketPipe],
+				DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent,
+				TaskanaTypeAheadComponent, SelectWorkBasketPipe],
 			providers: [WorkbasketService, MasterAndDetailService, ErrorModalService, RequestInProgressService,
 				AlertService, SavingWorkbasketService, {
 					provide: DomainService,

@@ -1,0 +1,12 @@
+
+typeahead-container >ul.dropdown-menu{
+    width: 215px;
+    & >li.active {
+        &>a {
+            background-color: $green;
+        }
+        &>a:hover {
+            background-color: $green;
+        }
+    }
+}
