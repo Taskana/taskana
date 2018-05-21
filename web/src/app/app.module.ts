@@ -50,11 +50,11 @@ import { APP_BASE_HREF } from '@angular/common';
 
 
 const MODULES = [
+  TabsModule.forRoot(),
+  AlertModule.forRoot(),
   BrowserModule,
   FormsModule,
-  TabsModule.forRoot(),
   AppRoutingModule,
-  AlertModule.forRoot(),
   AngularSvgIconModule,
   HttpClientModule,
   BrowserAnimationsModule,
@@ -66,7 +66,7 @@ const MODULES = [
 const DECLARATIONS = [
   AppComponent,
   NavBarComponent,
-  UserInformationComponent
+  UserInformationComponent,
 ];
 
 export function startupServiceFactory(startupService: StartupService): () => Promise<any> {

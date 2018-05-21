@@ -15,16 +15,16 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from '../../../../services/custom-fields/custom-fields.service';
+import { Observable } from 'rxjs/Observable';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
 declare var $: any;
-
 @Component({
 	selector: 'taskana-workbasket-access-items',
 	templateUrl: './access-items.component.html',
 	styleUrls: ['./access-items.component.scss']
 })
 export class AccessItemsComponent implements OnChanges, OnDestroy {
-
 
 	@Input()
 	workbasket: Workbasket;
@@ -65,7 +65,11 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		private errorModalService: ErrorModalService,
 		private savingWorkbaskets: SavingWorkbasketService,
 		private requestInProgressService: RequestInProgressService,
-		private customFieldService: CustomFieldsService) { }
+		private customFieldService: CustomFieldsService) {
+
+	}
+
+
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (!this.initialized && changes.active && changes.active.currentValue === 'accessItems') {
@@ -75,6 +79,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 			this.setBadge();
 		}
 	}
+
 	private init() {
 		this.initialized = true;
 		if (!this.workbasket._links.accessItems) {
@@ -133,6 +138,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 			})
 		return false;
 	}
+
 	private setBadge() {
 		if (this.action === ACTION.COPY) {
 			this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
