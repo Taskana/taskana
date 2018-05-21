@@ -2,8 +2,10 @@ package pro.taskana.rest;
 
 import java.sql.SQLException;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -16,6 +18,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import pro.taskana.ldap.LdapCacheTestImpl;
+import pro.taskana.ldap.LdapClient;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
@@ -25,6 +29,9 @@ import pro.taskana.sampledata.SampleDataGenerator;
 @EnableScheduling
 @Import(RestConfiguration.class)
 public class ExampleRestApplication {
+
+    @Autowired
+    private LdapClient ldapClient;
 
     public static void main(String[] args) {
         SpringApplication.run(ExampleRestApplication.class, args);
@@ -55,5 +62,12 @@ public class ExampleRestApplication {
         SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource);
         sampleDataGenerator.generateSampleData();
         return sampleDataGenerator;
+    }
+
+    @PostConstruct
+    private void init() {
+        if (!ldapClient.useLdap()) {
+            AccessIdController.setLdapCache(new LdapCacheTestImpl());
+        }
     }
 }
