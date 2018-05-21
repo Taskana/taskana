@@ -6,10 +6,12 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { ErrorModel } from 'app/models/modal-error';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
+import { WindowRefService } from 'app/services/window/window.service';
 
 @Injectable()
 export class BusinessAdminGuard implements CanActivate {
-    constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) { }
+    constructor(private taskanaEngineService: TaskanaEngineService, public router: Router,
+        private window: WindowRefService) { }
 
     canActivate() {
         return this.taskanaEngineService.getUserInformation().map(userInfo => {
@@ -17,7 +19,7 @@ export class BusinessAdminGuard implements CanActivate {
                 return this.navigateToWorplace();
             }
             const adminRole = userInfo.roles.find(role => {
-                if (role === 'BUSINESS_ADMIN' || role === 'ADMIN' ) {
+                if (role === 'BUSINESS_ADMIN' || role === 'ADMIN') {
                     return true;
                 }
             });
@@ -32,7 +34,9 @@ export class BusinessAdminGuard implements CanActivate {
     }
 
     navigateToWorplace(): boolean {
-        this.router.navigate(['workplace']);
+        if (this.window.nativeWindow.location.href.indexOf('administration') !== -1) {
+            this.router.navigate(['workplace']);
+        }
         return false
     }
 }

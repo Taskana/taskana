@@ -7,6 +7,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AlertModule } from 'ngx-bootstrap';
 import { SharedModule } from 'app/shared/shared.module';
 import { AdministrationRoutingModule } from './administration-routing.module';
+import { TypeaheadModule } from 'ngx-bootstrap';
 
 /**
  * Components
@@ -39,7 +40,6 @@ import { ClassificationsService } from './services/classifications/classificatio
 import { ClassificationTypesService } from './services/classification-types/classification-types.service';
 import { ClassificationCategoriesService } from './services/classification-categories-service/classification-categories.service';
 
-
 const MODULES = [
   CommonModule,
   FormsModule,
@@ -47,7 +47,8 @@ const MODULES = [
   AngularSvgIconModule,
   AlertModule,
   SharedModule,
-  AdministrationRoutingModule
+  AdministrationRoutingModule,
+  TypeaheadModule
 ];
 
 const DECLARATIONS = [

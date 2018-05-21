@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
-import { Component } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { Routes } from '@angular/router';
 import { AppModule } from 'app/app.module'
 
@@ -37,6 +37,36 @@ import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.se
 export class DummyDetailComponent {
 }
 
+@Component({
+	selector: 'taskana-type-ahead',
+	template: 'dummydetail',
+	providers: [
+		{
+			provide: NG_VALUE_ACCESSOR,
+			multi: true,
+			useExisting: forwardRef(() => TaskanaTypeAheadComponent),
+		}
+	]
+})
+export class TaskanaTypeAheadComponent implements ControlValueAccessor {
+	@Input()
+	placeHolderMessage;
+
+	writeValue(obj: any): void {
+
+	}
+	registerOnChange(fn: any): void {
+
+	}
+	registerOnTouched(fn: any): void {
+
+	}
+	setDisabledState?(isDisabled: boolean): void {
+
+	}
+
+}
+
 const routes: Routes = [
 	{ path: ':id', component: DummyDetailComponent, outlet: 'detail' },
 	{ path: 'someNewId', component: DummyDetailComponent }
@@ -50,7 +80,8 @@ describe('InformationComponent', () => {
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
 			declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe,
-				RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent, DummyDetailComponent],
+				RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent, DummyDetailComponent,
+				TaskanaTypeAheadComponent],
 			imports: [FormsModule,
 				AngularSvgIconModule,
 				HttpClientModule,
