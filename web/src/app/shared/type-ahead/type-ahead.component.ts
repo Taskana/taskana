@@ -19,9 +19,7 @@ const noop = () => {
       useExisting: forwardRef(() => TypeAheadComponent),
       multi: true
     }
-
   ]
-
 })
 export class TypeAheadComponent implements OnInit, ControlValueAccessor {
 

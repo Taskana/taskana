@@ -100,7 +100,6 @@ export class ClassificationsService {
       }
       return this.buildHierarchy(data[0]._embedded.classificationSummaryResourceList, data[1]);
     })
-
   }
 
   private buildHierarchy(classifications: Array<Classification>, type: string) {

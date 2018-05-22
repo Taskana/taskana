@@ -3,7 +3,7 @@
         <div #wbToolbar>
             <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)" (performSorting)="performSorting ($event)"></taskana-workbasket-list-toolbar>
         </div>
-        <div>
+        <div *ngIf="(workbaskets && workbaskets.length > 0) else empty_workbaskets">
             <ul #wbList id="wb-list-container" class="list-group">
                 <li class="list-group-item no-space">
                     <div class="row"></div>
@@ -26,7 +26,12 @@
             </ul>
         </div>
         <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
-
+        <ng-template #empty_workbaskets>
+            <div class="col-xs-12 container-no-items center-block">
+                <h3 class="grey">There are no workbaskets</h3>
+                <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
+            </div>
+        </ng-template>
     </div>
     <taskana-pagination [(workbasketsResource)]="workbasketsResource" (changePage)="changePage($event)"></taskana-pagination>
 </div>
