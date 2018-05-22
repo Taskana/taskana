@@ -64,6 +64,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 					return;
 				}
 				this.action = ACTION.COPY;
+				this.workbasket.key = undefined;
 				this.workbasketCopy = this.workbasket;
 				id = undefined
 				this.getWorkbasketInformation(id, this.selectedId);
