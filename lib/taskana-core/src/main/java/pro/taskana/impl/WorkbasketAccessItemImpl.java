@@ -11,6 +11,7 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
     private String id;
     private String workbasketId;
     private String accessId;
+    private String accessName;
     private boolean permRead;
     private boolean permOpen;
     private boolean permAppend;
@@ -74,6 +75,24 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         } else {
             this.accessId = accessId;
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see pro.taskana.impl.WorkbasketAccessItem#getAccessId()
+     */
+    @Override
+    public String getAccessName() {
+        return accessName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see pro.taskana.impl.WorkbasketAccessItem#getAccessId()
+     */
+    @Override
+    public void setAccessName(String accessName) {
+        this.accessName = accessName;
     }
 
     /*

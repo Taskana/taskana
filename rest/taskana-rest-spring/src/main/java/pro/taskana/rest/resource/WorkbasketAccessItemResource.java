@@ -19,6 +19,8 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
     @NotNull
     public String accessId;
 
+    public String accessName;
+
     public boolean permRead;
     public boolean permOpen;
     public boolean permAppend;
@@ -59,6 +61,14 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
 
     public void setAccessId(String accessId) {
         this.accessId = accessId;
+    }
+
+    public String getAccessName() {
+        return accessName;
+    }
+
+    public void setAccessName(String accessName) {
+        this.accessName = accessName;
     }
 
     public boolean isPermRead() {
