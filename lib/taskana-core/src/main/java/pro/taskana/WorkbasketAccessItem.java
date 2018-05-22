@@ -29,6 +29,21 @@ public interface WorkbasketAccessItem {
     String getAccessId();
 
     /**
+     * Returns the name of the group or user for which this WorkbasketAccessItem controls access permissions.
+     *
+     * @return access name, this is the name of the group or user
+     */
+    String getAccessName();
+
+    /**
+     * Set the name of the group or user for which this WorkbasketAccessItem controls access permissions.
+     *
+     * @param name
+     *            the name of the group or user for which this WorkbasketAccessItem controls access permissions.
+     */
+    void setAccessName(String name);
+
+    /**
      * Returns whether read of the referenced workbasket is permitted.
      *
      * @return read permission for the referenced workbasket

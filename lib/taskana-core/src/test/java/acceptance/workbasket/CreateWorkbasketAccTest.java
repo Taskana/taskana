@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -144,4 +145,36 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         } catch (InvalidWorkbasketException e) {
         }
     }
+
+    @WithAccessId(
+        userName = "user_1_2",
+        groupNames = {"businessadmin"})
+    @Test
+    public void testWorkbasketAccessItemSetName()
+        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+        InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
+
+        Workbasket workbasket = workbasketService.newWorkbasket("WBAIT1234", "DOMAIN_A");
+        workbasket.setName("MyNewBasket");
+        workbasket.setType(WorkbasketType.PERSONAL);
+        workbasket.setOrgLevel1("company");
+        workbasket = workbasketService.createWorkbasket(workbasket);
+        WorkbasketAccessItem wbai = workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user_1_2");
+        wbai.setPermRead(true);
+        wbai.setAccessName("Karl Napf");
+        workbasketService.createWorkbasketAccessItem(wbai);
+
+        Workbasket createdWorkbasket = workbasketService.getWorkbasket("WBAIT1234", "DOMAIN_A");
+        assertNotNull(createdWorkbasket);
+        assertNotNull(createdWorkbasket.getId());
+
+        List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(createdWorkbasket.getId());
+        WorkbasketAccessItem item = accessItems.stream().filter(t -> wbai.getId().equals(t.getId())).findFirst().orElse(
+            null);
+        assertEquals("Karl Napf", item.getAccessName());
+
+    }
+
 }
