@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';

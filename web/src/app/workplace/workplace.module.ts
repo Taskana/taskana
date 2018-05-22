@@ -18,7 +18,7 @@ import { CodeComponent } from './components/code/code.component';
 import { OrderTasksByPipe } from './util/orderTasksBy.pipe';
 
 import {TaskService} from './services/task.service';
-import {WorkbasketService} from './services/workbasket.service';
+import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
 import {SharedModule} from '../shared/shared.module';
 import {CustomHttpClientInterceptor} from './services/custom-http-interceptor/custom-http-interceptor.service';
 

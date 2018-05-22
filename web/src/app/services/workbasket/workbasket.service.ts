@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { environment } from 'app/../environments/environment';
+import { environment } from 'environments/environment';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
@@ -12,9 +12,13 @@ import { Direction } from 'app/models/sorting';
 
 import { DomainService } from 'app/services/domain/domain.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import {WorkbasketResource} from '../../models/workbasket-resource';
 
 @Injectable()
 export class WorkbasketService {
+
+  workbasketKey: string;
+  workbasketName: string;
 
 	public workBasketSelected = new Subject<string>();
 	public workBasketSaved = new Subject<number>();
@@ -92,6 +96,12 @@ export class WorkbasketService {
 	getWorkBasket(id: string): Observable<Workbasket> {
 		return this.httpClient.get<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets/${id}`);
 	}
+
+	// GET
+  getAllWorkBaskets(): Observable<WorkbasketResource> {
+    return this.httpClient.get<WorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`);
+  }
+
 	// POST
 	createWorkbasket(workbasket: Workbasket): Observable<Workbasket> {
 		return this.httpClient
