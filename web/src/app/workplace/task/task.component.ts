@@ -4,7 +4,7 @@ import {Task} from 'app/workplace/models/task';
 import {Workbasket} from 'app/models/workbasket';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {TaskService} from 'app/workplace/services/task.service';
-import {WorkbasketService} from 'app/workplace/services/workbasket.service';
+import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
 
 
 @Component({

@@ -14,7 +14,7 @@ import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { AlertService } from 'app/services/alert/alert.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
-import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';

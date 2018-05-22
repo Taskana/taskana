@@ -22,7 +22,7 @@ import { IconTypeComponent } from 'app/administration/components/type-icon/icon-
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
-import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 

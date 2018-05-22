@@ -17,7 +17,7 @@ import { ClassificationTypesSelectorComponent } from 'app/shared/classification-
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 
-import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
