@@ -32,7 +32,7 @@ import { SortComponent } from './components/sort/sort.component';
 /**
  * Services
  */
-import { WorkbasketService } from './services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { SavingWorkbasketService } from './services/saving-workbaskets/saving-workbaskets.service';
 import { ClassificationDefinitionService } from './services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from './services/workbasket-definition/workbasket-definition.service';

@@ -11,7 +11,7 @@ import { FilterModel } from 'app/models/filter'
 import { SortingModel } from 'app/models/sorting';
 import { Orientation } from 'app/models/orientation';
 
-import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service'
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
 import { OrientationService } from 'app/services/orientation/orientation.service';
 
 @Component({

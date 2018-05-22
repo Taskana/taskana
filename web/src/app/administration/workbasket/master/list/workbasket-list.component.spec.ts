@@ -24,7 +24,7 @@ import { ImportExportComponent } from 'app/administration/components/import-expo
 
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
-import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',

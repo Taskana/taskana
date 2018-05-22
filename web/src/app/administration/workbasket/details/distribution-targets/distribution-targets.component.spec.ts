@@ -13,7 +13,7 @@ import { FilterModel } from 'app/models/filter';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
 
-import { WorkbasketService } from 'app/administration/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
