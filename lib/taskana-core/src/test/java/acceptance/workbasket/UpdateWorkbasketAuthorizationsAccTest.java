@@ -57,10 +57,20 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         accessItem.setPermRead(true);
         accessItem = workbasketService.createWorkbasketAccessItem(accessItem);
 
+        WorkbasketAccessItem newItem = accessItem;
         accessItem.setPermCustom1(true);
         accessItem.setPermAppend(false);
-        WorkbasketAccessItem updatedItem = workbasketService.updateWorkbasketAccessItem(accessItem);
+        accessItem.setAccessName("Rojas, Miguel");
+        workbasketService.updateWorkbasketAccessItem(accessItem);
+        List<WorkbasketAccessItem> items = workbasketService
+            .getWorkbasketAccessItems("WBI:100000000000000000000000000000000002");
 
+        WorkbasketAccessItem updatedItem = items.stream()
+            .filter(t -> newItem.getId().equals(t.getId()))
+            .findFirst()
+            .orElse(null);
+
+        Assert.assertEquals("Rojas, Miguel", updatedItem.getAccessName());
         Assert.assertEquals(false, updatedItem.isPermAppend());
         Assert.assertEquals(true, updatedItem.isPermRead());
         Assert.assertEquals(true, updatedItem.isPermCustom11());

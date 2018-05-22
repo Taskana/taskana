@@ -319,7 +319,7 @@ public interface QueryMapper {
 
     @Select("<script>"
         + "SELECT "
-        + "ID, WORKBASKET_ID, ACCESS_ID, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, "
+        + "ID, WORKBASKET_ID, ACCESS_ID, ACCESS_NAME, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, "
         + "PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
         + "from TASKANA.WORKBASKET_ACCESS_LIST "
         + "<where>"
@@ -334,6 +334,7 @@ public interface QueryMapper {
         @Result(property = "id", column = "ID"),
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
         @Result(property = "accessId", column = "ACCESS_ID"),
+        @Result(property = "accessName", column = "ACCESS_NAME"),
         @Result(property = "permRead", column = "PERM_READ"),
         @Result(property = "permOpen", column = "PERM_OPEN"),
         @Result(property = "permAppend", column = "PERM_APPEND"),
