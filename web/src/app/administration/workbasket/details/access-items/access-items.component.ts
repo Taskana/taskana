@@ -66,10 +66,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		private savingWorkbaskets: SavingWorkbasketService,
 		private requestInProgressService: RequestInProgressService,
 		private customFieldService: CustomFieldsService) {
-
 	}
-
-
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (!this.initialized && changes.active && changes.active.currentValue === 'accessItems') {
@@ -137,6 +134,26 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 				return false;
 			})
 		return false;
+	}
+
+	checkAll(row: number) {
+		this.accessItems[row].permCustom1 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom2 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom3 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom4 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom5 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom6 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom7 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom8 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom9 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom10 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom11 = !this.accessItems[row].permRead;
+		this.accessItems[row].permCustom12 = !this.accessItems[row].permRead;
+		this.accessItems[row].permAppend = !this.accessItems[row].permRead;
+		this.accessItems[row].permDistribute = !this.accessItems[row].permRead;
+		this.accessItems[row].permOpen = !this.accessItems[row].permRead;
+		this.accessItems[row].permTransfer = !this.accessItems[row].permRead;
+		this.accessItems[row].permRead = !this.accessItems[row].permRead;
 	}
 
 	private setBadge() {

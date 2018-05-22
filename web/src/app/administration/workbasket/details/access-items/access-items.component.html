@@ -15,6 +15,7 @@
 					<tr>
 						<th></th>
 						<th class="text-align required-header">AccessID</th>
+						<th>Select all</th>
 						<th>Read</th>
 						<th>Open</th>
 						<th>Append</th>
@@ -44,64 +45,83 @@
 						<td class="input-group text-align text-width taskana-type-ahead" [ngClass]="{
 							'has-warning': (accessItemsClone[index].accessId !== accessItem.accessId),
 							'has-error': !accessItem.accessId } ">
-
 							<taskana-type-ahead required #accessItemName="ngModel" [(ngModel)]="accessItem.accessId" name="accessItem.accessId-{{index}}"
-							 [(ngModel)]="accessItem.accessIdr" placeHolderMessage="Access id is required"></taskana-type-ahead>
-
+							 [(ngModel)]="accessItem.accessId" placeHolderMessage="Access id is required"></taskana-type-ahead>
+						</td>
+						<td>
+							<input id="checkbox-{{index}}-00" type="checkbox" (click)="checkAll(index)">
+							<label for="checkbox-{{index}}-00"></label>
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permRead !== accessItem.permRead)}">
-							<input type="checkbox" disabled="disabled" name="accessItem.permRead-{{index}}" [(ngModel)]="accessItem.permRead">
+							<input id="checkbox-{{index}}-0" type="checkbox" disabled="disabled" name="accessItem.permRead-{{index}}" [(ngModel)]="accessItem.permRead"
+							 class="regular-checkbox">
+							<label for="checkbox-{{index}}-0"></label>
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permOpen !== accessItem.permOpen)}">
-							<input type="checkbox" name="accessItem.permOpen-{{index}}" [(ngModel)]="accessItem.permOpen">
+							<input id="checkbox-{{index}}-1" type="checkbox" name="accessItem.permOpen-{{index}}" [(ngModel)]="accessItem.permOpen">
+							<label for="checkbox-{{index}}-1"></label>
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permAppend !== accessItem.permAppend)}">
-							<input type="checkbox" name="accessItem.permAppend-{{index}}" [(ngModel)]="accessItem.permAppend">
+							<input id="checkbox-{{index}}-2" type="checkbox" name="accessItem.permAppend-{{index}}" [(ngModel)]="accessItem.permAppend">
+							<label for="checkbox-{{index}}-2"></label>
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permTransfer !== accessItem.permTransfer)}">
-							<input type="checkbox" name="accessItem.permTransfer-{{index}}" [(ngModel)]="accessItem.permTransfer">
+							<input id="checkbox-{{index}}-3" type="checkbox" name="accessItem.permTransfer-{{index}}" [(ngModel)]="accessItem.permTransfer">
+							<label for="checkbox-{{index}}-3"></label>
 						</td>
 						<td [ngClass]="{'has-changes': (accessItemsClone[index].permDistribute !== accessItem.permDistribute)}">
-							<input type="checkbox" name="accessItem.permDistribute-{{index}}" [(ngModel)]="accessItem.permDistribute">
+							<input id="checkbox-{{index}}-4" type="checkbox" name="accessItem.permDistribute-{{index}}" [(ngModel)]="accessItem.permDistribute">
+							<label for="checkbox-{{index}}-4"></label>
 						</td>
 						<td *ngIf="custom1Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom1 !== accessItem.permCustom1)}">
-							<input type="checkbox" name="accessItem.permCustom1-{{index}}" [(ngModel)]="accessItem.permCustom1">
+							<input id="checkbox-{{index}}-5" type="checkbox" name="accessItem.permCustom1-{{index}}" [(ngModel)]="accessItem.permCustom1">
+							<label for="checkbox-{{index}}-5"></label>
 						</td>
 						<td *ngIf="custom2Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom2 !== accessItem.permCustom2)}">
-							<input type="checkbox" name="accessItem.permCustom2-{{index}}" [(ngModel)]="accessItem.permCustom2">
+							<input id="checkbox-{{index}}-6" type="checkbox" name="accessItem.permCustom2-{{index}}" [(ngModel)]="accessItem.permCustom2">
+							<label for="checkbox-{{index}}-6"></label>
 						</td>
 						<td *ngIf="custom3Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom3 !== accessItem.permCustom3)}">
-							<input type="checkbox" name="accessItem.permCustom3-{{index}}" [(ngModel)]="accessItem.permCustom3">
+							<input id="checkbox-{{index}}-7" type="checkbox" name="accessItem.permCustom3-{{index}}" [(ngModel)]="accessItem.permCustom3">
+							<label for="checkbox-{{index}}-7"></label>
 						</td>
 						<td *ngIf="custom4Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom4 !== accessItem.permCustom4)}">
-							<input type="checkbox" name="accessItem.permCustom4-{{index}}" [(ngModel)]="accessItem.permCustom4">
+							<input id="checkbox-{{index}}-8" type="checkbox" name="accessItem.permCustom4-{{index}}" [(ngModel)]="accessItem.permCustom4">
+							<label for="checkbox-{{index}}-8"></label>
 						</td>
 						<td *ngIf="custom5Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom5 !== accessItem.permCustom5)}">
-							<input type="checkbox" name="accessItem.permCustom5-{{index}}" [(ngModel)]="accessItem.permCustom5">
+							<input id="checkbox-{{index}}-9" type="checkbox" name="accessItem.permCustom5-{{index}}" [(ngModel)]="accessItem.permCustom5">
+							<label for="checkbox-{{index}}-9"></label>
 						</td>
 						<td *ngIf="custom6Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom6 !== accessItem.permCustom6)}">
-							<input type="checkbox" name="accessItem.permCustom6-{{index}}" [(ngModel)]="accessItem.permCustom6">
+							<input id="checkbox-{{index}}-10" type="checkbox" name="accessItem.permCustom6-{{index}}" [(ngModel)]="accessItem.permCustom6">
+							<label for="checkbox-{{index}}-10"></label>
 						</td>
 						<td *ngIf="custom7Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom7 !== accessItem.permCustom7)}">
-							<input type="checkbox" name="accessItem.permCustom7-{{index}}" [(ngModel)]="accessItem.permCustom7">
+							<input id="checkbox-{{index}}-11" type="checkbox" name="accessItem.permCustom7-{{index}}" [(ngModel)]="accessItem.permCustom7">
+							<label for="checkbox-{{index}}-11"></label>
 						</td>
 						<td *ngIf="custom8Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom8 !== accessItem.permCustom8)}">
-							<input type="checkbox" name="accessItem.permCustom8-{{index}}" [(ngModel)]="accessItem.permCustom8">
+							<input id="checkbox-{{index}}-12" type="checkbox" name="accessItem.permCustom8-{{index}}" [(ngModel)]="accessItem.permCustom8">
+							<label for="checkbox-{{index}}-12"></label>
 						</td>
 						<td *ngIf="custom9Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom9 !== accessItem.permCustom9)}">
-							<input type="checkbox" name="accessItem.permCustom9-{{index}}" [(ngModel)]="accessItem.permCustom9">
+							<input id="checkbox-{{index}}-13" type="checkbox" name="accessItem.permCustom9-{{index}}" [(ngModel)]="accessItem.permCustom9">
+							<label for="checkbox-{{index}}-13"></label>
 						</td>
 						<td *ngIf="custom10Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom10 !== accessItem.permCustom10)}">
-							<input type="checkbox" name="accessItem.permCustom10-{{index}}" [(ngModel)]="accessItem.permCustom10">
+							<input id="checkbox-{{index}}-14" type="checkbox" name="accessItem.permCustom10-{{index}}" [(ngModel)]="accessItem.permCustom10">
+							<label for="checkbox-{{index}}-14"></label>
 						</td>
 						<td *ngIf="custom11Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom11 !== accessItem.permCustom11)}">
-							<input type="checkbox" name="accessItem.permCustom11-{{index}}" [(ngModel)]="accessItem.permCustom11">
+							<input id="checkbox-{{index}}-15" type="checkbox" name="accessItem.permCustom11-{{index}}" [(ngModel)]="accessItem.permCustom11">
+							<label for="checkbox-{{index}}-15"></label>
 						</td>
 						<td *ngIf="custom12Field.visible" [ngClass]="{'has-changes': (accessItemsClone[index].permCustom12 !== accessItem.permCustom12)}">
-							<input type="checkbox" name="accessItem.permCustom12-{{index}}" [(ngModel)]="accessItem.permCustom12">
+							<input id="checkbox-{{index}}-16" type="checkbox" name="accessItem.permCustom12-{{index}}" [(ngModel)]="accessItem.permCustom12">
+							<label for="checkbox-{{index}}-16"></label>
 						</td>
 					</tr>
-
 				</tbody>
 			</table>
 		</form>
