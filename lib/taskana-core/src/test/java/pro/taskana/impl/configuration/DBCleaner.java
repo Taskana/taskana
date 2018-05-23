@@ -20,6 +20,7 @@ public class DBCleaner {
     private static final Logger LOGGER = LoggerFactory.getLogger(DBCleaner.class);
     private static final String DB_CLEAR_SCRIPT = "/sql/clear-db.sql";
     private static final String DB_DROP_TABLES_SCRIPT = "/sql/drop-tables.sql";
+    private static final String DB_DROP_TABLES_DB2_SCRIPT = "/sql/drop-tables-db2.sql";
 
     private StringWriter outWriter = new StringWriter();
     private PrintWriter logWriter = new PrintWriter(outWriter);
@@ -42,7 +43,13 @@ public class DBCleaner {
             runner.setLogWriter(logWriter);
             runner.setErrorLogWriter(errorLogWriter);
             if (dropTables) {
-                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_DROP_TABLES_SCRIPT)));
+                String databaseProductName = connection.getMetaData().getDatabaseProductName();
+                if (databaseProductName.contains("DB2")) {
+                    runner.runScript(
+                        new InputStreamReader(this.getClass().getResourceAsStream(DB_DROP_TABLES_DB2_SCRIPT)));
+                } else {
+                    runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_DROP_TABLES_SCRIPT)));
+                }
             } else {
                 runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_CLEAR_SCRIPT)));
             }
