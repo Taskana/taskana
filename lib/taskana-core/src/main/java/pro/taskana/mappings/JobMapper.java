@@ -23,7 +23,7 @@ public interface JobMapper {
         + "VALUES ("
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
-        + "NEXT VALUE FOR TASKANA.JOB_SEQ"
+        + "TASKANA.JOB_SEQ.NEXTVAL"
         + "</when>"
         + "<otherwise>"
         + "nextval('TASKANA.JOB_SEQ')"
