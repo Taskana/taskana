@@ -32,6 +32,7 @@ public class TestDataGenerator {
     private PrintWriter logWriter;
     private StringWriter errorWriter;
     private PrintWriter errorLogWriter;
+    private boolean isDb2 = false;
 
     public TestDataGenerator() {
         this.logWriter = new PrintWriter(this.outWriter);
@@ -43,6 +44,9 @@ public class TestDataGenerator {
         ScriptRunner runner = null;
         try {
             Connection connection = dataSource.getConnection();
+            if (connection.getMetaData().getDatabaseProductName().contains("DB2")) {
+                isDb2 = true;
+            }
             LOGGER.debug(connection.getMetaData().toString());
             runner = new ScriptRunner(connection);
             runner.setStopOnError(true);
@@ -51,12 +55,21 @@ public class TestDataGenerator {
             runner.setStopOnError(true);
             runner.setLogWriter(this.logWriter);
             runner.setErrorLogWriter(this.errorLogWriter);
-            runner.runScript(
-                new InputStreamReader(this.getClass().getResourceAsStream("/sql/classification.sql")));
-            runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket.sql")));
-            runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/task.sql")));
-            runner.runScript(
-                new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket-access-list.sql")));
+            if (isDb2) {
+                runner.runScript(
+                    new InputStreamReader(this.getClass().getResourceAsStream("/sql/classification-db2.sql")));
+                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket.sql")));
+                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/task-db2.sql")));
+                runner.runScript(
+                    new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket-access-list-db2.sql")));
+            } else {
+                runner.runScript(
+                    new InputStreamReader(this.getClass().getResourceAsStream("/sql/classification.sql")));
+                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket.sql")));
+                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/task.sql")));
+                runner.runScript(
+                    new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket-access-list.sql")));
+            }
             runner.runScript(
                 new InputStreamReader(this.getClass().getResourceAsStream("/sql/distribution-targets.sql")));
             runner.runScript(
@@ -77,6 +90,9 @@ public class TestDataGenerator {
         ScriptRunner runner = null;
         try {
             Connection connection = dataSource.getConnection();
+            if (connection.getMetaData().getDatabaseProductName().contains("DB2")) {
+                isDb2 = true;
+            }
             LOGGER.debug(connection.getMetaData().toString());
             runner = new ScriptRunner(connection);
             runner.setStopOnError(true);
@@ -100,8 +116,14 @@ public class TestDataGenerator {
     }
 
     private String generateMonitoringSqlData() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(
-            new InputStreamReader(this.getClass().getResourceAsStream("/sql/monitor-sample-data.sql")));
+        BufferedReader bufferedReader;
+        if (isDb2) {
+            bufferedReader = new BufferedReader(
+                new InputStreamReader(this.getClass().getResourceAsStream("/sql/monitor-sample-data-db2.sql")));
+        } else {
+            bufferedReader = new BufferedReader(
+                new InputStreamReader(this.getClass().getResourceAsStream("/sql/monitor-sample-data.sql")));
+        }
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         StringBuilder sql = new StringBuilder();
