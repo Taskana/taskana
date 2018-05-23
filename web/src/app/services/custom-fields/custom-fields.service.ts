@@ -7,7 +7,7 @@ export class CustomFieldsService {
   constructor() { }
 
   initCustomFields(language: string = 'EN', jsonFile: any) {
-    this.customizedFields = jsonFile.customizedFields[language];
+    this.customizedFields = jsonFile[language];
   }
 
   getCustomField(fallbacktext: string, customPath: string = undefined): CustomField {

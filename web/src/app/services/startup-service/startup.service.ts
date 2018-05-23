@@ -18,8 +18,13 @@ export class StartupService {
         return this.loadEnvironment();
     }
 
-
     private loadEnvironment() {
+        return this.getEnvironmentFilePromise().then(
+            () => this.geCustomizedFieldsFilePromise()
+        );
+    }
+
+    getEnvironmentFilePromise() {
         return this.httpClient.get<any>('environments/data-sources/environment-information.json').map(jsonFile => {
             if (jsonFile) {
                 environment.taskanaRestUrl = jsonFile.taskanaRestUrl === '' ?
@@ -29,6 +34,17 @@ export class StartupService {
         }).toPromise()
             .catch(() => {
                 return Observable.of(true)
-            })
+            });
+    }
+
+    geCustomizedFieldsFilePromise() {
+        return this.httpClient.get<any>('environments/data-sources/customized-fields.json').map(jsonFile => {
+            if (jsonFile) {
+                this.customFieldsService.initCustomFields('EN', jsonFile);
+            }
+        }).toPromise()
+            .catch(() => {
+                return Observable.of(true)
+            });
     }
 }
