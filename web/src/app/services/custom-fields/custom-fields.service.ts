@@ -7,7 +7,7 @@ export class CustomFieldsService {
   constructor() { }
 
   initCustomFields(language: string = 'EN', jsonFile: any) {
-    this.customizedFields = jsonFile.customizedFields[language];
+    this.customizedFields = jsonFile[language];
   }
 
   getCustomField(fallbacktext: string, customPath: string = undefined): CustomField {
@@ -19,7 +19,7 @@ export class CustomFieldsService {
 
   private jsonPath(path: string, fallbacktext: string): CustomField {
     if (!this.customizedFields) {
-      return undefined;
+      return new CustomField(true, fallbacktext);
     };
     const paths = path.split('.');
     let value = this.customizedFields;

@@ -23,7 +23,7 @@
         <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
           <li>
             <a *ngFor="let domain of domains" (click)="switchDomain(domain)">
-              {{domain}}
+              <label>{{domain}}</label>
             </a>
           </li>
         </ul>
@@ -36,8 +36,8 @@
       <ul class="nav">
         <svg-icon class="logo white visible-xs" src="./assets/icons/logo.svg"></svg-icon>
         <h2 class="navbar-brand no-margin logo visible-xs"> {{title}}</h2>
-        <button type="button" class="btn btn-default logout navbar-toggle logout show pull-right" data-toggle="tooltip" title="logout" (click)="logout()" aria-expanded="true"
-          aria-controls="logout">
+        <button type="button" class="btn btn-default logout navbar-toggle logout show pull-right" data-toggle="tooltip" title="logout"
+          (click)="logout()" aria-expanded="true" aria-controls="logout">
           <span class="glyphicon glyphicon-share white"></span>
         </button>
       </ul>
