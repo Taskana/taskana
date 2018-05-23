@@ -28,10 +28,13 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   selectedRoute = '';
   route: string;
+  title = '';
+
   titleAdministration = 'Administration';
+  titleWorkbaskets = 'Workbaskets';
+  titleClassifications = 'Classifications';
   titleMonitor = 'Monitor';
   titleWorkplace = 'Workplace';
-  title = 'Administration';
   showNavbar = false;
   domains: Array<string> = [];
   selectedDomain: string;
@@ -87,8 +90,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   private setTitle(value: string = 'workbaskets') {
-    if (value.indexOf('workbaskets') === 0 || value.indexOf('classifications') === 0) {
-      this.title = this.titleAdministration;
+    if (value.indexOf('workbaskets') === 0) {
+      this.title = this.titleWorkbaskets;
+    } else if (value.indexOf('classifications') === 0) {
+      this.title = this.titleClassifications;
     } else if (value.indexOf('monitor') === 0) {
       this.title = this.titleMonitor;
     } else if (value.indexOf('workplace') === 0) {

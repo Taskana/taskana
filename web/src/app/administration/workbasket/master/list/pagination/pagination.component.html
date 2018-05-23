@@ -6,7 +6,7 @@
 	<li *ngFor="let pageNumber of workbasketsResource?.page?.totalPages |
 				spreadNumber:  workbasketsResource?.page?.number: maxPagesAvailable:  workbasketsResource?.page?.totalPages">
 		<a *ngIf="pageNumber + 1 !== workbasketsResource?.page?.number" (click)="changeToPage(pageNumber+1)">{{pageNumber + 1}}</a>
-		<a *ngIf="pageNumber + 1 === workbasketsResource?.page?.number"  class="pagination">
+		<a *ngIf="pageNumber + 1 === workbasketsResource?.page?.number" class="pagination">
 			<input [(ngModel)]="pageSelected" (keyup.enter)="changeToPage(pageSelected)" type="text" (blur)="changeToPage(pageSelected)">
 		</a>
 	</li>
@@ -14,3 +14,6 @@
 		<a (click)="changeToPage(workbasketsResource?.page.totalPages)" aria-label="Last">Last</a>
 	</li>
 </ul>
+<span class="footer pull-right">
+	<i [innerHTML]="getPagesTextToShow()"></i>
+</span>
