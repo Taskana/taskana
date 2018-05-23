@@ -72,7 +72,8 @@ describe('NavBarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`should have as title 'Administration'`, (() => {
-    expect(navBar.title).toEqual('Administration');
+  it(`should have as title ''`, (() => {
+    expect(navBar.title).toEqual('');
   }));
+
 });
