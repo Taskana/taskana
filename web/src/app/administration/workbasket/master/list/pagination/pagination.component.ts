@@ -37,4 +37,16 @@ export class PaginationComponent implements OnInit, OnChanges {
 			this.previousPageSelected = page;
 		}
 	}
+
+	getPagesTextToShow(): string {
+		if (!this.workbasketsResource) {
+			return '';
+		}
+		let text = this.workbasketsResource.page.totalElements + '';
+		if (this.workbasketsResource.page && this.workbasketsResource.page.totalElements &&
+			this.workbasketsResource.page.totalElements >= this.workbasketsResource.page.size) {
+			text = this.workbasketsResource.page.size + '';
+		}
+		return `${text} of ${this.workbasketsResource.page.totalElements} workbaskets`;
+	}
 }
