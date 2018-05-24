@@ -1,5 +1,6 @@
 package acceptance;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,7 +40,7 @@ public abstract class AbstractAccTest {
         resetDb();
     }
 
-    public static void resetDb(boolean... dropTables) throws SQLException {
+    public static void resetDb(boolean... dropTables) throws SQLException, IOException {
         DataSource dataSource = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         if (dropTables == null || dropTables.length == 0) {

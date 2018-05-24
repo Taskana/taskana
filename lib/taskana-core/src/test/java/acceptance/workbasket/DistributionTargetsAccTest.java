@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -244,7 +245,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2", "businessadmin"})
     @Test
     public void testSetDistributionTargets()
-        throws NotAuthorizedException, WorkbasketNotFoundException, SQLException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, SQLException, IOException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket sourceWorkbasket = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");

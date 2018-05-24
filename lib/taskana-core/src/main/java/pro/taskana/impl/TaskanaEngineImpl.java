@@ -112,6 +112,18 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         }
     }
 
+    public static boolean isDb2(String dbProductName) {
+        return dbProductName.contains("DB2");
+    }
+
+    public static boolean isH2(String databaseProductName) {
+        return databaseProductName.contains("H2");
+    }
+
+    public static boolean isPostgreSQL(String databaseProductName) {
+        return databaseProductName.equals("PostgreSQL");
+    }
+
     @Override
     public TaskService getTaskService() {
         SqlSession session = this.sessionManager;
@@ -325,11 +337,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         String databaseProductName;
         try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
             databaseProductName = con.getMetaData().getDatabaseProductName();
-            if (databaseProductName.contains("DB2")) {
+            if (isDb2(databaseProductName)) {
                 configuration.setDatabaseId("db2");
-            } else if (databaseProductName.contains("H2")) {
+            } else if (isH2(databaseProductName)) {
                 configuration.setDatabaseId("h2");
-            } else if (databaseProductName.equals("PostgreSQL")) {
+            } else if (isPostgreSQL(databaseProductName)) {
                 configuration.setDatabaseId("postgres");
             } else {
                 LOGGER.error(
