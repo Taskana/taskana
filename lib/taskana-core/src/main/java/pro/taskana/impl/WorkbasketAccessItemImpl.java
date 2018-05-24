@@ -49,7 +49,7 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
     /*
      * (non-Javadoc)
-     * @see pro.taskana.impl.WorkbasketAccessItem#getWorkbasketKey()
+     * @see pro.taskana.impl.WorkbasketAccessItem#getWorkbasketId()
      */
     @Override
     public String getWorkbasketId() {
@@ -79,7 +79,7 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
     /*
      * (non-Javadoc)
-     * @see pro.taskana.impl.WorkbasketAccessItem#getAccessId()
+     * @see pro.taskana.impl.WorkbasketAccessItem#getAccessName()
      */
     @Override
     public String getAccessName() {
@@ -88,7 +88,7 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
     /*
      * (non-Javadoc)
-     * @see pro.taskana.impl.WorkbasketAccessItem#getAccessId()
+     * @see pro.taskana.impl.WorkbasketAccessItem#setAccessName()
      */
     @Override
     public void setAccessName(String accessName) {
