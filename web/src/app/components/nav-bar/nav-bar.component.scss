@@ -9,7 +9,12 @@ $selected-border-color: #22a39f;
 }
 
 .navbar-toggle{
-    margin-right: 0px;
+    margin: 5px 0px;
+    font-size: 20px;
+    &.logout{
+        font-size: 20px;
+        padding: 12px 12px 0 0;
+    }
     
 }
 button.navbar-toggle:hover > span{
@@ -67,7 +72,6 @@ h2.navbar-brand{
         }
     }
 }
-
 
 .nav-content{
     margin-top: 5px;
