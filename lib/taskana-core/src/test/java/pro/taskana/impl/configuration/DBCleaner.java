@@ -43,13 +43,7 @@ public class DBCleaner {
             runner.setLogWriter(logWriter);
             runner.setErrorLogWriter(errorLogWriter);
             if (dropTables) {
-                String databaseProductName = connection.getMetaData().getDatabaseProductName();
-                if (databaseProductName.contains("DB2")) {
-                    runner.runScript(
-                        new InputStreamReader(this.getClass().getResourceAsStream(DB_DROP_TABLES_DB2_SCRIPT)));
-                } else {
-                    runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_DROP_TABLES_SCRIPT)));
-                }
+                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_DROP_TABLES_SCRIPT)));
             } else {
                 runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_CLEAR_SCRIPT)));
             }
