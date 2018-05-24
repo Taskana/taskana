@@ -3,6 +3,7 @@ package pro.taskana.database;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.configuration.DbSchemaCreator;
+import pro.taskana.impl.TaskanaEngineImpl;
 
 /**
  * Generates the test data for integration and acceptance tests.
@@ -28,11 +30,21 @@ import pro.taskana.configuration.DbSchemaCreator;
 public class TestDataGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
+    private static final String SQL = "/sql";
+    private static final String TASK = SQL + "/task.sql";
+    private static final String WORKBASKET = SQL + "/workbasket.sql";
+    private static final String DISTRIBUTION_TARGETS = SQL + "/distribution-targets.sql";
+    private static final String WORKBASKET_ACCESS_LIST = SQL + "/workbasket-access-list.sql";
+    private static final String CLASSIFICATION = SQL + "/classification.sql";
+    private static final String OBJECT_REFERENCE = SQL + "/object-reference.sql";
+    private static final String ATTACHMENT = SQL + "/attachment.sql";
+    private static final String MONITOR_SAMPLE_DATA = SQL + "/monitor-sample-data.sql";
+    private static SQLReplacer sqlReplacer;
+
     private StringWriter outWriter = new StringWriter();
     private PrintWriter logWriter;
     private StringWriter errorWriter;
     private PrintWriter errorLogWriter;
-    private boolean isDb2 = false;
 
     public TestDataGenerator() {
         this.logWriter = new PrintWriter(this.outWriter);
@@ -40,13 +52,10 @@ public class TestDataGenerator {
         this.errorLogWriter = new PrintWriter(this.errorWriter);
     }
 
-    public void generateTestData(DataSource dataSource) throws SQLException {
+    public void generateTestData(DataSource dataSource) throws SQLException, IOException {
         ScriptRunner runner = null;
         try {
             Connection connection = dataSource.getConnection();
-            if (connection.getMetaData().getDatabaseProductName().contains("DB2")) {
-                isDb2 = true;
-            }
             LOGGER.debug(connection.getMetaData().toString());
             runner = new ScriptRunner(connection);
             runner.setStopOnError(true);
@@ -55,29 +64,34 @@ public class TestDataGenerator {
             runner.setStopOnError(true);
             runner.setLogWriter(this.logWriter);
             runner.setErrorLogWriter(this.errorLogWriter);
-            if (isDb2) {
-                runner.runScript(
-                    new InputStreamReader(this.getClass().getResourceAsStream("/sql/classification-db2.sql")));
-                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket.sql")));
-                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/task-db2.sql")));
-                runner.runScript(
-                    new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket-access-list-db2.sql")));
-            } else {
-                runner.runScript(
-                    new InputStreamReader(this.getClass().getResourceAsStream("/sql/classification.sql")));
-                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket.sql")));
-                runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream("/sql/task.sql")));
-                runner.runScript(
-                    new InputStreamReader(this.getClass().getResourceAsStream("/sql/workbasket-access-list.sql")));
-            }
-            runner.runScript(
-                new InputStreamReader(this.getClass().getResourceAsStream("/sql/distribution-targets.sql")));
-            runner.runScript(
-                new InputStreamReader(this.getClass().getResourceAsStream("/sql/object-reference.sql")));
-            runner.runScript(
-                new InputStreamReader(this.getClass().getResourceAsStream("/sql/attachment.sql")));
-        } finally {
 
+            if (sqlReplacer == null) {
+                sqlReplacer = new SQLReplacer(connection.getMetaData().getDatabaseProductName());
+            }
+
+            runner.runScript(
+                new InputStreamReader(new ByteArrayInputStream(
+                    sqlReplacer.classificationSql.getBytes(StandardCharsets.UTF_8))));
+            runner.runScript(
+                new InputStreamReader(new ByteArrayInputStream(
+                    sqlReplacer.workbasketSql.getBytes(StandardCharsets.UTF_8))));
+            runner.runScript(
+                new InputStreamReader(new ByteArrayInputStream(
+                    sqlReplacer.taskSql.getBytes(StandardCharsets.UTF_8))));
+            runner.runScript(
+                new InputStreamReader(new ByteArrayInputStream(
+                    sqlReplacer.workbasketAccessListSql.getBytes(StandardCharsets.UTF_8))));
+            runner.runScript(
+                new InputStreamReader(new ByteArrayInputStream(
+                    sqlReplacer.distributionTargetSql.getBytes(StandardCharsets.UTF_8))));
+            runner.runScript(
+                new InputStreamReader(new ByteArrayInputStream(
+                    sqlReplacer.objectReferenceSql.getBytes(StandardCharsets.UTF_8))));
+            runner.runScript(
+                new InputStreamReader(new ByteArrayInputStream(
+                    sqlReplacer.attachmentSql.getBytes(StandardCharsets.UTF_8))));
+
+        } finally {
             runner.closeConnection();
             LOGGER.debug(outWriter.toString());
             if (!errorWriter.toString().trim().isEmpty()) {
@@ -90,9 +104,6 @@ public class TestDataGenerator {
         ScriptRunner runner = null;
         try {
             Connection connection = dataSource.getConnection();
-            if (connection.getMetaData().getDatabaseProductName().contains("DB2")) {
-                isDb2 = true;
-            }
             LOGGER.debug(connection.getMetaData().toString());
             runner = new ScriptRunner(connection);
             runner.setStopOnError(true);
@@ -101,10 +112,15 @@ public class TestDataGenerator {
             runner.setStopOnError(true);
             runner.setLogWriter(this.logWriter);
             runner.setErrorLogWriter(this.errorLogWriter);
+
+            if (sqlReplacer == null) {
+                sqlReplacer = new SQLReplacer(connection.getMetaData().getDatabaseProductName());
+            }
+
             runner.runScript(
                 new InputStreamReader(
                     new ByteArrayInputStream(
-                        generateMonitoringSqlData().getBytes(StandardCharsets.UTF_8.name()))));
+                        sqlReplacer.monitoringTestDataSql.getBytes(StandardCharsets.UTF_8))));
         } finally {
 
             runner.closeConnection();
@@ -115,33 +131,74 @@ public class TestDataGenerator {
         }
     }
 
-    private String generateMonitoringSqlData() throws IOException {
-        BufferedReader bufferedReader;
-        if (isDb2) {
-            bufferedReader = new BufferedReader(
-                new InputStreamReader(this.getClass().getResourceAsStream("/sql/monitor-sample-data-db2.sql")));
-        } else {
-            bufferedReader = new BufferedReader(
-                new InputStreamReader(this.getClass().getResourceAsStream("/sql/monitor-sample-data.sql")));
-        }
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        StringBuilder sql = new StringBuilder();
-        String line;
+    /**
+     * This class replaces boolean values with int values if the database is db2.
+     */
+    private static final class SQLReplacer {
 
-        List<Integer> ages = Arrays.asList(-70000, -14000, -2800, -1400, -1400, -700, -700, -35, -28, -28, -14, -14,
-            -14, -14, -14, -14, -14, -14, -14, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, 0, 0, 0, 0, 7, 7, 7, 7, 7, 7,
-            7, 14, 14, 14, 14, 21, 210, 210, 28000, 700000);
-        int i = 0;
-        while ((line = bufferedReader.readLine()) != null) {
-            if (line.contains("dueDate")) {
-                line = line.replace("dueDate", "\'" + now.plusDays(ages.get(i)).format(formatter) + "\' ");
-                i++;
-            }
-            sql.append(line).append("\n");
+        private String classificationSql;
+        private String workbasketSql;
+        private String taskSql;
+        private String workbasketAccessListSql;
+        private String distributionTargetSql;
+        private String objectReferenceSql;
+        private String attachmentSql;
+        private String monitoringTestDataSql;
+
+        private SQLReplacer(String dbProductName) throws IOException {
+            boolean isDb2 = TaskanaEngineImpl.isDb2(dbProductName);
+            classificationSql = parseAndReplace(getClass().getResourceAsStream(CLASSIFICATION), isDb2);
+            workbasketSql = parseAndReplace(getClass().getResourceAsStream(WORKBASKET), isDb2);
+            taskSql = parseAndReplace(getClass().getResourceAsStream(TASK), isDb2);
+            workbasketAccessListSql = parseAndReplace(getClass().getResourceAsStream(WORKBASKET_ACCESS_LIST), isDb2);
+            distributionTargetSql = parseAndReplace(getClass().getResourceAsStream(DISTRIBUTION_TARGETS), isDb2);
+            objectReferenceSql = parseAndReplace(getClass().getResourceAsStream(OBJECT_REFERENCE), isDb2);
+            attachmentSql = parseAndReplace(getClass().getResourceAsStream(ATTACHMENT), isDb2);
+            monitoringTestDataSql = generateMonitoringSqlData(isDb2);
         }
-        bufferedReader.close();
-        return sql.toString();
+
+        private String parseAndReplace(InputStream stream, boolean replace) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+            StringBuilder sql = new StringBuilder();
+            String line;
+            if (replace) {
+                while ((line = bufferedReader.readLine()) != null) {
+                    sql.append(line.replaceAll("true|TRUE", "1").replaceAll("false|FALSE", "0")).append("\n");
+                }
+            } else {
+                while ((line = bufferedReader.readLine()) != null) {
+                    sql.append(line).append("\n");
+                }
+            }
+            return sql.toString();
+        }
+
+        private String generateMonitoringSqlData(boolean replace) throws IOException {
+            String rawSql = parseAndReplace(getClass().getResourceAsStream(MONITOR_SAMPLE_DATA), replace);
+
+            BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(new ByteArrayInputStream(rawSql.getBytes(StandardCharsets.UTF_8))));
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            StringBuilder sql = new StringBuilder();
+            String line;
+
+            List<Integer> ages = Arrays.asList(-70000, -14000, -2800, -1400, -1400, -700, -700, -35, -28, -28, -14, -14,
+                -14, -14, -14, -14, -14, -14, -14, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, 0, 0, 0, 0, 7, 7, 7, 7,
+                7, 7,
+                7, 14, 14, 14, 14, 21, 210, 210, 28000, 700000);
+            int i = 0;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.contains("dueDate")) {
+                    line = line.replace("dueDate", "\'" + now.plusDays(ages.get(i)).format(formatter) + "\' ");
+                    i++;
+                }
+                sql.append(line).append("\n");
+            }
+            bufferedReader.close();
+            return sql.toString();
+        }
+
     }
 
 }
