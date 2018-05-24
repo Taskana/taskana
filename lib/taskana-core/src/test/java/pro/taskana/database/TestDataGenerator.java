@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -69,27 +70,13 @@ public class TestDataGenerator {
                 sqlReplacer = new SQLReplacer(connection.getMetaData().getDatabaseProductName());
             }
 
-            runner.runScript(
-                new InputStreamReader(new ByteArrayInputStream(
-                    sqlReplacer.classificationSql.getBytes(StandardCharsets.UTF_8))));
-            runner.runScript(
-                new InputStreamReader(new ByteArrayInputStream(
-                    sqlReplacer.workbasketSql.getBytes(StandardCharsets.UTF_8))));
-            runner.runScript(
-                new InputStreamReader(new ByteArrayInputStream(
-                    sqlReplacer.taskSql.getBytes(StandardCharsets.UTF_8))));
-            runner.runScript(
-                new InputStreamReader(new ByteArrayInputStream(
-                    sqlReplacer.workbasketAccessListSql.getBytes(StandardCharsets.UTF_8))));
-            runner.runScript(
-                new InputStreamReader(new ByteArrayInputStream(
-                    sqlReplacer.distributionTargetSql.getBytes(StandardCharsets.UTF_8))));
-            runner.runScript(
-                new InputStreamReader(new ByteArrayInputStream(
-                    sqlReplacer.objectReferenceSql.getBytes(StandardCharsets.UTF_8))));
-            runner.runScript(
-                new InputStreamReader(new ByteArrayInputStream(
-                    sqlReplacer.attachmentSql.getBytes(StandardCharsets.UTF_8))));
+            Stream.of(sqlReplacer.classificationSql, sqlReplacer.workbasketSql, sqlReplacer.taskSql,
+                sqlReplacer.workbasketAccessListSql, sqlReplacer.distributionTargetSql, sqlReplacer.objectReferenceSql,
+                sqlReplacer.attachmentSql)
+                .map(s -> s.getBytes(StandardCharsets.UTF_8))
+                .map(ByteArrayInputStream::new)
+                .map(InputStreamReader::new)
+                .forEach(runner::runScript);
 
         } finally {
             runner.closeConnection();
