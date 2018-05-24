@@ -23,7 +23,7 @@
         <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
           <li>
             <a *ngFor="let domain of domains" (click)="switchDomain(domain)">
-              {{domain}}
+              <label>{{domain}}</label>
             </a>
           </li>
         </ul>
