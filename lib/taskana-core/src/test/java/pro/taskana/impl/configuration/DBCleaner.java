@@ -20,7 +20,6 @@ public class DBCleaner {
     private static final Logger LOGGER = LoggerFactory.getLogger(DBCleaner.class);
     private static final String DB_CLEAR_SCRIPT = "/sql/clear-db.sql";
     private static final String DB_DROP_TABLES_SCRIPT = "/sql/drop-tables.sql";
-    private static final String DB_DROP_TABLES_DB2_SCRIPT = "/sql/drop-tables-db2.sql";
 
     private StringWriter outWriter = new StringWriter();
     private PrintWriter logWriter = new PrintWriter(outWriter);
