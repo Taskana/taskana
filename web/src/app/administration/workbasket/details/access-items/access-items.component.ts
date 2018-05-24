@@ -34,6 +34,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	active: string;
 	badgeMessage = '';
 
+	lookupField = this.customFieldService.getCustomField('Owner', 'workbaskets.access-items.lookupField');
 	custom1Field = this.customFieldService.getCustomField('Custom 1', 'workbaskets.access-items.custom1');
 	custom2Field = this.customFieldService.getCustomField('Custom 2', 'workbaskets.access-items.custom2');
 	custom3Field = this.customFieldService.getCustomField('Custom 3', 'workbaskets.access-items.custom3');
