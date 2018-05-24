@@ -8,7 +8,7 @@ export class TitlesService {
   constructor() { }
 
   initTitles(language: string = 'EN', jsonFile: any) {
-    this.titles = jsonFile.titles[language];
+    this.titles = jsonFile[language];
   }
 
   getTitle(id: number, fallBacktext: string, customPath: string = undefined) {
