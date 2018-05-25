@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pro.taskana</groupId>
 	<artifactId>taskana-core</artifactId>
-	<version>0.1.6-SNAPSHOT</version>
+	<version>0.9.1-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>The taskana library to include in your project.</description>
