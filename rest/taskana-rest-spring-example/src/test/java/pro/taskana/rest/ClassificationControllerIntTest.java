@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,17 +44,26 @@ import pro.taskana.rest.resource.ClassificationSummaryResource;
 @Import(RestConfiguration.class)
 public class ClassificationControllerIntTest {
 
+
+    String server = "http://127.0.0.1:";
+    RestTemplate template;
+    HttpEntity<String> request;
+    HttpHeaders headers = new HttpHeaders();
     @LocalServerPort
     int port;
 
+
+    @Before
+    public void before() {
+        template = getRestTemplate();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        request = new HttpEntity<String>(headers);
+    }
+
     @Test
     public void testGetAllClassifications() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classifications", HttpMethod.GET, request,
+            server + port + "/v1/classifications", HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
 
             });
@@ -62,12 +72,8 @@ public class ClassificationControllerIntTest {
 
     @Test
     public void testGetAllClassificationsFilterByCustomAttribute() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&custom-1-like=RVNR", HttpMethod.GET,
+            server + port + "/v1/classifications?domain=DOMAIN_A&custom-1-like=RVNR", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
 
@@ -78,12 +84,8 @@ public class ClassificationControllerIntTest {
 
     @Test
     public void testGetAllClassificationsKeepingFilters() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc", HttpMethod.GET,
+            server + port + "/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
 
@@ -99,12 +101,8 @@ public class ClassificationControllerIntTest {
 
     @Test
     public void testGetSecondPageSortedByKey() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5",
+            server + port + "/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5",
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
@@ -130,8 +128,8 @@ public class ClassificationControllerIntTest {
 
     @Test
     public void testCreateClassification() throws IOException {
-        String newClassification = "{\"classificationId\":null,\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
-        URL url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
+        String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+        URL url = new URL(server + port + "/v1/classifications");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -141,10 +139,10 @@ public class ClassificationControllerIntTest {
         out.write(newClassification);
         out.flush();
         out.close();
-        assertEquals(201, con.getResponseCode());
-        con.disconnect();
 
-        newClassification = "{\"classificationId\": null,\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+
+
+        newClassification = "{\"classificationId\": \"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
         con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
@@ -157,6 +155,24 @@ public class ClassificationControllerIntTest {
         out.close();
         assertEquals(201, con.getResponseCode());
         con.disconnect();
+    }
+
+    @Test
+    public void testCreateClassificationWithClassificationIdReturnsError400() throws IOException {
+        String newClassification = "{\"classificationId\":\"someId\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+        URL url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(newClassification);
+        out.flush();
+        out.close();
+        assertEquals(400, con.getResponseCode());
+        con.disconnect();
+
     }
 
     @Test
@@ -199,6 +215,7 @@ public class ClassificationControllerIntTest {
 
             });
     }
+
 
     /**
      * Return a REST template which is capable of dealing with responses in HAL format

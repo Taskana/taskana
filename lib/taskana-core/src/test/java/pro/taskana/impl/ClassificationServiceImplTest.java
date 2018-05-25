@@ -148,7 +148,7 @@ public class ClassificationServiceImplTest {
     public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
         DomainNotFoundException, InvalidArgumentException {
-        Classification classification = createDummyClassification(null);
+        Classification classification = createDummyClassification("");
         String domain = classification.getDomain();
         String key = classification.getKey();
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -292,7 +292,7 @@ public class ClassificationServiceImplTest {
     }
 
     @Test(expected = InvalidArgumentException.class)
-    public void testGetClassificationWithInvalidNullId()
+    public void testThrowExceptionIdIfClassificationIsCreatedWithAnExplicitId()
         throws ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException,
         NotAuthorizedException, ClassificationAlreadyExistException {
         try {

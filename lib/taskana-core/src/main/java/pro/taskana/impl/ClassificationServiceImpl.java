@@ -92,7 +92,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     private void checkClassificationId(ClassificationImpl classificationImpl) throws InvalidArgumentException {
-        if (classificationImpl.getId() != null || "".equals(classificationImpl.getId())) {
+        if (classificationImpl.getId() != null && !"".equals(classificationImpl.getId())) {
             throw new InvalidArgumentException("ClassificationId should be null on creation");
         }
     }
