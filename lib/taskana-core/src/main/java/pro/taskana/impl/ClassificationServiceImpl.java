@@ -70,6 +70,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                 throw new ClassificationAlreadyExistException(classification);
             }
             classificationImpl = (ClassificationImpl) classification;
+            this.checkClassificationId(classificationImpl);
             classificationImpl.setCreated(Instant.now());
             classificationImpl.setModified(classificationImpl.getCreated());
             this.initDefaultClassificationValues(classificationImpl);
@@ -88,6 +89,12 @@ public class ClassificationServiceImpl implements ClassificationService {
             LOGGER.debug("exit from createClassification()");
         }
         return classificationImpl;
+    }
+
+    private void checkClassificationId(ClassificationImpl classificationImpl) throws InvalidArgumentException {
+        if (classificationImpl.getId() != null || "".equals(classificationImpl.getId())) {
+            throw new InvalidArgumentException("ClassificationId should be null on creation");
+        }
     }
 
     private void addClassificationToRootDomain(ClassificationImpl classificationImpl) {

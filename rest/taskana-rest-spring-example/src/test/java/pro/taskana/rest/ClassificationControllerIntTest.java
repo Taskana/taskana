@@ -55,6 +55,7 @@ public class ClassificationControllerIntTest {
         ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
             "http://127.0.0.1:" + port + "/v1/classifications", HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
     }
@@ -69,6 +70,7 @@ public class ClassificationControllerIntTest {
             "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&custom-1-like=RVNR", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertEquals(13, response.getBody().getContent().size());
@@ -84,6 +86,7 @@ public class ClassificationControllerIntTest {
             "http://127.0.0.1:" + port + "/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
@@ -105,6 +108,7 @@ public class ClassificationControllerIntTest {
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
+
             });
         assertEquals(5, response.getBody().getContent().size());
         assertEquals("L1050", response.getBody().getContent().iterator().next().key);
@@ -126,7 +130,7 @@ public class ClassificationControllerIntTest {
 
     @Test
     public void testCreateClassification() throws IOException {
-        String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+        String newClassification = "{\"classificationId\":null,\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         URL url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
@@ -140,7 +144,7 @@ public class ClassificationControllerIntTest {
         assertEquals(201, con.getResponseCode());
         con.disconnect();
 
-        newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+        newClassification = "{\"classificationId\": null,\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
         con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
@@ -166,6 +170,7 @@ public class ClassificationControllerIntTest {
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<ClassificationSummaryResource>() {
+
             });
         assertEquals("Zustimmungserklärung", response.getBody().name);
     }
@@ -182,6 +187,7 @@ public class ClassificationControllerIntTest {
             HttpMethod.DELETE,
             request,
             new ParameterizedTypeReference<ClassificationSummaryResource>() {
+
             });
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
@@ -190,6 +196,7 @@ public class ClassificationControllerIntTest {
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<ClassificationSummaryResource>() {
+
             });
     }
 
@@ -207,7 +214,7 @@ public class ClassificationControllerIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 
