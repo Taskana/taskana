@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -87,7 +88,7 @@ public class ClassificationServiceImplTest {
     public void testCreateClassificationParentNotExisting()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
-        Classification classification = createDummyClassification();
+        Classification classification = createDummyClassification(null);
         classification.setParentId("NOT EXISTING ID");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
@@ -116,7 +117,7 @@ public class ClassificationServiceImplTest {
         NotAuthorizedException, DomainNotFoundException, InvalidArgumentException {
         Instant beforeTimestamp = Instant.now();
         Thread.sleep(10L);
-        Classification classification = createDummyClassification();
+        Classification classification = createDummyClassification(null);
         String domain = classification.getDomain();
         String key = classification.getKey();
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -147,7 +148,7 @@ public class ClassificationServiceImplTest {
     public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
         DomainNotFoundException, InvalidArgumentException {
-        Classification classification = createDummyClassification();
+        Classification classification = createDummyClassification(null);
         String domain = classification.getDomain();
         String key = classification.getKey();
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -174,7 +175,7 @@ public class ClassificationServiceImplTest {
     public void testCreateClassificationIntoRootDomain()
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
         DomainNotFoundException, InvalidArgumentException {
-        ClassificationImpl classification = (ClassificationImpl) createDummyClassification();
+        ClassificationImpl classification = (ClassificationImpl) createDummyClassification(null);
         classification.setDomain("");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
@@ -290,6 +291,21 @@ public class ClassificationServiceImplTest {
         }
     }
 
+    @Test(expected = InvalidArgumentException.class)
+    public void testGetClassificationWithInvalidNullId()
+        throws ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException,
+        NotAuthorizedException, ClassificationAlreadyExistException {
+        try {
+            Classification classification = createDummyClassification();
+            doReturn(true).when(taskanaEngineImplMock).domainExists(any());
+            cutSpy.createClassification(classification);
+        } catch (InvalidArgumentException e) {
+            assertEquals(e.getMessage(), "ClassificationId should be null on creation");
+            throw e;
+        }
+
+    }
+
     @Test
     public void testCreateClassificationQuery() {
         cutSpy.createClassificationQuery();
@@ -297,12 +313,16 @@ public class ClassificationServiceImplTest {
     }
 
     private Classification createDummyClassification() {
+        return this.createDummyClassification("ID: 1");
+    }
+
+    private Classification createDummyClassification(String id) {
         ClassificationImpl classificationImpl = new ClassificationImpl();
         classificationImpl.setDescription("A DUMMY FOR TESTING A SERVICE");
         classificationImpl.setName("SERVICE-DUMMY");
         classificationImpl.setDomain("DOMAIN_A");
         classificationImpl.setServiceLevel("P2D");
-        classificationImpl.setId("ID: 1");
+        classificationImpl.setId(id);
         classificationImpl.setKey("ABC111");
         classificationImpl.setParentId("");
         return classificationImpl;
