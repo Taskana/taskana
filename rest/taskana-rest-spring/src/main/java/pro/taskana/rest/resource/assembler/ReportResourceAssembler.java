@@ -25,7 +25,7 @@ import pro.taskana.rest.resource.ReportResource;
  * Transforms any {@link Report} into its {@link ReportResource}.
  */
 @Component
-public class ReportAssembler {
+public class ReportResourceAssembler {
 
     public ReportResource toResource(TaskStatusReport report, List<String> domains, List<TaskState> states)
         throws NotAuthorizedException {

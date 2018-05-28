@@ -21,16 +21,16 @@ import pro.taskana.rest.resource.WorkbasketAccessItemResource;
  * Mapper to convert from a list of WorkbasketAccessItem to a WorkbasketAccessItemResource.
  */
 @Component
-public class WorkbasketAccessItemListAssembler {
+public class WorkbasketAccessItemResourcesAssembler {
 
     @Autowired
-    private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
+    private WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler;
 
     public Resources<WorkbasketAccessItemResource> toResource(String workbasketId,
         Collection<WorkbasketAccessItem> accessItems) throws NotAuthorizedException, WorkbasketNotFoundException {
         List<WorkbasketAccessItemResource> resourceList = new ArrayList<>();
         for (WorkbasketAccessItem accessItem : accessItems) {
-            resourceList.add(workbasketAccessItemAssembler.toResource(accessItem));
+            resourceList.add(workbasketAccessItemResourceAssembler.toResource(accessItem));
         }
 
         Resources<WorkbasketAccessItemResource> accessItemListResource = new Resources<>(resourceList);

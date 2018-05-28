@@ -2,6 +2,7 @@ package pro.taskana.rest.resource.assembler;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.stereotype.Component;
 
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -12,6 +13,7 @@ import pro.taskana.rest.resource.TaskSummaryResource;
 /**
  * Resource assembler for {@link TaskSummaryResource}.
  */
+@Component
 public class TaskSummaryResourceAssembler
     extends ResourceAssemblerSupport<TaskSummary, TaskSummaryResource> {
 
@@ -40,6 +42,9 @@ public class TaskSummaryResourceAssembler
         }
         if (taskSummary.getDue() != null) {
             resource.setDue(taskSummary.getDue().toString());
+        }
+        if (taskSummary.getPlanned() != null) {
+            resource.setPlanned(taskSummary.getPlanned().toString());
         }
         resource.setClassificationSummaryResource(
             classificationAssembler.toResource(taskSummary.getClassificationSummary()));

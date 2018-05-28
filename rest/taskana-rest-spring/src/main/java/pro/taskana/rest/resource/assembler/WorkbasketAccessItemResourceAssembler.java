@@ -20,7 +20,7 @@ import pro.taskana.rest.resource.WorkbasketAccessItemResource;
  * versa.
  */
 @Component
-public class WorkbasketAccessItemAssembler {
+public class WorkbasketAccessItemResourceAssembler {
 
     @Autowired
     private WorkbasketService workbasketService;

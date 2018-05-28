@@ -15,7 +15,7 @@ import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ReportResource;
-import pro.taskana.rest.resource.assembler.ReportAssembler;
+import pro.taskana.rest.resource.assembler.ReportResourceAssembler;
 
 /**
  * Controller for all monitoring endpoints.
@@ -28,7 +28,7 @@ public class MonitorController {
     private TaskMonitorService taskMonitorService;
 
     @Autowired
-    private ReportAssembler reportAssembler;
+    private ReportResourceAssembler reportResourceAssembler;
 
     @GetMapping(path = "/countByState")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -73,6 +73,6 @@ public class MonitorController {
     public ResponseEntity<ReportResource> getTaskStatusReport(@RequestParam(required = false) List<String> domains,
         @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(reportAssembler.toResource(taskMonitorService.getTaskStatusReport(domains, states), domains, states));
+            .body(reportResourceAssembler.toResource(taskMonitorService.getTaskStatusReport(domains, states), domains, states));
     }
 }

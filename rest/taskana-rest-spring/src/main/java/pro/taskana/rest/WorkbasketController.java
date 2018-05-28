@@ -43,9 +43,9 @@ import pro.taskana.rest.resource.DistributionTargetResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
-import pro.taskana.rest.resource.assembler.DistributionTargetListAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketAccessItemListAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
+import pro.taskana.rest.resource.assembler.DistributionTargetResourcesAssembler;
+import pro.taskana.rest.resource.assembler.WorkbasketAccessItemResourcesAssembler;
+import pro.taskana.rest.resource.assembler.WorkbasketAccessItemResourceAssembler;
 import pro.taskana.rest.resource.assembler.WorkbasketAssembler;
 import pro.taskana.rest.resource.assembler.WorkbasketSummaryResourcesAssembler;
 
@@ -82,13 +82,13 @@ public class WorkbasketController extends AbstractPagingController {
     private WorkbasketAssembler workbasketAssembler;
 
     @Autowired
-    private DistributionTargetListAssembler distributionTargetListAssembler;
+    private DistributionTargetResourcesAssembler distributionTargetResourcesAssembler;
 
     @Autowired
-    private WorkbasketAccessItemListAssembler accessItemListAssembler;
+    private WorkbasketAccessItemResourcesAssembler accessItemListAssembler;
 
     @Autowired
-    private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
+    private WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler;
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -202,7 +202,7 @@ public class WorkbasketController extends AbstractPagingController {
         }
 
         List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
-        workbasketAccessResourceItems.forEach(item -> wbAccessItems.add(workbasketAccessItemAssembler.toModel(item)));
+        workbasketAccessResourceItems.forEach(item -> wbAccessItems.add(workbasketAccessItemResourceAssembler.toModel(item)));
         workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
 
         List<WorkbasketAccessItem> updatedWbAccessItems = workbasketService.getWorkbasketAccessItems(workbasketId);
@@ -220,7 +220,7 @@ public class WorkbasketController extends AbstractPagingController {
 
         ResponseEntity<Resources<DistributionTargetResource>> result;
         List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(workbasketId);
-        Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListAssembler
+        Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetResourcesAssembler
             .toResource(workbasketId, distributionTargets);
         result = new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
         return result;
@@ -234,7 +234,7 @@ public class WorkbasketController extends AbstractPagingController {
         workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);
 
         List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(sourceWorkbasketId);
-        Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListAssembler
+        Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetResourcesAssembler
             .toResource(sourceWorkbasketId, distributionTargets);
 
         return new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);

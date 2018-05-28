@@ -16,15 +16,15 @@ import pro.taskana.rest.TestConfiguration;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
 /**
- * Test for {@link WorkbasketAccessItemAssembler}.
+ * Test for {@link WorkbasketAccessItemResourceAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class WorkbasketAccessItemAssemblerTest {
+public class WorkbasketAccessItemResourceAssemblerTest {
 
     @Autowired
-    WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
+    WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler;
     @Autowired
     WorkbasketService workbasketService;
 
@@ -51,7 +51,7 @@ public class WorkbasketAccessItemAssemblerTest {
         accessItem.setPermCustom11(true);
         accessItem.setPermCustom12(true);
         // when
-        WorkbasketAccessItemResource resource = workbasketAccessItemAssembler.toResource(
+        WorkbasketAccessItemResource resource = workbasketAccessItemResourceAssembler.toResource(
             accessItem);
         // then
         testEquality(accessItem, resource);
@@ -82,7 +82,7 @@ public class WorkbasketAccessItemAssemblerTest {
         resource.setPermCustom11(true);
         resource.setPermCustom12(false);
         // when
-        WorkbasketAccessItem accessItem = workbasketAccessItemAssembler.toModel(resource);
+        WorkbasketAccessItem accessItem = workbasketAccessItemResourceAssembler.toModel(resource);
         // then
         testEquality(accessItem, resource);
     }
