@@ -1,13 +1,16 @@
-<taskana-spinner [isRunning]="requestInProgress" ></taskana-spinner>
-<div class="panel panel-default" *ngIf="task">
+<taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
+<div class="panel panel-default" *ngIf="task && !requestInProgress">
   <div class="panel-heading">
     <div class="pull-right">
       <button type="button" title="Open task to work on it" class="btn btn-default" aria-label="Left Align"
-      (click)="openTask(task.taskId)">
+              [disabled]="workOnTaskDisabled()" (click)="openTask(task.taskId)">
         <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
       </button>
-      <button type="button" title="Update Task" class="btn btn-default" (click)="updateTask()">
+      <button type="button" title="Update Task" class="btn btn-default btn-primary" (click)="updateTask()">
         <span class="glyphicon glyphicon-saved" aria-hidden="true"></span>
+      </button>
+      <button type="button" title="Delete Task" class="btn btn-default btn-danger" (click)="deleteTask()">
+        <span class="glyphicon glyphicon-remove"></span>
       </button>
     </div>
     <h4 class="panel-header"><b>{{task?.name}}</b></h4>
@@ -18,9 +21,9 @@
       <div class="col-md-6">
         <div class="form-group">
           <label for="task-description" class="control-label">Description</label>
-          <input type="text" class="form-control" id="task-description" placeholder="Description"
-                 [(ngModel)]="task.description"
-                 name="task.description">
+          <textarea type="text" class="form-control" id="task-description" placeholder="Description"
+                    [(ngModel)]="task.description"
+                    name="task.description"></textarea>
         </div>
         <div class="form-group">
           <label for="task-owner" class="control-label">Owner</label>
@@ -63,7 +66,7 @@
                  name="task.due">
         </div>
         <div class="form-group">
-          <label for="task-priority" class="control-label">Priority</label>
+          <label for="task-priority" disabled class="control-label">Priority</label>
           <input type="text" class="form-control" id="task-priority" placeholder="no priotity set"
                  [(ngModel)]="task.priority"
                  name="task.priority">

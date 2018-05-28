@@ -1,22 +1,32 @@
-<taskana-spinner [isRunning]="requestInProgress" ></taskana-spinner>
+<taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
 <div class="panel panel-default">
   <div class="panel-heading">
     <div class="pull-right">
-      <div class="col-md-6">
-        <input class="form-control" auto-complete [(ngModel)]="workbasket" [source]="autoCompleteData"
-               placeholder="Transfer ..."/>
+      <button type="button" (click)="navigateBack()" class="btn btn-default"><span title="Cancel and return to task detail"
+                                                                            class="glyphicon glyphicon-arrow-left text-muted"></span>
+      </button>
+
+      <div class="dropdown" style="display: inline">
+        <button type="button" data-toggle="dropdown" aria-expanded="true" class="btn btn-default dropdown-toggle">
+            <span
+              title="Transfer task to another workbasket"
+              class="glyphicon glyphicon-transfer text-muted"></span>
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li *ngFor="let workbasket of workbaskets">
+            <a class="dropdown-item" (click)="transferTask(workbasket)">
+              <label>{{workbasket.name}}</label>
+            </a>
+          </li>
+        </ul>
       </div>
-      <button (click)="transferTask()" class="btn-link"><span title="Transfer task to another workbasket"
-                                                              class="glyphicon glyphicon-new-window text-muted"></span>
-      </button>
-      <button (click)="cancelTask()" class="btn-link"><span title="Cancel task and return to task list"
-                                                            class="glyphicon glyphicon-remove-circle text-muted"></span>
-      </button>
-      <button (click)="completeTask()" class="btn-link"><span title="Complete task and return to task list"
-                                                              class="glyphicon glyphicon-ok-circle text-success"></span>
+      <button type="button" (click)="completeTask()" class="btn btn-default"><span
+        title="Complete task and return to task list"
+        class="glyphicon glyphicon-ok blue text-success"></span>
       </button>
     </div>
-    <h4 class="panel-header"><b>{{task?.name}}</b></h4>
+    <div class="panel-header"><h4><b>{{task?.name}}</b></h4></div>
   </div>
 
   <div class="panel-body" *ngIf="task">

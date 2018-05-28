@@ -14,11 +14,13 @@ export class SelectorComponent implements OnInit {
   tasksChanged = new EventEmitter<Task[]>();
 
   tasks: Task[] = [];
-
-  autoCompleteData: string[] = [];
+  workbasketNames: string[] = [];
   result = '';
-  resultKey: string;
+  resultId = '';
   workbaskets: Workbasket[];
+  currentBasket: Workbasket;
+
+  workbasketSelected = false;
 
   constructor(private taskService: TaskService,
               private workbasketService: WorkbasketService) {
@@ -28,34 +30,37 @@ export class SelectorComponent implements OnInit {
     this.workbasketService.getAllWorkBaskets().subscribe(workbaskets => {
       this.workbaskets = workbaskets._embedded ? workbaskets._embedded.workbaskets : [];
       this.workbaskets.forEach(workbasket => {
-        this.autoCompleteData.push(workbasket.name);
+        this.workbasketNames.push(workbasket.name);
       });
     });
-    if (this.workbasketService.workbasketKey) {
-      this.getTasks(this.workbasketService.workbasketKey);
-      this.result = this.workbasketService.workbasketName;
-    }
   }
 
   searchBasket() {
     if (this.workbaskets) {
       this.workbaskets.forEach(workbasket => {
         if (workbasket.name === this.result) {
-          this.resultKey = workbasket.workbasketId;
+          this.resultId = workbasket.workbasketId;
+          this.currentBasket = workbasket;
         }
       });
-      this.getTasks(this.resultKey);
-      this.workbasketService.workbasketKey = this.resultKey;
-      this.workbasketService.workbasketName = this.result;
-      this.tasksChanged.emit(this.tasks);
+
+      if (this.resultId.length > 0) {
+        this.getTasks(this.resultId);
+        this.tasksChanged.emit(this.tasks);
+      } else {
+        this.tasks = [];
+        this.tasksChanged.emit(this.tasks);
+      }
+
     }
+    this.resultId = '';
   }
 
-  getTasks(workbasketKey: string) {
-    this.taskService.findTasksWithWorkbasket(workbasketKey).subscribe(
+  getTasks(workbasketId: string) {
+    this.taskService.findTasksWithWorkbasket(workbasketId).subscribe(
       tasks => {
+        this.tasks.length = 0;
         if (!tasks || tasks._embedded === undefined) {
-          this.tasks.length = 0;
           return;
         }
         tasks._embedded.tasks.forEach(e => this.tasks.push(e));

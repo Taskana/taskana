@@ -1,8 +1,8 @@
 .clickable {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-.task-list-full-height{
+.task-list-full-height {
   height: calc(100vh - 55px);
 }
 
@@ -18,14 +18,15 @@
 ul {
   max-height: 90vh;
   margin-bottom: 10px;
-  overflow:scroll;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
-a > label{
+a > label {
   height: 2em;
   width: 100%;
 }
+
 dd, dt {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -42,6 +43,7 @@ dt > i {
 li > div.row > dl {
   margin-bottom: 0px;
 }
+
 li > div.row > dl:first-child {
   margin-left: 10px;
 }
