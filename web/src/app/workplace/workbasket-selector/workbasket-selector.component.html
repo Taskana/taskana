@@ -1,16 +1,14 @@
 <div class="row">
   <div class="col-md-12">
     <div class="input-group">
-      <input class="form-control dropdown-toggle" auto-complete [(ngModel)]="result" [source]="autoCompleteData"
+      <input [(ngModel)]="result" [typeahead]="workbasketNames" class="form-control"
+             (typeaheadOnSelect)="workbasketSelected = true" (typeaheadNoResults)="workbasketSelected = false"
              placeholder="Search for Workbasket ..."/>
       <span class="input-group-btn">
         <button class="btn btn-primary" type="button" (click)="searchBasket()"
-                [disabled]="result.length==0">Go!</button>
+                [disabled]="!workbasketSelected">Go!</button>
       </span>
     </div>
-    <!-- /input-group -->
   </div>
-  <!-- /.col-lg-18 -->
 </div>
-<!-- /.row -->
 
