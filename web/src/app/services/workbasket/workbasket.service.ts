@@ -17,9 +17,6 @@ import {WorkbasketResource} from '../../models/workbasket-resource';
 @Injectable()
 export class WorkbasketService {
 
-  workbasketKey: string;
-  workbasketName: string;
-
 	public workBasketSelected = new Subject<string>();
 	public workBasketSaved = new Subject<number>();
 
