@@ -57,7 +57,7 @@ public class RestConfiguration {
             contextSource.setUserDn(env.getRequiredProperty("taskana.ldap.bindDn"));
             contextSource.setPassword(env.getRequiredProperty("taskana.ldap.bindPassword"));
         } else {
-            contextSource.setUrl("ldap://com.dummy:9999");
+            contextSource.setUrl("ldap://localhost:9999");
             contextSource.setBase("o=taskana");
             contextSource.setUserDn("user");
             contextSource.setPassword("secret");

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.ldap.LdapCache;
 import pro.taskana.ldap.LdapClient;
 import pro.taskana.rest.resource.AccessIdResource;
@@ -34,11 +35,17 @@ public class AccessIdController {
 
     @GetMapping
     public ResponseEntity<List<AccessIdResource>> validateAccessIds(
-        @RequestParam(required = false) String searchFor) {
+        @RequestParam(required = false) String searchFor) throws InvalidArgumentException {
+        if (searchFor == null || searchFor.length() < ldapClient.getMinSearchForLength()) {
+            throw new InvalidArgumentException("searchFor string " + searchFor + " is too short. Minimum Length = "
+                + ldapClient.getMinSearchForLength());
+        }
         if (ldapClient.useLdap()) {
             return new ResponseEntity<>(ldapClient.searchUsersAndGroups(searchFor), HttpStatus.OK);
         } else if (ldapCache != null) {
-            return new ResponseEntity<>(ldapCache.findMatchingAccessId(searchFor), HttpStatus.OK);
+            return new ResponseEntity<>(
+                ldapCache.findMatchingAccessId(searchFor, ldapClient.getMaxNumberOfReturnedAccessIds()),
+                HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
         }
