@@ -18,6 +18,7 @@ import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Component;
 
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.rest.resource.AccessIdResource;
@@ -44,10 +45,13 @@ public class LdapClient {
     private String userSearchFilterValue;
     private String userFirstnameAttribute;
     private String userLastnameAttribute;
+    private String userIdAttribute;
     private String groupSearchBase;
     private String groupSearchFilterName;
     private String groupSearchFilterValue;
     private String groupNameAttribute;
+    private int minSearchForLength;
+    private int maxNumberOfReturnedAccessIds;
 
     private static final String CN = "cn";
     private String message;
@@ -55,18 +59,36 @@ public class LdapClient {
     @PostConstruct
     private void init() {
 
+        String strMinSearchForLength = getMinSearchForLengthAsString();
+        if (strMinSearchForLength == null || strMinSearchForLength.isEmpty()) {
+            minSearchForLength = 3;
+        } else {
+            minSearchForLength = Integer.parseInt(strMinSearchForLength);
+        }
+
+        String strMaxNumberOfReturnedAccessIds = getMaxNumberOfReturnedAccessIdsAsString();
+        if (strMaxNumberOfReturnedAccessIds == null || strMaxNumberOfReturnedAccessIds.isEmpty()) {
+            maxNumberOfReturnedAccessIds = 50;
+        } else {
+            maxNumberOfReturnedAccessIds = Integer.parseInt(strMaxNumberOfReturnedAccessIds);
+        }
+
         if (useLdap()) {
             userSearchBase = getUserSearchBase();
             userSearchFilterName = getUserSearchFilterName();
             userSearchFilterValue = getUserSearchFilterValue();
             userFirstnameAttribute = getUserFirstnameAttribute();
             userLastnameAttribute = getUserLastnameAttribute();
+            userIdAttribute = getUserIdAttribute();
             groupSearchBase = getGroupSearchBase();
             groupSearchFilterName = getGroupSearchFilterName();
             groupSearchFilterValue = getGroupSearchFilterValue();
             groupNameAttribute = getGroupNameAttribute();
 
-            message = "taskana.ldap.useLdap is set to true, but";
+            ldapTemplate.setDefaultCountLimit(maxNumberOfReturnedAccessIds);
+
+            final String emptyMessage = "taskana.ldap.useLdap is set to true, but";
+            message = emptyMessage;
             if (userSearchBase == null) {
                 message += " taskana.ldap.userSearchBase is not configured.";
             }
@@ -82,6 +104,9 @@ public class LdapClient {
             if (userLastnameAttribute == null) {
                 message += " taskana.ldap.userLastnameAttribute is not configured.";
             }
+            if (userIdAttribute == null) {
+                message += " taskana.ldap.userIdAttribute is not configured.";
+            }
             if (groupSearchBase == null) {
                 message += " taskana.ldap.groupSearchBase is not configured.";
             }
@@ -94,7 +119,7 @@ public class LdapClient {
             if (groupNameAttribute == null) {
                 message += " taskana.ldap.groupNameAttribute is not configured.";
             }
-            if (!message.equals("taskana.ldap.useLdap is set to true, but")) {
+            if (!message.equals(emptyMessage)) {
                 LOGGER.error("Ldap configuration error detected: {}", message);
                 throw new SystemException(message);
             }
@@ -102,36 +127,54 @@ public class LdapClient {
         }
     }
 
-    public List<AccessIdResource> searchUsersAndGroups(final String name) {
+    public List<AccessIdResource> searchUsersAndGroups(final String name) throws InvalidArgumentException {
         LOGGER.debug("entry to searchUsersAndGroups(name = {})", name);
         if (!active) {
             LOGGER.error("LdapClient was called but is not active due to missing configuration: " + message);
             throw new SystemException(
                 "LdapClient was called but is not active due to missing configuration: " + message);
         }
+        if (name == null || name.length() < minSearchForLength) {
+            throw new InvalidArgumentException("searchFor string " + name + " is too short. Minimum Length = "
+                + getMinSearchForLength());
+        }
+
         List<AccessIdResource> users = searchUsersByName(name);
         users.addAll(searchGroupsByName(name));
-        LOGGER.debug("exit from searchUsersAndGroups(name = {}). Found {} users and groups.", name, users.size());
-        return users;
+        users.sort((AccessIdResource a, AccessIdResource b) -> {
+            return a.getAccessId().compareToIgnoreCase(b.getAccessId());
+        });
+
+        List<AccessIdResource> result = users.subList(0, Math.min(users.size(), maxNumberOfReturnedAccessIds));
+        LOGGER.debug("exit from searchUsersAndGroups(name = {}). Returning {} users and groups: {}", name, users.size(),
+            LoggerUtils.listToString(result));
+
+        return result;
     }
 
-    public List<AccessIdResource> searchUsersByName(final String name) {
+    public List<AccessIdResource> searchUsersByName(final String name) throws InvalidArgumentException {
         LOGGER.debug("entry to searchUsersByName(name = {}).", name);
         if (!active) {
             LOGGER.error("LdapClient was called but is not active due to missing configuration: " + message);
             throw new SystemException(
                 "LdapClient was called but is not active due to missing configuration: " + message);
         }
+        if (name == null || name.length() < minSearchForLength) {
+            throw new InvalidArgumentException("searchFor string " + name + " is too short. Minimum Length = "
+                + getMinSearchForLength());
+        }
+
         final AndFilter andFilter = new AndFilter();
         andFilter.and(new EqualsFilter(getUserSearchFilterName(), getUserSearchFilterValue()));
         final OrFilter orFilter = new OrFilter();
 
-        orFilter.or(new WhitespaceWildcardsFilter(CN, name));
         orFilter.or(new WhitespaceWildcardsFilter(getUserFirstnameAttribute(), name));
         orFilter.or(new WhitespaceWildcardsFilter(getUserLastnameAttribute(), name));
+        orFilter.or(new WhitespaceWildcardsFilter(getUserIdAttribute(), name));
         andFilter.and(orFilter);
 
-        String[] userAttributesToReturn = {getUserFirstnameAttribute(), getUserLastnameAttribute(), CN};
+        String[] userAttributesToReturn = {getUserFirstnameAttribute(), getUserLastnameAttribute(),
+            getUserIdAttribute()};
 
         try {
             final List<AccessIdResource> accessIds = ldapTemplate.search(getUserSearchBase(), andFilter.encode(),
@@ -145,13 +188,18 @@ public class LdapClient {
         }
     }
 
-    public List<AccessIdResource> searchGroupsByName(final String name) {
+    public List<AccessIdResource> searchGroupsByName(final String name) throws InvalidArgumentException {
         LOGGER.debug("entry to searchGroupsByName(name = {}).", name);
         if (!active) {
             LOGGER.error("LdapClient was called but is not active due to missing configuration: " + message);
             throw new SystemException(
                 "LdapClient was called but is not active due to missing configuration: " + message);
         }
+        if (name == null || name.length() < minSearchForLength) {
+            throw new InvalidArgumentException("searchFor string " + name + " is too short. Minimum Length = "
+                + getMinSearchForLength());
+        }
+
         final AndFilter andFilter = new AndFilter();
         andFilter.and(new EqualsFilter(getGroupSearchFilterName(), getGroupSearchFilterValue()));
         final OrFilter orFilter = new OrFilter();
@@ -210,6 +258,10 @@ public class LdapClient {
         return env.getProperty("taskana.ldap.userLastnameAttribute");
     }
 
+    public String getUserIdAttribute() {
+        return env.getProperty("taskana.ldap.userIdAttribute");
+    }
+
     public String getGroupSearchBase() {
         return env.getProperty("taskana.ldap.groupSearchBase");
     }
@@ -226,6 +278,22 @@ public class LdapClient {
         return env.getProperty("taskana.ldap.groupNameAttribute");
     }
 
+    public String getMinSearchForLengthAsString() {
+        return env.getProperty("taskana.ldap.minSearchForLength");
+    }
+
+    public int getMinSearchForLength() {
+        return minSearchForLength;
+    }
+
+    public String getMaxNumberOfReturnedAccessIdsAsString() {
+        return env.getProperty("taskana.ldap.maxNumberOfReturnedAccessIds");
+    }
+
+    public int getMaxNumberOfReturnedAccessIds() {
+        return maxNumberOfReturnedAccessIds;
+    }
+
     /**
      * Context Mapper for user entries.
      */
@@ -234,7 +302,7 @@ public class LdapClient {
         @Override
         public AccessIdResource doMapFromContext(final DirContextOperations context) {
             final AccessIdResource accessId = new AccessIdResource();
-            accessId.setAccessId(context.getNameInNamespace()); // fully qualified dn
+            accessId.setAccessId(context.getStringAttribute(getUserIdAttribute()));
             String firstName = context.getStringAttribute(getUserFirstnameAttribute());
             String lastName = context.getStringAttribute(getUserLastnameAttribute());
             accessId.setName(lastName + ", " + firstName);
