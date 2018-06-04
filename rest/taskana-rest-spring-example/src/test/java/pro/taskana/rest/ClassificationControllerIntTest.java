@@ -44,14 +44,12 @@ import pro.taskana.rest.resource.ClassificationSummaryResource;
 @Import(RestConfiguration.class)
 public class ClassificationControllerIntTest {
 
-
     String server = "http://127.0.0.1:";
     RestTemplate template;
     HttpEntity<String> request;
     HttpHeaders headers = new HttpHeaders();
     @LocalServerPort
     int port;
-
 
     @Before
     public void before() {
@@ -88,6 +86,7 @@ public class ClassificationControllerIntTest {
             server + port + "/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
@@ -105,6 +104,7 @@ public class ClassificationControllerIntTest {
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
+
             });
         assertEquals(5, response.getBody().getContent().size());
         assertEquals("L1050", response.getBody().getContent().iterator().next().key);
@@ -137,8 +137,6 @@ public class ClassificationControllerIntTest {
         out.write(newClassification);
         out.flush();
         out.close();
-
-
 
         newClassification = "{\"classificationId\": \"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
@@ -213,7 +211,6 @@ public class ClassificationControllerIntTest {
 
             });
     }
-
 
     /**
      * Return a REST template which is capable of dealing with responses in HAL format
