@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.AccessIdResource;
 
@@ -24,10 +26,11 @@ public class LdapTest {
     private LdapClient ldapClient;
 
     @Test
-    public void testFindUsers() {
+    public void testFindUsers() throws InvalidArgumentException {
         if (ldapClient.useLdap()) {
-            List<AccessIdResource> usersAndGroups = ldapClient.searchUsersAndGroups("ie");
-            assertEquals(31, usersAndGroups.size());
+            List<AccessIdResource> usersAndGroups = ldapClient.searchUsersAndGroups("ser0");
+            System.out.println("#### found " + LoggerUtils.listToString(usersAndGroups));
+            assertEquals(50, usersAndGroups.size());
         }
     }
 }

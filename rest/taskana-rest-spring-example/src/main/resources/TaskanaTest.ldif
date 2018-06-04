@@ -13,14 +13,14 @@ objectclass: organizationalUnit
 objectclass: top
 ou: people
 
-dn: cn=Miguel Rojas,ou=people,o=TaskanaTest
+dn: cn=Rojas Miguel Angel Martin,ou=people,o=TaskanaTest
 objectclass: inetOrgPerson
 objectclass: organizationalPerson
 objectclass: person
 objectclass: top
-cn: Miguel Rojas
-sn: Rojas
-givenName: Miguel
+cn: Rojas Miguel Angel Martin
+sn: Martin
+givenName: Rojas Miguel Angel
 uid: user_1_1
 
 dn: cn=Marcel Lengl,ou=people,o=TaskanaTest
@@ -91,7 +91,7 @@ objectclass: top
 cn: Elena Ferrante
 sn: Ferrante
 givenName: Elena
-uid: Elena
+uid: elena
 
 dn: cn=Simone Mueller,ou=people,o=TaskanaTest
 objectclass: inetOrgPerson
@@ -101,7 +101,7 @@ objectclass: top
 cn: Simone Mueller
 sn: Mueller
 givenName: Simone
-uid: Simone
+uid: simone
 
 dn: cn=Aaron Sirup,ou=people,o=TaskanaTest
 objectclass: inetOrgPerson
