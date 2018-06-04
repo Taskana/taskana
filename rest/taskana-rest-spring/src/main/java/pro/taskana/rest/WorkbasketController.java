@@ -68,6 +68,7 @@ public class WorkbasketController extends AbstractPagingController {
     private static final String DOMAIN = "domain";
     private static final String REQUIRED_PERMISSION = "required-permission";
     private static final String TYPE = "type";
+    private static final String DESCRIPTION = "description";
 
     private static final String SORT_BY = "sort-by";
     private static final String SORT_DIRECTION = "order";
@@ -276,6 +277,9 @@ public class WorkbasketController extends AbstractPagingController {
                     break;
                 case (TYPE):
                     query = query.orderByType(sortDirection);
+                    break;
+                case (DESCRIPTION):
+                    query = query.orderByDescription(sortDirection);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown order '" + sortBy + "'");
