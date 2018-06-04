@@ -44,14 +44,12 @@ import pro.taskana.rest.resource.ClassificationSummaryResource;
 @Import(RestConfiguration.class)
 public class ClassificationControllerIntTest {
 
-
     String server = "http://127.0.0.1:";
     RestTemplate template;
     HttpEntity<String> request;
     HttpHeaders headers = new HttpHeaders();
     @LocalServerPort
     int port;
-
 
     @Before
     public void before() {
@@ -139,8 +137,6 @@ public class ClassificationControllerIntTest {
         out.write(newClassification);
         out.flush();
         out.close();
-
-
 
         newClassification = "{\"classificationId\": \"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         url = new URL("http://127.0.0.1:" + port + "/v1/classifications");
