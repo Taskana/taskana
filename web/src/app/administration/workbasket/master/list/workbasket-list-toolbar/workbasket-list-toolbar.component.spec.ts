@@ -25,6 +25,7 @@ import { ImportExportComponent } from 'app/administration/components/import-expo
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
+import { configureTests } from 'app/app.test.configuration';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -43,35 +44,36 @@ describe('WorkbasketListToolbarComponent', () => {
 		{ path: ':id', component: DummyDetailComponent, outlet: 'detail' }
 	];
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, HttpModule,
-				HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule, AppModule],
-			declarations: [WorkbasketListToolbarComponent, SortComponent,
-				FilterComponent, IconTypeComponent, DummyDetailComponent, ImportExportComponent],
-			providers: [
-				WorkbasketService,
-				ClassificationDefinitionService,
-				WorkbasketDefinitionService,
-			]
-		})
-			.compileComponents();
-	}));
+	beforeEach(done => {
+		const configure = (testBed: TestBed) => {
+			testBed.configureTestingModule({
+				imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, HttpModule,
+					HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule, AppModule],
+				declarations: [WorkbasketListToolbarComponent, SortComponent,
+					FilterComponent, IconTypeComponent, DummyDetailComponent, ImportExportComponent],
+				providers: [
+					WorkbasketService,
+					ClassificationDefinitionService,
+					WorkbasketDefinitionService,
+				]
+			})
+		};
+		configureTests(configure).then(testBed => {
+			fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
+			workbasketService = TestBed.get(WorkbasketService);
+			router = TestBed.get(Router);
+			spyOn(workbasketService, 'deleteWorkbasket').and.returnValue(Observable.of(''));
+			spyOn(workbasketService, 'triggerWorkBasketSaved');
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
-		workbasketService = TestBed.get(WorkbasketService);
-		router = TestBed.get(Router);
-		spyOn(workbasketService, 'deleteWorkbasket').and.returnValue(Observable.of(''));
-		spyOn(workbasketService, 'triggerWorkBasketSaved');
+			debugElement = fixture.debugElement.nativeElement;
+			component = fixture.componentInstance;
+			component.workbaskets = new Array<WorkbasketSummary>(
+				new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1',
+					undefined, undefined, undefined, undefined, undefined, undefined, undefined, new Links({ 'href': 'selfLink' })));
 
-		debugElement = fixture.debugElement.nativeElement;
-		component = fixture.componentInstance;
-		component.workbaskets = new Array<WorkbasketSummary>(
-			new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1',
-				undefined, undefined, undefined, undefined, undefined, undefined, undefined, new Links({ 'href': 'selfLink' })));
-
-		fixture.detectChanges();
+			fixture.detectChanges();
+			done();
+		});
 	});
 
 	afterEach(() => {

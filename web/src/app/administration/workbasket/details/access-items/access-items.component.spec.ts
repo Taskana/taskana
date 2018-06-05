@@ -25,6 +25,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { configureTests } from 'app/app.test.configuration';
 
 
 @Component({
@@ -62,43 +63,45 @@ describe('AccessItemsComponent', () => {
 	let fixture: ComponentFixture<AccessItemsComponent>;
 	let workbasketService, debugElement, alertService;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent, TaskanaTypeAheadComponent],
-			imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
-			providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService,
+
+	beforeEach(done => {
+		const configure = (testBed: TestBed) => {
+			testBed.configureTestingModule({
+				declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent, TaskanaTypeAheadComponent],
+				imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
+				providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService,
+					{
+						provide: DomainService,
+						useClass: DomainServiceMock
+					},
+					CustomFieldsService]
+
+			})
+		};
+		configureTests(configure).then(testBed => {
+			fixture = TestBed.createComponent(AccessItemsComponent);
+			component = fixture.componentInstance;
+			component.workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
+				new Links(undefined, undefined, { 'href': 'someurl' }));
+			workbasketService = TestBed.get(WorkbasketService);
+			alertService = TestBed.get(AlertService);
+			spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(Observable.of(new WorkbasketAccessItemsResource(
 				{
-					provide: DomainService,
-					useClass: DomainServiceMock
-				},
-				CustomFieldsService]
-
-		})
-			.compileComponents();
-	}));
-
-	beforeEach(() => {
-		fixture = TestBed.createComponent(AccessItemsComponent);
-		component = fixture.componentInstance;
-		component.workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
-			new Links(undefined, undefined, { 'href': 'someurl' }));
-		workbasketService = TestBed.get(WorkbasketService);
-		alertService = TestBed.get(AlertService);
-		spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(Observable.of(new WorkbasketAccessItemsResource(
-			{
-				'accessItems': new Array<WorkbasketAccessItems>(
-					new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false,
-						false, false, false, false, false, false, false, false, false),
-					new WorkbasketAccessItems('id2', '1', 'accessID2'))
-			}, new Links({ 'href': 'someurl' })
-		)));
-		spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(Observable.of(true)),
-			spyOn(alertService, 'triggerAlert').and.returnValue(Observable.of(true)),
-			debugElement = fixture.debugElement.nativeElement;
-		component.ngOnChanges({
-			active: new SimpleChange(undefined, 'accessItems', true)
+					'accessItems': new Array<WorkbasketAccessItems>(
+						new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false,
+							false, false, false, false, false, false, false, false, false),
+						new WorkbasketAccessItems('id2', '1', 'accessID2'))
+				}, new Links({ 'href': 'someurl' })
+			)));
+			spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(Observable.of(true)),
+				spyOn(alertService, 'triggerAlert').and.returnValue(Observable.of(true)),
+				debugElement = fixture.debugElement.nativeElement;
+			component.ngOnChanges({
+				active: new SimpleChange(undefined, 'accessItems', true)
+			});
+			fixture.detectChanges();
+			done();
 		});
-		fixture.detectChanges();
 	});
 
 	afterEach(() => {

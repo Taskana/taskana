@@ -28,6 +28,7 @@ import { SelectWorkBasketPipe } from 'app/shared/pipes/selectedWorkbasket/selete
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
+import { configureTests } from 'app/app.test.configuration';
 
 
 const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource({
@@ -54,45 +55,46 @@ describe('DistributionTargetsComponent', () => {
 	const workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
 		new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			imports: [AngularSvgIconModule, HttpClientModule, HttpModule, JsonpModule],
-			declarations: [DistributionTargetsComponent, SpinnerComponent, GeneralMessageModalComponent,
-				FilterComponent, SelectWorkBasketPipe, IconTypeComponent, DualListComponent],
-			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
-				{
-					provide: DomainService,
-					useClass: DomainServiceMock
-				  }]
-		})
-			.compileComponents();
-	}));
-
-	beforeEach(() => {
-		fixture = TestBed.createComponent(DistributionTargetsComponent);
-		component = fixture.componentInstance;
-		component.workbasket = workbasket;
-		workbasketService = TestBed.get(WorkbasketService);
-		spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
-			return Observable.of(new WorkbasketSummaryResource(
-				{
-					'workbaskets': new Array<WorkbasketSummary>(
-						new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
-						new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
-						new WorkbasketSummary('id3', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
-				}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
-		})
-		spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
-			return Observable.of(new WorkbasketDistributionTargetsResource(
-				{
-					'distributionTargets': new Array<WorkbasketSummary>(
-						new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
-				}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
-		})
-		component.ngOnChanges({
-			active: new SimpleChange(undefined, 'distributionTargets', true)
+	beforeEach(done => {
+		const configure = (testBed: TestBed) => {
+			testBed.configureTestingModule({
+				imports: [AngularSvgIconModule, HttpClientModule, HttpModule, JsonpModule],
+				declarations: [DistributionTargetsComponent, SpinnerComponent, GeneralMessageModalComponent,
+					FilterComponent, SelectWorkBasketPipe, IconTypeComponent, DualListComponent],
+				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
+					{
+						provide: DomainService,
+						useClass: DomainServiceMock
+					}]
+			})
+		};
+		configureTests(configure).then(testBed => {
+			fixture = TestBed.createComponent(DistributionTargetsComponent);
+			component = fixture.componentInstance;
+			component.workbasket = workbasket;
+			workbasketService = TestBed.get(WorkbasketService);
+			spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
+				return Observable.of(new WorkbasketSummaryResource(
+					{
+						'workbaskets': new Array<WorkbasketSummary>(
+							new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
+							new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
+							new WorkbasketSummary('id3', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
+					}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
+			})
+			spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
+				return Observable.of(new WorkbasketDistributionTargetsResource(
+					{
+						'distributionTargets': new Array<WorkbasketSummary>(
+							new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
+					}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
+			})
+			component.ngOnChanges({
+				active: new SimpleChange(undefined, 'distributionTargets', true)
+			});
+			fixture.detectChanges();
+			done();
 		});
-		fixture.detectChanges();
 	});
 
 	it('should create', () => {

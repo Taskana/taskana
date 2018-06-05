@@ -7,6 +7,8 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
 import { MonitorGuard } from 'app/guards/monitor-guard';
 import { WindowRefService } from 'app/services/window/window.service';
+import { UserGuard } from 'app/guards/user-guard';
+import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 @Component({
   selector: 'taskana-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -45,14 +47,14 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   administrationAccess = false;
   monitorAccess = false;
+  workplaceAccess = false;
 
   selectedRouteSubscription: Subscription;
 
   constructor(
     private selectedRouteService: SelectedRouteService,
     private domainService: DomainService,
-    private businessAdminGuard: BusinessAdminGuard,
-    private monitorGuard: MonitorGuard,
+    private taskanaEngineService: TaskanaEngineService,
     private window: WindowRefService) { }
 
   ngOnInit() {
@@ -68,12 +70,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
       this.selectedDomain = domain;
     });
 
-    this.businessAdminGuard.canActivate().subscribe(hasAccess => {
-      this.administrationAccess = hasAccess
-    });
-    this.monitorGuard.canActivate().subscribe(hasAccess => {
-      this.monitorAccess = hasAccess
-    });
+    this.administrationAccess = this.taskanaEngineService.hasRole(BusinessAdminGuard.roles);
+    this.monitorAccess = this.taskanaEngineService.hasRole(MonitorGuard.roles);
+    this.workplaceAccess = this.taskanaEngineService.hasRole(UserGuard.roles);
   }
 
   switchDomain(domain) {

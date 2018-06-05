@@ -24,7 +24,6 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
-import { NoAccessComponent } from './noAccess/no-access.component';
 import { WorkbasketInformationComponent } from './information/workbasket-information.component';
 import { AccessItemsComponent } from './access-items/access-items.component';
 import { DistributionTargetsComponent } from './distribution-targets/distribution-targets.component';
@@ -41,6 +40,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { configureTests } from 'app/app.test.configuration';
 @Component({
 	selector: 'taskana-filter',
 	template: ''
@@ -103,52 +103,52 @@ describe('WorkbasketDetailsComponent', () => {
 		{ path: '*', component: DummyDetailComponent }
 	];
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
-			declarations: [WorkbasketDetailsComponent, NoAccessComponent, WorkbasketInformationComponent, SpinnerComponent,
-				IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
-				DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent,
-				TaskanaTypeAheadComponent, SelectWorkBasketPipe],
-			providers: [WorkbasketService, MasterAndDetailService, ErrorModalService, RequestInProgressService,
-				AlertService, SavingWorkbasketService, {
-					provide: DomainService,
-					useClass: DomainServiceMock
-				},
-				CustomFieldsService]
-		})
-			.compileComponents();
-	}));
+	beforeEach(done => {
+		const configure = (testBed: TestBed) => {
+			testBed.configureTestingModule({
+				imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
+				declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent, SpinnerComponent,
+					IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
+					DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent,
+					TaskanaTypeAheadComponent, SelectWorkBasketPipe],
+				providers: [WorkbasketService, MasterAndDetailService, ErrorModalService, RequestInProgressService,
+					AlertService, SavingWorkbasketService, {
+						provide: DomainService,
+						useClass: DomainServiceMock
+					},
+					CustomFieldsService]
+			})
+		};
+		configureTests(configure).then(testBed => {
+			fixture = TestBed.createComponent(WorkbasketDetailsComponent);
+			component = fixture.componentInstance;
+			debugElement = fixture.debugElement.nativeElement;
+			router = TestBed.get(Router)
+			fixture.detectChanges();
+			masterAndDetailService = TestBed.get(MasterAndDetailService);
+			workbasketService = TestBed.get(WorkbasketService);
+			spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => { return Observable.of(true) })
+			spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => { return Observable.of('id1') })
+			spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
+				return Observable.of(new WorkbasketSummaryResource(
+					{
+						'workbaskets': new Array<WorkbasketSummary>(
+							new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
+								new Links({ 'href': 'someurl' })))
+					}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
+			})
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(WorkbasketDetailsComponent);
-		component = fixture.componentInstance;
-		debugElement = fixture.debugElement.nativeElement;
-		router = TestBed.get(Router)
-		fixture.detectChanges();
-		masterAndDetailService = TestBed.get(MasterAndDetailService);
-		workbasketService = TestBed.get(WorkbasketService);
-		spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => { return Observable.of(true) })
-		spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => { return Observable.of('id1') })
-		spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
-			return Observable.of(new WorkbasketSummaryResource(
-				{
-					'workbaskets': new Array<WorkbasketSummary>(
-						new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
-							new Links({ 'href': 'someurl' })))
-				}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
-		})
-
-		spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return Observable.of(workbasket) })
-		spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => {
-			return Observable.of(new WorkbasketAccessItemsResource(
-				{ 'accessItems': new Array<WorkbasketAccessItems>() }, new Links({ 'href': 'url' })))
-		})
-		spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
-			return Observable.of(new WorkbasketSummaryResource(
-				{ 'workbaskets': new Array<WorkbasketSummary>() }, new LinksWorkbasketSummary({ 'href': 'url' })))
-		})
-
+			spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return Observable.of(workbasket) })
+			spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => {
+				return Observable.of(new WorkbasketAccessItemsResource(
+					{ 'accessItems': new Array<WorkbasketAccessItems>() }, new Links({ 'href': 'url' })))
+			})
+			spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
+				return Observable.of(new WorkbasketSummaryResource(
+					{ 'workbaskets': new Array<WorkbasketSummary>() }, new LinksWorkbasketSummary({ 'href': 'url' })))
+			})
+			done();
+		});
 	});
 
 	afterEach(() => {
@@ -157,21 +157,6 @@ describe('WorkbasketDetailsComponent', () => {
 
 	it('should be created', () => {
 		expect(component).toBeTruthy();
-	});
-
-
-
-	it('should has created taskana-workbasket-details if workbasket is defined and taskana-no-access should dissapear', () => {
-		expect(component.workbasket).toBeUndefined();
-		fixture.detectChanges();
-		expect(debugElement.querySelector('taskana-no-access')).toBeTruthy();
-
-		component.workbasket = workbasket;
-		fixture.detectChanges();
-
-		expect(debugElement.querySelector('taskana-no-access')).toBeFalsy();
-		expect(debugElement.querySelector('taskana-workbasket-information')).toBeTruthy();
-
 	});
 
 });

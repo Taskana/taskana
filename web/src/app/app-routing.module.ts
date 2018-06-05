@@ -2,8 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
+
 import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
 import { MonitorGuard } from 'app/guards/monitor-guard';
+import { UserGuard } from 'app/guards/user-guard';
+import { NoAccessComponent } from './components/no-access/no-access.component';
 
 const appRoutes: Routes = [
     {
@@ -17,8 +20,13 @@ const appRoutes: Routes = [
         loadChildren: './monitor/monitor.module#MonitorModule',
     },
     {
+        canActivate: [UserGuard],
         path: 'workplace',
         loadChildren: './workplace/workplace.module#WorkplaceModule'
+    },
+    {
+        path: 'no-role',
+        component: NoAccessComponent
     },
     {
         path: '',

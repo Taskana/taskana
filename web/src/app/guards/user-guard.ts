@@ -6,23 +6,21 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { ErrorModel } from 'app/models/modal-error';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
+import { WindowRefService } from 'app/services/window/window.service';
 
 @Injectable()
-export class BusinessAdminGuard implements CanActivate {
-    static roles = ['ADMIN', 'BUSINESS_ADMIN'];
-
+export class UserGuard implements CanActivate {
+    static roles = ['ADMIN', 'USER'];
     constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) { }
-
     canActivate() {
-        if (this.taskanaEngineService.hasRole(BusinessAdminGuard.roles)) {
+        if (this.taskanaEngineService.hasRole(UserGuard.roles)) {
             return true;
         }
-        return this.navigateToWorkplace();
+        return this.navigateToNoRole();
     }
 
-
-    navigateToWorkplace(): boolean {
-        this.router.navigate(['workplace']);
-        return false
+    navigateToNoRole(): boolean {
+        this.router.navigate(['no-role']);
+        return false;
     }
 }

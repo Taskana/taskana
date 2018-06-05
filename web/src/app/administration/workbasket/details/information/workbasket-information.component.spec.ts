@@ -29,6 +29,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { configureTests } from 'app/app.test.configuration';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -77,35 +78,40 @@ describe('InformationComponent', () => {
 	let fixture: ComponentFixture<WorkbasketInformationComponent>;
 	let debugElement, workbasketService, alertService, savingWorkbasketService, requestInProgressService;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe,
-				RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent, DummyDetailComponent,
-				TaskanaTypeAheadComponent],
-			imports: [FormsModule,
-				AngularSvgIconModule,
-				HttpClientModule,
-				HttpModule,
-				RouterTestingModule.withRoutes(routes)],
-			providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
-				{
-					provide: DomainService,
-					useClass: DomainServiceMock
-				},
-				CustomFieldsService]
+	beforeEach(done => {
+		const configure = (testBed: TestBed) => {
+			testBed.configureTestingModule({
+				declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe,
+					RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent, DummyDetailComponent,
+					TaskanaTypeAheadComponent],
+				imports: [FormsModule,
+					AngularSvgIconModule,
+					HttpClientModule,
+					HttpModule,
+					RouterTestingModule.withRoutes(routes)],
+				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
+					{
+						provide: DomainService,
+						useClass: DomainServiceMock
+					},
+					CustomFieldsService]
 
-		})
-			.compileComponents();
-		fixture = TestBed.createComponent(WorkbasketInformationComponent);
-		component = fixture.componentInstance;
-		debugElement = fixture.debugElement.nativeElement;
-		workbasketService = TestBed.get(WorkbasketService);
-		alertService = TestBed.get(AlertService);
-		savingWorkbasketService = TestBed.get(SavingWorkbasketService);
-		requestInProgressService = TestBed.get(RequestInProgressService);
+			})
+		};
+		configureTests(configure).then(testBed => {
+			fixture = TestBed.createComponent(WorkbasketInformationComponent);
+			component = fixture.componentInstance;
+			debugElement = fixture.debugElement.nativeElement;
+			workbasketService = TestBed.get(WorkbasketService);
+			alertService = TestBed.get(AlertService);
+			savingWorkbasketService = TestBed.get(SavingWorkbasketService);
+			requestInProgressService = TestBed.get(RequestInProgressService);
 
-		spyOn(alertService, 'triggerAlert');
-	}));
+			spyOn(alertService, 'triggerAlert');
+			fixture.detectChanges();
+			done();
+		});
+	});
 
 	afterEach(() => {
 		document.body.removeChild(debugElement);
