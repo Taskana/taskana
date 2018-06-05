@@ -93,26 +93,26 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task claim(String taskId, boolean forceClaim)
+    public Task forceClaim(String taskId)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
+        return claim(taskId, true);
+    }
+
+    private Task claim(String taskId, boolean forceClaim)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         String userId = CurrentUserContext.getUserid();
-        LOGGER.debug("entry to claim(id = {}, forceClaim = {}, userId = {})", taskId, forceClaim, userId);
+        LOGGER.debug("entry to claim(id = {}, userId = {}, forceClaim = {})", taskId, userId, forceClaim);
         TaskImpl task = null;
         try {
             taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
             TaskState state = task.getState();
             if (state == TaskState.COMPLETED) {
-                LOGGER.warn("Method claim() found that task {} is already completed. Throwing InvalidStateException",
-                    taskId);
-                throw new InvalidStateException("Task is already completed");
+                throw new InvalidStateException("Task with id " + taskId + " is already completed.");
             }
             if (state == TaskState.CLAIMED && !forceClaim && !task.getOwner().equals(userId)) {
-                LOGGER.warn(
-                    "Method claim() found that task {} is claimed by {} and forceClaim is false. Throwing InvalidOwnerException",
-                    taskId, task.getOwner());
                 throw new InvalidOwnerException(
-                    "You´re not the owner of this task and it is already claimed by other user " + task.getOwner());
+                    "Task with id " + taskId + " is already claimed by " + task.getOwner() + ".");
             }
             Instant now = Instant.now();
             task.setOwner(userId);
@@ -121,7 +121,7 @@ public class TaskServiceImpl implements TaskService {
             task.setRead(true);
             task.setState(TaskState.CLAIMED);
             taskMapper.update(task);
-            LOGGER.debug("Method claim() claimed task '{}' for user '{}'.", taskId, userId);
+            LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from claim()");
@@ -136,10 +136,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task cancelClaim(String taskId, boolean forceUnclaim)
+    public Task forceCancelClaim(String taskId)
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
+        return this.cancelClaim(taskId, true);
+    }
+
+    private Task cancelClaim(String taskId, boolean forceUnclaim)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         String userId = CurrentUserContext.getUserid();
-        LOGGER.debug("entry to cancelClaim(taskId = {}) with userId = {}, forceFlag = {}", taskId, userId,
+        LOGGER.debug("entry to cancelClaim(taskId = {}), userId = {}, forceUnclaim = {}", taskId, userId,
             forceUnclaim);
         TaskImpl task = null;
         try {
@@ -147,16 +152,11 @@ public class TaskServiceImpl implements TaskService {
             task = (TaskImpl) getTask(taskId);
             TaskState state = task.getState();
             if (state == TaskState.COMPLETED) {
-                LOGGER.warn(
-                    "Method cancelClaim() found that task {} is already completed. Throwing InvalidStateException",
-                    taskId);
-                throw new InvalidStateException("Task is already completed");
+                throw new InvalidStateException("Task with id " + taskId + " is already completed.");
             }
             if (state == TaskState.CLAIMED && !forceUnclaim && !userId.equals(task.getOwner())) {
-                LOGGER.warn(
-                    "Method cancelClaim() found that task {} is claimed by {} and forceClaim is false. Throwing InvalidOwnerException",
-                    taskId, task.getOwner());
-                throw new InvalidOwnerException("Task is already claimed by an other user = " + task.getOwner());
+                throw new InvalidOwnerException(
+                    "Task with id " + taskId + " is already claimed by " + task.getOwner() + ".");
             }
             Instant now = Instant.now();
             task.setOwner(null);
@@ -165,11 +165,10 @@ public class TaskServiceImpl implements TaskService {
             task.setRead(true);
             task.setState(TaskState.READY);
             taskMapper.update(task);
-            LOGGER.debug("Method cancelClaim() unclaimed task '{}' for user '{}'.", taskId, userId);
+            LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from cancelClaim(taskId = {}) with userId = {}, forceFlag = {}", taskId, userId,
-                forceUnclaim);
+            LOGGER.debug("exit from cancelClaim()");
         }
         return task;
     }
@@ -181,9 +180,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task completeTask(String taskId, boolean isForced)
+    public Task forceCompleteTask(String taskId)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
-        LOGGER.debug("entry to completeTask(id = {}, isForced {})", taskId, isForced);
+        return completeTask(taskId, true);
+    }
+
+    private Task completeTask(String taskId, boolean isForced)
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
+        String userId = CurrentUserContext.getUserid();
+        LOGGER.debug("entry to completeTask(id = {}, userId = {}, isForced = {})", taskId, userId, isForced);
         TaskImpl task = null;
         try {
             taskanaEngine.openConnection();
@@ -192,29 +197,24 @@ public class TaskServiceImpl implements TaskService {
             // check pre-conditions for non-forced invocation
             if (!isForced) {
                 if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
-                    LOGGER.warn("Method completeTask() does expect a task which need to be CLAIMED before. TaskId={}",
-                        taskId);
-                    throw new InvalidStateException(taskId);
+                    throw new InvalidStateException("Task with id " + taskId + " has to be claimed before.");
                 } else if (!CurrentUserContext.getAccessIds().contains(task.getOwner())) {
-                    LOGGER.warn(
-                        "Method completeTask() does expect to be invoced by the task-owner or a administrator. TaskId={}, TaskOwner={}, CurrentUser={}",
-                        taskId, task.getOwner(), CurrentUserContext.getUserid());
                     throw new InvalidOwnerException(
-                        "TaskOwner is" + task.getOwner() + ", but current User is " + CurrentUserContext.getUserid());
+                        "Owner of task " + taskId + " is " + task.getOwner() + ", but current User is " + userId);
                 }
             } else {
                 // CLAIM-forced, if task was not already claimed before.
                 if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
-                    task = (TaskImpl) this.claim(taskId, true);
+                    task = (TaskImpl) this.forceClaim(taskId);
                 }
             }
             Instant now = Instant.now();
             task.setCompleted(now);
             task.setModified(now);
             task.setState(TaskState.COMPLETED);
-            task.setOwner(CurrentUserContext.getUserid());
+            task.setOwner(userId);
             taskMapper.update(task);
-            LOGGER.debug("Method completeTask() completed Task '{}'.", taskId);
+            LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from completeTask()");
@@ -963,27 +963,28 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(String taskId, boolean forceDelete)
+    public void forceDeleteTask(String taskId)
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
-        LOGGER.debug("entry to deleteTask(taskId = {} , forceDelete = {} )", taskId, forceDelete);
+        deleteTask(taskId, true);
+    }
+
+    private void deleteTask(String taskId, boolean forceDelete)
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+        LOGGER.debug("entry to deleteTask(taskId = {} , forceDelete = {})", taskId, forceDelete);
         taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN);
         TaskImpl task = null;
         try {
             taskanaEngine.openConnection();
             task = (TaskImpl) getTask(taskId);
 
-            // reset read flag and set transferred flag
             if (!TaskState.COMPLETED.equals(task.getState()) && !forceDelete) {
-                LOGGER.warn(
-                    "Method deleteTask() found that task {} is not completed and forceDelete is false. Throwing InvalidStateException",
-                    task);
-                throw new InvalidStateException("Cannot delete Task " + taskId + " because it is not completed");
+                throw new InvalidStateException("Cannot delete Task " + taskId + " because it is not completed.");
             }
             taskMapper.delete(taskId);
-            LOGGER.debug("Method deleteTask() deleted Task {}", taskId);
+            LOGGER.debug("Task {} deleted.", taskId);
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from deleteTask(). ");
+            LOGGER.debug("exit from deleteTask().");
         }
     }
 

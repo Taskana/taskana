@@ -151,7 +151,7 @@ public class TaskController extends AbstractPagingController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> completeTask(@PathVariable String taskId)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
-        taskService.completeTask(taskId, true);
+        taskService.forceCompleteTask(taskId);
         Task updatedTask = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
@@ -162,7 +162,7 @@ public class TaskController extends AbstractPagingController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> deleteTask(@PathVariable String taskId)
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
-        taskService.deleteTask(taskId, true);
+        taskService.forceDeleteTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(HttpStatus.OK);
         return result;
     }

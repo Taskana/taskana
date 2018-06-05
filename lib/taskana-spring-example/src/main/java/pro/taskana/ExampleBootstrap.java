@@ -43,7 +43,7 @@ public class ExampleBootstrap {
         taskService.claim(task.getId());
         System.out.println(
             "---------------------------> Task claimed: " + taskService.getTask(task.getId()).getOwner());
-        taskService.completeTask(task.getId(), true);
+        taskService.forceCompleteTask(task.getId());
         System.out.println("---------------------------> Task completed");
     }
 
