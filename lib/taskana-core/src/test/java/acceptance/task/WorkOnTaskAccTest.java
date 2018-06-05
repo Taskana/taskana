@@ -159,7 +159,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000031");
 
-        taskService.cancelClaim(claimedTask.getId(), true);
+        taskService.forceCancelClaim(claimedTask.getId());
 
         Task unclaimedTask = taskService.getTask("TKI:000000000000000000000000000000000031");
         assertNotNull(unclaimedTask);
@@ -205,7 +205,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000033");
 
-        taskService.completeTask(claimedTask.getId(), true);
+        taskService.forceCompleteTask(claimedTask.getId());
 
         Task completedTask = taskService.getTask("TKI:000000000000000000000000000000000033");
         assertNotNull(completedTask);
@@ -241,7 +241,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000035");
 
-        taskService.completeTask(claimedTask.getId(), true);
+        taskService.forceCompleteTask(claimedTask.getId());
 
         Task completedTask = taskService.getTask("TKI:000000000000000000000000000000000035");
         assertNotNull(completedTask);
