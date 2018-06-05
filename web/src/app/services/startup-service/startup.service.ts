@@ -5,6 +5,7 @@ import { environment } from 'app/../environments/environment';
 import { Injectable, Inject } from '@angular/core';
 import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 @Injectable()
 export class StartupService {
 
@@ -12,7 +13,8 @@ export class StartupService {
     constructor(
         private httpClient: HttpClient,
         private titlesService: TitlesService,
-        private customFieldsService: CustomFieldsService) { }
+        private customFieldsService: CustomFieldsService,
+        private taskanaEngineService: TaskanaEngineService) { }
 
     load(): Promise<any> {
         return this.loadEnvironment();
@@ -21,7 +23,9 @@ export class StartupService {
     private loadEnvironment() {
         return this.getEnvironmentFilePromise().then(
             () => this.geCustomizedFieldsFilePromise()
-        );
+        ).then(
+            () => this.taskanaEngineService.getUserInformation()
+        )
     }
 
     getEnvironmentFilePromise() {

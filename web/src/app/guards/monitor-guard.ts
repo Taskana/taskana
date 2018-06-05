@@ -10,33 +10,18 @@ import { WindowRefService } from 'app/services/window/window.service';
 
 @Injectable()
 export class MonitorGuard implements CanActivate {
-    constructor(private taskanaEngineService: TaskanaEngineService, public router: Router,
-        private window: WindowRefService) { }
+    static roles = ['ADMIN', 'MONITOR'];
+    constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) { }
 
     canActivate() {
-        return this.taskanaEngineService.getUserInformation().map(userInfo => {
-            if (userInfo.roles.length === 0) {
-                return this.navigateToWorplace();
-            }
-            const adminRole = userInfo.roles.find(role => {
-                if (role === 'MONITOR' || role === 'ADMIN') {
-                    return true;
-                }
-            });
-            if (adminRole) {
-                return true;
-            }
-            return this.navigateToWorplace();
-        }).catch(() => {
-
-            return Observable.of(this.navigateToWorplace())
-        });
+        if (this.taskanaEngineService.hasRole(MonitorGuard.roles)) {
+            return true;
+        }
+        return this.navigateToWorkplace();
     }
 
-    navigateToWorplace(): boolean {
-        if (this.window.nativeWindow.location.href.indexOf('monitor') !== -1) {
-            this.router.navigate(['workplace']);
-        }
-        return false
+    navigateToWorkplace(): boolean {
+        this.router.navigate(['workplace']);
+        return false;
     }
 }

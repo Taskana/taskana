@@ -14,53 +14,52 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
 import { MonitorGuard } from 'app/guards/monitor-guard';
-import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from 'app/services/window/window.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 import { UserInfoModel } from 'app/models/user-info';
+import { configureTests } from 'app/app.test.configuration';
 
 describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
-  let debugElement, navBar, taskanaEngineService;
+  let debugElement, navBar;
 
   const routes: Routes = [
     { path: 'classifications', component: NavBarComponent }
   ];
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [NavBarComponent, UserInformationComponent],
-      imports: [
-        AngularSvgIconModule,
-        HttpClientModule,
-        RouterTestingModule.withRoutes(routes),
-        SharedModule
-      ],
-      providers: [SelectedRouteService, {
-        provide: DomainService,
-        useClass: DomainServiceMock
-      },
-        BusinessAdminGuard,
-        MonitorGuard,
-        TaskanaEngineService,
-        WindowRefService,
-        ErrorModalService,
-        RequestInProgressService]
-    })
-      .compileComponents();
-  }));
+  beforeEach(done => {
+    const configure = (testBed: TestBed) => {
+      testBed.configureTestingModule({
+        declarations: [NavBarComponent, UserInformationComponent],
+        imports: [
+          AngularSvgIconModule,
+          HttpClientModule,
+          RouterTestingModule.withRoutes(routes),
+          SharedModule
+        ],
+        providers: [SelectedRouteService, {
+          provide: DomainService,
+          useClass: DomainServiceMock
+        },
+          BusinessAdminGuard,
+          MonitorGuard,
+          WindowRefService,
+          ErrorModalService,
+          RequestInProgressService]
+      })
+    };
+    configureTests(configure).then(testBed => {
+      fixture = TestBed.createComponent(NavBarComponent);
+      component = fixture.componentInstance;
+      debugElement = fixture.debugElement.nativeElement;
+      navBar = fixture.debugElement.componentInstance;
+      fixture.detectChanges();
+      done();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavBarComponent);
-    component = fixture.componentInstance;
-    debugElement = fixture.debugElement.nativeElement;
-    navBar = fixture.debugElement.componentInstance;
-    taskanaEngineService = TestBed.get(TaskanaEngineService);
-    spyOn(taskanaEngineService, 'getUserInformation').and.returnValue(Observable.of(new UserInfoModel));
-    fixture.detectChanges();
   });
 
   afterEach(() => {

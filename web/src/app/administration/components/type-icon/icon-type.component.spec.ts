@@ -3,23 +3,31 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { IconTypeComponent } from './icon-type.component';
+import { configureTests } from 'app/app.test.configuration';
 
 describe('IconTypeComponent', () => {
   let component: IconTypeComponent;
   let fixture: ComponentFixture<IconTypeComponent>;
+  let debugElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [IconTypeComponent]
-    })
-      .compileComponents();
-  }));
+  beforeEach(done => {
+    const configure = (testBed: TestBed) => {
+      testBed.configureTestingModule({
+        imports: [AngularSvgIconModule, HttpClientModule, HttpModule],
+        declarations: [IconTypeComponent]
+      })
+    };
+    configureTests(configure).then(testBed => {
+      fixture = TestBed.createComponent(IconTypeComponent);
+      component = fixture.componentInstance;
+      debugElement = fixture.debugElement.nativeElement;
+      fixture.detectChanges();
+      done();
+    });
+  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(IconTypeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  afterEach(() => {
+    document.body.removeChild(debugElement);
   });
 
   it('should create', () => {

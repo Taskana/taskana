@@ -3,24 +3,30 @@ import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 
 import { SortComponent } from './sort.component';
 import { Direction } from 'app/models/sorting';
+import { configureTests } from 'app/app.test.configuration';
 
 describe('SortComponent', () => {
 	let component: SortComponent;
 	let fixture: ComponentFixture<SortComponent>;
 	let debugElement;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [SortComponent, MapValuesPipe]
-		})
-			.compileComponents();
-	}));
+	beforeEach(done => {
+		const configure = (testBed: TestBed) => {
+			testBed.configureTestingModule({
+				declarations: [SortComponent, MapValuesPipe]
+			})
+		};
+		configureTests(configure).then(testBed => {
+			fixture = TestBed.createComponent(SortComponent);
+			component = fixture.componentInstance;
+			debugElement = fixture.debugElement.nativeElement;
+			fixture.detectChanges();
+			done();
+		});
+	});
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(SortComponent);
-		component = fixture.componentInstance;
-		debugElement = fixture.debugElement.nativeElement;
-		fixture.detectChanges();
+	afterEach(() => {
+		document.body.removeChild(debugElement);
 	});
 
 	it('should create', () => {
