@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authenticationProvider(jaasAuthProvider())
                 .authorizeRequests()
-                .antMatchers("/docs/**")
+                .antMatchers(HttpMethod.GET, "/docs/**")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/**")
                 .authenticated()
