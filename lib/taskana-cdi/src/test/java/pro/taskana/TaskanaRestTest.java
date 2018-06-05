@@ -78,7 +78,7 @@ public class TaskanaRestTest {
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException,
         NotAuthorizedException {
         logger.info(id);
-        taskanaEjb.getTaskService().completeTask(id, true);
+        taskanaEjb.getTaskService().forceCompleteTask(id);
     }
 
 }

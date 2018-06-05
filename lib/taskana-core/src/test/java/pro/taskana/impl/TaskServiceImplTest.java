@@ -456,9 +456,9 @@ public class TaskServiceImplTest {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
-        doReturn(expectedTask).when(cutSpy).claim(expectedTask.getId(), false);
+        doReturn(expectedTask).when(cutSpy).claim(expectedTask.getId());
         cutSpy.claim(expectedTask.getId());
-        verify(cutSpy, times(1)).claim(expectedTask.getId(), false);
+        verify(cutSpy, times(1)).claim(expectedTask.getId());
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
             taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
@@ -474,7 +474,7 @@ public class TaskServiceImplTest {
         PowerMockito.mockStatic(CurrentUserContext.class);
         Mockito.when(CurrentUserContext.getUserid()).thenReturn(expectedOwner);
 
-        Task acturalTask = cutSpy.claim(expectedTask.getId(), true);
+        Task acturalTask = cutSpy.forceClaim(expectedTask.getId());
 
         verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(expectedTask.getId());
@@ -498,7 +498,7 @@ public class TaskServiceImplTest {
         Mockito.doReturn(expectedTask).when(taskMapperMock).findById(any());
 
         try {
-            cut.claim("1", true);
+            cut.forceClaim("1");
         } catch (Exception e) {
             verify(taskanaEngineMock, times(2)).openConnection();
             verify(taskMapperMock, times(1)).findById(any());
@@ -519,7 +519,7 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
 
         try {
-            cutSpy.claim("1", true);
+            cutSpy.forceClaim("1");
         } catch (Exception e) {
             verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(task.getId());
@@ -606,9 +606,9 @@ public class TaskServiceImplTest {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         TaskImpl expectedTask = createUnitTestTask("1", "Unit Test Task 1", "1", null);
-        doReturn(expectedTask).when(cutSpy).cancelClaim(expectedTask.getId(), false);
+        doReturn(expectedTask).when(cutSpy).cancelClaim(expectedTask.getId());
         cutSpy.cancelClaim(expectedTask.getId());
-        verify(cutSpy, times(1)).cancelClaim(expectedTask.getId(), false);
+        verify(cutSpy, times(1)).cancelClaim(expectedTask.getId());
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
             taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
             classificationQueryImplMock);
@@ -628,7 +628,7 @@ public class TaskServiceImplTest {
         PowerMockito.mockStatic(CurrentUserContext.class);
         Mockito.when(CurrentUserContext.getUserid()).thenReturn(owner);
 
-        Task acturalTask = cutSpy.cancelClaim(expectedTask.getId(), true);
+        Task acturalTask = cutSpy.forceCancelClaim(expectedTask.getId());
 
         verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(expectedTask.getId());
@@ -658,7 +658,7 @@ public class TaskServiceImplTest {
         PowerMockito.mockStatic(CurrentUserContext.class);
         Mockito.when(CurrentUserContext.getUserid()).thenReturn(owner);
 
-        Task acturalTask = cutSpy.cancelClaim(expectedTask.getId(), true);
+        Task acturalTask = cutSpy.forceCancelClaim(expectedTask.getId());
 
         verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(expectedTask.getId());
@@ -681,7 +681,6 @@ public class TaskServiceImplTest {
         ClassificationNotFoundException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final long sleepTime = 100L;
-        final boolean isForced = false;
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
         Thread.sleep(sleepTime);
@@ -690,7 +689,7 @@ public class TaskServiceImplTest {
         task.setOwner(CurrentUserContext.getUserid());
         doReturn(task).when(taskMapperMock).findById(task.getId());
         doReturn(null).when(attachmentMapperMock).findAttachmentsByTaskId(task.getId());
-        doReturn(task).when(cutSpy).completeTask(task.getId(), isForced);
+        doReturn(task).when(cutSpy).completeTask(task.getId());
         doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
         doReturn(classificationQueryImplMock).when(classificationQueryImplMock).idIn(any());
         doReturn(new ArrayList<>()).when(classificationQueryImplMock).list();
@@ -736,7 +735,6 @@ public class TaskServiceImplTest {
         ClassificationNotFoundException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final long sleepTime = 100L;
-        final boolean isForced = false;
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
         // created and modify should be able to be different.
@@ -747,7 +745,7 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(taskMapperMock).update(task);
 
-        Task actualTask = cutSpy.completeTask(task.getId(), isForced);
+        Task actualTask = cutSpy.completeTask(task.getId());
 
         verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
@@ -767,7 +765,6 @@ public class TaskServiceImplTest {
     public void testCompleteTaskNotForcedNotClaimedBefore()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException,
         NotAuthorizedException {
-        final boolean isForced = false;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
@@ -776,7 +773,7 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
 
         try {
-            cutSpy.completeTask(task.getId(), isForced);
+            cutSpy.completeTask(task.getId());
         } catch (InvalidStateException e) {
             verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(task.getId());
@@ -793,7 +790,6 @@ public class TaskServiceImplTest {
     public void testCompleteTaskNotForcedInvalidOwnerException()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException,
         NotAuthorizedException {
-        final boolean isForced = false;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
@@ -803,7 +799,7 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
 
         try {
-            cutSpy.completeTask(task.getId(), isForced);
+            cutSpy.completeTask(task.getId());
         } catch (InvalidOwnerException e) {
             verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(task.getId());
@@ -821,11 +817,10 @@ public class TaskServiceImplTest {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException,
         NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
-        final boolean isForced = false;
         String taskId = "1";
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(taskId);
         try {
-            cutSpy.completeTask(taskId, isForced);
+            cutSpy.completeTask(taskId);
         } catch (InvalidOwnerException e) {
             verify(taskanaEngineMock, times(1)).openConnection();
             verify(cutSpy, times(1)).getTask(taskId);
@@ -842,7 +837,6 @@ public class TaskServiceImplTest {
     public void testCompleteForcedAndAlreadyClaimed()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException,
         ClassificationNotFoundException, NotAuthorizedException {
-        final boolean isForced = true;
         final long sleepTime = 100L;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
@@ -854,7 +848,7 @@ public class TaskServiceImplTest {
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(taskMapperMock).update(task);
 
-        Task actualTask = cutSpy.completeTask(task.getId(), isForced);
+        Task actualTask = cutSpy.forceCompleteTask(task.getId());
 
         verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
@@ -875,7 +869,6 @@ public class TaskServiceImplTest {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException,
         ClassificationNotFoundException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
-        final boolean isForced = true;
         final long sleepTime = 100L;
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
@@ -887,14 +880,14 @@ public class TaskServiceImplTest {
         Thread.sleep(sleepTime);
         claimedTask.setState(TaskState.CLAIMED);
         claimedTask.setClaimed(Instant.now());
-        doReturn(claimedTask).when(cutSpy).claim(task.getId(), isForced);
+        doReturn(claimedTask).when(cutSpy).forceClaim(task.getId());
         doNothing().when(taskMapperMock).update(claimedTask);
 
-        Task actualTask = cutSpy.completeTask(task.getId(), isForced);
+        Task actualTask = cutSpy.forceCompleteTask(task.getId());
 
         verify(taskanaEngineMock, times(1)).openConnection();
         verify(cutSpy, times(1)).getTask(task.getId());
-        verify(cutSpy, times(1)).claim(task.getId(), isForced);
+        verify(cutSpy, times(1)).forceClaim(task.getId());
         verify(taskMapperMock, times(1)).update(claimedTask);
         verify(taskanaEngineMock, times(1)).returnConnection();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,

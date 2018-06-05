@@ -42,12 +42,10 @@ public interface TaskService {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException;
 
     /**
-     * Claim an existing task for the current user. Enable forced claim.
+     * Claim an existing task for the current user even if it is already claimed by someone else.
      *
      * @param taskId
      *            the id of the task to be claimed
-     * @param forceClaim
-     *            if true, claim is performed even if the task is already claimed by someone else
      * @return claimed Task
      * @throws TaskNotFoundException
      *             if the task with taskId was not found
@@ -58,11 +56,11 @@ public interface TaskService {
      * @throws NotAuthorizedException
      *             if the current user has no read permission for the workbasket the task is in
      */
-    Task claim(String taskId, boolean forceClaim)
+    Task forceClaim(String taskId)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException;
 
     /**
-     * Unclaim a existing Task which was claimed and owned by you before.
+     * Cancel the claim of an existing task if it was claimed by the current user before.
      *
      * @param taskId
      *            id of the task which should be unclaimed.
@@ -80,14 +78,10 @@ public interface TaskService {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException;
 
     /**
-     * Unclaim a existing Task which was claimed and owned by you before. Also there can be enabled a force flag for
-     * admins.
+     * Cancel the claim of an existing task even if it was claimed by another user.
      *
      * @param taskId
      *            id of the task which should be unclaimed.
-     * @param forceCancel
-     *            force the cancellation of claim. If true, the task is unclaimed even if it was claimed by another
-     *            user.
      * @return updated unclaimed task
      * @throws TaskNotFoundException
      *             if the task can´t be found or does not exist
@@ -98,7 +92,7 @@ public interface TaskService {
      * @throws NotAuthorizedException
      *             if the current user has no read permission for the workbasket the task is in
      */
-    Task cancelClaim(String taskId, boolean forceCancel)
+    Task forceCancelClaim(String taskId)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException;
 
     /**
@@ -120,12 +114,10 @@ public interface TaskService {
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException;
 
     /**
-     * Complete a claimed Task and update State and Timestamps.
+     * Complete a Task and update State and Timestamps in every case if the Task exists.
      *
      * @param taskId
      *            - Id of the Task which should be completed.
-     * @param isForced
-     *            - Flag which can complete a Task in every case if Task does exist.
      * @return Task - updated task after completion.
      * @throws InvalidStateException
      *             when Task wasn´t claimed before.
@@ -136,7 +128,7 @@ public interface TaskService {
      * @throws NotAuthorizedException
      *             if the current user has no read permission for the workbasket the task is in
      */
-    Task completeTask(String taskId, boolean isForced)
+    Task forceCompleteTask(String taskId)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException;
 
     /**
@@ -353,12 +345,10 @@ public interface TaskService {
     void deleteTask(String taskId) throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
     /**
-     * Deletes the task with the given Id.
+     * Deletes the task with the given Id even if it is not completed.
      *
      * @param taskId
      *            The Id of the task to delete.
-     * @param forceDelete
-     *            force the deletion. If true, a task is deleted even if it is not in state completed.
      * @throws TaskNotFoundException
      *             If the given Id does not refer to an existing task.
      * @throws InvalidStateException
@@ -366,7 +356,7 @@ public interface TaskService {
      * @throws NotAuthorizedException
      *             if the current user is not member of role ADMIN
      */
-    void deleteTask(String taskId, boolean forceDelete)
+    void forceDeleteTask(String taskId)
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
     /**

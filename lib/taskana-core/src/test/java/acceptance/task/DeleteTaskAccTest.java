@@ -83,7 +83,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
             taskService.deleteTask(task.getId());
             fail("Should not be possible to delete claimed task without force flag");
         } catch (InvalidStateException ex) {
-            taskService.deleteTask(task.getId(), true);
+            taskService.forceDeleteTask(task.getId());
         }
 
         taskService.getTask("TKI:000000000000000000000000000000000027");
