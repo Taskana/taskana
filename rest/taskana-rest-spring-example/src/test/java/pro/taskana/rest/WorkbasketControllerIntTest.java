@@ -40,8 +40,7 @@ import pro.taskana.rest.resource.DistributionTargetResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
-@Import(RestConfiguration.class)
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
 public class WorkbasketControllerIntTest {
 
     String url = "http://127.0.0.1:";
