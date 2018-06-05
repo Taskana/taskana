@@ -44,10 +44,10 @@
                     <ng-template #ownerInput>
                         <input type="text" required #owner="ngModel" class="form-control" id="wb-owner" placeholder="Owner" [(ngModel)]="workbasket.owner"
                             name="workbasket.owner">
+                        <div *ngIf="!owner?.valid" class="required-text">
+                            * Owner is required
+                        </div>
                     </ng-template>
-                    <div *ngIf="!owner?.valid" class="required-text">
-                        * Owner is required
-                    </div>
                 </div>
                 <div class="form-group ">
                     <label for="wb-domain" class="control-label">Domain</label>
