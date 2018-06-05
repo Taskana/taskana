@@ -6,29 +6,35 @@ import { HttpModule } from '@angular/http';
 
 import { UserInformationComponent } from './user-information.component';
 
-import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 import { UserInfoModel } from 'app/models/user-info';
+import { configureTests } from 'app/app.test.configuration';
 
 describe('UserInformationComponent', () => {
   let component: UserInformationComponent;
   let fixture: ComponentFixture<UserInformationComponent>;
-  let taskanaEngineService;
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [AngularSvgIconModule,
-        HttpClientModule, HttpModule],
-      declarations: [UserInformationComponent],
-      providers: [TaskanaEngineService]
-    })
-      .compileComponents();
-  }));
+  let debugElement;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(UserInformationComponent);
-    component = fixture.componentInstance;
-    taskanaEngineService = TestBed.get(TaskanaEngineService);
-		spyOn(taskanaEngineService, 'getUserInformation').and.returnValue(Observable.of(new UserInfoModel));
-    fixture.detectChanges();
+
+  beforeEach(done => {
+    const configure = (testBed: TestBed) => {
+      testBed.configureTestingModule({
+        imports: [AngularSvgIconModule,
+          HttpClientModule, HttpModule],
+        declarations: [UserInformationComponent],
+      })
+    };
+    configureTests(configure).then(testBed => {
+      fixture = TestBed.createComponent(UserInformationComponent);
+      component = fixture.componentInstance;
+      debugElement = fixture.debugElement.nativeElement;
+      fixture.detectChanges();
+      done();
+    });
+
+  });
+
+  afterEach(() => {
+    document.body.removeChild(debugElement);
   });
 
   it('should create', () => {

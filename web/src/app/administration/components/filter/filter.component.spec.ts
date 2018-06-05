@@ -8,6 +8,7 @@ import { FilterModel } from 'app/models/filter';
 import { IconTypeComponent } from '../type-icon/icon-type.component';
 import { FilterComponent } from './filter.component';
 import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
+import { configureTests } from 'app/app.test.configuration';
 
 describe('FilterComponent', () => {
 	let component: FilterComponent,
@@ -15,18 +16,21 @@ describe('FilterComponent', () => {
 		debugElement: any;
 
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [FilterComponent, IconTypeComponent, MapValuesPipe],
-			imports: [AngularSvgIconModule, FormsModule, HttpClientModule, HttpModule]
-		})
-			.compileComponents();
-
-		fixture = TestBed.createComponent(FilterComponent);
-		component = fixture.componentInstance;
-		debugElement = fixture.debugElement.nativeElement;
-		fixture.detectChanges();
-	}));
+	beforeEach(done => {
+		const configure = (testBed: TestBed) => {
+			testBed.configureTestingModule({
+				declarations: [FilterComponent, IconTypeComponent, MapValuesPipe],
+				imports: [AngularSvgIconModule, FormsModule, HttpClientModule, HttpModule]
+			})
+		};
+		configureTests(configure).then(testBed => {
+			fixture = TestBed.createComponent(FilterComponent);
+			component = fixture.componentInstance;
+			debugElement = fixture.debugElement.nativeElement;
+			fixture.detectChanges();
+			done();
+		});
+	});
 
 	afterEach(() => {
 		document.body.removeChild(debugElement);

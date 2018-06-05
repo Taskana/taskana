@@ -25,6 +25,9 @@ import { ImportExportComponent } from 'app/administration/components/import-expo
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { OrientationService } from 'app/services/orientation/orientation.service';
+import { Orientation } from '../../../../models/orientation';
+import { configureTests } from 'app/app.test.configuration';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -73,37 +76,42 @@ describe('WorkbasketListComponent', () => {
 	];
 
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(done => {
+		const configure = (testBed: TestBed) => {
+			testBed.configureTestingModule({
+				declarations: [WorkbasketListComponent, DummyDetailComponent, FilterComponent, WorkbasketListToolbarComponent,
+					IconTypeComponent, SortComponent, PaginationComponent, ImportExportComponent],
+				imports: [
+					AngularSvgIconModule,
+					HttpModule,
+					HttpClientModule,
+					RouterTestingModule.withRoutes(routes),
+					SharedModule,
+					AppModule
+				],
+				providers: [
+					WorkbasketService,
+					WorkbasketDefinitionService,
+					ClassificationDefinitionService,
+					OrientationService
+				]
+			});
+		};
+		configureTests(configure).then(testBed => {
+			fixture = TestBed.createComponent(WorkbasketListComponent);
+			component = fixture.componentInstance;
+			debugElement = fixture.debugElement.nativeElement;
+			workbasketService = TestBed.get(WorkbasketService);
+			const orientationService = TestBed.get(OrientationService);
+			workbasketSummarySpy = spyOn(workbasketService, 'getWorkBasketsSummary').and.returnValue(Observable.of(workbasketSummaryResource));
+			spyOn(workbasketService, 'getSelectedWorkBasket').and.returnValue(Observable.of('2'));
+			spyOn(orientationService, 'getOrientation').and.returnValue(Observable.of(undefined));
 
-			declarations: [WorkbasketListComponent, DummyDetailComponent, FilterComponent, WorkbasketListToolbarComponent,
-				IconTypeComponent, SortComponent, PaginationComponent, ImportExportComponent],
-			imports: [
-				AngularSvgIconModule,
-				HttpModule,
-				HttpClientModule,
-				RouterTestingModule.withRoutes(routes),
-				SharedModule,
-				AppModule
-			],
-			providers: [
-				WorkbasketService,
-				WorkbasketDefinitionService,
-				ClassificationDefinitionService
-			]
-		})
-			.compileComponents();
+			fixture.detectChanges();
+			done();
+		});
 
-
-		fixture = TestBed.createComponent(WorkbasketListComponent);
-		component = fixture.componentInstance;
-		debugElement = fixture.debugElement.nativeElement;
-		workbasketService = TestBed.get(WorkbasketService);
-		workbasketSummarySpy = spyOn(workbasketService, 'getWorkBasketsSummary').and.returnValue(Observable.of(workbasketSummaryResource));
-		spyOn(workbasketService, 'getSelectedWorkBasket').and.returnValue(Observable.of('2'));
-
-		fixture.detectChanges();
-	}));
+	});
 
 	afterEach(() => {
 		fixture.detectChanges()

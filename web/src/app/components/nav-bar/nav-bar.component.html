@@ -57,7 +57,7 @@
       <div *ngIf="monitorAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('monitor') !== -1}">
         <span (click)="toogleNavBar()" routerLink="{{monitorUrl}}" aria-controls="Monitor" routerLinkActive="active">Monitor</span>
       </div>
-      <div class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('workplace') !== -1 || selectedRoute === ''}">
+      <div *ngIf="workplaceAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('workplace') !== -1 || selectedRoute === ''}">
         <span (click)="toogleNavBar()" routerLink="{{workplaceUrl}}" aria-controls="Workplace" routerLinkActive="active">Workplace</span>
       </div>
     </div>

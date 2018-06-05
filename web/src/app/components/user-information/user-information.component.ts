@@ -28,10 +28,8 @@ export class UserInformationComponent implements OnInit {
   constructor(private taskanaEngineService: TaskanaEngineService) { }
 
   ngOnInit() {
-    this.taskanaEngineService.getUserInformation().subscribe(userInfo => {
-      this.userInformation = userInfo;
-      this.roles = '[' + userInfo.roles.join(',') + ']';
-    })
+    this.userInformation = this.taskanaEngineService.currentUserInfo;
+    this.roles = '[' + this.taskanaEngineService.currentUserInfo.roles.join(',') + ']';
   }
 
   toogleRoles() {

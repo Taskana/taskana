@@ -27,6 +27,7 @@ import { ClassificationCategoriesService } from 'app/administration/services/cla
 import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { DomainService } from 'app/services/domain/domain.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { configureTests } from 'app/app.test.configuration';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -48,36 +49,38 @@ describe('ClassificationDetailsComponent', () => {
   let classificationsService, classificationTypesService, classificationCategoriesService;
   let treeService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
-      declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
-      providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
-        TreeService, ClassificationTypesService, ClassificationCategoriesService, {
-          provide: DomainService,
-          useClass: DomainServiceMock
-        },
-        CustomFieldsService]
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ClassificationDetailsComponent);
-    component = fixture.componentInstance;
-    classificationsService = TestBed.get(ClassificationsService);
-    classificationTypesService = TestBed.get(ClassificationTypesService);
-    classificationCategoriesService = TestBed.get(ClassificationCategoriesService);
-    classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
-    classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes').and.returnValue(Observable.of([]));
-    spyOn(classificationCategoriesService, 'getCategories').and.returnValue(Observable.of(['firstCategory', 'secondCategory']));
-    spyOn(classificationsService, 'deleteClassification').and.returnValue(Observable.of(true));
-    component.classification = new ClassificationDefinition('id1', undefined, undefined, undefined, undefined, undefined, undefined,
-      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-      undefined, undefined, undefined, new LinksClassification({ 'self': '' }));
-    treeService = TestBed.get(TreeService);
-    fixture.detectChanges();
+  beforeEach(done => {
+    const configure = (testBed: TestBed) => {
+      testBed.configureTestingModule({
+        imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
+        declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
+        providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
+          TreeService, ClassificationTypesService, ClassificationCategoriesService, {
+            provide: DomainService,
+            useClass: DomainServiceMock
+          },
+          CustomFieldsService]
+      })
+    };
+    configureTests(configure).then(testBed => {
+      fixture = TestBed.createComponent(ClassificationDetailsComponent);
+      component = fixture.componentInstance;
+      classificationsService = TestBed.get(ClassificationsService);
+      classificationTypesService = TestBed.get(ClassificationTypesService);
+      classificationCategoriesService = TestBed.get(ClassificationCategoriesService);
+      classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
+      classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes').and.returnValue(Observable.of([]));
+      spyOn(classificationCategoriesService, 'getCategories').and.returnValue(Observable.of(['firstCategory', 'secondCategory']));
+      spyOn(classificationsService, 'deleteClassification').and.returnValue(Observable.of(true));
+      component.classification = new ClassificationDefinition('id1', undefined, undefined, undefined, undefined, undefined, undefined,
+        undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+        undefined, undefined, undefined, new LinksClassification({ 'self': '' }));
+      treeService = TestBed.get(TreeService);
+      fixture.detectChanges();
+      done();
+    });
   });
+
 
   it('should create', () => {
     expect(component).toBeTruthy();
