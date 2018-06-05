@@ -33,7 +33,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   private inputTypeAhead;
 
   typeaheadLoading = false;
-  typeaheadMinLength = 2;
+  typeaheadMinLength = 3;
   typeaheadWaitMs = 500;
   typeaheadOptionsInScrollableView = 6;
 
@@ -42,8 +42,8 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
 
   // Placeholders for the callbacks which are later provided
   // by the Control Value Accessor
-  private onTouchedCallback: () => void = noop;
-  private onChangeCallback: (_: any) => void = noop;
+  private onTouchedCallback: () => {};
+  private onChangeCallback: (_: any) => {};
 
   // get accessor
   get value(): any {

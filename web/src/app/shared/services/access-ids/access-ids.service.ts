@@ -9,16 +9,16 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class AccessIdsService {
 
-  private url = environment.taskanaRestUrl + '/v1/validate-access-id';
+  private url = environment.taskanaRestUrl + '/v1/access-ids';
 
   constructor(
     private httpClient: HttpClient) { }
 
-  getAccessItemsInformation(token): Observable<Array<AccessIdDefinition>> {
-    if (!token) {
+  getAccessItemsInformation(token: string): Observable<Array<AccessIdDefinition>> {
+    if (!token || token.length < 3) {
       return Observable.of([]);
     }
-    return this.httpClient.get<Array<AccessIdDefinition>>(`${this.url}?search=${token}`);
+    return this.httpClient.get<Array<AccessIdDefinition>>(`${this.url}?searchFor=${token}`);
   };
 
 }
