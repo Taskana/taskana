@@ -215,7 +215,7 @@ public class ClassificationServiceImplTest {
 
     @Test(expected = ClassificationNotFoundException.class)
     public void testUpdateClassificationParentNotExisting()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
+        throws ClassificationNotFoundException, NotAuthorizedException,
         ConcurrencyException, InvalidArgumentException {
         Instant now = Instant.now();
         ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();

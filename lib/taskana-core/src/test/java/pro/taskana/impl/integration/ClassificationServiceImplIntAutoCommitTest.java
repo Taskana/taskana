@@ -6,7 +6,6 @@ import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -15,7 +14,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
-import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import org.junit.Assert;
@@ -64,7 +62,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Before
-    public void setup() throws FileNotFoundException, SQLException, LoginException {
+    public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -401,8 +399,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         return new TimeInterval(begin, end);
     }
 
-    private Classification createDummyClassificationWithUniqueKey(String domain, String type)
-        throws NotAuthorizedException {
+    private Classification createDummyClassificationWithUniqueKey(String domain, String type) {
         Classification classification = classificationService.newClassification("TEST" + counter, domain, type);
         counter++;
         return classification;

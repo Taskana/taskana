@@ -120,7 +120,6 @@ public class LdapClient {
                 message += " taskana.ldap.groupNameAttribute is not configured.";
             }
             if (!message.equals(emptyMessage)) {
-                LOGGER.error("Ldap configuration error detected: {}", message);
                 throw new SystemException(message);
             }
             active = true;
@@ -130,7 +129,6 @@ public class LdapClient {
     public List<AccessIdResource> searchUsersAndGroups(final String name) throws InvalidArgumentException {
         LOGGER.debug("entry to searchUsersAndGroups(name = {})", name);
         if (!active) {
-            LOGGER.error("LdapClient was called but is not active due to missing configuration: " + message);
             throw new SystemException(
                 "LdapClient was called but is not active due to missing configuration: " + message);
         }
@@ -155,7 +153,6 @@ public class LdapClient {
     public List<AccessIdResource> searchUsersByName(final String name) throws InvalidArgumentException {
         LOGGER.debug("entry to searchUsersByName(name = {}).", name);
         if (!active) {
-            LOGGER.error("LdapClient was called but is not active due to missing configuration: " + message);
             throw new SystemException(
                 "LdapClient was called but is not active due to missing configuration: " + message);
         }
@@ -176,22 +173,17 @@ public class LdapClient {
         String[] userAttributesToReturn = {getUserFirstnameAttribute(), getUserLastnameAttribute(),
             getUserIdAttribute()};
 
-        try {
-            final List<AccessIdResource> accessIds = ldapTemplate.search(getUserSearchBase(), andFilter.encode(),
-                SearchControls.SUBTREE_SCOPE, userAttributesToReturn, new UserContextMapper());
-            LOGGER.debug("exit from searchUsersByName. Retrieved the following users: {}.",
-                LoggerUtils.listToString(accessIds));
-            return accessIds;
-        } catch (Exception e) {
-            LOGGER.error("caught Exception {} ", e.getMessage());
-            throw e;
-        }
+        final List<AccessIdResource> accessIds = ldapTemplate.search(getUserSearchBase(), andFilter.encode(),
+            SearchControls.SUBTREE_SCOPE, userAttributesToReturn, new UserContextMapper());
+        LOGGER.debug("exit from searchUsersByName. Retrieved the following users: {}.",
+            LoggerUtils.listToString(accessIds));
+        return accessIds;
+
     }
 
     public List<AccessIdResource> searchGroupsByName(final String name) throws InvalidArgumentException {
         LOGGER.debug("entry to searchGroupsByName(name = {}).", name);
         if (!active) {
-            LOGGER.error("LdapClient was called but is not active due to missing configuration: " + message);
             throw new SystemException(
                 "LdapClient was called but is not active due to missing configuration: " + message);
         }
@@ -216,16 +208,11 @@ public class LdapClient {
             groupAttributesToReturn = new String[] {getGroupNameAttribute(), CN};
         }
 
-        try {
-            final List<AccessIdResource> accessIds = ldapTemplate.search(getGroupSearchBase(), andFilter.encode(),
-                SearchControls.SUBTREE_SCOPE, groupAttributesToReturn, new GroupContextMapper());
-            LOGGER.debug("Exit from searchGroupsByName. Retrieved the following groups: {}",
-                LoggerUtils.listToString(accessIds));
-            return accessIds;
-        } catch (Exception e) {
-            LOGGER.error("caught Exception {} ", e.getMessage());
-            throw e;
-        }
+        final List<AccessIdResource> accessIds = ldapTemplate.search(getGroupSearchBase(), andFilter.encode(),
+            SearchControls.SUBTREE_SCOPE, groupAttributesToReturn, new GroupContextMapper());
+        LOGGER.debug("Exit from searchGroupsByName. Retrieved the following groups: {}",
+            LoggerUtils.listToString(accessIds));
+        return accessIds;
 
     }
 

@@ -3,7 +3,6 @@ package acceptance.task;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -16,8 +15,6 @@ import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -38,8 +35,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testSortByModifiedAndDomain()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testSortByModifiedAndDomain() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
@@ -61,8 +57,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testSortByDomainNameAndCreated()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testSortByDomainNameAndCreated() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
@@ -93,8 +88,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testSortByPorSystemNoteDueAndOwner()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testSortByPorSystemNoteDueAndOwner() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
@@ -119,8 +113,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testSortByPorSystemInstanceParentProcPlannedAndState()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testSortByPorSystemInstanceParentProcPlannedAndState() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
@@ -145,8 +138,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testSortByPorCompanyAndClaimed()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testSortByPorCompanyAndClaimed() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
@@ -171,8 +163,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testSortByWbKeyPrioPorValueAndCompleted()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testSortByWbKeyPrioPorValueAndCompleted() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .stateIn(TaskState.READY)
@@ -198,8 +189,7 @@ public class QueryTasksWithSortingAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testSortBpIdClassificationIdDescriptionAndPorType()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testSortBpIdClassificationIdDescriptionAndPorType() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .stateIn(TaskState.READY)

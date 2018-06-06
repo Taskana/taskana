@@ -5,12 +5,10 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import org.junit.Assert;
@@ -81,7 +79,7 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     @Before
-    public void setup() throws FileNotFoundException, SQLException, LoginException {
+    public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false);
 
@@ -96,7 +94,7 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     @Test
-    public void testStart() throws FileNotFoundException, SQLException, TaskNotFoundException,
+    public void testStart() throws TaskNotFoundException,
         WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
         ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
         InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException {
@@ -123,7 +121,7 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
-        throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
+        throws TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
@@ -153,7 +151,7 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test
     public void testCreateTaskInTaskanaWithDefaultDb()
-        throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
+        throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
@@ -182,7 +180,7 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
+    public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException, SystemException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
@@ -279,8 +277,7 @@ public class TaskServiceImplIntAutocommitTest {
 
     @Test(expected = TaskNotFoundException.class)
     public void shouldNotTransferAnyTask()
-        throws WorkbasketNotFoundException, NotAuthorizedException, TaskNotFoundException, InvalidWorkbasketException,
-        ClassificationNotFoundException, InvalidStateException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, TaskNotFoundException, InvalidStateException {
         taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
     }
 
@@ -373,7 +370,7 @@ public class TaskServiceImplIntAutocommitTest {
     }
 
     @Test
-    public void testWithPrimaryObjectRef() throws FileNotFoundException, SQLException, TaskNotFoundException,
+    public void testWithPrimaryObjectRef() throws TaskNotFoundException,
         WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
         ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
         InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException {

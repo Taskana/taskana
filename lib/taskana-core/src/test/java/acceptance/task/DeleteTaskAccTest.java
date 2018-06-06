@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +63,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1", "admin"})
     @Test(expected = InvalidStateException.class)
     public void testThrowsExceptionIfTaskIsNotCompleted()
-        throws TaskNotFoundException, InvalidStateException, SQLException, NotAuthorizedException {
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000029");
 
@@ -76,7 +75,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1", "admin"})
     @Test(expected = TaskNotFoundException.class)
     public void testForceDeleteTaskIfNotCompleted()
-        throws SQLException, TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000027");
         try {

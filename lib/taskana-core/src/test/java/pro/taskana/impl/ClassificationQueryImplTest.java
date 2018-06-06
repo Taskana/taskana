@@ -15,8 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.ClassificationSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
  * Test for ClassificationQueryImpl.
@@ -40,7 +38,7 @@ public class ClassificationQueryImplTest {
     }
 
     @Test
-    public void should_ReturnList_when_BuilderIsUsed() throws NotAuthorizedException, InvalidArgumentException {
+    public void should_ReturnList_when_BuilderIsUsed() {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
@@ -53,8 +51,7 @@ public class ClassificationQueryImplTest {
     }
 
     @Test
-    public void should_ReturnListWithOffset_when_BuilderIsUsed()
-        throws NotAuthorizedException, InvalidArgumentException {
+    public void should_ReturnListWithOffset_when_BuilderIsUsed() {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
@@ -67,7 +64,7 @@ public class ClassificationQueryImplTest {
     }
 
     @Test
-    public void should_ReturnOneItem_when_BuilderIsUsed() throws NotAuthorizedException, InvalidArgumentException {
+    public void should_ReturnOneItem_when_BuilderIsUsed() {
         when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationSummaryImpl());
 

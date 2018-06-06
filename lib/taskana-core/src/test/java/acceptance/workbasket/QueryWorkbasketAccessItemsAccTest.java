@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -17,7 +16,6 @@ import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -60,7 +58,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsForAccessIds()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
             .accessIdIn("user_1_1", "group_1")
@@ -72,7 +70,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         userName = "dummy")
     @Test(expected = NotAuthorizedException.class)
     public void testQueryAccessItemsForAccessIdsNotAuthorized()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.createWorkbasketAccessItemQuery()
             .accessIdIn("user_1_1", "group_1")
@@ -85,7 +83,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsForAccessIdsOrderedAscending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery()
             .accessIdIn("user_1_1", "group_1")
@@ -103,7 +101,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsForAccessIdsAndWorkbasketKey()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
             .accessIdIn("user_1_1", "group_1")
@@ -117,7 +115,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsByWorkbasketKey()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
             .workbasketIdIn("WBI:100000000000000000000000000000000006")
@@ -130,7 +128,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAccessItemsByWorkbasketKeyOrderedDescending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
             .workbasketIdIn("WBI:100000000000000000000000000000000006")

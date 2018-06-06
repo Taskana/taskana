@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -32,7 +31,7 @@ public class TaskanaEngineConfigurationTest {
     private static final int POOL_TIME_TO_WAIT = 50;
 
     @Test
-    public void testCreateTaskanaEngine() throws FileNotFoundException, SQLException, LoginException {
+    public void testCreateTaskanaEngine() throws SQLException {
         DataSource ds = getDataSource();
         TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false);
 
@@ -45,13 +44,8 @@ public class TaskanaEngineConfigurationTest {
      * returns the Datasource used for Junit test. If the file {user.home}/taskanaUnitTest.properties is present, the
      * Datasource is created according to the properties jdbcDriver, jdbcUrl, dbUserName and dbPassword. Assuming, the
      * database has the name tskdb, a sample properties file for DB2 looks as follows:
-     *
-     * jdbcDriver=com.ibm.db2.jcc.DB2Driver
-     * jdbcUrl=jdbc:db2://localhost:50000/tskdb
-     * dbUserName=db2user
-     * dbPassword=db2password
-     *
-     * If any of these properties is missing, or the file doesn't exist, the default Datasource
+     * jdbcDriver=com.ibm.db2.jcc.DB2Driver jdbcUrl=jdbc:db2://localhost:50000/tskdb dbUserName=db2user
+     * dbPassword=db2password If any of these properties is missing, or the file doesn't exist, the default Datasource
      * for h2 in-memory db is created.
      *
      * @return dataSource for unit test

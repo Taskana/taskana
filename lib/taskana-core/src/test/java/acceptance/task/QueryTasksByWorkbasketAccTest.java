@@ -1,7 +1,5 @@
 package acceptance.task;
 
-import java.sql.SQLException;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,8 +7,6 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -30,8 +26,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedToQueryWorkbasketException.class)
-    public void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket() {
         TaskService taskService = taskanaEngine.getTaskService();
         taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_2_1", "DOMAIN_A"))
@@ -43,8 +38,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedToQueryWorkbasketException.class)
-    public void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket() {
         TaskService taskService = taskanaEngine.getTaskService();
         taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_1_1", "DOMAIN_A"), new KeyDomain("USER_2_1", "DOMAIN_A"))

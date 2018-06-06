@@ -241,7 +241,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
     @WithAccessId(userName = "teamlead_1")
     @Test(expected = NotAuthorizedException.class)
     public void testBulkTransferTaskWithoutAppendPermissionOnTarget()
-        throws InvalidArgumentException, WorkbasketNotFoundException, TaskNotFoundException, NotAuthorizedException {
+        throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000006"); // working

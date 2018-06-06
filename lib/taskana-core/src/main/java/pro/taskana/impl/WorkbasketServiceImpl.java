@@ -67,9 +67,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
             result = workbasketMapper.findById(workbasketId);
             if (result == null) {
-                LOGGER.error(
-                    "Method getWorkbasket() didn't find workbasket with ID {}. Throwing WorkbasketNotFoundException",
-                    workbasketId);
                 throw new WorkbasketNotFoundException(workbasketId,
                     "Workbasket with id " + workbasketId + " was not found.");
             }
@@ -92,9 +89,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
             result = workbasketMapper.findByKeyAndDomain(workbasketKey, domain);
             if (result == null) {
-                LOGGER.error(
-                    "Method getWorkbasketByKey() didn't find workbasket with key {}. Throwing WorkbasketNotFoundException",
-                    workbasketKey);
                 throw new WorkbasketNotFoundException(workbasketKey, domain,
                     "Workbasket with key " + workbasketKey + " and domain " + domain + " was not found.");
             }
@@ -150,9 +144,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             Workbasket existingWorkbasket = workbasketMapper.findByKeyAndDomain(newWorkbasket.getKey(),
                 newWorkbasket.getDomain());
             if (existingWorkbasket != null) {
-                LOGGER.error(
-                    "createWorkbasket failed because Workbasket with key {} and domain {} already exists. Throwing WorkbasketAlreadyExistsException.",
-                    newWorkbasket.getKey(), newWorkbasket.getDomain());
                 throw new WorkbasketAlreadyExistException(existingWorkbasket);
             }
 
@@ -172,7 +163,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public Workbasket updateWorkbasket(Workbasket workbasketToUpdate)
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws NotAuthorizedException {
         LOGGER.debug("entry to updateWorkbasket(workbasket)", workbasketToUpdate);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
@@ -208,8 +199,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             accessItem.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
             if (workbasketAccessItem.getId() == null || workbasketAccessItem.getAccessId() == null
                 || workbasketAccessItem.getWorkbasketId() == null) {
-                LOGGER.error(
-                    "createWorkbasketAccessItem failed because id, accessId or workbasketId is null. Throwing InvalidArgumentException.");
                 throw new InvalidArgumentException(
                     "Checking the preconditions of the current WorkbasketAccessItem failed. WorkbasketAccessItem="
                         + workbasketAccessItem.toString());
@@ -243,16 +232,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 for (WorkbasketAccessItem workbasketAccessItem : wbAccessItems) {
                     WorkbasketAccessItemImpl wbAccessItemImpl = (WorkbasketAccessItemImpl) workbasketAccessItem;
                     if (wbAccessItemImpl.getWorkbasketId() == null) {
-                        LOGGER.error(
-                            "setWorkbasketAccessItem failed because WorkbasketAccessItem {} has a null workbasketId. Throwing InvalidArgumentException.",
-                            workbasketAccessItem);
                         throw new InvalidArgumentException(
                             "Checking the preconditions of the current WorkbasketAccessItem failed - WBID is NULL. WorkbasketAccessItem="
                                 + workbasketAccessItem.toString());
                     } else if (!wbAccessItemImpl.getWorkbasketId().equals(workbasketId)) {
-                        LOGGER.error(
-                            "setWorkbasketAccessItem failed because WorkbasketAccessItem {} does not refer to workbasket {}. Throwing InvalidArgumentException.",
-                            workbasketAccessItem, workbasketId);
                         throw new InvalidArgumentException(
                             "Checking the preconditions of the current WorkbasketAccessItem failed - the WBID does not match. Target-WBID='"
                                 + workbasketId + "' WorkbasketAccessItem="
@@ -311,8 +294,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
 
             if (workbasketMapper.findById(workbasketId) == null) {
-                LOGGER.error("Throwing WorkbasketNotFoundException because workbasket with id {} does not exist",
-                    workbasketId);
                 throw new WorkbasketNotFoundException(workbasketId,
                     "Workbasket with id " + workbasketId + " was not found.");
             }
@@ -326,9 +307,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketAndAccessId(workbasketId,
                 accessIds);
             if (wbAcc == null) {
-                LOGGER.error(
-                    "AccessIds {} do not have permission {} on workbasket with id {}. Throwing NotAuthorizedException.",
-                    LoggerUtils.listToString(accessIds), Arrays.toString(requestedPermissions), workbasketId);
                 throw new NotAuthorizedException(
                     "Not authorized. Permission '" + Arrays.toString(requestedPermissions) + "' on workbasket '"
                         + workbasketId
@@ -340,9 +318,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             for (WorkbasketPermission perm : requestedPermissions) {
                 if (!grantedPermissions.contains(perm)) {
                     isAuthorized = false;
-                    LOGGER.error(
-                        "AccessIds {} do not have permission {} on workbasket with id {}. Throwing NotAuthorizedException.",
-                        LoggerUtils.listToString(accessIds), perm.name(), workbasketId);
                     throw new NotAuthorizedException(
                         "Not authorized. Permission '" + perm.name() + "' on workbasket '" + workbasketId
                             + "' is needed.");
@@ -363,9 +338,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             taskanaEngine.openConnection();
 
             if (workbasketMapper.findByKeyAndDomain(workbasketKey, domain) == null) {
-                LOGGER.error(
-                    "Throwing WorkbasketNotFoundException because workbasket with key {} and domain {} does not exist",
-                    workbasketKey, domain);
                 throw new WorkbasketNotFoundException(workbasketKey, domain,
                     "Workbasket with key " + workbasketKey + " and domain " + domain + " was not found");
             }
@@ -377,9 +349,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketKeyDomainAndAccessId(
                 workbasketKey, domain, accessIds);
             if (wbAcc == null) {
-                LOGGER.error(
-                    "AccessIds {} do not have permission {} on workbasket with key {} and domain {}. Throwing NotAuthorizedException.",
-                    LoggerUtils.listToString(accessIds), Arrays.toString(requestedPermissions), workbasketKey, domain);
                 throw new NotAuthorizedException(
                     "Not authorized. Permission '" + Arrays.toString(requestedPermissions)
                         + "' on workbasket with key '"
@@ -391,9 +360,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             for (WorkbasketPermission perm : requestedPermissions) {
                 if (!grantedPermissions.contains(perm)) {
                     isAuthorized = false;
-                    LOGGER.error(
-                        "AccessIds {} do not have permission {} on workbasket with key {} and domain {}. Throwing NotAuthorizedException.",
-                        LoggerUtils.listToString(accessIds), perm.name(), workbasketKey, domain);
                     throw new NotAuthorizedException(
                         "Not authorized. Permission '" + perm.name() + "' on workbasket with key '" + workbasketKey
                             + "' and domain '" + domain + "' is needed.");
@@ -746,7 +712,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public void removeDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+        throws NotAuthorizedException {
         LOGGER.debug("entry to removeDistributionTarget(sourceWorkbasketId = {}, targetWorkbasketId = {})",
             sourceWorkbasketId, targetWorkbasketId);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);

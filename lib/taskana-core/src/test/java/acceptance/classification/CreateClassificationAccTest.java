@@ -102,7 +102,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
     @Test
     public void testCreateClassificationWithInvalidValues()
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException, InvalidArgumentException {
+        DomainNotFoundException {
         long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
 
         // Check key NULL

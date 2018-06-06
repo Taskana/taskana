@@ -1,6 +1,5 @@
 package acceptance.workbasket;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -12,8 +11,6 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.security.JAASRunner;
@@ -34,8 +31,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testGetWorkbasket()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000007");
@@ -67,16 +63,14 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
 
     @Test(expected = WorkbasketNotFoundException.class)
     public void testThrowsExceptionIfIdIsInvalid()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.getWorkbasket("INVALID_ID");
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void testThrowsExceptionIfNotAuthorized()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
     }

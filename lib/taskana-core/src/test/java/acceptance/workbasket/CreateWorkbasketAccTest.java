@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Test;
@@ -39,7 +38,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testCreateWorkbasket()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
@@ -67,8 +66,8 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         userName = "dummy")
     @Test(expected = NotAuthorizedException.class)
     public void testCreateWorkbasketNotAuthorized()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
+        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
+        DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.newWorkbasket("key3", "DOMAIN_A");
@@ -85,8 +84,8 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test(expected = DomainNotFoundException.class)
     public void testCreateWorkbasketWithInvalidDomain()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
+        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
+        DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.newWorkbasket("key3", "UNKNOWN_DOMAIN");
@@ -103,7 +102,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testCreateWorkbasketWithMissingRequiredField()
-        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketAlreadyExistException,
+        throws NotAuthorizedException, WorkbasketAlreadyExistException,
         DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -151,7 +150,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testWorkbasketAccessItemSetName()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();

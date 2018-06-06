@@ -194,7 +194,7 @@ public class ClassificationController extends AbstractPagingController {
     }
 
     private ClassificationQuery applyFilterParams(ClassificationQuery query,
-        MultiValueMap<String, String> params) throws InvalidArgumentException {
+        MultiValueMap<String, String> params) {
         if (params.containsKey(NAME)) {
             String[] names = extractCommaSeparatedFields(params.get(NAME));
             query.nameIn(names);

@@ -47,13 +47,11 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.AttachmentPersistenceException;
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
@@ -123,8 +121,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testCreateSimpleTask() throws NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, ClassificationAlreadyExistException, TaskAlreadyExistException,
-        TaskNotFoundException, InvalidWorkbasketException, InvalidArgumentException {
+        ClassificationNotFoundException, TaskAlreadyExistException, TaskNotFoundException, InvalidArgumentException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl expectedTask = createUnitTestTask("", "DUMMYTASK", "k1", dummyClassification);
@@ -170,8 +167,7 @@ public class TaskServiceImplTest {
     @Test(expected = SystemException.class)
     public void testCreateTaskWithSecurityButNoUserId()
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-        ClassificationNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException,
-        InvalidArgumentException {
+        ClassificationNotFoundException, TaskAlreadyExistException, InvalidArgumentException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl expectedTask = createUnitTestTask("", "DUMMYTASK", "k1", dummyClassification);
@@ -195,8 +191,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testCreateSimpleTaskWithObjectReference() throws NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, ClassificationAlreadyExistException, TaskAlreadyExistException,
-        TaskNotFoundException, InvalidWorkbasketException, InvalidArgumentException {
+        ClassificationNotFoundException, TaskAlreadyExistException, TaskNotFoundException, InvalidArgumentException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         ObjectReference expectedObjectReference = JunitHelper.createDefaultObjRef();
         WorkbasketImpl wb = new WorkbasketImpl();
@@ -248,8 +243,8 @@ public class TaskServiceImplTest {
 
     @Test
     public void testCreateSimpleTaskWithObjectReferenceIsNull() throws NotAuthorizedException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, TaskNotFoundException, InvalidWorkbasketException, InvalidArgumentException {
+        WorkbasketNotFoundException, ClassificationNotFoundException, TaskAlreadyExistException, TaskNotFoundException,
+        InvalidArgumentException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         ObjectReference expectedObjectReference = JunitHelper.createDefaultObjRef();
         WorkbasketImpl wb = new WorkbasketImpl();
@@ -303,7 +298,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCreateTaskWithPlanned()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        TaskAlreadyExistException, TaskNotFoundException, InvalidWorkbasketException, InvalidArgumentException {
+        TaskAlreadyExistException, TaskNotFoundException, InvalidArgumentException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
 
         ObjectReference expectedObjectReference = JunitHelper.createDefaultObjRef();
@@ -376,7 +371,7 @@ public class TaskServiceImplTest {
     @Test(expected = TaskAlreadyExistException.class)
     public void testCreateTaskThrowingAlreadyExistException() throws WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException, TaskAlreadyExistException, TaskNotFoundException,
-        InvalidWorkbasketException, InvalidArgumentException {
+        InvalidArgumentException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("12", "Task Name", "1", dummyClassification);
@@ -399,7 +394,7 @@ public class TaskServiceImplTest {
     @Test(expected = NotAuthorizedException.class)
     public void testCreateThrowingAuthorizedOnWorkbasket()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        TaskAlreadyExistException, TaskNotFoundException, InvalidWorkbasketException, InvalidArgumentException {
+        TaskAlreadyExistException, TaskNotFoundException, InvalidArgumentException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("", "dummyTask", "1", dummyClassification);
@@ -430,7 +425,7 @@ public class TaskServiceImplTest {
     @Test(expected = WorkbasketNotFoundException.class)
     public void testCreateThrowsWorkbasketNotFoundException()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidWorkbasketException, TaskAlreadyExistException, TaskNotFoundException, InvalidArgumentException {
+        TaskAlreadyExistException, TaskNotFoundException, InvalidArgumentException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("", "dumma-task", "1", dummyClassification);
@@ -679,7 +674,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCompleteTaskDefault()
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, InterruptedException,
-        ClassificationNotFoundException, NotAuthorizedException {
+        NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final long sleepTime = 100L;
         Classification dummyClassification = createDummyClassification();
@@ -733,7 +728,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCompleteTaskNotForcedWorking()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException,
-        ClassificationNotFoundException, NotAuthorizedException {
+        NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final long sleepTime = 100L;
         Classification dummyClassification = createDummyClassification();
@@ -764,8 +759,7 @@ public class TaskServiceImplTest {
 
     @Test(expected = InvalidStateException.class)
     public void testCompleteTaskNotForcedNotClaimedBefore()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException,
-        NotAuthorizedException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
@@ -789,8 +783,7 @@ public class TaskServiceImplTest {
 
     @Test(expected = InvalidOwnerException.class)
     public void testCompleteTaskNotForcedInvalidOwnerException()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException,
-        NotAuthorizedException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
@@ -815,8 +808,7 @@ public class TaskServiceImplTest {
 
     @Test(expected = TaskNotFoundException.class)
     public void testCompleteTaskTaskNotFound()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, ClassificationNotFoundException,
-        NotAuthorizedException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         String taskId = "1";
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(taskId);
@@ -837,7 +829,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCompleteForcedAndAlreadyClaimed()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException,
-        ClassificationNotFoundException, NotAuthorizedException {
+        NotAuthorizedException {
         final long sleepTime = 100L;
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
@@ -868,7 +860,7 @@ public class TaskServiceImplTest {
     @Test
     public void testCompleteForcedNotClaimed()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, InterruptedException,
-        ClassificationNotFoundException, NotAuthorizedException {
+        NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         final long sleepTime = 100L;
         Classification dummyClassification = createDummyClassification();
@@ -902,9 +894,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testTransferTaskToDestinationWorkbasketWithoutSecurity()
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-        ClassificationAlreadyExistException, InvalidWorkbasketException, ClassificationNotFoundException,
-        InvalidStateException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Workbasket destinationWorkbasket = createWorkbasket("2", "k1");
         Workbasket sourceWorkbasket = createWorkbasket("47", "key47");
@@ -945,9 +935,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testTransferTaskToDestinationWorkbasketUsingSecurityTrue()
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-        ClassificationAlreadyExistException, InvalidWorkbasketException, ClassificationNotFoundException,
-        InvalidStateException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Workbasket destinationWorkbasket = createWorkbasket("2", "k2");
         Classification dummyClassification = createDummyClassification();
@@ -1088,8 +1076,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testSetTaskReadWIthExistingTask()
-        throws TaskNotFoundException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        NotAuthorizedException {
+        throws TaskNotFoundException, NotAuthorizedException {
         TaskServiceImpl cutSpy = Mockito.spy(cut);
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "1", dummyClassification);
@@ -1132,8 +1119,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testGetTaskByIdWithExistingTask()
-        throws TaskNotFoundException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        NotAuthorizedException {
+        throws TaskNotFoundException, NotAuthorizedException {
         Classification dummyClassification = createDummyClassification();
         Task expectedTask = createUnitTestTask("1", "DUMMY-TASK", "1", dummyClassification);
         doReturn(expectedTask).when(taskMapperMock).findById(expectedTask.getId());
@@ -1196,7 +1182,7 @@ public class TaskServiceImplTest {
     @Test
     public void testUpdateTaskAddingValidAttachment() throws TaskNotFoundException, SystemException,
         WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
-        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        NotAuthorizedException, AttachmentPersistenceException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
         Attachment attachment = JunitHelper.createDefaultAttachment();
@@ -1224,7 +1210,7 @@ public class TaskServiceImplTest {
     @Test
     public void testUpdateTaskAddingValidAttachmentTwice() throws TaskNotFoundException, SystemException,
         WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
-        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        NotAuthorizedException, AttachmentPersistenceException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
         Attachment attachment = JunitHelper.createDefaultAttachment();
@@ -1254,7 +1240,7 @@ public class TaskServiceImplTest {
     public void testUpdateTaskAddingAttachmentWithSameIdForcedUsingingListMethod()
         throws TaskNotFoundException, SystemException,
         WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
-        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        NotAuthorizedException, AttachmentPersistenceException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
         Attachment attachment = JunitHelper.createDefaultAttachment();
@@ -1287,7 +1273,7 @@ public class TaskServiceImplTest {
     @Test
     public void testUpdateTaskUpdateAttachment() throws TaskNotFoundException, SystemException,
         WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
-        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        NotAuthorizedException, AttachmentPersistenceException {
         String channelUpdate = "OTHER CHANNEL";
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
@@ -1321,7 +1307,7 @@ public class TaskServiceImplTest {
     @Test
     public void testUpdateTaskRemovingAttachment() throws TaskNotFoundException, SystemException,
         WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
-        InvalidWorkbasketException, NotAuthorizedException, AttachmentPersistenceException {
+        NotAuthorizedException, AttachmentPersistenceException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
         Attachment attachment = JunitHelper.createDefaultAttachment();

@@ -94,7 +94,7 @@ public class TaskSummaryResourceAssembler
                 resource.setCustom16(taskSummary.getCustomAttribute("16"));
             }
         } catch (InvalidArgumentException e) {
-            throw new SystemException("caught unexpected Exception " + e);
+            throw new SystemException("caught unexpected Exception.", e.getCause());
         }
 
         return resource;
