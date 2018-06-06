@@ -7,7 +7,6 @@ import {AngularSvgIconModule} from 'angular-svg-icon';
 import {WorkplaceRoutingModule} from './workplace-routing.module';
 import {AlertModule} from 'ngx-bootstrap';
 
-import { WorkplaceComponent } from './workplace.component';
 import { SelectorComponent } from './workbasket-selector/workbasket-selector.component';
 import { TasklistComponent } from './tasklist/tasklist.component';
 import { TaskdetailsComponent } from './taskdetails/taskdetails.component';
@@ -35,7 +34,6 @@ const MODULES = [
 ];
 
 const DECLARATIONS = [
-  WorkplaceComponent,
   SelectorComponent,
   TasklistComponent,
   TaskdetailsComponent,

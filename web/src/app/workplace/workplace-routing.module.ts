@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {MasterAndDetailComponent} from '../shared/master-and-detail/master-and-detail.component';
-import {WorkplaceComponent} from './workplace.component';
 import {TaskComponent} from './task/task.component';
 import {TaskdetailsComponent} from './taskdetails/taskdetails.component';
 import {TasklistComponent} from './tasklist/tasklist.component';
@@ -30,7 +29,6 @@ const routes: Routes = [
     },
     {
       path: '',
-      component: WorkplaceComponent,
       redirectTo: 'tasks',
       pathMatch: 'full'
     }

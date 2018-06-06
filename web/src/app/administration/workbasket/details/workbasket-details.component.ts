@@ -29,6 +29,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 	showDetail = false;
 	requestInProgress = false;
 	action: string;
+	tabSelected = 'information';
 
 	private workbasketSelectedSubscription: Subscription;
 	private workbasketSubscription: Subscription;
@@ -55,6 +56,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 			let id = params['id'];
 			this.action = undefined;
 			if (id && id.indexOf('new-workbasket') !== -1) {
+				this.tabSelected = 'information';
 				this.action = ACTION.CREATE;
 				id = undefined;
 				this.getWorkbasketInformation(id);
@@ -83,6 +85,10 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 	backClicked(): void {
 		this.service.selectWorkBasket(undefined);
 		this.router.navigate(['./'], { relativeTo: this.route.parent });
+	}
+
+	seclectTab(tab) {
+		this.tabSelected = this.action === ACTION.CREATE ? 'information' : tab;
 	}
 
 	private selectWorkbasket(id: string) {
