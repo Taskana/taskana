@@ -353,7 +353,7 @@ public class TaskControllerIntTest {
         con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("DELETE");
         con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4="); // admin
-        assertEquals(200, con.getResponseCode());
+        assertEquals(204, con.getResponseCode());
         con.disconnect();
     }
 
