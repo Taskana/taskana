@@ -196,6 +196,10 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngine.openConnection();
             task = (TaskImpl) this.getTask(taskId);
 
+            if (task.getState() == TaskState.COMPLETED) {
+                return task;
+            }
+
             // check pre-conditions for non-forced invocation
             if (!isForced) {
                 if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
