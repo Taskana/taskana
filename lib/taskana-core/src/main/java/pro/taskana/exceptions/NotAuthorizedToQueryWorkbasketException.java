@@ -9,6 +9,10 @@ public class NotAuthorizedToQueryWorkbasketException extends TaskanaRuntimeExcep
         super(msg);
     }
 
+    public NotAuthorizedToQueryWorkbasketException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
     private static final long serialVersionUID = 1L;
 
 }

@@ -237,7 +237,8 @@ public class ClassificationServiceImpl implements ClassificationService {
             try {
                 Duration.parse(classification.getServiceLevel());
             } catch (Exception e) {
-                throw new InvalidArgumentException("Invalid service level. Please use the format defined by ISO 8601");
+                throw new InvalidArgumentException("Invalid service level. Please use the format defined by ISO 8601",
+                    e.getCause());
             }
         }
 
@@ -278,7 +279,6 @@ public class ClassificationServiceImpl implements ClassificationService {
             taskanaEngine.openConnection();
             result = classificationMapper.findById(id);
             if (result == null) {
-                LOGGER.error("Classification for id {} was not found. Throwing ClassificationNotFoundException", id);
                 throw new ClassificationNotFoundException(id, "Classification for id " + id + " was not found");
             }
             return result;
@@ -303,9 +303,6 @@ public class ClassificationServiceImpl implements ClassificationService {
             if (result == null) {
                 result = classificationMapper.findByKeyAndDomain(key, "");
                 if (result == null) {
-                    LOGGER.error(
-                        "Classification for key {} and domain {} was not found. Throwing ClassificationNotFoundException",
-                        key, domain);
                     throw new ClassificationNotFoundException(key, domain,
                         "Classification for key " + key + " was not found");
                 }
@@ -400,7 +397,8 @@ public class ClassificationServiceImpl implements ClassificationService {
             } catch (PersistenceException e) {
                 if (isReferentialIntegrityConstraintViolation(e)) {
                     throw new ClassificationInUseException("The classification " + classificationId
-                        + " is in use and cannot be deleted. There are either tasks or attachments associated with the classification.");
+                        + " is in use and cannot be deleted. There are either tasks or attachments associated with the classification.",
+                        e.getCause());
                 }
             }
         } finally {

@@ -3,7 +3,6 @@ package acceptance.task;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
 
@@ -16,8 +15,6 @@ import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.TimeInterval;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -38,8 +35,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testCreatedWithin2Intervals()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testCreatedWithin2Intervals() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
@@ -71,8 +67,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testCreatedBefore()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testCreatedBefore() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
@@ -101,8 +96,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testCreatedAfter()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testCreatedAfter() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
@@ -130,8 +124,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testClaimedWithin2Intervals()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testClaimedWithin2Intervals() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
@@ -163,8 +156,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testCompletedWithin()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testCompletedWithin() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
@@ -192,8 +184,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testModifiedWithin()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testModifiedWithin() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
@@ -221,8 +212,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testPlannedWithin()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testPlannedWithin() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
@@ -250,8 +240,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testDueWithin()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testDueWithin() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(

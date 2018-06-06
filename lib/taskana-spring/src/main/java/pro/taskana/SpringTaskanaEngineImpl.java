@@ -1,7 +1,5 @@
 package pro.taskana;
 
-import java.sql.SQLException;
-
 import javax.annotation.PostConstruct;
 
 import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
@@ -19,7 +17,7 @@ public class SpringTaskanaEngineImpl extends TaskanaEngineImpl {
     }
 
     @PostConstruct
-    public void init() throws SQLException {
+    public void init() {
         this.transactionFactory = new SpringManagedTransactionFactory();
         this.sessionManager = createSqlSessionManager();
     }

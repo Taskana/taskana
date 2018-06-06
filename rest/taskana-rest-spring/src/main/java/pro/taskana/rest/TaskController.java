@@ -91,7 +91,7 @@ public class TaskController extends AbstractPagingController {
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<TaskSummaryResource>> getTasks(
-        @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException, NotAuthorizedException {
+        @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
 
         TaskQuery query = taskService.createTaskQuery();
         query = applyFilterParams(query, params);
@@ -171,7 +171,7 @@ public class TaskController extends AbstractPagingController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> createTask(@RequestBody TaskResource taskResource)
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException {
+        TaskAlreadyExistException, InvalidArgumentException {
         Task createdTask = taskService.createTask(taskResourceAssembler.toModel(taskResource));
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(createdTask),
             HttpStatus.CREATED);
@@ -212,7 +212,7 @@ public class TaskController extends AbstractPagingController {
     }
 
     private TaskQuery applyFilterParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
-        throws NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
 
         // apply filters
         if (params.containsKey(NAME)) {
@@ -292,7 +292,7 @@ public class TaskController extends AbstractPagingController {
     }
 
     private TaskQuery applySortingParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
-        throws NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
 
         // sorting
         String sortBy = params.getFirst(SORT_BY);

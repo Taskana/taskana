@@ -62,7 +62,7 @@ public class MapTypeHandler extends BaseTypeHandler<Map> {
         return null;
     }
 
-    private Map convertToMap(String fieldValue) throws SQLException {
+    private Map convertToMap(String fieldValue) {
         JSONObject jsonObj = new JSONObject(fieldValue);
         return jsonObj.toMap();
     }

@@ -68,7 +68,7 @@ public class ClassificationAssemblerTest {
     }
 
     @Test
-    public void resourceToClassification() throws NotAuthorizedException {
+    public void resourceToClassification() {
         // given
         ClassificationResource classificationResource = new ClassificationResource();
         classificationResource.setClassificationId("1");
@@ -95,7 +95,8 @@ public class ClassificationAssemblerTest {
         classificationResource.setServiceLevel("P1D");
         classificationResource.setDescription("Test");
         // when
-        ClassificationImpl classification = (ClassificationImpl) classificationResourceAssembler.toModel(classificationResource);
+        ClassificationImpl classification = (ClassificationImpl) classificationResourceAssembler
+            .toModel(classificationResource);
         // then
         testEquality(classification, classificationResource);
     }

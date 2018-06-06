@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Before;
@@ -140,8 +139,8 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testCreateAndDeleteWorkbasket()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
+        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
+        DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 

@@ -34,8 +34,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetFirstPageOfTaskQueryWithOffset()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testGetFirstPageOfTaskQueryWithOffset() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -47,8 +46,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testSecondPageOfTaskQueryWithOffset()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testSecondPageOfTaskQueryWithOffset() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -60,8 +58,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testListOffsetAndLimitOutOfBounds()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testListOffsetAndLimitOutOfBounds() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // both will be 0, working
@@ -87,8 +84,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testPaginationWithPages()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testPaginationWithPages() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // Getting full page
@@ -128,8 +124,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testPaginationNullAndNegativeLimitsIgnoring()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testPaginationNullAndNegativeLimitsIgnoring() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // 0 limit/size = 0 results
@@ -186,8 +181,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testCountOfTaskQuery()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testCountOfTaskQuery() {
         TaskService taskService = taskanaEngine.getTaskService();
         long count = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))

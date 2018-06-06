@@ -173,7 +173,6 @@ public class TaskanaEngineConfiguration {
                 if (key != null) {
                     roleMap.put(key, roleMemberSet);
                 } else {
-                    LOGGER.error("Internal System error when processing role property {}.", propertyName);
                     throw new SystemException(
                         "Internal System error when processing role property " + propertyName);
                 }
@@ -203,8 +202,8 @@ public class TaskanaEngineConfiguration {
                 LOGGER.debug("Role properties were loaded from file {}.", propertiesFile);
             }
         } catch (IOException e) {
-            LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);
-            throw new SystemException("internal System error when processing properties file " + propertiesFile);
+            throw new SystemException("internal System error when processing properties file " + propertiesFile,
+                e.getCause());
         }
         return props;
     }

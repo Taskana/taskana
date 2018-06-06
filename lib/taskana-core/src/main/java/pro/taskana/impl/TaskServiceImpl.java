@@ -38,7 +38,6 @@ import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
@@ -78,8 +77,7 @@ public class TaskServiceImpl implements TaskService {
             this.converter = DaysToWorkingDaysConverter
                 .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         } catch (InvalidArgumentException e) {
-            LOGGER.error("could not initialize DaysToWorkingDaysConverter. Caught exception " + e);
-            throw new SystemException("Internal error. Cannot initialize DaysToWorkingDaysConverter");
+            throw new SystemException("Internal error. Cannot initialize DaysToWorkingDaysConverter", e.getCause());
         }
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.taskMapper = taskMapper;
@@ -363,8 +361,6 @@ public class TaskServiceImpl implements TaskService {
                     .list();
                 if (workbaskets.isEmpty()) {
                     String currentUser = CurrentUserContext.getUserid();
-                    LOGGER.error("The current user {} has no read permission for workbasket {}.", currentUser,
-                        workbasketId);
                     throw new NotAuthorizedException(
                         "The current user " + currentUser + " has no read permission for workbasket " + workbasketId);
                 } else {
@@ -388,7 +384,6 @@ public class TaskServiceImpl implements TaskService {
                     .findFirst()
                     .orElse(null);
                 if (classification == null) {
-                    LOGGER.error("Could not find a Classification for task {} ", resultTask);
                     throw new SystemException(
                         "Could not find a Classification for task " + resultTask.getId());
                 }
@@ -396,7 +391,6 @@ public class TaskServiceImpl implements TaskService {
                 resultTask.setClassificationSummary(classification);
                 return resultTask;
             } else {
-                LOGGER.warn("Method getTaskById() didn't find task with id {}. Throwing TaskNotFoundException", id);
                 throw new TaskNotFoundException(id, "Task with id " + id + " was not found");
             }
         } finally {
@@ -407,8 +401,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task transfer(String taskId, String destinationWorkbasketId)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        InvalidStateException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketId = {})", taskId, destinationWorkbasketId);
         TaskImpl task = null;
         try {
@@ -447,8 +440,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task transfer(String taskId, String destinationWorkbasketKey, String domain)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        InvalidStateException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
         LOGGER.debug("entry to transfer(taskId = {}, destinationWorkbasketKey = {}, domain = {})", taskId,
             destinationWorkbasketKey, domain);
         TaskImpl task = null;
@@ -652,8 +644,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task updateTask(Task task)
         throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException {
+        ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException {
         String userId = CurrentUserContext.getUserid();
         LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
         TaskImpl newTaskImpl = (TaskImpl) task;
@@ -778,11 +769,9 @@ public class TaskServiceImpl implements TaskService {
                 .findFirst()
                 .orElse(null);
             if (aClassification == null) {
-                LOGGER.error("Didnt find a Classification for task ");
                 throw new SystemException(
                     "Did not find a Classification for task (Id=" + task.getTaskId() + ",classification="
-                        + task.getClassificationSummary().getId()
-                        + ")");
+                        + task.getClassificationSummary().getId() + ")");
             }
             // set the classification on the task object
             task.setClassificationSummary(aClassification);
@@ -908,7 +897,6 @@ public class TaskServiceImpl implements TaskService {
                 .findFirst()
                 .orElse(null);
             if (aClassification == null) {
-                LOGGER.error("Could not find a Classification for attachment {}.", att);
                 throw new SystemException("Could not find a Classification for attachment " + att);
             }
             att.setClassificationSummary(aClassification);
@@ -930,7 +918,6 @@ public class TaskServiceImpl implements TaskService {
                 .orElse(null);
 
             if (aClassification == null) {
-                LOGGER.error("Could not find a Classification for attachment {}.", att);
                 throw new SystemException("Could not find a Classification for attachment " + att);
             }
             att.setClassificationSummary(aClassification);
@@ -1052,8 +1039,6 @@ public class TaskServiceImpl implements TaskService {
         }
 
         if (customFieldsToUpdate == null || customFieldsToUpdate.isEmpty()) {
-            LOGGER.warn(
-                "The customFieldsToUpdate argument to updateTasks must not be empty. Throwing InvalidArgumentException.");
             throw new InvalidArgumentException("The customFieldsToUpdate argument to updateTasks must not be empty.");
         }
         validateObjectReference(selectionCriteria, "ObjectReference", "updateTasks call");
@@ -1070,7 +1055,6 @@ public class TaskServiceImpl implements TaskService {
             for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
                 String key = entry.getKey();
                 if (!allowedKeys.contains(key)) {
-                    LOGGER.warn("The customFieldsToUpdate argument to updateTasks contains invalid key {}.", key);
                     throw new InvalidArgumentException(
                         "The customFieldsToUpdate argument to updateTasks contains invalid key " + key);
                 } else {
@@ -1165,8 +1149,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
         PrioDurationHolder prioDurationFromAttachments)
-        throws InvalidArgumentException, ConcurrencyException, WorkbasketNotFoundException,
-        ClassificationNotFoundException {
+        throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException {
         validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
         if (oldTaskImpl.getModified() != null && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
             || oldTaskImpl.getClaimed() != null && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
@@ -1312,10 +1295,10 @@ public class TaskServiceImpl implements TaskService {
                             newTaskImpl.getId(),
                             attachmentImpl);
                     } catch (PersistenceException e) {
-                        LOGGER.error(
-                            "TaskService.updateTask() for TaskId={} can NOT INSERT the current Attachment, because it was added fored multiple times and wasn´t persisted before. ID={}",
-                            newTaskImpl.getId(), attachmentImpl.getId());
-                        throw new AttachmentPersistenceException(attachmentImpl.getId());
+                        throw new AttachmentPersistenceException(
+                            "Cannot insert the Attachement " + attachmentImpl.getId() + " for Task "
+                                + newTaskImpl.getId() + " because it already exists.",
+                            e.getCause());
                     }
 
                 }
@@ -1412,7 +1395,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     BulkOperationResults<String, Exception> classificationChanged(String taskId, String classificationId)
-        throws TaskNotFoundException, ClassificationNotFoundException {
+        throws ClassificationNotFoundException {
         LOGGER.debug("entry to classificationChanged(taskId = {} , classificationId = {} )", taskId, classificationId);
         TaskImpl task = null;
         BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();

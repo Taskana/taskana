@@ -9,5 +9,9 @@ public class ClassificationInUseException extends TaskanaException {
         super(msg);
     }
 
+    public ClassificationInUseException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
     private static final long serialVersionUID = 1L;
 }

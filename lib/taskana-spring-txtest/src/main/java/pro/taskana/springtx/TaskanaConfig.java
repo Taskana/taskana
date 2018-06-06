@@ -67,8 +67,7 @@ public class TaskanaConfig {
     }
 
     @Bean
-    public TaskanaEngine taskanaEngine(SpringTaskanaEngineConfiguration taskanaEngineConfiguration)
-        throws SQLException {
+    public TaskanaEngine taskanaEngine(SpringTaskanaEngineConfiguration taskanaEngineConfiguration) {
         TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         // taskanaEngine.setConnectionManagementMode(TaskanaEngine.ConnectionManagementMode.EXPLICIT);
         return taskanaEngine;

@@ -27,7 +27,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetFirstPageOfClassificationQueryWithOffset() throws NotAuthorizedException {
+    public void testGetFirstPageOfClassificationQueryWithOffset() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")
@@ -36,7 +36,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetSecondPageOfClassificationQueryWithOffset() throws NotAuthorizedException {
+    public void testGetSecondPageOfClassificationQueryWithOffset() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")
@@ -45,7 +45,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testListOffsetAndLimitOutOfBounds() throws NotAuthorizedException {
+    public void testListOffsetAndLimitOutOfBounds() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
 
         // both will be 0, working
@@ -68,7 +68,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testPaginationWithPages() throws NotAuthorizedException {
+    public void testPaginationWithPages() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
 
         // Getting full page
@@ -105,7 +105,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testPaginationNullAndNegativeLimitsIgnoring() throws NotAuthorizedException {
+    public void testPaginationNullAndNegativeLimitsIgnoring() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
 
         // 0 limit/size = 0 results
@@ -153,8 +153,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testCountOfClassificationsQuery()
-        throws NotAuthorizedException {
+    public void testCountOfClassificationsQuery() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         long count = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")

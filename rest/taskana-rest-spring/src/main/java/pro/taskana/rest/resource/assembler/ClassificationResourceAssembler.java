@@ -42,7 +42,7 @@ public class ClassificationResourceAssembler {
         return addLinks(resource, classification);
     }
 
-    public Classification toModel(ClassificationResource classificationResource) throws NotAuthorizedException {
+    public Classification toModel(ClassificationResource classificationResource) {
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification(
             classificationResource.domain, classificationResource.key, classificationResource.type);
         BeanUtils.copyProperties(classificationResource, classification);

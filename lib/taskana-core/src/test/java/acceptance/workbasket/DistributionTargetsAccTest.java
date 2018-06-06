@@ -18,7 +18,6 @@ import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.security.JAASRunner;
@@ -127,7 +126,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_3_1", groupNames = {"group_1"})
     @Test
     public void testDistributionTargetCallsFailWithNotAuthorizedException()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+        throws WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         String existingWb = "WBI:100000000000000000000000000000000001";
 
@@ -170,7 +169,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2", "businessadmin"})
     @Test
     public void testAddAndRemoveDistributionTargets()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
 
@@ -201,7 +200,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testAddAndRemoveDistributionTargetsOnWorkbasketWithoutReadPermission()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("GPK_B_KSC_2", "DOMAIN_B");
 
@@ -227,7 +226,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2"})
     @Test(expected = NotAuthorizedException.class)
     public void testAddDistributionTargetsFailsNotAuthorized()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
 
@@ -277,7 +276,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2"})
     @Test
     public void testGetDistributionSourcesById()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         List<WorkbasketSummary> distributionSources = workbasketService
@@ -298,7 +297,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2"})
     @Test
     public void testGetDistributionSourcesByKeyDomain()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         List<WorkbasketSummary> distributionSources = workbasketService
@@ -318,7 +317,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         groupNames = {"undefinedgroup"})
     @Test(expected = NotAuthorizedException.class)
     public void testQueryDistributionSourcesThrowsNotAuthorized()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         List<WorkbasketSummary> distributionSources = workbasketService
@@ -332,7 +331,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2"})
     @Test(expected = WorkbasketNotFoundException.class)
     public void testQueryDistributionSourcesThrowsWorkbasketNotFound()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, SQLException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         List<WorkbasketSummary> distributionSources = workbasketService

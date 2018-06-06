@@ -23,7 +23,6 @@ import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 
@@ -78,7 +77,7 @@ public abstract class AbstractAccTest {
 
     protected Attachment createAttachment(String classificationKey, ObjectReference objRef,
         String channel, String receivedDate, Map<String, String> customAttributes)
-        throws ClassificationNotFoundException, NotAuthorizedException {
+        throws ClassificationNotFoundException {
         Attachment attachment = taskanaEngine.getTaskService().newAttachment();
 
         attachment.setClassificationSummary(

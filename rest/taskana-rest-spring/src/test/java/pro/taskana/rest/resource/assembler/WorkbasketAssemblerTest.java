@@ -58,7 +58,7 @@ public class WorkbasketAssemblerTest {
     }
 
     @Test
-    public void resourceToWorkbasket() throws NotAuthorizedException {
+    public void resourceToWorkbasket() {
         // given
         WorkbasketResource workbasketResource = new WorkbasketResource();
         workbasketResource.setWorkbasketId("1");

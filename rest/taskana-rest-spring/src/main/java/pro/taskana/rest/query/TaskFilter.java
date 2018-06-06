@@ -13,7 +13,6 @@ import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
  * TODO.
@@ -51,12 +50,12 @@ public class TaskFilter {
     @Autowired
     private TaskService taskService;
 
-    public List<TaskSummary> getAll() throws NotAuthorizedException {
+    public List<TaskSummary> getAll() {
         return taskService.createTaskQuery().list();
     }
 
     public List<TaskSummary> inspectParams(MultiValueMap<String, String> params)
-        throws NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskQuery taskQuery = taskService.createTaskQuery();
 
         // apply filters

@@ -1,13 +1,11 @@
 package pro.taskana.impl.integration;
 
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import org.junit.After;
@@ -63,7 +61,7 @@ public class WorkbasketServiceImplIntExplicitTest {
     }
 
     @Before
-    public void setup() throws FileNotFoundException, SQLException, LoginException {
+    public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -178,8 +176,7 @@ public class WorkbasketServiceImplIntExplicitTest {
         workBasketService.createWorkbasketAccessItem(accessItem);
     }
 
-    private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type)
-        throws NotAuthorizedException {
+    private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type) {
         WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket(key, domain);
         wb.setId(id);
         wb.setName(name);

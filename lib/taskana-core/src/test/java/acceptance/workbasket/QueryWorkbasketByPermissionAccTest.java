@@ -2,7 +2,6 @@ package acceptance.workbasket;
 
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +39,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUser()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
@@ -53,7 +52,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         userName = "dummy")
     @Test(expected = NotAuthorizedException.class)
     public void testQueryAllTransferTargetsForUserNotAuthorized()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
@@ -66,7 +65,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroup()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
+        throws NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
@@ -79,7 +78,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupSortedByNameAscending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
+        throws NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
@@ -94,7 +93,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupSortedByNameDescending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
+        throws NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
@@ -110,7 +109,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testQueryAllTransferSourcesForUserAndGroup()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
+        throws NotAuthorizedException, InvalidArgumentException, SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user_1_1", "group_1")
@@ -127,7 +126,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryAllTransferTargetsForUserAndGroupFromSubject()
-        throws SQLException, NotAuthorizedException, SystemException {
+        throws SystemException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .callerHasPermission(WorkbasketPermission.APPEND)
@@ -137,8 +136,7 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
     @WithAccessId(userName = "user_1_1")
     @Test
-    public void testQueryAllAvailableWorkbasketForOpeningForUserAndGroupFromSubject()
-        throws SQLException, NotAuthorizedException {
+    public void testQueryAllAvailableWorkbasketForOpeningForUserAndGroupFromSubject() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .callerHasPermission(WorkbasketPermission.READ)

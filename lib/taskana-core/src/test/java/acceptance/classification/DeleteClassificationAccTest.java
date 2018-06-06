@@ -6,8 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,7 +36,7 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testDeleteClassificationInDomain()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
         classificationService.deleteClassification("L140101", "DOMAIN_A");
 
         Classification classification = classificationService.getClassification("L140101", "DOMAIN_A");
@@ -51,7 +49,7 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2"})
     @Test(expected = NotAuthorizedException.class)
     public void testDeleteClassificationInDomainUserIsNotAuthorized()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
         classificationService.deleteClassification("L140101", "DOMAIN_A");
         fail("NotAuthorizedException should have been thrown");
     }
@@ -61,7 +59,7 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test(expected = ClassificationInUseException.class)
     public void testThrowExeptionIfDeleteClassificationWithExistingTasks()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
         classificationService.deleteClassification("L1050", "DOMAIN_A");
     }
 
@@ -70,7 +68,7 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test(expected = ClassificationInUseException.class)
     public void testThrowExeptionIfDeleteMasterClassificationWithExistingTasks()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
         classificationService.deleteClassification("L1050", "");
     }
 
@@ -79,7 +77,7 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testDeleteMasterClassification()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
 
         classificationService.deleteClassification("L3060", "");
 
@@ -97,7 +95,7 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test(expected = ClassificationInUseException.class)
     public void testDeleteMasterClassificationWithExistingAttachment()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
 
         classificationService.deleteClassification("L12010", "");
 
@@ -115,7 +113,7 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testThrowExceptionWhenChildClassificationIsInUseAndRollback()
-        throws ClassificationInUseException, NotAuthorizedException, ClassificationNotFoundException {
+        throws NotAuthorizedException, ClassificationNotFoundException {
         boolean classificationInUse = false;
         try {
             classificationService.deleteClassification("L11010", "DOMAIN_A");

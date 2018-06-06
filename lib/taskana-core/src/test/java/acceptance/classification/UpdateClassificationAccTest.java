@@ -7,7 +7,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     public void testUpdateClassification()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
         InvalidArgumentException {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
@@ -89,7 +88,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
     @Test(expected = NotAuthorizedException.class)
     public void testUpdateClassificationFails()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
         InvalidArgumentException {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
@@ -188,7 +187,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         groupNames = {"admin"})
     @Test
     public void testUpdateClassificationPrioServiceLevel()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
         InterruptedException, TaskNotFoundException, InvalidArgumentException {
         String newEntryPoint = "updated EntryPoint";
         Instant before = Instant.now();

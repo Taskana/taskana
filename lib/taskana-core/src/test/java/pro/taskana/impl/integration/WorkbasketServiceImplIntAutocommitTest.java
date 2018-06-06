@@ -1,6 +1,5 @@
 package pro.taskana.impl.integration;
 
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
@@ -73,7 +71,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
     }
 
     @Before
-    public void setup() throws FileNotFoundException, SQLException, LoginException {
+    public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -87,7 +85,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
 
     @Test(expected = WorkbasketNotFoundException.class)
     public void testGetWorkbasketFail()
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException {
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         workBasketService.getWorkbasket("fail");
     }
 
@@ -224,8 +222,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         workBasketService.createWorkbasketAccessItem(accessItem);
     }
 
-    private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type)
-        throws NotAuthorizedException {
+    private Workbasket createTestWorkbasket(String id, String key, String domain, String name, WorkbasketType type) {
         WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket(key, domain);
         wb.setId(id);
         wb.setName(name);

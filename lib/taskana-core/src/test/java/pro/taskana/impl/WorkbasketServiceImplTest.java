@@ -87,7 +87,7 @@ public class WorkbasketServiceImplTest {
     private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
 
     @Before
-    public void setup() throws NotAuthorizedException {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
     }
 
@@ -222,7 +222,7 @@ public class WorkbasketServiceImplTest {
 
     @Test
     public void testCreateWorkbasket_InvalidWorkbasketCases()
-        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketAlreadyExistException,
+        throws NotAuthorizedException, WorkbasketAlreadyExistException,
         DomainNotFoundException {
         WorkbasketImpl wb = new WorkbasketImpl();
         int serviceCalls = 1;
@@ -464,7 +464,7 @@ public class WorkbasketServiceImplTest {
 
     @Test
     public void testDeleteWorkbasketWithNullOrEmptyParam()
-        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
+        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException {
         // null param
         try {
             cutSpy.deleteWorkbasket(null);
@@ -579,7 +579,7 @@ public class WorkbasketServiceImplTest {
     }
 
     private List<String> createTestDistributionTargets(int amount)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        throws InvalidWorkbasketException, NotAuthorizedException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
         List<String> distributionsTargets = new ArrayList<>();
         amount = (amount < 0) ? 0 : amount;
