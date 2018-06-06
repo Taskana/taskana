@@ -34,7 +34,9 @@ public abstract class AbstractPagingController {
 
     protected String[] extractCommaSeparatedFields(List<String> list) {
         List<String> values = new ArrayList<>();
-        list.forEach(item -> values.addAll(Arrays.asList(item.split(","))));
+        if (list != null) {
+            list.forEach(item -> values.addAll(Arrays.asList(item.split(","))));
+        }
         return values.toArray(new String[0]);
     }
 
