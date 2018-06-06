@@ -19,7 +19,6 @@ import { WorkbasketInformationComponent } from './workbasket/details/information
 import { DistributionTargetsComponent } from './workbasket/details/distribution-targets/distribution-targets.component';
 import { DualListComponent } from './workbasket/details/distribution-targets/dual-list/dual-list.component';
 import { AccessItemsComponent } from './workbasket/details/access-items/access-items.component';
-import { NoAccessComponent } from './workbasket/details/noAccess/no-access.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { IconTypeComponent } from './components/type-icon/icon-type.component';
 import { PaginationComponent } from './workbasket/master/list/pagination/pagination.component';
@@ -57,7 +56,6 @@ const DECLARATIONS = [
   AccessItemsComponent,
   WorkbasketDetailsComponent,
   WorkbasketInformationComponent,
-  NoAccessComponent,
   FilterComponent,
   IconTypeComponent,
   DistributionTargetsComponent,

@@ -7,21 +7,19 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 
 @Injectable()
-export class TaskanaEngineService {
+export class TaskanaEngineServiceMock {
 
   currentUserInfo: UserInfoModel;
 
   constructor(
-    private httpClient: HttpClient
-  ) { }
+  ) {
+    this.getUserInformation();
+  }
 
   // GET
   getUserInformation(): Promise<any> {
-    return this.httpClient.get<any>(`${environment.taskanaRestUrl}/v1/current-user-info`).map(
-      data => {
-        this.currentUserInfo = data
-      }
-    ).toPromise();
+    this.currentUserInfo = new UserInfoModel('userid', [''], ['admin']);
+    return Observable.of().toPromise();
   }
 
   hasRole(roles2Find: Array<string>): boolean {

@@ -6,26 +6,30 @@ import { SharedModule } from 'app/shared/shared.module';
 import { PaginationComponent } from './pagination.component';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { Page } from 'app/models/page';
+import { configureTests } from 'app/app.test.configuration';
 
 describe('PaginationComponent', () => {
 	let component: PaginationComponent;
 	let fixture: ComponentFixture<PaginationComponent>;
 	let debugElement;
-	beforeEach(async(() => {
-		return TestBed.configureTestingModule({
-			declarations: [
-				PaginationComponent
-			],
-			imports: [FormsModule, SharedModule]
-		})
-			.compileComponents();
-	}));
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(PaginationComponent);
-		component = fixture.componentInstance;
-		debugElement = fixture.debugElement.nativeElement;
-		fixture.detectChanges();
+
+	beforeEach(done => {
+		const configure = (testBed: TestBed) => {
+			testBed.configureTestingModule({
+				declarations: [
+					PaginationComponent
+				],
+				imports: [FormsModule, SharedModule]
+			})
+		};
+		configureTests(configure).then(testBed => {
+			fixture = TestBed.createComponent(PaginationComponent);
+			component = fixture.componentInstance;
+			debugElement = fixture.debugElement.nativeElement;
+			fixture.detectChanges();
+			done();
+		});
 	});
 
 	afterEach(() => {

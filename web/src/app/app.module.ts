@@ -39,6 +39,7 @@ import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine
 import { AppComponent } from './app.component';
 import { NavBarComponent } from 'app/components/nav-bar/nav-bar.component';
 import { UserInformationComponent } from 'app/components/user-information/user-information.component';
+import { NoAccessComponent } from 'app/components/no-access/no-access.component';
 
 /**
  * Guards
@@ -46,6 +47,7 @@ import { UserInformationComponent } from 'app/components/user-information/user-i
 import { DomainGuard } from './guards/domain-guard';
 import { BusinessAdminGuard } from './guards/business-admin-guard';
 import { MonitorGuard } from './guards/monitor-guard';
+import { UserGuard } from './guards/user-guard';
 import { APP_BASE_HREF } from '@angular/common';
 
 
@@ -67,6 +69,7 @@ const DECLARATIONS = [
   AppComponent,
   NavBarComponent,
   UserInformationComponent,
+  NoAccessComponent,
 ];
 
 export function startupServiceFactory(startupService: StartupService): () => Promise<any> {
@@ -90,6 +93,7 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     DomainGuard,
     BusinessAdminGuard,
     MonitorGuard,
+    UserGuard,
     StartupService,
     {
       provide: APP_INITIALIZER,

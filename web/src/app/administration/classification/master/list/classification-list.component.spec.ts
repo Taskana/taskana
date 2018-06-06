@@ -26,6 +26,7 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { configureTests } from 'app/app.test.configuration';
 
 @Component({
   selector: 'taskana-tree',
@@ -59,29 +60,30 @@ describe('ClassificationListComponent', () => {
   let classificationsSpy, classificationsTypesSpy;
   let classificationsService, classificationTypesService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ClassificationListComponent, ImportExportComponent, SpinnerComponent, ClassificationTypesSelectorComponent,
-        TaskanaTreeComponent, DummyDetailComponent, IconTypeComponent, MapValuesPipe],
-      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpModule],
-      providers: [
-        HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
-        ErrorModalService, ClassificationTypesService, RequestInProgressService
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(done => {
+    const configure = (testBed: TestBed) => {
+      testBed.configureTestingModule({
+        declarations: [ClassificationListComponent, ImportExportComponent, SpinnerComponent, ClassificationTypesSelectorComponent,
+          TaskanaTreeComponent, DummyDetailComponent, IconTypeComponent, MapValuesPipe],
+        imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpModule],
+        providers: [
+          HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
+          ErrorModalService, ClassificationTypesService, RequestInProgressService
+        ]
+      })
+    };
+    configureTests(configure).then(testBed => {
+      fixture = TestBed.createComponent(ClassificationListComponent);
+      component = fixture.componentInstance;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ClassificationListComponent);
-    component = fixture.componentInstance;
-
-    classificationsService = TestBed.get(ClassificationsService);
-    classificationTypesService = TestBed.get(ClassificationTypesService);
-    classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
-    classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes')
-      .and.returnValue(Observable.of(classificationTypes));
-    fixture.detectChanges();
+      classificationsService = TestBed.get(ClassificationsService);
+      classificationTypesService = TestBed.get(ClassificationTypesService);
+      classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
+      classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes')
+        .and.returnValue(Observable.of(classificationTypes));
+      fixture.detectChanges();
+      done();
+    });
   });
 
   it('should create', () => {
