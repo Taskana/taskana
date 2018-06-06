@@ -354,7 +354,7 @@ public class TaskControllerRestDocumentation {
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) //admin
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
     }
     
@@ -386,7 +386,7 @@ public class TaskControllerRestDocumentation {
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) //admin
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
     }
     
@@ -417,7 +417,7 @@ public class TaskControllerRestDocumentation {
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) //admin
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
     }
     
@@ -447,6 +447,6 @@ public class TaskControllerRestDocumentation {
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) //admin
-        .andExpect(MockMvcResultMatchers.status().isOk());
+        .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 }
