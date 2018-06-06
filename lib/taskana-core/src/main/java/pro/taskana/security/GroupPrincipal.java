@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.security.acl.Group;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -16,6 +17,7 @@ public class GroupPrincipal implements Group {
 
     public GroupPrincipal(String name) {
         this.name = name;
+        this.members = new HashSet<Principal>();
     }
 
     @Override

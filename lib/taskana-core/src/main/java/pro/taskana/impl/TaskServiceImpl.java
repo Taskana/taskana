@@ -297,7 +297,7 @@ public class TaskServiceImpl implements TaskService {
         TaskImpl task = (TaskImpl) taskToCreate;
         try {
             taskanaEngine.openConnection();
-            if (task.getId() != "" && task.getId() != null) {
+            if (task.getId() != null && !task.getId().equals("")) {
                 throw new TaskAlreadyExistException(task.getId());
             } else {
                 LOGGER.debug("Task {} cannot be be found, so it can be created.", task.getId());

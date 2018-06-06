@@ -98,7 +98,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     private void addClassificationToRootDomain(ClassificationImpl classificationImpl) {
-        if (classificationImpl.getDomain() != "") {
+        if (!classificationImpl.getDomain().equals("")) {
             boolean doesExist = true;
             String idBackup = classificationImpl.getId();
             String domainBackup = classificationImpl.getDomain();
@@ -178,7 +178,14 @@ public class ClassificationServiceImpl implements ClassificationService {
             }
             classificationMapper.update(classificationImpl);
             boolean priorityChanged = oldClassification.getPriority() != classification.getPriority();
-            boolean serviceLevelChanged = oldClassification.getServiceLevel() != classification.getServiceLevel();
+            boolean serviceLevelChanged = true;
+            if (oldClassification.getServiceLevel() == null) {
+                if (classification.getServiceLevel() == null) {
+                    serviceLevelChanged = false;
+                }
+            } else if (oldClassification.getServiceLevel().equals(classification.getServiceLevel())) {
+                serviceLevelChanged = false;
+            }
 
             if (priorityChanged || serviceLevelChanged) {
                 Map<String, String> args = new HashMap<>();
