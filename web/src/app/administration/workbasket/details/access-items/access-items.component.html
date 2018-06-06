@@ -42,7 +42,7 @@
 								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 							</button>
 						</td>
-						<td *ngIf="lookupField.visible else accessIdInput" class="input-group text-align text-width taskana-type-ahead" [ngClass]="{
+						<td *ngIf="accessIdField.lookupField else accessIdInput" class="input-group text-align text-width taskana-type-ahead" [ngClass]="{
 							'has-warning': (accessItemsClone[index].accessId !== accessItem.accessId),
 							'has-error': !accessItem.accessId } ">
 							<taskana-type-ahead required #accessItemName="ngModel" [(ngModel)]="accessItem.accessId" name="accessItem.accessId-{{index}}"

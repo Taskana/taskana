@@ -37,7 +37,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 	requestInProgress = false;
 	badgeMessage = '';
 
-	lookupField = this.customFieldsService.getCustomField('Owner', 'workbaskets.information.lookupField');
+	ownerField = this.customFieldsService.getCustomField('Owner', 'workbaskets.information.owner');
 	custom1Field = this.customFieldsService.getCustomField('Custom 1', 'workbaskets.information.custom1');
 	custom2Field = this.customFieldsService.getCustomField('Custom 2', 'workbaskets.information.custom2');
 	custom3Field = this.customFieldsService.getCustomField('Custom 3', 'workbaskets.information.custom3');

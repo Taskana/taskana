@@ -2,8 +2,8 @@
     "EN": {
         "workbaskets": {
             "information": {
-                "lookupField": {
-                    "visible": true
+                "owner": {
+                    "lookupField": true
                 },
                 "custom1": {
                     "field": "Customized field 1 title",
@@ -15,8 +15,8 @@
                 }
             },
             "access-items": {
-                "lookupField": {
-                    "visible": false
+                "accessId": {
+                    "lookupField": true
                 },
                 "custom3": {
                     "field": "",
