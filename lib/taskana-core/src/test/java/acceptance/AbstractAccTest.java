@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import org.junit.BeforeClass;
 
 import pro.taskana.Attachment;
+import pro.taskana.ObjectReference;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.TimeInterval;
@@ -23,7 +24,6 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 

@@ -11,12 +11,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.ObjectReference;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
-import pro.taskana.impl.ObjectReference;
 import pro.taskana.security.JAASRunner;
 
 /**

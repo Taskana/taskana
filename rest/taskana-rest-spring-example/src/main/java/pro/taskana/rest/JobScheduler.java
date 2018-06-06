@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.impl.BulkOperationResults;
 import pro.taskana.impl.JobRunner;
 import pro.taskana.impl.util.LoggerUtils;
 

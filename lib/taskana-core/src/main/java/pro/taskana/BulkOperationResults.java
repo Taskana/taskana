@@ -1,4 +1,4 @@
-package pro.taskana.impl;
+package pro.taskana;
 
 import java.util.ArrayList;
 import java.util.HashMap;

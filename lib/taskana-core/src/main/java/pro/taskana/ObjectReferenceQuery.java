@@ -1,7 +1,5 @@
 package pro.taskana;
 
-import pro.taskana.impl.ObjectReference;
-
 /**
  * ObjectReferenceQuery for generating dynamic sql.
  */

@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.ObjectReference;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
@@ -34,7 +35,6 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;

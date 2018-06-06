@@ -9,8 +9,8 @@ import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
 import pro.taskana.Attachment;
+import pro.taskana.ObjectReference;
 import pro.taskana.TaskState;
-import pro.taskana.impl.ObjectReference;
 
 /**
  * Resource class for {@link pro.taskana.WorkbasketSummary}.

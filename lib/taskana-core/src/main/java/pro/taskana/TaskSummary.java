@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.List;
 
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.impl.ObjectReference;
 
 /**
  * Interface for TaskSummary. This is a specific short model-object which only contains the most important information.

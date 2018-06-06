@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.mappings.JobMapper;
 

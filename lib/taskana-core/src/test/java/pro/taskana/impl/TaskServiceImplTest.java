@@ -37,6 +37,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import pro.taskana.Attachment;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.ObjectReference;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
