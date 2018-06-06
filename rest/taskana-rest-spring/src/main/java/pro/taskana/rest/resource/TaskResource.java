@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.hateoas.ResourceSupport;
 
 import pro.taskana.Attachment;
+import pro.taskana.ObjectReference;
 import pro.taskana.TaskState;
-import pro.taskana.impl.ObjectReference;
 
 /**
  * Resource class for {@link pro.taskana.Task}.

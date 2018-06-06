@@ -15,8 +15,6 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.BulkOperationResults;
-import pro.taskana.impl.ObjectReference;
 
 /**
  * The Task Service manages all operations on tasks.

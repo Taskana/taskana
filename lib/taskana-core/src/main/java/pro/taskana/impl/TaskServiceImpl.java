@@ -17,8 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.Attachment;
+import pro.taskana.BulkOperationResults;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.ObjectReference;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;

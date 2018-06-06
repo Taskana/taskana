@@ -6,9 +6,9 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
+import pro.taskana.ObjectReference;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ClassificationSummaryImpl;
-import pro.taskana.impl.ObjectReference;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.impl.TaskSummaryImpl;

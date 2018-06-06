@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.impl.ObjectReference;
 
 /**
  * task-Interface to specify attribute interactions.

@@ -9,11 +9,11 @@ import java.util.List;
 import org.junit.Test;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.ObjectReference;
 import pro.taskana.TaskQuery;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.ObjectReference;
 
 /**
  * Acceptance test for all "get classification" scenarios.
