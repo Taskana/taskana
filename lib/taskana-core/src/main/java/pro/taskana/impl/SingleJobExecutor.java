@@ -9,5 +9,10 @@ import pro.taskana.BulkOperationResults;
  */
 public interface SingleJobExecutor {
 
+    String TASKIDS = "taskIds";
+    String CLASSIFICATION_ID = "classificationId";
+    String PRIORITY_CHANGED = "priorityChanged";
+    String SERVICE_LEVEL_CHANGED = "serviceLevelChanged";
+
     BulkOperationResults<String, Exception> runSingleJob(Job job, TaskanaEngineImpl taskanaEngine);
 }
