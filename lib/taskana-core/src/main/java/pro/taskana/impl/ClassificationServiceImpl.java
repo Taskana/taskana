@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
@@ -98,7 +99,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
 
     private void addClassificationToRootDomain(ClassificationImpl classificationImpl) {
-        if (!classificationImpl.getDomain().equals("")) {
+        if (!Objects.equals(classificationImpl.getDomain(), "")) {
             boolean doesExist = true;
             String idBackup = classificationImpl.getId();
             String domainBackup = classificationImpl.getDomain();
@@ -178,26 +179,22 @@ public class ClassificationServiceImpl implements ClassificationService {
             }
             classificationMapper.update(classificationImpl);
             boolean priorityChanged = oldClassification.getPriority() != classification.getPriority();
-            boolean serviceLevelChanged = true;
-            if (oldClassification.getServiceLevel() == null) {
-                if (classification.getServiceLevel() == null) {
-                    serviceLevelChanged = false;
-                }
-            } else if (oldClassification.getServiceLevel().equals(classification.getServiceLevel())) {
-                serviceLevelChanged = false;
-            }
+
+            boolean serviceLevelChanged = !Objects.equals(oldClassification.getServiceLevel(),
+                classification.getServiceLevel());
 
             if (priorityChanged || serviceLevelChanged) {
                 Map<String, String> args = new HashMap<>();
-                args.put(TaskUpdateOnClassificationChangeExecutor.CLASSIFICATION_ID, classificationImpl.getId());
-                args.put(TaskUpdateOnClassificationChangeExecutor.PRIORITY_CHANGED, String.valueOf(priorityChanged));
-                args.put(TaskUpdateOnClassificationChangeExecutor.SERVICE_LEVEL_CHANGED,
+                args.put(TaskUpdateJobExecutor.CLASSIFICATION_ID, classificationImpl.getId());
+                args.put(TaskUpdateJobExecutor.PRIORITY_CHANGED, String.valueOf(priorityChanged));
+                args.put(TaskUpdateJobExecutor.SERVICE_LEVEL_CHANGED,
                     String.valueOf(serviceLevelChanged));
                 Job job = new Job();
                 job.setCreated(Instant.now());
                 job.setState(Job.State.READY);
-                job.setExecutor(TaskUpdateOnClassificationChangeExecutor.class.getName());
+                job.setExecutor(ClassificationChangedJobExecutor.class.getName());
                 job.setArguments(args);
+                job.setType(Job.Type.CLASSIFICATIONCHANGEDJOB);
                 taskanaEngine.getSqlSession().getMapper(JobMapper.class).insertJob(job);
             }
 

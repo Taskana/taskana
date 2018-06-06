@@ -44,6 +44,8 @@ public class TaskanaEngineConfiguration {
     private static final String H2_DRIVER = "org.h2.Driver";
     private static final String TASKANA_PROPERTIES = "/taskana.properties";
     private static final String TASKANA_ROLES_SEPARATOR = "|";
+    private static final String TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION = "taskana.job.max.task.updates.per.transaction";
+    private static final String TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES = "taskana.job.max.retries.for.failed.task.updates";
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
     private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";
@@ -67,6 +69,10 @@ public class TaskanaEngineConfiguration {
     // Properties for the monitor
     private boolean germanPublicHolidaysEnabled;
     private List<LocalDate> customHolidays;
+
+    // Properties for task-update Job execution on classification change
+    private int maxNumberOfTaskUpdatesPerTransaction;
+    private int maxNumberOfRetriesOfFailedTaskUpdates;
 
     // List of configured domain names
     protected List<String> domains = new ArrayList<String>();
@@ -117,9 +123,30 @@ public class TaskanaEngineConfiguration {
         LOGGER.debug("Reading taskana configuration from {} with role separator {}", propertiesFile, rolesSeparator);
         Properties props = readPropertiesFromFile(propertiesFile);
         initTaskanaRoles(props, rolesSeparator);
+        initJobParameters(props);
         initDomains(props);
         initClassificationTypes(props);
         initClassificationCategories(props);
+    }
+
+    private void initJobParameters(Properties props) {
+        String taskUpdates = props.getProperty(TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION);
+        if (taskUpdates == null || taskUpdates.isEmpty()) {
+            maxNumberOfTaskUpdatesPerTransaction = 50;
+        } else {
+            maxNumberOfTaskUpdatesPerTransaction = Integer.parseInt(taskUpdates);
+        }
+
+        String retries = props.getProperty(TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES);
+        if (retries == null || retries.isEmpty()) {
+            maxNumberOfRetriesOfFailedTaskUpdates = 3;
+        } else {
+            maxNumberOfRetriesOfFailedTaskUpdates = Integer.parseInt(retries);
+        }
+
+        LOGGER.debug(
+            "Configured number of task updates per transaction: {}, number of retries of failed task updates: {}",
+            maxNumberOfTaskUpdatesPerTransaction, maxNumberOfRetriesOfFailedTaskUpdates);
     }
 
     private void initDomains(Properties props) {
@@ -173,6 +200,7 @@ public class TaskanaEngineConfiguration {
                 if (key != null) {
                     roleMap.put(key, roleMemberSet);
                 } else {
+                    LOGGER.error("Internal System error when processing role property {}.", propertyName);
                     throw new SystemException(
                         "Internal System error when processing role property " + propertyName);
                 }
@@ -202,6 +230,7 @@ public class TaskanaEngineConfiguration {
                 LOGGER.debug("Role properties were loaded from file {}.", propertiesFile);
             }
         } catch (IOException e) {
+            LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);
             throw new SystemException("internal System error when processing properties file " + propertiesFile,
                 e.getCause());
         }
@@ -269,6 +298,14 @@ public class TaskanaEngineConfiguration {
 
     public String getPropertiesFileName() {
         return this.propertiesFileName;
+    }
+
+    public int getMaxNumberOfTaskUpdatesPerTransaction() {
+        return maxNumberOfTaskUpdatesPerTransaction;
+    }
+
+    public int getMaxNumberOfRetriesOfFailedTaskUpdates() {
+        return maxNumberOfRetriesOfFailedTaskUpdates;
     }
 
     public void setPropertiesFileName(String propertiesFileName) {

@@ -301,7 +301,7 @@ public class TaskServiceImpl implements TaskService {
         TaskImpl task = (TaskImpl) taskToCreate;
         try {
             taskanaEngine.openConnection();
-            if (task.getId() != null && !task.getId().equals("")) {
+            if (task.getId() != null && !"".equals(task.getId())) {
                 throw new TaskAlreadyExistException(task.getId());
             } else {
                 LOGGER.debug("Task {} cannot be be found, so it can be created.", task.getId());
@@ -1416,7 +1416,6 @@ public class TaskServiceImpl implements TaskService {
 
             Classification classification = classificationService.getClassification(classificationId);
             task.setClassificationSummary(classification.asSummary());
-
             PrioDurationHolder prioDurationFromAttachments = handleAttachmentsOnClassificationUpdate(task);
 
             updateClassificationRelatedProperties(task, task, prioDurationFromAttachments);
