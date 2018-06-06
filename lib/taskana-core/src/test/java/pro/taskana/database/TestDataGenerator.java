@@ -79,7 +79,9 @@ public class TestDataGenerator {
                 .forEach(runner::runScript);
 
         } finally {
-            runner.closeConnection();
+            if (runner != null) {
+                runner.closeConnection();
+            }
             LOGGER.debug(outWriter.toString());
             if (!errorWriter.toString().trim().isEmpty()) {
                 LOGGER.error(errorWriter.toString());
@@ -109,8 +111,9 @@ public class TestDataGenerator {
                     new ByteArrayInputStream(
                         sqlReplacer.monitoringTestDataSql.getBytes(StandardCharsets.UTF_8))));
         } finally {
-
-            runner.closeConnection();
+            if (runner != null) {
+                runner.closeConnection();
+            }
             LOGGER.debug(outWriter.toString());
             if (!errorWriter.toString().trim().isEmpty()) {
                 LOGGER.error(errorWriter.toString());
