@@ -6,24 +6,31 @@
                 <a (click)="backClicked()">
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
             </li>
-            <li role="presentation" class="active" (click)="tabSelected = 'information'">
-                <a href="#work-baskets" aria-controls="work baskets" role="tab" data-toggle="tab" aria-expanded="true">Information</a>
+            <li role="presentation" class="active" (click)="seclectTab('information')" [ngClass]="{'active':tabSelected === 'information'}">
+                <a aria-controls="work baskets" role="tab" aria-expanded="true">
+                    Information</a>
             </li>
-            <li role="presentation" [ngClass]="{'disabled': !workbasket._links?.accessItems}" (click)="tabSelected = 'accessItems'">
-                <a href="#access-items" aria-controls="Acccess" role="tab" data-toggle="tab" aria-expanded="true">Access</a>
+            <li role="presentation" (click)="seclectTab('accessItems')" [ngClass]="{
+                'disabled': action ==='CREATE',
+                'active':tabSelected === 'accessItems'}">
+                <a aria-controls="Acccess" role="tab" aria-expanded="true">
+                    Access</a>
             </li>
-            <li role="presentation" [ngClass]="{'disabled': !workbasket._links?.distributionTargets}" (click)="tabSelected = 'distributionTargets'">
-                <a href="#distribution-targets" aria-controls="distribution targets" role="tab" data-toggle="tab" aria-expanded="true">Distribution targets</a>
+            <li role="presentation" (click)="seclectTab('distributionTargets')" [ngClass]="{
+                'disabled': action ==='CREATE',
+                'active':tabSelected === 'distributionTargets'}">
+                <a aria-controls="distribution targets" role="tab" data-toggle="tab" aria-expanded="true">
+                    Distribution targets</a>
             </li>
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane fade in active" id="work-baskets">
+            <div role="tabpanel" class="tab-pane active" [ngClass]="{'active':tabSelected === 'information'}" id="work-baskets">
                 <taskana-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-workbasket-information>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="access-items">
+            <div role="tabpanel" class="tab-pane" id="access-items" [ngClass]="{'active':tabSelected === 'accessItems'}">
                 <taskana-workbasket-access-items [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-workbasket-access-items>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="distribution-targets">
+            <div role="tabpanel" class="tab-pane" id="distribution-targets" [ngClass]="{'active':tabSelected === 'distributionTargets'}">
                 <taskana-workbaskets-distribution-targets [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-workbaskets-distribution-targets>
             </div>
         </div>
