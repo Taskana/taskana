@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -23,8 +22,7 @@ public class TaskanaComponent {
     }
 
     public void triggerRollback() throws NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, InvalidWorkbasketException, TaskAlreadyExistException,
-        InvalidArgumentException {
+        ClassificationNotFoundException, TaskAlreadyExistException, InvalidArgumentException {
         Task task = taskService.newTask("1");
         task.setName("Unit Test Task");
         ObjectReference objRef = new ObjectReference();

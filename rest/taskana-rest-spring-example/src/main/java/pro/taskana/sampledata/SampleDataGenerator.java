@@ -37,7 +37,7 @@ public class SampleDataGenerator {
         runner = new ScriptRunner(dataSource.getConnection());
     }
 
-    public void generateSampleData() throws SQLException {
+    public void generateSampleData() {
         StringWriter outWriter = new StringWriter();
         PrintWriter logWriter = new PrintWriter(outWriter);
 

@@ -1,6 +1,5 @@
 package acceptance.task;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -10,8 +9,6 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -31,7 +28,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2"})
     @Test
     public void testQueryTasksByExcactValueOfObjectReference()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
+        throws SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueIn("11223344", "22334455")
@@ -44,7 +41,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2"})
     @Test
     public void testQueryTasksByExcactValueAndTypeOfObjectReference()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
+        throws SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceTypeIn("SDNR")
@@ -58,7 +55,7 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         groupNames = {"group_1", "group_2"})
     @Test
     public void testQueryTasksByValueLikeOfObjectReference()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, SystemException {
+        throws SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueLike("%567%")

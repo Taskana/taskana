@@ -1,6 +1,5 @@
 package acceptance.security;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -27,8 +26,7 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryWorkbasketByUnauthenticated()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByUnauthenticated() throws InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
@@ -50,8 +48,7 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "unknown")
     @Test
-    public void testQueryWorkbasketByUnknownUser()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByUnknownUser() throws InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
@@ -74,8 +71,7 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
         userName = "unknown",
         groupNames = "businessadmin")
     @Test
-    public void testQueryWorkbasketByBusinessAdmin()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByBusinessAdmin() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
@@ -95,8 +91,7 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
         userName = "unknown",
         groupNames = "admin")
     @Test
-    public void testQueryWorkbasketByAdmin()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByAdmin() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")

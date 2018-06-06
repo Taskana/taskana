@@ -9,7 +9,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,18 +22,12 @@ import pro.taskana.BulkOperationResults;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
-import pro.taskana.exceptions.AttachmentPersistenceException;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -53,8 +46,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testClaimTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000025");
@@ -76,8 +68,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = InvalidOwnerException.class)
     public void testThrowsExceptionIfTaskIsAlreadyClaimed()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000026");
@@ -90,8 +81,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testClaimAlreadyClaimedByCallerTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000027");
@@ -104,8 +94,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = InvalidOwnerException.class)
     public void testForceClaimTaskWhichIsAlreadyClaimedByAnotherUser()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000028");
@@ -118,8 +107,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testCancelClaimTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000029");
@@ -139,8 +127,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = InvalidOwnerException.class)
     public void testThrowsExceptionIfCancelClaimOfTaskFromAnotherUser()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000030");
@@ -153,8 +140,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testForceCancelClaimOfTaskFromAnotherUser()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000031");
@@ -174,8 +160,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testCompleteTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         Instant before = Instant.now().minus(Duration.ofSeconds(3L));
         TaskService taskService = taskanaEngine.getTaskService();
@@ -199,8 +184,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testForceCompleteUnclaimedTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000033");
@@ -221,8 +205,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = InvalidOwnerException.class)
     public void testThrowsExceptionIfCompletingClaimedTaskOfAnotherUser()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000034");
@@ -235,8 +218,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testForceCompleteClaimedTaskOfAnotherUser()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000035");
@@ -257,9 +239,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testBulkCompleteTasks()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException, AttachmentPersistenceException {
+        throws NotAuthorizedException, InvalidArgumentException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> taskIdList = new ArrayList<>();
@@ -282,9 +262,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testBulkDeleteTasksWithException()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException, AttachmentPersistenceException {
+        throws InvalidArgumentException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> taskIdList = new ArrayList<>();

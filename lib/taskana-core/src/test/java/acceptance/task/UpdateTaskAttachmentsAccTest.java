@@ -8,7 +8,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     // since only @Test and not @Before methods are run by JAASRunner, we call this method explicitely at
     // the begin of each testcase....
     private void setUpMethod()
-        throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException, SQLException,
+        throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
         AttachmentPersistenceException {
         taskService = taskanaEngine.getTaskService();
@@ -81,7 +80,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void testAddNewAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         int attachmentCount = task.getAttachments().size();
         assertTrue(task.getPriority() == 1);
@@ -104,7 +103,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
         throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
         InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         int attachmentCount = 0;
         task.getAttachments().clear();
@@ -127,7 +126,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void testAddExistingAttachmentAgainWillUpdateWhenNotEqual()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         // Add attachment before
         task = taskService.getTask(task.getId());
@@ -162,7 +161,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void testAddExistingAttachmentAgainWillDoNothingWhenEqual()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         // Add Attachment before
         int attachmentCount = task.getAttachments().size();
@@ -189,7 +188,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void testAddAttachmentAsNullValueWillBeIgnored()
         throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
         InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         // Try to add a single NULL-Element
         int attachmentCount = task.getAttachments().size();
@@ -226,7 +225,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void testRemoveAttachment()
         throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
         InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         task.addAttachment(attachment);
         task = taskService.updateTask(task);
@@ -250,7 +249,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void testRemoveAttachmentWithNullAndNotAddedId()
         throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
         InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         task.addAttachment(attachment);
         task = taskService.updateTask(task);
@@ -276,7 +275,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void testUpdateAttachment()
         throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
         InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         ((TaskImpl) task).setAttachments(new ArrayList<>());
         task = taskService.updateTask(task);
@@ -312,7 +311,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void modifyExistingAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         // setup test
         assertThat(task.getAttachments().size(), equalTo(0));
@@ -396,7 +395,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void replaceExistingAttachments()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
         setUpMethod();
         // setup test
         assertThat(task.getAttachments().size(), equalTo(0));
@@ -441,7 +440,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testPrioDurationOfTaskFromAttachmentsAtUpdate()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
         ConcurrencyException, AttachmentPersistenceException {
 
@@ -491,7 +490,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     public void testAddCustomAttributeToAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException, SQLException {
+        AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         task = taskService.getTask("TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D

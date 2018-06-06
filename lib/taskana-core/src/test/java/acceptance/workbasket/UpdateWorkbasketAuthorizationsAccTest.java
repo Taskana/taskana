@@ -7,7 +7,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -23,7 +22,6 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
@@ -83,8 +81,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testUpdateWorkbasketAccessItemRejected()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException {
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItem accessItem = workbasketService
             .newWorkbasketAccessItem("WBI:100000000000000000000000000000000001", "user1");
@@ -125,8 +122,8 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         groupNames = {"group_2", "businessadmin"})
     @Test
     public void testUpdatedAccessItemLeadsToNotAuthorizedException()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+        ClassificationNotFoundException, TaskAlreadyExistException {
         TaskService taskService = taskanaEngine.getTaskService();
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 

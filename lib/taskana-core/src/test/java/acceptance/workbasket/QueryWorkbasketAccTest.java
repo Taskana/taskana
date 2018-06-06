@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -91,7 +90,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketValuesForColumnName() throws NotAuthorizedException {
+    public void testQueryWorkbasketValuesForColumnName() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<String> columnValueList = workbasketService.createWorkbasketQuery()
             .listValues("NAME", null);
@@ -110,8 +109,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByDomain()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByDomain() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_B")
@@ -123,8 +121,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByDomainAndType()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByDomainAndType() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -137,8 +134,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByName()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByName() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameIn("Gruppenpostkorb KSC")
@@ -151,8 +147,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByNameStartsWith()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByNameStartsWith() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Gruppenpostkorb KSC%")
@@ -164,8 +159,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByNameContains()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByNameContains() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Teamlead%", "%Gruppenpostkorb KSC%")
@@ -177,8 +171,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByNameContainsCaseInsensitive()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByNameContainsCaseInsensitive() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%TEAMLEAD%")
@@ -190,8 +183,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByDescription()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByDescription() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .descriptionLike("%ppk%", "%gruppen%")
@@ -205,8 +197,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByOwnerLike()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByOwnerLike() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .ownerLike("%an%", "%te%")
@@ -219,8 +210,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByKey()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByKey() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC")
@@ -232,8 +222,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByMultipleKeys()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByMultipleKeys() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC_1", "GPK_KSC")
@@ -245,8 +234,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByMultipleKeysWithUnknownKey()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByMultipleKeysWithUnknownKey() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC_1", "GPK_Ksc", "GPK_KSC_3")
@@ -258,8 +246,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByKeyContains()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByKeyContains() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyLike("%KSC%")
@@ -271,8 +258,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByKeyContainsIgnoreCase()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByKeyContainsIgnoreCase() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyLike("%kSc%")
@@ -284,8 +270,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByKeyOrNameContainsIgnoreCase()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByKeyOrNameContainsIgnoreCase() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyOrNameLike("%kSc%")
@@ -297,8 +282,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByNameStartsWithSortedByNameAscending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByNameStartsWithSortedByNameAscending() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Gruppenpostkorb KSC%")
@@ -322,8 +306,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "max")
     @Test
-    public void testQueryWorkbasketByNameStartsWithSortedByNameDescending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByNameStartsWithSortedByNameDescending() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("basxet%")
@@ -344,8 +327,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "max")
     @Test
-    public void testQueryWorkbasketByNameStartsWithSortedByKeyAscending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByNameStartsWithSortedByKeyAscending() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("basxet%")
@@ -366,8 +348,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "max")
     @Test
-    public void testQueryWorkbasketByNameStartsWithSortedByKeyDescending()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByNameStartsWithSortedByKeyDescending() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("basxet%")
@@ -389,8 +370,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByCreated()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByCreated() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .createdWithin(todaysInterval())
@@ -402,8 +382,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByModified()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryWorkbasketByModified() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .modifiedWithin(todaysInterval())
@@ -416,7 +395,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         groupNames = "admin")
     @Test
     public void testQueryWorkbasketByAdmin()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")

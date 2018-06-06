@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +78,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForOwnerLike()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryForOwnerLike() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -102,8 +100,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForParentBusinessProcessId()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryForParentBusinessProcessId() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -126,8 +123,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForName()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryForName() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -150,8 +146,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForClassificationKey()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryForClassificationKey() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -175,7 +170,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForAttachmentInSummary()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         TaskNotFoundException, WorkbasketNotFoundException, ConcurrencyException, InvalidWorkbasketException,
         AttachmentPersistenceException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -201,8 +196,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForWorkbasketKeyDomain()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testQueryForWorkbasketKeyDomain() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<KeyDomain> workbasketIdentifiers = Arrays.asList(new KeyDomain("GPK_KSC", "DOMAIN_A"),
             new KeyDomain("USER_1_2", "DOMAIN_A"));
@@ -228,7 +222,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom1()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -262,7 +256,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom2()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -296,7 +290,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom3()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -330,7 +324,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom4()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -364,7 +358,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom5()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -398,7 +392,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom6()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -432,7 +426,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom7()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -466,7 +460,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom8()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -500,7 +494,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom9()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -534,7 +528,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryForCustom10()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -568,8 +562,8 @@ public class QueryTasksAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testQueryTaskByCustomAttributes()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");

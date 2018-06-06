@@ -3,7 +3,6 @@ package acceptance.objectreference;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Test;
@@ -11,9 +10,6 @@ import org.junit.Test;
 import acceptance.AbstractAccTest;
 import pro.taskana.ObjectReference;
 import pro.taskana.TaskQuery;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
  * Acceptance test for all "get classification" scenarios.
@@ -42,8 +38,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceByCompany()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+    public void testFindObjectReferenceByCompany() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()
@@ -55,8 +50,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceBySystem()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+    public void testFindObjectReferenceBySystem() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()
@@ -69,8 +63,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceBySystemInstance()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+    public void testFindObjectReferenceBySystemInstance() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()
@@ -83,8 +76,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceByType()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+    public void testFindObjectReferenceByType() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()
@@ -96,8 +88,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceByValue()
-        throws SQLException, ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException {
+    public void testFindObjectReferenceByValue() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()

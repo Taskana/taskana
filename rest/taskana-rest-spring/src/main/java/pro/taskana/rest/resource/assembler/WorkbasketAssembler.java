@@ -37,7 +37,7 @@ public class WorkbasketAssembler {
         return addLinks(resource, wb);
     }
 
-    public Workbasket toModel(WorkbasketResource wbResource) throws NotAuthorizedException {
+    public Workbasket toModel(WorkbasketResource wbResource) {
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket(wbResource.key, wbResource.domain);
         BeanUtils.copyProperties(wbResource, workbasket);
 
@@ -55,7 +55,8 @@ public class WorkbasketAssembler {
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
             .withRel("accessItems"));
         resource.add(linkTo(WorkbasketController.class).withRel("allWorkbaskets"));
-        resource.add(linkTo(methodOn(WorkbasketController.class).removeDistributionTargetForWorkbasketId(wb.getId())).withRel("removeDistributionTargets"));
+        resource.add(linkTo(methodOn(WorkbasketController.class).removeDistributionTargetForWorkbasketId(wb.getId()))
+            .withRel("removeDistributionTargets"));
         return resource;
     }
 }

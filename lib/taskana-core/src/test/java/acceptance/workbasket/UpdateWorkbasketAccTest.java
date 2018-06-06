@@ -1,6 +1,5 @@
 package acceptance.workbasket;
 
-import java.sql.SQLException;
 import java.time.Instant;
 
 import org.junit.Assert;
@@ -11,7 +10,6 @@ import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
-import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -33,8 +31,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testUpdateWorkbasket()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
         Instant modified = workbasket.getModified();
@@ -66,8 +63,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testCheckAuthorizationToUpdateWorkbasket()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-        InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
 

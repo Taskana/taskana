@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
@@ -14,7 +13,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
@@ -45,12 +43,8 @@ public class TaskanaProducersTest {
         return swarm;
     }
 
-    @Before
-    public void init() throws SQLException, ClassNotFoundException {
-    }
-
     @Test
-    public void testCommit() throws SQLException, ClassNotFoundException, NamingException {
+    public void testCommit() throws SQLException, ClassNotFoundException {
 
         Client client = ClientBuilder.newClient();
         client.target("http://127.0.0.1:8090/rest/test").request().get();
@@ -70,7 +64,7 @@ public class TaskanaProducersTest {
     }
 
     @Test
-    public void testRollback() throws SQLException, ClassNotFoundException, NamingException {
+    public void testRollback() throws SQLException, ClassNotFoundException {
         Client client = ClientBuilder.newClient();
         client.target("http://127.0.0.1:8090/rest/test").request().post(null);
 

@@ -3,7 +3,6 @@ package acceptance.workbasket;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Ignore;
@@ -13,7 +12,6 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.security.JAASRunner;
@@ -33,8 +31,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetFirstPageOfWorkbasketQueryWithOffset()
-        throws NotAuthorizedException {
+    public void testGetFirstPageOfWorkbasketQueryWithOffset() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -46,8 +43,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetSecondPageOfWorkbasketQueryWithOffset()
-        throws NotAuthorizedException {
+    public void testGetSecondPageOfWorkbasketQueryWithOffset() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -59,7 +55,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testListOffsetAndLimitOutOfBounds() throws NotAuthorizedException {
+    public void testListOffsetAndLimitOutOfBounds() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         // both will be 0, working
@@ -85,7 +81,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testPaginationWithPages() throws NotAuthorizedException {
+    public void testPaginationWithPages() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         // Getting full page
@@ -125,8 +121,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testPaginationNullAndNegativeLimitsIgnoring()
-        throws NotAuthorizedException {
+    public void testPaginationNullAndNegativeLimitsIgnoring() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         // 0 limit/size = 0 results
@@ -163,7 +158,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     @Ignore
     @Test(expected = TaskanaRuntimeException.class)
     public void testPaginationThrowingExceptionWhenPageOutOfBounds()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+        throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         // entrypoint set outside result amount
@@ -178,8 +173,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testCountOfWorkbasketQuery()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testCountOfWorkbasketQuery() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         long count = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -191,8 +185,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testWorkbasketQueryDomA()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testWorkbasketQueryDomA() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> result = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")

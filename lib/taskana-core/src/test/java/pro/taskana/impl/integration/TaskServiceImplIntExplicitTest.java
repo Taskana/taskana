@@ -5,13 +5,11 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
 
 import org.junit.After;
@@ -85,7 +83,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     @Before
-    public void setup() throws FileNotFoundException, SQLException, LoginException {
+    public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -101,8 +99,8 @@ public class TaskServiceImplIntExplicitTest {
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
-        throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
+        throws SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
+        ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
         Connection connection = dataSource.getConnection();
@@ -141,7 +139,7 @@ public class TaskServiceImplIntExplicitTest {
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testCreateTask()
-        throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
+        throws SQLException, TaskNotFoundException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
@@ -171,7 +169,7 @@ public class TaskServiceImplIntExplicitTest {
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
     public void testCreateTaskInTaskanaWithDefaultDb()
-        throws FileNotFoundException, SQLException, TaskNotFoundException, NotAuthorizedException,
+        throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
@@ -368,7 +366,7 @@ public class TaskServiceImplIntExplicitTest {
     @Test(expected = TaskNotFoundException.class)
     public void shouldNotTransferAnyTask()
         throws WorkbasketNotFoundException, NotAuthorizedException, TaskNotFoundException, SQLException,
-        InvalidWorkbasketException, ClassificationNotFoundException, InvalidStateException {
+        InvalidStateException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
@@ -462,7 +460,7 @@ public class TaskServiceImplIntExplicitTest {
     }
 
     private Task generateDummyTask() throws ClassificationAlreadyExistException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        InvalidWorkbasketException, NotAuthorizedException,
         WorkbasketAlreadyExistException, DomainNotFoundException, InvalidArgumentException {
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("wb", "DOMAIN_A");
         workbasket.setName("wb");

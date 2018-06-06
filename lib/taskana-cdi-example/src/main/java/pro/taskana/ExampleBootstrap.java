@@ -10,7 +10,6 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -25,8 +24,8 @@ public class ExampleBootstrap {
     @PostConstruct
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init)
         throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, InvalidStateException, InvalidOwnerException, InvalidWorkbasketException,
-        TaskAlreadyExistException, InvalidArgumentException {
+        ClassificationNotFoundException, InvalidStateException, InvalidOwnerException, TaskAlreadyExistException,
+        InvalidArgumentException {
         System.out.println("---------------------------> Start App");
         Task task = taskanaEjb.getTaskService().newTask(null);
         ObjectReference objRef = new ObjectReference();

@@ -54,7 +54,7 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     }
 
     @Test
-    public void testOtherConfigFileSameDelimiter() throws IOException, SQLException {
+    public void testOtherConfigFileSameDelimiter() throws IOException {
         String propertiesFileName = createNewConfigFileWithSameDelimiter("/dummyTestConfig.properties");
         try {
             getConfiguration().initTaskanaProperties(propertiesFileName, "|");
@@ -81,7 +81,7 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     }
 
     @Test
-    public void testOtherConfigFileDifferentDelimiter() throws IOException, SQLException {
+    public void testOtherConfigFileDifferentDelimiter() throws IOException {
         String delimiter = ";";
         String propertiesFileName = createNewConfigFileWithDifferentDelimiter("/dummyTestConfig.properties", delimiter);
         try {

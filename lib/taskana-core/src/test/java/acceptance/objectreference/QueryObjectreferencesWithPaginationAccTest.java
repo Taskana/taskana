@@ -41,20 +41,20 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     }
 
     @Test
-    public void testGetFirstPageOfObjectRefQueryWithOffset() throws NotAuthorizedException {
+    public void testGetFirstPageOfObjectRefQueryWithOffset() {
 
         List<ObjectReference> results = objRefQuery.list(0, 5);
         assertThat(results.size(), equalTo(3));
     }
 
     @Test
-    public void testGetSecondPageOfObjectRefQueryWithOffset() throws NotAuthorizedException {
+    public void testGetSecondPageOfObjectRefQueryWithOffset() {
         List<ObjectReference> results = objRefQuery.list(2, 5);
         assertThat(results.size(), equalTo(1));
     }
 
     @Test
-    public void testListOffsetAndLimitOutOfBounds() throws NotAuthorizedException {
+    public void testListOffsetAndLimitOutOfBounds() {
         // both will be 0, working
         List<ObjectReference> results = objRefQuery.list(-1, -3);
         assertThat(results.size(), equalTo(0));
@@ -69,7 +69,7 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     }
 
     @Test
-    public void testPaginationWithPages() throws NotAuthorizedException {
+    public void testPaginationWithPages() {
         // Getting full page
         int pageNumber = 1;
         int pageSize = 10;
@@ -96,7 +96,7 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     }
 
     @Test
-    public void testPaginationNullAndNegativeLimitsIgnoring() throws NotAuthorizedException {
+    public void testPaginationNullAndNegativeLimitsIgnoring() {
         // 0 limit/size = 0 results
         int pageNumber = 2;
         int pageSize = 0;
@@ -132,8 +132,7 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     }
 
     @Test
-    public void testCountOfClassificationsQuery()
-        throws NotAuthorizedException {
+    public void testCountOfClassificationsQuery() {
         long count = objRefQuery.count();
         assertThat(count, equalTo(3L));
     }

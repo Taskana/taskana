@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -35,8 +34,7 @@ public class TaskanaEjb {
     }
 
     public void triggerRollback() throws NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException,
-        InvalidArgumentException {
+        ClassificationNotFoundException, TaskAlreadyExistException, InvalidArgumentException {
         Task task = taskService.newTask(null);
         ObjectReference objRef = new ObjectReference();
         objRef.setCompany("aCompany");

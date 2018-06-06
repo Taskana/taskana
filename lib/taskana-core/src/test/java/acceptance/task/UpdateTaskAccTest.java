@@ -11,7 +11,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -54,8 +53,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testUpdatePrimaryObjectReferenceOfTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
@@ -84,8 +83,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
@@ -141,8 +140,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
@@ -193,9 +192,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testUpdateReadFlagOfTask()
-        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException {
+        throws TaskNotFoundException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -235,8 +232,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = InvalidArgumentException.class)
     public void testUpdateOfWorkbasketKeyWhatIsNotAllowed()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();

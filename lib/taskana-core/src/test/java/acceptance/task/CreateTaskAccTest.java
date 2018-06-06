@@ -7,7 +7,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
@@ -26,9 +25,7 @@ import pro.taskana.TaskState;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -58,8 +55,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testCreateSimpleManualTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -90,8 +87,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testCreateSimpleTaskWithCustomAttributes()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -157,9 +154,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testCreateExternalTaskWithAttachment()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -223,8 +219,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testCreateExternalTaskWithMultipleAttachments()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -260,8 +256,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testPrioDurationOfTaskFromAttachmentsAtCreate()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -306,8 +302,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfAttachmentIsInvalid()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws NotAuthorizedException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = makeNewTask(taskService);
@@ -378,7 +374,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         }
     }
 
-    private Task makeNewTask(TaskService taskService) throws ClassificationNotFoundException {
+    private Task makeNewTask(TaskService taskService) {
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("L12010");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -391,8 +387,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testUseCustomNameIfSetForNewTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -411,8 +407,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testUseClassificationMetadataFromCorrectDomainForNewTask()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -431,8 +427,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = WorkbasketNotFoundException.class)
     public void testGetExceptionIfWorkbasketDoesNotExist()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("UNKNOWN");
@@ -446,8 +442,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testGetExceptionIfAppendIsNotPermitted()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("GPK_KSC", "DOMAIN_A");
@@ -461,8 +457,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws NotAuthorizedException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -535,8 +531,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testSetDomainFromWorkbasket()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -559,8 +555,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testCreatedTaskObjectEqualsReadTaskObject()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException {
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");

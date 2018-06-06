@@ -22,7 +22,7 @@ public abstract class AbstractPagingController {
             pagesize = Long.valueOf(pagesizeParam);
             page = Long.valueOf(pageParam);
         } catch (NumberFormatException e) {
-            throw new InvalidArgumentException("page and pagesize must be a integer value.");
+            throw new InvalidArgumentException("page and pagesize must be a integer value.", e.getCause());
         }
         PageMetadata pageMetadata = new PageMetadata(pagesize, page, totalElements);
         if (pageMetadata.getNumber() > pageMetadata.getTotalPages()) {

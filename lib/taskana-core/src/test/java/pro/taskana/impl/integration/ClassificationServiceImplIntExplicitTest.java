@@ -440,8 +440,7 @@ public class ClassificationServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(null);
     }
 
-    private Classification createNewClassificationWithUniqueKey(String domain, String type)
-        throws NotAuthorizedException {
+    private Classification createNewClassificationWithUniqueKey(String domain, String type) {
         Classification classification = classificationService.newClassification("TEST" + counter, domain, type);
         counter++;
         return classification;

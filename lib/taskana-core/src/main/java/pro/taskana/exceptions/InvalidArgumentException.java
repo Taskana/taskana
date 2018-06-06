@@ -11,5 +11,9 @@ public class InvalidArgumentException extends TaskanaException {
         super(msg);
     }
 
+    public InvalidArgumentException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
     private static final long serialVersionUID = 1L;
 }

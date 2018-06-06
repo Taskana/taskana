@@ -254,8 +254,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
                     try {
                         this.sessionManager.commit();
                     } catch (Exception e) {
-                        LOGGER.error("closeSession(): Tried to Autocommit and caught exception" + e);
-                        throw new AutocommitFailedException(e);
+                        throw new AutocommitFailedException(e.getCause());
                     }
                 }
                 this.sessionManager.close();
@@ -344,18 +343,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             } else if (isPostgreSQL(databaseProductName)) {
                 configuration.setDatabaseId("postgres");
             } else {
-                LOGGER.error(
-                    "Method createSqlSessionManager() didn't find database with name {}. Throwing UnsupportedDatabaseException",
-                    databaseProductName);
                 throw new UnsupportedDatabaseException(databaseProductName);
             }
 
         } catch (SQLException e) {
-            LOGGER.error(
-                "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.",
-                e);
             throw new SystemException(
-                "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.");
+                "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.",
+                e.getCause());
         }
 
         // add mappers

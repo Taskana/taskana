@@ -66,7 +66,7 @@ public class TaskanaRestTest {
     @POST
     public Response rollbackTask()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidWorkbasketException, TaskAlreadyExistException, InvalidArgumentException {
+        TaskAlreadyExistException, InvalidArgumentException {
         taskanaEjb.triggerRollback();
         return Response.status(204).build();
     }
@@ -74,8 +74,7 @@ public class TaskanaRestTest {
     @DELETE
     @Path("{id}")
     public void completeTask(@PathParam("id") String id)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, ClassificationNotFoundException,
-        NotAuthorizedException {
+        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
         logger.info(id);
         taskanaEjb.getTaskService().forceCompleteTask(id);
     }

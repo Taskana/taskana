@@ -15,7 +15,6 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.util.IdGenerator;
 
@@ -54,7 +53,7 @@ public class TaskanaTestController {
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping("/transaction")
     public @ResponseBody String transaction(@RequestParam(value = "rollback", defaultValue = "false") String rollback)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        throws InvalidWorkbasketException, NotAuthorizedException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key", "workbasket"));
 
@@ -70,7 +69,7 @@ public class TaskanaTestController {
     @RequestMapping("/transaction-many")
     public @ResponseBody String transactionMany(
         @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        throws InvalidWorkbasketException, NotAuthorizedException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
@@ -87,7 +86,7 @@ public class TaskanaTestController {
     @RequestMapping("/geschbuch")
     public @ResponseBody String transactionGeschbuch(
         @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-        throws WorkbasketNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
+        throws InvalidWorkbasketException, NotAuthorizedException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
@@ -120,7 +119,7 @@ public class TaskanaTestController {
         return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM GESCHBUCH.TEST", Integer.class);
     }
 
-    private Workbasket createWorkBasket(String key, String name) throws NotAuthorizedException {
+    private Workbasket createWorkBasket(String key, String name) {
         WorkbasketImpl workbasket = (WorkbasketImpl) taskanaEngine.getWorkbasketService().newWorkbasket(key,
             "DOMAIN_A");
         String id1 = IdGenerator.generateWithPrefix("TWB");
