@@ -7,6 +7,7 @@ import java.util.Map;
 import pro.taskana.Attachment;
 import pro.taskana.AttachmentSummary;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.ObjectReference;
 
 /**
  * Attachment entity.

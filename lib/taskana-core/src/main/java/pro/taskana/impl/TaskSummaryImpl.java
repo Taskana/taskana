@@ -6,6 +6,7 @@ import java.util.List;
 
 import pro.taskana.AttachmentSummary;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.ObjectReference;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.WorkbasketSummary;
