@@ -27,7 +27,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 @SpringBootApplication
 @EnableScheduling
-@Import(RestConfiguration.class)
+@Import(SampleConfiguration.class)
 public class ExampleRestApplication {
 
     @Autowired

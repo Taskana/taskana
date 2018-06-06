@@ -15,8 +15,17 @@ public class Job {
     private Instant started;
     private Instant completed;
     private State state;
+    private Type type;
+    private int retryCount;
     private String executor;
+    private String errors;
     Map<String, String> arguments;
+
+    public Job() {
+        created = Instant.now();
+        state = State.READY;
+        retryCount = 0;
+    }
 
     public Integer getJobId() {
         return jobId;
@@ -74,6 +83,30 @@ public class Job {
         this.arguments = arguments;
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    public void setRetryCount(int retryCount) {
+        this.retryCount = retryCount;
+    }
+
+    public String getErrors() {
+        return errors;
+    }
+
+    public void setErrors(String errors) {
+        this.errors = errors;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -87,10 +120,16 @@ public class Job {
         builder.append(completed);
         builder.append(", state=");
         builder.append(state);
+        builder.append(", type=");
+        builder.append(type);
+        builder.append(", retryCount=");
+        builder.append(retryCount);
         builder.append(", executor=");
         builder.append(executor);
         builder.append(", arguments=");
         builder.append(arguments);
+        builder.append(", errors=");
+        builder.append(errors);
         builder.append("]");
         return builder.toString();
     }
@@ -107,4 +146,11 @@ public class Job {
         COMPLETED
     }
 
+    /**
+     * This enum controls the type of a job.
+     */
+    public enum Type {
+        CLASSIFICATIONCHANGEDJOB,
+        UPDATETASKSJOB;
+    }
 }

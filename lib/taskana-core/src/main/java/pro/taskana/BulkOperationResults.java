@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BulkOperationResults<K, V> {
 
-    private Map<K, V> errorMap = new HashMap<K, V>();
+    private Map<K, V> errorMap = new HashMap<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkOperationResults.class);
 
     /**
@@ -105,9 +105,11 @@ public class BulkOperationResults<K, V> {
      *            the other log
      */
     public void addAllErrors(BulkOperationResults<K, V> log) {
-        List<K> failedIds = log.getFailedIds();
-        for (K id : failedIds) {
-            addError(id, log.getErrorForId(id));
+        if (log != null && log.containsErrors()) {
+            List<K> failedIds = log.getFailedIds();
+            for (K id : failedIds) {
+                addError(id, log.getErrorForId(id));
+            }
         }
     }
 }
