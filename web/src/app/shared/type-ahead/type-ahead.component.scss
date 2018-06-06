@@ -11,6 +11,11 @@ $grey: #ddd;
         border-bottom: 1px solid $grey;
         margin-top:6px;
     }
+    > div{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
 }
 
 .input-text {
