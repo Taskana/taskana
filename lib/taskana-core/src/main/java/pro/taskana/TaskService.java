@@ -95,6 +95,7 @@ public interface TaskService {
 
     /**
      * Complete a claimed Task as owner/admin and update State and Timestamps.
+     * If task is already completed, the task is returned as itself.
      *
      * @param taskId
      *            - Id of the Task which should be completed.
@@ -113,6 +114,7 @@ public interface TaskService {
 
     /**
      * Complete a Task and update State and Timestamps in every case if the Task exists.
+     * If task is already completed, the task is returned as itself.
      *
      * @param taskId
      *            - Id of the Task which should be completed.
