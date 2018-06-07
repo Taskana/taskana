@@ -94,7 +94,9 @@ public abstract class AbstractAccTest {
             receivedTimestamp = Instant.parse(receivedDate);
         }
         attachment.setReceived(receivedTimestamp);
-        attachment.setCustomAttributes(customAttributes);
+        if (customAttributes != null) {
+            attachment.setCustomAttributes(customAttributes);
+        }
 
         return attachment;
     }

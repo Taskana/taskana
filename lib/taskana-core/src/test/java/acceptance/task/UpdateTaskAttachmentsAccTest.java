@@ -484,4 +484,25 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(calendarDays))));
     }
 
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testAddCustomAttributeToAttachment()
+        throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
+        AttachmentPersistenceException, SQLException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        task = taskService.getTask("TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D
+        attachment = createAttachment("DOCTYPE_DEFAULT", // prio 99, SL P2000D
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL", "2018-01-15", null);
+        attachment.getCustomAttributes().put("TEST_KEY", "TEST_VALUE");
+        task.addAttachment(attachment);
+        taskService.updateTask(task);
+        Task updatedTask = taskService.getTask("TKI:000000000000000000000000000000000000");
+        assertEquals("TEST_VALUE", updatedTask.getAttachments().get(0).getCustomAttributes().get("TEST_KEY"));
+    }
 }
