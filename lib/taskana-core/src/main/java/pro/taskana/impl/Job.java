@@ -105,6 +105,9 @@ public class Job {
 
     public void setErrors(String errors) {
         this.errors = errors;
+        if (this.errors != null && this.errors.length() > 4096) {
+            this.errors = errors.substring(0, 4095);
+        }
     }
 
     @Override
