@@ -13,14 +13,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Collections;
+
+import javax.sql.DataSource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
@@ -40,14 +43,30 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.rest.resource.TaskSummaryResource;
+import pro.taskana.sampledata.SampleDataGenerator;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
+    properties = {"devMode=true"})
 public class TaskControllerIntTest {
 
     @LocalServerPort
     int port;
+
+    @Autowired
+    private DataSource dataSource;
+
+    public void resetDb() {
+        SampleDataGenerator sampleDataGenerator;
+        try {
+            sampleDataGenerator = new SampleDataGenerator(dataSource);
+            sampleDataGenerator.generateSampleData();
+        } catch (SQLException e) {
+            throw new SystemException("tried to reset DB and caught Exception " + e, e);
+        }
+    }
 
     @Test
     public void testGetAllTasks() {
@@ -194,6 +213,8 @@ public class TaskControllerIntTest {
 
     @Test
     public void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
+        resetDb(); // required because ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
+                   // tasks and this test depends on the tasks as they are in sampledata
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -232,6 +253,8 @@ public class TaskControllerIntTest {
 
     @Test
     public void testGetQueryByPorSecondPageSortedByType() {
+        resetDb(); // required because ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
+                   // tasks and this test depends on the tasks as they are in sampledata
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
