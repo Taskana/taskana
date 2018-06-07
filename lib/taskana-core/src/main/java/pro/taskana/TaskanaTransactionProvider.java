@@ -7,6 +7,7 @@ package pro.taskana;
  * @param <T>
  *            the type of the returned objects.
  */
+@FunctionalInterface
 public interface TaskanaTransactionProvider<T> {
 
     T executeInTransaction(TaskanaCallable<T> action);
