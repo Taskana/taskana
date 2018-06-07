@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
 import java.time.Instant;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import pro.taskana.Attachment;
@@ -24,7 +24,7 @@ public class AttachmentImpl implements Attachment {
     private ObjectReference objectReference;
     private String channel;
     private Instant received;
-    private Map<String, String> customAttributes = Collections.emptyMap();
+    private Map<String, String> customAttributes = new HashMap<String, String>();
 
     AttachmentImpl() {
     }
