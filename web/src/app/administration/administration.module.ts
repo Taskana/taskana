@@ -1,7 +1,7 @@
 // tslint:enable:max-line-length
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AlertModule } from 'ngx-bootstrap';
@@ -42,6 +42,7 @@ import { ClassificationCategoriesService } from './services/classification-categ
 const MODULES = [
   CommonModule,
   FormsModule,
+  ReactiveFormsModule,
   Ng2AutoCompleteModule,
   AngularSvgIconModule,
   AlertModule,
