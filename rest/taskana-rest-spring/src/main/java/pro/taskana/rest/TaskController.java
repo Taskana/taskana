@@ -163,7 +163,7 @@ public class TaskController extends AbstractPagingController {
     public ResponseEntity<TaskResource> deleteTask(@PathVariable String taskId)
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         taskService.forceDeleteTask(taskId);
-        ResponseEntity<TaskResource> result = new ResponseEntity<>(HttpStatus.OK);
+        ResponseEntity<TaskResource> result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return result;
     }
 
