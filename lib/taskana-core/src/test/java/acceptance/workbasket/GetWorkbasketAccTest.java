@@ -1,8 +1,11 @@
 package acceptance.workbasket;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -10,6 +13,7 @@ import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -30,19 +34,51 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetWorkbasket()
+    public void testGetWorkbasketById()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000007");
 
-        Assert.assertEquals("DOMAIN_A", workbasket.getDomain());
-        Assert.assertEquals("PPK User 2 KSC 1", workbasket.getDescription());
-        Assert.assertEquals("PPK User 2 KSC 1", workbasket.getName());
-        Assert.assertEquals("USER_1_2", workbasket.getKey());
-        Assert.assertEquals(WorkbasketType.PERSONAL, workbasket.getType());
-        Assert.assertEquals("Peter Maier", workbasket.getOwner());
-        Assert.assertEquals("Versicherung", workbasket.getOrgLevel1());
+        assertEquals("DOMAIN_A", workbasket.getDomain());
+        assertEquals("PPK User 2 KSC 1", workbasket.getDescription());
+        assertEquals("PPK User 2 KSC 1", workbasket.getName());
+        assertEquals("USER_1_2", workbasket.getKey());
+        assertEquals(WorkbasketType.PERSONAL, workbasket.getType());
+        assertEquals("Peter Maier", workbasket.getOwner());
+        assertEquals("Versicherung", workbasket.getOrgLevel1());
+        assertEquals("Abteilung", workbasket.getOrgLevel2());
+        assertEquals("Projekt", workbasket.getOrgLevel3());
+        assertEquals("Team", workbasket.getOrgLevel4());
+        assertEquals("Custom1", workbasket.getCustom1());
+        assertEquals("Custom2", workbasket.getCustom2());
+        assertEquals("Custom3", workbasket.getCustom3());
+        assertEquals("Custom4", workbasket.getCustom4());
+    }
+
+    @WithAccessId(
+            userName = "user_1_1",
+            groupNames = {"group_1"})
+    @Test
+    public void testGetWorkbasketByKeyAndDomain()
+        throws NotAuthorizedException, WorkbasketNotFoundException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+        Workbasket workbasket = workbasketService.getWorkbasket("USER_1_2", "DOMAIN_A");
+
+        assertEquals("WBI:100000000000000000000000000000000007", workbasket.getId());
+        assertEquals("PPK User 2 KSC 1", workbasket.getDescription());
+        assertEquals("PPK User 2 KSC 1", workbasket.getName());
+        assertEquals(WorkbasketType.PERSONAL, workbasket.getType());
+        assertEquals("Peter Maier", workbasket.getOwner());
+        assertEquals("Versicherung", workbasket.getOrgLevel1());
+        assertEquals("Abteilung", workbasket.getOrgLevel2());
+        assertEquals("Projekt", workbasket.getOrgLevel3());
+        assertEquals("Team", workbasket.getOrgLevel4());
+        assertEquals("Custom1", workbasket.getCustom1());
+        assertEquals("Custom2", workbasket.getCustom2());
+        assertEquals("Custom3", workbasket.getCustom3());
+        assertEquals("Custom4", workbasket.getCustom4());
     }
 
     @WithAccessId(
@@ -54,11 +90,62 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketPermission> permissions = workbasketService
             .getPermissionsForWorkbasket("WBI:100000000000000000000000000000000007");
 
-        Assert.assertEquals(4, permissions.size());
-        Assert.assertTrue(permissions.contains(WorkbasketPermission.READ));
-        Assert.assertTrue(permissions.contains(WorkbasketPermission.OPEN));
-        Assert.assertTrue(permissions.contains(WorkbasketPermission.TRANSFER));
-        Assert.assertTrue(permissions.contains(WorkbasketPermission.APPEND));
+        assertEquals(4, permissions.size());
+        assertTrue(permissions.contains(WorkbasketPermission.READ));
+        assertTrue(permissions.contains(WorkbasketPermission.OPEN));
+        assertTrue(permissions.contains(WorkbasketPermission.TRANSFER));
+        assertTrue(permissions.contains(WorkbasketPermission.APPEND));
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testGetWorkbasketAsSummary()
+        throws NotAuthorizedException, WorkbasketNotFoundException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+        WorkbasketSummary workbasketSummary = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000007").asSummary();
+
+        assertEquals("DOMAIN_A", workbasketSummary.getDomain());
+        assertEquals("PPK User 2 KSC 1", workbasketSummary.getDescription());
+        assertEquals("PPK User 2 KSC 1", workbasketSummary.getName());
+        assertEquals("USER_1_2", workbasketSummary.getKey());
+        assertEquals(WorkbasketType.PERSONAL, workbasketSummary.getType());
+        assertEquals("Peter Maier", workbasketSummary.getOwner());
+        assertEquals("Versicherung", workbasketSummary.getOrgLevel1());
+        assertEquals("Abteilung", workbasketSummary.getOrgLevel2());
+        assertEquals("Projekt", workbasketSummary.getOrgLevel3());
+        assertEquals("Team", workbasketSummary.getOrgLevel4());
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testGetWorkbasketsByPermissions()
+        throws NotAuthorizedException, WorkbasketNotFoundException {
+
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketPermission> permissions = new ArrayList<WorkbasketPermission>();
+        permissions.add(WorkbasketPermission.READ);
+        permissions.add(WorkbasketPermission.OPEN);
+        permissions.add(WorkbasketPermission.APPEND);
+        permissions.add(WorkbasketPermission.TRANSFER);
+
+        List<WorkbasketSummary> workbasketSummaries = workbasketService.getWorkbaskets(permissions);
+
+        List<WorkbasketSummary> expectedSummaries = new ArrayList<WorkbasketSummary>();
+        expectedSummaries.add(workbasketService.getWorkbasket("WBI:100000000000000000000000000000000002").asSummary());
+        expectedSummaries.add(workbasketService.getWorkbasket("WBI:100000000000000000000000000000000004").asSummary());
+        expectedSummaries.add(workbasketService.getWorkbasket("WBI:100000000000000000000000000000000006").asSummary());
+        expectedSummaries.add(workbasketService.getWorkbasket("WBI:100000000000000000000000000000000007").asSummary());
+
+        assertEquals(4, workbasketSummaries.size());
+
+        for (WorkbasketSummary wbSummary : workbasketSummaries) {
+            assertTrue(expectedSummaries.contains(wbSummary));
+        }
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
@@ -66,6 +153,13 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.getWorkbasket("INVALID_ID");
+    }
+
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void testThrowsExceptionIfKeyOrDomainIsInvalid()
+            throws NotAuthorizedException, WorkbasketNotFoundException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        workbasketService.getWorkbasket("INVALID_KEY", "INVALID_DOMAIN");
     }
 
     @Test(expected = NotAuthorizedException.class)

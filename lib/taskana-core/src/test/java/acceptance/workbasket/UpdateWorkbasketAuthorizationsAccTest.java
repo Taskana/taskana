@@ -6,10 +6,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,12 +69,12 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             .findFirst()
             .orElse(null);
 
-        Assert.assertEquals("Rojas, Miguel", updatedItem.getAccessName());
-        Assert.assertEquals(false, updatedItem.isPermAppend());
-        Assert.assertEquals(true, updatedItem.isPermRead());
-        Assert.assertEquals(true, updatedItem.isPermCustom11());
-        Assert.assertEquals(true, updatedItem.isPermCustom1());
-        Assert.assertEquals(false, updatedItem.isPermCustom2());
+        assertEquals("Rojas, Miguel", updatedItem.getAccessName());
+        assertEquals(false, updatedItem.isPermAppend());
+        assertEquals(true, updatedItem.isPermRead());
+        assertEquals(true, updatedItem.isPermCustom11());
+        assertEquals(true, updatedItem.isPermCustom1());
+        assertEquals(false, updatedItem.isPermCustom2());
     }
 
     @WithAccessId(
@@ -102,11 +103,11 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
         ((WorkbasketAccessItemImpl) accessItem).setAccessId("user1");
         accessItem = workbasketService.updateWorkbasketAccessItem(accessItem);
-        Assert.assertEquals(false, accessItem.isPermAppend());
-        Assert.assertEquals(true, accessItem.isPermRead());
-        Assert.assertEquals(true, accessItem.isPermCustom11());
-        Assert.assertEquals(true, accessItem.isPermCustom1());
-        Assert.assertEquals(false, accessItem.isPermCustom2());
+        assertEquals(false, accessItem.isPermAppend());
+        assertEquals(true, accessItem.isPermRead());
+        assertEquals(true, accessItem.isPermCustom11());
+        assertEquals(true, accessItem.isPermCustom1());
+        assertEquals(false, accessItem.isPermCustom2());
 
         ((WorkbasketAccessItemImpl) accessItem).setWorkbasketId("2");
         try {
@@ -138,7 +139,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         List<TaskSummary> tasks = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain(wbKey, wbDomain))
             .list();
-        Assert.assertEquals(1, tasks.size());
+        assertEquals(1, tasks.size());
         assertThat(createdTask, not(equalTo(null)));
 
         List<WorkbasketAccessItem> accessItems = workbasketService
@@ -148,7 +149,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             .findFirst()
             .orElse(null);
 
-        Assert.assertTrue(theAccessItem != null);
+        assertTrue(theAccessItem != null);
         theAccessItem.setPermOpen(false);
         workbasketService.updateWorkbasketAccessItem(theAccessItem);
 
@@ -240,6 +241,31 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         assertFalse(item0.isPermTransfer());
         assertFalse(item0.isPermAppend());
         assertFalse(item0.isPermTransfer());
+    }
+
+    @WithAccessId(
+            userName = "teamlead_1",
+            groupNames = {"group_1", "businessadmin"})
+    @Test
+    public void testDeleteAccessItem() throws NotAuthorizedException, InvalidArgumentException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        final String wbId = "WBI:100000000000000000000000000000000001";
+
+        List<WorkbasketAccessItem> originalList = workbasketService.getWorkbasketAccessItems(wbId);
+
+        List<WorkbasketAccessItem> accessList = new ArrayList<WorkbasketAccessItem>(originalList);
+        WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, "group_1");
+        accessList.add(newItem);
+        int countBefore = workbasketService.getWorkbasketAccessItems(wbId).size();
+        workbasketService.setWorkbasketAccessItems(wbId, accessList);
+        int countAfter = workbasketService.getWorkbasketAccessItems(wbId).size();
+        assertEquals(countBefore + 1, countAfter);
+
+        workbasketService.setWorkbasketAccessItems(wbId, accessList);
+        String newId = workbasketService.getWorkbasketAccessItems(wbId).get(countAfter - 1).getId();
+        workbasketService.deleteWorkbasketAccessItem(newId);
+
+        assertEquals(originalList.toString(), workbasketService.getWorkbasketAccessItems(wbId).toString());
     }
 
     @WithAccessId(
