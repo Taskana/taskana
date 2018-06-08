@@ -57,6 +57,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         Workbasket createdWorkbasket = workbasketService.getWorkbasket("NT1234", "DOMAIN_A");
         assertNotNull(createdWorkbasket);
         assertNotNull(createdWorkbasket.getId());
+        assertEquals(workbasket, createdWorkbasket);
         Workbasket createdWorkbasket2 = workbasketService.getWorkbasket(createdWorkbasket.getId());
         assertNotNull(createdWorkbasket);
         assertEquals(createdWorkbasket, createdWorkbasket2);
