@@ -2,7 +2,7 @@ import { Component, Input, forwardRef } from '@angular/core';
 import { async, ComponentFixture, TestBed, } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router, Routes } from '@angular/router';
-import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -106,7 +106,7 @@ describe('WorkbasketDetailsComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-				imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule],
+				imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
 				declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent, SpinnerComponent,
 					IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
 					DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent,
