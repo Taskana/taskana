@@ -297,4 +297,42 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testBulkTransferByWorkbasketAndDomainByKey()
+        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException, TaskNotFoundException {
+        Instant before = Instant.now();
+        TaskService taskService = taskanaEngine.getTaskService();
+        List<String> taskIdList = new ArrayList<>();
+
+        taskIdList.add("TKI:000000000000000000000000000000000023");
+        taskIdList.add("TKI:000000000000000000000000000000000024");
+
+        BulkOperationResults<String, TaskanaException> results = taskService
+                .transferTasks("GPK_B_KSC_1", "DOMAIN_B", taskIdList);
+        assertFalse(results.containsErrors());
+
+        Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket("GPK_B_KSC_1", "DOMAIN_B");
+        Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000023");
+        assertNotNull(transferredTask);
+        assertTrue(transferredTask.isTransferred());
+        assertFalse(transferredTask.isRead());
+        assertEquals(TaskState.READY, transferredTask.getState());
+        assertThat(transferredTask.getWorkbasketKey(), equalTo(wb.getKey()));
+        assertThat(transferredTask.getDomain(), equalTo(wb.getDomain()));
+        assertFalse(transferredTask.getModified().isBefore(before));
+        assertThat(transferredTask.getOwner(), equalTo(null));
+        transferredTask = taskService.getTask("TKI:000000000000000000000000000000000024");
+        assertNotNull(transferredTask);
+        assertTrue(transferredTask.isTransferred());
+        assertFalse(transferredTask.isRead());
+        assertEquals(TaskState.READY, transferredTask.getState());
+        assertThat(transferredTask.getWorkbasketKey(), equalTo(wb.getKey()));
+        assertThat(transferredTask.getDomain(), equalTo(wb.getDomain()));
+        assertFalse(transferredTask.getModified().isBefore(before));
+        assertThat(transferredTask.getOwner(), equalTo(null));
+    }
+
 }
