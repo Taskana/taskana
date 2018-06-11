@@ -8,6 +8,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.impl.CategoryReport;
 import pro.taskana.impl.report.impl.ClassificationReport;
+import pro.taskana.impl.report.impl.CombinedClassificationFilter;
 import pro.taskana.impl.report.impl.CustomFieldValueReport;
 import pro.taskana.impl.report.impl.DetailedClassificationReport;
 import pro.taskana.impl.report.impl.TaskStatusReport;
@@ -43,6 +44,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
+     * @param combinedClassificationFilter
+     *            a list of pairs of a classificationId for a task and a classificationId for the corresponding
+     *            attachment that is used to filter by the classification of the attachment. To filter by the
+     *            classification of the task, the classificationId of the attachment should be null. To omit this
+     *            filter, use null for this parameter
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
@@ -50,7 +56,8 @@ public interface TaskMonitorService {
      *             if the current user is not member of role MONITOR
      */
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<CombinedClassificationFilter> combinedClassificationFilter)
         throws InvalidArgumentException, NotAuthorizedException;
 
     /**
@@ -77,6 +84,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
+     * @param combinedClassificationFilter
+     *            a list of pairs of a classificationId for a task and a classificationId for the corresponding
+     *            attachment that is used to filter by the classification of the attachment. To filter by the
+     *            classification of the task, the classificationId of the attachment should be null. To omit this
+     *            filter, use null for this parameter
      * @param columnHeaders
      *            a list of columnHeaders that specify the subdivision into different cluster of due dates. Days in past
      *            are represented as negative values and days in the future are represented as positive values. To avoid
@@ -92,16 +104,17 @@ public interface TaskMonitorService {
      */
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException;
+        List<CombinedClassificationFilter> combinedClassificationFilter, List<TimeIntervalColumnHeader> columnHeaders)
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
-     * Returns a {@link WorkbasketLevelReport} grouped by workbaskets. For each workbasket the report contains the total
-     * number of tasks and the number of tasks of the respective cluster that are specified by the
-     * {@link TimeIntervalColumnHeader}s. It can be specified whether the age of the tasks is counted in days or in
-     * working days. Furthermore the report contains a sum line that contains the total numbers of the different
-     * clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets, states,
-     * categories, domains and values of a custom field. If no filter is required, the respective parameter should be
-     * null. Tasks with Timestamp DUE = null are not considered.
+     * Returns a {@link WorkbasketLevelReport} for specific classifications grouped by workbaskets. For each workbasket
+     * the report contains the total number of tasks and the number of tasks of the respective cluster that are
+     * specified by the {@link TimeIntervalColumnHeader}s. It can be specified whether the age of the tasks is counted
+     * in days or in working days. Furthermore the report contains a sum line that contains the total numbers of the
+     * different clusters and the total number of all tasks. The tasks of the report are filtered by workbaskets,
+     * states, categories, domains and values of a custom field. If no filter is required, the respective parameter
+     * should be null. Tasks with Timestamp DUE = null are not considered.
      *
      * @param workbasketIds
      *            a list of workbasket ids objects to filter by workbaskets. To omit this filter, use null for this
@@ -118,6 +131,11 @@ public interface TaskMonitorService {
      * @param customFieldValues
      *            a list of custom field values to filter by the values of the custom field. To omit this filter, use
      *            null for this parameter
+     * @param combinedClassificationFilter
+     *            a list of pairs of a classificationId for a task and a classificationId for the corresponding
+     *            attachment that is used to filter by the classification of the attachment. To filter by the
+     *            classification of the task, the classificationId of the attachment should be null. To omit this
+     *            filter, use null for this parameter
      * @param columnHeaders
      *            a list of columnHeaders that specify the subdivision into different cluster of due dates. Days in past
      *            are represented as negative values and days in the future are represented as positive values. To avoid
@@ -136,8 +154,8 @@ public interface TaskMonitorService {
      */
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException, NotAuthorizedException;
+        List<CombinedClassificationFilter> combinedClassificationFilter, List<TimeIntervalColumnHeader> columnHeaders,
+        boolean inWorkingDays) throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@link CategoryReport} grouped by categories. The report contains the total numbers of tasks of the

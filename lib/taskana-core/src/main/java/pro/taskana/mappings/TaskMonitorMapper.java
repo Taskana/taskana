@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Select;
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
 import pro.taskana.impl.SelectedItem;
+import pro.taskana.impl.report.impl.CombinedClassificationFilter;
 import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.impl.MonitorQueryItem;
 import pro.taskana.impl.report.impl.TaskQueryItem;
@@ -21,31 +22,39 @@ import pro.taskana.impl.report.impl.TaskQueryItem;
 public interface TaskMonitorMapper {
 
     @Select("<script>"
-        + "<if test=\"_databaseId == 'db2'\">SELECT WORKBASKET_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
-        + "<if test=\"_databaseId == 'h2'\">SELECT WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
-        + "<if test=\"_databaseId == 'postgres'\">SELECT WORKBASKET_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
-        + "FROM TASKANA.TASK "
+        + "<if test=\"_databaseId == 'db2'\">SELECT T.WORKBASKET_KEY, (DAYS(T.DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'h2'\">SELECT T.WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, T.DUE) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "<if test=\"_databaseId == 'postgres'\">SELECT T.WORKBASKET_KEY, DATE_PART('DAY', T.DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
+        + "FROM TASKANA.TASK AS T LEFT JOIN TASKANA.ATTACHMENT AS A ON T.ID = A.TASK_ID "
         + "<where>"
         + "<if test=\"workbasketIds != null\">"
-        + "WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
+        + "T.WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
         + "</if>"
         + "<if test=\"states != null\">"
-        + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
+        + "AND T.STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
         + "</if>"
         + "<if test=\"categories != null\">"
-        + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+        + "AND T.CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
         + "</if>"
         + "<if test=\"domains != null\">"
-        + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
+        + "AND T.DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "</if>"
         + "<if test=\"customField != null and customFieldValues != null\">"
         + "AND ${customField}  IN (<foreach collection='customFieldValues' item='customFieldValue' separator=','>#{customFieldValue}</foreach>) "
         + "</if>"
-        + "AND DUE IS NOT NULL "
+        + "<if test=\"combinedClassificationFilter != null\">"
+        + "AND <foreach collection='combinedClassificationFilter' item='item' separator='OR'> "
+        + "T.CLASSIFICATION_ID = #{item.taskClassificationId}"
+        + "<if test=\"item.attachmentClassificationId != null\">"
+        + "AND A.CLASSIFICATION_ID = #{item.attachmentClassificationId}"
+        + "</if>"
+        + "</foreach>"
+        + "</if>"
+        + "AND T.DUE IS NOT NULL "
         + "</where>"
-        + "<if test=\"_databaseId == 'db2'\">GROUP BY WORKBASKET_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
-        + "<if test=\"_databaseId == 'h2'\">GROUP BY WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE)</if> "
-        + "<if test=\"_databaseId == 'postgres'\">GROUP BY WORKBASKET_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP)</if> "
+        + "<if test=\"_databaseId == 'db2'\">GROUP BY T.WORKBASKET_KEY, (DAYS(T.DUE) - DAYS(CURRENT_TIMESTAMP))</if> "
+        + "<if test=\"_databaseId == 'h2'\">GROUP BY T.WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, T.DUE)</if> "
+        + "<if test=\"_databaseId == 'postgres'\">GROUP BY T.WORKBASKET_KEY, DATE_PART('DAY', T.DUE - CURRENT_TIMESTAMP)</if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results({
@@ -57,7 +66,8 @@ public interface TaskMonitorMapper {
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains,
         @Param("customField") CustomField customField,
-        @Param("customFieldValues") List<String> customFieldValues);
+        @Param("customFieldValues") List<String> customFieldValues,
+        @Param("combinedClassificationFilter") List<CombinedClassificationFilter> combinedClassificationFilter);
 
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_CATEGORY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
