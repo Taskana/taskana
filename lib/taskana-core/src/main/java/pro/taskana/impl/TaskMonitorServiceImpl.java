@@ -16,6 +16,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.impl.CategoryReport;
 import pro.taskana.impl.report.impl.ClassificationReport;
+import pro.taskana.impl.report.impl.CombinedClassificationFilter;
 import pro.taskana.impl.report.impl.CustomFieldValueReport;
 import pro.taskana.impl.report.impl.DaysToWorkingDaysPreProcessor;
 import pro.taskana.impl.report.impl.DetailedClassificationReport;
@@ -45,31 +46,34 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
     @Override
     public WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
-        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
+        List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
+        List<CombinedClassificationFilter> combinedClassificationFilter)
         throws InvalidArgumentException, NotAuthorizedException {
         return getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField, customFieldValues,
-            Collections.emptyList(), false);
+            combinedClassificationFilter, Collections.emptyList(), false);
     }
 
     @Override
     public WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders) throws InvalidArgumentException, NotAuthorizedException {
+        List<CombinedClassificationFilter> combinedClassificationFilter, List<TimeIntervalColumnHeader> columnHeaders)
+        throws InvalidArgumentException, NotAuthorizedException {
         return getWorkbasketLevelReport(workbasketIds, states, categories, domains, customField, customFieldValues,
-            columnHeaders, true);
+            combinedClassificationFilter, columnHeaders, true);
     }
 
     @Override
     public WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
-        List<TimeIntervalColumnHeader> columnHeaders, boolean inWorkingDays)
-        throws InvalidArgumentException, NotAuthorizedException {
+        List<CombinedClassificationFilter> combinedClassificationFilter, List<TimeIntervalColumnHeader> columnHeaders,
+        boolean inWorkingDays) throws InvalidArgumentException, NotAuthorizedException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to getWorkbasketLevelReport(workbasketIds = {}, states = {}, categories = {}, "
-                + "domains = {}, customField = {}, customFieldValues = {}, columnHeaders = {}, "
-                + "inWorkingDays = {})", LoggerUtils.listToString(workbasketIds), LoggerUtils.listToString(states),
-                LoggerUtils.listToString(categories), LoggerUtils.listToString(domains), customField,
-                LoggerUtils.listToString(customFieldValues), LoggerUtils.listToString(columnHeaders),
+                + "domains = {}, customField = {}, customFieldValues = {}, combinedClassificationFilter = {}, "
+                + "columnHeaders = {}, inWorkingDays = {})", LoggerUtils.listToString(workbasketIds),
+                LoggerUtils.listToString(states), LoggerUtils.listToString(categories),
+                LoggerUtils.listToString(domains), customField, LoggerUtils.listToString(customFieldValues),
+                LoggerUtils.listToString(combinedClassificationFilter), LoggerUtils.listToString(columnHeaders),
                 inWorkingDays);
         }
         taskanaEngineImpl.checkRoleMembership(TaskanaRole.MONITOR);
@@ -80,7 +84,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
 
             WorkbasketLevelReport report = new WorkbasketLevelReport(columnHeaders);
             List<MonitorQueryItem> monitorQueryItems = taskMonitorMapper.getTaskCountOfWorkbaskets(
-                workbasketIds, states, categories, domains, customField, customFieldValues);
+                workbasketIds, states, categories, domains, customField, customFieldValues,
+                combinedClassificationFilter);
 
             report.addItems(monitorQueryItems, new DaysToWorkingDaysPreProcessor<>(columnHeaders, inWorkingDays));
 
