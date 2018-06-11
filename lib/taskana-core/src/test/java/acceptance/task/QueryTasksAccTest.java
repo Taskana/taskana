@@ -201,7 +201,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(2));
+        assertThat(results.size(), equalTo(3));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -218,7 +218,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("1", ids)
             .list();
-        assertThat(result2.size(), equalTo(2));
+        assertThat(result2.size(), equalTo(3));
     }
 
     @WithAccessId(
@@ -235,7 +235,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(1));
+        assertThat(results.size(), equalTo(2));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -252,7 +252,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("2", ids)
             .list();
-        assertThat(result2.size(), equalTo(1));
+        assertThat(result2.size(), equalTo(2));
     }
 
     @WithAccessId(
@@ -269,7 +269,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(1));
+        assertThat(results.size(), equalTo(2));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -286,7 +286,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("3", ids)
             .list();
-        assertThat(result2.size(), equalTo(1));
+        assertThat(result2.size(), equalTo(2));
     }
 
     @WithAccessId(
@@ -303,7 +303,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(1));
+        assertThat(results.size(), equalTo(2));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -320,7 +320,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("4", ids)
             .list();
-        assertThat(result2.size(), equalTo(1));
+        assertThat(result2.size(), equalTo(2));
     }
 
     @WithAccessId(
@@ -337,7 +337,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(3));
+        assertThat(results.size(), equalTo(4));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -354,7 +354,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("5", ids)
             .list();
-        assertThat(result2.size(), equalTo(3));
+        assertThat(result2.size(), equalTo(4));
     }
 
     @WithAccessId(
@@ -371,7 +371,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(2));
+        assertThat(results.size(), equalTo(3));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -388,7 +388,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("6", ids)
             .list();
-        assertThat(result2.size(), equalTo(2));
+        assertThat(result2.size(), equalTo(3));
     }
 
     @WithAccessId(
@@ -405,7 +405,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(1));
+        assertThat(results.size(), equalTo(2));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -422,7 +422,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("7", ids)
             .list();
-        assertThat(result2.size(), equalTo(1));
+        assertThat(result2.size(), equalTo(2));
     }
 
     @WithAccessId(
@@ -439,7 +439,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(1));
+        assertThat(results.size(), equalTo(2));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -456,7 +456,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("8", ids)
             .list();
-        assertThat(result2.size(), equalTo(1));
+        assertThat(result2.size(), equalTo(2));
     }
 
     @WithAccessId(
@@ -473,7 +473,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(1));
+        assertThat(results.size(), equalTo(2));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -490,7 +490,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("9", ids)
             .list();
-        assertThat(result2.size(), equalTo(1));
+        assertThat(result2.size(), equalTo(2));
     }
 
     @WithAccessId(
@@ -507,7 +507,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
                 "%n%", "%o%", "%p%",
                 "%q%", "%r%", "%s%", "%w%")
             .list();
-        assertThat(results.size(), equalTo(2));
+        assertThat(results.size(), equalTo(3));
 
         String[] ids = results.stream()
             .map(t -> {
@@ -524,7 +524,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("10", ids)
             .list();
-        assertThat(result2.size(), equalTo(2));
+        assertThat(result2.size(), equalTo(3));
     }
 
     @WithAccessId(
