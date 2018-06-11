@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
 import { SortingModel, Direction } from 'app/models/sorting';
 
 @Component({
@@ -7,9 +7,7 @@ import { SortingModel, Direction } from 'app/models/sorting';
   styleUrls: ['./sort.component.scss']
 })
 export class SortComponent implements OnInit {
-  readonly sortingFields: Map<string, string> = new Map(
-    [['name', 'Name'], ['key', 'Id'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
-
+  @Input() sortingFields: Map<string, string>;
 
   @Output()
   performSorting = new EventEmitter<SortingModel>();

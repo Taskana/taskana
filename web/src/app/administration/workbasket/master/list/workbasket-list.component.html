@@ -1,7 +1,7 @@
 <div class="workbasket-list-full-height">
     <div class="footer-space">
         <div #wbToolbar>
-            <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)" (performSorting)="performSorting ($event)"></taskana-workbasket-list-toolbar>
+            <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)" (performSorting)="performSorting($event)"></taskana-workbasket-list-toolbar>
         </div>
         <div *ngIf="(workbaskets && workbaskets.length > 0) else empty_workbaskets">
             <ul #wbList id="wb-list-container" class="list-group">

@@ -1,7 +1,7 @@
 <div class="task-list-full-height">
-  <taskana-workbasket-selector (tasksChanged)="loadTasks($event)"></taskana-workbasket-selector>
-  <!--TODO: add toolbar for sorting, also add pagination-->
-  <div>
+  <taskana-tasklist-toolbar (tasksChanged)="loadTasks($event)" (basketChanged)="loadBasketID($event)"
+                            (performSorting)="performSorting($event)"></taskana-tasklist-toolbar>
+  <div *ngIf="!requestInProgress">
     <ul #taskList id="task-list-container" class="list-group">
       <li class="list-group-item" *ngIf="tasks === undefined || tasks.length === 0" type="text">
         <b>This Workbasket has no Tasks</b>
