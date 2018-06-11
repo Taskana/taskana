@@ -9,7 +9,6 @@ import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -94,8 +93,8 @@ public interface TaskService {
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException;
 
     /**
-     * Complete a claimed Task as owner/admin and update State and Timestamps.
-     * If task is already completed, the task is returned as itself.
+     * Complete a claimed Task as owner/admin and update State and Timestamps. If task is already completed, the task is
+     * returned as itself.
      *
      * @param taskId
      *            - Id of the Task which should be completed.
@@ -113,8 +112,8 @@ public interface TaskService {
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException;
 
     /**
-     * Complete a Task and update State and Timestamps in every case if the Task exists.
-     * If task is already completed, the task is returned as itself.
+     * Complete a Task and update State and Timestamps in every case if the Task exists. If task is already completed,
+     * the task is returned as itself.
      *
      * @param taskId
      *            - Id of the Task which should be completed.
@@ -179,14 +178,11 @@ public interface TaskService {
      *             Thrown if the target work basket was not found.
      * @throws NotAuthorizedException
      *             Thrown if the current user is not authorized to transfer this {@link Task} to the target work basket
-     * @throws InvalidWorkbasketException
-     *             Thrown if either the source or the target workbasket has a missing required property
      * @throws InvalidStateException
      *             Thrown if the task is in a state which does not allow transferring
      */
     Task transfer(String taskId, String destinationWorkbasketId)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        InvalidStateException;
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException;
 
     /**
      * Transfer a task to another work basket. The transfer sets the transferred flag and resets the read flag.
@@ -204,14 +200,11 @@ public interface TaskService {
      *             Thrown if the target work basket was not found.
      * @throws NotAuthorizedException
      *             Thrown if the current user is not authorized to transfer this {@link Task} to the target work basket
-     * @throws InvalidWorkbasketException
-     *             Thrown if either the source or the target workbasket has a missing required property
      * @throws InvalidStateException
      *             Thrown if the task is in a state which does not allow transferring
      */
     Task transfer(String taskId, String workbasketKey, String domain)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        InvalidStateException;
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException;
 
     /**
      * Marks a task as read.
@@ -274,20 +267,15 @@ public interface TaskService {
      *             if the id of the task is not found in the database
      * @throws ConcurrencyException
      *             if the task has already been updated by another user
-     * @throws InvalidWorkbasketException
-     *             if the updated task refers to a workbasket that has missing required properties
      * @throws ClassificationNotFoundException
      *             if the updated task refers to a classification that cannot be found
-     * @throws WorkbasketNotFoundException
-     *             if the updated task refers to a work basket that cannot be found
      * @throws NotAuthorizedException
      *             if the current user is not authorized to update the task
      * @throws AttachmentPersistenceException
      *             if an Attachment with ID will be added multiple times without using the task-methods.
      */
     Task updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidWorkbasketException,
-        NotAuthorizedException, AttachmentPersistenceException;
+        ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException;
 
     /**
      * Transfers a list of tasks to an other workbasket. Exceptions will be thrown if the caller got no permissions on

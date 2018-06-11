@@ -643,7 +643,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task updateTask(Task task)
-        throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException, WorkbasketNotFoundException,
+        throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
         ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException {
         String userId = CurrentUserContext.getUserid();
         LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);

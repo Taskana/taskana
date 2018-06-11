@@ -64,7 +64,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
     private Instant now;
 
     @BeforeClass
-    public static void resetDb() throws SQLException {
+    public static void resetDb() {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);

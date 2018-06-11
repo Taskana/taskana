@@ -46,6 +46,8 @@ public interface TaskMonitorService {
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
@@ -85,6 +87,8 @@ public interface TaskMonitorService {
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
@@ -127,6 +131,8 @@ public interface TaskMonitorService {
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     WorkbasketLevelReport getWorkbasketLevelReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
@@ -156,6 +162,8 @@ public interface TaskMonitorService {
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues)
@@ -195,6 +203,8 @@ public interface TaskMonitorService {
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
@@ -237,6 +247,8 @@ public interface TaskMonitorService {
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     CategoryReport getCategoryReport(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, CustomField customField, List<String> customFieldValues,
@@ -266,6 +278,8 @@ public interface TaskMonitorService {
      * @return the ClassificationReport
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
@@ -305,6 +319,8 @@ public interface TaskMonitorService {
      * @return the ClassificationReport
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
@@ -347,6 +363,8 @@ public interface TaskMonitorService {
      * @return the ClassificationReport
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     ClassificationReport getClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
@@ -377,6 +395,8 @@ public interface TaskMonitorService {
      * @return the DetailedClassificationReport
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
@@ -417,6 +437,8 @@ public interface TaskMonitorService {
      * @return the DetailedClassificationReport
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
@@ -460,6 +482,8 @@ public interface TaskMonitorService {
      * @return the DetailedClassificationReport
      * @throws InvalidArgumentException
      *             thrown if DaysToWorkingDaysConverter is initialized with null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     DetailedClassificationReport getDetailedClassificationReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
@@ -488,6 +512,8 @@ public interface TaskMonitorService {
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if customField is null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues)
@@ -526,6 +552,8 @@ public interface TaskMonitorService {
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if customField is null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, CustomField customField, List<String> customFieldValues,
@@ -567,6 +595,8 @@ public interface TaskMonitorService {
      * @return the report
      * @throws InvalidArgumentException
      *             thrown if customField is null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     CustomFieldValueReport getCustomFieldValueReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories,
@@ -612,6 +642,8 @@ public interface TaskMonitorService {
      * @return the list of task ids
      * @throws InvalidArgumentException
      *             thrown if columnHeaders is null or if selectedItems is empty or null
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     List<String> getTaskIdsForSelectedItems(List<String> workbasketIds, List<TaskState> states, List<String> categories,
         List<String> domains, List<String> classificationKeys,
@@ -644,6 +676,8 @@ public interface TaskMonitorService {
      *         pool.
      * @throws InvalidArgumentException
      *             thrown if the customAttributeName is invalid/empty.
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR
      */
     List<String> getCustomAttributeValuesForReport(List<String> workbasketIds, List<TaskState> states,
         List<String> categories, List<String> domains, List<String> classificationIds,
@@ -654,6 +688,8 @@ public interface TaskMonitorService {
      * Overloaded method for {@link #getTaskStatusReport(List, List)}. This method omits all filters.
      *
      * @return the {@link TaskStatusReport}
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR or ADMIN
      */
     TaskStatusReport getTaskStatusReport() throws NotAuthorizedException;
 
@@ -664,6 +700,8 @@ public interface TaskMonitorService {
      * @param domains
      *            a list of domains to filter by domains. To omit this filter, use null for this parameter
      * @return the {@link TaskStatusReport}
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR or ADMIN
      */
     TaskStatusReport getTaskStatusReport(List<String> domains) throws NotAuthorizedException;
 
@@ -677,6 +715,8 @@ public interface TaskMonitorService {
      * @param domains
      *            a list of domains to filter by domains. To omit this filter, use null for this parameter
      * @return the {@link TaskStatusReport}
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role MONITOR or ADMIN
      */
     TaskStatusReport getTaskStatusReport(List<String> domains, List<TaskState> states) throws NotAuthorizedException;
 

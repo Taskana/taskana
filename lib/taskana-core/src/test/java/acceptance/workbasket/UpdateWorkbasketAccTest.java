@@ -10,7 +10,6 @@ import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.security.JAASRunner;
@@ -31,7 +30,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testUpdateWorkbasket()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
         Instant modified = workbasket.getModified();
@@ -63,7 +62,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testCheckAuthorizationToUpdateWorkbasket()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
 

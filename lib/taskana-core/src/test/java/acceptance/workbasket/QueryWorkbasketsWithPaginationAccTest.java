@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -152,13 +151,10 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     /**
      * Testcase only for DB2 users, because H2 doesn´t throw a Exception when the offset is set to high.<br>
      * Using DB2 should throw a unchecked RuntimeException for a offset which is out of bounds.
-     *
-     * @throws NotAuthorizedException
      */
     @Ignore
     @Test(expected = TaskanaRuntimeException.class)
-    public void testPaginationThrowingExceptionWhenPageOutOfBounds()
-        throws NotAuthorizedException {
+    public void testPaginationThrowingExceptionWhenPageOutOfBounds() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         // entrypoint set outside result amount

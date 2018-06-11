@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
@@ -31,9 +30,8 @@ public class DBCleaner {
      *
      * @param dropTables
      *            if true drop tables, else clean tables
-     * @throws SQLException
      */
-    public void clearDb(DataSource dataSource, boolean dropTables) throws SQLException {
+    public void clearDb(DataSource dataSource, boolean dropTables) {
         try (Connection connection = dataSource.getConnection()) {
             ScriptRunner runner = new ScriptRunner(connection);
             LOGGER.debug(connection.getMetaData().toString());

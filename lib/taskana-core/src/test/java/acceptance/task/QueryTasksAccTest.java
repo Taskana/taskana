@@ -30,7 +30,6 @@ import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -171,8 +170,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @Test
     public void testQueryForAttachmentInSummary()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        TaskNotFoundException, WorkbasketNotFoundException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException {
+        TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         Attachment attachment = createAttachment("DOCTYPE_DEFAULT", // prio 99, SL P2000D

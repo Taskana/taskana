@@ -29,7 +29,6 @@ import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -53,8 +52,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testUpdatePrimaryObjectReferenceOfTask()
-        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException, TaskNotFoundException,
         ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
@@ -83,9 +81,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
-        throws NotAuthorizedException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException, AttachmentPersistenceException {
+        throws NotAuthorizedException, ClassificationNotFoundException, TaskNotFoundException, ConcurrencyException,
+        AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -141,8 +138,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     @Test
     public void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException, AttachmentPersistenceException {
+        TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -167,9 +163,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testUpdateClassificationOfTask()
-        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException {
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        NotAuthorizedException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -215,9 +210,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testCustomPropertiesOfTask()
-        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException {
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        NotAuthorizedException, AttachmentPersistenceException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         task.setCustomAttribute("1", "T2100");
@@ -233,8 +227,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     @Test(expected = InvalidArgumentException.class)
     public void testUpdateOfWorkbasketKeyWhatIsNotAllowed()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException, AttachmentPersistenceException {
+        TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -302,7 +295,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     public void testUpdateCallbackInfoOfSimpleTask()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
-        InvalidWorkbasketException, AttachmentPersistenceException {
+        AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");

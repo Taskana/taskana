@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import java.sql.SQLException;
+
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 
@@ -59,8 +61,10 @@ public interface TaskanaEngine {
      *
      * @param connection
      *            - The java.sql.Connection that is controlled by the client
+     * @throws SQLException
+     *             if a database access error occurs
      */
-    void setConnection(java.sql.Connection connection) throws java.sql.SQLException;
+    void setConnection(java.sql.Connection connection) throws SQLException;
 
     /**
      * Closes the client's connection, sets it to null and switches to mode PARTICIPATE. Only applicable in mode

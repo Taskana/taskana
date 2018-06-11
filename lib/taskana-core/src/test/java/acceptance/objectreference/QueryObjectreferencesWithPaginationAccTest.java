@@ -15,7 +15,6 @@ import pro.taskana.ObjectReference;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.security.JAASRunner;
 
@@ -119,12 +118,10 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     /**
      * Testcase only for DB2 users, because H2 doesn´t throw a Exception when the offset is set to high.<br>
      * Using DB2 should throw a unchecked RuntimeException for a offset which is out of bounds.
-     *
-     * @throws NotAuthorizedException
      */
     @Ignore
     @Test(expected = TaskanaRuntimeException.class)
-    public void testPaginationThrowingExceptionWhenPageOutOfBounds() throws NotAuthorizedException {
+    public void testPaginationThrowingExceptionWhenPageOutOfBounds() {
         // entrypoint set outside result amount
         int pageNumber = 6;
         int pageSize = 10;

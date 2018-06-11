@@ -27,7 +27,6 @@ import pro.taskana.Workbasket;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
@@ -50,8 +49,8 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testTransferTaskToWorkbasketId()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException,
+        InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
         taskService.claim(task.getId());
@@ -71,8 +70,8 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testTransferTaskToWorkbasketKeyDomain()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException,
+        InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
         taskService.claim(task.getId());
@@ -92,8 +91,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testDomainChangingWhenTransferTask()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         String domain1 = task.getDomain();
@@ -109,8 +107,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testThrowsExceptionIfTransferWithNoTransferAuthorization()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000001");
 
@@ -122,8 +119,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = InvalidStateException.class)
     public void testThrowsExceptionIfTaskIsAlreadyCompleted()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:100000000000000000000000000000000006");
 
@@ -135,8 +131,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = NotAuthorizedException.class)
     public void testThrowsExceptionIfTransferWithNoAppendAuthorization()
-        throws NotAuthorizedException, WorkbasketNotFoundException, InvalidWorkbasketException, TaskNotFoundException,
-        InvalidStateException {
+        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000002");
 
