@@ -54,7 +54,7 @@ public class WorkbasketServiceImplIntExplicitTest {
     private WorkbasketService workBasketService;
 
     @BeforeClass
-    public static void resetDb() throws SQLException {
+    public static void resetDb() {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);
