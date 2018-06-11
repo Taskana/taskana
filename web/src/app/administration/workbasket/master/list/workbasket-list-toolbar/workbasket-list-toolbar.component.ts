@@ -40,6 +40,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
 	@Output() performFilter = new EventEmitter<FilterModel>();
 	workbasketServiceSubscription: Subscription;
 	selectionToImport = ImportType.WORKBASKETS;
+	sortingFields = new Map([['name', 'Name'], ['key', 'Id'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
 	toolbarState = false;
 
 	constructor(
