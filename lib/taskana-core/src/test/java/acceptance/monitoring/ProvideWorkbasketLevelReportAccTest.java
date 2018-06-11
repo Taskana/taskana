@@ -31,6 +31,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.report.impl.CombinedClassificationFilter;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.impl.WorkbasketLevelReport;
 import pro.taskana.security.JAASRunner;
@@ -70,7 +71,8 @@ public class ProvideWorkbasketLevelReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null);
+        taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
+            null);
     }
 
     @WithAccessId(
@@ -80,7 +82,8 @@ public class ProvideWorkbasketLevelReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null);
+        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
+            null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
@@ -106,7 +109,7 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
-            columnHeaders);
+            null, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -137,7 +140,7 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
         WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
-            columnHeaders);
+            null, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -166,7 +169,7 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
         WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
-            columnHeaders, false);
+            null, columnHeaders, false);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -196,8 +199,7 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
         WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, null, null, null,
-            null, null,
-            columnHeaders);
+            null, null, null, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -222,7 +224,7 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
         WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, states, null, null, null, null,
-            columnHeaders);
+            null, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -252,8 +254,7 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
         WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, categories, null, null,
-            null,
-            columnHeaders);
+            null, null, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -284,8 +285,7 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
         WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, domains, null,
-            null,
-            columnHeaders);
+            null, null, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -316,7 +316,7 @@ public class ProvideWorkbasketLevelReportAccTest {
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
         WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null,
-            customField, customFieldValues, columnHeaders);
+            customField, customFieldValues, null, columnHeaders);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -333,6 +333,47 @@ public class ProvideWorkbasketLevelReportAccTest {
 
         int[] row3 = report.getRow("USER_1_3").getCells();
         assertArrayEquals(new int[] {2, 1, 0, 0, 1}, row3);
+    }
+
+    @WithAccessId(
+        userName = "monitor")
+    @Test
+    public void testEachItemOfWorkbasketLevelReportForSelectedClassifications()
+        throws InvalidArgumentException, NotAuthorizedException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+        List<CombinedClassificationFilter> combinedClassificationFilter = new ArrayList<>();
+        combinedClassificationFilter
+            .add(new CombinedClassificationFilter("CLI:000000000000000000000000000000000003",
+                "CLI:000000000000000000000000000000000008"));
+        combinedClassificationFilter
+            .add(new CombinedClassificationFilter("CLI:000000000000000000000000000000000003",
+                "CLI:000000000000000000000000000000000009"));
+        combinedClassificationFilter
+            .add(new CombinedClassificationFilter("CLI:000000000000000000000000000000000002",
+                "CLI:000000000000000000000000000000000007"));
+        combinedClassificationFilter
+            .add(new CombinedClassificationFilter("CLI:000000000000000000000000000000000005"));
+
+        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null,
+            null, combinedClassificationFilter, columnHeaders, true);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report, columnHeaders));
+        }
+
+        assertNotNull(report);
+        assertEquals(3, report.rowSize());
+
+        int[] row1 = report.getRow("USER_1_1").getCells();
+        assertArrayEquals(new int[] {3, 3, 0, 1, 1}, row1);
+
+        int[] row2 = report.getRow("USER_1_2").getCells();
+        assertArrayEquals(new int[] {0, 2, 1, 6, 0}, row2);
+
+        int[] row3 = report.getRow("USER_1_3").getCells();
+        assertArrayEquals(new int[] {1, 0, 0, 0, 3}, row3);
     }
 
     private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {
