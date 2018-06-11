@@ -150,7 +150,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test(expected = WorkbasketAlreadyExistException.class)
     public void testThrowsExceptionIfWorkbasketWithCaseInsensitiveSameKeyDomainIsCreated()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
