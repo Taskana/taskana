@@ -6,7 +6,7 @@ import {AngularSvgIconModule} from 'angular-svg-icon';
 import {WorkplaceRoutingModule} from './workplace-routing.module';
 import {AlertModule, TypeaheadModule} from 'ngx-bootstrap';
 
-import {SelectorComponent} from './workbasket-selector/workbasket-selector.component';
+import {TaskListToolbarComponent} from './tasklist/tasklist-toolbar/tasklist-toolbar.component';
 import {TasklistComponent} from './tasklist/tasklist.component';
 import {TaskdetailsComponent} from './taskdetails/taskdetails.component';
 import {TaskComponent} from './task/task.component';
@@ -33,7 +33,7 @@ const MODULES = [
 ];
 
 const DECLARATIONS = [
-  SelectorComponent,
+  TaskListToolbarComponent,
   TasklistComponent,
   TaskdetailsComponent,
   TaskComponent,

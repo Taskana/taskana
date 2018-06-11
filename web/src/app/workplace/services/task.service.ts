@@ -2,9 +2,10 @@ import {Task} from 'app/workplace/models/task';
 import {Observable} from 'rxjs/Observable';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {environment} from 'app/../environments/environment';
+import {environment} from 'environments/environment';
 import {TaskResource} from 'app/workplace/models/task-resource';
 import {Subject} from 'rxjs/Subject';
+import {Direction} from 'app/models/sorting';
 
 @Injectable()
 export class TaskService {
@@ -27,8 +28,17 @@ export class TaskService {
   constructor(private httpClient: HttpClient) {
   }
 
-  findTasksWithWorkbasket(basketId: string): Observable<TaskResource> {
-    return this.httpClient.get<TaskResource>(`${this.url}?workbasket-id=${basketId}`);
+  /**
+   * @param {string} basketId
+   * @param {string} sortBy name of field, that the tasks should be sorted by, default is priority
+   * @returns {Observable<TaskResource>}
+   */
+  findTasksWithWorkbasket(basketId: string,
+                          sortBy = 'priority',
+                          order: string = Direction.ASC): Observable<TaskResource> {
+
+    const url = `${this.url}?workbasket-id=${basketId}&sortBy=${sortBy}&order=${order}`;
+    return this.httpClient.get<TaskResource>(url);
   }
 
   getTask(id: string): Observable<Task> {

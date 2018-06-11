@@ -1,10 +1,10 @@
-<div class="dropdown clearfix btn-group"> 
-  <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+<div class="dropdown clearfix btn-group">
+  <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
       <span class="glyphicon {{sort.sortDirection === 'asc'? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes' }} blue"
-          data-toggle= "tooltip" title="{{sort.sortDirection === 'asc'? 'A-Z' : 'Z-A' }}"></span> 
-  </button>         
+          data-toggle= "tooltip" title="{{sort.sortDirection === 'asc'? 'A-Z' : 'Z-A' }}"></span>
+  </button>
 
-  <div class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown"> 
+  <div class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown">
     <div>
         <div class="col-xs-6">
             <h5>Sort By</h5>
@@ -15,9 +15,9 @@
         <button id= "sort-by-direction-desc" type="button" (click)="changeOrder('desc')" data-toggle="tooltip" title="Z-A" class="btn btn-default {{sort.sortDirection === 'desc'? 'selected' : '' }}" >
             <span class="glyphicon glyphicon-sort-by-attributes blue" aria-hidden="true"></span>
         </button>
-    </div>                                                 
+    </div>
     <div role="separator" class="divider"></div>
-    <li id="sort-by-{{sortingField.key}}"(click)="changeSortBy(sortingField.key)"  *ngFor="let sortingField of sortingFields | mapValues">
+    <li id="sort-by-{{sortingField.key}}" (click)="changeSortBy(sortingField.key)" *ngFor="let sortingField of sortingFields | mapValues">
         <a>
             <label>
                 <span class="glyphicon {{sort.sortBy === sortingField.key? 'glyphicon-check': 'glyphicon-unchecked'}} blue" aria-hidden="true"></span>
