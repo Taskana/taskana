@@ -3,7 +3,6 @@ package acceptance.task;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Ignore;
@@ -14,8 +13,6 @@ import acceptance.AbstractAccTest;
 import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -155,18 +152,13 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     /**
      * Testcase only for DB2 users, because H2 doesn´t throw a Exception when the offset is set to high.<br>
      * Using DB2 should throw a unchecked RuntimeException for a offset which is out of bounds.
-     *
-     * @throws SQLException
-     * @throws NotAuthorizedException
-     * @throws InvalidArgumentException
      */
     @Ignore
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test(expected = TaskanaRuntimeException.class)
-    public void testPaginationThrowingExceptionWhenPageOutOfBounds()
-        throws SQLException, NotAuthorizedException, InvalidArgumentException {
+    public void testPaginationThrowingExceptionWhenPageOutOfBounds() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // entrypoint set outside result amount

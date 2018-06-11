@@ -7,10 +7,10 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import pro.taskana.security.GroupPrincipal;
 import pro.taskana.security.UserPrincipal;
 
@@ -25,14 +25,13 @@ public class SampleLoginModule extends UsernamePasswordAuthenticationFilter impl
 
     private Subject subject;
 
-
     @Override
-    public boolean abort() throws LoginException {
+    public boolean abort() {
         return true;
     }
 
     @Override
-    public boolean commit() throws LoginException {
+    public boolean commit() {
         addUserPrincipalToSubject();
         addGroupSubjectsDerivedFromUsername();
         return true;
@@ -83,12 +82,12 @@ public class SampleLoginModule extends UsernamePasswordAuthenticationFilter impl
     }
 
     @Override
-    public boolean login() throws LoginException {
+    public boolean login() {
         return nameCallback.getName().equals(new String(passwordCallback.getPassword()));
     }
 
     @Override
-    public boolean logout() throws LoginException {
+    public boolean logout() {
         return true;
     }
 

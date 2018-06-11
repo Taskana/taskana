@@ -55,7 +55,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     private TaskanaEngineImpl taskanaEngineImpl;
 
     @BeforeClass
-    public static void resetDb() throws SQLException {
+    public static void resetDb() {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, true);

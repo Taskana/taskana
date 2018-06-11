@@ -70,15 +70,11 @@ public interface WorkbasketService {
      * @param workbasket
      *            The Workbasket to update
      * @return the updated Workbasket
-     * @throws InvalidWorkbasketException
-     *             if a required property of the workbasket is not set
-     * @throws WorkbasketNotFoundException
-     *             if the updated work basket references a distribution target that does not exist
      * @throws NotAuthorizedException
      *             if the current user is not authorized to update the work basket
      */
     Workbasket updateWorkbasket(Workbasket workbasket)
-        throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException;
+        throws NotAuthorizedException;
 
     /**
      * Returns a new WorkbasketAccessItem which is not persisted.
@@ -309,11 +305,9 @@ public interface WorkbasketService {
      *            The id of the target workbasket
      * @throws NotAuthorizedException
      *             If the current user doesn't have READ permission for the source workbasket
-     * @throws WorkbasketNotFoundException
-     *             if the source workbasket can´t be found by ID.
      */
     void removeDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
-        throws NotAuthorizedException, WorkbasketNotFoundException;
+        throws NotAuthorizedException;
 
     /**
      * Deletes the workbasket by the given ID of it.

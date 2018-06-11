@@ -27,7 +27,6 @@ import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -59,8 +58,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     // the begin of each testcase....
     private void setUpMethod()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException {
+        InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         taskService = taskanaEngine.getTaskService();
         task = taskService.getTask("TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D
         task.setClassificationKey("T2000");
@@ -79,8 +77,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     @Test
     public void testAddNewAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException {
+        InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
         int attachmentCount = task.getAttachments().size();
         assertTrue(task.getPriority() == 1);
@@ -101,8 +98,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test(expected = AttachmentPersistenceException.class)
     public void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
-        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        NotAuthorizedException,
         AttachmentPersistenceException {
         setUpMethod();
         int attachmentCount = 0;
@@ -125,8 +122,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     @Test
     public void testAddExistingAttachmentAgainWillUpdateWhenNotEqual()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException {
+        InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
         // Add attachment before
         task = taskService.getTask(task.getId());
@@ -160,8 +156,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     @Test
     public void testAddExistingAttachmentAgainWillDoNothingWhenEqual()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException {
+        InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
         // Add Attachment before
         int attachmentCount = task.getAttachments().size();
@@ -186,9 +181,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testAddAttachmentAsNullValueWillBeIgnored()
-        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException {
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        NotAuthorizedException, AttachmentPersistenceException {
         setUpMethod();
         // Try to add a single NULL-Element
         int attachmentCount = task.getAttachments().size();
@@ -223,9 +217,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testRemoveAttachment()
-        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException {
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        NotAuthorizedException, AttachmentPersistenceException {
         setUpMethod();
         task.addAttachment(attachment);
         task = taskService.updateTask(task);
@@ -247,9 +240,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testRemoveAttachmentWithNullAndNotAddedId()
-        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException {
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        NotAuthorizedException, AttachmentPersistenceException {
         setUpMethod();
         task.addAttachment(attachment);
         task = taskService.updateTask(task);
@@ -273,9 +265,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     public void testUpdateAttachment()
-        throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-        InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException, NotAuthorizedException,
-        AttachmentPersistenceException {
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        NotAuthorizedException, AttachmentPersistenceException {
         setUpMethod();
         ((TaskImpl) task).setAttachments(new ArrayList<>());
         task = taskService.updateTask(task);
@@ -310,8 +301,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     @Test
     public void modifyExistingAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException {
+        InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
         // setup test
         assertThat(task.getAttachments().size(), equalTo(0));
@@ -394,8 +384,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     @Test
     public void replaceExistingAttachments()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException {
+        InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
         // setup test
         assertThat(task.getAttachments().size(), equalTo(0));
@@ -441,8 +430,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     @Test
     public void testPrioDurationOfTaskFromAttachmentsAtUpdate()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, InvalidWorkbasketException, TaskNotFoundException,
-        ConcurrencyException, AttachmentPersistenceException {
+        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException, ConcurrencyException,
+        AttachmentPersistenceException {
 
         setUpMethod();
         TaskService taskService = taskanaEngine.getTaskService();
@@ -489,8 +478,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     @Test
     public void testAddCustomAttributeToAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        WorkbasketNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
-        AttachmentPersistenceException {
+        InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         task = taskService.getTask("TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D
