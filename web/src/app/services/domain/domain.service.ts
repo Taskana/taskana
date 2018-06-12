@@ -26,7 +26,7 @@ export class DomainService {
 
   // GET
   getDomains(forceRefresh = false): Observable<string[]> {
-    if (!this.dataObs$.observers.length || forceRefresh) {
+    if (forceRefresh) {
       this.httpClient.get<string[]>(this.url).subscribe(
         domains => {
           this.dataObs$.next(domains);

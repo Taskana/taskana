@@ -29,7 +29,9 @@ export class UserInformationComponent implements OnInit {
 
   ngOnInit() {
     this.userInformation = this.taskanaEngineService.currentUserInfo;
-    this.roles = '[' + this.taskanaEngineService.currentUserInfo.roles.join(',') + ']';
+    if (this.userInformation) {
+      this.roles = '[' + this.userInformation.roles.join(',') + ']';
+    }
   }
 
   toogleRoles() {
