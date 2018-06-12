@@ -3,18 +3,28 @@ package acceptance.classification;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.TimeInterval;
+import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.security.JAASRunner;
+import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get classification" scenarios.
  */
+@RunWith(JAASRunner.class)
 public class QueryClassificationAccTest extends AbstractAccTest {
 
     public QueryClassificationAccTest() {
@@ -228,4 +238,20 @@ public class QueryClassificationAccTest extends AbstractAccTest {
 
     }
 
+    @WithAccessId(
+        userName = "businessadmin")
+    @Test
+    public void testFindClassificationByModifiedWithin()
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        String clId = "CLI:200000000000000000000000000000000015";
+        classificationService.updateClassification(classificationService.getClassification(clId));
+        List<ClassificationSummary> list = classificationService.createClassificationQuery()
+                .modifiedWithin(new TimeInterval(
+                        classificationService.getClassification(clId).getModified(),
+                        Instant.now()))
+                .list();
+        assertEquals(1, list.size());
+        assertEquals(clId, list.get(0).getId());
+    }
 }
