@@ -7,9 +7,9 @@ import pro.taskana.impl.report.Report;
 /**
  * TODO.
  */
-public class WorkbasketLevelReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
+public class WorkbasketReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
-    public WorkbasketLevelReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
+    public WorkbasketReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
         super(timeIntervalColumnHeaders, "WORKBASKET KEYS");
     }
 

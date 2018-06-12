@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -69,10 +71,7 @@ public class ProvideCustomFieldValueReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CustomField customField = CustomField.CUSTOM_1;
-
-        taskMonitorService.getCustomFieldValueReport(null, null, null, null,
-            customField, null);
+        taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1).buildReport();
     }
 
     @WithAccessId(
@@ -82,10 +81,8 @@ public class ProvideCustomFieldValueReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CustomField customField = CustomField.CUSTOM_1;
-
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
-            customField, null);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
@@ -111,10 +108,8 @@ public class ProvideCustomFieldValueReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CustomField customField = CustomField.CUSTOM_2;
-
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
-            customField, null);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_2)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
@@ -142,9 +137,10 @@ public class ProvideCustomFieldValueReportAccTest {
         CustomField customField = CustomField.CUSTOM_1;
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
-            customField, null,
-            columnHeaders);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(customField)
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -168,12 +164,12 @@ public class ProvideCustomFieldValueReportAccTest {
     public void testEachItemOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CustomField customField = CustomField.CUSTOM_1;
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
-            customField, null,
-            columnHeaders);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -199,12 +195,11 @@ public class ProvideCustomFieldValueReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CustomField customField = CustomField.CUSTOM_1;
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
-            customField, null,
-            columnHeaders, false);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .withColumnHeaders(columnHeaders)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -231,12 +226,13 @@ public class ProvideCustomFieldValueReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
-        CustomField customField = CustomField.CUSTOM_1;
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(workbasketIds, null, null, null,
-            customField, null,
-            columnHeaders);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .workbasketIdIn(workbasketIds)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -263,12 +259,13 @@ public class ProvideCustomFieldValueReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TaskState> states = Collections.singletonList(TaskState.READY);
-        CustomField customField = CustomField.CUSTOM_1;
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, states, null, null,
-            customField, null,
-            columnHeaders);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .stateIn(states)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -295,13 +292,13 @@ public class ProvideCustomFieldValueReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
-        CustomField customField = CustomField.CUSTOM_1;
-
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, categories, null,
-            customField, null,
-            columnHeaders);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .categoryIn(categories)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -328,12 +325,13 @@ public class ProvideCustomFieldValueReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> domains = Collections.singletonList("DOMAIN_A");
-        CustomField customField = CustomField.CUSTOM_1;
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, domains,
-            customField, null,
-            columnHeaders);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .domainIn(domains)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -359,13 +357,15 @@ public class ProvideCustomFieldValueReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        Map<CustomField, String> customAttributeFilter = new HashMap<>();
+        customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CustomFieldValueReport report = taskMonitorService.getCustomFieldValueReport(null, null, null, null,
-            customField,
-            customFieldValues, columnHeaders);
+        CustomFieldValueReport report = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .customAttributeFilterIn(customAttributeFilter)
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));

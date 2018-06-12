@@ -72,7 +72,11 @@ public class MonitorController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ReportResource> getTaskStatusReport(@RequestParam(required = false) List<String> domains,
         @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException {
+        // return ResponseEntity.status(HttpStatus.OK)
+        // .body(reportAssembler.toResource(taskMonitorService.getTaskStatusReport(domains, states), domains, states));
         return ResponseEntity.status(HttpStatus.OK)
-            .body(reportAssembler.toResource(taskMonitorService.getTaskStatusReport(domains, states), domains, states));
+            .body(reportAssembler.toResource(
+                taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
+                domains, states));
     }
 }

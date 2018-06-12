@@ -39,8 +39,14 @@ public interface TaskMonitorMapper {
         + "<if test=\"domains != null\">"
         + "AND T.DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "</if>"
-        + "<if test=\"customField != null and customFieldValues != null\">"
-        + "AND ${customField}  IN (<foreach collection='customFieldValues' item='customFieldValue' separator=','>#{customFieldValue}</foreach>) "
+        + "<if test='classificationIds != null'>"
+        + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+        + "</if>"
+        + "<if test='excludedClassificationIds != null'>"
+        + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+        + "</if>"
+        + "<if test='customAttributeFilter != null'>"
+        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
         + "</if>"
         + "<if test=\"combinedClassificationFilter != null\">"
         + "AND <foreach collection='combinedClassificationFilter' item='item' separator='OR'> "
@@ -65,8 +71,9 @@ public interface TaskMonitorMapper {
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains,
-        @Param("customField") CustomField customField,
-        @Param("customFieldValues") List<String> customFieldValues,
+        @Param("classificationIds") List<String> classificationIds,
+        @Param("excludedClassificationIds") List<String> excludedClassificationIds,
+        @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter,
         @Param("combinedClassificationFilter") List<CombinedClassificationFilter> combinedClassificationFilter);
 
     @Select("<script>"
@@ -87,8 +94,14 @@ public interface TaskMonitorMapper {
         + "<if test=\"domains != null\">"
         + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "</if>"
-        + "<if test=\"customField != null and customFieldValues != null\">"
-        + "AND ${customField}  IN (<foreach collection='customFieldValues' item='customFieldValue' separator=','>#{customFieldValue}</foreach>) "
+        + "<if test='classificationIds != null'>"
+        + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+        + "</if>"
+        + "<if test='excludedClassificationIds != null'>"
+        + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+        + "</if>"
+        + "<if test='customAttributeFilter != null'>"
+        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
         + "</if>"
         + "AND DUE IS NOT NULL "
         + "</where>"
@@ -105,8 +118,9 @@ public interface TaskMonitorMapper {
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains,
-        @Param("customField") CustomField customField,
-        @Param("customFieldValues") List<String> customFieldValues);
+        @Param("classificationIds") List<String> classificationIds,
+        @Param("excludedClassificationIds") List<String> excludedClassificationIds,
+        @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
 
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
@@ -126,8 +140,14 @@ public interface TaskMonitorMapper {
         + "<if test=\"domains != null\">"
         + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "</if>"
-        + "<if test=\"customField != null and customFieldValues != null\">"
-        + "AND ${customField}  IN (<foreach collection='customFieldValues' item='customFieldValue' separator=','>#{customFieldValue}</foreach>) "
+        + "<if test='classificationIds != null'>"
+        + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+        + "</if>"
+        + "<if test='excludedClassificationIds != null'>"
+        + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+        + "</if>"
+        + "<if test='customAttributeFilter != null'>"
+        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
         + "</if>"
         + "AND DUE IS NOT NULL "
         + "</where>"
@@ -144,8 +164,9 @@ public interface TaskMonitorMapper {
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains,
-        @Param("customField") CustomField customField,
-        @Param("customFieldValues") List<String> customFieldValues);
+        @Param("classificationIds") List<String> classificationIds,
+        @Param("excludedClassificationIds") List<String> excludedClassificationIds,
+        @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
 
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
@@ -165,8 +186,14 @@ public interface TaskMonitorMapper {
         + "<if test=\"domains != null\">"
         + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "</if>"
-        + "<if test=\"customField != null and customFieldValues != null\">"
-        + "AND ${customField}  IN (<foreach collection='customFieldValues' item='customFieldValue' separator=','>#{customFieldValue}</foreach>) "
+        + "<if test='classificationIds != null'>"
+        + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+        + "</if>"
+        + "<if test='excludedClassificationIds != null'>"
+        + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+        + "</if>"
+        + "<if test='customAttributeFilter != null'>"
+        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
         + "</if>"
         + "AND DUE IS NOT NULL "
         + "</where>"
@@ -185,8 +212,9 @@ public interface TaskMonitorMapper {
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains,
-        @Param("customField") CustomField customField,
-        @Param("customFieldValues") List<String> customFieldValues);
+        @Param("classificationIds") List<String> classificationIds,
+        @Param("excludedClassificationIds") List<String> excludedClassificationIds,
+        @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
 
     @Select("<script>"
         + "<if test=\"_databaseId == 'db2'\">SELECT ${customField} as CUSTOM_FIELD, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS, COUNT(*) as NUMBER_OF_TASKS</if> "
@@ -206,8 +234,14 @@ public interface TaskMonitorMapper {
         + "<if test=\"domains != null\">"
         + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
         + "</if>"
-        + "<if test=\"customField != null and customFieldValues != null\">"
-        + "AND ${customField}  IN (<foreach collection='customFieldValues' item='customFieldValue' separator=','>#{customFieldValue}</foreach>) "
+        + "<if test='classificationIds != null'>"
+        + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+        + "</if>"
+        + "<if test='excludedClassificationIds != null'>"
+        + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+        + "</if>"
+        + "<if test='customAttributeFilter != null'>"
+        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
         + "</if>"
         + "AND DUE IS NOT NULL "
         + "</where>"
@@ -220,12 +254,15 @@ public interface TaskMonitorMapper {
         @Result(column = "CUSTOM_FIELD", property = "key"),
         @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
         @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")})
-    List<MonitorQueryItem> getTaskCountOfCustomFieldValues(@Param("workbasketIds") List<String> workbasketIds,
+    List<MonitorQueryItem> getTaskCountOfCustomFieldValues(
+        @Param("customField") CustomField customField,
+        @Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
         @Param("categories") List<String> categories,
         @Param("domains") List<String> domains,
-        @Param("customField") CustomField customField,
-        @Param("customFieldValues") List<String> customFieldValues);
+        @Param("classificationIds") List<String> classificationIds,
+        @Param("excludedClassificationIds") List<String> excludedClassificationIds,
+        @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
 
     @Select("<script>"
         + "SELECT T.ID FROM TASKANA.TASK T "
@@ -251,8 +288,8 @@ public interface TaskMonitorMapper {
         + "<if test='excludedClassificationIds != null'>"
         + "AND T.CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
         + "</if>"
-        + "<if test=\"customField != null and customFieldValues != null\">"
-        + "AND T.${customField}  IN (<foreach collection='customFieldValues' item='customFieldValue' separator=','>#{customFieldValue}</foreach>) "
+        + "<if test='customAttributeFilter != null'>"
+        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
         + "</if>"
         + "AND T.DUE IS NOT NULL AND ( "
         + "<foreach collection='selectedItems' item='selectedItem' separator=' OR '>"
@@ -278,10 +315,11 @@ public interface TaskMonitorMapper {
         + "</script>")
     List<String> getTaskIdsForSelectedItems(@Param("workbasketIds") List<String> workbasketIds,
         @Param("states") List<TaskState> states,
-        @Param("categories") List<String> categories, @Param("domains") List<String> domains,
+        @Param("categories") List<String> categories,
+        @Param("domains") List<String> domains,
         @Param("classificationIds") List<String> classificationIds,
         @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-        @Param("customField") CustomField customField, @Param("customFieldValues") List<String> customFieldValues,
+        @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter,
         @Param("groupedBy") String groupedBy, @Param("selectedItems") List<SelectedItem> selectedItems,
         @Param("joinWithAttachments") boolean joinWithAttachments);
 
@@ -307,7 +345,7 @@ public interface TaskMonitorMapper {
         @Param("states") List<TaskState> states);
 
     @Select("<script>"
-        + "SELECT DISTINCT ${customAttributeName} "
+        + "SELECT DISTINCT ${customField} "
         + "FROM TASKANA.TASK "
         + "<where>"
         + "<if test='workbasketIds != null'>"
@@ -329,7 +367,7 @@ public interface TaskMonitorMapper {
         + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
         + "</if>"
         + "<if test='customAttributeFilter != null'>"
-        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(CUSTOM_${key} = '${customAttributeFilter.get(key)}')</foreach>) "
+        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
         + "</if>"
         + "</where>"
         + "</script>")
@@ -338,7 +376,7 @@ public interface TaskMonitorMapper {
         @Param("categories") List<String> categories, @Param("domains") List<String> domains,
         @Param("classificationIds") List<String> classificationIds,
         @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-        @Param("customAttributeFilter") Map<String, String> customAttributeFilter,
-        @Param("customAttributeName") String customAttributeName);
+        @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter,
+        @Param("customField") CustomField customField);
 
 }
