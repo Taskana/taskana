@@ -1,4 +1,4 @@
-package pro.taskana.springtx;
+package pro.taskana;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Import;
 /**
  * Class to start an Application to test Taskana
  *
- * @author v101536 (Kilian Burkhardt)
  */
 @SpringBootApplication
 @Import(TaskanaConfig.class)

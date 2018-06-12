@@ -1,4 +1,4 @@
-package pro.taskana.springtx;
+package pro.taskana;
 
 import java.sql.SQLException;
 
@@ -23,7 +23,6 @@ import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 /**
  * Class to set /load configuration for Taskana Library
  *
- * @author v101536 (Kilian Burkhardt)
  */
 @Configuration
 @EnableTransactionManagement()
@@ -31,13 +30,13 @@ public class TaskanaConfig {
 
     @Profile("inmemorydb")
     @Configuration
-    @PropertySource("classpath:postkorb-inmemorydb.properties")
+    @PropertySource("classpath:customdb.properties")
     static class InmemoryDBProperties {
     }
 
     @Bean
     @Primary
-    @ConfigurationProperties(prefix = "postkorb.datasource")
+    @ConfigurationProperties(prefix = "customdb.datasource")
     public DataSourceProperties dataSourceProperties() {
         return new DataSourceProperties();
     }
@@ -88,4 +87,8 @@ public class TaskanaConfig {
         return taskanaEngine.getClassificationService();
     }
 
+    @Bean
+    public ExampleBootstrap exampleBootstrap() {
+      return new ExampleBootstrap() ;
+    }
 }
