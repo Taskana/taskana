@@ -11,7 +11,7 @@ import { WindowRefService } from 'app/services/window/window.service';
 @Injectable()
 export class UserGuard implements CanActivate {
     static roles = ['ADMIN', 'USER'];
-    constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) { }
+    constructor(private taskanaEngineService: TaskanaEngineService, private router: Router) { }
     canActivate() {
         if (this.taskanaEngineService.hasRole(UserGuard.roles)) {
             return true;
