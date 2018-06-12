@@ -66,9 +66,7 @@ public class GetTaskIdsOfWorkbasketReportAccTest {
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
-        taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
-            null, null, null,
-            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_WORKBASKET_KEY);
+        taskMonitorService.createWorkbasketReportBuilder().listTaskIdsForSelectedItems(selectedItems);
     }
 
     @WithAccessId(
@@ -99,9 +97,10 @@ public class GetTaskIdsOfWorkbasketReportAccTest {
         s3.setUpperAgeLimit(Integer.MAX_VALUE);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
-            null, null, null,
-            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_WORKBASKET_KEY);
+        List<String> ids = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .listTaskIdsForSelectedItems(selectedItems);
 
         assertEquals(7, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
@@ -142,9 +141,11 @@ public class GetTaskIdsOfWorkbasketReportAccTest {
         s3.setUpperAgeLimit(Integer.MAX_VALUE);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
-            Collections.singletonList("CLI:000000000000000000000000000000000001"), null, null,
-            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_WORKBASKET_KEY);
+        List<String> ids = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .excludedClassificationIdIn(Collections.singletonList("CLI:000000000000000000000000000000000001"))
+            .listTaskIdsForSelectedItems(selectedItems);
 
         assertEquals(4, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));

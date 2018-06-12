@@ -39,7 +39,7 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "get task ids of category report" scenarios.
  */
 @RunWith(JAASRunner.class)
-public class GetTaskIdsOfCategoryReportAccTest {
+public class GetTaskIdsOfCustomFieldValueReportAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
@@ -71,13 +71,14 @@ public class GetTaskIdsOfCategoryReportAccTest {
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
-        taskMonitorService.createCategoryReportBuilder().listTaskIdsForSelectedItems(selectedItems);
+        taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .listTaskIdsForSelectedItems(selectedItems);
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReport() throws InvalidArgumentException, NotAuthorizedException {
+    public void testGetTaskIdsOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -85,46 +86,43 @@ public class GetTaskIdsOfCategoryReportAccTest {
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
-        s1.setKey("EXTERN");
+        s1.setKey("Geschaeftsstelle A");
         s1.setLowerAgeLimit(-5);
         s1.setUpperAgeLimit(-2);
         selectedItems.add(s1);
 
         SelectedItem s2 = new SelectedItem();
-        s2.setKey("AUTOMATIC");
+        s2.setKey("Geschaeftsstelle B");
         s2.setLowerAgeLimit(Integer.MIN_VALUE);
         s2.setUpperAgeLimit(-11);
         selectedItems.add(s2);
 
         SelectedItem s3 = new SelectedItem();
-        s3.setKey("MANUAL");
+        s3.setKey("Geschaeftsstelle C");
         s3.setLowerAgeLimit(0);
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.createCategoryReportBuilder()
+        List<String> ids = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems);
 
-        assertEquals(11, ids.size());
+        assertEquals(8, ids.size());
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000002"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000009"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000021"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000022"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000023"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000024"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000026"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000027"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000028"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000029"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000033"));
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithWorkbasketFilter()
+    public void testGetTaskIdsOfCustomFieldValueReportWithWorkbasketFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -134,90 +132,85 @@ public class GetTaskIdsOfCategoryReportAccTest {
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
-        s1.setKey("EXTERN");
+        s1.setKey("Geschaeftsstelle A");
         s1.setLowerAgeLimit(-5);
         s1.setUpperAgeLimit(-2);
         selectedItems.add(s1);
 
         SelectedItem s2 = new SelectedItem();
-        s2.setKey("AUTOMATIC");
+        s2.setKey("Geschaeftsstelle B");
         s2.setLowerAgeLimit(Integer.MIN_VALUE);
         s2.setUpperAgeLimit(-11);
         selectedItems.add(s2);
 
         SelectedItem s3 = new SelectedItem();
-        s3.setKey("MANUAL");
+        s3.setKey("Geschaeftsstelle C");
         s3.setLowerAgeLimit(0);
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.createCategoryReportBuilder()
+        List<String> ids = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .workbasketIdIn(workbasketIds)
             .listTaskIdsForSelectedItems(selectedItems);
 
-        assertEquals(4, ids.size());
+        assertEquals(3, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000009"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000026"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithStateFilter()
+    public void testGetTaskIdsOfCustomFieldValueReportWithStateFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<TaskState> states = Collections.singletonList(TaskState.READY);
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
-        s1.setKey("EXTERN");
+        s1.setKey("Geschaeftsstelle A");
         s1.setLowerAgeLimit(-5);
         s1.setUpperAgeLimit(-2);
         selectedItems.add(s1);
 
         SelectedItem s2 = new SelectedItem();
-        s2.setKey("AUTOMATIC");
+        s2.setKey("Geschaeftsstelle B");
         s2.setLowerAgeLimit(Integer.MIN_VALUE);
         s2.setUpperAgeLimit(-11);
         selectedItems.add(s2);
 
         SelectedItem s3 = new SelectedItem();
-        s3.setKey("MANUAL");
+        s3.setKey("Geschaeftsstelle C");
         s3.setLowerAgeLimit(0);
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.createCategoryReportBuilder()
+        List<String> ids = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .stateIn(states)
+            .stateIn(Collections.singletonList(TaskState.READY))
             .listTaskIdsForSelectedItems(selectedItems);
 
-        assertEquals(11, ids.size());
+        assertEquals(8, ids.size());
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000002"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000009"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000021"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000022"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000023"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000024"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000026"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000027"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000028"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000029"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000033"));
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithCategoryFilter()
+    public void testGetTaskIdsOfCustomFieldValueReportWithCategoryFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -227,18 +220,24 @@ public class GetTaskIdsOfCategoryReportAccTest {
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
-        s1.setKey("AUTOMATIC");
-        s1.setLowerAgeLimit(Integer.MIN_VALUE);
-        s1.setUpperAgeLimit(-11);
+        s1.setKey("Geschaeftsstelle A");
+        s1.setLowerAgeLimit(-5);
+        s1.setUpperAgeLimit(-2);
         selectedItems.add(s1);
 
         SelectedItem s2 = new SelectedItem();
-        s2.setKey("MANUAL");
-        s2.setLowerAgeLimit(0);
-        s2.setUpperAgeLimit(0);
+        s2.setKey("Geschaeftsstelle B");
+        s2.setLowerAgeLimit(Integer.MIN_VALUE);
+        s2.setUpperAgeLimit(-11);
         selectedItems.add(s2);
 
-        List<String> ids = taskMonitorService.createCategoryReportBuilder()
+        SelectedItem s3 = new SelectedItem();
+        s3.setKey("Geschaeftsstelle C");
+        s3.setLowerAgeLimit(0);
+        s3.setUpperAgeLimit(0);
+        selectedItems.add(s3);
+
+        List<String> ids = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .categoryIn(categories)
@@ -246,57 +245,55 @@ public class GetTaskIdsOfCategoryReportAccTest {
 
         assertEquals(3, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000009"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000029"));
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithDomainFilter()
+    public void testGetTaskIdsOfCustomFieldValueReportWithDomainFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> domains = Collections.singletonList("DOMAIN_A");
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
-        s1.setKey("EXTERN");
+        s1.setKey("Geschaeftsstelle A");
         s1.setLowerAgeLimit(-5);
         s1.setUpperAgeLimit(-2);
         selectedItems.add(s1);
 
         SelectedItem s2 = new SelectedItem();
-        s2.setKey("AUTOMATIC");
+        s2.setKey("Geschaeftsstelle B");
         s2.setLowerAgeLimit(Integer.MIN_VALUE);
         s2.setUpperAgeLimit(-11);
         selectedItems.add(s2);
 
         SelectedItem s3 = new SelectedItem();
-        s3.setKey("MANUAL");
+        s3.setKey("Geschaeftsstelle C");
         s3.setLowerAgeLimit(0);
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.createCategoryReportBuilder()
+        List<String> ids = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .domainIn(domains)
+            .domainIn(Collections.singletonList("DOMAIN_A"))
             .listTaskIdsForSelectedItems(selectedItems);
 
-        assertEquals(4, ids.size());
+        assertEquals(3, ids.size());
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000009"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000021"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000022"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000028"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000033"));
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter()
+    public void testGetTaskIdsOfCustomFieldValueReportWithCustomFieldValueFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -307,35 +304,34 @@ public class GetTaskIdsOfCategoryReportAccTest {
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
-        s1.setKey("EXTERN");
+        s1.setKey("Geschaeftsstelle A");
         s1.setLowerAgeLimit(-5);
         s1.setUpperAgeLimit(-2);
         selectedItems.add(s1);
 
         SelectedItem s2 = new SelectedItem();
-        s2.setKey("AUTOMATIC");
+        s2.setKey("Geschaeftsstelle B");
         s2.setLowerAgeLimit(Integer.MIN_VALUE);
         s2.setUpperAgeLimit(-11);
         selectedItems.add(s2);
 
         SelectedItem s3 = new SelectedItem();
-        s3.setKey("MANUAL");
+        s3.setKey("Geschaeftsstelle C");
         s3.setLowerAgeLimit(0);
         s3.setUpperAgeLimit(0);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.createCategoryReportBuilder()
+        List<String> ids = taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .customAttributeFilterIn(customAttributeFilter)
             .listTaskIdsForSelectedItems(selectedItems);
 
-        assertEquals(5, ids.size());
+        assertEquals(4, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000024"));
         assertTrue(ids.contains("TKI:000000000000000000000000000000000027"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-        assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
+        assertTrue(ids.contains("TKI:000000000000000000000000000000000029"));
     }
 
     @WithAccessId(
@@ -349,7 +345,7 @@ public class GetTaskIdsOfCategoryReportAccTest {
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
-        s1.setKey("EXTERN");
+        s1.setKey("Geschaeftsstelle A");
         s1.setSubKey("INVALID");
         s1.setLowerAgeLimit(-5);
         s1.setUpperAgeLimit(-2);

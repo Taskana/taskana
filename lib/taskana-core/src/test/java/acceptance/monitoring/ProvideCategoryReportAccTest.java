@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import javax.sql.DataSource;
@@ -70,7 +72,7 @@ public class ProvideCategoryReportAccTest {
     public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        taskMonitorService.getCategoryReport(null, null, null, null, null, null);
+        taskMonitorService.createCategoryReportBuilder().buildReport();
     }
 
     @WithAccessId(
@@ -79,7 +81,7 @@ public class ProvideCategoryReportAccTest {
     public void testGetTotalNumbersOfTasksOfCategoryReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CategoryReport report = taskMonitorService.getCategoryReport(null, null, null, null, null, null);
+        CategoryReport report = taskMonitorService.createCategoryReportBuilder().buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
@@ -106,8 +108,10 @@ public class ProvideCategoryReportAccTest {
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-        CategoryReport report = taskMonitorService.getCategoryReport(null, null, null, null, null, null,
-            columnHeaders);
+        CategoryReport report = taskMonitorService.createCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -136,8 +140,10 @@ public class ProvideCategoryReportAccTest {
 
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CategoryReport report = taskMonitorService.getCategoryReport(null, null, null, null, null, null,
-            columnHeaders);
+        CategoryReport report = taskMonitorService.createCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -164,8 +170,9 @@ public class ProvideCategoryReportAccTest {
 
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CategoryReport report = taskMonitorService.getCategoryReport(null, null, null, null, null, null,
-            columnHeaders, false);
+        CategoryReport report = taskMonitorService.createCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -194,8 +201,11 @@ public class ProvideCategoryReportAccTest {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CategoryReport report = taskMonitorService.getCategoryReport(workbasketIds, null, null, null, null, null,
-            columnHeaders);
+        CategoryReport report = taskMonitorService.createCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .workbasketIdIn(workbasketIds)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -223,8 +233,11 @@ public class ProvideCategoryReportAccTest {
         List<TaskState> states = Collections.singletonList(TaskState.READY);
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CategoryReport report = taskMonitorService.getCategoryReport(null, states, null, null, null, null,
-            columnHeaders);
+        CategoryReport report = taskMonitorService.createCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .stateIn(states)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -253,8 +266,11 @@ public class ProvideCategoryReportAccTest {
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CategoryReport report = taskMonitorService.getCategoryReport(null, null, categories, null, null, null,
-            columnHeaders);
+        CategoryReport report = taskMonitorService.createCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .categoryIn(categories)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -280,8 +296,11 @@ public class ProvideCategoryReportAccTest {
         List<String> domains = Collections.singletonList("DOMAIN_A");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CategoryReport report = taskMonitorService.getCategoryReport(null, null, null, domains, null, null,
-            columnHeaders);
+        CategoryReport report = taskMonitorService.createCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .domainIn(domains)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -307,12 +326,15 @@ public class ProvideCategoryReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        Map<CustomField, String> customAttributeFilter = new HashMap<>();
+        customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        CategoryReport report = taskMonitorService.getCategoryReport(null, null, null, null, customField,
-            customFieldValues, columnHeaders);
+        CategoryReport report = taskMonitorService.createCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .customAttributeFilterIn(customAttributeFilter)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));

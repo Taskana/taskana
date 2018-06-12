@@ -2,8 +2,8 @@ package pro.taskana.impl.report.impl;
 
 /**
  * The CombinedClassificationFilter is a pair of a classificationId for a task and a classificationId for the
- * corresponding attachment that is used to filter the {@link WorkbasketLevelReport} by the classification of the
- * attachment. To filter by the classification of the task, the classificationId of the attachment should be null.
+ * corresponding attachment that is used to filter the {@link WorkbasketReport} by the classification of the attachment.
+ * To filter by the classification of the task, the classificationId of the attachment should be null.
  */
 public class CombinedClassificationFilter {
 
