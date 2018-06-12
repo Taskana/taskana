@@ -83,9 +83,7 @@ public class GetTaskIdsOfClassificationReportAccTest {
         s3.setUpperAgeLimit(-11);
         selectedItems.add(s3);
 
-        taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
-            null, null, null,
-            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_KEY);
+        taskMonitorService.createClassificationReportBuilder().listTaskIdsForSelectedItems(selectedItems);
     }
 
     @WithAccessId(
@@ -116,9 +114,10 @@ public class GetTaskIdsOfClassificationReportAccTest {
         s3.setUpperAgeLimit(-11);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
-            null, null, null,
-            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_KEY);
+        List<String> ids = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .listTaskIdsForSelectedItems(selectedItems);
 
         assertEquals(6, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
@@ -160,9 +159,10 @@ public class GetTaskIdsOfClassificationReportAccTest {
         s3.setUpperAgeLimit(-11);
         selectedItems.add(s3);
 
-        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, null, null,
-            null, null, null,
-            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_KEY);
+        List<String> ids = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .listTaskIdsForSelectedItems(selectedItems);
 
         assertEquals(2, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
@@ -202,9 +202,11 @@ public class GetTaskIdsOfClassificationReportAccTest {
         domains.add("DOMAIN_B");
         domains.add("DOMAIN_C");
 
-        List<String> ids = taskMonitorService.getTaskIdsForSelectedItems(null, null, null, domains, null,
-            null, null, null,
-            columnHeaders, true, selectedItems, TaskMonitorService.DIMENSION_CLASSIFICATION_KEY);
+        List<String> ids = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .domainIn(domains)
+            .listTaskIdsForSelectedItems(selectedItems);
 
         assertEquals(3, ids.size());
         assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));

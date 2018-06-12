@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import javax.sql.DataSource;
@@ -33,7 +35,7 @@ import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.report.impl.CombinedClassificationFilter;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
-import pro.taskana.impl.report.impl.WorkbasketLevelReport;
+import pro.taskana.impl.report.impl.WorkbasketReport;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -41,9 +43,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "workbasket level report" scenarios.
  */
 @RunWith(JAASRunner.class)
-public class ProvideWorkbasketLevelReportAccTest {
+public class ProvideWorkbasketReportAccTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProvideWorkbasketLevelReportAccTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProvideWorkbasketReportAccTest.class);
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
 
@@ -71,19 +73,17 @@ public class ProvideWorkbasketLevelReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
-            null);
+        taskMonitorService.createWorkbasketReportBuilder().buildReport();
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTotalNumbersOfTasksOfWorkbasketLevelReport()
+    public void testGetTotalNumbersOfTasksOfWorkbasketReport()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
-            null);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder().buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
@@ -102,14 +102,16 @@ public class ProvideWorkbasketLevelReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetWorkbasketLevelReportWithReportLineItemDefinitions()
+    public void testGetWorkbasketReportWithReportLineItemDefinitions()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
-            null, columnHeaders);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -134,13 +136,15 @@ public class ProvideWorkbasketLevelReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfWorkbasketLevelReport() throws InvalidArgumentException, NotAuthorizedException {
+    public void testEachItemOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
-            null, columnHeaders);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -162,14 +166,15 @@ public class ProvideWorkbasketLevelReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfWorkbasketLevelReportNotInWorkingDays()
+    public void testEachItemOfWorkbasketReportNotInWorkingDays()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null, null,
-            null, columnHeaders, false);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -191,15 +196,18 @@ public class ProvideWorkbasketLevelReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfWorkbasketLevelReportWithWorkbasketFilter()
+    public void testEachItemOfWorkbasketReportWithWorkbasketFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(workbasketIds, null, null, null,
-            null, null, null, columnHeaders);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .workbasketIdIn(workbasketIds)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -216,15 +224,18 @@ public class ProvideWorkbasketLevelReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfWorkbasketLevelReportWithStateFilter()
+    public void testEachItemOfWorkbasketReportWithStateFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TaskState> states = Collections.singletonList(TaskState.READY);
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, states, null, null, null, null,
-            null, columnHeaders);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .stateIn(states)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -246,15 +257,18 @@ public class ProvideWorkbasketLevelReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfWorkbasketLevelReportWithCategoryFilter()
+    public void testEachItemOfWorkbasketReportWithCategoryFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, categories, null, null,
-            null, null, columnHeaders);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .categoryIn(categories)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -277,15 +291,18 @@ public class ProvideWorkbasketLevelReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfWorkbasketLevelReportWithDomainFilter()
+    public void testEachItemOfWorkbasketReportWithDomainFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> domains = Collections.singletonList("DOMAIN_A");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, domains, null,
-            null, null, columnHeaders);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .domainIn(domains)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -307,16 +324,19 @@ public class ProvideWorkbasketLevelReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfWorkbasketLevelReportWithCustomFieldValueFilter()
+    public void testEachItemOfWorkbasketReportWithCustomFieldValueFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        Map<CustomField, String> customAttributeFilter = new HashMap<>();
+        customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null,
-            customField, customFieldValues, null, columnHeaders);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .customAttributeFilterIn(customAttributeFilter)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -338,7 +358,7 @@ public class ProvideWorkbasketLevelReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfWorkbasketLevelReportForSelectedClassifications()
+    public void testEachItemOfWorkbasketReportForSelectedClassifications()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -356,8 +376,11 @@ public class ProvideWorkbasketLevelReportAccTest {
         combinedClassificationFilter
             .add(new CombinedClassificationFilter("CLI:000000000000000000000000000000000005"));
 
-        WorkbasketLevelReport report = taskMonitorService.getWorkbasketLevelReport(null, null, null, null, null,
-            null, combinedClassificationFilter, columnHeaders, true);
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .combinedClassificationFilterIn(combinedClassificationFilter)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -400,11 +423,11 @@ public class ProvideWorkbasketLevelReportAccTest {
         return columnHeaders;
     }
 
-    private String reportToString(WorkbasketLevelReport report) {
+    private String reportToString(WorkbasketReport report) {
         return reportToString(report, null);
     }
 
-    private String reportToString(WorkbasketLevelReport report,
+    private String reportToString(WorkbasketReport report,
         List<TimeIntervalColumnHeader> reportLineItemDefinitions) {
         String formatColumWidth = "| %-7s ";
         String formatFirstColumn = "| %-36s  %-4s ";
@@ -418,7 +441,7 @@ public class ProvideWorkbasketLevelReportAccTest {
             builder.append("-");
         }
         builder.append("\n");
-        builder.append(String.format(formatFirstColumnFirstLine, "Workbasket levels", "Total"));
+        builder.append(String.format(formatFirstColumnFirstLine, "Workbaskets", "Total"));
         if (reportLineItemDefinitions != null) {
             for (TimeIntervalColumnHeader def : reportLineItemDefinitions) {
                 if (def.getLowerAgeLimit() == Integer.MIN_VALUE) {

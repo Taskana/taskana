@@ -39,7 +39,7 @@ import pro.taskana.security.WithAccessId;
 @RunWith(JAASRunner.class)
 public class ProvideTaskStatusReportAccTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProvideWorkbasketLevelReportAccTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProvideWorkbasketReportAccTest.class);
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
 
@@ -65,7 +65,7 @@ public class ProvideTaskStatusReportAccTest {
     @Test(expected = NotAuthorizedException.class)
     public void testRoleCheck() throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
-        taskMonitorService.getTaskStatusReport();
+        taskMonitorService.createTaskStatusReportBuilder().buildReport();
     }
 
     @WithAccessId(
@@ -75,7 +75,7 @@ public class ProvideTaskStatusReportAccTest {
         // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         // when
-        TaskStatusReport report = taskMonitorService.getTaskStatusReport();
+        TaskStatusReport report = taskMonitorService.createTaskStatusReportBuilder().buildReport();
         // then
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
@@ -105,7 +105,7 @@ public class ProvideTaskStatusReportAccTest {
     @Test
     public void testCompleteTaskStatusReportAsAdmin() throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
-        taskMonitorService.getTaskStatusReport();
+        taskMonitorService.createTaskStatusReportBuilder().buildReport();
     }
 
     @WithAccessId(
@@ -115,7 +115,10 @@ public class ProvideTaskStatusReportAccTest {
         // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         // when
-        TaskStatusReport report = taskMonitorService.getTaskStatusReport(asList("DOMAIN_C", "DOMAIN_A"));
+        TaskStatusReport report = taskMonitorService
+            .createTaskStatusReportBuilder()
+            .domainIn(asList("DOMAIN_C", "DOMAIN_A"))
+            .buildReport();
         // then
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
@@ -143,8 +146,10 @@ public class ProvideTaskStatusReportAccTest {
         // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         // when
-        TaskStatusReport report = taskMonitorService.getTaskStatusReport(null,
-            Collections.singletonList(TaskState.READY));
+        TaskStatusReport report = taskMonitorService
+            .createTaskStatusReportBuilder()
+            .stateIn(Collections.singletonList(TaskState.READY))
+            .buildReport();
         // then
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));

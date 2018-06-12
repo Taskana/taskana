@@ -18,12 +18,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
-import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
@@ -59,25 +59,23 @@ public class GetCustomAttributeValuesForReportAcctest {
     }
 
     @Test(expected = NotAuthorizedException.class)
-    public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+    public void testRoleCheck() throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        taskMonitorService.getCustomAttributeValuesForReport(
-            Collections.singletonList("WBI:000000000000000000000000000000000001"), null,
-            null, null, null, null, null,
-            "2");
+        taskMonitorService.createWorkbasketReportBuilder()
+            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2);
+
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForOneWorkbasket() throws InvalidArgumentException, NotAuthorizedException {
+    public void testGetCustomAttributeValuesForOneWorkbasket() throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> values = taskMonitorService.getCustomAttributeValuesForReport(
-            Collections.singletonList("WBI:000000000000000000000000000000000001"), null,
-            null, null, null, null, null,
-            "2");
+        List<String> values = taskMonitorService.createWorkbasketReportBuilder()
+            .workbasketIdIn(Collections.singletonList("WBI:000000000000000000000000000000000001"))
+            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2);
 
         assertNotNull(values);
         assertEquals(2, values.size());
@@ -88,14 +86,12 @@ public class GetCustomAttributeValuesForReportAcctest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForOneDomain() throws InvalidArgumentException, NotAuthorizedException {
+    public void testGetCustomAttributeValuesForOneDomain() throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<String> values = taskMonitorService.getCustomAttributeValuesForReport(
-            null, null,
-            null, Collections.singletonList("DOMAIN_A"), null, null, null,
-            "16");
-
+        List<String> values = taskMonitorService.createWorkbasketReportBuilder()
+            .domainIn(Collections.singletonList("DOMAIN_A"))
+            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
         assertNotNull(values);
         assertEquals(26, values.size());
     }
@@ -104,16 +100,16 @@ public class GetCustomAttributeValuesForReportAcctest {
         userName = "monitor")
     @Test
     public void testGetCustomAttributeValuesForCustomAttribute()
-        throws InvalidArgumentException, NotAuthorizedException {
+        throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        Map<String, String> props = new HashMap<>();
-        props.put("2", "Vollkasko");
-        props.put("1", "Geschaeftsstelle A");
-        List<String> values = taskMonitorService.getCustomAttributeValuesForReport(
-            null, null,
-            null, null, null, null, props,
-            "16");
+        Map<CustomField, String> customAttributeFilter = new HashMap<>();
+        customAttributeFilter.put(CustomField.CUSTOM_2, "Vollkasko");
+        customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+
+        List<String> values = taskMonitorService.createCategoryReportBuilder()
+            .customAttributeFilterIn(customAttributeFilter)
+            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
 
         assertNotNull(values);
         assertEquals(12, values.size());
@@ -123,17 +119,18 @@ public class GetCustomAttributeValuesForReportAcctest {
         userName = "monitor")
     @Test
     public void testGetCustomAttributeValuesForExcludedClassifications()
-        throws InvalidArgumentException, NotAuthorizedException {
+        throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> domains = new ArrayList<>();
         domains.add("DOMAIN_A");
         domains.add("DOMAIN_B");
         domains.add("DOMAIN_C");
-        List<String> values = taskMonitorService.getCustomAttributeValuesForReport(
-            null, null,
-            null, domains, null, Collections.singletonList("CLI:000000000000000000000000000000000003"), null,
-            "16");
+
+        List<String> values = taskMonitorService.createCategoryReportBuilder()
+            .domainIn(domains)
+            .excludedClassificationIdIn(Collections.singletonList("CLI:000000000000000000000000000000000003"))
+            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
 
         assertNotNull(values);
         assertEquals(43, values.size());

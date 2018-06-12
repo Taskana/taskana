@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import javax.sql.DataSource;
@@ -71,7 +73,7 @@ public class ProvideClassificationReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        taskMonitorService.getClassificationReport(null, null, null, null, null, null);
+        taskMonitorService.createClassificationReportBuilder().buildReport();
     }
 
     @WithAccessId(
@@ -81,7 +83,7 @@ public class ProvideClassificationReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, null, null);
+        ClassificationReport report = taskMonitorService.createClassificationReportBuilder().buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report));
@@ -110,13 +112,15 @@ public class ProvideClassificationReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<TimeIntervalColumnHeader> reportLineItemDefinitions = getListOfColumnsHeaders();
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnsHeaders();
 
-        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, null, null,
-            reportLineItemDefinitions);
+        ClassificationReport report = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
         int sumLineCount = IntStream.of(report.getSumRow().getCells()).sum();
@@ -151,8 +155,10 @@ public class ProvideClassificationReportAccTest {
 
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, null, null,
-            columnHeaders);
+        ClassificationReport report = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -184,13 +190,14 @@ public class ProvideClassificationReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<TimeIntervalColumnHeader> reportLineItemDefinitions = getShortListOfColumnHeaders();
+        List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, null, null,
-            reportLineItemDefinitions, false);
+        ClassificationReport report = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(reportToString(report, reportLineItemDefinitions));
+            LOGGER.debug(reportToString(report, columnHeaders));
         }
 
         assertNotNull(report);
@@ -222,9 +229,11 @@ public class ProvideClassificationReportAccTest {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        ClassificationReport report = taskMonitorService.getClassificationReport(workbasketIds, null, null, null, null,
-            null,
-            columnHeaders);
+        ClassificationReport report = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .workbasketIdIn(workbasketIds)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -259,8 +268,11 @@ public class ProvideClassificationReportAccTest {
         List<TaskState> states = Collections.singletonList(TaskState.READY);
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        ClassificationReport report = taskMonitorService.getClassificationReport(null, states, null, null, null, null,
-            columnHeaders);
+        ClassificationReport report = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .stateIn(states)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -295,8 +307,11 @@ public class ProvideClassificationReportAccTest {
         List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, categories, null, null,
-            null, columnHeaders);
+        ClassificationReport report = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .categoryIn(categories)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -323,8 +338,11 @@ public class ProvideClassificationReportAccTest {
         List<String> domains = Collections.singletonList("DOMAIN_A");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, domains, null, null,
-            columnHeaders);
+        ClassificationReport report = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .domainIn(domains)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
@@ -356,12 +374,15 @@ public class ProvideClassificationReportAccTest {
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        CustomField customField = CustomField.CUSTOM_1;
-        List<String> customFieldValues = Collections.singletonList("Geschaeftsstelle A");
+        Map<CustomField, String> customAttributeFilter = new HashMap<>();
+        customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-        ClassificationReport report = taskMonitorService.getClassificationReport(null, null, null, null, customField,
-            customFieldValues, columnHeaders);
+        ClassificationReport report = taskMonitorService.createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .customAttributeFilterIn(customAttributeFilter)
+            .inWorkingDays()
+            .buildReport();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(reportToString(report, columnHeaders));
