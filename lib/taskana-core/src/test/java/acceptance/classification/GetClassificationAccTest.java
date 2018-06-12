@@ -1,8 +1,11 @@
 package acceptance.classification;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import acceptance.AbstractAccTest;
@@ -25,14 +28,31 @@ public class GetClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
             .list();
-        Assert.assertNotNull(classificationSummaryList);
+        assertNotNull(classificationSummaryList);
     }
 
     @Test
-    public void testGetOneClassificationForDomain() throws ClassificationNotFoundException {
+    public void testGetOneClassificationByKeyAndDomain() throws ClassificationNotFoundException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T6310", "DOMAIN_A");
-        Assert.assertNotNull(classification);
+        assertNotNull(classification);
+        assertEquals("CLI:100000000000000000000000000000000011", classification.getId());
+        assertEquals("", classification.getParentId());
+        assertEquals("AUTOMATIC", classification.getCategory());
+        assertEquals("TASK", classification.getType());
+        assertEquals(true, classification.getIsValidInDomain());
+        assertEquals("T-GUK Honorarrechnung erstellen", classification.getName());
+        assertEquals(2, classification.getPriority());
+        assertEquals("P2D", classification.getServiceLevel());
+        assertEquals("", classification.getApplicationEntryPoint());
+        assertEquals("VNR", classification.getCustom1());
+        assertEquals("custom2", classification.getCustom2());
+        assertEquals("custom3", classification.getCustom3());
+        assertEquals("custom4", classification.getCustom4());
+        assertEquals("custom5", classification.getCustom5());
+        assertEquals("custom6", classification.getCustom6());
+        assertEquals("custom7", classification.getCustom7());
+        assertEquals("custom8", classification.getCustom8());
     }
 
     @Test
@@ -40,7 +60,42 @@ public class GetClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService
             .getClassification("CLI:100000000000000000000000000000000011");
-        Assert.assertNotNull(classification);
+        assertNotNull(classification);
+        assertEquals("T6310", classification.getKey());
+        assertEquals("", classification.getParentId());
+        assertEquals("AUTOMATIC", classification.getCategory());
+        assertEquals("TASK", classification.getType());
+        assertEquals("DOMAIN_A", classification.getDomain());
+        assertEquals(true, classification.getIsValidInDomain());
+        assertEquals("T-GUK Honorarrechnung erstellen", classification.getName());
+        assertEquals(2, classification.getPriority());
+        assertEquals("P2D", classification.getServiceLevel());
+        assertEquals("", classification.getApplicationEntryPoint());
+        assertEquals("VNR", classification.getCustom1());
+        assertEquals("custom2", classification.getCustom2());
+        assertEquals("custom3", classification.getCustom3());
+        assertEquals("custom4", classification.getCustom4());
+        assertEquals("custom5", classification.getCustom5());
+        assertEquals("custom6", classification.getCustom6());
+        assertEquals("custom7", classification.getCustom7());
+        assertEquals("custom8", classification.getCustom8());
+    }
+
+    @Test
+    public void testGetClassificationAsSummary() throws ClassificationNotFoundException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        ClassificationSummary classification = classificationService
+            .getClassification("CLI:100000000000000000000000000000000011").asSummary();
+        assertNotNull(classification);
+        assertEquals("T6310", classification.getKey());
+        assertEquals("", classification.getParentId());
+        assertEquals("AUTOMATIC", classification.getCategory());
+        assertEquals("TASK", classification.getType());
+        assertEquals("DOMAIN_A", classification.getDomain());
+        assertEquals("T-GUK Honorarrechnung erstellen", classification.getName());
+        //assertEquals("Generali Unterstützungskasse Honorar wird fällig", classification.getDescription());
+        assertEquals(2, classification.getPriority());
+        assertEquals("P2D", classification.getServiceLevel());
     }
 
     @Test(expected = ClassificationNotFoundException.class)
@@ -48,7 +103,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService
             .getClassification("CLI:100000000470000000000000000000000011");
-        Assert.fail("ClassificationNotFoundException was expected");
+        fail("ClassificationNotFoundException was expected");
     }
 
     @Test
@@ -56,17 +111,17 @@ public class GetClassificationAccTest extends AbstractAccTest {
         throws ClassificationNotFoundException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("L10000", "DOMAIN_B");
-        Assert.assertNotNull(classification);
-        Assert.assertEquals("", classification.getDomain());
-        Assert.assertEquals(999L, classification.getPriority());
+        assertNotNull(classification);
+        assertEquals("", classification.getDomain());
+        assertEquals(999L, classification.getPriority());
     }
 
     @Test
     public void testGetOneClassificationForRootDomain() throws ClassificationNotFoundException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("L10000", "");
-        Assert.assertNotNull(classification);
-        Assert.assertEquals("", classification.getDomain());
-        Assert.assertEquals(999L, classification.getPriority());
+        assertNotNull(classification);
+        assertEquals("", classification.getDomain());
+        assertEquals(999L, classification.getPriority());
     }
 }
