@@ -1,4 +1,4 @@
-package pro.taskana.springtx;
+package pro.taskana;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * @author Titus Meyer (v081065)
+ *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TaskanaConfigTestApplication.class,
@@ -35,8 +35,9 @@ public class TaskanaTransactionTest {
     @Before
     public void before() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.execute("DELETE FROM TASK");
         jdbcTemplate.execute("DELETE FROM WORKBASKET");
-        jdbcTemplate.execute("DELETE FROM GESCHBUCH.TEST");
+        jdbcTemplate.execute("DELETE FROM CUSTOMDB.TEST");
     }
 
     @Test
@@ -92,10 +93,10 @@ public class TaskanaTransactionTest {
     }
 
     @Test
-    public void testTransactionGeschbuch() {
+    public void testTransactionCustomdb() {
         assertBefore(0, 0);
 
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity("/geschbuch", String.class);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity("/customdb", String.class);
         System.err.println("response: " + responseEntity.getBody());
         assertThat(responseEntity.getBody(), containsString("workbaskets: 2"));
         assertThat(responseEntity.getBody(), containsString("tests: 2"));
@@ -104,10 +105,10 @@ public class TaskanaTransactionTest {
     }
 
     @Test
-    public void testTransactionGeschbuchRollback() {
+    public void testTransactionCustomdbRollback() {
         assertBefore(0, 0);
 
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity("/geschbuch?rollback={rollback}",
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity("/customdb?rollback={rollback}",
             String.class, "true");
         System.err.println("response: " + responseEntity.getBody());
         assertThat(responseEntity.getBody(), containsString("workbaskets: 2"));
@@ -118,12 +119,12 @@ public class TaskanaTransactionTest {
 
     private void assertBefore(int workbaskets, int tests) {
         assertWorkbaskets("before", workbaskets);
-        assertGeschbuchTests("before", tests);
+        assertCustomdbTests("before", tests);
     }
 
     private void assertAfter(int workbaskets, int tests) {
         assertWorkbaskets("after", workbaskets);
-        assertGeschbuchTests("after", tests);
+        assertCustomdbTests("after", tests);
     }
 
     private void assertWorkbaskets(String assertion, int value) {
@@ -132,8 +133,8 @@ public class TaskanaTransactionTest {
         assertThat(workbaskets, is(value));
     }
 
-    private void assertGeschbuchTests(String assertion, int value) {
-        int tests = getGeschbuchTests();
+    private void assertCustomdbTests(String assertion, int value) {
+        int tests = getCustomdbTests();
         System.err.println(assertion + " tests: " + tests);
         assertThat(tests, is(value));
     }
@@ -147,12 +148,12 @@ public class TaskanaTransactionTest {
         }
     }
 
-    private int getGeschbuchTests() {
-        ResponseEntity<Integer> tests = restTemplate.getForEntity("/geschbuch-tests", Integer.class);
+    private int getCustomdbTests() {
+        ResponseEntity<Integer> tests = restTemplate.getForEntity("/customdb-tests", Integer.class);
         if (tests.getStatusCode().is2xxSuccessful()) {
             return tests.getBody();
         } else {
-            throw new RuntimeException("error get geschbuch.tests: " + tests.getBody());
+            throw new RuntimeException("error get customdb.tests: " + tests.getBody());
         }
     }
 }

@@ -1,4 +1,4 @@
-package pro.taskana.springtx;
+package pro.taskana;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,7 +19,7 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.util.IdGenerator;
 
 /**
- * @author Titus Meyer (v081065)
+ * Rest Controller.
  */
 @RestController
 public class TaskanaTestController {
@@ -45,9 +45,9 @@ public class TaskanaTestController {
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    @RequestMapping("/geschbuch-tests")
-    public @ResponseBody Integer geschbuchTests() {
-        return getGeschbuchTests();
+    @RequestMapping("/customdb-tests")
+    public @ResponseBody Integer customdbTests() {
+        return getCustomdbTests();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -83,21 +83,21 @@ public class TaskanaTestController {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping("/geschbuch")
-    public @ResponseBody String transactionGeschbuch(
+    @RequestMapping("/customdb")
+    public @ResponseBody String transactionCustomdb(
         @RequestParam(value = "rollback", defaultValue = "false") String rollback)
         throws InvalidWorkbasketException, NotAuthorizedException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
         taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
 
-        jdbcTemplate.execute("INSERT INTO GESCHBUCH.TEST VALUES ('1', 'test')");
-        jdbcTemplate.execute("INSERT INTO GESCHBUCH.TEST VALUES ('2', 'test2')");
+        jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('1', 'test')");
+        jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('2', 'test2')");
 
         if (Boolean.valueOf(rollback)) {
-            throw new RuntimeException("workbaskets: " + getWorkbaskets() + ", tests: " + getGeschbuchTests());
+            throw new RuntimeException("workbaskets: " + getWorkbaskets() + ", tests: " + getCustomdbTests());
         } else {
-            return "workbaskets: " + getWorkbaskets() + ", tests: " + getGeschbuchTests();
+            return "workbaskets: " + getWorkbaskets() + ", tests: " + getCustomdbTests();
         }
     }
 
@@ -105,7 +105,7 @@ public class TaskanaTestController {
     @RequestMapping("/cleanup")
     public @ResponseBody String cleanup() {
         jdbcTemplate.execute("DELETE FROM WORKBASKET");
-        jdbcTemplate.execute("DELETE FROM GESCHBUCH.TEST");
+        jdbcTemplate.execute("DELETE FROM CUSTOMDB.TEST");
         System.err.println("cleaned workbasket and test tables");
         return "cleaned workbasket and test tables";
     }
@@ -115,8 +115,8 @@ public class TaskanaTestController {
         return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM WORKBASKET", Integer.class);
     }
 
-    private int getGeschbuchTests() {
-        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM GESCHBUCH.TEST", Integer.class);
+    private int getCustomdbTests() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
     }
 
     private Workbasket createWorkBasket(String key, String name) {
