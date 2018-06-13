@@ -49,13 +49,15 @@ public class TaskanaEngineConfiguration {
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
     private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";
+    protected static final String TASKANA_SCHEMA_VERSION = "0.9.2"; // must match the VERSION value in table
+                                                                    // TASKANA.TASKANA_SCHEMA_VERSION
 
     // Taskana properties file
     protected String propertiesFileName = TASKANA_PROPERTIES;
 
     // Taskana datasource configuration
     protected DataSource dataSource;
-    protected DbSchemaCreator dbScriptRunner;
+    protected DbSchemaCreator dbSchemaCreator;
 
     // Taskana role configuration
     protected String rolesSeparator = TASKANA_ROLES_SEPARATOR;
@@ -114,8 +116,13 @@ public class TaskanaEngineConfiguration {
             // use default In Memory datasource
             this.dataSource = createDefaultDataSource();
         }
-        dbScriptRunner = new DbSchemaCreator(this.dataSource);
-        dbScriptRunner.run();
+        dbSchemaCreator = new DbSchemaCreator(this.dataSource);
+        dbSchemaCreator.run();
+
+        if (!dbSchemaCreator.isValidSchemaVersion(TASKANA_SCHEMA_VERSION)) {
+            throw new SystemException(
+                "The Database Schema Version doesn't match the expected version " + TASKANA_SCHEMA_VERSION);
+        }
 
     }
 
