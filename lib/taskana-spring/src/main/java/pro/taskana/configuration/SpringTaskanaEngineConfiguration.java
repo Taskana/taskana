@@ -4,9 +4,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import pro.taskana.SpringTaskanaEngineImpl;
 import pro.taskana.TaskanaEngine;
 
@@ -14,8 +11,6 @@ import pro.taskana.TaskanaEngine;
  * This class configures the TaskanaEngineConfiguration for spring
  */
 public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration {
-
-    private static final Logger logger = LoggerFactory.getLogger(SpringTaskanaEngineConfiguration.class);
 
     public SpringTaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
         boolean securityEnabled) throws SQLException {
@@ -35,14 +30,6 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
     @Override
     public TaskanaEngine buildTaskanaEngine() {
         this.useManagedTransactions = true;
-
-        dbScriptRunner = new DbSchemaCreator(this.dataSource);
-        try {
-            dbScriptRunner.run();
-        } catch (SQLException e) {
-            logger.error("The taskana schema could not be created: ", e);
-        }
-
         return new SpringTaskanaEngineImpl(this);
     }
 
