@@ -5,10 +5,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.apache.ibatis.jdbc.SqlRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +76,40 @@ public class DbSchemaCreator {
         }
         LOGGER.debug("Schema does exist.");
         return true;
+    }
+
+    public boolean isValidSchemaVersion(String expectedVersion) {
+        SqlRunner runner = null;
+        try {
+            Connection connection = dataSource.getConnection();
+            runner = new SqlRunner(connection);
+            LOGGER.debug(connection.getMetaData().toString());
+
+            String query = "select VERSION from TASKANA.TASKANA_SCHEMA_VERSION where "
+                + "VERSION = (select max(VERSION) from TASKANA.TASKANA_SCHEMA_VERSION) "
+                + "AND VERSION = '" + expectedVersion + "'";
+
+            Map<String, Object> queryResult = runner.selectOne(query, new Object[] {});
+            if (queryResult == null || queryResult.isEmpty()) {
+                LOGGER.error(
+                    "Schema version not valid. The VERSION property in table TASKANA.TASKANA_SCHEMA_VERSION has not the expected value {}",
+                    expectedVersion);
+                return false;
+            } else {
+                LOGGER.debug("Schema version is valid.");
+                return true;
+            }
+
+        } catch (Exception e) {
+            LOGGER.error(
+                "Schema version not valid. The VERSION property in table TASKANA.TASKANA_SCHEMA_VERSION has not the expected value {}",
+                expectedVersion);
+            return false;
+        } finally {
+            if (runner != null) {
+                runner.closeConnection();
+            }
+        }
     }
 
     public DataSource getDataSource() {
