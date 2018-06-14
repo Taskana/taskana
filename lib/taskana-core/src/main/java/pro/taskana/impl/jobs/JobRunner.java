@@ -1,4 +1,4 @@
-package pro.taskana.impl;
+package pro.taskana.impl.jobs;
 
 import java.time.Instant;
 import java.util.List;
@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.impl.TaskServiceImpl;
+import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.mappings.JobMapper;
 
 /**

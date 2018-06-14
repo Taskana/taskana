@@ -105,8 +105,4 @@ public abstract class AbstractAccTest {
         Instant end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
         return new TimeInterval(begin, end);
     }
-
-    protected Instant getInstant(String datetime) {
-        return LocalDateTime.parse(datetime).atZone(ZoneId.systemDefault()).toInstant();
-    }
 }
