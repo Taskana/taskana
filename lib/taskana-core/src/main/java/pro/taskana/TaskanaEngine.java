@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import java.sql.SQLException;
+import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -65,6 +66,26 @@ public interface TaskanaEngine {
      *             if a database access error occurs
      */
     void setConnection(java.sql.Connection connection) throws SQLException;
+
+
+    /**
+     * Open the connection to the database. to be called at the begin of each Api call that accesses the database
+     */
+    void openConnection();
+
+    /**
+     * retrieve the SqlSession used by taskana.
+     *
+     * @return the myBatis SqlSession object used by taskana
+     */
+    SqlSession getSqlSession();
+
+    /**
+     * Returns the database connection into the pool. In the case of nested calls, simply pops the latest session from
+     * the session stack. Closes the connection if the session stack is empty. In mode AUTOCOMMIT commits before the
+     * connection is closed. To be called at the end of each Api call that accesses the database
+     */
+    void returnConnection();
 
     /**
      * Closes the client's connection, sets it to null and switches to mode PARTICIPATE. Only applicable in mode

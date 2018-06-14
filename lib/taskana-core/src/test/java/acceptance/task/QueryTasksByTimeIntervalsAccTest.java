@@ -15,6 +15,7 @@ import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.TimeInterval;
+import pro.taskana.impl.util.InstantGenerator;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -39,11 +40,11 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
-            getInstant("2018-01-29T15:55:10"),
-            getInstant("2018-01-29T15:55:17"));
+            InstantGenerator.getInstant("2018-01-29T15:55:10"),
+            InstantGenerator.getInstant("2018-01-29T15:55:17"));
         TimeInterval interval2 = new TimeInterval(
-            getInstant("2018-01-29T15:55:23"),
-            getInstant("2018-01-29T15:55:25"));
+            InstantGenerator.getInstant("2018-01-29T15:55:23"),
+            InstantGenerator.getInstant("2018-01-29T15:55:25"));
 
         List<TaskSummary> results = taskService.createTaskQuery()
             .createdWithin(interval1, interval2)
@@ -72,7 +73,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
         TimeInterval interval1 = new TimeInterval(
             null,
-            getInstant("2018-01-29T15:55:17"));
+            InstantGenerator.getInstant("2018-01-29T15:55:17"));
 
         List<TaskSummary> results = taskService.createTaskQuery()
             .createdWithin(interval1)
@@ -100,7 +101,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
-            getInstant("2018-01-29T15:55:17"), null);
+            InstantGenerator.getInstant("2018-01-29T15:55:17"), null);
 
         List<TaskSummary> results = taskService.createTaskQuery()
             .createdWithin(interval1)
@@ -128,11 +129,11 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
-            getInstant("2018-01-30T15:55:00"),
-            getInstant("2018-01-30T15:55:10"));
+            InstantGenerator.getInstant("2018-01-30T15:55:00"),
+            InstantGenerator.getInstant("2018-01-30T15:55:10"));
         TimeInterval interval2 = new TimeInterval(
-            getInstant("2018-01-30T15:55:23"),
-            getInstant("2018-01-30T15:55:25"));
+            InstantGenerator.getInstant("2018-01-30T15:55:23"),
+            InstantGenerator.getInstant("2018-01-30T15:55:25"));
 
         List<TaskSummary> results = taskService.createTaskQuery()
             .claimedWithin(interval1, interval2)
@@ -160,8 +161,8 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
-            getInstant("2018-01-30T16:55:23"),
-            getInstant("2018-01-30T16:55:25"));
+            InstantGenerator.getInstant("2018-01-30T16:55:23"),
+            InstantGenerator.getInstant("2018-01-30T16:55:25"));
         List<TaskSummary> results = taskService.createTaskQuery()
             .completedWithin(interval)
             .orderByCompleted(asc)
@@ -188,8 +189,8 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
-            getInstant("2018-01-30T15:55:00"),
-            getInstant("2018-01-30T15:55:22"));
+            InstantGenerator.getInstant("2018-01-30T15:55:00"),
+            InstantGenerator.getInstant("2018-01-30T15:55:22"));
         List<TaskSummary> results = taskService.createTaskQuery()
             .modifiedWithin(interval)
             .orderByModified(asc)
@@ -216,8 +217,8 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
-            getInstant("2018-01-29T15:55:00"),
-            getInstant("2018-01-30T15:55:22"));
+            InstantGenerator.getInstant("2018-01-29T15:55:00"),
+            InstantGenerator.getInstant("2018-01-30T15:55:22"));
         List<TaskSummary> results = taskService.createTaskQuery()
             .plannedWithin(interval)
             .orderByPlanned(asc)
@@ -244,8 +245,8 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
-            getInstant("2018-01-29T15:55:00"),
-            getInstant("2018-01-30T15:55:22"));
+            InstantGenerator.getInstant("2018-01-29T15:55:00"),
+            InstantGenerator.getInstant("2018-01-30T15:55:22"));
         List<TaskSummary> results = taskService.createTaskQuery()
             .dueWithin(interval)
             .orderByPlanned(asc)
