@@ -24,7 +24,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	initialized = false;
 	inputValue: string;
 
-	allCategories: Map<string, string> = new Map([['', 'None'], ['EXTERNAL', 'External'],
+	allCategories: Map<string, string> = new Map([['ALL', 'All'], ['EXTERNAL', 'External'],
 	['AUTOMATIC', 'Automatic'], ['MANUAL', 'manual'], ['CLOSED', 'closed']]);
 
 	classifications: Array<Classification> = [];
