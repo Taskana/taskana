@@ -1,42 +1,71 @@
 language: java
 jdk:
   - oraclejdk8
+
+services:
+  - docker
+
+cache:
+  directories:
+    - $HOME/.m2
+    - web/node_modules
+    - web/dist
+
+stages:
+  - Build
+  - Test
+  - "Release / Deploy"
+
 env:
   global:
-    - NODE_VERSION: 6
-cache:
-  timeout: 604800 #1 week
-  directories:
-  - "$HOME/.m2"
-  - "web/node_modules"
-before_install:
-  - nvm install $NODE_VERSION
-  - npm install -g @angular/cli >/dev/null 2>&1
-  - lib/deployment/change_version.sh -m "rest/ lib/ web/" -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
-install:
-  - (cd web && npm install --no-progress && npm run build:prod)
-    && mvn clean install -q -f lib/ -DskipTests=true -Dmaven.javadoc.skip=true -B
-    && mvn clean install -q -f rest/ -DskipTests=true -Dmaven.javadoc.skip=true -B
-before_script:
+    - NODE_VERSION=6
+  matrix:
+    - DB=H2 
+    - DB=DB2_10_5
+    - DB=DB2_11_1
+    - DB=POSTGRES
+
+stage: Test
+script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
-script:
-  - (cd web && npm run test)
-    && mvn verify -f lib/
-    && mvn verify -f rest/
-    && lib/deployment/release.sh -ik -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/"
-    && lib/deployment/release.sh -m web/
-    && lib/deployment/release.sh -pp -p rest/ -m rest/taskana-rest-spring -mf manifest.yml -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
-deploy:
-  provider: cloudfoundry
-  username: tobias.schaefer@novatec-gmbh.de
-  password:
-    secure: dQh3e8Zhi2ucd5NcxHZ337Ku2SFrt0qA8lghtExQU5bcdFziqYKJsVFdD19hNQE6DOZT8FV9OHTB3odZSvV7aa38sq4KDwzJVVitIyU3eNZP0S5AqAv0eKitqQhjY7rnjBIkgMQ2rGTZlAL9g/CQWPlB4rnUPLXv/7+pZP29M3OPK0hyIPw9I0FfU02cM+R2z8SYPRr4MYYbdsTdJeJz+1sKWwQiD4bDE/Kmcs7BALTZ3/HFmu2Kjxk7soERSpXlMvKDkHHJCJMSjQI6zT5Ja6yg4SgOgccLZKuaPwF+8a7RKPOtW+H74zzO/IE9FGimlRKFGHhoFmQh0oI1sMkhRyIH0n/rkCVzI6B8XjDBEdaRjfHZbAkrjapuvhLwSxyklut3CknbSxfgAo8tZefsGVETD1rYkfLA207bkxt6Wk+X1d2pCRFkUoeTjcB+IkqvftTJvTX5vyt927w0pyx/xg9gxBLA3bqzhRL7rwgXgqgrxNUDFT3nxExecPpdEinyVf+jQxmrb1uw1WEFM+dLjA3tByxMEy7PfnfqTvUs8dvs4em1Vln+N5K1+OqU93ze3FmPMmqY3/4r63qdVACtCqHlfGC3HQPUi6fWmBzVNhZ9rF6FJvkECTkvLklnOB9MIoneGk2v46slveUsxKSz985A2aMkYNO+p1VozS8rAfg=
-  api: https://api.ng.bluemix.net
-  organization: '"NovaTec Consulting GmbH"'
-  space: Taskana
-  on:
-    repo: Taskana/taskana
-    all_branches: true
-    condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
+  - nvm install $NODE_VERSION
+    && ci/change_version.sh -m "lib/ rest/" -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
+    && ./ci/test.sh $DB
+
+jobs:
+  include:
+    - stage: Build
+      install:
+        - nvm install $NODE_VERSION
+          && (cd web && npm install)
+          && ci/change_version.sh -m "lib/ rest/" -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
+      script:
+        - (cd web && npm run build:prod)
+          && mvn clean install -q -f lib -DskipTests -Dmaven.javadoc.skip=true
+          && mvn clean install -q -f rest -DskipTests -Dmaven.javadoc.skip=true
+    - stage: "Release / Deploy"
+      script: 
+        - ci/change_version.sh -i -m "lib/ rest/" -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
+          && ci/copy-rest-spring.sh $TRAVIS_TAG
+          && ci/commitPoms.sh lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
+      deploy: 
+        provider: cloudfoundry 
+        username: tobias.schaefer@novatec-gmbh.de
+        password:
+          secure: dQh3e8Zhi2ucd5NcxHZ337Ku2SFrt0qA8lghtExQU5bcdFziqYKJsVFdD19hNQE6DOZT8FV9OHTB3odZSvV7aa38sq4KDwzJVVitIyU3eNZP0S5AqAv0eKitqQhjY7rnjBIkgMQ2rGTZlAL9g/CQWPlB4rnUPLXv/7+pZP29M3OPK0hyIPw9I0FfU02cM+R2z8SYPRr4MYYbdsTdJeJz+1sKWwQiD4bDE/Kmcs7BALTZ3/HFmu2Kjxk7soERSpXlMvKDkHHJCJMSjQI6zT5Ja6yg4SgOgccLZKuaPwF+8a7RKPOtW+H74zzO/IE9FGimlRKFGHhoFmQh0oI1sMkhRyIH0n/rkCVzI6B8XjDBEdaRjfHZbAkrjapuvhLwSxyklut3CknbSxfgAo8tZefsGVETD1rYkfLA207bkxt6Wk+X1d2pCRFkUoeTjcB+IkqvftTJvTX5vyt927w0pyx/xg9gxBLA3bqzhRL7rwgXgqgrxNUDFT3nxExecPpdEinyVf+jQxmrb1uw1WEFM+dLjA3tByxMEy7PfnfqTvUs8dvs4em1Vln+N5K1+OqU93ze3FmPMmqY3/4r63qdVACtCqHlfGC3HQPUi6fWmBzVNhZ9rF6FJvkECTkvLklnOB9MIoneGk2v46slveUsxKSz985A2aMkYNO+p1VozS8rAfg=
+        api: https://api.ng.bluemix.net 
+        organization: '"NovaTec Consulting GmbH"' 
+        space: Taskana
+        on:
+          all_branches: true
+      if: tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
+    - stage: "Release / Deploy"
+      script:
+        - ci/release.sh lib/taskana-core $TRAVIS_TAG
+          && ci/release.sh lib/taskana-spring $TRAVIS_TAG
+          && ci/release.sh lib/taskana-cdi $TRAVIS_TAG
+          && ci/release.sh web/ $TRAVIS_TAG
+          && ci/release.sh rest/taskana-rest-spring $TRAVIS_TAG
+      if: (tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ OR branch = master) AND type != pull_request
