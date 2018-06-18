@@ -18,7 +18,7 @@ install:
     && mvn clean install -q -f lib/ -DskipTests=true -Dmaven.javadoc.skip=true -B
     && mvn clean install -q -f rest/ -DskipTests=true -Dmaven.javadoc.skip=true -B
 script:
-  - (cd web && npm run test-phantom)
+  - (cd web && npm run test)
     && mvn verify -f lib/
     && mvn verify -f rest/
     && lib/deployment/release.sh -ik -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/"
