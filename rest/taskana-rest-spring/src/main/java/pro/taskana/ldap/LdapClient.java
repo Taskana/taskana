@@ -31,13 +31,14 @@ import pro.taskana.rest.resource.AccessIdResource;
 @Component
 public class LdapClient {
 
+    public static final String TASKANA_USE_LDAP_PROP_NAME = "taskana.ldap.useLdap";
     private static final Logger LOGGER = LoggerFactory.getLogger(LdapClient.class);
     private boolean active = false;
 
     @Autowired
     private Environment env;
 
-    @Autowired
+    @Autowired(required = false)
     private LdapTemplate ldapTemplate;
 
     private String userSearchBase;
@@ -217,7 +218,7 @@ public class LdapClient {
     }
 
     public boolean useLdap() {
-        String useLdap = env.getProperty("taskana.ldap.useLdap");
+        String useLdap = env.getProperty(TASKANA_USE_LDAP_PROP_NAME);
         if (useLdap == null || useLdap.isEmpty()) {
             return false;
         } else {
