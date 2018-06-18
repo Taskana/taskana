@@ -28,7 +28,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.impl.DaysToWorkingDaysConverter;
-import pro.taskana.impl.JobRunner;
+import pro.taskana.impl.jobs.JobRunner;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.security.JAASRunner;
