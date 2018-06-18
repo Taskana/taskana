@@ -17,11 +17,11 @@
 			<taskana-icon-type [type]="selectedCategory" class="vertical-align"></taskana-icon-type>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-classification" role="menu">
-			<li *ngFor="let categories of allCategories | mapValues">
-				<button type="button" (click)="selectCategory(categories.key);" class="btn btn-default btn-classification-list" data-toggle="tooltip"
+			<li>
+				<a *ngFor="let categories of allCategories | mapValues" type="button" (click)="selectCategory(categories.key);" data-toggle="tooltip"
 				 [title]="categories.value">
-					<taskana-icon-type class="vertical-align" [type]='categories.key'></taskana-icon-type>
-				</button>
+					<taskana-icon-type class="vertical-align" [type]='categories.key' [text]="categories.value"></taskana-icon-type>
+				</a>
 			</li>
 		</ul>
 	</div>
@@ -35,7 +35,7 @@
 	 [selectNodeId]="selectedId" [filterText]="inputValue" [filterIcon]="selectedCategory" (selectNodeIdChanged)="selectClassification($event)"></taskana-tree>
 	<ng-template #empty_classifications>
 		<div class="col-xs-12 container-no-items center-block">
-				<h3 class="grey">There are no classifications</h3>
+			<h3 class="grey">There are no classifications</h3>
 			<svg-icon class="img-responsive empty-icon" src="./assets/icons/classification-empty.svg"></svg-icon>
 		</div>
 	</ng-template>

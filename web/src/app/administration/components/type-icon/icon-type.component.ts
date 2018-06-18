@@ -10,7 +10,7 @@ export class IconTypeComponent implements OnInit {
 
 
 	@Input()
-	type: ICONTYPES = ICONTYPES.PERSONAL;
+	type: ICONTYPES = ICONTYPES.ALL;
 
 	@Input()
 	selected = false;
@@ -18,8 +18,11 @@ export class IconTypeComponent implements OnInit {
 	@Input()
 	tooltip = false;
 
+	@Input()
+	text = '';
+
 	public static get allTypes(): Map<string, string> {
-		return new Map([['', 'None'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])
+		return new Map([ ['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])
 	};
 
 	constructor() { }
@@ -36,7 +39,7 @@ export class IconTypeComponent implements OnInit {
 				type === 'EXTERNAL' ?  'external.svg' :
 				type === 'AUTOMATIC' ?  'automatic.svg' :
 				type === 'MANUAL' ?  'manual.svg' :
-				type === 'CLOSED' ?  'closed.svg' : '';
+				type === 'CLOSED' ?  'closed.svg' : 'asterisk.svg';
 
 	}
 }

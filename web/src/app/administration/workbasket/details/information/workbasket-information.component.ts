@@ -54,7 +54,9 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 		private savingWorkbasket: SavingWorkbasketService,
 		private requestInProgressService: RequestInProgressService,
 		private customFieldsService: CustomFieldsService) {
-		this.allTypes = IconTypeComponent.allTypes;
+		this.allTypes = new Map([['PERSONAL', 'Personal'], ['GROUP', 'Group'],
+		['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])
+
 	}
 
 	ngOnInit(): void {
