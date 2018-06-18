@@ -65,9 +65,12 @@ public interface TaskanaEngine {
      * @throws SQLException
      *             if a database access error occurs
 <<<<<<< HEAD
+<<<<<<< HEAD
      */
     void setConnection(java.sql.Connection connection) throws SQLException;
 =======
+=======
+>>>>>>> 878b751e68953d798c2a2f6409cda225ab2dbc65
      */
     void setConnection(java.sql.Connection connection) throws SQLException;
 
@@ -90,7 +93,10 @@ public interface TaskanaEngine {
      * connection is closed. To be called at the end of each Api call that accesses the database
      */
     void returnConnection();
+<<<<<<< HEAD
 >>>>>>> TSK-567 Create a scheduler job for cleanup completed tasks
+=======
+>>>>>>> 878b751e68953d798c2a2f6409cda225ab2dbc65
 
     /**
      * Closes the client's connection, sets it to null and switches to mode PARTICIPATE. Only applicable in mode
