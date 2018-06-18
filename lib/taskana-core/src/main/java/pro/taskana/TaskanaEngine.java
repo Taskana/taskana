@@ -1,7 +1,7 @@
 package pro.taskana;
 
-import org.apache.ibatis.session.SqlSession;
 
+import org.apache.ibatis.session.SqlSession;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 
@@ -61,8 +61,10 @@ public interface TaskanaEngine {
      *
      * @param connection
      *            - The java.sql.Connection that is controlled by the client
+     * @throws SQLException
+     *             if a database access error occurs
      */
-    void setConnection(java.sql.Connection connection) throws java.sql.SQLException;
+    void setConnection(java.sql.Connection connection) throws SQLException;
 
 
     /**

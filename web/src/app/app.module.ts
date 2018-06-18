@@ -74,7 +74,7 @@ const DECLARATIONS = [
 
 export function startupServiceFactory(startupService: StartupService): () => Promise<any> {
   return (): Promise<any> => {
-    return startupService.load();
+    return startupService.load()
   };
 }
 

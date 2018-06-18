@@ -16,7 +16,6 @@ import { Links } from 'app/models/links';
 import { FilterModel } from 'app/models/filter';
 import { SortingModel } from 'app/models/sorting';
 
-import { SortComponent } from 'app/administration/components/sort/sort.component';
 import { FilterComponent } from 'app/administration/components/filter/filter.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
@@ -49,7 +48,7 @@ describe('WorkbasketListToolbarComponent', () => {
 			testBed.configureTestingModule({
 				imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, HttpModule,
 					HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule, AppModule],
-				declarations: [WorkbasketListToolbarComponent, SortComponent,
+				declarations: [WorkbasketListToolbarComponent,
 					FilterComponent, IconTypeComponent, DummyDetailComponent, ImportExportComponent],
 				providers: [
 					WorkbasketService,

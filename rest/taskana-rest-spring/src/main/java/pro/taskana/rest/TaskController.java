@@ -37,7 +37,6 @@ import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -181,8 +180,7 @@ public class TaskController extends AbstractPagingController {
     @RequestMapping(path = "/{taskId}/transfer/{workbasketId}")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> transferTask(@PathVariable String taskId, @PathVariable String workbasketId)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-        InvalidStateException {
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
         Task updatedTask = taskService.transfer(taskId, workbasketId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
@@ -193,8 +191,8 @@ public class TaskController extends AbstractPagingController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> updateTask(
         @PathVariable(value = "taskId") String taskId,
-        @RequestBody TaskResource taskResource) throws TaskNotFoundException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException, InvalidWorkbasketException,
+        @RequestBody TaskResource taskResource)
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         ResponseEntity<TaskResource> result;
         if (taskId.equals(taskResource.getTaskId())) {

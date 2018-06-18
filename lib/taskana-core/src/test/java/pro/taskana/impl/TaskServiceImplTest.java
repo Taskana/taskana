@@ -1181,7 +1181,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testUpdateTaskAddingValidAttachment() throws TaskNotFoundException, SystemException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
@@ -1209,7 +1209,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testUpdateTaskAddingValidAttachmentTwice() throws TaskNotFoundException, SystemException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
@@ -1239,7 +1239,7 @@ public class TaskServiceImplTest {
     @Test(expected = AttachmentPersistenceException.class)
     public void testUpdateTaskAddingAttachmentWithSameIdForcedUsingingListMethod()
         throws TaskNotFoundException, SystemException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
@@ -1272,7 +1272,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testUpdateTaskUpdateAttachment() throws TaskNotFoundException, SystemException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         String channelUpdate = "OTHER CHANNEL";
         Classification classification = createDummyClassification();
@@ -1306,7 +1306,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void testUpdateTaskRemovingAttachment() throws TaskNotFoundException, SystemException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");

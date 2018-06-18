@@ -30,6 +30,7 @@ import { MapToIterable } from './pipes/mapToIterable/mapToIterable';
  */
 import { HttpClientInterceptor } from './services/httpClientInterceptor/http-client-interceptor.service';
 import { AccessIdsService } from './services/access-ids/access-ids.service';
+import {SortComponent} from './sort/sort.component';
 
 
 
@@ -56,7 +57,8 @@ const DECLARATIONS = [
   SelectWorkBasketPipe,
   SpreadNumberPipe,
   OrderBy,
-  MapToIterable
+  MapToIterable,
+  SortComponent
 ];
 
 @NgModule({

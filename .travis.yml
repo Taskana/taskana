@@ -17,8 +17,12 @@ install:
   - (cd web && npm install --no-progress && npm run build:prod)
     && mvn clean install -q -f lib/ -DskipTests=true -Dmaven.javadoc.skip=true -B
     && mvn clean install -q -f rest/ -DskipTests=true -Dmaven.javadoc.skip=true -B
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
 script:
-  - (cd web && npm run test-phantom)
+  - (cd web && npm run test)
     && mvn verify -f lib/
     && mvn verify -f rest/
     && lib/deployment/release.sh -ik -p lib/ -m "lib/taskana-core/ lib/taskana-spring/ lib/taskana-cdi/"

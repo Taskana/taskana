@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.security.JAASRunner;
 
@@ -136,12 +135,10 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     /**
      * Testcase only for DB2 users, because H2 doesn´t throw a Exception when the offset is set to high.<br>
      * Using DB2 should throw a unchecked RuntimeException for a offset which is out of bounds.
-     *
-     * @throws NotAuthorizedException
      */
     @Ignore
     @Test(expected = TaskanaRuntimeException.class)
-    public void testPaginationThrowingExceptionWhenPageOutOfBounds() throws NotAuthorizedException {
+    public void testPaginationThrowingExceptionWhenPageOutOfBounds() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
 
         // entrypoint set outside result amount
