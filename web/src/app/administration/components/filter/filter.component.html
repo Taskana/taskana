@@ -1,17 +1,17 @@
 <div id="{{target}}" class="list-group-search">
 	<div class="row">
 		<div class="dropdown col-xs-2">
-			<button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdownMenufilter" data-toggle="dropdown"
-			 aria-haspopup="true" aria-expanded="true">
+			<button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdownMenufilter" data-toggle="dropdown" aria-haspopup="true"
+			 aria-expanded="true">
 				<taskana-icon-type [type]="filter.type" class="vertical-align"></taskana-icon-type>
 
 			</button>
 			<ul class="dropdown-menu dropdown-menu-users" role="menu">
-				<li *ngFor="let type of allTypes | mapValues">
-					<button type="button" (click)="selectType(type.key); search()" class="btn btn-default btn-users-list" data-toggle="tooltip"
+				<li>
+					<a *ngFor="let type of allTypes | mapValues" type="button" (click)="selectType(type.key); search()" data-toggle="tooltip"
 					 [title]="type.value">
-						<taskana-icon-type class="vertical-align" [type]='type.key'></taskana-icon-type>
-					</button>
+						<taskana-icon-type class="vertical-align" [type]='type.key' [text]="type.value"></taskana-icon-type>
+					</a>
 				</li>
 			</ul>
 		</div>

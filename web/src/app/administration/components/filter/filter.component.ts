@@ -23,7 +23,8 @@ export class FilterComponent {
 	toggleDropDown = false;
 
 	constructor() {
-		this.allTypes = IconTypeComponent.allTypes;
+		this.allTypes = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
+		['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
 	}
 
 	selectType(type: ICONTYPES) {

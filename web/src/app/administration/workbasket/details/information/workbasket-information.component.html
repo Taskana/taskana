@@ -65,8 +65,7 @@
                         <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
                             <li>
                                 <a *ngFor="let type of allTypes | mapValues | removeEmptyType" (click)="selectType(type.key)">
-                                    <taskana-icon-type class="vertical-align" [type]='type.key'></taskana-icon-type>
-                                    {{type.value}}
+                                    <taskana-icon-type class="vertical-align" [type]='type.key' [text]="type.value"></taskana-icon-type>
                                 </a>
                             </li>
                         </ul>

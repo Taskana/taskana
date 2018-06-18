@@ -1,7 +1,7 @@
 
 
 export enum ICONTYPES {
-	NONE = '',
+	ALL = 'ALL',
 	PERSONAL = 'PERSONAL',
 	GROUP = 'GROUP',
 	CLEARANCE = 'CLEARANCE',
