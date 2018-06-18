@@ -20,6 +20,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.ldap.LdapClient;
+import pro.taskana.ldap.LdapConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
@@ -27,7 +28,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 @SpringBootApplication
 @EnableScheduling
-@Import(SampleConfiguration.class)
+@Import({SampleConfiguration.class, LdapConfiguration.class, RestConfiguration.class})
 public class ExampleRestApplication {
 
     @Autowired

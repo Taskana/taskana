@@ -1,7 +1,7 @@
 package pro.taskana.rest;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Configuration;
 
 import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskanaTransactionProvider;
@@ -9,7 +9,7 @@ import pro.taskana.TaskanaTransactionProvider;
 /**
  * Configuration class for Spring sample application.
  */
-@Import(RestConfiguration.class)
+@Configuration
 public class SampleConfiguration {
 
     @Bean
