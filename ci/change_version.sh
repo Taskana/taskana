@@ -6,10 +6,15 @@ set -e #fail fast
 #H
 #H prints this help and exits  
 #H 
-#H change_version.sh [modules...]
+#H change_version.sh <-m modules...> [-i] 
 #H
 #H   if a release version exists (extracted from TRAVIS_TAG) 
 #H   the maven versions of all modules will be changed to the given release version.
+#H
+#H module:
+#H   directory of a maven project
+#H i:
+#H   increments version
 #H
 #H Environment variables:
 #H   - TRAVIS_TAG 
@@ -22,21 +27,37 @@ function helpAndExit {
   exit "$1"
 }
 
+# takes a version (without leading v) and increments its
+# last number by one. 
+# Arguments:
+#   $1: version (without leading v) which will be patched
+# Return:
+#   version with last number incremented
+function increment_version() {
+  if [[ ! "$1" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
+    echo "'$1' does not match tag pattern." >&2
+    exit 1;
+  fi
+  echo "${1%\.*}.`expr ${1##*\.*\.} + 1`"
+}
+
 # changing version in pom and all its children
 # Arguments:
 #   $1: directory of pom
 #   $2: new version
 function change_version {
-  mvn org.codehaus.mojo:versions-maven-plugin:2.5:set -f "$1" -DnewVersion="$2"   -DartifactId=*  -DgroupId=*
+  mvn versions:set -f "$1" -DnewVersion="$2"   -DartifactId=*  -DgroupId=* versions:commit
 }
 
 function main {
-  if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help"  ]]; then
-    helpAndExit 0
-  fi
+  [[ $# -eq 0 || "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
 
   while [[ $# -gt 0 ]]; do
     case $1 in
+      -i)
+        INCREMENT="true"
+        shift # past argument
+        ;;
       -m|--modules)
         if [[ -z "$2" || "$2" == -* ]]; then
           echo "missing parameter for argument '-m|--modules'" >&2
@@ -68,12 +89,13 @@ function main {
   fi
 
   if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    version=`[[ -n "$INCREMENT" ]] && echo $(increment_version "${TRAVIS_TAG##v}")-SNAPSHOT || echo "${TRAVIS_TAG##v}"`
     for dir in ${MODULES[@]}; do
-      change_version "$dir" "${TRAVIS_TAG##v}"
+      change_version "$dir" "$version"
     done
 
     if [[ -n "$SWARM" ]]; then
-      sed -i "s/pro.taskana:taskana-core.*-SNAPSHOT/pro.taskana:taskana-core:${TRAVIS_TAG##v}/" "$SWARM"
+      sed -i "s/pro.taskana:taskana-core.*-SNAPSHOT/pro.taskana:taskana-core:$version/" "$SWARM"
     fi
   else
     echo "skipped version change because this is not a release build"
