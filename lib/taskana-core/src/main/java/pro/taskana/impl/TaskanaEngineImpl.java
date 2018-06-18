@@ -222,7 +222,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     /**
      * Open the connection to the database. to be called at the begin of each Api call that accesses the database
      */
-    void openConnection() {
+    public void openConnection() {
         initSqlSession();
         if (mode != ConnectionManagementMode.EXPLICIT) {
             pushSessionToStack(this.sessionManager);
@@ -245,7 +245,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      * the session stack. Closes the connection if the session stack is empty. In mode AUTOCOMMIT commits before the
      * connection is closed. To be called at the end of each Api call that accesses the database
      */
-    void returnConnection() {
+    public void returnConnection() {
         if (this.mode != ConnectionManagementMode.EXPLICIT) {
             popSessionFromStack();
             if (getSessionStack().isEmpty()
@@ -267,7 +267,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      *
      * @return the myBatis SqlSession object used by taskana
      */
-    SqlSession getSqlSession() {
+    public SqlSession getSqlSession() {
         return this.sessionManager;
     }
 
