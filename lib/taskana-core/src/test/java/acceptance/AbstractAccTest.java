@@ -106,7 +106,4 @@ public abstract class AbstractAccTest {
         return new TimeInterval(begin, end);
     }
 
-    protected Instant getInstant(String datetime) {
-        return LocalDateTime.parse(datetime).atZone(ZoneId.systemDefault()).toInstant();
-    }
 }

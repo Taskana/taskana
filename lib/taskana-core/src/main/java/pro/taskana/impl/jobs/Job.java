@@ -1,4 +1,4 @@
-package pro.taskana.impl;
+package pro.taskana.impl.jobs;
 
 import java.time.Instant;
 import java.util.Map;
