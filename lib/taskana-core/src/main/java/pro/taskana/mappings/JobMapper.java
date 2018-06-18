@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import pro.taskana.impl.jobs.Job;
+import pro.taskana.impl.Job;
 import pro.taskana.impl.persistence.MapTypeHandler;
 
 /**

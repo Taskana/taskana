@@ -27,7 +27,6 @@ import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.jobs.Job;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.mappings.ClassificationMapper;
 import pro.taskana.mappings.JobMapper;
