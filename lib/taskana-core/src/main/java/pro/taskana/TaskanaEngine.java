@@ -1,8 +1,10 @@
 package pro.taskana;
 
+
 import java.sql.SQLException;
 import org.apache.ibatis.session.SqlSession;
 
+import org.apache.ibatis.session.SqlSession;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.NotAuthorizedException;
 
