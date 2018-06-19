@@ -10,6 +10,7 @@ public class ClassificationResource extends ResourceSupport {
     public String classificationId;
     public String key;
     public String parentId;
+    public String parentKey;
     public String category;
     public String type;
     public String domain;
@@ -56,6 +57,14 @@ public class ClassificationResource extends ResourceSupport {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public String getParentKey() {
+        return parentId;
+    }
+
+    public void setParentKey(String parentKey) {
+        this.parentKey = parentKey;
     }
 
     public String getCategory() {
@@ -215,6 +224,8 @@ public class ClassificationResource extends ResourceSupport {
         builder.append(key);
         builder.append(", parentId=");
         builder.append(parentId);
+        builder.append(", parentKey=");
+        builder.append(parentKey);
         builder.append(", category=");
         builder.append(category);
         builder.append(", type=");

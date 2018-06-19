@@ -173,11 +173,23 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test(expected = ClassificationNotFoundException.class)
-    public void testCreateClassificationWithInvalidParent()
+    public void testCreateClassificationWithInvalidParentId()
         throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
         DomainNotFoundException, InvalidArgumentException {
         Classification classification = classificationService.newClassification("Key5", "", "TASK");
         classification.setParentId("ID WHICH CANT BE FOUND");
+        classification = classificationService.createClassification(classification);
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testCreateClassificationWithInvalidParentKey()
+        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        DomainNotFoundException, InvalidArgumentException {
+        Classification classification = classificationService.newClassification("Key5", "", "TASK");
+        classification.setParentKey("KEY WHICH CANT BE FOUND");
         classification = classificationService.createClassification(classification);
     }
 

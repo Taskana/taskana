@@ -72,6 +72,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setIsValidInDomain(false);
         classification.setName(newName);
         classification.setParentId("CLI:100000000000000000000000000000000004");
+        classification.setParentKey("L11010");
         classification.setPriority(1000);
         classification.setServiceLevel("P2DT3H4M");
 
@@ -173,12 +174,25 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test(expected = ClassificationNotFoundException.class)
-    public void testUpdateClassificationParentToInvalid()
+    public void testUpdateClassificationParentIdToInvalid()
         throws NotAuthorizedException, ClassificationNotFoundException,
         ConcurrencyException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         classification.setParentId("ID WHICH CANT BE FOUND");
+        classification = classificationService.updateClassification(classification);
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testUpdateClassificationParentKeyToInvalid()
+        throws NotAuthorizedException, ClassificationNotFoundException,
+        ConcurrencyException, InvalidArgumentException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
+        classification.setParentKey("KEY WHICH CANT BE FOUND");
         classification = classificationService.updateClassification(classification);
     }
 

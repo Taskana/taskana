@@ -85,7 +85,7 @@ public class ClassificationServiceImplTest {
     }
 
     @Test(expected = ClassificationNotFoundException.class)
-    public void testCreateClassificationParentNotExisting()
+    public void testCreateClassificationParentIdNotExisting()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
         Classification classification = createDummyClassification(null);
@@ -104,6 +104,36 @@ public class ClassificationServiceImplTest {
                 classification.getDomain());
             verify(cutSpy, times(1)).getClassification(classification.getParentId());
             verify(classificationMapperMock, times(1)).findById(classification.getParentId());
+            verify(taskanaEngineImplMock, times(2)).returnConnection();
+            verify(taskanaEngineImplMock, times(1)).domainExists(any());
+            verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
+            throw e;
+        }
+    }
+
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testCreateClassificationParentKeyNotExisting()
+        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
+        DomainNotFoundException, InvalidArgumentException {
+        Classification classification = createDummyClassification(null);
+        classification.setParentKey("NOT EXISTING KEY");
+        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
+            classification.getDomain());
+        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getParentKey(),
+            classification.getDomain());
+        doReturn(true).when(taskanaEngineImplMock).domainExists(any());
+
+        try {
+            cutSpy.createClassification(classification);
+        } catch (ClassificationNotFoundException e) {
+            verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
+            verify(taskanaEngineImplMock, times(2)).openConnection();
+            verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
+                classification.getDomain());
+            verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getParentKey(),
+                classification.getDomain());
+            verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getParentKey(), "");
+            verify(cutSpy, times(1)).getClassification(classification.getParentKey(), classification.getDomain());
             verify(taskanaEngineImplMock, times(2)).returnConnection();
             verify(taskanaEngineImplMock, times(1)).domainExists(any());
             verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
@@ -214,7 +244,7 @@ public class ClassificationServiceImplTest {
     }
 
     @Test(expected = ClassificationNotFoundException.class)
-    public void testUpdateClassificationParentNotExisting()
+    public void testUpdateClassificationParentIdNotExisting()
         throws ClassificationNotFoundException, NotAuthorizedException,
         ConcurrencyException, InvalidArgumentException {
         Instant now = Instant.now();
@@ -238,6 +268,41 @@ public class ClassificationServiceImplTest {
                 classification.getDomain());
             verify(cutSpy, times(1)).getClassification(classification.getParentId());
             verify(classificationMapperMock, times(1)).findById(classification.getParentId());
+            verify(taskanaEngineImplMock, times(2)).returnConnection();
+            verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
+            throw e;
+        }
+    }
+
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testUpdateClassificationParentKeyNotExisting()
+        throws ClassificationNotFoundException, NotAuthorizedException,
+        ConcurrencyException, InvalidArgumentException {
+        Instant now = Instant.now();
+        ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
+        oldClassification.setParentKey("SOME KEY");
+        oldClassification.setCreated(now);
+        oldClassification.setModified(now);
+        Classification classification = createDummyClassification();
+        classification.setParentKey("DIFFERENT KEY - FOR CHECKING PARENT");
+        ((ClassificationImpl) classification).setCreated(oldClassification.getCreated());
+        ((ClassificationImpl) classification).setModified(oldClassification.getModified());
+        doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
+        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getParentKey(),
+            classification.getDomain());
+
+        try {
+            cutSpy.updateClassification(classification);
+        } catch (ClassificationNotFoundException e) {
+            verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
+            verify(taskanaEngineImplMock, times(2)).openConnection();
+            verify(cutSpy, times(1)).getClassification(classification.getKey(),
+                classification.getDomain());
+            verify(cutSpy, times(1)).getClassification(classification.getParentKey(),
+                classification.getDomain());
+            verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getParentKey(),
+                classification.getDomain());
+            verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getParentKey(), "");
             verify(taskanaEngineImplMock, times(2)).returnConnection();
             verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
             throw e;
@@ -326,6 +391,7 @@ public class ClassificationServiceImplTest {
         classificationImpl.setId(id);
         classificationImpl.setKey("ABC111");
         classificationImpl.setParentId("");
+        classificationImpl.setParentKey("");
         return classificationImpl;
     }
 }

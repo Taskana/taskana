@@ -13,6 +13,7 @@ public class ClassificationImpl implements Classification {
     private String id;
     private String key;
     private String parentId;
+    private String parentKey;
     private String category;
     private String type;
     private String domain;
@@ -62,6 +63,16 @@ public class ClassificationImpl implements Classification {
     @Override
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    @Override
+    public String getParentKey() {
+        return parentKey;
+    }
+
+    @Override
+    public void setParentKey(String parentKey) {
+        this.parentKey = parentKey;
     }
 
     @Override
@@ -260,8 +271,17 @@ public class ClassificationImpl implements Classification {
         summary.setName(this.name);
         summary.setType(this.type);
         summary.setParentId(this.parentId);
+        summary.setParentKey(this.parentKey);
         summary.setPriority(this.priority);
         summary.setServiceLevel(this.serviceLevel);
+        summary.setCustom1(custom1);
+        summary.setCustom2(custom2);
+        summary.setCustom3(custom3);
+        summary.setCustom4(custom4);
+        summary.setCustom5(custom5);
+        summary.setCustom6(custom6);
+        summary.setCustom7(custom7);
+        summary.setCustom8(custom8);
         return summary;
     }
 
@@ -274,6 +294,8 @@ public class ClassificationImpl implements Classification {
         builder.append(key);
         builder.append(", parentId=");
         builder.append(parentId);
+        builder.append(", parentKey=");
+        builder.append(parentKey);
         builder.append(", category=");
         builder.append(category);
         builder.append(", type=");
@@ -339,6 +361,7 @@ public class ClassificationImpl implements Classification {
         result = prime * result + ((modified == null) ? 0 : modified.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((parentId == null) ? 0 : parentId.hashCode());
+        result = prime * result + ((parentKey == null) ? 0 : parentKey.hashCode());
         result = prime * result + priority;
         result = prime * result + ((serviceLevel == null) ? 0 : serviceLevel.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
@@ -488,6 +511,13 @@ public class ClassificationImpl implements Classification {
                 return false;
             }
         } else if (!parentId.equals(other.parentId)) {
+            return false;
+        }
+        if (parentKey == null) {
+            if (other.parentKey != null) {
+                return false;
+            }
+        } else if (!parentKey.equals(other.parentKey)) {
             return false;
         }
         if (priority != other.priority) {

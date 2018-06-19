@@ -33,6 +33,21 @@ public interface Classification {
     void setParentId(String parentId);
 
     /**
+     * Used to get the key of the parent classification.
+     *
+     * @return key of the parent classification or null if there is no parent.
+     */
+    String getParentKey();
+
+    /**
+     * Set/Change a reference to the current parent classification via key. EMPTY if there is no parent.
+     *
+     * @param parentKey
+     *            The key of the parent classification.
+     */
+    void setParentKey(String parentKey);
+
+    /**
      * @return category of this classification.
      */
     String getCategory();
