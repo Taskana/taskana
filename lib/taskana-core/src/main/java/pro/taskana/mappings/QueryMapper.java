@@ -270,12 +270,13 @@ public interface QueryMapper {
         @Result(property = "custom16", column = "CUSTOM_16")})
     List<TaskSummaryImpl> queryTaskSummaries(TaskQueryImpl taskQuery);
 
-    @Select("<script>SELECT ID, KEY, PARENT_ID, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
+    @Select("<script>SELECT ID, KEY, PARENT_ID, PARENT_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
         + "FROM TASKANA.CLASSIFICATION "
         + "<where>"
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
         + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='parentId != null'>AND PARENT_ID IN(<foreach item='item' collection='parentId' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='parentKey != null'>AND PARENT_KEY IN(<foreach item='item' collection='parentKey' separator=',' >#{item}</foreach>)</if> "
         + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
@@ -318,7 +319,16 @@ public interface QueryMapper {
         @Result(property = "name", column = "NAME"),
         @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "serviceLevel", column = "SERVICE_LEVEL"),
-        @Result(property = "parentId", column = "PARENT_ID")})
+        @Result(property = "parentId", column = "PARENT_ID"),
+        @Result(property = "parentKey", column = "PARENT_KEY"),
+        @Result(property = "custom1", column = "CUSTOM_1"),
+        @Result(property = "custom2", column = "CUSTOM_2"),
+        @Result(property = "custom3", column = "CUSTOM_3"),
+        @Result(property = "custom4", column = "CUSTOM_4"),
+        @Result(property = "custom5", column = "CUSTOM_5"),
+        @Result(property = "custom6", column = "CUSTOM_6"),
+        @Result(property = "custom7", column = "CUSTOM_7"),
+        @Result(property = "custom8", column = "CUSTOM_8")})
     List<ClassificationSummaryImpl> queryClassificationSummaries(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
@@ -658,6 +668,7 @@ public interface QueryMapper {
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
         + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='parentId != null'>AND PARENT_ID IN(<foreach item='item' collection='parentId' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='parentKey != null'>AND PARENT_KEY IN(<foreach item='item' collection='parentKey' separator=',' >#{item}</foreach>)</if> "
         + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "
@@ -890,6 +901,7 @@ public interface QueryMapper {
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
         + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='parentId != null'>AND PARENT_ID IN(<foreach item='item' collection='parentId' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='parentKey != null'>AND PARENT_KEY IN(<foreach item='item' collection='parentKey' separator=',' >#{item}</foreach>)</if> "
         + "<if test='category != null'>AND CATEGORY IN(<foreach item='item' collection='category' separator=',' >#{item}</foreach>)</if> "
         + "<if test='type != null'>AND TYPE IN(<foreach item='item' collection='type' separator=',' >#{item}</foreach>)</if> "
         + "<if test='domain != null'>AND DOMAIN IN(<foreach item='item' collection='domain' separator=',' >#{item}</foreach>)</if> "

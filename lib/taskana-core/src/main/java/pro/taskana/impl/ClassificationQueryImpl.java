@@ -32,6 +32,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private String[] key;
     private String[] idIn;
     private String[] parentId;
+    private String[] parentKey;
     private String[] category;
     private String[] type;
     private String[] domain;
@@ -84,6 +85,12 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public ClassificationQuery parentIdIn(String... parentId) {
         this.parentId = parentId;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery parentKeyIn(String... parentKey) {
+        this.parentKey = parentKey;
         return this;
     }
 
@@ -288,6 +295,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
+    public ClassificationQuery orderByParentKey(SortDirection sortDirection) {
+        return addOrderCriteria("PARENT_KEY", sortDirection);
+    }
+
+    @Override
     public ClassificationQuery orderByCategory(SortDirection sortDirection) {
         return addOrderCriteria("CATEGORY", sortDirection);
     }
@@ -474,6 +486,10 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         return parentId;
     }
 
+    public String[] getparentKey() {
+        return parentKey;
+    }
+
     public String[] getCategory() {
         return category;
     }
@@ -609,6 +625,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         builder.append(Arrays.toString(idIn));
         builder.append(", parentId=");
         builder.append(Arrays.toString(parentId));
+        builder.append(", parentKey=");
+        builder.append(Arrays.toString(parentKey));
         builder.append(", category=");
         builder.append(Arrays.toString(category));
         builder.append(", type=");
