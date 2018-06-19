@@ -79,6 +79,9 @@ public class ClassificationServiceImpl implements ClassificationService {
             if (classificationImpl.getParentId() != null && !classificationImpl.getParentId().isEmpty()) {
                 this.getClassification(classificationImpl.getParentId());
             }
+            if (classificationImpl.getParentKey() != null && !classificationImpl.getParentKey().isEmpty()) {
+                this.getClassification(classificationImpl.getParentKey(), classificationImpl.getDomain());
+            }
             classificationMapper.insert(classificationImpl);
             LOGGER.debug("Method createClassification created classification {}.", classificationImpl);
 
@@ -177,6 +180,14 @@ public class ClassificationServiceImpl implements ClassificationService {
                     this.getClassification(classificationImpl.getParentId());
                 }
             }
+
+            // Check if parentKey changed and object does exist
+            if (!oldClassification.getParentKey().equals(classificationImpl.getParentKey())) {
+                if (classificationImpl.getParentKey() != null && !classificationImpl.getParentKey().isEmpty()) {
+                    this.getClassification(classificationImpl.getParentKey(), classificationImpl.getDomain());
+                }
+            }
+
             classificationMapper.update(classificationImpl);
             boolean priorityChanged = oldClassification.getPriority() != classification.getPriority();
 
@@ -245,6 +256,10 @@ public class ClassificationServiceImpl implements ClassificationService {
 
         if (classification.getParentId() == null) {
             classification.setParentId("");
+        }
+
+        if (classification.getParentKey() == null) {
+            classification.setParentKey("");
         }
 
         if (classification.getType() != null

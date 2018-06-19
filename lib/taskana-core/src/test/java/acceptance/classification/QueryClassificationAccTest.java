@@ -126,7 +126,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsWithParentKey() {
+    public void testGetClassificationsWithParentId() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .keyIn("A12", "A13")
@@ -142,6 +142,28 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .categoryIn("EXTERNAL", "MANUAL", "AUTOMATIC")
             .parentIdIn("CLI:100000000000000000000000000000000014", "CLI:100000000000000000000000000000000010",
                 "CLI:100000000000000000000000000000000011")
+            .domainIn("DOMAIN_A")
+            .list();
+        assertNotNull(classifications);
+        assertEquals(2, classifications.size());
+    }
+
+    @Test
+    public void testGetClassificationsWithParentKey() {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
+            .keyIn("A12", "A13")
+            .categoryIn("EXTERNAL", "MANUAL")
+            .parentKeyIn("L10000")
+            .list();
+
+        assertNotNull(classifications);
+        assertEquals(1, classifications.size());
+
+        classifications = classificationService.createClassificationQuery()
+            .keyIn("A12", "A13")
+            .categoryIn("EXTERNAL", "MANUAL", "AUTOMATIC")
+            .parentKeyIn("L10000", "T2100", "T6310")
             .domainIn("DOMAIN_A")
             .list();
         assertNotNull(classifications);

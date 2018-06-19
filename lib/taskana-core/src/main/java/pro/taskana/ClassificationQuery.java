@@ -33,6 +33,15 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
     ClassificationQuery parentIdIn(String... parentId);
 
     /**
+     * Add your parentKeys to your query.
+     *
+     * @param parentKey
+     *            as an array of Strings
+     * @return the query
+     */
+    ClassificationQuery parentKeyIn(String... parentKey);
+
+    /**
      * Add your category to your query.
      *
      * @param category
@@ -322,6 +331,16 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      * @return the query
      */
     ClassificationQuery orderByParentId(SortDirection sortDirection);
+
+    /**
+     * Sort the query result by the parent classification key.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    ClassificationQuery orderByParentKey(SortDirection sortDirection);
 
     /**
      * Sort the query result by category.

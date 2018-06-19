@@ -10,11 +10,20 @@ public class ClassificationSummaryResource extends ResourceSupport {
     public String classificationId;
     public String key;
     public String parentId;
+    public String parentKey;
     public String category;
     public String type;
     public String domain;
     public String name;
     public int priority;
+    public String custom1;
+    public String custom2;
+    public String custom3;
+    public String custom4;
+    public String custom5;
+    public String custom6;
+    public String custom7;
+    public String custom8;
 
     public String getClassificationId() {
         return classificationId;
@@ -38,6 +47,14 @@ public class ClassificationSummaryResource extends ResourceSupport {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public String getParentKey() {
+        return parentKey;
+    }
+
+    public void setParentKey(String parentKey) {
+        this.parentKey = parentKey;
     }
 
     public String getCategory() {
@@ -78,6 +95,70 @@ public class ClassificationSummaryResource extends ResourceSupport {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String getCustom1() {
+        return custom1;
+    }
+
+    public void setCustom1(String custom1) {
+        this.custom1 = custom1;
+    }
+
+    public String getCustom2() {
+        return custom2;
+    }
+
+    public void setCustom2(String custom2) {
+        this.custom2 = custom2;
+    }
+
+    public String getCustom3() {
+        return custom3;
+    }
+
+    public void setCustom3(String custom3) {
+        this.custom3 = custom3;
+    }
+
+    public String getCustom4() {
+        return custom4;
+    }
+
+    public void setCustom4(String custom4) {
+        this.custom4 = custom4;
+    }
+
+    public String getCustom5() {
+        return custom5;
+    }
+
+    public void setCustom5(String custom5) {
+        this.custom5 = custom5;
+    }
+
+    public String getCustom6() {
+        return custom6;
+    }
+
+    public void setCustom6(String custom6) {
+        this.custom6 = custom6;
+    }
+
+    public String getCustom7() {
+        return custom7;
+    }
+
+    public void setCustom7(String custom7) {
+        this.custom7 = custom7;
+    }
+
+    public String getCustom8() {
+        return custom8;
+    }
+
+    public void setCustom8(String custom8) {
+        this.custom8 = custom8;
     }
 
 }

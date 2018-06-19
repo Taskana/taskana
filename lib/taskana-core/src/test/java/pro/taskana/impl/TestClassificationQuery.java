@@ -14,6 +14,7 @@ public class TestClassificationQuery implements ClassificationQuery {
 
     private List<ClassificationSummaryImpl> classifications;
     private String[] parentId;
+    private String[] parentKey;
     private String description;
 
     public TestClassificationQuery(List<ClassificationSummaryImpl> classifications) {
@@ -33,6 +34,12 @@ public class TestClassificationQuery implements ClassificationQuery {
     @Override
     public ClassificationQuery parentIdIn(String... parentId) {
         this.parentId = parentId;
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery parentKeyIn(String... parentKey) {
+        this.parentKey = parentKey;
         return this;
     }
 
@@ -210,6 +217,11 @@ public class TestClassificationQuery implements ClassificationQuery {
 
     @Override
     public ClassificationQuery orderByParentId(SortDirection sortDirection) {
+        return this;
+    }
+
+    @Override
+    public ClassificationQuery orderByParentKey(SortDirection sortDirection) {
         return this;
     }
 
