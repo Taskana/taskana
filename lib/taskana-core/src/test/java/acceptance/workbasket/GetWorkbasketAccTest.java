@@ -3,7 +3,6 @@ package acceptance.workbasket;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -117,35 +116,6 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         assertEquals("Abteilung", workbasketSummary.getOrgLevel2());
         assertEquals("Projekt", workbasketSummary.getOrgLevel3());
         assertEquals("Team", workbasketSummary.getOrgLevel4());
-    }
-
-    @WithAccessId(
-        userName = "user_1_1",
-        groupNames = {"group_1"})
-    @Test
-    public void testGetWorkbasketsByPermissions()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
-
-        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        List<WorkbasketPermission> permissions = new ArrayList<WorkbasketPermission>();
-        permissions.add(WorkbasketPermission.READ);
-        permissions.add(WorkbasketPermission.OPEN);
-        permissions.add(WorkbasketPermission.APPEND);
-        permissions.add(WorkbasketPermission.TRANSFER);
-
-        List<WorkbasketSummary> workbasketSummaries = workbasketService.getWorkbaskets(permissions);
-
-        List<WorkbasketSummary> expectedSummaries = new ArrayList<WorkbasketSummary>();
-        expectedSummaries.add(workbasketService.getWorkbasket("WBI:100000000000000000000000000000000002").asSummary());
-        expectedSummaries.add(workbasketService.getWorkbasket("WBI:100000000000000000000000000000000004").asSummary());
-        expectedSummaries.add(workbasketService.getWorkbasket("WBI:100000000000000000000000000000000006").asSummary());
-        expectedSummaries.add(workbasketService.getWorkbasket("WBI:100000000000000000000000000000000007").asSummary());
-
-        assertEquals(4, workbasketSummaries.size());
-
-        for (WorkbasketSummary wbSummary : workbasketSummaries) {
-            assertTrue(expectedSummaries.contains(wbSummary));
-        }
     }
 
     @Test(expected = WorkbasketNotFoundException.class)

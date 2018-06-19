@@ -3,10 +3,7 @@ package pro.taskana.impl;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,32 +96,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from getWorkbasket(workbasketId). Returning result {} ", result);
-        }
-    }
-
-    @Override
-    public List<WorkbasketSummary> getWorkbaskets(List<WorkbasketPermission> permissions) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("entry to getWorkbaskets(permissions = {})", LoggerUtils.listToString(permissions));
-        }
-        List<WorkbasketSummary> result = null;
-        try {
-            taskanaEngine.openConnection();
-            // use a set to avoid duplicates
-            Set<WorkbasketSummary> workbaskets = new HashSet<>();
-            for (String accessId : CurrentUserContext.getAccessIds()) {
-                workbaskets.addAll(workbasketMapper.findByPermission(permissions, accessId));
-            }
-            result = new ArrayList<>();
-            result.addAll(workbaskets);
-            return result;
-        } finally {
-            taskanaEngine.returnConnection();
-            if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from getWorkbaskets(permissions). Returning {} resulting Objects: {} ",
-                    numberOfResultObjects, LoggerUtils.listToString(result));
-            }
         }
     }
 

@@ -189,16 +189,6 @@ public interface WorkbasketService {
         throws InvalidArgumentException, NotAuthorizedException;
 
     /**
-     * This method returns the workbaskets for which the current user has all permissions specified in the permissions
-     * list.
-     *
-     * @param permission
-     *            a List of WorkbasketAuthorization enums
-     * @return the summaries of all Workbaskets for which the current user has the specified authorizations
-     */
-    List<WorkbasketSummary> getWorkbaskets(List<WorkbasketPermission> permission);
-
-    /**
      * This method provides a query builder for querying the database.
      *
      * @return a {@link WorkbasketQuery}
