@@ -1,7 +1,5 @@
 package pro.taskana.mappings;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -11,7 +9,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import pro.taskana.impl.ClassificationImpl;
-import pro.taskana.impl.ClassificationSummaryImpl;
 
 /**
  * This class is the mybatis mapping of classifications.
@@ -89,24 +86,5 @@ public interface ClassificationMapper {
     @Delete("DELETE FROM TASKANA.CLASSIFICATION "
         + "WHERE ID = #{classificationId}")
     void deleteClassification(@Param("classificationId") String classificationId);
-
-    @Select("<script>"
-        + "SELECT ID, KEY, CATEGORY, TYPE, DOMAIN, NAME, PARENT_ID, PARENT_KEY "
-        + "FROM TASKANA.CLASSIFICATION "
-        + "WHERE KEY = #{key} "
-        + "AND DOMAIN = #{domain}"
-        + "ORDER BY KEY DESC "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>")
-    @Results({@Result(property = "id", column = "ID"),
-        @Result(property = "key", column = "KEY"),
-        @Result(property = "category", column = "CATEGORY"),
-        @Result(property = "type", column = "TYPE"),
-        @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "name", column = "NAME"),
-        @Result(property = "parentId", column = "PARENT_ID"),
-        @Result(property = "parentKey", column = "PARENT_KEY")})
-    List<ClassificationSummaryImpl> getAllClassificationsWithKey(@Param("key") String key,
-        @Param("domain") String domain);
 
 }
