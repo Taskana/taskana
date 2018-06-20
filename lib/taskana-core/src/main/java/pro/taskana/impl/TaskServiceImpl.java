@@ -498,30 +498,6 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    @Override
-    public BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketKey,
-        String destinationWorkbasketDomain, List<String> taskIds)
-        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
-        try {
-            taskanaEngine.openConnection();
-            LOGGER.debug("entry to transferBulk(targetWbKey = {}, domain = {}, taskIds = {})", destinationWorkbasketKey,
-                destinationWorkbasketDomain, taskIds);
-            // Check pre-conditions with trowing Exceptions
-            if (destinationWorkbasketKey == null || destinationWorkbasketDomain == null) {
-                throw new InvalidArgumentException(
-                    "DestinationWorkbasketKey or domain can´t be used as NULL-Parameter.");
-            }
-            Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketKey,
-                destinationWorkbasketDomain);
-
-            return transferTasks(taskIds, destinationWorkbasket);
-        } finally {
-            LOGGER.debug("exit from transferBulk(targetWbKey = {}, taskIds = {})", destinationWorkbasketKey,
-                destinationWorkbasketDomain, taskIds);
-            taskanaEngine.returnConnection();
-        }
-    }
-
     private BulkOperationResults<String, TaskanaException> transferTasks(List<String> taskIdsToBeTransferred,
         Workbasket destinationWorkbasket)
         throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
