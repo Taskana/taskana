@@ -364,7 +364,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             Classification classification = this.classificationMapper.findByKeyAndDomain(classificationKey, domain);
             if (classification == null) {
                 throw new ClassificationNotFoundException(classificationKey, domain,
-                    "The classification " + classificationKey + "wasn't found in the domain " + domain);
+                    "The classification \"" + classificationKey + "\" wasn't found in the domain " + domain);
             }
             deleteClassification(classification.getId());
         } finally {
@@ -383,7 +383,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             Classification classification = this.classificationMapper.findById(classificationId);
             if (classification == null) {
                 throw new ClassificationNotFoundException(classificationId,
-                    "The classification " + classificationId + "wasn't found");
+                    "The classification \"" + classificationId + "\" wasn't found");
             }
 
             if (classification.getDomain().equals("")) {

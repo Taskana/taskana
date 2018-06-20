@@ -1,5 +1,7 @@
 package pro.taskana.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,8 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaRestExceptionHandler.class);
 
     @ExceptionHandler(InvalidArgumentException.class)
     protected ResponseEntity<Object> handleInvalidArgument(InvalidArgumentException ex, WebRequest req) {
@@ -112,9 +116,21 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
         return buildResponse(ex, req, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<Object> handleGeneralException(Exception ex, WebRequest req) {
+        return buildResponse(ex, req, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<Object> buildResponse(Exception ex, WebRequest req, HttpStatus status) {
         TaskanaErrorData errorData = new TaskanaErrorData(status, ex, req);
+        logError(ex, errorData);
         return new ResponseEntity<>(errorData, status);
+    }
+
+    private void logError(Exception ex, TaskanaErrorData errorData) {
+        LOGGER.error(
+            "Error occured during processing of rest request:\n" + errorData.toString(),
+            ex);
     }
 
 }
