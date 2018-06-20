@@ -3,6 +3,7 @@ package acceptance.workbasket;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -247,25 +248,32 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             userName = "teamlead_1",
             groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testDeleteAccessItem() throws NotAuthorizedException, InvalidArgumentException {
+    public void testDeleteAccessItemForAccessItemId() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000001";
 
         List<WorkbasketAccessItem> originalList = workbasketService.getWorkbasketAccessItems(wbId);
+        List<String> originalIds = new ArrayList<String>();
+        for (WorkbasketAccessItem a : originalList) {
+            originalIds.add(a.getId());
+        }
 
-        List<WorkbasketAccessItem> accessList = new ArrayList<WorkbasketAccessItem>(originalList);
+        List<WorkbasketAccessItem> accessList = new ArrayList<>(originalList);
         WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, "group_1");
         accessList.add(newItem);
-        int countBefore = workbasketService.getWorkbasketAccessItems(wbId).size();
+        assertNotEquals(originalList, accessList);
         workbasketService.setWorkbasketAccessItems(wbId, accessList);
-        int countAfter = workbasketService.getWorkbasketAccessItems(wbId).size();
-        assertEquals(countBefore + 1, countAfter);
 
-        workbasketService.setWorkbasketAccessItems(wbId, accessList);
-        String newId = workbasketService.getWorkbasketAccessItems(wbId).get(countAfter - 1).getId();
-        workbasketService.deleteWorkbasketAccessItem(newId);
-
-        assertEquals(originalList.toString(), workbasketService.getWorkbasketAccessItems(wbId).toString());
+        List<WorkbasketAccessItem> modifiedList = new ArrayList<>(
+                workbasketService.getWorkbasketAccessItems(wbId));
+        for (WorkbasketAccessItem a : modifiedList) {
+            if (!originalIds.contains(a.getId())) {
+                workbasketService.deleteWorkbasketAccessItem(a.getId());
+            }
+        }
+        List<WorkbasketAccessItem> listEqualToOriginal = new ArrayList<>(
+                workbasketService.getWorkbasketAccessItems(wbId));
+        assertEquals(originalList, listEqualToOriginal);
     }
 
     @WithAccessId(
