@@ -24,8 +24,6 @@ import { ClassificationTypesService } from 'app/administration/services/classifi
 // tslint:disable:max-line-length
 import { ClassificationCategoriesService } from 'app/administration/services/classification-categories-service/classification-categories.service';
 // tslint:enable:max-line-length
-import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
-import { DomainService } from 'app/services/domain/domain.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
 
@@ -55,10 +53,7 @@ describe('ClassificationDetailsComponent', () => {
         imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
         declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
         providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
-          TreeService, ClassificationTypesService, ClassificationCategoriesService, {
-            provide: DomainService,
-            useClass: DomainServiceMock
-          },
+          TreeService, ClassificationTypesService, ClassificationCategoriesService,
           CustomFieldsService]
       })
     };

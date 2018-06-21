@@ -88,6 +88,12 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login?logout';
   }
 
+  showDomainSelector(): boolean {
+    return this.selectedRoute.indexOf('administration') !== -1
+        || this.selectedRoute.indexOf('workbaskets') !== -1
+        || this.selectedRoute.indexOf('classifications') !== -1
+  }
+
   private setTitle(value: string = 'workbaskets') {
     if (value.indexOf('workbaskets') === 0) {
       this.title = this.titleWorkbaskets;

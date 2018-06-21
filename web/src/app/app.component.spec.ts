@@ -13,11 +13,8 @@ import { OrientationService } from './services/orientation/orientation.service';
 import { SelectedRouteService } from './services/selected-route/selected-route';
 
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
-import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
-import { DomainService } from 'app/services/domain/domain.service';
 
-
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
 
 	let app, fixture, debugElement;
 
@@ -36,11 +33,7 @@ fdescribe('AppComponent', () => {
 				HttpClientModule,
 				SharedModule
 			],
-			providers: [ErrorModalService, RequestInProgressService, AlertService, OrientationService, SelectedRouteService,
-				{
-					provide: DomainService,
-					useClass: DomainServiceMock
-				}]
+			providers: [ErrorModalService, RequestInProgressService, AlertService, OrientationService, SelectedRouteService]
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(AppComponent);

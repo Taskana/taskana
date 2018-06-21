@@ -193,7 +193,7 @@ export class WorkbasketService {
 		query += requiredPermission ? `${this.REQUIREDPERMISSION}=${requiredPermission}&` : '';
 		query += page ? `${this.PAGE}=${page}&` : '';
 		query += pageSize ? `${this.PAGESIZE}=${pageSize}&` : '';
-		query += domain ? `${this.DOMAIN}=${domain}&` : '';
+		query += domain !== undefined ? `${this.DOMAIN}=${domain}&` : '';
 
 		if (query.lastIndexOf('&') === query.length - 1) {
 			query = query.slice(0, query.lastIndexOf('&'))

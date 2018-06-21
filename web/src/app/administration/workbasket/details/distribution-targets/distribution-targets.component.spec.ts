@@ -26,8 +26,6 @@ import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/g
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { SelectWorkBasketPipe } from 'app/shared/pipes/selectedWorkbasket/seleted-workbasket.pipe';
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
-import { DomainService } from 'app/services/domain/domain.service';
-import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { configureTests } from 'app/app.test.configuration';
 
 
@@ -62,10 +60,7 @@ describe('DistributionTargetsComponent', () => {
 				declarations: [DistributionTargetsComponent, SpinnerComponent, GeneralMessageModalComponent,
 					FilterComponent, SelectWorkBasketPipe, IconTypeComponent, DualListComponent],
 				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
-					{
-						provide: DomainService,
-						useClass: DomainServiceMock
-					}]
+				]
 			})
 		};
 		configureTests(configure).then(testBed => {

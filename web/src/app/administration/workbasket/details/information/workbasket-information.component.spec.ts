@@ -9,7 +9,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
 import { Component, Input, forwardRef } from '@angular/core';
 import { Routes } from '@angular/router';
-import { AppModule } from 'app/app.module'
 
 import { Workbasket } from 'app/models/workbasket';
 import { ICONTYPES } from 'app/models/type';
@@ -26,8 +25,6 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { DomainService } from 'app/services/domain/domain.service';
-import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
 
@@ -90,10 +87,6 @@ describe('InformationComponent', () => {
 					HttpModule,
 					RouterTestingModule.withRoutes(routes)],
 				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
-					{
-						provide: DomainService,
-						useClass: DomainServiceMock
-					},
 					CustomFieldsService]
 
 			})
