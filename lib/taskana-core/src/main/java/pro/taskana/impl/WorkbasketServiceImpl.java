@@ -45,9 +45,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     private DistributionTargetMapper distributionTargetMapper;
     private WorkbasketAccessMapper workbasketAccessMapper;
 
-    public WorkbasketServiceImpl() {
-    }
-
     WorkbasketServiceImpl(TaskanaEngine taskanaEngine, WorkbasketMapper workbasketMapper,
         DistributionTargetMapper distributionTargetMapper, WorkbasketAccessMapper workbasketAccessMapper) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
@@ -275,7 +272,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             }
 
             List<String> accessIds = CurrentUserContext.getAccessIds();
-            List<WorkbasketPermission> grantedPermissions = new ArrayList<>();
             WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketAndAccessId(workbasketId,
                 accessIds);
             if (wbAcc == null) {
@@ -285,7 +281,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                         + "' is needed.");
             }
 
-            this.addWorkbasketAccessItemValuesToPermissionSet(wbAcc, grantedPermissions);
+            List<WorkbasketPermission> grantedPermissions = this.getPermissionsFromWorkbasketAccessItem(wbAcc);
 
             for (WorkbasketPermission perm : requestedPermissions) {
                 if (!grantedPermissions.contains(perm)) {
@@ -317,7 +313,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 return;
             }
             List<String> accessIds = CurrentUserContext.getAccessIds();
-            List<WorkbasketPermission> grantedPermissions = new ArrayList<>();
             WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketKeyDomainAndAccessId(
                 workbasketKey, domain, accessIds);
             if (wbAcc == null) {
@@ -327,7 +322,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                         + workbasketKey
                         + "' and domain '" + domain + "' is needed.");
             }
-            this.addWorkbasketAccessItemValuesToPermissionSet(wbAcc, grantedPermissions);
+            List<WorkbasketPermission> grantedPermissions = this.getPermissionsFromWorkbasketAccessItem(wbAcc);
 
             for (WorkbasketPermission perm : requestedPermissions) {
                 if (!grantedPermissions.contains(perm)) {
@@ -409,14 +404,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     @Override
     public List<WorkbasketPermission> getPermissionsForWorkbasket(String workbasketId) {
-        List<WorkbasketPermission> permissions = new ArrayList<>();
         WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketAndAccessId(workbasketId,
             CurrentUserContext.getAccessIds());
-        if (wbAcc != null) {
-            this.addWorkbasketAccessItemValuesToPermissionSet(wbAcc, permissions);
-        }
-        return permissions;
-
+        return this.getPermissionsFromWorkbasketAccessItem(wbAcc);
     }
 
     @Override
@@ -446,8 +436,12 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         }
     }
 
-    private void addWorkbasketAccessItemValuesToPermissionSet(WorkbasketAccessItem workbasketAccessItem,
-        List<WorkbasketPermission> permissions) {
+    private List<WorkbasketPermission> getPermissionsFromWorkbasketAccessItem(
+        WorkbasketAccessItem workbasketAccessItem) {
+        List<WorkbasketPermission> permissions = new ArrayList<WorkbasketPermission>();
+        if (workbasketAccessItem == null) {
+            return permissions;
+        }
         if (workbasketAccessItem.isPermOpen()) {
             permissions.add(WorkbasketPermission.OPEN);
         }
@@ -499,6 +493,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         if (workbasketAccessItem.isPermCustom12()) {
             permissions.add(WorkbasketPermission.CUSTOM_12);
         }
+        return permissions;
     }
 
     @Override
