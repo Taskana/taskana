@@ -1,7 +1,7 @@
 package acceptance.workbasket;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -56,8 +56,8 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(
-            userName = "user_1_1",
-            groupNames = {"group_1"})
+        userName = "user_1_1",
+        groupNames = {"group_1"})
     @Test
     public void testGetWorkbasketByKeyAndDomain()
         throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -100,11 +100,24 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
+    public void testGetWorkbasketPermissionsForInvalidWorkbasketId() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketPermission> permissions = workbasketService
+            .getPermissionsForWorkbasket("WBI:invalid");
+
+        assertEquals(0, permissions.size());
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
     public void testGetWorkbasketAsSummary()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-        WorkbasketSummary workbasketSummary = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000007").asSummary();
+        WorkbasketSummary workbasketSummary = workbasketService
+            .getWorkbasket("WBI:100000000000000000000000000000000007").asSummary();
 
         assertEquals("DOMAIN_A", workbasketSummary.getDomain());
         assertEquals("PPK User 2 KSC 1", workbasketSummary.getDescription());
@@ -127,7 +140,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
 
     @Test(expected = WorkbasketNotFoundException.class)
     public void testThrowsExceptionIfKeyOrDomainIsInvalid()
-            throws NotAuthorizedException, WorkbasketNotFoundException {
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.getWorkbasket("INVALID_KEY", "INVALID_DOMAIN");
     }

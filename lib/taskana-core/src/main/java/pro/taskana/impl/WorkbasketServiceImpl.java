@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -411,8 +412,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         List<WorkbasketPermission> permissions = new ArrayList<>();
         WorkbasketAccessItem wbAcc = workbasketAccessMapper.findByWorkbasketAndAccessId(workbasketId,
             CurrentUserContext.getAccessIds());
-        this.addWorkbasketAccessItemValuesToPermissionSet(wbAcc, permissions);
+        if (wbAcc != null) {
+            this.addWorkbasketAccessItemValuesToPermissionSet(wbAcc, permissions);
+        }
         return permissions;
+
     }
 
     @Override

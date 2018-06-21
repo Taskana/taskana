@@ -216,11 +216,13 @@ public interface WorkbasketService {
     Workbasket newWorkbasket(String key, String domain);
 
     /**
-     * Returns a set with all permissions of the current user at this workbasket.
+     * Returns a set with all permissions of the current user at this workbasket.<br>
+     * If the workbasketId is invalid, an empty list of permissions is returned since there is no distinction made
+     * between the situation that the workbasket is not found and the caller has no permissions on the workbasket.
      *
      * @param workbasketId
      *            the id of the referenced workbasket
-     * @return a Set with all permissions
+     * @return a {@link List} with all {@link WorkbasketPermission}s of the caller on the requested workbasket.
      */
     List<WorkbasketPermission> getPermissionsForWorkbasket(String workbasketId);
 
