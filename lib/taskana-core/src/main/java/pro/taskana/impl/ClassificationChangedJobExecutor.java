@@ -79,7 +79,6 @@ public class ClassificationChangedJobExecutor implements SingleJobExecutor {
             if (!taskIdBatch.isEmpty()) {
                 String taskIds = String.join(",", taskIdBatch);
                 args.put(ClassificationChangedJobExecutor.TASKIDS, taskIds);
-                args.put(CLASSIFICATION_ID, classificationId);
                 args.put(PRIORITY_CHANGED, new Boolean(priorityChanged).toString());
                 args.put(SERVICE_LEVEL_CHANGED, new Boolean(serviceLevelChanged).toString());
                 Job job = new Job();

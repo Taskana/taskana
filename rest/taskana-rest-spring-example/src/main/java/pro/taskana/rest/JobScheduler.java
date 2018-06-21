@@ -32,7 +32,7 @@ public class JobScheduler {
     @Autowired
     TaskanaTransactionProvider<BulkOperationResults<String, Exception>> springTransactionProvider;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(cron = "${taskana.jobscheduler.cron}")
     public void triggerJobs() {
         boolean otherJobActive = jobRunning.getAndSet(true);
         if (!otherJobActive) {  // only one job should be active at any time

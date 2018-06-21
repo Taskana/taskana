@@ -44,8 +44,9 @@ public class TaskanaEngineConfiguration {
     private static final String H2_DRIVER = "org.h2.Driver";
     private static final String TASKANA_PROPERTIES = "/taskana.properties";
     private static final String TASKANA_ROLES_SEPARATOR = "|";
-    private static final String TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION = "taskana.job.max.task.updates.per.transaction";
-    private static final String TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES = "taskana.job.max.retries.for.failed.task.updates";
+    private static final String TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION = "taskana.jobs.taskupdate.batchSize";
+    private static final String TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES = "taskana.jobs.taskupdate.maxRetries";
+
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
     private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";

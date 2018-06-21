@@ -1187,15 +1187,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         if (newClassificationSummary == null) { // newClassification is null -> take prio and duration from attachments
-            if (prioDurationFromAttachments.getDuration() != null) {
-                long days = converter.convertWorkingDaysToDays(newTaskImpl.getPlanned(),
-                    prioDurationFromAttachments.getDuration().toDays());
-                Instant due = newTaskImpl.getPlanned().plus(Duration.ofDays(days));
-                newTaskImpl.setDue(due);
-            }
-            if (prioDurationFromAttachments.getPrio() > Integer.MIN_VALUE) {
-                newTaskImpl.setPriority(prioDurationFromAttachments.getPrio());
-            }
+            updateTaskPrioDurationFromAttachments(newTaskImpl, prioDurationFromAttachments);
         } else {
             Classification newClassification = null;
             if (!oldClassificationSummary.getKey().equals(newClassificationSummary.getKey())) {
@@ -1394,14 +1386,14 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    BulkOperationResults<String, Exception> classificationChanged(String taskId, String classificationId)
+    BulkOperationResults<String, Exception> refreshPriorityAndDueDate(String taskId)
         throws ClassificationNotFoundException {
-        LOGGER.debug("entry to classificationChanged(taskId = {} , classificationId = {} )", taskId, classificationId);
+        LOGGER.debug("entry to classificationChanged(taskId = {})", taskId);
         TaskImpl task = null;
         BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();
         try {
             taskanaEngine.openConnection();
-            if (taskId == null || taskId.isEmpty() || classificationId == null || classificationId.isEmpty()) {
+            if (taskId == null || taskId.isEmpty()) {
                 return bulkLog;
             }
 
@@ -1414,11 +1406,12 @@ public class TaskServiceImpl implements TaskService {
             List<Attachment> attachments = augmentAttachmentsByClassification(attachmentImpls, bulkLog);
             task.setAttachments(attachments);
 
-            Classification classification = classificationService.getClassification(classificationId);
+            Classification classification = classificationService
+                .getClassification(task.getClassificationSummary().getId());
             task.setClassificationSummary(classification.asSummary());
             PrioDurationHolder prioDurationFromAttachments = handleAttachmentsOnClassificationUpdate(task);
 
-            updateClassificationRelatedProperties(task, task, prioDurationFromAttachments);
+            updatePrioDueDateOnClassificationUpdate(task, prioDurationFromAttachments);
 
             task.setModified(Instant.now());
             taskMapper.update(task);
@@ -1428,6 +1421,54 @@ public class TaskServiceImpl implements TaskService {
             LOGGER.debug("exit from deleteTask(). ");
         }
 
+    }
+
+    private void updatePrioDueDateOnClassificationUpdate(TaskImpl task,
+        PrioDurationHolder prioDurationFromAttachments) {
+        ClassificationSummary classificationSummary = task.getClassificationSummary();
+
+        if (classificationSummary == null) { // classification is null -> take prio and duration from attachments
+            updateTaskPrioDurationFromAttachments(task, prioDurationFromAttachments);
+        } else {
+            updateTaskPrioDurationFromClassificationAndAttachments(task, prioDurationFromAttachments,
+                classificationSummary);
+        }
+
+    }
+
+    private void updateTaskPrioDurationFromClassificationAndAttachments(TaskImpl task,
+        PrioDurationHolder prioDurationFromAttachments, ClassificationSummary classificationSummary) {
+        if (classificationSummary.getServiceLevel() != null) {
+            Duration durationFromClassification = Duration.parse(classificationSummary.getServiceLevel());
+            Duration minDuration = prioDurationFromAttachments.getDuration();
+            if (minDuration != null) {
+                if (minDuration.compareTo(durationFromClassification) > 0) {
+                    minDuration = durationFromClassification;
+                }
+            } else {
+                minDuration = durationFromClassification;
+            }
+
+            long days = converter.convertWorkingDaysToDays(task.getPlanned(), minDuration.toDays());
+            Instant due = task.getPlanned().plus(Duration.ofDays(days));
+
+            task.setDue(due);
+        }
+
+        int newPriority = Math.max(classificationSummary.getPriority(), prioDurationFromAttachments.getPrio());
+        task.setPriority(newPriority);
+    }
+
+    private void updateTaskPrioDurationFromAttachments(TaskImpl task, PrioDurationHolder prioDurationFromAttachments) {
+        if (prioDurationFromAttachments.getDuration() != null) {
+            long days = converter.convertWorkingDaysToDays(task.getPlanned(),
+                prioDurationFromAttachments.getDuration().toDays());
+            Instant due = task.getPlanned().plus(Duration.ofDays(days));
+            task.setDue(due);
+        }
+        if (prioDurationFromAttachments.getPrio() > Integer.MIN_VALUE) {
+            task.setPriority(prioDurationFromAttachments.getPrio());
+        }
     }
 
     private List<Attachment> augmentAttachmentsByClassification(List<AttachmentImpl> attachmentImpls,
