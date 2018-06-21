@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,9 +18,7 @@ import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Attachment;
-import pro.taskana.AttachmentSummary;
 import pro.taskana.BaseQuery.SortDirection;
-import pro.taskana.KeyDomain;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
@@ -187,32 +184,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .list();
         assertThat(results.size(), equalTo(1));
         assertThat(results.get(0).getAttachmentSummaries().size(), equalTo(3));
-        AttachmentSummary att = results.get(0).getAttachmentSummaries().get(0);
-    }
-
-    @WithAccessId(
-        userName = "teamlead_1",
-        groupNames = {"group_1"})
-    @Test
-    public void testQueryForWorkbasketKeyDomain() {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<KeyDomain> workbasketIdentifiers = Arrays.asList(new KeyDomain("GPK_KSC", "DOMAIN_A"),
-            new KeyDomain("USER_1_2", "DOMAIN_A"));
-
-        List<TaskSummary> results = taskService.createTaskQuery()
-            .workbasketKeyDomainIn(workbasketIdentifiers.toArray(new KeyDomain[0]))
-            .list();
-        assertThat(results.size(), equalTo(42));
-
-        String[] ids = results.stream()
-            .map(t -> t.getWorkbasketSummary().getId())
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
-
-        List<TaskSummary> result2 = taskService.createTaskQuery()
-            .workbasketIdIn(ids)
-            .list();
-        assertThat(result2.size(), equalTo(42));
+        assertNotNull(results.get(0).getAttachmentSummaries().get(0));
     }
 
     @WithAccessId(
@@ -625,18 +597,19 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         TaskQuery taskQuery = taskService.createTaskQuery();
         long numberOfTasks = taskQuery.count();
-        Assert.assertEquals(24, numberOfTasks);
+        assertEquals(24, numberOfTasks);
         List<TaskSummary> tasks = taskQuery
             .orderByDue(SortDirection.DESCENDING)
             .list();
+        assertEquals(24, tasks.size());
         List<TaskSummary> tasksp = taskQuery
             .orderByDue(SortDirection.DESCENDING)
             .listPage(4, 5);
-        Assert.assertEquals(5, tasksp.size());
+        assertEquals(5, tasksp.size());
         tasksp = taskQuery
             .orderByDue(SortDirection.DESCENDING)
             .listPage(5, 5);
-        Assert.assertEquals(4, tasksp.size());
+        assertEquals(4, tasksp.size());
     }
 
 }
