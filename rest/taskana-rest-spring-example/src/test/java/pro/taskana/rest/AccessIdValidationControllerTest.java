@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -19,21 +20,25 @@ import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.rest.resource.AccessIdResource;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
+    "devMode=true"})
 public class AccessIdValidationControllerTest {
 
     @LocalServerPort
@@ -49,6 +54,7 @@ public class AccessIdValidationControllerTest {
         ResponseEntity<List<AccessIdResource>> response = template.exchange(
             "http://127.0.0.1:" + port + "/v1/access-ids?searchFor=ali", HttpMethod.GET, request,
             new ParameterizedTypeReference<List<AccessIdResource>>() {
+
             });
         List<AccessIdResource> body = response.getBody();
         assertNotNull(body);
@@ -57,6 +63,26 @@ public class AccessIdValidationControllerTest {
         for (AccessIdResource accessId : body) {
             assertTrue(expectedIds.contains(accessId.getName()));
         }
+    }
+
+    @Test
+    public void testBadRequestWhenSearchForIsTooShort() {
+        AccessIdController.setLdapCache(new LdapCacheTestImpl());
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        try {
+            template.exchange(
+                "http://127.0.0.1:" + port + "/v1/access-ids?searchFor=al", HttpMethod.GET, request,
+                new ParameterizedTypeReference<List<AccessIdResource>>() {
+
+                });
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            assertTrue(e.getResponseBodyAsString().contains("Minimum searchFor length ="));
+        }
+
     }
 
     /**
@@ -73,7 +99,7 @@ public class AccessIdValidationControllerTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 

@@ -89,28 +89,31 @@ public class GenenalExceptionHandlingTest {
         try {
 
             AccessIdController.setLdapCache(new LdapCacheTestImpl());
-            ResponseEntity<List<AccessIdResource>> response = template.exchange(
+            template.exchange(
                 server + port + "/v1/access-ids?searchFor=al", HttpMethod.GET, request,
                 new ParameterizedTypeReference<List<AccessIdResource>>() {
 
                 });
         } catch (Exception ex) {
             verify(mockAppender).doAppend(captorLoggingEvent.capture());
-            assertTrue(captorLoggingEvent.getValue().getMessage().contains("is too short. Minimum Length ="));
+            assertTrue(
+                captorLoggingEvent.getValue().getMessage().contains("is too short. Minimum searchFor length = "));
         }
     }
 
     @Test
     public void testDeleteNonExisitingClassificationExceptionIsLogged() {
         try {
-            ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
+            template.exchange(
                 server + port + "/v1/classifications/non-existing-id", HttpMethod.DELETE, request,
                 new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
 
                 });
-        } catch (Exception ex){
+        } catch (Exception ex) {
             verify(mockAppender).doAppend(captorLoggingEvent.capture());
-            assertTrue(captorLoggingEvent.getValue().getMessage().contains("The classification \"non-existing-id\" wasn't found"));
+            assertTrue(captorLoggingEvent.getValue()
+                .getMessage()
+                .contains("The classification \"non-existing-id\" wasn't found"));
         }
 
     }
