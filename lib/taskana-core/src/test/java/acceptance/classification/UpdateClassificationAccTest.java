@@ -255,8 +255,14 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
             assertTrue(task.getModified().isAfter(before));
             assertTrue(task.getPriority() == 1000);
             long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), 15);
+            // the following excluded tasks are affected via attachments. The task or an attachment still has a service
+            // level below 15 days
+            // therefore, we cannot compare the due date of these tasks to an SL of 15 days.
             if (!taskId.equals("TKI:000000000000000000000000000000000008")
-                && !taskId.equals("TKI:000000000000000000000000000000000053")) {
+                && !taskId.equals("TKI:000000000000000000000000000000000000")
+                && !taskId.equals("TKI:000000000000000000000000000000000053")
+                && !taskId.equals("TKI:000000000000000000000000000000000054")
+                && !taskId.equals("TKI:000000000000000000000000000000000055")) {
                 assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
             }
 

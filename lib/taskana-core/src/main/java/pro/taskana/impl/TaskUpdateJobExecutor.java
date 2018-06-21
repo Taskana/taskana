@@ -20,7 +20,6 @@ public class TaskUpdateJobExecutor implements SingleJobExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskUpdateJobExecutor.class);
 
     private TaskanaEngineImpl taskanaEngine;
-    private String classificationId;
     private List<String> affectedTaskIds;
 
     public TaskUpdateJobExecutor() {
@@ -33,7 +32,6 @@ public class TaskUpdateJobExecutor implements SingleJobExecutor {
         String taskIdsString = args.get(TASKIDS);
         affectedTaskIds = Arrays.asList(taskIdsString.split(","));
 
-        classificationId = args.get(CLASSIFICATION_ID);
         BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();
         bulkLog.addAllErrors(handleAffectedTasks(job));
 
@@ -49,7 +47,7 @@ public class TaskUpdateJobExecutor implements SingleJobExecutor {
         BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();
         for (String taskId : affectedTaskIds) {
             try {
-                bulkLog.addAllErrors(taskService.classificationChanged(taskId, classificationId));
+                bulkLog.addAllErrors(taskService.refreshPriorityAndDueDate(taskId));
             } catch (Exception e) {
                 bulkLog.addError(taskId, e);
             }
