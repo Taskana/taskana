@@ -28,7 +28,6 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.JobTaskRunner;
 import pro.taskana.security.JAASRunner;
@@ -53,14 +52,14 @@ public class JobTaskRunnerAccTest extends AbstractAccTest {
     @Test
     public void shouldCleanCompletedTasksUntilDate() {
 
-        JobTaskRunner runner = new JobTaskRunner(taskanaEngine, taskService);
+        JobTaskRunner runner = new JobTaskRunner(taskanaEngine);
         Instant completeUntilDate = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
             .atZone(ZoneId.systemDefault())
             .minusDays(14)
             .toInstant();
 
         List<TaskSummary> tasksCompletedUntilDateBefore = getTaskCompletedUntilDate(completeUntilDate);
-        BulkOperationResults<String, TaskanaException> results = runner.runCleanCompletedTasks(completeUntilDate);
+        BulkOperationResults<String, Exception> results = runner.runCleanCompletedTasks(completeUntilDate);
         List<TaskSummary> tasksCompletedUntilDateAfter = getTaskCompletedUntilDate(completeUntilDate);
 
         assertFalse(results.containsErrors());
@@ -84,7 +83,7 @@ public class JobTaskRunnerAccTest extends AbstractAccTest {
         taskService.claim(createdTask.getId());
         taskService.completeTask(createdTask.getId());
 
-        JobTaskRunner runner = new JobTaskRunner(taskanaEngine, taskService);
+        JobTaskRunner runner = new JobTaskRunner(taskanaEngine);
         Instant completeUntilDate = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
             .atZone(ZoneId.systemDefault())
             .minusDays(14)
