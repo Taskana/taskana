@@ -45,6 +45,7 @@ public class ClassificationDefinitionControllerRestDocumentation {
     private MockMvc mockMvc;
     
     private FieldDescriptor[] classificationdefinitionsFieldDescriptors;
+    private String snippetPath = (System.getProperty("user.dir")) + "/target/generated-snippets/";
     
     @Before
     public void setUp() {
@@ -72,7 +73,7 @@ public class ClassificationDefinitionControllerRestDocumentation {
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllClassificationdefinitionsDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllClassificationdefinitionsDocTest",
                 responseFields(classificationdefinitionsFieldDescriptors)));
     }
     
@@ -85,7 +86,7 @@ public class ClassificationDefinitionControllerRestDocumentation {
                 .contentType("application/json")
                 .content(definitionString))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("ImportClassificationdefinitions",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "ImportClassificationdefinitions",
                 requestFields(subsectionWithPath("[]").description("An array of <<classification-definitions, classifications>>"))));
     }
 }

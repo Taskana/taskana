@@ -44,6 +44,7 @@ public class MonitorControllerRestDocumentation {
     private WebApplicationContext context;
     
     private MockMvc mockMvc;
+    private String snippetPath = (System.getProperty("user.dir")) + "/target/generated-snippets/";
     
     private FieldDescriptor[] taskStatusReportFieldDescriptors;
     private FieldDescriptor[] countByStateFieldDescriptors;
@@ -90,7 +91,7 @@ public class MonitorControllerRestDocumentation {
                 .get("http://127.0.0.1:" + port + "/v1/monitor/taskStatusReport")
                 .header("Authorization", "Basic YWRtaW46YWRtaW4="))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetTaskStatusReportDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetTaskStatusReportDocTest",
                 responseFields(taskStatusReportFieldDescriptors)));
     }
     
@@ -101,7 +102,7 @@ public class MonitorControllerRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetCountByStateDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetCountByStateDocTest",
                 responseFields(countByStateFieldDescriptors)));
     }
 }

@@ -45,6 +45,7 @@ public class AbstractPagingControllerRestDocumentation {
     private MockMvc mockMvc;
 
     private HashMap<String, String> pagingFieldDescriptionsMap = new HashMap<String, String>();
+    private String snippetPath = (System.getProperty("user.dir")) + "/target/generated-snippets/";
     
     private FieldDescriptor[] pagingFieldDescriptors;
     
@@ -98,7 +99,7 @@ public class AbstractPagingControllerRestDocumentation {
                 .get("http://127.0.0.1:" + port + "/v1/classifications?page=2&page-size=5")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("CommonSummaryResourceFields",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "CommonSummaryResourceFields",
                 responseFields(pagingFieldDescriptors)));
     }
 }

@@ -49,6 +49,7 @@ public class TaskControllerRestDocumentation {
     private MockMvc mockMvc;
     
     private HashMap<String, String> taskFieldDescriptionsMap = new HashMap<String, String>();
+    private String snippetPath = (System.getProperty("user.dir")) + "/target/generated-snippets/";
     
     private FieldDescriptor[] allTasksFieldDescriptors;
     private FieldDescriptor[] taskFieldDescriptors;
@@ -276,7 +277,7 @@ public class TaskControllerRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllTasksDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllTasksDocTest",
                 responseFields(allTasksFieldDescriptors)));
     }
     
@@ -287,7 +288,7 @@ public class TaskControllerRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetSpecificTaskDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetSpecificTaskDocTest",
                 responseFields(taskFieldDescriptors)));
     }
     
@@ -298,7 +299,7 @@ public class TaskControllerRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("TaskSubset",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "TaskSubset",
                 responseFields(taskSubsetFieldDescriptors)));
     }
     
@@ -328,7 +329,7 @@ public class TaskControllerRestDocumentation {
                 .contentType("application/json")
                 .content(modifiedTask))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("UpdateTaskDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "UpdateTaskDocTest",
                 requestFields(taskFieldDescriptors),
                 responseFields(taskFieldDescriptors)));
     }
@@ -344,7 +345,7 @@ public class TaskControllerRestDocumentation {
                         "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isCreated())
-        .andDo(MockMvcRestDocumentation.document("CreateTaskDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "CreateTaskDocTest",
                 requestFields(createTaskFieldDescriptors),
                 responseFields(taskFieldDescriptors)))
         .andReturn();     
@@ -355,7 +356,7 @@ public class TaskControllerRestDocumentation {
                 .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) //admin
         .andExpect(MockMvcResultMatchers.status().isNoContent())
-        .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "DeleteTaskDocTest"));
     }
     
     @Test
@@ -369,7 +370,7 @@ public class TaskControllerRestDocumentation {
                         "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isCreated())
-        .andDo(MockMvcRestDocumentation.document("temp"))
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "temp"))
         .andReturn();
         
         String newId = result.getResponse().getContentAsString().substring(11, 51);
@@ -380,14 +381,14 @@ public class TaskControllerRestDocumentation {
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
                 .content("{}"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("ClaimTaskDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "ClaimTaskDocTest",
                 responseFields(taskFieldDescriptors)));
         
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) //admin
         .andExpect(MockMvcResultMatchers.status().isNoContent())
-        .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "DeleteTaskDocTest"));
     }
     
     @Test
@@ -400,7 +401,7 @@ public class TaskControllerRestDocumentation {
                         "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isCreated())
-        .andDo(MockMvcRestDocumentation.document("temp"))
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "temp"))
         .andReturn();
         
         String newId = result.getResponse().getContentAsString().substring(11, 51);
@@ -411,14 +412,14 @@ public class TaskControllerRestDocumentation {
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
                 .content("{}"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("CompleteTaskDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "CompleteTaskDocTest",
                 responseFields(taskFieldDescriptors)));
         
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) //admin
         .andExpect(MockMvcResultMatchers.status().isNoContent())
-        .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "DeleteTaskDocTest"));
     }
     
     @Test
@@ -431,7 +432,7 @@ public class TaskControllerRestDocumentation {
                         "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isCreated())
-        .andDo(MockMvcRestDocumentation.document("TransferTaskDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "TransferTaskDocTest",
                 responseFields(taskFieldDescriptors)))
         .andReturn();
        
@@ -441,7 +442,7 @@ public class TaskControllerRestDocumentation {
                 .post("http://127.0.0.1:" + port + "/v1/tasks/" + newId + "/transfer/WBI:100000000000000000000000000000000001")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("TransferTaskDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "TransferTaskDocTest",
                 responseFields(taskFieldDescriptors)));
         
         this.mockMvc.perform(RestDocumentationRequestBuilders
