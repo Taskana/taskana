@@ -112,4 +112,21 @@ public class BulkOperationResults<K, V> {
             }
         }
     }
+
+    /**
+     * Map from any exception type to Exception.
+     *
+     * @return map of errors which can´t be null.
+     */
+    public BulkOperationResults<K, Exception> mapBulkOperationResults() {
+        BulkOperationResults<K, Exception> bulkLogMapped = new BulkOperationResults<>();
+
+        List<K> failedIds = this.getFailedIds();
+        for (K id : failedIds) {
+            bulkLogMapped.addError(id, (Exception) this.getErrorForId(id));
+        }
+
+        return bulkLogMapped;
+
+    }
 }
