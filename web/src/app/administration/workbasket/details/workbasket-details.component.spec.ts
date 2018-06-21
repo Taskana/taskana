@@ -1,5 +1,5 @@
 import { Component, Input, forwardRef } from '@angular/core';
-import { async, ComponentFixture, TestBed, } from '@angular/core/testing';
+import { ComponentFixture, TestBed, } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
@@ -11,7 +11,6 @@ import { Observable } from 'rxjs/Observable';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
-import { ACTION } from 'app/models/action';
 import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
 import { ICONTYPES } from 'app/models/type';
 import { Links } from 'app/models/links';
@@ -37,8 +36,6 @@ import { RemoveNoneTypePipe } from 'app/shared/pipes/removeNoneType/remove-none-
 import { SelectWorkBasketPipe } from 'app/shared/pipes/selectedWorkbasket/seleted-workbasket.pipe';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { DomainService } from 'app/services/domain/domain.service';
-import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
 @Component({
@@ -112,10 +109,7 @@ describe('WorkbasketDetailsComponent', () => {
 					DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent,
 					TaskanaTypeAheadComponent, SelectWorkBasketPipe],
 				providers: [WorkbasketService, MasterAndDetailService, ErrorModalService, RequestInProgressService,
-					AlertService, SavingWorkbasketService, {
-						provide: DomainService,
-						useClass: DomainServiceMock
-					},
+					AlertService, SavingWorkbasketService,
 					CustomFieldsService]
 			})
 		};

@@ -9,7 +9,6 @@ export class DomainServiceMock {
 
   private domainSelectedValue;
   private domainSelected = new BehaviorSubject<string>('DOMAIN_A');
-  private domainSwitched = new Subject<string>();
 
   constructor() {
   }
@@ -34,12 +33,13 @@ export class DomainServiceMock {
   getSelectedDomainValue() {
   }
 
-  getSwitchedDomain(): Observable<string> {
-    return this.domainSwitched.asObservable();
+  addMasterDomain() {
+  }
+
+  removeMasterDomain() {
   }
 
   switchDomain(value: string) {
     this.selectDomain(value)
-    this.domainSwitched.next(value)
   }
 }

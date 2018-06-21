@@ -10,7 +10,7 @@ export class SelectedRouteService {
 
     private detailRoutes: Array<string> = ['workbaskets', 'classifications', 'monitor', 'workplace'];
 
-    constructor(private route: ActivatedRoute, private router: Router) { }
+    constructor(private router: Router) { }
 
 
     selectRoute(value) {
