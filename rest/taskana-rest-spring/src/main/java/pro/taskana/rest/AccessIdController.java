@@ -35,9 +35,9 @@ public class AccessIdController {
 
     @GetMapping
     public ResponseEntity<List<AccessIdResource>> validateAccessIds(
-        @RequestParam(required = false) String searchFor) throws InvalidArgumentException {
-        if (searchFor == null || searchFor.length() < ldapClient.getMinSearchForLength()) {
-            throw new InvalidArgumentException("searchFor string " + searchFor + " is too short. Minimum Length = "
+        @RequestParam String searchFor) throws InvalidArgumentException {
+        if (searchFor.length() < ldapClient.getMinSearchForLength()) {
+            throw new InvalidArgumentException("searchFor string '" + searchFor + "' is too short. Minimum searchFor length = "
                 + ldapClient.getMinSearchForLength());
         }
         if (ldapClient.useLdap()) {
