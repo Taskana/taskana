@@ -9,7 +9,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { DomainService } from 'app/services/domain/domain.service';
 import { Observable } from 'rxjs/Observable';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpModule } from '@angular/http';
 import { configureTests } from 'app/app.test.configuration';
@@ -25,10 +24,7 @@ describe('ImportExportComponent', () => {
       testBed.configureTestingModule({
         declarations: [ImportExportComponent],
         imports: [HttpClientModule, AngularSvgIconModule, HttpModule],
-        providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, AlertService, {
-          provide: DomainService,
-          useClass: DomainServiceMock
-        },
+        providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, AlertService,
           ErrorModalService]
       })
     };
@@ -42,8 +38,8 @@ describe('ImportExportComponent', () => {
   });
 
   afterEach(() => {
-		document.body.removeChild(debugElement);
-	});
+    document.body.removeChild(debugElement);
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

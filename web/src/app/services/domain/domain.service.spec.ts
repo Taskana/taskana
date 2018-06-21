@@ -1,11 +1,12 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { DomainService } from './domain.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Routes } from '@angular/router';
 import { Component } from '@angular/core';
+
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { DomainService } from './domain.service';
 import { RequestInProgressService } from '../requestInProgress/request-in-progress.service';
+import { SelectedRouteService } from '../selected-route/selected-route';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -25,7 +26,7 @@ describe('DomainService', () => {
         HttpClientModule,
         RouterTestingModule.withRoutes(routes)
       ],
-      providers: [HttpClient, DomainService, RequestInProgressService],
+      providers: [HttpClient, DomainService, RequestInProgressService, SelectedRouteService],
       declarations: [DummyDetailComponent]
     });
   });

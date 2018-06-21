@@ -22,8 +22,6 @@ import { SavingWorkbasketService, SavingInformation } from 'app/administration/s
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { DomainService } from 'app/services/domain/domain.service';
-import { DomainServiceMock } from 'app/services/domain/domain.service.mock';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
 
@@ -70,10 +68,6 @@ describe('AccessItemsComponent', () => {
 				declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent, TaskanaTypeAheadComponent],
 				imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
 				providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService,
-					{
-						provide: DomainService,
-						useClass: DomainServiceMock
-					},
 					CustomFieldsService]
 
 			})

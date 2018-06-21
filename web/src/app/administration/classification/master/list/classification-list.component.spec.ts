@@ -57,7 +57,6 @@ describe('ClassificationListComponent', () => {
   let fixture: ComponentFixture<ClassificationListComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
   const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
-  let classificationsSpy, classificationsTypesSpy;
   let classificationsService, classificationTypesService;
 
   beforeEach(done => {
@@ -78,8 +77,8 @@ describe('ClassificationListComponent', () => {
 
       classificationsService = TestBed.get(ClassificationsService);
       classificationTypesService = TestBed.get(ClassificationTypesService);
-      classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
-      classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes')
+      spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
+      spyOn(classificationTypesService, 'getClassificationTypes')
         .and.returnValue(Observable.of(classificationTypes));
       fixture.detectChanges();
       done();

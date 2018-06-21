@@ -5,34 +5,51 @@ import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { RequestInProgressService } from '../requestInProgress/request-in-progress.service';
-import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { SelectedRouteService } from '../selected-route/selected-route';
 
 @Injectable()
 export class DomainService {
 
   url = environment.taskanaRestUrl + '/v1/domains';
 
+  private domainRestValue: Array<string> = new Array<string>();
+  private domainValue: Array<string> = new Array<string>();
   private domainSelectedValue;
   private domainSelected = new BehaviorSubject<string>('');
-  private domainSwitched = new Subject<string>();
   private dataObs$ = new ReplaySubject<Array<string>>(1);
+  private hasMasterDomain = false;
 
   constructor(
     private httpClient: HttpClient,
     private router: Router,
-    private requestInProgressService: RequestInProgressService) {
+    private requestInProgressService: RequestInProgressService,
+    private selectedRouteService: SelectedRouteService) {
+    this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
+      if (value.indexOf('workbaskets') === 0) {
+        this.hasMasterDomain = false
+        this.removeMasterDomain();
+        if (this.domainSelectedValue === '') {
+          this.selectDomain(this.domainValue[0]);
+        }
+      } else if (value.indexOf('classifications') === 0) {
+        this.hasMasterDomain = true;
+        this.addMasterDomain();
+      }
+    });
+
   }
 
   // GET
   getDomains(forceRefresh = false): Observable<string[]> {
-    if (forceRefresh) {
+    if (!this.dataObs$.observers.length || forceRefresh) {
       this.httpClient.get<string[]>(this.url).subscribe(
         domains => {
-          this.dataObs$.next(domains);
-          if (!this.domainSelectedValue && domains && domains.length > 0) {
-            this.domainSelectedValue = domains[0];
-            this.selectDomain(domains[0]);
+          this.domainRestValue = domains;
+          this.domainValue = domains;
+          this.dataObs$.next(this.hasMasterDomain ? this.addEmptyDomain(domains) : domains);
+          if (this.domainSelectedValue === undefined && this.domainValue.length > 0) {
+            this.selectDomain(this.domainValue[0]);
           }
         },
         error => {
@@ -49,10 +66,6 @@ export class DomainService {
     return this.domainSelected.asObservable();
   }
 
-  getSwitchedDomain(): Observable<string> {
-    return this.domainSwitched.asObservable();
-  }
-
   selectDomain(value: string) {
     // this.requestInProgressService.setRequestInProgress(true);
     this.domainSelectedValue = value;
@@ -61,7 +74,6 @@ export class DomainService {
 
   switchDomain(value: string) {
     this.selectDomain(value);
-    this.domainSwitched.next(value);
     this.router.navigate([this.getNavigationUrl()]);
   }
 
@@ -72,6 +84,26 @@ export class DomainService {
   getSelectedDomainValue() {
     return this.domainSelectedValue;
   }
+
+  addMasterDomain() {
+    if (this.domainValue.some(domain => domain !== '')) {
+      this.dataObs$.next(this.addEmptyDomain(this.domainRestValue));
+    }
+  }
+
+  removeMasterDomain() {
+    if (this.domainValue.some(domain => domain === '')) {
+      this.domainValue = this.domainRestValue;
+      this.dataObs$.next(this.domainValue);
+    }
+  }
+
+  private addEmptyDomain(domains: Array<string>): Array<string> {
+    this.domainValue = Object.assign([], domains);
+    this.domainValue.unshift('');
+    return this.domainValue;
+  }
+
 
   private getNavigationUrl(): string {
     if (this.router.url.indexOf('workbaskets') !== -1) {

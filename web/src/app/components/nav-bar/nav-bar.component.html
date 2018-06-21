@@ -13,17 +13,17 @@
         <h2 class="navbar-brand no-margin"> {{title}}</h2>
       </ul>
     </div>
-    <div *ngIf="selectedRoute.indexOf('workbaskets') !== -1 || selectedRoute.indexOf('classifications') !== -1" class="pull-right domain-form">
+    <div *ngIf="showDomainSelector()" class="pull-right domain-form">
       <div class="dropdown clearfix btn-group">
         <label class="control-label hidden-xs">Working on </label>
         <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          {{selectedDomain}}
+          {{selectedDomain? selectedDomain: 'MASTER DOMAIN'}}
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
           <li>
             <a *ngFor="let domain of domains" (click)="switchDomain(domain)">
-              <label>{{domain}}</label>
+              <label>{{domain? domain: 'MASTER DOMAIN'}}</label>
             </a>
           </li>
         </ul>

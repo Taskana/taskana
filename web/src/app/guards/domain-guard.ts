@@ -11,7 +11,7 @@ export class DomainGuard implements CanActivate {
     constructor(private domainService: DomainService, private errorModalService: ErrorModalService) { }
 
     canActivate() {
-        return this.domainService.getDomains(true).map(domain => {
+        return this.domainService.getDomains().map(domain => {
             return true;
         }).catch(() => {
             this.errorModalService.triggerError(new ErrorModel(
