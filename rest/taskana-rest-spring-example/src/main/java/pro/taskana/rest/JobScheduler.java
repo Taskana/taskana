@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaTransactionProvider;
-import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.impl.JobRunner;
 import pro.taskana.impl.JobTaskRunner;
 import pro.taskana.impl.util.LoggerUtils;
@@ -63,14 +62,15 @@ public class JobScheduler {
     @Scheduled(cron = "0 0 0 * * *")
     public void triggerTaskCompletedCleanUpJob() {
         LOGGER.info("triggerTaskCompletedCleanUpJob");
-        JobTaskRunner runner = new JobTaskRunner(taskanaEngine, taskanaEngine.getTaskService());
+        JobTaskRunner runner = new JobTaskRunner(taskanaEngine);
+        runner.registerTransactionProvider(springTransactionProvider);
         Instant completeUntilDate = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
             .atZone(ZoneId.systemDefault())
             .minusDays(untilDays)
             .toInstant();
 
-        BulkOperationResults<String, TaskanaException> result = runner.runCleanCompletedTasks(completeUntilDate);
-        Map<String, TaskanaException> errors = result.getErrorMap();
+        BulkOperationResults<String, Exception> result = runner.runCleanCompletedTasks(completeUntilDate);
+        Map<String, Exception> errors = result.getErrorMap();
 
         LOGGER.info("triggerTaskCompletedCleanUpJob Completed Result = {} ", LoggerUtils.mapToString(errors));
     }
