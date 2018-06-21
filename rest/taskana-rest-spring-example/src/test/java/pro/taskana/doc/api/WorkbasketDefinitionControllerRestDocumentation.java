@@ -11,7 +11,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +44,8 @@ public class WorkbasketDefinitionControllerRestDocumentation {
     
     private MockMvc mockMvc;
     
+    private String snippetPath = (System.getProperty("user.dir")) + "/target/generated-snippets/";
+    
     private FieldDescriptor[] workbasketdefinitionsFieldDescriptors;
     
     @Before
@@ -74,7 +75,7 @@ public class WorkbasketDefinitionControllerRestDocumentation {
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllWorkbasktdefinitionsDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllWorkbasktdefinitionsDocTest",
                 responseFields(workbasketdefinitionsFieldDescriptors)));
     }
     
@@ -94,7 +95,7 @@ public class WorkbasketDefinitionControllerRestDocumentation {
                         + "}"
                         + "]"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("ImportWorkbasketdefinitions",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "ImportWorkbasketdefinitions",
                 requestFields(subsectionWithPath("[]").description("An array of <<workbasket, workbaskets>>"))));
     }
 }

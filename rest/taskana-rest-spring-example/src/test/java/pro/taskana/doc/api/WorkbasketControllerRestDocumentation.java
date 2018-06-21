@@ -51,6 +51,7 @@ public class WorkbasketControllerRestDocumentation {
     // HashMaps to store the field descriptions centrally for multiple uses 
     private HashMap<String, String> workbasketFieldDescriptionsMap = new HashMap<String, String>();
     private HashMap<String, String> accessItemFieldDescriptionsMap = new HashMap<String, String>();
+    private String snippetPath = (System.getProperty("user.dir")) + "/target/generated-snippets/";
     
     private FieldDescriptor[] allWorkbasketsFieldDescriptors;
     private FieldDescriptor[] workbasketFieldDescriptors;
@@ -248,7 +249,7 @@ public class WorkbasketControllerRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllWorkbasketsDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllWorkbasketsDocTest",
                 responseFields(allWorkbasketsFieldDescriptors)));
     }
     
@@ -258,7 +259,7 @@ public class WorkbasketControllerRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetSpecificWorkbasketDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetSpecificWorkbasketDocTest",
                 responseFields(workbasketFieldDescriptors)));
     }
     
@@ -268,7 +269,7 @@ public class WorkbasketControllerRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllWorkbasketAccessItemsDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllWorkbasketAccessItemsDocTest",
                 responseFields(allWorkbasketAccessItemsFieldDescriptors)));
     }
     
@@ -278,7 +279,7 @@ public class WorkbasketControllerRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("WorkbasketSubset",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "WorkbasketSubset",
                 responseFields(workbasketSubsetFieldDescriptors)));
     }
     
@@ -287,7 +288,7 @@ public class WorkbasketControllerRestDocumentation {
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("http://127.0.0.1:" + port + "/v1/workbaskets/distribution-targets/WBI:100000000000000000000000000000000007")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isNoContent())
-        .andDo(MockMvcRestDocumentation.document("RemoveWorkbasketAsDistributionTargetDocTest"));
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "RemoveWorkbasketAsDistributionTargetDocTest"));
     }
     
     @Test
@@ -295,7 +296,7 @@ public class WorkbasketControllerRestDocumentation {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port + "/v1/workbaskets/WBI:100000000000000000000000000000000002/distribution-targets")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllWorkbasketDistributionTargets",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllWorkbasketDistributionTargets",
                 responseFields(allDistributionTargetsFieldDescriptors)));
     }
     
@@ -307,7 +308,7 @@ public class WorkbasketControllerRestDocumentation {
                 .content("{\"key\" : \"asdasdasd\", \"name\" : \"Gruppenpostkorb KSC\", \"domain\" : \"DOMAIN_A\", \"type\" : \"GROUP\",   \"created\" : \"2018-02-01T11:00:00Z\",\r\n" + 
                         "  \"modified\" : \"2018-02-01T11:00:00Z\"}"))
         .andExpect(MockMvcResultMatchers.status().isCreated())
-        .andDo(MockMvcRestDocumentation.document("CreateWorkbasketDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "CreateWorkbasketDocTest",
                 requestFields(createWorkbasketFieldDescriptors),
                 responseFields(workbasketFieldDescriptors)))
         .andReturn();
@@ -317,7 +318,7 @@ public class WorkbasketControllerRestDocumentation {
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("http://127.0.0.1:" + port + "/v1/workbaskets/" + newId)
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isNoContent())
-        .andDo(MockMvcRestDocumentation.document("DeleteWorkbasketDocTest"));
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "DeleteWorkbasketDocTest"));
     }
     
     @Test public void updateWorkbasketDocTest() throws Exception {
@@ -344,7 +345,7 @@ public class WorkbasketControllerRestDocumentation {
                 .contentType("application/json")
                 .content(modifiedWorkbasket))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("UpdateWorkbasketDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "UpdateWorkbasketDocTest",
                 requestFields(workbasketFieldDescriptors),
                 responseFields(workbasketFieldDescriptors)));
     }
@@ -355,7 +356,7 @@ public class WorkbasketControllerRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("AccessItemsDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "AccessItemsDocTest",
                 responseFields(accessItemFieldDescriptors)));
     }
 }

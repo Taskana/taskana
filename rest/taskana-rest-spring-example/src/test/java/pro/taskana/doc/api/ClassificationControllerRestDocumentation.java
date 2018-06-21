@@ -55,6 +55,7 @@ public class ClassificationControllerRestDocumentation {
     private MockMvc mockMvc;
 
     private HashMap<String, String> classificationFieldDescriptionsMap = new HashMap<String, String>();
+    private String snippetPath = (System.getProperty("user.dir")) + "/target/generated-snippets/";
 
     private FieldDescriptor[] allClassificationsFieldDescriptors;
     private FieldDescriptor[] classificationFieldDescriptors;
@@ -250,7 +251,7 @@ public class ClassificationControllerRestDocumentation {
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(MockMvcRestDocumentation.document("GetAllClassificationsDocTest",
+            .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllClassificationsDocTest",
                 responseFields(allClassificationsFieldDescriptors)));
     }
 
@@ -260,7 +261,7 @@ public class ClassificationControllerRestDocumentation {
             .get("http://127.0.0.1:" + port + "/v1/classifications/CLI:100000000000000000000000000000000009")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(MockMvcRestDocumentation.document("GetSpecificClassificationDocTest",
+            .andDo(MockMvcRestDocumentation.document(snippetPath + "GetSpecificClassificationDocTest",
                 responseFields(classificationFieldDescriptors)));
     }
 
@@ -270,7 +271,7 @@ public class ClassificationControllerRestDocumentation {
             .get("http://127.0.0.1:" + port + "/v1/classifications/CLI:100000000000000000000000000000000009")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(MockMvcRestDocumentation.document("ClassificationSubset",
+            .andDo(MockMvcRestDocumentation.document(snippetPath + "ClassificationSubset",
                 responseFields(classificationSubsetFieldDescriptors)));
     }
 
@@ -282,7 +283,7 @@ public class ClassificationControllerRestDocumentation {
             .content("{\"key\":\"Key0815casdgdgh\", \"domain\":\"DOMAIN_B\"}")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isCreated())
-            .andDo(MockMvcRestDocumentation.document("CreateClassificationDocTest",
+            .andDo(MockMvcRestDocumentation.document(snippetPath + "CreateClassificationDocTest",
                 requestFields(createClassificationFieldDescriptors),
                 responseFields(classificationFieldDescriptors)))
             .andReturn();
@@ -293,7 +294,7 @@ public class ClassificationControllerRestDocumentation {
             .delete("http://127.0.0.1:" + port + "/v1/classifications/" + newId)
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isNoContent())
-            .andDo(MockMvcRestDocumentation.document("DeleteClassificationDocTest"));
+            .andDo(MockMvcRestDocumentation.document(snippetPath + "DeleteClassificationDocTest"));
     }
 
     @Test
@@ -322,7 +323,7 @@ public class ClassificationControllerRestDocumentation {
             .contentType("application/json")
             .content(modifiedTask))
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(MockMvcRestDocumentation.document("UpdateClassificationDocTest",
+            .andDo(MockMvcRestDocumentation.document(snippetPath + "UpdateClassificationDocTest",
                 requestFields(classificationFieldDescriptors),
                 responseFields(classificationFieldDescriptors)));
     }

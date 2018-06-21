@@ -43,6 +43,8 @@ public class TaskanaEngineControllerRestDocumentation {
     
     private MockMvc mockMvc;
     
+    private String snippetPath = (System.getProperty("user.dir")) + "/target/generated-snippets/";
+    
     private FieldDescriptor[] allDomainsFieldDescriptors;
     private FieldDescriptor[] allClassificationCategoriesFieldDescriptors;
     private FieldDescriptor[] allClassificationTypesFieldDescriptors;
@@ -88,7 +90,7 @@ public class TaskanaEngineControllerRestDocumentation {
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllDomainsDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllDomainsDocTest",
                 responseFields(allDomainsFieldDescriptors)));
     }
     
@@ -99,7 +101,7 @@ public class TaskanaEngineControllerRestDocumentation {
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllClassificationCategoriesDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllClassificationCategoriesDocTest",
                 responseFields(allClassificationCategoriesFieldDescriptors)));
     }
     
@@ -110,7 +112,7 @@ public class TaskanaEngineControllerRestDocumentation {
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllClassificationTypesDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetAllClassificationTypesDocTest",
                 responseFields(allClassificationTypesFieldDescriptors)));
     }
     
@@ -121,7 +123,7 @@ public class TaskanaEngineControllerRestDocumentation {
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetCurrentUserInfoDocTest",
+        .andDo(MockMvcRestDocumentation.document(snippetPath + "GetCurrentUserInfoDocTest",
                 responseFields(currentUserInfoFieldDescriptors)));
     }
 }

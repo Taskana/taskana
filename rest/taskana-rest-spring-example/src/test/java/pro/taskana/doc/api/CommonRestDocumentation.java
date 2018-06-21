@@ -47,6 +47,7 @@ public class CommonRestDocumentation {
     private MockMvc mockMvc;
 
     private HashMap<String, String> selfLinkFieldDescriptionsMap = new HashMap<String, String>();
+    private String snippetPath = (System.getProperty("user.dir")) + "/target/generated-snippets/";
 
     private FieldDescriptor[] selfLinkFieldDescriptors;
 
@@ -106,7 +107,7 @@ public class CommonRestDocumentation {
             .get("http://127.0.0.1:" + port + "/v1/classifications/CLI:100000000000000000000000000000000009")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(MockMvcRestDocumentation.document("CommonFields",
+            .andDo(MockMvcRestDocumentation.document(snippetPath + "CommonFields",
                 responseFields(selfLinkFieldDescriptors)));
     }
 }
