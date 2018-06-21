@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -25,8 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.hal.Jackson2HalModule;
@@ -38,6 +39,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.TriggerContext;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -48,7 +51,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.taskana.Classification;
 import pro.taskana.Task;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
 import pro.taskana.rest.resource.TaskResource;
@@ -56,7 +58,8 @@ import pro.taskana.rest.resource.assembler.ClassificationResourceAssembler;
 import pro.taskana.rest.resource.assembler.TaskResourceAssembler;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
+    properties = {"devMode=true"})
 public class ClassificationControllerIntTest {
 
     @Autowired
@@ -64,6 +67,9 @@ public class ClassificationControllerIntTest {
 
     @Autowired
     private TaskResourceAssembler taskResourceAssembler;
+
+    @Autowired
+    Environment env;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationControllerIntTest.class);
     String server = "http://127.0.0.1:";
@@ -237,7 +243,7 @@ public class ClassificationControllerIntTest {
 
     @Test
     public void testUpdateClassificationPrioServiceLevel()
-        throws IOException, InterruptedException, NotAuthorizedException, InvalidArgumentException {
+        throws IOException, InterruptedException, InvalidArgumentException {
 
         // 1st step: get old classification :
         Instant before = Instant.now();
@@ -273,9 +279,31 @@ public class ClassificationControllerIntTest {
         assertEquals(200, con.getResponseCode());
         con.disconnect();
 
-        // wait a minute to give JobScheduler a chance to run
-        LOGGER.info("About to sleep for 70 seconds to give JobScheduler a chance to process the classification change");
-        Thread.sleep(70000);
+        // wait taskana.jobscheduler.delay + 5 seconds to give JobScheduler a chance to run
+        String cron = env.getProperty("taskana.jobscheduler.cron");
+        CronTrigger trigger = new CronTrigger(cron);
+        TriggerContext context = new TriggerContext() {
+
+            @Override
+            public Date lastScheduledExecutionTime() {
+                return null;
+            }
+
+            @Override
+            public Date lastActualExecutionTime() {
+                return null;
+            }
+
+            @Override
+            public Date lastCompletionTime() {
+                return null;
+            }
+        };
+        long delay = trigger.nextExecutionTime(context).getTime() - (new Date()).getTime() + 2000;
+
+        LOGGER.info("About to sleep for " + delay / 1000
+            + " seconds to give JobScheduler a chance to process the classification change");
+        Thread.sleep(delay);
         LOGGER.info("Sleeping ended. Continuing .... ");
 
         // verify the classification modified timestamp is after 'before'
