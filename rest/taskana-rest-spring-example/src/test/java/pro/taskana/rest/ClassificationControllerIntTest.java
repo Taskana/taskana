@@ -279,7 +279,7 @@ public class ClassificationControllerIntTest {
         assertEquals(200, con.getResponseCode());
         con.disconnect();
 
-        // wait taskana.jobscheduler.delay + 5 seconds to give JobScheduler a chance to run
+        // wait until the next trigger time + 2 seconds to give JobScheduler a chance to run
         String cron = env.getProperty("taskana.jobscheduler.cron");
         CronTrigger trigger = new CronTrigger(cron);
         TriggerContext context = new TriggerContext() {
@@ -299,7 +299,8 @@ public class ClassificationControllerIntTest {
                 return null;
             }
         };
-        long delay = trigger.nextExecutionTime(context).getTime() - (new Date()).getTime() + 2000;
+        Date now = new Date();
+        long delay = trigger.nextExecutionTime(context).getTime() - now.getTime() + 2000;
 
         LOGGER.info("About to sleep for " + delay / 1000
             + " seconds to give JobScheduler a chance to process the classification change");

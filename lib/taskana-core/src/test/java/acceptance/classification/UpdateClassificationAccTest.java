@@ -245,6 +245,10 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
                 "TKI:000000000000000000000000000000000055", "TKI:000000000000000000000000000000000100",
                 "TKI:000000000000000000000000000000000101", "TKI:000000000000000000000000000000000102",
                 "TKI:000000000000000000000000000000000103"));
+        List<String> indirectlyAffectedTasks = new ArrayList<>(Arrays.asList(
+            "TKI:000000000000000000000000000000000000", "TKI:000000000000000000000000000000000053",
+            "TKI:000000000000000000000000000000000054", "TKI:000000000000000000000000000000000055"));
+
         TaskService taskService = taskanaEngine.getTaskService();
 
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
@@ -254,15 +258,17 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
             Task task = taskService.getTask(taskId);
             assertTrue(task.getModified().isAfter(before));
             assertTrue(task.getPriority() == 1000);
-            long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), 15);
             // the following excluded tasks are affected via attachments. The task or an attachment still has a service
             // level below 15 days
             // therefore, we cannot compare the due date of these tasks to an SL of 15 days.
-            if (!taskId.equals("TKI:000000000000000000000000000000000008")
-                && !taskId.equals("TKI:000000000000000000000000000000000000")
-                && !taskId.equals("TKI:000000000000000000000000000000000053")
-                && !taskId.equals("TKI:000000000000000000000000000000000054")
-                && !taskId.equals("TKI:000000000000000000000000000000000055")) {
+            if (taskId.equals("TKI:000000000000000000000000000000000008")) {
+                long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), 8);
+                assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
+            } else if (indirectlyAffectedTasks.contains(taskId)) {
+                long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
+                assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
+            } else {
+                long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), 15);
                 assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
             }
 
