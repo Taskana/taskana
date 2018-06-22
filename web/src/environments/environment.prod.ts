@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  taskanaRestUrl: 'https://taskana-rest.mybluemix.net'
+  taskanaRestUrl: 'https://taskana.mybluemix.net'
 };
