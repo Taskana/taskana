@@ -58,7 +58,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected TransactionFactory transactionFactory;
     protected SqlSessionManager sessionManager;
-    protected SqlSessionFactory sessionFactory;
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
 
@@ -281,9 +280,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      */
     @Override
     public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
-        if (isUserInRole(roles)) {
-            return;
-        } else {
+        if (!isUserInRole(roles)) {
             if (LOGGER.isErrorEnabled()) {
                 String accessIds = LoggerUtils.listToString(CurrentUserContext.getAccessIds());
                 String rolesAsString = Arrays.toString(roles);
@@ -306,19 +303,20 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     public boolean isUserInRole(TaskanaRole... roles) {
         if (!getConfiguration().isSecurityEnabled()) {
             return true;
-        } else {
-            List<String> accessIds = CurrentUserContext.getAccessIds();
-            Set<String> rolesMembers = new HashSet<>();
-            for (TaskanaRole role : roles) {
-                rolesMembers.addAll(getConfiguration().getRoleMap().get(role));
-            }
-            for (String accessId : accessIds) {
-                if (rolesMembers.contains(accessId)) {
-                    return true;
-                }
-            }
-            return false;
         }
+
+        List<String> accessIds = CurrentUserContext.getAccessIds();
+        Set<String> rolesMembers = new HashSet<>();
+        for (TaskanaRole role : roles) {
+            rolesMembers.addAll(getConfiguration().getRoleMap().get(role));
+        }
+        for (String accessId : accessIds) {
+            if (rolesMembers.contains(accessId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
