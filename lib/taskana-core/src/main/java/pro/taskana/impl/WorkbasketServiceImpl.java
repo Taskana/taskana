@@ -517,7 +517,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 checkAuthorization(workbasketId, WorkbasketPermission.READ);
             }
             List<WorkbasketSummaryImpl> distributionTargets = workbasketMapper
-                .findByDistributionTargets(workbasketId);
+                .findDistributionTargets(workbasketId);
             result.addAll(distributionTargets);
             return result;
         } finally {
@@ -543,7 +543,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 checkAuthorization(workbasket.getId(), WorkbasketPermission.READ);
             }
             List<WorkbasketSummaryImpl> distributionTargets = workbasketMapper
-                .findByDistributionTargets(workbasket.getId());
+                .findDistributionTargets(workbasket.getId());
             result.addAll(distributionTargets);
             return result;
         } finally {
