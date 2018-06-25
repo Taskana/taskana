@@ -148,13 +148,13 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery nameLike(String... nameLike) {
-        this.nameLike = nameLike;
+        this.nameLike = toUpperCopy(nameLike);
         return this;
     }
 
     @Override
     public ClassificationQuery descriptionLike(String description) {
-        this.descriptionLike = description;
+        this.descriptionLike = description.toUpperCase();
         return this;
     }
 
@@ -172,7 +172,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery serviceLevelLike(String... serviceLevelLike) {
-        this.serviceLevelLike = serviceLevelLike;
+        this.serviceLevelLike = toUpperCopy(serviceLevelLike);
         return this;
     }
 
@@ -184,7 +184,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike) {
-        this.applicationEntryPointLike = applicationEntryPointLike;
+        this.applicationEntryPointLike = toUpperCopy(applicationEntryPointLike);
         return this;
     }
 
@@ -196,7 +196,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery custom1Like(String... custom1Like) {
-        this.custom1Like = custom1Like;
+        this.custom1Like = toUpperCopy(custom1Like);
         return this;
     }
 
@@ -208,7 +208,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery custom2Like(String... custom2Like) {
-        this.custom2Like = custom2Like;
+        this.custom2Like = toUpperCopy(custom2Like);
         return this;
     }
 
@@ -220,7 +220,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery custom3Like(String... custom3Like) {
-        this.custom3Like = custom3Like;
+        this.custom3Like = toUpperCopy(custom3Like);
         return this;
     }
 
@@ -232,7 +232,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery custom4Like(String... custom4Like) {
-        this.custom4Like = custom4Like;
+        this.custom4Like = toUpperCopy(custom4Like);
         return this;
     }
 
@@ -244,7 +244,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery custom5Like(String... custom5Like) {
-        this.custom5Like = custom5Like;
+        this.custom5Like = toUpperCopy(custom5Like);
         return this;
     }
 
@@ -256,7 +256,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery custom6Like(String... custom6Like) {
-        this.custom6Like = custom6Like;
+        this.custom6Like = toUpperCopy(custom6Like);
         return this;
     }
 
@@ -268,7 +268,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery custom7Like(String... custom7Like) {
-        this.custom7Like = custom7Like;
+        this.custom7Like = toUpperCopy(custom7Like);
         return this;
     }
 
@@ -280,7 +280,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public ClassificationQuery custom8Like(String... custom8Like) {
-        this.custom8Like = custom8Like;
+        this.custom8Like = toUpperCopy(custom8Like);
         return this;
     }
 
@@ -612,6 +612,14 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     public String getColumnName() {
         return columnName;
+    }
+
+    private String[] toUpperCopy(String... source) {
+        String[] target = new String[source.length];
+        for (int i = 0; i < source.length; i++) {
+            target[i] = source[i].toUpperCase();
+        }
+        return target;
     }
 
     @Override
