@@ -82,7 +82,7 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         userName = "dummy",
         groupNames = {"businessadmin"})
     @Test
-    public void testQueryAccessItemsForAccessIdsOrderedAscending()
+    public void testQueryAccessItemsForAccessIdsOrderedDescending()
         throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery()
