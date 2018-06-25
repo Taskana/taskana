@@ -1,7 +1,5 @@
 package pro.taskana.mappings;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -15,20 +13,6 @@ import pro.taskana.ObjectReference;
  * This class is the mybatis mapping of ObjectReference.
  */
 public interface ObjectReferenceMapper {
-
-    @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
-            + "FROM TASKANA.OBJECT_REFERENCE "
-            + "ORDER BY ID "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>")
-    @Results({
-        @Result(property = "id", column = "ID"),
-        @Result(property = "company", column = "COMPANY"),
-        @Result(property = "system", column = "SYSTEM"),
-        @Result(property = "systemInstance", column = "SYSTEM_INSTANCE"),
-        @Result(property = "type", column = "TYPE"),
-        @Result(property = "value", column = "VALUE") })
-    List<ObjectReference> findAll();
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
             + "FROM TASKANA.OBJECT_REFERENCE "
