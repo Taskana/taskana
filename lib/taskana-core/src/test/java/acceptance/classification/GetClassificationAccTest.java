@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.junit.Test;
-
 import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
@@ -44,7 +43,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
         assertEquals("T-GUK Honorarrechnung erstellen", classification.getName());
         assertEquals(2, classification.getPriority());
         assertEquals("P2D", classification.getServiceLevel());
-        assertEquals("", classification.getApplicationEntryPoint());
+        assertEquals("point0815", classification.getApplicationEntryPoint());
         assertEquals("VNR", classification.getCustom1());
         assertEquals("custom2", classification.getCustom2());
         assertEquals("custom3", classification.getCustom3());
@@ -70,7 +69,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
         assertEquals("T-GUK Honorarrechnung erstellen", classification.getName());
         assertEquals(2, classification.getPriority());
         assertEquals("P2D", classification.getServiceLevel());
-        assertEquals("", classification.getApplicationEntryPoint());
+        assertEquals("point0815", classification.getApplicationEntryPoint());
         assertEquals("VNR", classification.getCustom1());
         assertEquals("custom2", classification.getCustom2());
         assertEquals("custom3", classification.getCustom3());
