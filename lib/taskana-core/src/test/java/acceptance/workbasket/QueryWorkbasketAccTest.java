@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -114,7 +116,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_B")
             .list();
-        Assert.assertEquals(1L, results.size());
+        assertEquals(1L, results.size());
     }
 
     @WithAccessId(
@@ -127,7 +129,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .domainIn("DOMAIN_A")
             .typeIn(WorkbasketType.PERSONAL)
             .list();
-        Assert.assertEquals(6L, results.size());
+        assertEquals(6L, results.size());
     }
 
     @WithAccessId(
@@ -139,8 +141,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameIn("Gruppenpostkorb KSC")
             .list();
-        Assert.assertEquals(1L, results.size());
-        Assert.assertEquals("GPK_KSC", results.get(0).getKey());
+        assertEquals(1L, results.size());
+        assertEquals("GPK_KSC", results.get(0).getKey());
     }
 
     @WithAccessId(
@@ -152,7 +154,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Gruppenpostkorb KSC%")
             .list();
-        Assert.assertEquals(3L, results.size());
+        assertEquals(3L, results.size());
     }
 
     @WithAccessId(
@@ -164,7 +166,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Teamlead%", "%Gruppenpostkorb KSC%")
             .list();
-        Assert.assertEquals(5L, results.size());
+        assertEquals(5L, results.size());
     }
 
     @WithAccessId(
@@ -176,7 +178,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%TEAMLEAD%")
             .list();
-        Assert.assertEquals(2L, results.size());
+        assertEquals(2L, results.size());
     }
 
     @WithAccessId(
@@ -190,7 +192,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .orderByType(desc)
             .orderByDescription(asc)
             .list();
-        Assert.assertEquals(9L, results.size());
+        assertEquals(9L, results.size());
     }
 
     @WithAccessId(
@@ -203,7 +205,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .ownerLike("%an%", "%te%")
             .orderByOwner(asc)
             .list();
-        Assert.assertEquals(1L, results.size());
+        assertEquals(1L, results.size());
     }
 
     @WithAccessId(
@@ -215,7 +217,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC")
             .list();
-        Assert.assertEquals(1L, results.size());
+        assertEquals(1L, results.size());
     }
 
     @WithAccessId(
@@ -227,7 +229,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC_1", "GPK_KSC")
             .list();
-        Assert.assertEquals(2L, results.size());
+        assertEquals(2L, results.size());
     }
 
     @WithAccessId(
@@ -239,7 +241,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC_1", "GPK_Ksc", "GPK_KSC_3")
             .list();
-        Assert.assertEquals(2L, results.size());
+        assertEquals(2L, results.size());
     }
 
     @WithAccessId(
@@ -251,7 +253,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyLike("%KSC%")
             .list();
-        Assert.assertEquals(3L, results.size());
+        assertEquals(3L, results.size());
     }
 
     @WithAccessId(
@@ -263,7 +265,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyLike("%kSc%")
             .list();
-        Assert.assertEquals(3L, results.size());
+        assertEquals(3L, results.size());
     }
 
     @WithAccessId(
@@ -275,7 +277,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyOrNameLike("%kSc%")
             .list();
-        Assert.assertEquals(9L, results.size());
+        assertEquals(9L, results.size());
     }
 
     @WithAccessId(
@@ -288,14 +290,14 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .nameLike("%Gruppenpostkorb KSC%")
             .orderByName(asc)
             .list();
-        Assert.assertEquals(3L, results.size());
-        Assert.assertEquals("GPK_KSC", results.get(0).getKey());
+        assertEquals(3L, results.size());
+        assertEquals("GPK_KSC", results.get(0).getKey());
 
         // check sort order is correct
         WorkbasketSummary previousSummary = null;
         for (WorkbasketSummary wbSummary : results) {
             if (previousSummary != null) {
-                Assert.assertTrue(wbSummary.getName().compareToIgnoreCase(
+                assertTrue(wbSummary.getName().compareToIgnoreCase(
                     previousSummary.getName()) >= 0);
             }
             previousSummary = wbSummary;
@@ -312,12 +314,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .nameLike("basxet%")
             .orderByName(desc)
             .list();
-        Assert.assertEquals(10L, results.size());
+        assertEquals(10L, results.size());
         // check sort order is correct
         WorkbasketSummary previousSummary = null;
         for (WorkbasketSummary wbSummary : results) {
             if (previousSummary != null) {
-                Assert.assertTrue(wbSummary.getName().compareToIgnoreCase(
+                assertTrue(wbSummary.getName().compareToIgnoreCase(
                     previousSummary.getName()) <= 0);
             }
             previousSummary = wbSummary;
@@ -333,12 +335,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .nameLike("basxet%")
             .orderByKey(asc)
             .list();
-        Assert.assertEquals(10L, results.size());
+        assertEquals(10L, results.size());
         // check sort order is correct
         WorkbasketSummary previousSummary = null;
         for (WorkbasketSummary wbSummary : results) {
             if (previousSummary != null) {
-                Assert.assertTrue(wbSummary.getKey().compareToIgnoreCase(
+                assertTrue(wbSummary.getKey().compareToIgnoreCase(
                     previousSummary.getKey()) >= 0);
             }
             previousSummary = wbSummary;
@@ -354,12 +356,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .nameLike("basxet%")
             .orderByKey(desc)
             .list();
-        Assert.assertEquals(10L, results.size());
+        assertEquals(10L, results.size());
         // check sort order is correct
         WorkbasketSummary previousSummary = null;
         for (WorkbasketSummary wbSummary : results) {
             if (previousSummary != null) {
-                Assert.assertTrue(wbSummary.getKey().compareToIgnoreCase(
+                assertTrue(wbSummary.getKey().compareToIgnoreCase(
                     previousSummary.getKey()) <= 0);
             }
             previousSummary = wbSummary;
@@ -375,7 +377,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .createdWithin(todaysInterval())
             .list();
-        Assert.assertEquals(9L, results.size());
+        assertEquals(9L, results.size());
     }
 
     @WithAccessId(
@@ -387,7 +389,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .modifiedWithin(todaysInterval())
             .list();
-        Assert.assertEquals(9L, results.size());
+        assertEquals(9L, results.size());
     }
 
     @WithAccessId(
@@ -401,12 +403,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .nameLike("%")
             .orderByName(desc)
             .list();
-        Assert.assertEquals(25L, results.size());
+        assertEquals(25L, results.size());
         // check sort order is correct
         WorkbasketSummary previousSummary = null;
         for (WorkbasketSummary wbSummary : results) {
             if (previousSummary != null) {
-                Assert.assertTrue(wbSummary.getName().compareToIgnoreCase(
+                assertTrue(wbSummary.getName().compareToIgnoreCase(
                     previousSummary.getName()) <= 0);
             }
             previousSummary = wbSummary;
@@ -418,8 +420,74 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
             .orderByName(desc)
             .list();
 
-        Assert.assertEquals(13L, results.size());
+        assertEquals(13L, results.size());
 
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = "group_1")
+    @Test
+    public void testQueryWorkbasketByDomainLike() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .domainLike("DOMAIN_%").orderByDomain(asc).list();
+
+        ArrayList<String> expectedIds = new ArrayList<String>(
+                Arrays.asList("WBI:100000000000000000000000000000000001", "WBI:100000000000000000000000000000000002",
+                        "WBI:100000000000000000000000000000000004", "WBI:100000000000000000000000000000000005",
+                        "WBI:100000000000000000000000000000000006", "WBI:100000000000000000000000000000000007",
+                        "WBI:100000000000000000000000000000000008", "WBI:100000000000000000000000000000000009",
+                        "WBI:100000000000000000000000000000000010", "WBI:100000000000000000000000000000000012"));
+        assertEquals(10L, results.size());
+        for (String id : expectedIds) {
+            assertTrue(results.stream().anyMatch(wbSummary -> wbSummary.getId().equals(id)));
+        }
+    }
+
+    @WithAccessId(
+        userName = "admin",
+        groupNames = "group_1")
+    @Test
+    public void testQueryWorkbasketByOwnerInOrderByDomainDesc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .ownerIn("owner0815").orderByDomain(desc).list();
+
+        assertEquals(2L, results.size());
+        assertEquals("WBI:100000000000000000000000000000000015", results.get(0).getId());
+        assertEquals("WBI:100000000000000000000000000000000001", results.get(1).getId());
+    }
+
+    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
+    @Ignore
+    @WithAccessId(
+        userName = "admin",
+        groupNames = "")
+    @Test
+    public void testQueryForCustom1LikeOrderByCustom1Asc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .custom1Like("ABC%")
+                .orderByCustom1(asc)
+                .list();
+
+        assertEquals(3, results.size());
+        assertEquals("WBI:100000000000000000000000000000000015", results.get(0).getId());
+        assertEquals("WBI:100000000000000000000000000000000001", results.get(1).getId());
+        assertEquals("WBI:100000000000000000000000000000000008", results.get(2).getId());
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testQueryWorkbasketCustom1In() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .custom1In("ABCQVW").list();
+
+        assertEquals(1, results.size());
+        assertEquals("WBI:100000000000000000000000000000000001", results.get(0).getId());
+    }
 }
