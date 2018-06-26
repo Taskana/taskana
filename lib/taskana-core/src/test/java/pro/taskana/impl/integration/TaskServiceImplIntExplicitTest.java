@@ -459,8 +459,8 @@ public class TaskServiceImplIntExplicitTest {
         }
     }
 
-    private Task generateDummyTask() throws ClassificationAlreadyExistException, ClassificationNotFoundException,
-        InvalidWorkbasketException, NotAuthorizedException,
+    private Task generateDummyTask()
+        throws ClassificationAlreadyExistException, InvalidWorkbasketException, NotAuthorizedException,
         WorkbasketAlreadyExistException, DomainNotFoundException, InvalidArgumentException {
         WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("wb", "DOMAIN_A");
         workbasket.setName("wb");

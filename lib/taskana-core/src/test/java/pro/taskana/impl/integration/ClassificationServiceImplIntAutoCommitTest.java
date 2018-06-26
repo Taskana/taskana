@@ -153,8 +153,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindAllClassifications()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException, InvalidArgumentException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
+        InvalidArgumentException {
         Classification classification0 = this.createDummyClassificationWithUniqueKey("", "TASK");
         classificationService.createClassification(classification0);
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "TASK");
@@ -183,8 +183,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testInsertAndClassificationMapper()
-        throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-        InvalidArgumentException, DomainNotFoundException {
+        throws NotAuthorizedException, ClassificationAlreadyExistException, InvalidArgumentException,
+        DomainNotFoundException {
         Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
         classification = classificationService.createClassification(classification);
 
@@ -221,8 +221,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException, InvalidArgumentException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
+        InvalidArgumentException {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
         classification1.setCategory("EXTERNAL");
         classificationService.createClassification(classification1);
@@ -244,8 +244,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperCustomAndCategory()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException, InvalidArgumentException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
+        InvalidArgumentException {
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "TASK");
         classification1.setDescription("DESC1");
         classification1.setCategory("EXTERNAL");
@@ -283,7 +283,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
         throws ClassificationAlreadyExistException, NumberFormatException, NotAuthorizedException,
-        ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException {
+        DomainNotFoundException, InvalidArgumentException {
         Classification classification = this.createDummyClassificationWithUniqueKey("", "TASK");
         classification.setPriority(Integer.decode("5"));
         classificationService.createClassification(classification);
@@ -317,8 +317,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
 
     @Test
     public void testFindWithClassificationMapperServiceLevelNameAndDescription()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException, InvalidArgumentException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
+        InvalidArgumentException {
         int all = 0;
         Classification classification = this.createDummyClassificationWithUniqueKey("", "TASK");
         classification.setServiceLevel("P1D");

@@ -82,15 +82,13 @@ public interface ClassificationService {
      *             when the classification does already exists at the given domain.
      * @throws NotAuthorizedException
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
-     * @throws ClassificationNotFoundException
-     *             if the current parentId is not NULL/EMPTY and can not be found.
      * @throws DomainNotFoundException
      *             if the domain does not exist in the configuration
      * @throws InvalidArgumentException
      *             if the ServiceLevel property does not comply with the ISO 8601 specification
      */
     Classification createClassification(Classification classification)
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        throws ClassificationAlreadyExistException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException;
 
     /**
