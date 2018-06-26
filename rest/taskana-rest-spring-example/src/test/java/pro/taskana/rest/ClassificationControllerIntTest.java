@@ -184,6 +184,57 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
+    public void testCreateClassificationWithParentId() throws IOException {
+        String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P1\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\"}";
+        URL url = new URL(server + port + "/v1/classifications");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(newClassification);
+        out.flush();
+        out.close();
+        assertEquals(201, con.getResponseCode());
+        con.disconnect();
+    }
+
+    @Test
+    public void testCreateClassificationWithParentKey() throws IOException {
+        String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
+        URL url = new URL(server + port + "/v1/classifications");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(newClassification);
+        out.flush();
+        out.close();
+        assertEquals(201, con.getResponseCode());
+        con.disconnect();
+    }
+
+    @Test
+    public void testReturn400IfCreateClassificationWithIncompatibleParentIdAndKey() throws IOException {
+        String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\",\"parentKey\":\"T2000\"}";
+        URL url = new URL(server + port + "/v1/classifications");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(newClassification);
+        out.flush();
+        out.close();
+        assertEquals(400, con.getResponseCode());
+        con.disconnect();
+    }
+
+    @Test
     public void testCreateClassificationWithClassificationIdReturnsError400() throws IOException {
         String newClassification = "{\"classificationId\":\"someId\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         URL url = new URL("http://127.0.0.1:" + port + "/v1/classifications");

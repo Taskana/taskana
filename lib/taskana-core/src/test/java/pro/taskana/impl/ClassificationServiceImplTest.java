@@ -63,7 +63,7 @@ public class ClassificationServiceImplTest {
 
     @Test(expected = ClassificationAlreadyExistException.class)
     public void testCreateClassificationAlreadyExisting()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
+        throws ClassificationAlreadyExistException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
         Classification classification = createDummyClassification();
         doReturn(classification).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -84,7 +84,7 @@ public class ClassificationServiceImplTest {
         }
     }
 
-    @Test(expected = ClassificationNotFoundException.class)
+    @Test(expected = InvalidArgumentException.class)
     public void testCreateClassificationParentIdNotExisting()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
@@ -97,7 +97,7 @@ public class ClassificationServiceImplTest {
 
         try {
             cutSpy.createClassification(classification);
-        } catch (ClassificationNotFoundException e) {
+        } catch (InvalidArgumentException e) {
             verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
             verify(taskanaEngineImplMock, times(2)).openConnection();
             verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
@@ -111,7 +111,7 @@ public class ClassificationServiceImplTest {
         }
     }
 
-    @Test(expected = ClassificationNotFoundException.class)
+    @Test(expected = InvalidArgumentException.class)
     public void testCreateClassificationParentKeyNotExisting()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
@@ -125,7 +125,7 @@ public class ClassificationServiceImplTest {
 
         try {
             cutSpy.createClassification(classification);
-        } catch (ClassificationNotFoundException e) {
+        } catch (InvalidArgumentException e) {
             verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
             verify(taskanaEngineImplMock, times(2)).openConnection();
             verify(classificationMapperMock, times(1)).findByKeyAndDomain(classification.getKey(),
@@ -143,7 +143,7 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationInOwnDomainButExistingInRoot()
-        throws ClassificationAlreadyExistException, ClassificationNotFoundException, InterruptedException,
+        throws ClassificationAlreadyExistException, InterruptedException,
         NotAuthorizedException, DomainNotFoundException, InvalidArgumentException {
         Instant beforeTimestamp = Instant.now();
         Thread.sleep(10L);
@@ -176,8 +176,8 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
-        DomainNotFoundException, InvalidArgumentException {
+        throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
+        InvalidArgumentException {
         Classification classification = createDummyClassification("");
         String domain = classification.getDomain();
         String key = classification.getKey();
@@ -203,7 +203,7 @@ public class ClassificationServiceImplTest {
 
     @Test
     public void testCreateClassificationIntoRootDomain()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        throws ClassificationAlreadyExistException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
         ClassificationImpl classification = (ClassificationImpl) createDummyClassification(null);
         classification.setDomain("");
@@ -364,7 +364,7 @@ public class ClassificationServiceImplTest {
 
     @Test(expected = InvalidArgumentException.class)
     public void testThrowExceptionIdIfClassificationIsCreatedWithAnExplicitId()
-        throws ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException,
+        throws DomainNotFoundException, InvalidArgumentException,
         NotAuthorizedException, ClassificationAlreadyExistException {
         try {
             Classification classification = createDummyClassification();
