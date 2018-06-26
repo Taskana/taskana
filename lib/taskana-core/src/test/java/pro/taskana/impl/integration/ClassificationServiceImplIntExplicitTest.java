@@ -166,7 +166,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindAllClassifications()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException {
+        DomainNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification0 = this.createNewClassificationWithUniqueKey("", "TASK");
@@ -204,7 +204,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testInsertAndClassificationQuery()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException {
+        DomainNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
@@ -249,7 +249,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindWithClassificationMapperDomainAndCategory()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException {
+        DomainNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
@@ -276,7 +276,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindWithClassificationMapperCustomAndCategory()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException {
+        DomainNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification1 = this.createNewClassificationWithUniqueKey("", "TASK");
@@ -317,7 +317,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindWithClassificationMapperPriorityTypeAndParent()
         throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-        ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException {
+        DomainNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         Classification classification = this.createNewClassificationWithUniqueKey("", "TASK");
@@ -354,7 +354,7 @@ public class ClassificationServiceImplIntExplicitTest {
     @Test
     public void testFindWithClassificationMapperServiceLevelNameAndDescription()
         throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-        ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException {
+        DomainNotFoundException, InvalidArgumentException {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         int all = 0;

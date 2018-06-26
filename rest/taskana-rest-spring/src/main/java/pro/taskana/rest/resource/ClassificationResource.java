@@ -60,7 +60,7 @@ public class ClassificationResource extends ResourceSupport {
     }
 
     public String getParentKey() {
-        return parentId;
+        return parentKey;
     }
 
     public void setParentKey(String parentKey) {

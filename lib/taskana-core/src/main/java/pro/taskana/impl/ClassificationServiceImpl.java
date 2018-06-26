@@ -54,7 +54,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     @Override
     public Classification createClassification(Classification classification)
-        throws ClassificationAlreadyExistException, NotAuthorizedException, ClassificationNotFoundException,
+        throws ClassificationAlreadyExistException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
         LOGGER.debug("entry to createClassification(classification = {})", classification);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -76,12 +76,8 @@ public class ClassificationServiceImpl implements ClassificationService {
             classificationImpl.setModified(classificationImpl.getCreated());
             this.initDefaultClassificationValues(classificationImpl);
 
-            if (classificationImpl.getParentId() != null && !classificationImpl.getParentId().isEmpty()) {
-                this.getClassification(classificationImpl.getParentId());
-            }
-            if (classificationImpl.getParentKey() != null && !classificationImpl.getParentKey().isEmpty()) {
-                this.getClassification(classificationImpl.getParentKey(), classificationImpl.getDomain());
-            }
+            validateAndPopulateParentInformation(classificationImpl);
+
             classificationMapper.insert(classificationImpl);
             LOGGER.debug("Method createClassification created classification {}.", classificationImpl);
 
@@ -93,6 +89,32 @@ public class ClassificationServiceImpl implements ClassificationService {
             LOGGER.debug("exit from createClassification()");
         }
         return classificationImpl;
+    }
+
+    private void validateAndPopulateParentInformation(ClassificationImpl classificationImpl)
+        throws InvalidArgumentException {
+        try {
+
+            if (classificationImpl.getParentId() != null && !classificationImpl.getParentId().isEmpty()) {
+                Classification parentClassification = this.getClassification(classificationImpl.getParentId());
+                if (classificationImpl.getParentKey() != null && !classificationImpl.getParentKey().isEmpty()) {
+                    if (!classificationImpl.getParentKey().equals(parentClassification.getKey())) {
+                        throw new InvalidArgumentException(
+                            "Given parent key of classification does not match key of parent id.");
+                    }
+                    classificationImpl.setParentKey(parentClassification.getKey());
+                }
+            }
+
+            if (classificationImpl.getParentKey() != null && !classificationImpl.getParentKey().isEmpty()) {
+                Classification parentClassification = this.getClassification(classificationImpl.getParentKey(),
+                    classificationImpl.getDomain());
+                classificationImpl.setParentId(parentClassification.getId());
+            }
+
+        } catch (ClassificationNotFoundException e) {
+            throw new InvalidArgumentException("Parent classification could not be found.", e);
+        }
     }
 
     private void checkClassificationId(ClassificationImpl classificationImpl) throws InvalidArgumentException {
