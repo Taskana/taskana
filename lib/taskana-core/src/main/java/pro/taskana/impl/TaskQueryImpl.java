@@ -47,6 +47,7 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] taskIds;
     private String[] description;
     private String[] note;
+    private String[] noteLike;
     private int[] priority;
     private KeyDomain[] workbasketKeyDomainIn;
     private String[] workbasketIdIn;
@@ -115,11 +116,13 @@ public class TaskQueryImpl implements TaskQuery {
     private TimeInterval[] plannedIn;
     private TimeInterval[] dueIn;
     private List<String> orderBy;
+    private List<String> orderColumns;
 
     TaskQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
         this.orderBy = new ArrayList<>();
+        this.orderColumns = new ArrayList<>();
         this.filterByAccessIdIn = true;
     }
 
@@ -227,7 +230,7 @@ public class TaskQueryImpl implements TaskQuery {
 
     @Override
     public TaskQuery noteLike(String... note) {
-        this.note = toUpperCopy(note);
+        this.noteLike = toUpperCopy(note);
         return this;
     }
 
@@ -403,6 +406,10 @@ public class TaskQueryImpl implements TaskQuery {
                 "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
                 e.getCause());
         }
+        if (strings.length == 0) {
+            throw new InvalidArgumentException(
+                "At least one string has to be provided as a search parameter");
+        }
 
         switch (num) {
             case 1:
@@ -470,6 +477,10 @@ public class TaskQueryImpl implements TaskQuery {
             throw new InvalidArgumentException(
                 "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
                 e.getCause());
+        }
+        if (strings.length == 0) {
+            throw new InvalidArgumentException(
+                "At least one string has to be provided as a search parameter");
         }
 
         switch (num) {
@@ -968,6 +979,10 @@ public class TaskQueryImpl implements TaskQuery {
         return orderBy;
     }
 
+    public List<String> getOrderColumns() {
+        return orderColumns;
+    }
+
     public TimeInterval[] getCreatedIn() {
         return createdIn;
     }
@@ -978,6 +993,10 @@ public class TaskQueryImpl implements TaskQuery {
 
     public String[] getNote() {
         return note;
+    }
+
+    public String[] getNoteLike() {
+        return noteLike;
     }
 
     public String[] getParentBusinessProcessIdIn() {
@@ -1186,6 +1205,7 @@ public class TaskQueryImpl implements TaskQuery {
             orderByDirection = " DESC";
         }
         orderBy.add(columnName + orderByDirection);
+        orderColumns.add(columnName);
         return this;
     }
 

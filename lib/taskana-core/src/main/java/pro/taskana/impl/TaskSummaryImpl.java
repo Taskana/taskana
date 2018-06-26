@@ -398,7 +398,7 @@ public class TaskSummaryImpl implements TaskSummary {
             case 10:
                 return custom10;
             case 11:
-                return custom10;
+                return custom11;
             case 12:
                 return custom12;
             case 13:
