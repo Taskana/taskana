@@ -87,9 +87,9 @@ public class DbSchemaCreator {
 
             String query = "select VERSION from TASKANA.TASKANA_SCHEMA_VERSION where "
                 + "VERSION = (select max(VERSION) from TASKANA.TASKANA_SCHEMA_VERSION) "
-                + "AND VERSION = '" + expectedVersion + "'";
+                + "AND VERSION = ?";
 
-            Map<String, Object> queryResult = runner.selectOne(query, new Object[] {});
+            Map<String, Object> queryResult = runner.selectOne(query, expectedVersion);
             if (queryResult == null || queryResult.isEmpty()) {
                 LOGGER.error(
                     "Schema version not valid. The VERSION property in table TASKANA.TASKANA_SCHEMA_VERSION has not the expected value {}",
