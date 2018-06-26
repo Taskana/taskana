@@ -64,10 +64,12 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private String[] custom8In;
     private String[] custom8Like;
     private List<String> orderBy;
+    private List<String> orderColumns;
 
     ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.orderBy = new ArrayList<>();
+        this.orderColumns = new ArrayList<>();
     }
 
     @Override
@@ -471,6 +473,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
             orderByDirection = " DESC";
         }
         orderBy.add(columnName + orderByDirection);
+        orderColumns.add(columnName);
         return this;
     }
 
@@ -612,6 +615,14 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     public String getColumnName() {
         return columnName;
+    }
+
+    public List<String> getOrderBy() {
+        return orderBy;
+    }
+
+    public List<String> getOrderColumns() {
+        return orderColumns;
     }
 
     private String[] toUpperCopy(String... source) {

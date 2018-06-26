@@ -69,6 +69,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] orgLevel4Like;
     private TaskanaEngineImpl taskanaEngine;
     private List<String> orderBy;
+    private List<String> orderColumns;
     private boolean joinWithAccessList;
     private boolean checkReadPermission;
     private boolean usedToAugmentTasks;
@@ -77,6 +78,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.orderBy = new ArrayList<>();
+        this.orderColumns = new ArrayList<>();
         this.callerRolesAndAccessIdsAlreadyHandled = false;
     }
 
@@ -597,6 +599,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return orderBy;
     }
 
+    public List<String> getOrderColumns() {
+        return orderColumns;
+    }
+
     public String getColumnName() {
         return columnName;
     }
@@ -760,6 +766,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             orderByDirection = " DESC";
         }
         orderBy.add(colName + orderByDirection);
+        orderColumns.add(colName);
         return this;
     }
 

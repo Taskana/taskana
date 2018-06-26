@@ -33,10 +33,12 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
     private TaskanaEngineImpl taskanaEngine;
     private List<String> orderBy;
+    private List<String> orderColumns;
 
     WorkbasketAccessItemQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         orderBy = new ArrayList<>();
+        orderColumns = new ArrayList<>();
     }
 
     @Override
@@ -177,6 +179,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
             orderByDirection = " DESC";
         }
         orderBy.add(colName + orderByDirection);
+        orderColumns.add(colName);
         return this;
     }
 
@@ -194,6 +197,10 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
     public List<String> getOrderBy() {
         return orderBy;
+    }
+
+    public List<String> getOrderColumns() {
+        return orderColumns;
     }
 
     public String getColumnName() {
