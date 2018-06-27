@@ -35,11 +35,7 @@ export class IconTypeComponent implements OnInit {
 		return 	type === 'PERSONAL' ? 'user.svg' :
 				type === 'GROUP' ? 'users.svg' :
 				type === 'TOPIC' ? 'topic.svg' :
-				type === 'CLEARANCE' ? 'clearance.svg' :
-				type === 'EXTERNAL' ?  'external.svg' :
-				type === 'AUTOMATIC' ?  'automatic.svg' :
-				type === 'MANUAL' ?  'manual.svg' :
-				type === 'CLOSED' ?  'closed.svg' : 'asterisk.svg';
+				type === 'CLEARANCE' ? 'clearance.svg' : 'asterisk.svg';
 
 	}
 }
