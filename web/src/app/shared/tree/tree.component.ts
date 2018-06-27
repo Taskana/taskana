@@ -64,17 +64,13 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
       this.unSelectActiveNode();
     }
 
-    if (this.filterTextOld !== this.filterText) {
-      this.filterTextOld = this.filterText;
-      this.filterNodes(this.filterText);
-      this.manageTreeState();
-    }
-    if (this.filterIconOld !== this.filterIcon) {
+    if (this.filterTextOld !== this.filterText ||
+      this.filterIconOld !== this.filterIcon) {
       this.filterIconOld = this.filterIcon;
-      this.filterNodes(this.filterIcon);
+      this.filterTextOld = this.filterText;
+      this.filterNodes(this.filterText ? this.filterText : '', this.filterIcon);
       this.manageTreeState();
     }
-
   }
 
   onActivate(treeNode: any) {
@@ -118,12 +114,20 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
     this.expandParent(node.parent);
   }
 
-  private filterNodes(text) {
+  private filterNodes(text, iconText) {
     this.tree.treeModel.filterNodes((node) => {
-      return (node.data.name.toUpperCase().includes(text.toUpperCase())
-        || node.data.key.toUpperCase().includes(text.toUpperCase())
-        || node.data.category.toUpperCase().includes(text.toUpperCase()));
+      return this.checkNameAndKey(node, text) &&
+        this.checkIcon(node, iconText);
     });
+  }
+
+  private checkNameAndKey(node: any, text: string): boolean {
+    return (node.data.name.toUpperCase().includes(text.toUpperCase())
+      || node.data.key.toUpperCase().includes(text.toUpperCase()))
+  }
+  private checkIcon(node: any, iconText: string): boolean {
+    return (node.data.category.toUpperCase() === iconText.toUpperCase()
+      || iconText === '')
   }
 
   private manageTreeState() {
@@ -131,7 +135,5 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
       this.tree.treeModel.collapseAll();
     }
   }
-
 }
-
 
