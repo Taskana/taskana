@@ -22,6 +22,7 @@ import { ClassificationCategoriesService } from 'app/administration/services/cla
 // tslint:enable:max-line-length
 import { DomainService } from 'app/services/domain/domain.service';
 import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';
+import { Pair } from 'app/models/pair';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -186,6 +187,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classification.category = category;
   }
 
+  getCategoryIcon(category: string): Pair {
+    return this.categoryService.getCategoryIcon(category);
+  }
+
   private afterRequest() {
     this.requestInProgressService.setRequestInProgress(false);
     this.classificationsService.triggerClassificationSaved();
@@ -236,6 +241,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
 
   ngOnDestroy(): void {
 

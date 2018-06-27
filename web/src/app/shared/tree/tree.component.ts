@@ -1,8 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked, OnChanges, SimpleChanges } from '@angular/core';
 import { TreeNodeModel } from 'app/models/tree-node';
 
-import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions, ITreeState, TreeComponent, TreeNode } from 'angular-tree-component';
+import { KEYS, ITreeOptions, TreeComponent, TreeNode } from 'angular-tree-component';
 import { TreeService } from '../../services/tree/tree.service';
+import {
+  ClassificationCategoriesService
+} from 'app/administration/services/classification-categories-service/classification-categories.service';
+import { Pair } from 'app/models/pair';
 
 @Component({
   selector: 'taskana-tree',
@@ -25,7 +29,6 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
 
   private filterTextOld: string
   private filterIconOld: string
-  private beforeFilteringState: ITreeState;
 
   options: ITreeOptions = {
     displayField: 'name',
@@ -42,10 +45,9 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
     levelPadding: 20
   }
 
-  constructor(private treeService: TreeService) { }
+  constructor(private treeService: TreeService, private categoryService: ClassificationCategoriesService) { }
 
   ngOnInit() {
-    this.selectNode(this.selectNodeId);
     this.treeService.getRemovedNodeId().subscribe(value => {
       const removedNode = this.getNode(value);
       if (removedNode.parent) {
@@ -81,6 +83,11 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
 
   onDeactivate(treeNode: any) {
     this.selectNodeIdChanged.emit(undefined);
+  }
+
+
+  getCategoryIcon(category: string): Pair {
+    return this.categoryService.getCategoryIcon(category);
   }
 
   private selectNode(nodeId: string) {

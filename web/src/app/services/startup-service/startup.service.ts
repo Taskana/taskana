@@ -46,7 +46,7 @@ export class StartupService {
     }
 
     geCustomizedFieldsFilePromise() {
-        return this.httpClient.get<any>('environments/data-sources/customized-fields.json').map(jsonFile => {
+        return this.httpClient.get<any>('environments/data-sources/taskana-customization.json').map(jsonFile => {
             if (jsonFile) {
                 this.customFieldsService.initCustomFields('EN', jsonFile);
             }

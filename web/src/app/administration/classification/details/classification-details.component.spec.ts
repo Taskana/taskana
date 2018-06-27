@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Routes } from '@angular/router';
@@ -6,7 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { AppModule } from 'app/app.module'
 
 import { ClassificationDetailsComponent } from './classification-details.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
@@ -26,6 +25,7 @@ import { ClassificationCategoriesService } from 'app/administration/services/cla
 // tslint:enable:max-line-length
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
+import { Pair } from 'app/models/pair';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -67,6 +67,7 @@ describe('ClassificationDetailsComponent', () => {
       classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes').and.returnValue(Observable.of([]));
       spyOn(classificationCategoriesService, 'getCategories').and.returnValue(Observable.of(['firstCategory', 'secondCategory']));
       spyOn(classificationsService, 'deleteClassification').and.returnValue(Observable.of(true));
+      spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
       component.classification = new ClassificationDefinition('id1', undefined, undefined, undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, new LinksClassification({ 'self': '' }));
