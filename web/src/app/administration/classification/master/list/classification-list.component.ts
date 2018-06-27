@@ -8,6 +8,10 @@ import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
 import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
+import {
+	ClassificationCategoriesService
+} from 'app/administration/services/classification-categories-service/classification-categories.service';
+import { Pair } from 'app/models/pair';
 
 @Component({
 	selector: 'taskana-classification-list',
@@ -23,10 +27,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	requestInProgress = false;
 	initialized = false;
 	inputValue: string;
-
-	allCategories: Map<string, string> = new Map([['ALL', 'All'], ['EXTERNAL', 'External'],
-	['AUTOMATIC', 'Automatic'], ['MANUAL', 'manual'], ['CLOSED', 'closed']]);
-
+	categories = new Array<string>();
 	classifications: Array<Classification> = [];
 	classificationsTypes: Array<string> = [];
 	classificationTypeSelected: string;
@@ -35,12 +36,14 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	classificationSelectedSubscription: Subscription;
 	classificationSavedSubscription: Subscription;
 	selectedClassificationSubscription: Subscription;
+	categoriesSubscription: Subscription;
 
 	constructor(
 		private classificationService: ClassificationsService,
 		private router: Router,
 		private route: ActivatedRoute,
-		private classificationTypeService: ClassificationTypesService) {
+		private classificationTypeService: ClassificationTypesService,
+		private categoryService: ClassificationCategoriesService) {
 	}
 
 	ngOnInit() {
@@ -53,6 +56,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 			this.classificationTypeSelected = value;
 			this.performRequest();
 		})
+
+		this.categoriesSubscription = this.categoryService.getCategories().subscribe((categories: Array<string>) => {
+			this.categories = categories;
+		});
 	}
 
 	selectClassificationType(classificationTypeSelected: string) {
@@ -81,6 +88,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
 	selectCategory(category: string) {
 		this.selectedCategory = category;
+	}
+
+	getCategoryIcon(category: string): Pair {
+		return this.categoryService.getCategoryIcon(category);
 	}
 
 	private performRequest(forceRequest = false) {

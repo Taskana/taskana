@@ -17,7 +17,6 @@ import { ClassificationTypesSelectorComponent } from 'app/shared/classification-
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
@@ -27,6 +26,10 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
+import {
+  ClassificationCategoriesService
+} from 'app/administration/services/classification-categories-service/classification-categories.service';
+import { Pair } from 'app/models/pair';
 
 @Component({
   selector: 'taskana-tree',
@@ -57,7 +60,7 @@ describe('ClassificationListComponent', () => {
   let fixture: ComponentFixture<ClassificationListComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
   const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
-  let classificationsService, classificationTypesService;
+  let classificationsService, classificationTypesService, classificationCategoriesService;
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
@@ -67,19 +70,22 @@ describe('ClassificationListComponent', () => {
         imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpModule],
         providers: [
           HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
-          ErrorModalService, ClassificationTypesService, RequestInProgressService
+          ErrorModalService, ClassificationTypesService, RequestInProgressService, ClassificationCategoriesService
         ]
       })
     };
     configureTests(configure).then(testBed => {
-      fixture = TestBed.createComponent(ClassificationListComponent);
+      fixture = testBed.createComponent(ClassificationListComponent);
       component = fixture.componentInstance;
 
-      classificationsService = TestBed.get(ClassificationsService);
-      classificationTypesService = TestBed.get(ClassificationTypesService);
+      classificationsService = testBed.get(ClassificationsService);
+      classificationTypesService = testBed.get(ClassificationTypesService);
+      classificationCategoriesService = testBed.get(ClassificationCategoriesService);
       spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
       spyOn(classificationTypesService, 'getClassificationTypes')
         .and.returnValue(Observable.of(classificationTypes));
+      spyOn(classificationCategoriesService, 'getCategories').and.returnValue(Observable.of(new Array<string>('cat1', 'cat2')));
+      spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
       fixture.detectChanges();
       done();
     });

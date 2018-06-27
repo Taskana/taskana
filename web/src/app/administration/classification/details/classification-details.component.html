@@ -50,10 +50,7 @@
               <div class="dropdown clearfix btn-group">
                 <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                   <span class="text-top">
-                    <svg-icon class="blue small fa-fw" src="./assets/icons/{{classification.category === 'EXTERNAL'? 'external':
-                                    classification.category === 'AUTOMATIC'? 'automatic':
-                                    classification.category === 'MANUAL'? 'manual':
-                                    'closed'}}.svg"></svg-icon>
+                    <svg-icon class="blue fa-fw" src="{{getCategoryIcon(classification.category).name}}" data-toggle="tooltip" [title]="getCategoryIcon(classification.category).text"></svg-icon>
                   </span>
                   {{classification.category}}
                   <span class="caret"></span>
@@ -62,10 +59,7 @@
                   <li>
                     <a *ngFor="let category of categories" (click)="selectCategory(category)">
                       <span class="text-top">
-                        <svg-icon class="blue small fa-fw" src="./assets/icons/{{category === 'EXTERNAL'? 'external':
-                                    category === 'AUTOMATIC'? 'automatic':
-                                    category === 'MANUAL'? 'manual':
-                                    'closed'}}.svg"></svg-icon>
+                        <svg-icon class="blue fa-fw" src="{{getCategoryIcon(category).name}}" data-toggle="tooltip" [title]="getCategoryIcon(category).text"></svg-icon>
                       </span>
                       {{category}}
                     </a>

@@ -1,5 +1,5 @@
 import { Input, Component } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -7,6 +7,11 @@ import { HttpModule } from '@angular/http';
 import { TaskanaTreeComponent } from './tree.component';
 
 import { TreeService } from 'app/services/tree/tree.service';
+import {
+  ClassificationCategoriesService
+} from 'app/administration/services/classification-categories-service/classification-categories.service';
+import { configureTests } from 'app/app.test.configuration';
+import { Pair } from 'app/models/pair';
 
 // tslint:disable:component-selector
 @Component({
@@ -26,20 +31,26 @@ class TreeVendorComponent {
 describe('TaskanaTreeComponent', () => {
   let component: TaskanaTreeComponent;
   let fixture: ComponentFixture<TaskanaTreeComponent>;
+  let classificationCategoriesService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [AngularSvgIconModule, HttpClientModule, HttpModule],
-      declarations: [TaskanaTreeComponent, TreeVendorComponent],
-      providers: [TreeService]
-    })
-      .compileComponents();
-  }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TaskanaTreeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  beforeEach(done => {
+    const configure = (testBed: TestBed) => {
+      testBed.configureTestingModule({
+        imports: [AngularSvgIconModule, HttpClientModule, HttpModule],
+        declarations: [TaskanaTreeComponent, TreeVendorComponent],
+        providers: [TreeService, ClassificationCategoriesService]
+
+      })
+    };
+    configureTests(configure).then(testBed => {
+      fixture = testBed.createComponent(TaskanaTreeComponent);
+      classificationCategoriesService = testBed.get(ClassificationCategoriesService);
+      spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      done();
+    });
   });
 
   it('should create', () => {

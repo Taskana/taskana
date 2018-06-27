@@ -17,6 +17,13 @@ export class CustomFieldsService {
     return this.jsonPath(customPath, fallbacktext);
   }
 
+  getCustomObject(fallbackObject: Object, customPath: string = undefined): Object {
+    if (!customPath) {
+      return fallbackObject;
+    }
+    return this.jsonPathObject(customPath, fallbackObject);
+  }
+
   private jsonPath(path: string, fallbacktext: string): CustomField {
     if (!this.customizedFields) {
       return new CustomField(true, fallbacktext);
@@ -34,4 +41,24 @@ export class CustomFieldsService {
 
     return value;
   }
+
+
+  private jsonPathObject(path: string, fallbackObject: Object): Object {
+    if (!this.customizedFields) {
+      return fallbackObject;
+    };
+    const paths = path.split('.');
+    let value = this.customizedFields;
+    paths.every(element => {
+      value = value[element];
+      if (!value) {
+        value = fallbackObject
+        return false;
+      }
+      return true;
+    });
+
+    return value;
+  }
+
 }
