@@ -119,6 +119,7 @@ public class JobRunner {
             }
         } catch (Exception e) {
             // transaction was rolled back -> split job into 2 half sized jobs
+            LOGGER.warn("Processing of job " + job.getJobId() + " failed. Trying to split it up into two pieces...", e);
             if (job.getRetryCount() < maxRetryCount) {
                 rescheduleBisectedJob(bulkLog, job);
             } else {
@@ -304,7 +305,9 @@ public class JobRunner {
             executor = (SingleJobExecutor) Class.forName(job.getExecutor()).newInstance();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             LOGGER.error("When attempting to load class {} caught Exception {} ", job.getExecutor(), e);
-            throw new SystemException("When attempting to load class " + job.getExecutor() + " caught Exception " + e);
+            throw new SystemException(
+                "When attempting to load class " + job.getExecutor() + " caught Exception " + e.getMessage(),
+                e);
         }
         bulkLog = executor.runSingleJob(job, taskanaEngine);
 
