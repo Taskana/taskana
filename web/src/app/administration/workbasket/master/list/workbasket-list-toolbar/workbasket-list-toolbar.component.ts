@@ -38,6 +38,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
 	@Input() workbaskets: Array<WorkbasketSummary>;
 	@Output() performSorting = new EventEmitter<SortingModel>();
 	@Output() performFilter = new EventEmitter<FilterModel>();
+	@Output() importSucessful = new EventEmitter();
 	workbasketServiceSubscription: Subscription;
 	selectionToImport = ImportType.WORKBASKETS;
 	sortingFields = new Map([['name', 'Name'], ['key', 'Key'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
@@ -65,5 +66,9 @@ export class WorkbasketListToolbarComponent implements OnInit {
 	addWorkbasket() {
 		this.workbasketService.selectWorkBasket(undefined);
 		this.router.navigate([{ outlets: { detail: ['new-workbasket'] } }], { relativeTo: this.route });
+	}
+
+	importEvent() {
+		this.importSucessful.emit();
 	}
 }
