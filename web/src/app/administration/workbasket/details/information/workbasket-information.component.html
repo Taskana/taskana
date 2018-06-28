@@ -2,12 +2,17 @@
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
     <div class="panel-heading">
         <div class="pull-right">
-            <button type="button" [disabled]="!WorkbasketForm.form.valid" (click)="onSave()" class="btn btn-default btn-primary">Save</button>
-            <button type="button" (click)="onClear()" class="btn btn-default">Undo</button>
-            <button type="button" (click)="removeDistributionTargets()" data-toggle="tooltip" title="remove distribuition target" class="btn btn-default remove">
+            <button type="button" [disabled]="!WorkbasketForm.form.valid" (click)="onSave()" class="btn btn-default btn-primary" data-toggle="tooltip"
+                title="Save">
+                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
+            </button>
+            <button type="button" (click)="onClear()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
+                <span class="glyphicon glyphicon-repeat blue" aria-hidden="true"></span>
+            </button>
+            <button type="button" (click)="removeDistributionTargets()" data-toggle="tooltip" title="Remove distribuition target" class="btn btn-default remove">
                 <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
             </button>
-            <button type="button" (click)="copyWorkbasket()" data-toggle="tooltip" title="copy" class="btn btn-default">
+            <button type="button" (click)="copyWorkbasket()" data-toggle="tooltip" title="Copy" class="btn btn-default">
                 <span class="glyphicon glyphicon-copy green-blue" aria-hidden="true"></span>
             </button>
             <button type="button" (click)="removeWorkbasket()" data-toggle="tooltip" title="Remove" class="btn btn-default remove">

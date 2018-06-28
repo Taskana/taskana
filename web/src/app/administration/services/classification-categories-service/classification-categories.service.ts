@@ -35,7 +35,7 @@ export class ClassificationCategoriesService {
 
   getCategoryIcon(category: string): Pair {
     let categoryIcon = this.categoriesObject[category];
-    let text = '';
+    let text = category;
     if (!categoryIcon) {
       categoryIcon = this.missingIcon;
       text = 'Category does not match with the configuration'

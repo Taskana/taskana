@@ -1,8 +1,13 @@
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-			<button type="button" (click)="onSave()" [disabled]="!AccessItemsForm.valid || action === 'COPY'" class="btn btn-default btn-primary">Save</button>
-			<button type="button" (click)="clear()" class="btn btn-default">Undo</button>
+			<button type="button" (click)="onSave()" [disabled]="!AccessItemsForm.valid || action === 'COPY'" class="btn btn-default btn-primary"
+			 data-toggle="tooltip" title="Save">
+				<span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
+			</button>
+			<button type="button" (click)="clear()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
+				<span class="glyphicon glyphicon-repeat blue" aria-hidden="true"></span>
+			</button>
 		</div>
 		<h4 class="panel-header">{{workbasket.name}}
 			<span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
@@ -131,9 +136,9 @@
 				</tbody>
 			</table>
 		</form>
-		<button id="button-add-access-item" type="button" (click)="addAccessItem()" class="btn btn-default">
+		<button id="button-add-access-item" type="button" (click)="addAccessItem()" class="btn btn-default" data-toggle="tooltip" title="Add new access">
 			<span>
-				<svg-icon class="green-blue" src="./assets/icons/wb-add.svg"></svg-icon>
+				<svg-icon class="glyphicon glyphicon-plus green-blue"></svg-icon>
 			</span>
 			Add new access
 		</button>

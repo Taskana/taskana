@@ -2,7 +2,7 @@
   <div class="navbar no-border-radius navbar-inverse no-gutter col-xs-12">
     <div class="pull-left col-sm-3 col-md-4">
       <button type="button" *ngIf="!showNavbar" class="btn btn-default navbar-toggle show pull-left" (click)="toogleNavBar();"
-        aria-expanded="true" aria-controls="navbar">
+        aria-expanded="true" aria-controls="navbar" data-toggle="tooltip" title="Menu">
         <span class="glyphicon glyphicon glyphicon-th-list white"></span>
       </button>
       <span>&nbsp;</span>
@@ -36,7 +36,7 @@
       <ul class="nav">
         <svg-icon class="logo white visible-xs" src="./assets/icons/logo.svg"></svg-icon>
         <h2 class="navbar-brand no-margin logo visible-xs"> {{title}}</h2>
-        <button type="button" class="btn btn-default logout navbar-toggle logout show pull-right" data-toggle="tooltip" title="logout" (click)="logout()" aria-expanded="true"
+        <button type="button" class="btn btn-default logout navbar-toggle logout show pull-right" data-toggle="tooltip" title="Logout" (click)="logout()" aria-expanded="true"
           aria-controls="logout">
           <span class="glyphicon glyphicon-share white"></span>
         </button>
