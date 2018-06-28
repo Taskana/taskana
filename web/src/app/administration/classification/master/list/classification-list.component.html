@@ -5,7 +5,8 @@
 				<button type="button" (click)="addClassification()" data-toggle="tooltip" title="Add" class="btn btn-default">
 					<span class="glyphicon glyphicon-plus green-blue" aria-hidden="true"></span>
 				</button>
-				<taskana-import-export-component [currentSelection]="selectionToImport"></taskana-import-export-component>
+				<taskana-import-export-component [currentSelection]="selectionToImport" (importSucessful)="refreshClassificationList()">
+				</taskana-import-export-component>
 				<taskana-classification-types-selector class="pull-right" [classificationTypes]="classificationsTypes" [(classificationTypeSelected)]="classificationTypeSelected"
 				 (classificationTypeChanged)=selectClassificationType($event)></taskana-classification-types-selector>
 			</div>

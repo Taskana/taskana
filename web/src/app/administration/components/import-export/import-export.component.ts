@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
@@ -14,6 +14,10 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 export class ImportExportComponent implements OnInit {
 
   @Input() currentSelection: ImportType;
+
+  @Output() importSucessful = new EventEmitter();
+
+
   domains: string[] = [];
 
   constructor(private domainService: DomainService, private workbasketDefinitionService: WorkbasketDefinitionService,
@@ -44,11 +48,11 @@ export class ImportExportComponent implements OnInit {
 
     const reader = new FileReader();
     if (this.currentSelection === ImportType.WORKBASKETS) {
-      reader.onload = <Event>(e) => {
-        this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
-      }
+      reader.onload = <Event>(e) => this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
+      this.importSucessful.emit();
     } else {
       reader.onload = <Event>(e) => this.classificationDefinitionService.importClassifications(e.target.result);
+      this.importSucessful.emit();
     }
     reader.readAsText(file);
   }
