@@ -1,4 +1,4 @@
-<input #selectedFile type="file" (change)="onSelectFile($event)" class="hide" />
+<input #selectedFile type="file" accept=".json" (change)="onSelectFile($event)" class="hide" />
 <svg-icon class="btn btn-default green-blue" src="./assets/icons/import.svg" title="Import" (click)="selectedFile.click()"></svg-icon>
 <div class="dropdown" style="display: inline">
   <svg-icon class="btn btn-default red dropdown-toggle" title="Export" src="./assets/icons/export.svg" data-toggle="dropdown"
