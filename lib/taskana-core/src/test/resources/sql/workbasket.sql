@@ -18,13 +18,13 @@ INSERT INTO TASKANA.WORKBASKET VALUES ('WBI:100000000000000000000000000000000014
 INSERT INTO TASKANA.WORKBASKET VALUES ('WBI:100000000000000000000000000000000015', 'USER_3_2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'PPK User 2 KSC 1 Domain B', 'DOMAIN_B', 'PERSONAL', 'PPK User 1 KSC 1 Domain B', 'owner0815', 'ABCABC', '', '', '', '', '', '', '');
 
 -- Workbaskets for sorting test
-INSERT INTO TASKANA.WORKBASKET VALUES ('900', 'sort001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basxet0', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
-INSERT INTO TASKANA.WORKBASKET VALUES ('901', 'Sort002', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basxet1', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
-INSERT INTO TASKANA.WORKBASKET VALUES ('902', 'sOrt003', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'bAsxet2', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
-INSERT INTO TASKANA.WORKBASKET VALUES ('903', 'soRt004', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'baSxet3', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
-INSERT INTO TASKANA.WORKBASKET VALUES ('904', 'sorT005', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basXet4', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
-INSERT INTO TASKANA.WORKBASKET VALUES ('905', 'Sort006', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basxEt5', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
-INSERT INTO TASKANA.WORKBASKET VALUES ('906', 'SOrt007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basxeT6', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
-INSERT INTO TASKANA.WORKBASKET VALUES ('907', 'SoRt008', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'BAsxet7', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
-INSERT INTO TASKANA.WORKBASKET VALUES ('908', 'SorT009', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'BaSxet8', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
-INSERT INTO TASKANA.WORKBASKET VALUES ('909', 'Sort010', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'BasXet9', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000900', 'sort001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basxet0', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000901', 'Sort002', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Basxet1', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000902', 'sOrt003', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'bAsxet2', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000903', 'soRt004', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'baSxet3', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000904', 'sorT005', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basXet4', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000905', 'Sort006', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basxEt5', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000906', 'SOrt007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'basxeT6', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000907', 'SoRt008', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'BAsxet7', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000908', 'SorT009', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'BaSxet8', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
+INSERT INTO TASKANA.WORKBASKET VALUES ('0000000000000000000000000000000000000909', 'Sort010', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'BasXet9', 'DOM_XY', 'TOPIC',     'Lorem ipsum dolor sit amet.', 'Max', '', '', '', '', '', '', '', '');
