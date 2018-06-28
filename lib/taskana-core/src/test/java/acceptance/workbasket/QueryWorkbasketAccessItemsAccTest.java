@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -137,6 +138,34 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
             .list();
         Assert.assertEquals(3L, results.size());
         Assert.assertEquals("WAI:100000000000000000000000000000000009", results.get(0).getId());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForIdIn() throws NotAuthorizedException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        String[] expectedIds = {"WAI:100000000000000000000000000000000001",
+                "WAI:100000000000000000000000000000000015",
+                "WAI:100000000000000000000000000000000007"};
+        List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
+                .idIn(expectedIds)
+                .list();
+        for (String id : Arrays.asList(expectedIds)) {
+            assertTrue(results.stream().anyMatch(accessItem -> accessItem.getId().equals(id)));
+        }
+    }
+
+    @WithAccessId(
+        userName = "businessadmin")
+    @Test
+    public void testQueryForOrderById() throws NotAuthorizedException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
+                .orderById(asc)
+                .list();
+        assertEquals("0000000000000000000000000000000000000900", results.get(0).getId());
+        assertEquals("WAI:100000000000000000000000000000000123", results.get(results.size() - 1).getId());
     }
 
 }
