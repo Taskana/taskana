@@ -119,6 +119,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
 	}
 
+	refreshClassificationList() {
+		this.performRequest(true);
+	}
+
 	ngOnDestroy(): void {
 		if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe(); }
 		if (this.classificationTypeServiceSubscription) { this.classificationTypeServiceSubscription.unsubscribe(); }
