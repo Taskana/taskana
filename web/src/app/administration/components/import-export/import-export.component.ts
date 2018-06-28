@@ -3,6 +3,8 @@ import { ClassificationDefinitionService } from 'app/administration/services/cla
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { ImportType } from 'app/models/import-type';
+import { ErrorModel } from 'app/models/modal-error';
+import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 
 @Component({
   selector: 'taskana-import-export-component',
@@ -15,7 +17,7 @@ export class ImportExportComponent implements OnInit {
   domains: string[] = [];
 
   constructor(private domainService: DomainService, private workbasketDefinitionService: WorkbasketDefinitionService,
-    private classificationDefinitionService: ClassificationDefinitionService) {
+    private classificationDefinitionService: ClassificationDefinitionService, private errorModalService: ErrorModalService) {
   }
 
   ngOnInit() {
@@ -29,9 +31,22 @@ export class ImportExportComponent implements OnInit {
 
   onSelectFile(event) {
     const file = event.target.files[0];
+
+    const ending = file.name.match(/\.([^\.]+)$/)[1];
+    switch (ending) {
+        case 'json':
+            break;
+        default:
+            file.value = '';
+            this.errorModalService.triggerError(new ErrorModel(undefined,
+              `This file format is not allowed! Please use a .json file.`));
+    }
+
     const reader = new FileReader();
     if (this.currentSelection === ImportType.WORKBASKETS) {
-      reader.onload = <Event>(e) => this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
+      reader.onload = <Event>(e) => {
+        this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
+      }
     } else {
       reader.onload = <Event>(e) => this.classificationDefinitionService.importClassifications(e.target.result);
     }
