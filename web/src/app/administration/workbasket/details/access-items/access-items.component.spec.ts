@@ -1,8 +1,8 @@
 import { SimpleChange, Component, forwardRef, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule, JsonpModule } from '@angular/http';
+import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Observable } from 'rxjs/Observable';
 
