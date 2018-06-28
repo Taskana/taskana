@@ -17,7 +17,7 @@
 			<svg-icon *ngIf="selectedCategory else category_unselected" class="blue" [src]="getCategoryIcon(selectedCategory).name" data-toggle="tooltip"
 			 [title]="getCategoryIcon(category).text"></svg-icon>
 			<ng-template #category_unselected>
-				<svg-icon class="blue vertical-align" src="./assets/icons/asterisk.svg"></svg-icon>
+				<svg-icon data-toggle="tooltip" title="All" class="blue vertical-align" src="./assets/icons/asterisk.svg"></svg-icon>
 			</ng-template>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-classification" role="menu">
