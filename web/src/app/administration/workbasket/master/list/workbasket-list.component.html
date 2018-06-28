@@ -12,7 +12,7 @@
                     type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
                     <div class="row">
                         <dl class="col-xs-1">
-                            <taskana-icon-type class="vertical-align" [type]="workbasket.type" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
+                            <taskana-icon-type class="vertical-align" [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
                         </dl>
                         <dl class="col-xs-10">
                             <dt data-toggle="tooltip" title="{{workbasket.name}}">{{workbasket.name}},

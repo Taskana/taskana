@@ -22,7 +22,7 @@ import { Side } from '../distribution-targets.component';
 				style({ opacity: 0.5, height: '50px' }),
 				style({ opacity: 0, height: '0px' })])))
 		]
-	)],
+		)],
 })
 export class DualListComponent implements OnInit {
 
@@ -33,6 +33,7 @@ export class DualListComponent implements OnInit {
 	@Output() performDualListFilter = new EventEmitter<{ filterBy: FilterModel, side: Side }>();
 	@Input() requestInProgress = false;
 	@Input() side: Side;
+	@Input() header: string;
 
 	sideNumber = 0;
 	toggleDtl = false;
