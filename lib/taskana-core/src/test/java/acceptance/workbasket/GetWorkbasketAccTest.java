@@ -45,14 +45,14 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         assertEquals("USER_1_2", workbasket.getKey());
         assertEquals(WorkbasketType.PERSONAL, workbasket.getType());
         assertEquals("Peter Maier", workbasket.getOwner());
-        assertEquals("Versicherung", workbasket.getOrgLevel1());
-        assertEquals("Abteilung", workbasket.getOrgLevel2());
-        assertEquals("Projekt", workbasket.getOrgLevel3());
-        assertEquals("Team", workbasket.getOrgLevel4());
-        assertEquals("Custom1", workbasket.getCustom1());
-        assertEquals("Custom2", workbasket.getCustom2());
-        assertEquals("Custom3", workbasket.getCustom3());
-        assertEquals("Custom4", workbasket.getCustom4());
+        assertEquals("versicherung", workbasket.getOrgLevel1());
+        assertEquals("abteilung", workbasket.getOrgLevel2());
+        assertEquals("projekt", workbasket.getOrgLevel3());
+        assertEquals("team", workbasket.getOrgLevel4());
+        assertEquals("custom1", workbasket.getCustom1());
+        assertEquals("custom2", workbasket.getCustom2());
+        assertEquals("custom3", workbasket.getCustom3());
+        assertEquals("custom4", workbasket.getCustom4());
     }
 
     @WithAccessId(
@@ -70,14 +70,14 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         assertEquals("PPK User 2 KSC 1", workbasket.getName());
         assertEquals(WorkbasketType.PERSONAL, workbasket.getType());
         assertEquals("Peter Maier", workbasket.getOwner());
-        assertEquals("Versicherung", workbasket.getOrgLevel1());
-        assertEquals("Abteilung", workbasket.getOrgLevel2());
-        assertEquals("Projekt", workbasket.getOrgLevel3());
-        assertEquals("Team", workbasket.getOrgLevel4());
-        assertEquals("Custom1", workbasket.getCustom1());
-        assertEquals("Custom2", workbasket.getCustom2());
-        assertEquals("Custom3", workbasket.getCustom3());
-        assertEquals("Custom4", workbasket.getCustom4());
+        assertEquals("versicherung", workbasket.getOrgLevel1());
+        assertEquals("abteilung", workbasket.getOrgLevel2());
+        assertEquals("projekt", workbasket.getOrgLevel3());
+        assertEquals("team", workbasket.getOrgLevel4());
+        assertEquals("custom1", workbasket.getCustom1());
+        assertEquals("custom2", workbasket.getCustom2());
+        assertEquals("custom3", workbasket.getCustom3());
+        assertEquals("custom4", workbasket.getCustom4());
     }
 
     @WithAccessId(
@@ -125,10 +125,10 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         assertEquals("USER_1_2", workbasketSummary.getKey());
         assertEquals(WorkbasketType.PERSONAL, workbasketSummary.getType());
         assertEquals("Peter Maier", workbasketSummary.getOwner());
-        assertEquals("Versicherung", workbasketSummary.getOrgLevel1());
-        assertEquals("Abteilung", workbasketSummary.getOrgLevel2());
-        assertEquals("Projekt", workbasketSummary.getOrgLevel3());
-        assertEquals("Team", workbasketSummary.getOrgLevel4());
+        assertEquals("versicherung", workbasketSummary.getOrgLevel1());
+        assertEquals("abteilung", workbasketSummary.getOrgLevel2());
+        assertEquals("projekt", workbasketSummary.getOrgLevel3());
+        assertEquals("team", workbasketSummary.getOrgLevel4());
     }
 
     @Test(expected = WorkbasketNotFoundException.class)

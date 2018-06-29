@@ -459,30 +459,11 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         assertEquals("WBI:100000000000000000000000000000000001", results.get(1).getId());
     }
 
-    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
-    @Ignore
-    @WithAccessId(
-        userName = "admin",
-        groupNames = "")
-    @Test
-    public void testQueryForCustom1LikeOrderByCustom1Asc() {
-        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .custom1Like("ABC%")
-                .orderByCustom1(asc)
-                .list();
-
-        assertEquals(3, results.size());
-        assertEquals("WBI:100000000000000000000000000000000015", results.get(0).getId());
-        assertEquals("WBI:100000000000000000000000000000000001", results.get(1).getId());
-        assertEquals("WBI:100000000000000000000000000000000008", results.get(2).getId());
-    }
-
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketCustom1In() {
+    public void testQueryForCustom1In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
                 .custom1In("ABCQVW").list();
@@ -490,4 +471,266 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         assertEquals(1, results.size());
         assertEquals("WBI:100000000000000000000000000000000001", results.get(0).getId());
     }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForCustom1Like() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .custom1Like("custo%")
+                .list();
+        assertEquals(2, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForCustom2In() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .custom2In("cust2", "custom2")
+                .list();
+        assertEquals(3, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForCustom2Like() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .custom2Like("cusTo%")
+                .list();
+        assertEquals(3, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForCustom3In() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .custom3In("custom3")
+                .list();
+        assertEquals(2, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForCustom3Like() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .custom3Like("cu%")
+                .list();
+        assertEquals(3, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForCustom4In() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .custom4In("custom4", "team")
+                .list();
+        assertEquals(3, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForCustom4Like() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .custom4Like("%u%")
+                .list();
+        assertEquals(4, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrgLevl1In() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orgLevel1In("orgl1", "")
+                .list();
+        assertEquals(24, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrgLevel1Like() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orgLevel1Like("%1")
+                .list();
+        assertEquals(2, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrgLevel2In() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orgLevel2In("abteilung")
+                .list();
+        assertEquals(1, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrgLevel2Like() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orgLevel2Like("ab%")
+                .list();
+        assertEquals(1, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrgLevel3In() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orgLevel3In("orgl3")
+                .list();
+        assertEquals(2, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrgLevel3Like() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orgLevel3Like("org%")
+                .list();
+        assertEquals(2, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrgLevel4In() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orgLevel4In("team", "orgl4")
+                .list();
+        assertEquals(2, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrgLevel4Like() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orgLevel4Like("%")
+                .list();
+        assertEquals(25, results.size());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrderByOrgLevel1Desc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orderByOrgLevel1(desc)
+                .list();
+        assertEquals("WBI:100000000000000000000000000000000007", results.get(0).getId());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrderByOrgLevel2Asc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orderByOrgLevel2(asc)
+                .list();
+        assertEquals("WBI:100000000000000000000000000000000007", results.get(results.size() - 3).getId());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrderByOrgLevel3Desc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orderByOrgLevel3(desc)
+                .list();
+        assertEquals("WBI:100000000000000000000000000000000007", results.get(0).getId());
+    }
+
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrderByOrgLevel4Asc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orderByOrgLevel4(asc)
+                .list();
+        assertEquals("WBI:100000000000000000000000000000000012", results.get(results.size() - 3).getId());
+    }
+
+    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
+    @Ignore
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrderByCustom1Asc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orderByCustom1(asc)
+                .list();
+        assertEquals("WBI:100000000000000000000000000000000015", results.get(results.size() - 4).getId());
+    }
+
+    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
+    @Ignore
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrderByCustom2Desc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orderByCustom2(desc)
+                .list();
+        assertEquals("WBI:100000000000000000000000000000000014", results.get(0).getId());
+    }
+
+    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
+    @Ignore
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrderByCustom3Asc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orderByCustom3(asc)
+                .list();
+        assertEquals("WBI:100000000000000000000000000000000015", results.get(results.size() - 3).getId());
+    }
+
+    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
+    @Ignore
+    @WithAccessId(
+        userName = "admin")
+    @Test
+    public void testQueryForOrderByCustom4Desc() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+                .orderByCustom4(desc)
+                .list();
+        assertEquals("WBI:100000000000000000000000000000000001", results.get(0).getId());
+    }
+
 }
