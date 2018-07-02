@@ -1,28 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/map'
 
 import { Classification } from 'app/models/classification';
-import { TreeNodeModel } from 'app/models/tree-node';
 import { ClassificationDefinition } from 'app/models/classification-definition';
 
 import { ClassificationResource } from 'app/models/classification-resource';
 import { ClassificationTypesService } from '../classification-types/classification-types.service';
 import { DomainService } from 'app/services/domain/domain.service';
+import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
+import { Direction } from 'app/models/sorting';
 
 @Injectable()
 export class ClassificationsService {
 
-  private url = environment.taskanaRestUrl + '/v1/classifications/';
   private classificationSelected = new Subject<string>();
   private classificationSaved = new Subject<number>();
-
-  private classificationTypes: Array<string>;
 
   constructor(
     private httpClient: HttpClient,
@@ -31,16 +28,31 @@ export class ClassificationsService {
   }
 
   // GET
-  getClassifications(forceRequest = false): Observable<any> {
+  getClassifications(sortBy: string = TaskanaQueryParameters.KEY,
+    order: string = Direction.ASC,
+    name: string = undefined,
+    nameLike: string = undefined,
+    descLike: string = undefined,
+    owner: string = undefined,
+    ownerLike: string = undefined,
+    type: string = undefined,
+    key: string = undefined,
+    keyLike: string = undefined,
+    requiredPermission: string = undefined,
+    allPages: boolean = true): Observable<any> {
     return this.domainService.getSelectedDomain().mergeMap(domain => {
-      const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
+      this.classificationTypeService.getSelectedClassificationType();
       return this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
-        `${environment.taskanaRestUrl}/v1/classifications/?domain=${domain}`));
+        `${environment.taskanaRestUrl}/v1/classifications/${TaskanaQueryParameters.getQueryParameters(
+          sortBy, order, name,
+          nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
+          !allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined, domain)}`));
 
     }).do(() => {
       this.domainService.domainChangedComplete();
     });
   }
+
 
   // GET
   getClassification(id: string): Observable<ClassificationDefinition> {
@@ -130,16 +142,5 @@ export class ClassificationsService {
       }
     }
   }
-
-  private map2Array(map: Map<string, string>): Array<string> {
-    const returnArray = [];
-
-    map.forEach((entryVal, entryKey) => {
-      returnArray.push(entryKey);
-    });
-
-    return returnArray;
-  }
-
 }
 

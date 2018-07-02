@@ -1,5 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { IconTypeComponent } from '../type-icon/icon-type.component'
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ICONTYPES } from 'app/models/type';
 import { FilterModel } from 'app/models/filter';
 
@@ -23,7 +22,7 @@ export class FilterComponent {
 	toggleDropDown = false;
 
 	constructor() {
-		this.allTypes = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
+		this.allTypes = new Map([['', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
 		['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
 	}
 

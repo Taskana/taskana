@@ -1,6 +1,6 @@
 import {
-	Component, OnInit, EventEmitter, OnDestroy,
-	HostListener, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef
+	Component, OnInit, OnDestroy,
+	ViewChild, ElementRef, ChangeDetectorRef
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -13,6 +13,7 @@ import { Orientation } from 'app/models/orientation';
 
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
 import { OrientationService } from 'app/services/orientation/orientation.service';
+import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 
 @Component({
 	selector: 'taskana-workbasket-list',
@@ -74,7 +75,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 	}
 
 	changePage(page) {
-		this.workbasketService.page = page;
+		TaskanaQueryParameters.page = page;
 		this.performRequest();
 	}
 
@@ -84,7 +85,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 		const unusedHeight = 145
 		const totalHeight = window.innerHeight;
 		const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
-		this.workbasketService.pageSize = cards;
+		TaskanaQueryParameters.pageSize = cards;
 		this.performRequest();
 	}
 
