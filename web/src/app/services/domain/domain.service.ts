@@ -100,7 +100,7 @@ export class DomainService {
 
   private addEmptyDomain(domains: Array<string>): Array<string> {
     this.domainValue = Object.assign([], domains);
-    this.domainValue.unshift('');
+    this.domainValue.push('');
     return this.domainValue;
   }
 
