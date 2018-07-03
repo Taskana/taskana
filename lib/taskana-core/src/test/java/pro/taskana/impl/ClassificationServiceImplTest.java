@@ -202,6 +202,28 @@ public class ClassificationServiceImplTest {
     }
 
     @Test
+    public void testCreateChildClassificationInOwnDomainAndCopyInRootDomain()
+        throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
+        InvalidArgumentException {
+        Classification classification = createDummyClassification("");
+        classification.setParentId("parentId");
+        ClassificationImpl parentRootClassification = (ClassificationImpl) createDummyClassification("ParentIdRoot");
+        parentRootClassification.setKey("ParentKey");
+        parentRootClassification.setDomain("");
+        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
+            classification.getDomain());
+        doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(), "");
+        doReturn(parentRootClassification).when(classificationMapperMock).findByKeyAndDomain("ParentKey", "");
+
+        doReturn(parentRootClassification).when(classificationMapperMock).findById("parentId");
+        doReturn(true).when(taskanaEngineImplMock).domainExists(any());
+
+        cutSpy.createClassification(classification);
+
+        verify(classificationMapperMock, times(1)).findByKeyAndDomain("ParentKey", "");
+    }
+
+    @Test
     public void testCreateClassificationIntoRootDomain()
         throws ClassificationAlreadyExistException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
