@@ -126,36 +126,48 @@ public class ClassificationServiceImpl implements ClassificationService {
     private void addClassificationToRootDomain(ClassificationImpl classificationImpl) {
         if (!Objects.equals(classificationImpl.getDomain(), "")) {
             boolean doesExist = true;
-            String idBackup = classificationImpl.getId();
-            String domainBackup = classificationImpl.getDomain();
-            boolean isValidInDomainBackup = classificationImpl.getIsValidInDomain();
-            classificationImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
-            classificationImpl.setDomain("");
-            classificationImpl.setIsValidInDomain(false);
+            ClassificationImpl rootClassification = new ClassificationImpl(classificationImpl);
+            rootClassification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+            rootClassification.setParentId(getClassificationRootDomainParentId(classificationImpl));
+            rootClassification.setDomain("");
+            rootClassification.setIsValidInDomain(false);
             try {
-                this.getClassification(classificationImpl.getKey(), classificationImpl.getDomain());
-                throw new ClassificationAlreadyExistException(classificationImpl);
+                this.getClassification(rootClassification.getKey(), rootClassification.getDomain());
+                throw new ClassificationAlreadyExistException(rootClassification);
             } catch (ClassificationNotFoundException e) {
                 doesExist = false;
                 LOGGER.debug(
                     "Method createClassification: Classification does not exist in root domain. Classification {}.",
-                    classificationImpl);
+                    rootClassification);
             } catch (ClassificationAlreadyExistException ex) {
                 LOGGER.warn(
                     "Method createClassification: Classification does already exist in root domain. Classification {}.",
-                    classificationImpl);
+                    rootClassification);
             } finally {
                 if (!doesExist) {
-                    classificationMapper.insert(classificationImpl);
+                    classificationMapper.insert(rootClassification);
                     LOGGER.debug(
                         "Method createClassification: Classification created in root-domain, too. Classification {}.",
-                        classificationImpl);
+                        rootClassification);
                 }
-                classificationImpl.setId(idBackup);
-                classificationImpl.setDomain(domainBackup);
-                classificationImpl.setIsValidInDomain(isValidInDomainBackup);
             }
         }
+    }
+
+    private String getClassificationRootDomainParentId(ClassificationImpl classificationImpl) {
+        String rootParentId = "";
+        try {
+            if (classificationImpl.getParentId() != null && !"".equals(classificationImpl.getParentId())) {
+                rootParentId = this.getClassification(this.getClassification(classificationImpl.getParentId()).getKey(),
+                    "")
+                    .getId();
+            }
+        } catch (ClassificationNotFoundException e) {
+            LOGGER.warn(
+                "Method getRootDomainParentIdClassification: Cannot find parent classification in Root domain. Classification {}.",
+                classificationImpl);
+        }
+        return rootParentId;
     }
 
     @Override
