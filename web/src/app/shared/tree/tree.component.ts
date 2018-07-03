@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked, OnDestroy } from '@angular/core';
 import { TreeNodeModel } from 'app/models/tree-node';
 
 import { KEYS, ITreeOptions, TreeComponent, TreeNode } from 'angular-tree-component';
@@ -7,13 +7,14 @@ import {
   ClassificationCategoriesService
 } from 'app/administration/services/classification-categories-service/classification-categories.service';
 import { Pair } from 'app/models/pair';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'taskana-tree',
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss']
 })
-export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
+export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
 
 
   @ViewChild('tree')
@@ -29,6 +30,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
 
   private filterTextOld: string
   private filterIconOld: string
+  private removedNodeIdSubscription: Subscription;
 
   options: ITreeOptions = {
     displayField: 'name',
@@ -48,7 +50,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
   constructor(private treeService: TreeService, private categoryService: ClassificationCategoriesService) { }
 
   ngOnInit() {
-    this.treeService.getRemovedNodeId().subscribe(value => {
+    this.removedNodeIdSubscription = this.treeService.getRemovedNodeId().subscribe(value => {
       const removedNode = this.getNode(value);
       if (removedNode.parent) {
         removedNode.parent.collapse();
@@ -135,5 +137,10 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked {
       this.tree.treeModel.collapseAll();
     }
   }
+
+  ngOnDestroy(): void {
+    if (this.removedNodeIdSubscription) { this.removedNodeIdSubscription.unsubscribe() }
+  }
+
 }
 

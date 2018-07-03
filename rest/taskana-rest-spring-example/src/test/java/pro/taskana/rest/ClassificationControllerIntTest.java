@@ -218,6 +218,42 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
+    public void testCreateClassificationWithParentKeyInDOMAIN_AShouldCreateAClassificationInRootDomain()
+        throws IOException {
+        String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
+
+        URL url = new URL(server + port + "/v1/classifications");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        out.write(newClassification);
+        out.flush();
+        out.close();
+        assertEquals(201, con.getResponseCode());
+        con.disconnect();
+
+        ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
+            server + port + "/v1/classifications", HttpMethod.GET,
+            request,
+            new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
+
+            });
+        assertNotNull(response.getBody().getLink(Link.REL_SELF));
+        boolean foundClassificationCreated = false;
+        for (ClassificationSummaryResource classification : response.getBody().getContent()) {
+            if ("NEW_CLASS_P2".equals(classification.getKey()) && "".equals(classification.getDomain())
+                && "T2100".equals(classification.getParentKey())) {
+                foundClassificationCreated = true;
+            }
+        }
+
+        assertEquals(true, foundClassificationCreated);
+    }
+
+    @Test
     public void testReturn400IfCreateClassificationWithIncompatibleParentIdAndKey() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\",\"parentKey\":\"T2000\"}";
         URL url = new URL(server + port + "/v1/classifications");
@@ -433,7 +469,7 @@ public class ClassificationControllerIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 
