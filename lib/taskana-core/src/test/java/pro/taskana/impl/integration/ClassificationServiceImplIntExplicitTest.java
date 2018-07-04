@@ -89,7 +89,7 @@ public class ClassificationServiceImplIntExplicitTest {
         Classification actualClassification;
         Classification actualClassification2;
 
-        // empty classification (root)
+        // empty classification (master)
         expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey("", "TASK");
         expectedClassification = (ClassificationImpl) classificationService
             .createClassification(expectedClassification);
@@ -101,7 +101,7 @@ public class ClassificationServiceImplIntExplicitTest {
         assertThat(actualClassification.getId(), not(equalTo(null)));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
 
-        // specific to domain + root
+        // specific to domain + master
         expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey(domain, "TASK");
         expectedClassification.setKey(key);
         expectedClassification = (ClassificationImpl) classificationService
@@ -134,7 +134,7 @@ public class ClassificationServiceImplIntExplicitTest {
         } catch (ClassificationAlreadyExistException e) {
         }
 
-        // new classification but root existing
+        // new classification but master existing
         expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey("", "TASK");
         expectedClassification.setKey(key);
         expectedClassification.setDomain("DOMAIN_B");
@@ -147,8 +147,8 @@ public class ClassificationServiceImplIntExplicitTest {
         assertThat(actualClassification.getKey(), equalTo(key));
         assertThat(actualClassification.getDomain(), equalTo("DOMAIN_B"));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
-        Classification rootResult = classificationService.getClassification(key, "");
-        assertThat(rootResult, not(equalTo(null)));
+        Classification masterResult = classificationService.getClassification(key, "");
+        assertThat(masterResult, not(equalTo(null)));
 
         // invalid serviceLevel
         try {

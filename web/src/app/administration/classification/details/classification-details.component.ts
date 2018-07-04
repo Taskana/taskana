@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { ClassificationDefinition } from 'app/models/classification-definition';
 import { ACTION } from 'app/models/action';
-import { Classification } from 'app/models/classification';
 import { ErrorModel } from 'app/models/modal-error';
 import { AlertModel, AlertType } from 'app/models/alert';
 
@@ -33,7 +32,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   classification: ClassificationDefinition;
   classificationClone: ClassificationDefinition;
-  selectedId: string = undefined;
+  selectedClassification: ClassificationDefinition = undefined;
   showDetail = false;
   classificationTypes: Array<string> = [];
   badgeMessage = '';
@@ -57,6 +56,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private classificationSavingSubscription: Subscription;
   private classificationRemoveSubscription: Subscription;
   private selectedClassificationSubscription: Subscription;
+  private selectedClassificationTypeSubscription: Subscription;
   private categoriesSubscription: Subscription;
   private domainSubscription: Subscription;
 
@@ -78,10 +78,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       this.classificationTypes = classificationTypes;
     })
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
-      .subscribe(classificationIdSelected => {
+      .subscribe(classificationSelected => {
         this.classification = undefined;
-        if (classificationIdSelected) {
-          this.fillClassificationInformation(classificationIdSelected);
+        if (classificationSelected) {
+          this.fillClassificationInformation(classificationSelected);
         }
       });
 
@@ -95,7 +95,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         if (id === 'undefined') {
           id = undefined;
         }
-        this.fillClassificationInformation(id);
+        this.fillClassificationInformation(new ClassificationDefinition())
       }
 
       if (id && id !== '') {
@@ -155,7 +155,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       this.classificationSavingSubscription = this.classificationsService.postClassification(this.classification)
         .subscribe((classification: ClassificationDefinition) => {
           this.classification = classification;
-          this.classificationsService.selectClassification(classification.classificationId);
+          this.classificationsService.selectClassification(classification);
           this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
           this.afterRequest();
         },
@@ -197,22 +197,21 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private selectClassification(id: string) {
-    this.selectedId = id;
-    this.classificationsService.selectClassification(id);
+    this.selectedClassificationSubscription = this.classificationsService.getClassification(id).subscribe(classification => {
+      this.selectedClassification = classification;
+      this.classificationsService.selectClassification(classification)
+    });
   }
 
-  private fillClassificationInformation(classificationIdSelected: string) {
+  private fillClassificationInformation(classificationSelected: ClassificationDefinition) {
     if (this.action === ACTION.CREATE) { // CREATE
-      this.initClassificationCreation(classificationIdSelected);
+      this.initClassificationCreation(classificationSelected);
     } else {
       this.requestInProgress = true;
-      this.classificationServiceSubscription = this.classificationsService.getClassification(classificationIdSelected)
-        .subscribe((classification: ClassificationDefinition) => {
-          this.classification = classification;
-          this.classificationClone = { ...this.classification };
-          this.requestInProgress = false;
-          this.checkDomainAndRedirect();
-        });
+      this.classification = classificationSelected;
+      this.classificationClone = { ...classificationSelected };
+      this.requestInProgress = false;
+      this.checkDomainAndRedirect();
     }
   }
 
@@ -222,15 +221,16 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classification.modified = date;
   }
 
-  private initClassificationCreation(classificationIdSelected: string) {
+  private initClassificationCreation(classificationSelected: ClassificationDefinition) {
     this.classification = new ClassificationDefinition();
-    this.selectedClassificationSubscription = this.classificationTypeService.getSelectedClassificationType().subscribe(value => {
-      if (this.classification) { this.classification.type = value; }
-    });
+    this.classification.parentId = classificationSelected.classificationId;
+    this.classification.parentKey = classificationSelected.key;
+    this.classification.category = classificationSelected.category;
     this.classification.domain = this.domainService.getSelectedDomainValue();
-    this.classification.category = this.categories[0];
+    this.selectedClassificationSubscription = this.classificationTypeService.getSelectedClassificationType().subscribe(type => {
+      if (this.classification) { this.classification.type = type; }
+    });
     this.addDateToClassification();
-    this.classification.parentId = classificationIdSelected;
     this.classificationClone = { ...this.classification };
   }
 
@@ -252,6 +252,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     if (this.classificationSavingSubscription) { this.classificationSavingSubscription.unsubscribe(); }
     if (this.classificationRemoveSubscription) { this.classificationRemoveSubscription.unsubscribe(); }
     if (this.selectedClassificationSubscription) { this.selectedClassificationSubscription.unsubscribe(); }
+    if (this.selectedClassificationTypeSubscription) { this.selectedClassificationTypeSubscription.unsubscribe(); }
     if (this.categoriesSubscription) { this.categoriesSubscription.unsubscribe(); }
     if (this.domainSubscription) { this.domainSubscription.unsubscribe(); }
   }

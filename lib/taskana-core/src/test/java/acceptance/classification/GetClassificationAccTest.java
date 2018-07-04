@@ -106,7 +106,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetOneClassificationForDomainAndGetClassificationFromRootDomain()
+    public void testGetOneClassificationForDomainAndGetClassificationFromMasterDomain()
         throws ClassificationNotFoundException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("L10000", "DOMAIN_B");
@@ -116,7 +116,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetOneClassificationForRootDomain() throws ClassificationNotFoundException {
+    public void testGetOneClassificationForMasterDomain() throws ClassificationNotFoundException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("L10000", "");
         assertNotNull(classification);

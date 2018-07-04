@@ -70,7 +70,7 @@ describe('ClassificationDetailsComponent', () => {
       spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
       component.classification = new ClassificationDefinition('id1', undefined, undefined, undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-        undefined, undefined, undefined, new LinksClassification({ 'self': '' }));
+        undefined, undefined, undefined, undefined, new LinksClassification({ 'self': '' }));
       treeService = TestBed.get(TreeService);
       fixture.detectChanges();
       done();
