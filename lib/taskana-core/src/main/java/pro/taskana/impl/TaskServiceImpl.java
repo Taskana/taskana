@@ -741,7 +741,7 @@ public class TaskServiceImpl implements TaskService {
         Set<String> taskIdSet = taskSummaries.stream().map(TaskSummaryImpl::getTaskId).collect(Collectors.toSet());
         String[] taskIdArray = taskIdSet.toArray(new String[0]);
 
-        LOGGER.debug("augmentTaskSummariesByContainedSummaries() about to query for attachments ");
+        LOGGER.debug("augmentTaskSummariesByContainedSummaries() about to query for attachmentSummaries ");
         List<AttachmentSummaryImpl> attachmentSummaries = attachmentMapper
             .findAttachmentSummariesByTaskIds(taskIdArray);
 

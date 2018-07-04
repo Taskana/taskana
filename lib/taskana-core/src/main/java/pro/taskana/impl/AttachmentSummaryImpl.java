@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import pro.taskana.AttachmentSummary;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.ObjectReference;
 
 /**
  * The most important fields of the Attachment entity.
@@ -15,6 +16,8 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     private Instant created;
     private Instant modified;
     private ClassificationSummary classificationSummary;
+    private ObjectReference objectReference;
+    private String channel;
     private Instant received;
 
     AttachmentSummaryImpl() {
@@ -86,6 +89,32 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
         this.classificationSummary = classificationSummary;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see pro.taskana.AttachmentSummary#getObjectReference()
+     */
+    @Override
+    public ObjectReference getObjectReference() {
+        return objectReference;
+    }
+
+    public void setObjectReference(ObjectReference objectReference) {
+        this.objectReference = objectReference;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see pro.taskana.AttachmentSummary#getChannel()
+     */
+    @Override
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
     // auxiliary method to enable MyBatis access to classificationSummary
     public ClassificationSummaryImpl getClassificationSummaryImpl() {
         return (ClassificationSummaryImpl) classificationSummary;
@@ -113,10 +142,12 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((channel == null) ? 0 : channel.hashCode());
         result = prime * result + ((classificationSummary == null) ? 0 : classificationSummary.hashCode());
         result = prime * result + ((created == null) ? 0 : created.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((modified == null) ? 0 : modified.hashCode());
+        result = prime * result + ((objectReference == null) ? 0 : objectReference.hashCode());
         result = prime * result + ((received == null) ? 0 : received.hashCode());
         result = prime * result + ((taskId == null) ? 0 : taskId.hashCode());
         return result;
@@ -176,13 +207,27 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
         } else if (!taskId.equals(other.taskId)) {
             return false;
         }
+        if (objectReference == null) {
+            if (other.objectReference != null) {
+                return false;
+            }
+        } else if (!objectReference.equals(other.objectReference)) {
+            return false;
+        }
+        if (channel == null) {
+            if (other.channel != null) {
+                return false;
+            }
+        } else if (!channel.equals(other.channel)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("AttachmentSummaryImpl [id=");
+        builder.append("AttachmentImpl [id=");
         builder.append(id);
         builder.append(", taskId=");
         builder.append(taskId);
@@ -192,6 +237,10 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
         builder.append(modified);
         builder.append(", classificationSummary=");
         builder.append(classificationSummary);
+        builder.append(", objectReference=");
+        builder.append(objectReference);
+        builder.append(", channel=");
+        builder.append(channel);
         builder.append(", received=");
         builder.append(received);
         builder.append("]");

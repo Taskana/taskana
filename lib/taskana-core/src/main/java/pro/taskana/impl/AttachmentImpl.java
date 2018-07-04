@@ -134,6 +134,8 @@ public class AttachmentImpl implements Attachment {
         summary.setModified(this.modified);
         summary.setReceived(this.received);
         summary.setTaskId(this.taskId);
+        summary.setChannel(this.channel);
+        summary.setObjectReference(this.objectReference);
         return summary;
     }
 
