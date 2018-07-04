@@ -11,55 +11,25 @@ import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-dis
 import { Direction } from 'app/models/sorting';
 
 import { DomainService } from 'app/services/domain/domain.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import {WorkbasketResource} from '../../models/workbasket-resource';
+import { WorkbasketResource } from '../../models/workbasket-resource';
+import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 
 @Injectable()
 export class WorkbasketService {
 
 	public workBasketSelected = new Subject<string>();
 	public workBasketSaved = new Subject<number>();
-
-	// Sorting
-	readonly SORTBY = 'sort-by';
-	readonly ORDER = 'order';
-
-	// Filtering
-	readonly NAME = 'name';
-	readonly NAMELIKE = 'name-like';
-	readonly DESCLIKE = 'description-like';
-	readonly OWNER = 'owner';
-	readonly OWNERLIKE = 'owner-like';
-	readonly TYPE = 'type';
-	readonly KEY = 'key';
-	readonly KEYLIKE = 'key-like';
-
-	// Access
-	readonly REQUIREDPERMISSION = 'required-permission';
-
-	// Pagination
-	readonly PAGE = 'page';
-	readonly PAGESIZE = 'page-size';
-
-	// Domain
-	readonly DOMAIN = 'domain';
-
-
-	page = 1;
-	pageSize = 9;
-
 	private workbasketSummaryRef: Observable<WorkbasketSummaryResource> = new Observable();
 
 	constructor(
 		private httpClient: HttpClient,
-		private domainService: DomainService,
-		private requestInProgressService: RequestInProgressService
+		private domainService: DomainService
 	) { }
 
 	// #region "REST calls"
 	// GET
 	getWorkBasketsSummary(forceRequest: boolean = false,
-		sortBy: string = this.KEY,
+		sortBy: string = TaskanaQueryParameters.KEY,
 		order: string = Direction.ASC,
 		name: string = undefined,
 		nameLike: string = undefined,
@@ -78,10 +48,10 @@ export class WorkbasketService {
 
 		return this.domainService.getSelectedDomain().mergeMap(domain => {
 			return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
-				`${environment.taskanaRestUrl}/v1/workbaskets/${this.getWorkbasketSummaryQueryParameters(
+				`${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters.getQueryParameters(
 					sortBy, order, name,
 					nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
-					!allPages ? this.page : undefined, !allPages ? this.pageSize : undefined, domain)}`)
+					!allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined, domain)}`)
 				.do(workbaskets => {
 					return workbaskets;
 				});
@@ -95,9 +65,9 @@ export class WorkbasketService {
 	}
 
 	// GET
-  getAllWorkBaskets(): Observable<WorkbasketResource> {
-    return this.httpClient.get<WorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`);
-  }
+	getAllWorkBaskets(): Observable<WorkbasketResource> {
+		return this.httpClient.get<WorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`);
+	}
 
 	// POST
 	createWorkbasket(workbasket: Workbasket): Observable<Workbasket> {
@@ -165,41 +135,6 @@ export class WorkbasketService {
 	// #endregion
 
 	// #region private
-	private getWorkbasketSummaryQueryParameters(sortBy: string,
-		order: string,
-		name: string,
-		nameLike: string,
-		descLike: string,
-		owner: string,
-		ownerLike: string,
-		type: string,
-		key: string,
-		keyLike: string,
-		requiredPermission: string,
-		page: number,
-		pageSize: number,
-		domain: string): string {
-		let query = '?';
-		query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
-		query += order ? `${this.ORDER}=${order}&` : '';
-		query += name ? `${this.NAME}=${name}&` : '';
-		query += nameLike ? `${this.NAMELIKE}=${nameLike}&` : '';
-		query += descLike ? `${this.DESCLIKE}=${descLike}&` : '';
-		query += owner ? `${this.OWNER}=${owner}&` : '';
-		query += ownerLike ? `${this.OWNERLIKE}=${ownerLike}&` : '';
-		query += type ? `${this.TYPE}=${type}&` : '';
-		query += key ? `${this.KEY}=${key}&` : '';
-		query += keyLike ? `${this.KEYLIKE}=${keyLike}&` : '';
-		query += requiredPermission ? `${this.REQUIREDPERMISSION}=${requiredPermission}&` : '';
-		query += page ? `${this.PAGE}=${page}&` : '';
-		query += pageSize ? `${this.PAGESIZE}=${pageSize}&` : '';
-		query += domain !== undefined ? `${this.DOMAIN}=${domain}&` : '';
-
-		if (query.lastIndexOf('&') === query.length - 1) {
-			query = query.slice(0, query.lastIndexOf('&'))
-		}
-		return query;
-	}
 
 	private handleError(error: Response | any) {
 		let errMsg: string;

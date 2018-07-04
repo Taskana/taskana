@@ -1,2 +1,3 @@
-<svg-icon class="{{selected? 'white': 'blue' }} small" src="./assets/icons/{{getIconPath(type)}}"></svg-icon>
+<svg-icon class="{{selected? 'white': 'blue' }} small vertical-align" src="./assets/icons/{{getIconPath(type)}}" data-toggle="tooltip"
+    [title]="!type? 'All' : type"></svg-icon>
 {{text}}
