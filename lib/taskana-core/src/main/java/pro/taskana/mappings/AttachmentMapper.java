@@ -74,7 +74,7 @@ public interface AttachmentMapper {
     })
     AttachmentImpl getAttachment(@Param("attachmentId") String attachmentId);
 
-    @Select("<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, RECEIVED "
+    @Select("<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED "
         + "FROM TASKANA.ATTACHMENT "
         + "<where>"
         + "TASK_ID IN (<foreach collection='array' item='item' separator=',' >#{item}</foreach>)"
@@ -88,7 +88,13 @@ public interface AttachmentMapper {
         @Result(property = "modified", column = "MODIFIED"),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
         @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
-        @Result(property = "received", column = "RECEIVED"),
+        @Result(property = "objectReference.company", column = "REF_COMPANY"),
+        @Result(property = "objectReference.system", column = "REF_SYSTEM"),
+        @Result(property = "objectReference.systemInstance", column = "REF_INSTANCE"),
+        @Result(property = "objectReference.type", column = "REF_TYPE"),
+        @Result(property = "objectReference.value", column = "REF_VALUE"),
+        @Result(property = "channel", column = "CHANNEL"),
+        @Result(property = "received", column = "RECEIVED")
     })
     List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(String[] taskIds);
 
