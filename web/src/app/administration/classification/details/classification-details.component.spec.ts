@@ -6,12 +6,18 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { configureTests } from 'app/app.test.configuration';
+
 
 import { ClassificationDetailsComponent } from './classification-details.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { ClassificationDefinition } from 'app/models/classification-definition';
 import { LinksClassification } from 'app/models/links-classfication';
+import { Pair } from 'app/models/pair';
 
+// tslint:disable:max-line-length
+import { ClassificationCategoriesService } from 'app/administration/services/classification-categories-service/classification-categories.service';
+// tslint:enable:max-line-length
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
@@ -20,12 +26,9 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
-// tslint:disable:max-line-length
-import { ClassificationCategoriesService } from 'app/administration/services/classification-categories-service/classification-categories.service';
-// tslint:enable:max-line-length
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
-import { configureTests } from 'app/app.test.configuration';
-import { Pair } from 'app/models/pair';
+import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -42,10 +45,9 @@ describe('ClassificationDetailsComponent', () => {
   let component: ClassificationDetailsComponent;
   let fixture: ComponentFixture<ClassificationDetailsComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
-  const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
-  let classificationsSpy, classificationsTypesSpy;
-  let classificationsService, classificationTypesService, classificationCategoriesService;
-  let treeService;
+
+  let classificationsService, classificationTypesService, classificationCategoriesService,
+    treeService, removeConfirmationService;
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
@@ -63,8 +65,10 @@ describe('ClassificationDetailsComponent', () => {
       classificationsService = TestBed.get(ClassificationsService);
       classificationTypesService = TestBed.get(ClassificationTypesService);
       classificationCategoriesService = TestBed.get(ClassificationCategoriesService);
-      classificationsSpy = spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
-      classificationsTypesSpy = spyOn(classificationTypesService, 'getClassificationTypes').and.returnValue(Observable.of([]));
+      classificationsService = TestBed.get(ClassificationsService);
+      removeConfirmationService = TestBed.get(RemoveConfirmationService);
+      spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
+      spyOn(classificationTypesService, 'getClassificationTypes').and.returnValue(Observable.of([]));
       spyOn(classificationCategoriesService, 'getCategories').and.returnValue(Observable.of(['firstCategory', 'secondCategory']));
       spyOn(classificationsService, 'deleteClassification').and.returnValue(Observable.of(true));
       spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
@@ -84,8 +88,8 @@ describe('ClassificationDetailsComponent', () => {
 
   it('should trigger treeService remove node id after removing a node', () => {
     const treeServiceSpy = spyOn(treeService, 'setRemovedNodeId');
-
     component.removeClassification();
+    removeConfirmationService.runCallbackFunction();
     expect(treeServiceSpy).toHaveBeenCalledWith('id1');
   });
 

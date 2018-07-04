@@ -1,9 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Task} from 'app/workplace/models/task';
-import {ActivatedRoute, Router} from '@angular/router';
-import {TaskService} from 'app/workplace/services/task.service';
-import {Subscription} from 'rxjs/Subscription';
-import {Location} from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { TaskService } from 'app/workplace/services/task.service';
+import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+
+import { Task } from 'app/workplace/models/task';
 
 @Component({
   selector: 'taskana-task-details',
@@ -17,9 +19,9 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
-              private taskService: TaskService,
-              private router: Router,
-              private location: Location) {
+    private taskService: TaskService,
+    private router: Router,
+    private removeConfirmationService: RemoveConfirmationService) {
   }
 
   ngOnInit() {
@@ -47,7 +49,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   openTask(taskId: string) {
-    this.router.navigate([{outlets: {detail: `task/${taskId}`}}], {relativeTo: this.route.parent});
+    this.router.navigate([{ outlets: { detail: `task/${taskId}` } }], { relativeTo: this.route.parent });
   }
 
   workOnTaskDisabled(): boolean {
@@ -55,6 +57,11 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteTask(): void {
+    this.removeConfirmationService.setRemoveConfirmation(this.deleteTaskConfirmation.bind(this),
+      `You are going to delete Task: ${this.task.taskId}. Can you confirm this action?`);
+  }
+
+  deleteTaskConfirmation(): void {
     this.taskService.deleteTask(this.task).subscribe();
     this.taskService.publishDeletedTask(this.task);
     this.task = null;

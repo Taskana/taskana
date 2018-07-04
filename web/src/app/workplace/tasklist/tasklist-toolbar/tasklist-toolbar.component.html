@@ -1,22 +1,17 @@
 <div class="row">
   <div class="col-md-6">
     <div class="input-group">
-      <input [(ngModel)]="result" [typeahead]="workbasketNames" class="form-control"
-             (typeaheadOnSelect)="workbasketSelected = true" (typeaheadNoResults)="workbasketSelected = false"
-             placeholder="Search for Workbasket ..."/>
+      <input [(ngModel)]="result" [typeahead]="workbasketNames" class="form-control" (typeaheadOnSelect)="workbasketSelected = true"
+        typeaheadMinLength="0" (typeaheadNoResults)="workbasketSelected = false" placeholder="Search for Workbasket ..." />
       <span class="input-group-btn">
-        <button class="btn btn-primary" type="button" (click)="searchBasket()"
-                [disabled]="!workbasketSelected">Go!</button>
+        <button class="btn btn-primary" type="button" (click)="searchBasket()" [disabled]="!workbasketSelected">Go!</button>
       </span>
     </div>
 
   </div>
   <div class="col-md-6">
     <div class="pull-right margin-right">
-      <taskana-sort
-        [sortingFields]="sortingFields"
-        (performSorting)="sorting($event)"></taskana-sort>
+      <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"></taskana-sort>
     </div>
   </div>
 </div>
-

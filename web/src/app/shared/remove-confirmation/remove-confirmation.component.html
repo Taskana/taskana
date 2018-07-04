@@ -1,0 +1,24 @@
+<div #removeConfirmationModal class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content word-break">
+      <div class="modal-header">
+        <h4 class="modal-title" id="generalModalLabel">Delete confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" role="alert">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <span class="sr-only">Error:</span>
+          {{message}}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-danger" data-dismiss="modal" data-toggle="tooltip" title="Cancel">
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="btn btn-default btn-primary" data-dismiss="modal" data-toggle="tooltip" title="Confirm" (click)="confirmAction()">
+          <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
