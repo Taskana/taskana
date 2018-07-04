@@ -1,9 +1,7 @@
-import { Component, OnInit, Input, Output, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
+import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
-import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { ICONTYPES } from 'app/models/type';
 import { ErrorModel } from 'app/models/modal-error';
 import { ACTION } from 'app/models/action';
@@ -16,8 +14,8 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
 @Component({
 	selector: 'taskana-workbasket-information',
@@ -53,7 +51,8 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 		private errorModalService: ErrorModalService,
 		private savingWorkbasket: SavingWorkbasketService,
 		private requestInProgressService: RequestInProgressService,
-		private customFieldsService: CustomFieldsService) {
+		private customFieldsService: CustomFieldsService,
+		private removeConfirmationService: RemoveConfirmationService) {
 		this.allTypes = new Map([['PERSONAL', 'Personal'], ['GROUP', 'Group'],
 		['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])
 
@@ -103,18 +102,8 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 	}
 
 	removeWorkbasket() {
-		this.requestInProgressService.setRequestInProgress(true);
-		this.workbasketService.deleteWorkbasket(this.workbasket._links.self.href).subscribe(response => {
-			this.requestInProgressService.setRequestInProgress(false);
-			this.workbasketService.triggerWorkBasketSaved();
-			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
-				`Workbasket ${this.workbasket.workbasketId} was removed successfully`))
-			this.router.navigate(['administration/workbaskets']);
-		}, error => {
-			this.requestInProgressService.setRequestInProgress(false);
-			this.errorModalService.triggerError(new ErrorModel(
-				`There was an error deleting workbasket ${this.workbasket.workbasketId}`, error))
-		});
+		this.removeConfirmationService.setRemoveConfirmation(this.onRemoveConfirmed.bind(this),
+			`You are going to delete workbasket: ${this.workbasket.key}. Can you confirm this action?`);
 	}
 
 	copyWorkbasket() {
@@ -170,6 +159,21 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 		const date = TaskanaDate.getDate();
 		this.workbasket.created = date;
 		this.workbasket.modified = date;
+	}
+
+	private onRemoveConfirmed() {
+		this.requestInProgressService.setRequestInProgress(true);
+		this.workbasketService.deleteWorkbasket(this.workbasket._links.self.href).subscribe(response => {
+			this.requestInProgressService.setRequestInProgress(false);
+			this.workbasketService.triggerWorkBasketSaved();
+			this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
+				`Workbasket ${this.workbasket.workbasketId} was removed successfully`))
+			this.router.navigate(['administration/workbaskets']);
+		}, error => {
+			this.requestInProgressService.setRequestInProgress(false);
+			this.errorModalService.triggerError(new ErrorModel(
+				`There was an error deleting workbasket ${this.workbasket.workbasketId}`, error))
+		});
 	}
 
 	ngOnDestroy() {
