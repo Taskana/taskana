@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, OnChanges, SimpleChanges, Output, EventEmitter, DoCheck } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 declare var $: any;
 
 @Component({

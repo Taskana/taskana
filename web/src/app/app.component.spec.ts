@@ -6,12 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from 'app/shared/shared.module';
 
-import { ErrorModalService } from './services/errorModal/error-modal.service';
-import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
-import { AlertService } from './services/alert/alert.service';
-import { OrientationService } from './services/orientation/orientation.service';
-import { SelectedRouteService } from './services/selected-route/selected-route';
-
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
 describe('AppComponent', () => {
@@ -32,8 +26,7 @@ describe('AppComponent', () => {
 				RouterTestingModule.withRoutes(routes),
 				HttpClientModule,
 				SharedModule
-			],
-			providers: [ErrorModalService, RequestInProgressService, AlertService, OrientationService, SelectedRouteService]
+			]
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(AppComponent);

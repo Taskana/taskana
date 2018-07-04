@@ -17,6 +17,8 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
+import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+
 // tslint:disable:max-line-length
 import { ClassificationCategoriesService } from 'app/administration/services/classification-categories-service/classification-categories.service';
 // tslint:enable:max-line-length
@@ -71,7 +73,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private classificationTypeService: ClassificationTypesService,
     private categoryService: ClassificationCategoriesService,
     private domainService: DomainService,
-    private customFieldsService: CustomFieldsService) { }
+    private customFieldsService: CustomFieldsService,
+    private removeConfirmationService: RemoveConfirmationService) { }
 
   ngOnInit() {
     this.classificationTypeService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
@@ -126,27 +129,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   removeClassification() {
-    if (!this.classification || !this.classification.classificationId) {
-      this.errorModalService.triggerError(
-        new ErrorModel('There is no classification selected', 'Please check if you are creating a classification'));
-      return false;
-    }
-    this.requestInProgressService.setRequestInProgress(true);
-    this.treeService.setRemovedNodeId(this.classification.classificationId);
-
-    this.classificationRemoveSubscription = this.classificationsService
-      .deleteClassification(this.classification._links.self.href)
-      .subscribe(() => {
-        const key = this.classification.key;
-        this.classification = undefined;
-        this.afterRequest();
-        this.classificationsService.selectClassification(undefined);
-        this.router.navigate(['administration/classifications']);
-        this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`))
-      }, error => {
-        this.errorModalService.triggerError(new ErrorModel('There was error while removing your classification', error))
-        this.afterRequest();
-      })
+    this.removeConfirmationService.setRemoveConfirmation(this.removeClassificationConfirmation.bind(this),
+      `You are going to delete classification: ${this.classification.key}. Can you confirm this action?`);
   }
 
   onSave() {
@@ -242,6 +226,30 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  private removeClassificationConfirmation() {
+
+    if (!this.classification || !this.classification.classificationId) {
+      this.errorModalService.triggerError(
+        new ErrorModel('There is no classification selected', 'Please check if you are creating a classification'));
+      return false;
+    }
+    this.requestInProgressService.setRequestInProgress(true);
+    this.treeService.setRemovedNodeId(this.classification.classificationId);
+
+    this.classificationRemoveSubscription = this.classificationsService
+      .deleteClassification(this.classification._links.self.href)
+      .subscribe(() => {
+        const key = this.classification.key;
+        this.classification = undefined;
+        this.afterRequest();
+        this.classificationsService.selectClassification(undefined);
+        this.router.navigate(['administration/classifications']);
+        this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`))
+      }, error => {
+        this.errorModalService.triggerError(new ErrorModel('There was error while removing your classification', error))
+        this.afterRequest();
+      })
+  }
 
   ngOnDestroy(): void {
 
