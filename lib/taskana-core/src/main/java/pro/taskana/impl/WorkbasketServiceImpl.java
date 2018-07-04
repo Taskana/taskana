@@ -215,11 +215,13 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                     }
                     newItems.add(wbAccessItemImpl);
                 }
+            }
 
-                // delete all current ones
-                workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(workbasketId);
+            // delete all current ones
+            workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(workbasketId);
 
-                // add all
+            // add all
+            if (!newItems.isEmpty()) {
                 newItems.stream().forEach(item -> workbasketAccessMapper.insert(item));
             }
         } finally {
@@ -366,7 +368,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             if ((originalItem.getAccessId() != null && !originalItem.getAccessId().equals(accessItem.getAccessId()))
                 || (originalItem.getWorkbasketId() != null
-                    && !originalItem.getWorkbasketId().equals(accessItem.getWorkbasketId()))) {
+                && !originalItem.getWorkbasketId().equals(accessItem.getWorkbasketId()))) {
                 throw new InvalidArgumentException(
                     "AccessId and WorkbasketId must not be changed in updateWorkbasketAccessItem calls");
             }
