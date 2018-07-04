@@ -1,7 +1,13 @@
 package pro.taskana.impl;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
+
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.Attachment;
+import pro.taskana.AttachmentSummary;
+import pro.taskana.ObjectReference;
 
 /**
  * Unit Test for methods needed fot attachment at TaskImpl.<br>
@@ -90,6 +98,47 @@ public class TaskAttachmentTest {
 
         assertThat(cut.getAttachments().size(), equalTo(2));
         assertThat(actual, equalTo(attachment1));
+    }
+
+    @Test
+    public void testGetAttachmentSummaries() {
+        ObjectReference objRef = new ObjectReference();
+        objRef.setId("ObjRefId");
+        objRef.setCompany("company");
+
+        Map<String, String> customAttr = new HashMap<String, String>();
+        customAttr.put("key", "value");
+
+        Attachment attachment1 = createAttachment("ID1", "taskId1");
+        attachment1.setChannel("channel");
+        attachment1.setClassificationSummary(new ClassificationImpl().asSummary());
+        attachment1.setReceived(Instant.now());
+        attachment1.setObjectReference(objRef);
+        //attachment1.setCustomAttributes(customAttr);
+
+        cut.addAttachment(attachment1);
+
+        List<AttachmentSummary> summaries = cut.asSummary().getAttachmentSummaries();
+        AttachmentSummary attachmentSummary = summaries.get(0);
+
+        assertThat(attachmentSummary, equalTo(attachment1.asSummary()));
+
+        assertThat(attachmentSummary.getId(), equalTo(attachment1.getId()));
+        assertThat(attachmentSummary.getTaskId(), equalTo(attachment1.getTaskId()));
+        assertThat(attachmentSummary.getChannel(), equalTo(attachment1.getChannel()));
+        assertThat(attachmentSummary.getClassificationSummary(), equalTo(attachment1.getClassificationSummary()));
+        assertThat(attachmentSummary.getObjectReference(), equalTo(attachment1.getObjectReference()));
+        assertThat(attachmentSummary.getCreated(), equalTo(attachment1.getCreated()));
+        assertThat(attachmentSummary.getReceived(), equalTo(attachment1.getReceived()));
+        assertThat(attachmentSummary.getModified(), equalTo(attachment1.getModified()));
+
+        // Must be different
+        assertNotEquals(attachmentSummary.hashCode(), attachment1.hashCode());
+
+        cut.removeAttachment("ID1");
+        assertThat(summaries.size(), equalTo(1));
+        summaries = cut.asSummary().getAttachmentSummaries();
+        assertThat(summaries.size(), equalTo(0));
     }
 
     private Attachment createAttachment(String id, String taskId) {

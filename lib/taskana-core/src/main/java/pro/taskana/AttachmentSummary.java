@@ -37,6 +37,20 @@ public interface AttachmentSummary {
     Instant getModified();
 
     /**
+     * Gets the {@link ObjectReference primaryObjectReference} of the attachment.
+     *
+     * @return {@link ObjectReference primaryObjectReference} of the attachment
+     **/
+    ObjectReference getObjectReference();
+
+    /**
+     * Gets the Channel on which the attachment was received.
+     *
+     * @return the channel
+     **/
+    String getChannel();
+
+    /**
      * Gets the classificationSummary of the attachment.
      *
      * @return the classification summary
