@@ -129,14 +129,4 @@ describe('AccessItemsComponent', () => {
 			new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`));
 	});
 
-
-	it('should keep accessItemsClone length to previous value after clearing the form.', () => {
-		expect(component.accessItemsClone.length).toBe(2);
-		component.remove(1);
-		expect(component.accessItemsClone.length).toBe(1);
-		component.clear();
-		expect(component.accessItemsClone.length).toBe(2);
-
-	});
-
 });
