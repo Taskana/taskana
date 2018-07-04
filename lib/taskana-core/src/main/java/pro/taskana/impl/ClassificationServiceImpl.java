@@ -82,7 +82,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             LOGGER.debug("Method createClassification created classification {}.", classificationImpl);
 
             if (!classification.getDomain().isEmpty()) {
-                addClassificationToRootDomain(classificationImpl);
+                addClassificationToMasterDomain(classificationImpl);
             }
         } finally {
             taskanaEngine.returnConnection();
@@ -123,51 +123,38 @@ public class ClassificationServiceImpl implements ClassificationService {
         }
     }
 
-    private void addClassificationToRootDomain(ClassificationImpl classificationImpl) {
+    private void addClassificationToMasterDomain(ClassificationImpl classificationImpl) {
         if (!Objects.equals(classificationImpl.getDomain(), "")) {
             boolean doesExist = true;
-            ClassificationImpl rootClassification = new ClassificationImpl(classificationImpl);
-            rootClassification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
-            rootClassification.setParentId(getClassificationRootDomainParentId(classificationImpl));
-            rootClassification.setDomain("");
-            rootClassification.setIsValidInDomain(false);
+            ClassificationImpl masterClassification = new ClassificationImpl(classificationImpl);
+            masterClassification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+            masterClassification.setParentKey(classificationImpl.getParentKey());
+            masterClassification.setDomain("");
+            masterClassification.setIsValidInDomain(false);
             try {
-                this.getClassification(rootClassification.getKey(), rootClassification.getDomain());
-                throw new ClassificationAlreadyExistException(rootClassification);
+                if (classificationImpl.getParentKey() != null && !"".equals(classificationImpl.getParentKey())) {
+                    masterClassification.setParentId(getClassification(classificationImpl.getParentKey(), "").getId());
+                }
+                this.getClassification(masterClassification.getKey(), masterClassification.getDomain());
+                throw new ClassificationAlreadyExistException(masterClassification);
             } catch (ClassificationNotFoundException e) {
                 doesExist = false;
                 LOGGER.debug(
-                    "Method createClassification: Classification does not exist in root domain. Classification {}.",
-                    rootClassification);
+                    "Method createClassification: Classification does not exist in master domain. Classification {}.",
+                    masterClassification);
             } catch (ClassificationAlreadyExistException ex) {
                 LOGGER.warn(
-                    "Method createClassification: Classification does already exist in root domain. Classification {}.",
-                    rootClassification);
+                    "Method createClassification: Classification does already exist in master domain. Classification {}.",
+                    masterClassification);
             } finally {
                 if (!doesExist) {
-                    classificationMapper.insert(rootClassification);
+                    classificationMapper.insert(masterClassification);
                     LOGGER.debug(
-                        "Method createClassification: Classification created in root-domain, too. Classification {}.",
-                        rootClassification);
+                        "Method createClassification: Classification created in master-domain, too. Classification {}.",
+                        masterClassification);
                 }
             }
         }
-    }
-
-    private String getClassificationRootDomainParentId(ClassificationImpl classificationImpl) {
-        String rootParentId = "";
-        try {
-            if (classificationImpl.getParentId() != null && !"".equals(classificationImpl.getParentId())) {
-                rootParentId = this.getClassification(this.getClassification(classificationImpl.getParentId()).getKey(),
-                    "")
-                    .getId();
-            }
-        } catch (ClassificationNotFoundException e) {
-            LOGGER.warn(
-                "Method getRootDomainParentIdClassification: Cannot find parent classification in Root domain. Classification {}.",
-                classificationImpl);
-        }
-        return rootParentId;
     }
 
     @Override

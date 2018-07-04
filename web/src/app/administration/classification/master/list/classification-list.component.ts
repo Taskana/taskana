@@ -12,6 +12,7 @@ import {
 	ClassificationCategoriesService
 } from 'app/administration/services/classification-categories-service/classification-categories.service';
 import { Pair } from 'app/models/pair';
+import { ClassificationDefinition } from '../../../../models/classification-definition';
 
 @Component({
 	selector: 'taskana-classification-list',
@@ -101,6 +102,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
 		this.requestInProgress = true;
 		this.classifications = [];
+
+		if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe() }
+		if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe() }
+
 		this.classificationServiceSubscription = this.classificationService.getClassifications()
 			.subscribe((classifications: Array<TreeNodeModel>) => {
 				this.requestInProgress = false;
@@ -111,8 +116,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 					});
 			});
 		this.classificationSelectedSubscription = this.classificationService.getSelectedClassification()
-			.subscribe((classificationSelected: string) => {
-				setTimeout(() => { this.selectedId = classificationSelected; }, 0);
+			.subscribe((classificationSelected: ClassificationDefinition) => {
+				this.selectedId = classificationSelected ? classificationSelected.classificationId : undefined;
 			});
 
 		this.initialized = true;

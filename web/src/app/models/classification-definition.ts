@@ -4,6 +4,7 @@ export class ClassificationDefinition {
   constructor(public classificationId: string = undefined,
     public key: string = undefined,
     public parentId: string = undefined,
+    public parentKey: string = undefined,
     public category: string = undefined,
     public domain: string = undefined,
     public type: string = undefined,

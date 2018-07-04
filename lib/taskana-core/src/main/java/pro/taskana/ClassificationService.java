@@ -15,15 +15,15 @@ public interface ClassificationService {
 
     /**
      * Get the Classification for key and domain. If there's no Classification in the given domain, return the
-     * Classification from the root domain.
+     * Classification from the master domain.
      *
      * @param key
      *            the key of the searched-for classifications
      * @param domain
      *            the domain of the searched-for classifications
-     * @return If exist: domain-specific classification, else root classification
+     * @return If exist: domain-specific classification, else master classification
      * @throws ClassificationNotFoundException
-     *             if no classification is found that matches the key either in domain or in the root domain.
+     *             if no classification is found that matches the key either in domain or in the master domain.
      */
     Classification getClassification(String key, String domain) throws ClassificationNotFoundException;
 
@@ -73,7 +73,7 @@ public interface ClassificationService {
 
     /**
      * Persists a new classification after adding default values. <br >
-     * The classification will be added to root-domain, too - if not already existing.
+     * The classification will be added to master-domain, too - if not already existing.
      *
      * @param classification
      *            the classification to insert
