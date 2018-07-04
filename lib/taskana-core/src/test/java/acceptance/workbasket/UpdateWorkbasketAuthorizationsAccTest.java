@@ -209,6 +209,26 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
+    public void testUpdatedAccessItemListToEmptyList() throws InvalidArgumentException, NotAuthorizedException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        final String wbId = "WBI:100000000000000000000000000000000004";
+        List<WorkbasketAccessItem> accessItems = workbasketService
+            .getWorkbasketAccessItems(wbId);
+        int countBefore = accessItems.size();
+        assertThat(3, equalTo(countBefore));
+
+        workbasketService.setWorkbasketAccessItems(wbId, new ArrayList<>());
+
+        List<WorkbasketAccessItem> updatedAccessItems = workbasketService
+            .getWorkbasketAccessItems(wbId);
+        int countAfter = updatedAccessItems.size();
+        assertThat(0, equalTo(countAfter));
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
+    @Test
     public void testInsertAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000004";
