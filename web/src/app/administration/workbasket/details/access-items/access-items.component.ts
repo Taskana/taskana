@@ -130,9 +130,10 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	}
 
 	clear() {
-		this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'))
 		this.AccessItemsForm.reset();
 		this.setAccessItemsGroups(this.accessItemsResetClone);
+		this.accessItemsClone = this.cloneAccessItems(this.accessItemsResetClone);
+		this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'))
 	}
 
 	remove(index: number) {
