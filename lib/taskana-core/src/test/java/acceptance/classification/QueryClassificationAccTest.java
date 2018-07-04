@@ -41,7 +41,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<String> columnValueList = classificationService.createClassificationQuery()
             .listValues("NAME", null);
         assertNotNull(columnValueList);
-        assertEquals(15, columnValueList.size());
+        assertEquals(16, columnValueList.size());
 
         columnValueList = classificationService.createClassificationQuery()
             .listValues("TYPE", null);
@@ -100,7 +100,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .list();
 
         assertNotNull(classifications);
-        assertEquals(25, classifications.size());
+        assertEquals(28, classifications.size());
 
         List<ClassificationSummary> documentTypes = classifications.stream()
             .filter(c -> c.getType().equals("DOCUMENT"))
@@ -112,7 +112,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .filter(c -> c.getType().equals("TASK"))
             .collect(
                 Collectors.toList());
-        assertEquals(23, taskTypes.size());
+        assertEquals(26, taskTypes.size());
     }
 
     @Test
@@ -172,7 +172,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .list();
 
         assertNotNull(classifications);
-        assertEquals(1, classifications.size());
+        assertEquals(2, classifications.size());
 
         classifications = classificationService.createClassificationQuery()
             .keyIn("A12", "A13")
@@ -238,7 +238,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
             .validInDomainEquals(Boolean.TRUE)
             .priorityIn(1, 2, 3)
             .list();
-        assertEquals(14, list.size());
+        assertEquals(15, list.size());
 
     }
 
@@ -274,7 +274,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .nameIn("Widerruf", "OLD-Leistungsfall")
                 .list();
-        assertEquals(5, results.size());
+        assertEquals(6, results.size());
     }
 
     @Test
@@ -283,7 +283,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .descriptionLike("Widerruf%")
                 .list();
-        assertEquals(8, results.size());
+        assertEquals(9, results.size());
     }
 
     @Test
@@ -328,7 +328,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom1In("VNR,RVNR,KOLVNR, ANR", "VNR")
                 .list();
-        assertEquals(13, results.size());
+        assertEquals(17, results.size());
     }
 
     @Test
@@ -337,7 +337,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom2In("CUSTOM2", "custom2")
                 .list();
-        assertEquals(2, results.size());
+        assertEquals(3, results.size());
     }
 
     @Test
@@ -346,7 +346,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom3In("Custom3", "custom3")
                 .list();
-        assertEquals(2, results.size());
+        assertEquals(3, results.size());
     }
 
     @Test
@@ -355,7 +355,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom4In("custom4")
                 .list();
-        assertEquals(2, results.size());
+        assertEquals(3, results.size());
     }
 
     @Test
@@ -364,7 +364,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom5In("custom5")
                 .list();
-        assertEquals(2, results.size());
+        assertEquals(3, results.size());
     }
 
     @Test
@@ -373,7 +373,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom6In("custom6")
                 .list();
-        assertEquals(2, results.size());
+        assertEquals(3, results.size());
     }
 
     @Test
@@ -382,7 +382,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom7In("custom7", "custom_7")
                 .list();
-        assertEquals(2, results.size());
+        assertEquals(3, results.size());
     }
 
     @Test
@@ -391,7 +391,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom8In("custom_8", "custom8")
                 .list();
-        assertEquals(2, results.size());
+        assertEquals(3, results.size());
     }
 
     @Test
@@ -400,7 +400,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom3Like("cus%")
                 .list();
-        assertEquals(3, results.size());
+        assertEquals(4, results.size());
     }
 
     @Test
@@ -409,7 +409,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom4Like("cus%")
                 .list();
-        assertEquals(3, results.size());
+        assertEquals(4, results.size());
     }
 
     @Test
@@ -418,7 +418,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom5Like("cus%")
                 .list();
-        assertEquals(3, results.size());
+        assertEquals(4, results.size());
     }
 
     @Test
@@ -427,7 +427,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom6Like("cus%")
                 .list();
-        assertEquals(3, results.size());
+        assertEquals(4, results.size());
     }
 
     @Test
@@ -436,7 +436,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom7Like("cus%")
                 .list();
-        assertEquals(3, results.size());
+        assertEquals(4, results.size());
     }
 
     @Test
@@ -445,7 +445,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .custom8Like("cus%")
                 .list();
-        assertEquals(3, results.size());
+        assertEquals(4, results.size());
     }
 
     @Test
@@ -461,18 +461,19 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     public void testQueryForOrderByParentIdDesc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
+                .orderByDomain(asc)
                 .orderByParentId(desc)
                 .list();
-        assertEquals("CLI:100000000000000000000000000000000015", results.get(0).getParentId());
+        assertEquals("CLI:000000000000000000000000000000000020", results.get(0).getParentId());
     }
 
     @Test
     public void testQueryForOrderByParentKeyDesc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .orderByParentId(desc)
+                .orderByParentKey(desc)
                 .list();
-        assertEquals("CLI:100000000000000000000000000000000015", results.get(0).getParentId());
+        assertEquals("T6310", results.get(0).getParentKey());
     }
 
     @Test
@@ -527,7 +528,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
                 .orderByApplicationEntryPoint(asc)
                 .orderByName(asc)
                 .list();
-        assertEquals("CLI:100000000000000000000000000000000007", results.get(results.size() - 5).getId());
+        assertEquals("CLI:100000000000000000000000000000000007", results.get(results.size() - 6).getId());
     }
 
     @Test
@@ -535,8 +536,9 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .orderByParentKey(asc)
+                .orderByDomain(asc)
                 .list();
-        assertEquals("CLI:000000000000000000000000000000000001", results.get(0).getId());
+        assertEquals("CLI:000000000000000000000000000000000019", results.get(results.size() - 5).getId());
     }
 
     @Test
@@ -544,8 +546,8 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .orderByCustom1(desc)
-                .orderByName(asc)
                 .orderByDomain(asc)
+                .orderByServiceLevel(desc)
                 .list();
         assertEquals("CLI:000000000000000000000000000000000002", results.get(0).getId());
     }
@@ -556,6 +558,8 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .orderByCustom2(asc)
                 .orderByName(asc)
+                .orderByParentKey(asc)
+                .orderByDomain(asc)
                 .list();
         assertEquals("CLI:000000000000000000000000000000000002", results.get(0).getId());
     }
@@ -577,7 +581,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
                 .orderByCustom4(asc)
                 .orderByName(asc)
                 .list();
-        assertEquals("CLI:100000000000000000000000000000000010", results.get(results.size() - 4).getId());
+        assertEquals("CLI:100000000000000000000000000000000010", results.get(results.size() - 5).getId());
     }
 
     @Test
@@ -597,7 +601,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
                 .orderByCustom6(asc)
                 .orderByName(asc)
                 .list();
-        assertEquals("CLI:100000000000000000000000000000000010", results.get(results.size() - 3).getId());
+        assertEquals("CLI:100000000000000000000000000000000010", results.get(results.size() - 4).getId());
     }
 
     @Test
@@ -617,6 +621,6 @@ public class QueryClassificationAccTest extends AbstractAccTest {
                 .orderByCustom8(asc)
                 .orderByName(asc)
                 .list();
-        assertEquals("CLI:100000000000000000000000000000000010", results.get(results.size() - 3).getId());
+        assertEquals("CLI:100000000000000000000000000000000010", results.get(results.size() - 4).getId());
     }
 }
