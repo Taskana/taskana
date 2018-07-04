@@ -142,7 +142,7 @@ public class ClassificationServiceImplTest {
     }
 
     @Test
-    public void testCreateClassificationInOwnDomainButExistingInRoot()
+    public void testCreateClassificationInOwnDomainButExistingInMaster()
         throws ClassificationAlreadyExistException, InterruptedException,
         NotAuthorizedException, DomainNotFoundException, InvalidArgumentException {
         Instant beforeTimestamp = Instant.now();
@@ -175,7 +175,7 @@ public class ClassificationServiceImplTest {
     }
 
     @Test
-    public void testCreateClassificationInOwnDomainAndCopyInRootDomain()
+    public void testCreateClassificationInOwnDomainAndCopyInMasterDomain()
         throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
         InvalidArgumentException {
         Classification classification = createDummyClassification("");
@@ -202,25 +202,28 @@ public class ClassificationServiceImplTest {
     }
 
     @Test
-    public void testCreateChildClassificationInOwnDomainAndCopyInRootDomain()
+    public void testCreateChildClassificationInOwnDomainAndCopyInMasterDomain()
         throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
         InvalidArgumentException {
         Classification classification = createDummyClassification("");
         classification.setParentId("parentId");
-        ClassificationImpl parentRootClassification = (ClassificationImpl) createDummyClassification("ParentIdRoot");
-        parentRootClassification.setKey("ParentKey");
-        parentRootClassification.setDomain("");
+        classification.setParentKey("ParentKey");
+        ClassificationImpl parentDomainClassification = (ClassificationImpl) createDummyClassification("ParentId");
+        parentDomainClassification.setKey("ParentKey");
+        ClassificationImpl parentMasterClassification = (ClassificationImpl) createDummyClassification("ParentIdMaster");
+        parentMasterClassification.setKey("ParentKey");
+        parentMasterClassification.setDomain("");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
             classification.getDomain());
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(), "");
-        doReturn(parentRootClassification).when(classificationMapperMock).findByKeyAndDomain("ParentKey", "");
+        doReturn(parentMasterClassification).when(classificationMapperMock).findByKeyAndDomain("ParentKey", "");
 
-        doReturn(parentRootClassification).when(classificationMapperMock).findById("parentId");
+        doReturn(parentDomainClassification).when(classificationMapperMock).findById("parentId");
         doReturn(true).when(taskanaEngineImplMock).domainExists(any());
 
         cutSpy.createClassification(classification);
 
-        verify(classificationMapperMock, times(1)).findByKeyAndDomain("ParentKey", "");
+        verify(classificationMapperMock, times(2)).insert(any());
     }
 
     @Test

@@ -81,7 +81,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         Classification actualClassification;
         Classification actualClassification2;
 
-        // empty classification (root)
+        // empty classification (master)
         expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey("", "TASK");
         expectedClassification = (ClassificationImpl) classificationService
             .createClassification(expectedClassification);
@@ -92,7 +92,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         assertThat(actualClassification.getId(), not(equalTo(null)));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
 
-        // specific to domain + root
+        // specific to domain + master
         expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey(domain, "TASK");
         expectedClassification.setKey(key);
         expectedClassification = (ClassificationImpl) classificationService
@@ -123,7 +123,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         } catch (ClassificationAlreadyExistException e) {
         }
 
-        // new classification but root existing
+        // new classification but master existing
         expectedClassification = (ClassificationImpl) this.createDummyClassificationWithUniqueKey("DOMAIN_B",
             "TASK");
         expectedClassification.setKey(key);
@@ -136,8 +136,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
         assertThat(actualClassification.getDomain(), equalTo("DOMAIN_B"));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
         // verify that
-        Classification rootResults = classificationService.getClassification(key, "");
-        assertThat(rootResults, not(equalTo(null)));
+        Classification masterResults = classificationService.getClassification(key, "");
+        assertThat(masterResults, not(equalTo(null)));
 
         // invalid serviceLevel
         try {

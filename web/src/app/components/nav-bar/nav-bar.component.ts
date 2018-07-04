@@ -50,6 +50,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   workplaceAccess = false;
 
   selectedRouteSubscription: Subscription;
+  getDomainsSubscription: Subscription;
 
   constructor(
     private selectedRouteService: SelectedRouteService,
@@ -62,7 +63,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       this.selectedRoute = value;
       this.setTitle(value);
     });
-    this.domainService.getDomains().subscribe(domains => {
+    this.getDomainsSubscription = this.domainService.getDomains().subscribe(domains => {
       this.domains = domains;
     });
 
@@ -90,8 +91,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   showDomainSelector(): boolean {
     return this.selectedRoute.indexOf('administration') !== -1
-        || this.selectedRoute.indexOf('workbaskets') !== -1
-        || this.selectedRoute.indexOf('classifications') !== -1
+      || this.selectedRoute.indexOf('workbaskets') !== -1
+      || this.selectedRoute.indexOf('classifications') !== -1
   }
 
   private setTitle(value: string = 'workbaskets') {
@@ -108,5 +109,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.selectedRouteSubscription) { this.selectedRouteSubscription.unsubscribe(); }
+    if (this.getDomainsSubscription) { this.getDomainsSubscription.unsubscribe(); }
   }
 }

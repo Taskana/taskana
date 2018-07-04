@@ -35,7 +35,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testCreateRootClassification()
+    public void testCreateMasterClassification()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
         long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
@@ -59,7 +59,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testCreateClassificationWithRootCopy()
+    public void testCreateClassificationWithMasterCopy()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
         long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
@@ -87,7 +87,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         assertNotNull(classification.getId());
         assertThat(classification.getIsValidInDomain(), equalTo(true));
 
-        // Check root-copy
+        // Check master-copy
         classification = classificationService.getClassification(classification.getKey(), "");
         assertNotNull(classification);
         assertNotNull(classification.getCreated());

@@ -18,7 +18,7 @@ import { Direction } from 'app/models/sorting';
 @Injectable()
 export class ClassificationsService {
 
-  private classificationSelected = new Subject<string>();
+  private classificationSelected = new Subject<ClassificationDefinition>();
   private classificationSaved = new Subject<number>();
 
   constructor(
@@ -39,9 +39,8 @@ export class ClassificationsService {
     key: string = undefined,
     keyLike: string = undefined,
     requiredPermission: string = undefined,
-    allPages: boolean = true): Observable<any> {
+    allPages: boolean = true): Observable<Array<Classification>> {
     return this.domainService.getSelectedDomain().mergeMap(domain => {
-      this.classificationTypeService.getSelectedClassificationType();
       return this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
         `${environment.taskanaRestUrl}/v1/classifications/${TaskanaQueryParameters.getQueryParameters(
           sortBy, order, name,
@@ -81,11 +80,11 @@ export class ClassificationsService {
   }
 
   // #region "Service extras"
-  selectClassification(id: string) {
-    this.classificationSelected.next(id);
+  selectClassification(classification: ClassificationDefinition) {
+    this.classificationSelected.next(classification);
   }
 
-  getSelectedClassification(): Observable<string> {
+  getSelectedClassification(): Observable<ClassificationDefinition> {
     return this.classificationSelected.asObservable();
 
   }
