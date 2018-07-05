@@ -279,10 +279,6 @@ taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbas
     }
 }
 
-tree-viewport {
-    height: calc(100vh - 165px);   
-}
-
 li.list-group-item.active:hover, {
     color: #fff;
     background-color: $green;
