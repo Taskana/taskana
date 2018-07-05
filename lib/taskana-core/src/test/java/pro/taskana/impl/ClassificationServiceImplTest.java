@@ -14,7 +14,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.mappings.ClassificationMapper;
+import pro.taskana.mappings.JobMapper;
 
 /**
  * Unit Test for ClassificationServiceImpl.
@@ -54,6 +57,9 @@ public class ClassificationServiceImplTest {
 
     @Mock
     private ClassificationQueryImpl classificationQueryImplMock;
+
+    @Mock
+    private SqlSession sqlSessionMock;
 
     @Before
     public void setup() {
@@ -210,7 +216,8 @@ public class ClassificationServiceImplTest {
         classification.setParentKey("ParentKey");
         ClassificationImpl parentDomainClassification = (ClassificationImpl) createDummyClassification("ParentId");
         parentDomainClassification.setKey("ParentKey");
-        ClassificationImpl parentMasterClassification = (ClassificationImpl) createDummyClassification("ParentIdMaster");
+        ClassificationImpl parentMasterClassification = (ClassificationImpl) createDummyClassification(
+            "ParentIdMaster");
         parentMasterClassification.setKey("ParentKey");
         parentMasterClassification.setDomain("");
         doReturn(null).when(classificationMapperMock).findByKeyAndDomain(classification.getKey(),
@@ -266,6 +273,24 @@ public class ClassificationServiceImplTest {
         verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
+    }
+
+    @Test
+    public void testUpdateClassificationWithEmptyServiceLevel()
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException {
+        Instant now = Instant.now();
+        Classification classification = createDummyClassification();
+        ((ClassificationImpl) classification).setModified(now);
+        classification.setServiceLevel("");
+        ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
+        oldClassification.setModified(now);
+        doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
+        doReturn(sqlSessionMock).when(taskanaEngineImplMock).getSqlSession();
+        doReturn(new JobRunnerMock()).when(sqlSessionMock).getMapper(any());
+
+        cutSpy.updateClassification(classification);
+
+        verify(classificationMapperMock, times(1)).update(any());
     }
 
     @Test(expected = ClassificationNotFoundException.class)
@@ -418,5 +443,30 @@ public class ClassificationServiceImplTest {
         classificationImpl.setParentId("");
         classificationImpl.setParentKey("");
         return classificationImpl;
+    }
+    /**
+     * This is the mock of a jobRunner.
+     */
+    private class JobRunnerMock implements JobMapper {
+
+        @Override
+        public void insertJob(Job job) {
+
+        }
+
+        @Override
+        public List<Job> findJobsToRun() {
+            return null;
+        }
+
+        @Override
+        public void update(Job job) {
+
+        }
+
+        @Override
+        public void delete(Job job) {
+
+        }
     }
 }

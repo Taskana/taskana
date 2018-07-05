@@ -180,7 +180,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
             // Update classification fields used by tasks
             if (oldClassification.getCategory() != classificationImpl.getCategory()) {
-                List<TaskSummary> taskSumamries = taskanaEngine.getTaskService()
+                List<TaskSummary> taskSummaries = taskanaEngine.getTaskService()
                     .createTaskQuery()
                     .classificationIdIn(oldClassification.getId())
                     .list();
@@ -188,9 +188,9 @@ public class ClassificationServiceImpl implements ClassificationService {
                 boolean categoryChanged = !(oldClassification.getCategory() == null
                     ? classification.getCategory() == null
                     : oldClassification.getCategory().equals(classification.getCategory()));
-                if (!taskSumamries.isEmpty() && categoryChanged) {
+                if (!taskSummaries.isEmpty() && categoryChanged) {
                     List<String> taskIds = new ArrayList<>();
-                    taskSumamries.stream().forEach(ts -> taskIds.add(ts.getTaskId()));
+                    taskSummaries.stream().forEach(ts -> taskIds.add(ts.getTaskId()));
                     taskMapper.updateClassificationCategoryOnChange(taskIds, classificationImpl.getCategory());
                 }
             }
@@ -262,7 +262,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             classification.setIsValidInDomain(true);
         }
 
-        if (classification.getServiceLevel() != null) {
+        if (classification.getServiceLevel() != null && !"".equals(classification.getServiceLevel())) {
             try {
                 Duration.parse(classification.getServiceLevel());
             } catch (Exception e) {
