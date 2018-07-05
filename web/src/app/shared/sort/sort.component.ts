@@ -1,5 +1,5 @@
-import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
-import { SortingModel, Direction } from 'app/models/sorting';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Direction, SortingModel} from 'app/models/sorting';
 
 @Component({
   selector: 'taskana-sort',
@@ -8,12 +8,14 @@ import { SortingModel, Direction } from 'app/models/sorting';
 })
 export class SortComponent implements OnInit {
   @Input() sortingFields: Map<string, string>;
+  @Input() enabled = true;
 
-  @Output()
-  performSorting = new EventEmitter<SortingModel>();
+  @Output() performSorting = new EventEmitter<SortingModel>();
+
   sort: SortingModel = new SortingModel();
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }

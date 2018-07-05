@@ -5,6 +5,7 @@ import {TaskService} from 'app/workplace/services/task.service';
 import {Subscription} from 'rxjs/Subscription';
 import {SortingModel} from 'app/models/sorting';
 import {Workbasket} from 'app/models/workbasket';
+import {FilterModel} from 'app/models/filter';
 
 @Component({
   selector: 'taskana-task-list',
@@ -17,7 +18,16 @@ export class TasklistComponent implements OnInit, OnDestroy {
 
   currentBasket: Workbasket;
   selectedId = '';
-  sort: SortingModel = new SortingModel();
+  sort: SortingModel = new SortingModel('priority');
+  filterBy: FilterModel = new FilterModel({
+    name: '',
+    owner: '',
+    priority: '',
+    state: '',
+    classificationKey: '',
+    workbasketId: '',
+    workbasketKey: ''
+  });
   requestInProgress = false;
 
   private taskChangeSubscription: Subscription;
@@ -63,13 +73,20 @@ export class TasklistComponent implements OnInit, OnDestroy {
     this.getTasks();
   }
 
+  performFilter(filterBy: FilterModel) {
+    this.filterBy = filterBy;
+    this.getTasks();
+  }
+
   getTasks(): void {
     this.requestInProgress = true;
-    this.taskService.findTasksWithWorkbasket(this.currentBasket.workbasketId, this.sort.sortBy, this.sort.sortDirection)
+    this.taskService.findTasksWithWorkbasket(this.currentBasket.workbasketId, this.sort.sortBy, this.sort.sortDirection,
+      this.filterBy.filterParams.name, this.filterBy.filterParams.owner, this.filterBy.filterParams.priority,
+      this.filterBy.filterParams.state)
       .subscribe(tasks => {
         this.requestInProgress = false;
         this.tasks = tasks._embedded ? tasks._embedded.tasks : this.tasks;
-      })
+      });
   }
 
   ngOnDestroy(): void {

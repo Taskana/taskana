@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
-import { ImportType } from 'app/models/import-type';
+import { TaskanaType } from 'app/models/taskana-type';
 import { ErrorModel } from 'app/models/modal-error';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 
@@ -13,7 +13,7 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 })
 export class ImportExportComponent implements OnInit {
 
-  @Input() currentSelection: ImportType;
+  @Input() currentSelection: TaskanaType;
 
   @Output() importSucessful = new EventEmitter();
 
@@ -47,7 +47,7 @@ export class ImportExportComponent implements OnInit {
     }
 
     const reader = new FileReader();
-    if (this.currentSelection === ImportType.WORKBASKETS) {
+    if (this.currentSelection === TaskanaType.WORKBASKETS) {
       reader.onload = <Event>(e) => this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
       this.importSucessful.emit();
     } else {
@@ -58,7 +58,7 @@ export class ImportExportComponent implements OnInit {
   }
 
   export(domain = '') {
-    if (this.currentSelection === ImportType.WORKBASKETS) {
+    if (this.currentSelection === TaskanaType.WORKBASKETS) {
       this.workbasketDefinitionService.exportWorkbaskets(domain);
     } else {
       this.classificationDefinitionService.exportClassifications(domain);

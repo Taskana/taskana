@@ -4,7 +4,8 @@
       <button type="button" (click)="addWorkbasket()" data-toggle="tooltip" title="Add" class="btn btn-default">
         <span class="glyphicon glyphicon-plus green-blue" aria-hidden="true"></span>
       </button>
-      <taskana-import-export-component (importSucessful)="importEvent()" [currentSelection]="'selectionToImport'"></taskana-import-export-component>
+      <taskana-import-export-component (importSucessful)="importEvent()"
+                                       [currentSelection]="selectionToImport"></taskana-import-export-component>
     </div>
     <div class="pull-right margin-right">
       <taskana-sort
@@ -17,7 +18,9 @@
     </div>
 
   </div>
-  <div [@toggleDown]="toolbarState" *ngIf="toolbarState" class="row no-overflow">
-    <taskana-filter (performFilter)="filtering($event)"></taskana-filter>
+  <div [@toggle]="toolbarState" *ngIf="toolbarState" class="row no-overflow">
+    <taskana-filter [allTypes]="filteringTypes" [filterParams]="filterParams"
+                    [filterType]="filterType"
+                    (performFilter)="filtering($event)"></taskana-filter>
   </div>
 </li>

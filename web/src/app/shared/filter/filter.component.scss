@@ -15,3 +15,11 @@
 row.padding {
     padding: 1px 0px;
 }
+
+.filter-list {
+  list-style-type: none;
+}
+
+.filter-list > li {
+  padding-top: 5px;
+}

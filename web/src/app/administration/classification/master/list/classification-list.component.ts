@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { ImportType } from 'app/models/import-type';
+import { TaskanaType } from 'app/models/taskana-type';
 import { Classification } from 'app/models/classification';
 import { TreeNodeModel } from 'app/models/tree-node';
 
@@ -24,7 +24,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
 	selectedCategory = '';
 	selectedId: string;
-	selectionToImport = ImportType.CLASSIFICATIONS;
+	selectionToImport = TaskanaType.CLASSIFICATIONS;
 	requestInProgress = false;
 	initialized = false;
 	inputValue: string;
