@@ -1,3 +1,9 @@
+tree-viewport {
+    height: calc(100vh - 165px);
+    & > div {
+        display: inline-block;
+    }
+}
 
 tree-node-expander {
     
