@@ -29,6 +29,10 @@ public class WorkbasketSummaryResource extends ResourceSupport {
 
     public String description;
     public String owner;
+    public String custom1;
+    public String custom2;
+    public String custom3;
+    public String custom4;
     public String orgLevel1;
     public String orgLevel2;
     public String orgLevel3;
@@ -88,6 +92,38 @@ public class WorkbasketSummaryResource extends ResourceSupport {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getCustom1() {
+        return custom1;
+    }
+
+    public void setCustom1(String custom1) {
+        this.custom1 = custom1;
+    }
+
+    public String getCustom2() {
+        return custom2;
+    }
+
+    public void setCustom2(String custom2) {
+        this.custom2 = custom2;
+    }
+
+    public String getCustom3() {
+        return custom3;
+    }
+
+    public void setCustom3(String custom3) {
+        this.custom3 = custom3;
+    }
+
+    public String getCustom4() {
+        return custom4;
+    }
+
+    public void setCustom4(String custom4) {
+        this.custom4 = custom4;
     }
 
     public String getOrgLevel1() {
