@@ -56,30 +56,58 @@ public interface WorkbasketSummary {
     WorkbasketType getType();
 
     /**
-     * Gets the orglevel1 property of the task.
+     *  Gets the custom1 property of the workbasket.
      *
-     * @return the task's orglevel1 property
+     * @return the workbasket's custom1 property.
+     */
+    String getCustom1();
+
+    /**
+     *  Gets the custom2 property of the workbasket.
+     *
+     * @return the workbasket's custom2 property.
+     */
+    String getCustom2();
+
+    /**
+     *  Gets the custom3 property of the workbasket.
+     *
+     * @return the workbasket's custom3 property.
+     */
+    String getCustom3();
+
+    /**
+     *  Gets the custom4 property of the workbasket.
+     *
+     * @return the workbasket's custom4 property.
+     */
+    String getCustom4();
+
+    /**
+     * Gets the orglevel1 property of the workbasket.
+     *
+     * @return the workbasket's orglevel1 property
      */
     String getOrgLevel1();
 
     /**
-     * Gets the orglevel2 property of the task.
+     * Gets the orglevel2 property of the workbasket.
      *
-     * @return the task's orglevel2 property
+     * @return the workbasket's orglevel2 property
      */
     String getOrgLevel2();
 
     /**
-     * Gets the orglevel3 property of the task.
+     * Gets the orglevel3 property of the workbasket.
      *
-     * @return the task's orglevel3 property
+     * @return the workbasket's orglevel3 property
      */
     String getOrgLevel3();
 
     /**
-     * Gets the orglevel4 property of the task.
+     * Gets the orglevel4 property of the workbasket.
      *
-     * @return the task's orglevel4 property
+     * @return the workbasket's orglevel4 property
      */
     String getOrgLevel4();
 

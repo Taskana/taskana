@@ -63,7 +63,7 @@ public interface WorkbasketMapper {
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     WorkbasketImpl findByKeyAndDomain(@Param("key") String key, @Param("domain") String domain);
 
-    @Select("<script>SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM TASKANA.WORKBASKET WHERE ID IN (SELECT TARGET_ID FROM TASKANA.DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id}) "
+    @Select("<script>SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM TASKANA.WORKBASKET WHERE ID IN (SELECT TARGET_ID FROM TASKANA.DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id}) "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
@@ -74,13 +74,17 @@ public interface WorkbasketMapper {
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "type", column = "TYPE"),
+        @Result(property = "custom1", column = "CUSTOM_1"),
+        @Result(property = "custom2", column = "CUSTOM_2"),
+        @Result(property = "custom3", column = "CUSTOM_3"),
+        @Result(property = "custom4", column = "CUSTOM_4"),
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketSummaryImpl> findDistributionTargets(@Param("id") String id);
 
-    @Select("<script>SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM TASKANA.WORKBASKET "
+    @Select("<script>SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4 FROM TASKANA.WORKBASKET "
         + " WHERE ID IN (SELECT SOURCE_ID FROM TASKANA.DISTRIBUTION_TARGETS WHERE TARGET_ID = #{id}) "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
@@ -92,13 +96,17 @@ public interface WorkbasketMapper {
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "type", column = "TYPE"),
+        @Result(property = "custom1", column = "CUSTOM_1"),
+        @Result(property = "custom2", column = "CUSTOM_2"),
+        @Result(property = "custom3", column = "CUSTOM_3"),
+        @Result(property = "custom4", column = "CUSTOM_4"),
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
         @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
     List<WorkbasketSummaryImpl> findDistributionSources(@Param("id") String id);
 
-    @Select("<script>SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4  FROM TASKANA.WORKBASKET WHERE ID = #{id} "
+    @Select("<script>SELECT ID, KEY, NAME, DESCRIPTION, OWNER, DOMAIN, TYPE, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4  FROM TASKANA.WORKBASKET WHERE ID = #{id} "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
@@ -109,6 +117,10 @@ public interface WorkbasketMapper {
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "type", column = "TYPE"),
+        @Result(property = "custom1", column = "CUSTOM_1"),
+        @Result(property = "custom2", column = "CUSTOM_2"),
+        @Result(property = "custom3", column = "CUSTOM_3"),
+        @Result(property = "custom4", column = "CUSTOM_4"),
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
@@ -126,6 +138,10 @@ public interface WorkbasketMapper {
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "type", column = "TYPE"),
+        @Result(property = "custom1", column = "CUSTOM_1"),
+        @Result(property = "custom2", column = "CUSTOM_2"),
+        @Result(property = "custom3", column = "CUSTOM_3"),
+        @Result(property = "custom4", column = "CUSTOM_4"),
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),

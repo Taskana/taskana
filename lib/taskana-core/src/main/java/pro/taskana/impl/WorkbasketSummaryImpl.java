@@ -15,6 +15,10 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     private String owner;
     private String domain;
     private WorkbasketType type;
+    private String custom1;
+    private String custom2;
+    private String custom3;
+    private String custom4;
     private String orgLevel1;
     private String orgLevel2;
     private String orgLevel3;
@@ -112,6 +116,58 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
 
     public void setType(WorkbasketType type) {
         this.type = type;
+    }
+
+    /*
+     *  (non-Javadoc)
+     *  @see pro.taskana.impl.WorkbasketSummary#getCustom1()
+     */
+    @Override
+    public String getCustom1() {
+        return custom1;
+    }
+
+    public void setCustom1(String custom1) {
+        this.custom1 = custom1;
+    }
+
+    /*
+     *  (non-Javadoc)
+     *  @see pro.taskana.impl.WorkbasketSummary#getCustom2()
+     */
+    @Override
+    public String getCustom2() {
+        return custom2;
+    }
+
+    public void setCustom2(String custom2) {
+        this.custom2 = custom2;
+    }
+
+    /*
+     *  (non-Javadoc)
+     *  @see pro.taskana.impl.WorkbasketSummary#getCustom3()
+     */
+    @Override
+    public String getCustom3() {
+        return custom3;
+    }
+
+    public void setCustom3(String custom3) {
+        this.custom3 = custom3;
+    }
+
+    /*
+     *  (non-Javadoc)
+     *  @see pro.taskana.impl.WorkbasketSummary#getCustom4()
+     */
+    @Override
+    public String getCustom4() {
+        return custom4;
+    }
+
+    public void setCustom4(String custom4) {
+        this.custom4 = custom4;
     }
 
     /*

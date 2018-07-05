@@ -37,6 +37,10 @@ public class WorkbasketSummaryAssemblerTest {
         workbasketSummary.setDescription("WorkbasketSummaryImplTes");
         workbasketSummary.setId("1");
         workbasketSummary.setName("WorkbasketSummary");
+        workbasketSummary.setCustom1("custom1");
+        workbasketSummary.setCustom2("custom2");
+        workbasketSummary.setCustom3("custom3");
+        workbasketSummary.setCustom4("custom4");
         workbasketSummary.setOrgLevel1("Org1");
         workbasketSummary.setOrgLevel2("Org2");
         workbasketSummary.setOrgLevel3("Org3");
@@ -51,6 +55,10 @@ public class WorkbasketSummaryAssemblerTest {
         Assert.assertEquals(workbasketSummary.getId(), workbasketSummaryResource.workbasketId);
         Assert.assertEquals(workbasketSummary.getKey(), workbasketSummaryResource.key);
         Assert.assertEquals(workbasketSummary.getName(), workbasketSummaryResource.name);
+        Assert.assertEquals(workbasketSummary.getCustom1(), workbasketSummaryResource.custom1);
+        Assert.assertEquals(workbasketSummary.getCustom2(), workbasketSummaryResource.custom2);
+        Assert.assertEquals(workbasketSummary.getCustom3(), workbasketSummaryResource.custom3);
+        Assert.assertEquals(workbasketSummary.getCustom4(), workbasketSummaryResource.custom4);
         Assert.assertEquals(workbasketSummary.getOrgLevel1(), workbasketSummaryResource.orgLevel1);
         Assert.assertEquals(workbasketSummary.getOrgLevel2(), workbasketSummaryResource.orgLevel2);
         Assert.assertEquals(workbasketSummary.getOrgLevel3(), workbasketSummaryResource.orgLevel3);
