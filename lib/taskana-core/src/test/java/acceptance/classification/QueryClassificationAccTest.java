@@ -545,6 +545,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .orderByCustom1(desc)
                 .orderByName(asc)
+                .orderByDomain(asc)
                 .list();
         assertEquals("CLI:000000000000000000000000000000000002", results.get(0).getId());
     }

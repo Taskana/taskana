@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -546,7 +545,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
                 .custom4Like("%u%")
                 .list();
-        assertEquals(4, results.size());
+        assertEquals(5, results.size());
     }
 
     @WithAccessId(
@@ -681,8 +680,6 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         assertEquals("WBI:100000000000000000000000000000000012", results.get(results.size() - 3).getId());
     }
 
-    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
-    @Ignore
     @WithAccessId(
         userName = "admin")
     @Test
@@ -694,8 +691,6 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         assertEquals("WBI:100000000000000000000000000000000015", results.get(results.size() - 4).getId());
     }
 
-    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
-    @Ignore
     @WithAccessId(
         userName = "admin")
     @Test
@@ -707,8 +702,6 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         assertEquals("WBI:100000000000000000000000000000000014", results.get(0).getId());
     }
 
-    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
-    @Ignore
     @WithAccessId(
         userName = "admin")
     @Test
@@ -717,11 +710,9 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
                 .orderByCustom3(asc)
                 .list();
-        assertEquals("WBI:100000000000000000000000000000000015", results.get(results.size() - 3).getId());
+        assertEquals("WBI:100000000000000000000000000000000015", results.get(results.size() - 4).getId());
     }
 
-    // TODO Add custom1 - custom4 to the workbasketSummary then reenable this test.
-    @Ignore
     @WithAccessId(
         userName = "admin")
     @Test
@@ -730,7 +721,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
                 .orderByCustom4(desc)
                 .list();
-        assertEquals("WBI:100000000000000000000000000000000001", results.get(0).getId());
+        assertEquals("WBI:100000000000000000000000000000000006", results.get(0).getId());
     }
 
 }
