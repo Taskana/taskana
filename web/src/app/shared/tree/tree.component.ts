@@ -1,4 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked, OnDestroy } from '@angular/core';
+import {
+  Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked,
+  OnDestroy, ElementRef, HostListener
+} from '@angular/core';
 import { TreeNodeModel } from 'app/models/tree-node';
 
 import { KEYS, ITreeOptions, TreeComponent, TreeNode } from 'angular-tree-component';
@@ -12,7 +15,7 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
   selector: 'taskana-tree',
   templateUrl: './tree.component.html',
-  styleUrls: ['./tree.component.scss']
+  styleUrls: ['./tree.component.scss'],
 })
 export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
 
@@ -47,7 +50,17 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     levelPadding: 20
   }
 
-  constructor(private treeService: TreeService, private categoryService: ClassificationCategoriesService) { }
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event) {
+    if (this.checkValidElements(event) && this.tree.treeModel.getActiveNode()) {
+      this.unSelectActiveNode();
+    }
+  }
+
+  constructor(
+    private treeService: TreeService,
+    private categoryService: ClassificationCategoriesService,
+    private elementRef: ElementRef) { }
 
   ngOnInit() {
     this.removedNodeIdSubscription = this.treeService.getRemovedNodeId().subscribe(value => {
@@ -100,6 +113,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
   private unSelectActiveNode() {
     const activeNode = this.tree.treeModel.getActiveNode();
+    this.selectNodeId = undefined;
     activeNode.setIsActive(false);
     activeNode.blur();
   }
@@ -136,6 +150,14 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     if (this.filterText === '') {
       this.tree.treeModel.collapseAll();
     }
+  }
+
+  private checkValidElements(event): boolean {
+    return (this.elementRef.nativeElement.contains(event.target) ||
+      this.elementRef.nativeElement === event.target) &&
+      (event.target.localName === 'tree-viewport' ||
+        event.target.localName === 'tree-viewport' ||
+        event.target.localName === 'taskana-tree')
   }
 
   ngOnDestroy(): void {
