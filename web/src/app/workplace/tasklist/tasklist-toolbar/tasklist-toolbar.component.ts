@@ -1,21 +1,39 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {animate, keyframes, style, transition, trigger} from '@angular/animations';
 import {Task} from 'app/workplace/models/task';
 import {Workbasket} from 'app/models/workbasket';
 import {TaskService} from 'app/workplace/services/task.service';
 import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
 import {SortingModel} from 'app/models/sorting';
+import {FilterModel} from 'app/models/filter';
+import {TaskanaType} from 'app/models/taskana-type';
 
 @Component({
   selector: 'taskana-tasklist-toolbar',
-  templateUrl: './tasklist-toolbar.component.html'
+  animations: [
+    trigger('toggle', [
+        transition('void => *', animate('300ms ease-in', keyframes([
+          style({height: '0px'}),
+          style({height: '50px'}),
+          style({height: '*'})]))),
+        transition('* => void', animate('300ms ease-out', keyframes([
+          style({height: '*'}),
+          style({height: '50px'}),
+          style({height: '0px'})])))
+      ]
+    )],
+  templateUrl: './tasklist-toolbar.component.html',
+  styleUrls: ['./tasklist-toolbar.component.scss']
 })
 export class TaskListToolbarComponent implements OnInit {
 
   @Output() tasksChanged = new EventEmitter<Task[]>();
   @Output() basketChanged = new EventEmitter<Workbasket>();
   @Output() performSorting = new EventEmitter<SortingModel>();
+  @Output() performFilter = new EventEmitter<FilterModel>();
 
   sortingFields = new Map([['name', 'Name'], ['priority', 'Priority'], ['due', 'Due'], ['planned', 'Planned']]);
+  filterParams = {name: '', key: '', owner: '', priority: '', state: ''};
   tasks: Task[] = [];
 
   workbasketNames: string[] = [];
@@ -24,6 +42,8 @@ export class TaskListToolbarComponent implements OnInit {
   workbaskets: Workbasket[];
   currentBasket: Workbasket;
   workbasketSelected = false;
+  toolbarState = false;
+  filterType = TaskanaType.TASKS;
 
   constructor(private taskService: TaskService,
               private workbasketService: WorkbasketService) {
@@ -39,6 +59,7 @@ export class TaskListToolbarComponent implements OnInit {
   }
 
   searchBasket() {
+    this.toolbarState = false;
     if (this.workbaskets) {
       this.workbaskets.forEach(workbasket => {
         if (workbasket.name === this.result) {
@@ -60,7 +81,8 @@ export class TaskListToolbarComponent implements OnInit {
   }
 
   getTasks(workbasketId: string) {
-    this.taskService.findTasksWithWorkbasket(workbasketId).subscribe(
+    this.taskService.findTasksWithWorkbasket(workbasketId, undefined, undefined,
+      undefined, undefined, undefined, undefined).subscribe(
       tasks => {
         this.tasks.length = 0;
         if (!tasks || tasks._embedded === undefined) {
@@ -73,5 +95,9 @@ export class TaskListToolbarComponent implements OnInit {
 
   sorting(sort: SortingModel) {
     this.performSorting.emit(sort);
+  }
+
+  filtering(filterBy: FilterModel) {
+    this.performFilter.emit(filterBy);
   }
 }

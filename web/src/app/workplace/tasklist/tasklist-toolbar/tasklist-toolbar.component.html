@@ -1,17 +1,35 @@
-<div class="row">
-  <div class="col-md-6">
-    <div class="input-group">
-      <input [(ngModel)]="result" [typeahead]="workbasketNames" class="form-control" (typeaheadOnSelect)="workbasketSelected = true"
-        typeaheadMinLength="0" (typeaheadNoResults)="workbasketSelected = false" placeholder="Search for Workbasket ..." />
-      <span class="input-group-btn">
-        <button class="btn btn-primary" type="button" (click)="searchBasket()" [disabled]="!workbasketSelected">Go!</button>
+<li id="tasklist-action-toolbar" class="list-group-item tab-align">
+  <div class="row">
+    <div class="col-xs-9">
+      <div class="input-group">
+        <input [(ngModel)]="result" [typeahead]="workbasketNames" class="form-control"
+               (typeaheadOnSelect)="workbasketSelected = true" (typeaheadNoResults)="workbasketSelected = false"
+               placeholder="Search for Workbasket ..."/>
+        <span class="input-group-btn">
+        <button class="btn btn-primary" type="button" (click)="searchBasket()"
+                [disabled]="!workbasketSelected">Go!</button>
       </span>
+      </div>
+    </div>
+
+    <div class="pull-right margin-right">
+      <taskana-sort
+        [enabled]="tasks.length > 0"
+        [sortingFields]="sortingFields"
+        (performSorting)="sorting($event)"></taskana-sort>
+      <button [disabled]="tasks.length === 0" class="btn btn-default collapsed" type="button"
+              id="collapsedMenufilterWb" aria-expanded="false"
+              (click)="toolbarState=!toolbarState">
+        <span class="glyphicon glyphicon-filter blue"></span>
+      </button>
     </div>
 
   </div>
-  <div class="col-md-6">
-    <div class="pull-right margin-right">
-      <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"></taskana-sort>
-    </div>
+  <div [@toggle]="toolbarState" *ngIf="toolbarState" class="row no-overflow">
+    <taskana-filter
+      [filterParams]="filterParams"
+      [filterType]="filterType"
+      (performFilter)="filtering($event)">
+    </taskana-filter>
   </div>
-</div>
+</li>
