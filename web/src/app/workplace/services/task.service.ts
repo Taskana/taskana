@@ -9,6 +9,14 @@ import {Direction} from 'app/models/sorting';
 
 @Injectable()
 export class TaskService {
+  WORKBASKET_ID = 'workbasket-id';
+  SORT_BY = 'sortBy';
+  SORT_DIRECTION = 'order';
+  NAME = 'name';
+  OWNER = 'owner';
+  PRIORITY = 'priority';
+  STATE = 'state';
+
   url = `${environment.taskanaRestUrl}/v1/tasks`;
 
   taskChangedSource = new Subject<Task>();
@@ -35,9 +43,12 @@ export class TaskService {
    */
   findTasksWithWorkbasket(basketId: string,
                           sortBy = 'priority',
-                          order: string = Direction.ASC): Observable<TaskResource> {
-
-    const url = `${this.url}?workbasket-id=${basketId}&sortBy=${sortBy}&order=${order}`;
+                          sortDirection: string = Direction.ASC,
+                          name: string,
+                          owner: string,
+                          priority: string,
+                          state: string): Observable<TaskResource> {
+    const url = `${this.url}${this.getTaskQueryParameters(basketId, sortBy, sortDirection, name, owner, priority, state)}`;
     return this.httpClient.get<TaskResource>(url);
   }
 
@@ -63,5 +74,27 @@ export class TaskService {
 
   deleteTask(task: Task): Observable<Task> {
     return this.httpClient.delete<Task>(`${this.url}/${task.taskId}`);
+  }
+
+  private getTaskQueryParameters(basketId: string,
+                                 sortBy: string,
+                                 sortDirection: string,
+                                 name: string,
+                                 owner: string,
+                                 priority: string,
+                                 state: string): string {
+    let query = '?';
+    query += basketId ? `${this.WORKBASKET_ID}=${basketId}&` : '';
+    query += `${this.SORT_BY}=${sortBy}&`;
+    query += `${this.SORT_DIRECTION}=${sortDirection}&`;
+    query += name ? `${this.NAME}=${name}&` : '';
+    query += owner ? `${this.OWNER}=${owner}&` : '';
+    query += priority ? `${this.PRIORITY}=${priority}&` : '';
+    query += state ? `${this.STATE}=${state}&` : '';
+
+    if (query.lastIndexOf('&') === query.length - 1) {
+      query = query.slice(0, query.lastIndexOf('&'))
+    }
+    return query;
   }
 }

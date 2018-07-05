@@ -1,0 +1,77 @@
+<div class="list-group-search">
+  <div class="row">
+
+    <div *ngIf="filterTypeIsWorkbasket(); else tasktype">
+      <div class="dropdown col-xs-2">
+        <button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdownMenufilter"
+                data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="true">
+          <taskana-icon-type [type]="filter.filterParams?.type" class="vertical-align"></taskana-icon-type>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-users" role="menu">
+          <li>
+            <a *ngFor="let type of allTypes | mapValues" type="button" (click)="selectType(type.key); search()"
+               data-toggle="tooltip"
+               [title]="type.value">
+              <taskana-icon-type class="vertical-align" [type]='type.key' [text]="type.value"></taskana-icon-type>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-xs-4">
+        <input type="text" [(ngModel)]="filter.filterParams.name" (keyup.enter)="search()" class="form-control"
+               id="display-name-filter" placeholder="Filter name">
+      </div>
+
+      <div class="col-xs-4">
+        <input type="text" [(ngModel)]="filter.filterParams.key" (keyup.enter)="search()" class="form-control"
+               id="display-key-filter" placeholder="Filter key">
+      </div>
+    </div>
+
+    <ng-template #tasktype>
+      <div class="col-xs-2">
+      </div>
+
+      <div class="col-xs-8">
+        <input type="text" [(ngModel)]="filter.filterParams.name" (keyup.enter)="search()" class="form-control"
+               id="display-name-filter" placeholder="Filter name">
+      </div>
+    </ng-template>
+
+    <button (click)="clear(); search()" type="button"
+            class="btn btn-default glyphicon glyphicon-ban-circle blue pull-right margin-right"
+            data-toggle="tooltip" title="Clear">
+    </button>
+  </div>
+
+  <div class="filter-list">
+    <li class="" *ngFor="let filterType of getUnusedKeys()">
+      <div class="row padding">
+        <div class="col-xs-2">
+        </div>
+        <div class="col-xs-8">
+          <div *ngIf="checkUppercaseFilterType(filterType); else normalFilter">
+            <input type="text" [(ngModel)]="filter.filterParams[filterType]"
+                   (ngModelChange)="filter.filterParams[filterType] = $event.toLocaleUpperCase()"
+                   (keyup.enter)="search()"
+                   class="form-control" id="display-{{filterType}}-filter" placeholder="Filter {{filterType}}">
+          </div>
+          <ng-template #normalFilter>
+            <input type="text" [(ngModel)]="filter.filterParams[filterType]"
+                   (keyup.enter)="search()"
+                   class="form-control" id="display-{{filterType}}-filter" placeholder="Filter {{filterType}}">
+          </ng-template>
+        </div>
+
+        <div *ngIf="filterType === lastFilterKey" class="pull-right">
+          <button (click)="search()" type="button"
+                  class="btn btn-default glyphicon glyphicon-search blue pull-right margin-right"
+                  data-toggle="tooltip" title="Search">
+          </button>
+        </div>
+      </div>
+    </li>
+  </div>
+</div>

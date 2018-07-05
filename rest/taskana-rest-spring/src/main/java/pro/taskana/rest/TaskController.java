@@ -219,9 +219,9 @@ public class TaskController extends AbstractPagingController {
             params.remove(NAME);
         }
         if (params.containsKey(PRIORITY)) {
-            String[] prioritesInString = extractCommaSeparatedFields(params.get(PRIORITY));
-            int[] priorites = extractPriorities(prioritesInString);
-            taskQuery.priorityIn(priorites);
+            String[] prioritiesInString = extractCommaSeparatedFields(params.get(PRIORITY));
+            int[] priorities = extractPriorities(prioritiesInString);
+            taskQuery.priorityIn(priorities);
             params.remove(PRIORITY);
         }
         if (params.containsKey(STATE)) {
@@ -335,12 +335,12 @@ public class TaskController extends AbstractPagingController {
         return taskQuery;
     }
 
-    private int[] extractPriorities(String[] prioritesInString) {
-        int[] priorites = new int[prioritesInString.length];
-        for (int i = 0; i < prioritesInString.length; i++) {
-            priorites[i] = Integer.getInteger(prioritesInString[i]);
+    private int[] extractPriorities(String[] prioritiesInString) {
+        int[] priorities = new int[prioritiesInString.length];
+        for (int i = 0; i < prioritiesInString.length; i++) {
+            priorities[i] = Integer.valueOf(prioritiesInString[i]);
         }
-        return priorites;
+        return priorities;
     }
 
     private TaskState[] extractStates(MultiValueMap<String, String> params) throws InvalidArgumentException {

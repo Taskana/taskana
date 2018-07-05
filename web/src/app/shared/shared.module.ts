@@ -32,6 +32,9 @@ import { MapToIterable } from './pipes/mapToIterable/mapToIterable';
  */
 import { HttpClientInterceptor } from './services/httpClientInterceptor/http-client-interceptor.service';
 import { AccessIdsService } from './services/access-ids/access-ids.service';
+import {SortComponent} from 'app/shared/sort/sort.component';
+import {FilterComponent} from 'app/shared/filter/filter.component';
+import {IconTypeComponent} from 'app/administration/components/type-icon/icon-type.component';
 import { FormsValidatorService } from './services/forms/forms-validator.service';
 
 
@@ -61,6 +64,8 @@ const DECLARATIONS = [
   OrderBy,
   MapToIterable,
   SortComponent,
+  FilterComponent,
+  IconTypeComponent,
   RemoveConfirmationComponent
 ];
 

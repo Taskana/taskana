@@ -1,6 +1,8 @@
 <div class="task-list-full-height">
   <taskana-tasklist-toolbar (tasksChanged)="loadTasks($event)" (basketChanged)="loadBasketID($event)"
-                            (performSorting)="performSorting($event)"></taskana-tasklist-toolbar>
+                            (performSorting)="performSorting($event)"
+                            (performFilter)="performFilter($event)">
+  </taskana-tasklist-toolbar>
   <div *ngIf="!requestInProgress">
     <ul #taskList id="task-list-container" class="list-group">
       <li class="list-group-item" *ngIf="tasks === undefined || tasks.length === 0" type="text">
@@ -10,10 +12,8 @@
           type="text" (click)="selectTask(task.taskId)">
         <div class="row">
           <dl class="col-xs-10">
-            <dt data-toggle="tooltip" title="{{task.name}}">{{task.name}},
-              <i data-toggle="tooltip" title="{{task.taskId}}">{{task.taskId}} </i>
-            </dt>
-            <dd data-toggle="tooltip" title="{{task.due}}">Due: {{task.due}} &nbsp;</dd>
+            <dt data-toggle="tooltip" title="{{task.name}}">{{task.name}}</dt>
+            <dd data-toggle="tooltip" title="{{task.owner}}">Owner: {{task.owner}} &nbsp;</dd>
             <dd data-toggle="tooltip" title="{{task.priority}}">Priority: {{task.priority}} &nbsp;</dd>
             <dd data-toggle="tooltip" title="{{task.state}}">State: {{task.state}} &nbsp;</dd>
           </dl>
