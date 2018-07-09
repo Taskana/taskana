@@ -1,4 +1,4 @@
-<div *ngIf="alert" [@alertState]="alert" class="alert alert-{{alert.type}} {{alert.autoClosing? '':'alert-dismissible'}} footer"
+<div *ngIf="alert" [@toggleTop]="alert" class="alert alert-{{alert.type}} {{alert.autoClosing? '':'alert-dismissible'}} footer"
  role="alert">
  	<span class="glyphicon {{alert.type === 'success'? 'glyphicon-thumbs-up': 'glyphicon-exclamation-sign'  }}" aria-hidden="true"></span>
 	{{alert.text}}

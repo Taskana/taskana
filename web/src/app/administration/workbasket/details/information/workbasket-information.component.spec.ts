@@ -1,13 +1,13 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
-import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs/Observable';
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 
 import { Workbasket } from 'app/models/workbasket';
@@ -18,11 +18,13 @@ import { Links } from 'app/models/links';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
+import { TaskanaTypeAheadMockComponent } from 'app/shared/type-ahead/type-ahead.mock.component';
+
 import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 import { RemoveNoneTypePipe } from 'app/shared/pipes/removeNoneType/remove-none-type.pipe';
 
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
@@ -33,36 +35,6 @@ import { configureTests } from 'app/app.test.configuration';
 	template: 'dummydetail'
 })
 export class DummyDetailComponent {
-}
-
-@Component({
-	selector: 'taskana-type-ahead',
-	template: 'dummydetail',
-	providers: [
-		{
-			provide: NG_VALUE_ACCESSOR,
-			multi: true,
-			useExisting: forwardRef(() => TaskanaTypeAheadComponent),
-		}
-	]
-})
-export class TaskanaTypeAheadComponent implements ControlValueAccessor {
-	@Input()
-	placeHolderMessage;
-
-	writeValue(obj: any): void {
-
-	}
-	registerOnChange(fn: any): void {
-
-	}
-	registerOnTouched(fn: any): void {
-
-	}
-	setDisabledState?(isDisabled: boolean): void {
-
-	}
-
 }
 
 const routes: Routes = [
@@ -80,7 +52,7 @@ describe('InformationComponent', () => {
 			testBed.configureTestingModule({
 				declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe,
 					RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent, DummyDetailComponent,
-					TaskanaTypeAheadComponent],
+					TaskanaTypeAheadMockComponent],
 				imports: [FormsModule,
 					AngularSvgIconModule,
 					HttpClientModule,
@@ -153,7 +125,7 @@ describe('InformationComponent', () => {
 			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
 		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(Observable.of(component.workbasket));
 		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(Observable.of(component.workbasket));
-		component.onSave();
+		component.onSubmit();
 		expect(component.requestInProgress).toBeFalsy();
 
 	}));
@@ -164,7 +136,8 @@ describe('InformationComponent', () => {
 			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
 		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(Observable.of(component.workbasket));
 		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(Observable.of(component.workbasket));
-		component.onSave();
+		fixture.detectChanges();
+		component.onSubmit();
 		expect(workbasketService.triggerWorkBasketSaved).toHaveBeenCalled();
 	});
 
@@ -177,8 +150,8 @@ describe('InformationComponent', () => {
 			new Workbasket('someNewId', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 				'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 				'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }))));
-
-		component.onSave();
+		fixture.detectChanges();
+		component.onSubmit();
 		expect(alertService.triggerAlert).toHaveBeenCalled();
 		expect(component.workbasket.workbasketId).toBe('someNewId');
 	});
@@ -199,8 +172,8 @@ describe('InformationComponent', () => {
 
 			spyOn(savingWorkbasketService, 'triggerDistributionTargetSaving');
 			spyOn(savingWorkbasketService, 'triggerAccessItemsSaving');
-
-			component.onSave();
+			fixture.detectChanges();
+			component.onSubmit();
 			expect(alertService.triggerAlert).toHaveBeenCalled();
 			expect(component.workbasket.workbasketId).toBe('someNewId');
 			expect(savingWorkbasketService.triggerDistributionTargetSaving).toHaveBeenCalled();

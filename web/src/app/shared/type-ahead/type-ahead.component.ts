@@ -1,18 +1,17 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, forwardRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
-import { AccessItemsComponent } from 'app/administration/workbasket/details/access-items/access-items.component';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { highlight } from 'app/shared/animations/validation.animation';
 
-const noop = () => {
-};
 
 @Component({
   selector: 'taskana-type-ahead',
   templateUrl: './type-ahead.component.html',
   styleUrls: ['./type-ahead.component.scss'],
+  animations: [highlight],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -28,6 +27,9 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
 
   @Input()
   placeHolderMessage;
+
+  @Input()
+  validationValue;
 
   @ViewChild('inputTypeAhead')
   private inputTypeAhead;
