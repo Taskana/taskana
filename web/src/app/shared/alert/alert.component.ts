@@ -1,25 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { trigger, state, style, animate, transition } from '@angular/animations';
 
 import { AlertModel } from 'app/models/alert';
 import { AlertService } from 'app/services/alert/alert.service';
+import { expandTop } from '../animations/expand.animation';
 
 @Component({
 	selector: 'taskana-alert',
 	templateUrl: './alert.component.html',
 	styleUrls: ['./alert.component.scss'],
-	animations: [
-		trigger('alertState', [
-			state('in', style({ transform: 'translateY(0)', overflow: 'hidden' })),
-			transition('void => *', [
-				style({ transform: 'translateY(100%)', overflow: 'hidden' }),
-				animate(100)
-			]),
-			transition('* => void', [
-				animate(100, style({ transform: 'translateY(100%)', overflow: 'hidden' }))
-			])
-		])
-	]
+	animations: [expandTop]
 })
 
 export class AlertComponent implements OnInit {

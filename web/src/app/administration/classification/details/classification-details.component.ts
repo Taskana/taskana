@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -7,6 +7,7 @@ import { ACTION } from 'app/models/action';
 import { ErrorModel } from 'app/models/modal-error';
 import { AlertModel, AlertType } from 'app/models/alert';
 
+import { highlight } from 'app/shared/animations/validation.animation';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
@@ -24,10 +25,13 @@ import { ClassificationCategoriesService } from 'app/administration/services/cla
 import { DomainService } from 'app/services/domain/domain.service';
 import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';
 import { Pair } from 'app/models/pair';
+import { NgForm } from '@angular/forms';
+import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 
 @Component({
   selector: 'taskana-classification-details',
   templateUrl: './classification-details.component.html',
+  animations: [highlight],
   styleUrls: ['./classification-details.component.scss']
 })
 export class ClassificationDetailsComponent implements OnInit, OnDestroy {
@@ -62,6 +66,9 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private categoriesSubscription: Subscription;
   private domainSubscription: Subscription;
 
+  @ViewChild('ClassificationForm') classificationForm: NgForm;
+  toogleValidationMap = new Map<string, boolean>();
+
   constructor(private classificationsService: ClassificationsService,
     private route: ActivatedRoute,
     private router: Router,
@@ -74,7 +81,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private categoryService: ClassificationCategoriesService,
     private domainService: DomainService,
     private customFieldsService: CustomFieldsService,
-    private removeConfirmationService: RemoveConfirmationService) { }
+    private removeConfirmationService: RemoveConfirmationService,
+    private formsValidatorService: FormsValidatorService) { }
 
   ngOnInit() {
     this.classificationTypeService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
@@ -133,7 +141,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       `You are going to delete classification: ${this.classification.key}. Can you confirm this action?`);
   }
 
-  onSave() {
+  onSubmit() {
+    if (this.formsValidatorService.validate(this.classificationForm, this.toogleValidationMap)) {
+			this.onSave();
+    }
+  }
+
+  private onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     if (this.action === ACTION.CREATE) {
       this.classificationSavingSubscription = this.classificationsService.postClassification(this.classification)

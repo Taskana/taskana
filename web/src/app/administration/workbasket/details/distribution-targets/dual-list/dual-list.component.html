@@ -15,7 +15,7 @@
 			</button>
 		</div>
 	</div>
-	<div [@toggle]="toolbarState" *ngIf="toolbarState" class="row">
+	<div [@toggleDown]="toolbarState" *ngIf="toolbarState" class="row">
 		<taskana-filter class="col-xs-12" (performFilter)="performAvailableFilter($event)"></taskana-filter>
 	</div>
 	<taskana-spinner [isRunning]="requestInProgress" positionClass="centered-spinner" class="floating"></taskana-spinner>

@@ -21,6 +21,10 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { configureTests } from 'app/app.test.configuration';
 
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 import { WorkbasketInformationComponent } from './information/workbasket-information.component';
@@ -31,13 +35,14 @@ import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { AlertComponent } from 'app/shared/alert/alert.component';
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
+import { TaskanaTypeAheadMockComponent } from 'app/shared/type-ahead/type-ahead.mock.component';
+
 import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 import { RemoveNoneTypePipe } from 'app/shared/pipes/removeNoneType/remove-none-type.pipe';
 import { SelectWorkBasketPipe } from 'app/shared/pipes/selectedWorkbasket/seleted-workbasket.pipe';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
-import { configureTests } from 'app/app.test.configuration';
+
+
+
 @Component({
 	selector: 'taskana-filter',
 	template: ''
@@ -53,37 +58,6 @@ export class FilterComponent {
 	template: 'dummydetail'
 })
 export class DummyDetailComponent {
-}
-
-@Component({
-	selector: 'taskana-type-ahead',
-	template: 'dummydetail',
-	providers: [
-		{
-			provide: NG_VALUE_ACCESSOR,
-			multi: true,
-			useExisting: forwardRef(() => TaskanaTypeAheadComponent),
-		}
-	]
-})
-export class TaskanaTypeAheadComponent implements ControlValueAccessor {
-
-	@Input()
-	placeHolderMessage;
-
-	writeValue(obj: any): void {
-
-	}
-	registerOnChange(fn: any): void {
-
-	}
-	registerOnTouched(fn: any): void {
-
-	}
-	setDisabledState?(isDisabled: boolean): void {
-
-	}
-
 }
 
 describe('WorkbasketDetailsComponent', () => {
@@ -107,7 +81,7 @@ describe('WorkbasketDetailsComponent', () => {
 				declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent, SpinnerComponent,
 					IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
 					DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent,
-					TaskanaTypeAheadComponent, SelectWorkBasketPipe],
+					TaskanaTypeAheadMockComponent, SelectWorkBasketPipe],
 				providers: [WorkbasketService, MasterAndDetailService, ErrorModalService, RequestInProgressService,
 					AlertService, SavingWorkbasketService,
 					CustomFieldsService]

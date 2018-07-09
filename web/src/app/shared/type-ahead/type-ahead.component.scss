@@ -1,20 +1,25 @@
 $blue: #2e9eca;
 $grey: #ddd;
+$invalid: #a94442;
 .wrapper-text {
     height: 47px;
     & label {
         width: 100%;
         margin-bottom: 0px;
+        padding-left: 12px;
+        font-style: italic;
      }
     & div {
         width: 100%;
         border-bottom: 1px solid $grey;
         margin-top:6px;
+        padding-left: 12px;
     }
     > div{
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+        padding-left: 12px;
     }
 }
 
@@ -30,6 +35,7 @@ $grey: #ddd;
     &:focus{
         border-bottom: 1px solid $blue;
     }
+    padding-left: 12px;
     
 }
 
@@ -49,4 +55,16 @@ $grey: #ddd;
 .loading {
     position: absolute;
     right: 0;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: $invalid;
+    opacity: 1; /* Firefox */
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: $invalid;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: $invalid;
 }

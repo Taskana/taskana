@@ -20,6 +20,8 @@ import { ErrorModalService } from './services/errorModal/error-modal.service';
 import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
 import { OrientationService } from './services/orientation/orientation.service';
 import { SelectedRouteService } from './services/selected-route/selected-route';
+import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 export const configureTests = (configure: (testBed: TestBed) => void) => {
@@ -33,9 +35,10 @@ export const configureTests = (configure: (testBed: TestBed) => void) => {
 
     configure(testBed);
     testBed.configureTestingModule({
+        imports: [BrowserAnimationsModule],
         providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
         { provide: DomainService, useClass: DomainServiceMock }, CustomFieldsService, RemoveConfirmationService,
-            AlertService, ErrorModalService, RequestInProgressService, OrientationService, SelectedRouteService]
+            AlertService, ErrorModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
     });
 
     return testBed.compileComponents().then(() => testBed);

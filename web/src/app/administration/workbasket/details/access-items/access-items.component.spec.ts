@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Observable } from 'rxjs/Observable';
+import { configureTests } from 'app/app.test.configuration';
 
 import { Workbasket } from 'app/models/workbasket';
 import { AlertModel, AlertType } from 'app/models/alert';
@@ -16,45 +17,15 @@ import { ICONTYPES } from 'app/models/type';
 import { AccessItemsComponent } from './access-items.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
+import { TaskanaTypeAheadMockComponent } from 'app/shared/type-ahead/type-ahead.mock.component';
 
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
-import { configureTests } from 'app/app.test.configuration';
 
-
-@Component({
-	selector: 'taskana-type-ahead',
-	template: 'dummydetail',
-	providers: [
-		{
-			provide: NG_VALUE_ACCESSOR,
-			multi: true,
-			useExisting: forwardRef(() => TaskanaTypeAheadComponent),
-		}
-	]
-})
-export class TaskanaTypeAheadComponent implements ControlValueAccessor {
-	@Input()
-	placeHolderMessage;
-
-	writeValue(obj: any): void {
-
-	}
-	registerOnChange(fn: any): void {
-
-	}
-	registerOnTouched(fn: any): void {
-
-	}
-	setDisabledState?(isDisabled: boolean): void {
-
-	}
-
-}
 
 describe('AccessItemsComponent', () => {
 	let component: AccessItemsComponent;
@@ -65,7 +36,7 @@ describe('AccessItemsComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-				declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent, TaskanaTypeAheadComponent],
+				declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent, TaskanaTypeAheadMockComponent],
 				imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
 				providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService,
 					CustomFieldsService]
@@ -124,7 +95,7 @@ describe('AccessItemsComponent', () => {
 	});
 
 	it('should show alert successfull after saving', () => {
-		component.onSave();
+		component.onSubmit();
 		expect(alertService.triggerAlert).toHaveBeenCalledWith(
 			new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`));
 	});
