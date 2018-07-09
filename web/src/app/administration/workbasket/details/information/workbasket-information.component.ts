@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { NgForm } from '@angular/forms';
 
 import { ICONTYPES } from 'app/models/type';
 import { ErrorModel } from 'app/models/modal-error';
@@ -16,9 +17,12 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+import { highlight } from 'app/shared/animations/validation.animation';
+import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 
 @Component({
 	selector: 'taskana-workbasket-information',
+	animations: [highlight],
 	templateUrl: './workbasket-information.component.html',
 	styleUrls: ['./workbasket-information.component.scss']
 })
@@ -28,6 +32,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 	@Input()
 	workbasket: Workbasket;
 	workbasketClone: Workbasket;
+	workbasketErrors
 	@Input()
 	action: string;
 
@@ -41,8 +46,11 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 	custom3Field = this.customFieldsService.getCustomField('Custom 3', 'workbaskets.information.custom3');
 	custom4Field = this.customFieldsService.getCustomField('Custom 4', 'workbaskets.information.custom4');
 
+	toogleValidationMap = new Map<string, boolean>();
+
 	private workbasketSubscription: Subscription;
 	private routeSubscription: Subscription;
+	@ViewChild('WorkbasketForm') workbasketForm: NgForm;
 
 	constructor(private workbasketService: WorkbasketService,
 		private alertService: AlertService,
@@ -52,7 +60,8 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 		private savingWorkbasket: SavingWorkbasketService,
 		private requestInProgressService: RequestInProgressService,
 		private customFieldsService: CustomFieldsService,
-		private removeConfirmationService: RemoveConfirmationService) {
+		private removeConfirmationService: RemoveConfirmationService,
+		private formsValidatorService: FormsValidatorService) {
 		this.allTypes = new Map([['PERSONAL', 'Personal'], ['GROUP', 'Group'],
 		['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])
 
@@ -75,7 +84,13 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 		this.workbasket.type = type;
 	}
 
-	onSave() {
+	onSubmit() {
+		if (this.workbasketForm && this.formsValidatorService.validate(this.workbasketForm, this.toogleValidationMap)) {
+			this.onSave();
+		}
+	}
+
+	private onSave() {
 		this.beforeRequest();
 		if (!this.workbasket.workbasketId) {
 			this.postNewWorkbasket();

@@ -14,6 +14,7 @@ import { AlertComponent } from 'app/shared/alert/alert.component';
 import { MasterAndDetailComponent } from 'app/shared/master-and-detail/master-and-detail.component';
 import { TaskanaTreeComponent } from 'app/shared/tree/tree.component';
 import { TypeAheadComponent } from 'app/shared/type-ahead/type-ahead.component';
+import { SortComponent } from './sort/sort.component';
 import { RemoveConfirmationComponent } from 'app/shared/remove-confirmation/remove-confirmation.component';
 
 /**
@@ -31,7 +32,7 @@ import { MapToIterable } from './pipes/mapToIterable/mapToIterable';
  */
 import { HttpClientInterceptor } from './services/httpClientInterceptor/http-client-interceptor.service';
 import { AccessIdsService } from './services/access-ids/access-ids.service';
-import { SortComponent } from './sort/sort.component';
+import { FormsValidatorService } from './services/forms/forms-validator.service';
 
 
 
@@ -73,7 +74,8 @@ const DECLARATIONS = [
       useClass: HttpClientInterceptor,
       multi: true
     },
-    AccessIdsService
+    AccessIdsService,
+    FormsValidatorService
   ]
 })
 export class SharedModule {

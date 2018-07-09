@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { NgForm, FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { FormBuilder, Validators, FormArray } from '@angular/forms';
 
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
@@ -15,14 +14,14 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
-import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
+import { highlight } from 'app/shared/animations/validation.animation';
 
-declare var $: any;
+declare const $: any;
 @Component({
 	selector: 'taskana-workbasket-access-items',
 	templateUrl: './access-items.component.html',
+	animations: [highlight],
 	styleUrls: ['./access-items.component.scss']
 })
 export class AccessItemsComponent implements OnChanges, OnDestroy {
@@ -61,6 +60,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		accessItemsGroups: this.formBuilder.array([
 		])
 	});
+	toogleValidationAccessIdMap = new Map<number, boolean>();
 
 	private initialized = false;
 
@@ -140,7 +140,33 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		this.accessItemsClone.splice(index, 1);
 	}
 
-	onSave() {
+	onSubmit() {
+		let valid = true;
+		for (let i = 0; i < this.accessItemsGroups.length; i++) {
+			if (this.accessItemsGroups.controls[i].invalid) {
+				const validationState = this.toogleValidationAccessIdMap.get(i);
+				validationState ? this.toogleValidationAccessIdMap.set(i, !validationState) : this.toogleValidationAccessIdMap.set(i, true);
+				valid = false;
+			}
+		}
+		if (!valid) {
+			this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `There are some empty fields which are required.`))
+			return false;
+		}
+		this.onSave();
+	}
+
+	checkAll(row: number, value: any) {
+		const checkAll = value.target.checked;
+		const workbasketAccessItemsObj = new WorkbasketAccessItems();
+		for (const property in workbasketAccessItemsObj) {
+			if (property !== 'accessId' && property !== '_links' && property !== 'workbasketId' && property !== 'accessItemId') {
+				this.accessItemsGroups.controls[row].get(property).setValue(checkAll);
+			}
+		}
+	}
+
+	private onSave() {
 		this.requestInProgressService.setRequestInProgress(true);
 		this.workbasketService.updateWorkBasketAccessItem(this.accessItemsResource._links.self.href, this.AccessItemsForm.value.accessItemsGroups)
 			.subscribe(response => {
@@ -153,16 +179,6 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 				this.errorModalService.triggerError(new ErrorModel(`There was error while saving your workbasket's access items`, error))
 				this.requestInProgressService.setRequestInProgress(false);
 			})
-	}
-
-	checkAll(row: number, value: any) {
-		const checkAll = value.target.checked;
-		const workbasketAccessItemsObj = new WorkbasketAccessItems();
-		for (const property in workbasketAccessItemsObj) {
-			if (property !== 'accessId' && property !== '_links' && property !== 'workbasketId' && property !== 'accessItemId') {
-				this.accessItemsGroups.controls[row].get(property).setValue(checkAll);
-			}
-		}
 	}
 
 	private setBadge() {

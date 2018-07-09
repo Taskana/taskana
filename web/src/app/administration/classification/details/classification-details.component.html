@@ -11,7 +11,7 @@
     <div *ngIf="classification" id="classification" class="panel panel-default classification">
       <div class="panel-heading">
         <div class="pull-right">
-          <button type="button" [disabled]="!ClassificationForm.form.valid" (click)="onSave()" class="btn btn-default btn-primary"
+          <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary"
             data-toggle="tooltip" title="Save">
             <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
           </button>
@@ -33,7 +33,7 @@
               <label for="classification-key" class="control-label">Key</label>
               <input type="text" required #key="ngModel" [disabled]="action!== 'CREATE'? true : false" class="form-control" id="classification-key"
                 placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
-              <div *ngIf="!key.valid && action === 'CREATE'" class="required-text">
+              <div *ngIf="!key.valid && action === 'CREATE'" class="required-text" [@validation]="this.toogleValidationMap.get('classification.key')">
                 * Key is required
               </div>
             </div>
@@ -41,7 +41,7 @@
               <label for="classification-name" class="control-label">Name</label>
               <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name" [(ngModel)]="classification.name"
                 name="classification.name">
-              <div *ngIf="!name.valid" class="required-text">
+              <div *ngIf="!name.valid" class="required-text" [@validation]="this.toogleValidationMap.get('classification.name')">
                 * Name is required
               </div>
             </div>

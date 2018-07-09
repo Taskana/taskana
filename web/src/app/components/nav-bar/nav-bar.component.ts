@@ -2,29 +2,18 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from 'environments/environment';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
 import { Subscription } from 'rxjs/Subscription';
-import { trigger, state, style, transition, keyframes, animate } from '@angular/animations';
 import { DomainService } from 'app/services/domain/domain.service';
 import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
 import { MonitorGuard } from 'app/guards/monitor-guard';
 import { WindowRefService } from 'app/services/window/window.service';
 import { UserGuard } from 'app/guards/user-guard';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
+import { expandRight } from 'app/shared/animations/expand.animation';
 @Component({
   selector: 'taskana-nav-bar',
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.scss'],
-  animations: [
-    trigger('toggle', [
-      transition('void => *', animate('300ms ease-in', keyframes([
-        style({ opacity: 0, width: '0px' }),
-        style({ opacity: 1, width: '150px' }),
-        style({ opacity: 1, width: '*' })]))),
-      transition('* => void', animate('300ms ease-out', keyframes([
-        style({ opacity: 1, width: '*' }),
-        style({ opacity: 0, width: '150px' }),
-        style({ opacity: 0, width: '0px' })])))
-    ]
-    )],
+  animations: [expandRight],
 })
 export class NavBarComponent implements OnInit, OnDestroy {
 
