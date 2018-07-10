@@ -366,7 +366,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             if ((originalItem.getAccessId() != null && !originalItem.getAccessId().equals(accessItem.getAccessId()))
                 || (originalItem.getWorkbasketId() != null
-                    && !originalItem.getWorkbasketId().equals(accessItem.getWorkbasketId()))) {
+                && !originalItem.getWorkbasketId().equals(accessItem.getWorkbasketId()))) {
                 throw new InvalidArgumentException(
                     "AccessId and WorkbasketId must not be changed in updateWorkbasketAccessItem calls");
             }
@@ -738,7 +738,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             if (numTasksInWorkbasket > 0) {
                 throw new WorkbasketInUseException(
-                    "Workbasket is used on tasks and can´t be deleted. WorkbasketId=" + workbasketId);
+                    "Workbasket is used on tasks and can´t be deleted. WorkbasketId = \"" + workbasketId
+                        + "\" and WorkbasketKey = \"" + wb.getKey() + "\" in domain = \"" + wb.getDomain() + "\"");
             }
 
             // delete workbasket and sub-tables
