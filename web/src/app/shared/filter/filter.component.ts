@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, EventEmitter, Input, Output} from '@angular/core';
+import {AfterContentInit, Component, EventEmitter, Input, Output, OnInit} from '@angular/core';
 import {ICONTYPES} from 'app/models/type';
 import {FilterModel} from 'app/models/filter';
 import {TaskanaType} from 'app/models/taskana-type';
@@ -8,7 +8,8 @@ import {TaskanaType} from 'app/models/taskana-type';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })
-export class FilterComponent implements AfterContentInit {
+export class FilterComponent implements OnInit {
+
   @Input() allTypes: Map<string, string>;
 
   @Input() filterParams: any;
@@ -25,7 +26,7 @@ export class FilterComponent implements AfterContentInit {
   constructor() {
   }
 
-  ngAfterContentInit(): void {
+  ngOnInit(): void {
     this.initializeFilterModel();
     if (this.filterParams) {
       this.filterParamKeys = Object.keys(this.filterParams);
@@ -67,7 +68,7 @@ export class FilterComponent implements AfterContentInit {
   getUnusedKeys(): string[] {
     const unusedKeys = [];
     for (const key of this.filterParamKeys) {
-      if (['name', 'key'].indexOf(key) < 0) {
+      if (['name', 'key', 'type'].indexOf(key) < 0) {
         unusedKeys.push(key);
       }
     }
