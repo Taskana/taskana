@@ -172,7 +172,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                 classificationImpl.getDomain());
             if (!oldClassification.getModified().equals(classificationImpl.getModified())) {
                 throw new ConcurrencyException(
-                    "The current Classification has been modified while editing. The values can not be updated. Classification="
+                    "The current Classification has been modified while editing. The values can not be updated. Classification "
                         + classificationImpl.toString());
             }
             classificationImpl.setModified(Instant.now());
@@ -337,7 +337,7 @@ public class ClassificationServiceImpl implements ClassificationService {
                 result = classificationMapper.findByKeyAndDomain(key, "");
                 if (result == null) {
                     throw new ClassificationNotFoundException(key, domain,
-                        "Classification for key " + key + " was not found");
+                        "Classification for key = " + key + " and master domain was not found");
                 }
             }
             return result;
@@ -429,8 +429,10 @@ public class ClassificationServiceImpl implements ClassificationService {
                 this.classificationMapper.deleteClassification(classificationId);
             } catch (PersistenceException e) {
                 if (isReferentialIntegrityConstraintViolation(e)) {
-                    throw new ClassificationInUseException("The classification " + classificationId
-                        + " is in use and cannot be deleted. There are either tasks or attachments associated with the classification.",
+                    throw new ClassificationInUseException(
+                        "The classification id = \"" + classificationId + "\" and key = \"" + classification.getKey()
+                            + "\" in domain = \"" + classification.getDomain()
+                            + "\" is in use and cannot be deleted. There are either tasks or attachments associated with the classification.",
                         e.getCause());
                 }
             }
