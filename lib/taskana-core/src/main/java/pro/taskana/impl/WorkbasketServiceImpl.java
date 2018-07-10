@@ -740,7 +740,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             if (numTasksInWorkbasket > 0) {
                 throw new WorkbasketInUseException(
-                    "Workbasket is used on tasks and can´t be deleted. WorkbasketId=" + workbasketId);
+                    "Workbasket is used on tasks and can´t be deleted. WorkbasketId = \"" + workbasketId
+                        + "\" and WorkbasketKey = \"" + wb.getKey() + "\" in domain = \"" + wb.getDomain() + "\"");
             }
 
             // delete workbasket and sub-tables
