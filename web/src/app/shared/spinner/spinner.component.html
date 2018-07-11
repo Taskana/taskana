@@ -1,4 +1,4 @@
-<div [ngClass]="{'no-display':!isDelayedRunning}">
+<div [ngClass]="{'no-display':!showSpinner}">
 	<div *ngIf ="!isModal" class="sk-circle {{positionClass? positionClass: 'spinner-centered'}}">
 		<div class="sk-circle1 sk-child"></div>
 		<div class="sk-circle2 sk-child"></div>

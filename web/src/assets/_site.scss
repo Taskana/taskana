@@ -257,6 +257,12 @@ svg-icon.fa-fw > svg {
     margin-bottom: 30px;
 }
 
+.centered-spinner-whole-screen {
+    position: absolute !important;
+    top: 20vh;
+    left: 42%;
+}
+
 .list-group-item {
     padding: 5px 15px;
 }

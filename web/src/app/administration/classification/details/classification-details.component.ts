@@ -45,6 +45,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   requestInProgress = false;
   categories: Array<string> = [];
   categorySelected: string;
+  spinnerIsRunning = false;
   custom1Field = this.customFieldsService.getCustomField('Custom 1', 'classifications.information.custom1');
   custom2Field = this.customFieldsService.getCustomField('Custom 2', 'classifications.information.custom2');
   custom3Field = this.customFieldsService.getCustomField('Custom 3', 'classifications.information.custom3');
@@ -106,7 +107,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         if (id === 'undefined') {
           id = undefined;
         }
-        this.fillClassificationInformation(new ClassificationDefinition())
+        this.fillClassificationInformation(this.selectedClassification ? this.selectedClassification : new ClassificationDefinition())
       }
 
       if (id && id !== '') {
@@ -189,26 +190,35 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     return this.categoryService.getCategoryIcon(category);
   }
 
+  spinnerRunning(value) { this.spinnerIsRunning = value; }
+
   private afterRequest() {
     this.requestInProgressService.setRequestInProgress(false);
     this.classificationsService.triggerClassificationSaved();
   }
 
   private selectClassification(id: string) {
+    if (this.classificationIsAlreadySelected()) {
+      return true;
+    }
+    this.requestInProgress = true;
     this.selectedClassificationSubscription = this.classificationsService.getClassification(id).subscribe(classification => {
       this.selectedClassification = classification;
-      this.classificationsService.selectClassification(classification)
+      this.classificationsService.selectClassification(classification);
+      this.requestInProgress = false;
     });
+  }
+
+  private classificationIsAlreadySelected(): boolean {
+    if (this.action === ACTION.CREATE && this.selectedClassification) { return true }
   }
 
   private fillClassificationInformation(classificationSelected: ClassificationDefinition) {
     if (this.action === ACTION.CREATE) { // CREATE
-      this.initClassificationCreation(classificationSelected);
+      this.initClassificationOnCreation(classificationSelected);
     } else {
-      this.requestInProgress = true;
       this.classification = classificationSelected;
       this.classificationClone = { ...classificationSelected };
-      this.requestInProgress = false;
       this.checkDomainAndRedirect();
     }
   }
@@ -219,7 +229,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classification.modified = date;
   }
 
-  private initClassificationCreation(classificationSelected: ClassificationDefinition) {
+  private initClassificationOnCreation(classificationSelected: ClassificationDefinition) {
     this.classification = new ClassificationDefinition();
     this.classification.parentId = classificationSelected.classificationId;
     this.classification.parentKey = classificationSelected.key;
