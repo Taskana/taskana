@@ -75,7 +75,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
 
   logout() {
-    this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login?logout';
+    this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/logout';
   }
 
   showDomainSelector(): boolean {
