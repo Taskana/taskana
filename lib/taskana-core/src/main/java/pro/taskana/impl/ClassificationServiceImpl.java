@@ -266,7 +266,9 @@ public class ClassificationServiceImpl implements ClassificationService {
             try {
                 Duration.parse(classification.getServiceLevel());
             } catch (Exception e) {
-                throw new InvalidArgumentException("Invalid service level. Please use the format defined by ISO 8601",
+                throw new InvalidArgumentException("Invalid service level. Please use the format defined by ISO 8601. "
+                    + "For example: \"P2D\" represents a period of \"two days.\" "
+                    + "Or \"P2DT6H\" represents a period of \"two days and six hours.\"",
                     e.getCause());
             }
         }
