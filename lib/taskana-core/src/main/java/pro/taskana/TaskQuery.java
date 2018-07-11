@@ -88,6 +88,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery stateIn(TaskState... states);
 
     /**
+     * Exclude these states from your query.
+     *
+     * @param states
+     *            the states as {@link TaskState}
+     * @return the query
+     */
+    TaskQuery stateNotIn(TaskState... states);
+
+    /**
      * Add your classificationKey to your query.
      *
      * @param classificationKeys
@@ -95,6 +104,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      * @return the query
      */
     TaskQuery classificationKeyIn(String... classificationKeys);
+
+    /**
+     * Exlude these classificationKeys from your query.
+     *
+     * @param classificationKeys
+     *            the classification key
+     * @return the query
+     */
+    TaskQuery classificationKeyNotIn(String... classificationKeys);
 
     /**
      * Add your classificationKey for pattern matching to your query. It will be compared in SQL with the LIKE operator.
