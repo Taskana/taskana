@@ -227,7 +227,7 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("AttachmentImpl [id=");
+        builder.append("AttachmentSummaryImpl [id=");
         builder.append(id);
         builder.append(", taskId=");
         builder.append(taskId);

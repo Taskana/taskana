@@ -3,6 +3,7 @@ package acceptance.task;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -57,7 +58,19 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
         assertEquals(20, tasks.size());
 
         List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
-        assertEquals(null, attachmentSummaries);
+        assertNotNull(attachmentSummaries);
+        assertTrue(attachmentSummaries.isEmpty());
+    }
+
+    @WithAccessId(
+            userName = "user_1_1",
+            groupNames = {"group_1"})
+    @Test
+    public void testIfNewTaskHasEmptyAttachmentList() {
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task task = taskService.newTask("WBI:100000000000000000000000000000000006");
+        assertNotNull(task.getAttachments());
+        assertNotNull(task.asSummary().getAttachmentSummaries());
     }
 
     @WithAccessId(
