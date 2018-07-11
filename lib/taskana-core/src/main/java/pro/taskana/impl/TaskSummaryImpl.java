@@ -38,7 +38,7 @@ public class TaskSummaryImpl implements TaskSummary {
     private boolean isRead;
     private boolean isTransferred;
     // All objects have to be serializable
-    private List<AttachmentSummary> attachmentSummaries;
+    private List<AttachmentSummary> attachmentSummaries = new ArrayList<>();
     private String custom1;
     private String custom2;
     private String custom3;
