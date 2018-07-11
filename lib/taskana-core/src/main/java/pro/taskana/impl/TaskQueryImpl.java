@@ -55,6 +55,7 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] classificationIdIn;
     private String[] classificationKeyIn;
     private String[] classificationKeyLike;
+    private String[] classificationKeyNotIn;
     private String[] classificationCategoryIn;
     private String[] classificationCategoryLike;
     private String[] ownerIn;
@@ -259,6 +260,12 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
+    public TaskQuery classificationKeyNotIn(String... classificationKeys) {
+        this.classificationKeyNotIn = classificationKeys;
+        return this;
+    }
+
+    @Override
     public TaskQuery classificationKeyLike(String... classificationKeys) {
         this.classificationKeyLike = toUpperCopy(classificationKeys);
         return this;
@@ -393,6 +400,17 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery stateIn(TaskState... states) {
         this.stateIn = states;
+        return this;
+    }
+
+    @Override
+    public TaskQuery stateNotIn(TaskState... states) {
+        // No benefit in introducing a new variable
+        List<TaskState> stateIn = Arrays.asList(TaskState.values());
+        for (TaskState state : states) {
+            stateIn.remove(state);
+        }
+        this.stateIn = stateIn.toArray(new TaskState[0]);
         return this;
     }
 
@@ -1179,6 +1197,10 @@ public class TaskQueryImpl implements TaskQuery {
         return classificationKeyIn;
     }
 
+    public String[] getClassificationKeyNotIn() {
+        return classificationKeyNotIn;
+    }
+
     public String[] getClassificationKeyLike() {
         return classificationKeyLike;
     }
@@ -1248,6 +1270,8 @@ public class TaskQueryImpl implements TaskQuery {
         builder.append(Arrays.toString(classificationIdIn));
         builder.append(", classificationKeyIn=");
         builder.append(Arrays.toString(classificationKeyIn));
+        builder.append(", classificationKeyNotIn=");
+        builder.append(Arrays.toString(classificationKeyNotIn));
         builder.append(", classificationKeyLike=");
         builder.append(Arrays.toString(classificationKeyLike));
         builder.append(", classificationCategoryIn=");

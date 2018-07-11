@@ -159,6 +159,16 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .classificationKeyIn(ids)
             .list();
         assertThat(result2.size(), equalTo(66));
+
+        List<TaskSummary> result3 = taskService.createTaskQuery()
+            .classificationKeyNotIn("T2100", "T2000")
+            .list();
+        assertThat(result3.size(), equalTo(70));
+
+        List<TaskSummary> result4 = taskService.createTaskQuery()
+             .classificationKeyNotIn("L1050", "L1060", "T2100")
+             .list();
+        assertThat(result4.size(), equalTo(6));
     }
 
     @WithAccessId(
