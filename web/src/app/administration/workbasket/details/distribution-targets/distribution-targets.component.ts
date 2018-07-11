@@ -125,7 +125,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 				this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
 				this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
 				this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
-					`Workbasket  ${this.workbasket.name} Access items were saved successfully`));
+					`Workbasket  ${this.workbasket.name} : Distribution targets were saved successfully`));
 				return true;
 			},
 				error => {
