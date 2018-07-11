@@ -28,11 +28,11 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   @Input() selectNodeId: string;
   @Output() selectNodeIdChanged = new EventEmitter<string>();
   @Input() filterText: string;
-  @Input() filterIcon: string;
+  @Input() filterIcon = '';
 
 
   private filterTextOld: string
-  private filterIconOld: string
+  private filterIconOld = '';
   private removedNodeIdSubscription: Subscription;
 
   options: ITreeOptions = {
@@ -123,7 +123,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private expandParent(node: TreeNode) {
-    if (!node.parent) {
+    if (!node.parent || node.isRoot) {
       return
     }
     node.parent.expand();

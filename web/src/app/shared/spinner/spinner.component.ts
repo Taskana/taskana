@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ViewChild } from '@angular/core';
 
 import { ErrorModel } from 'app/models/modal-error';
@@ -16,10 +16,14 @@ export class SpinnerComponent implements OnDestroy {
     private requestTimeout: any;
     private maxRequestTimeout = 10000;
 
-    isDelayedRunning = false;
+    set isDelayedRunning(value: boolean) {
+        this.showSpinner = value;
+        this.spinnerIsRunning.next(value)
+    }
+    showSpinner: boolean;
 
     @Input()
-    delay = 200;
+    delay = 250;
 
     @Input()
     set isRunning(value: boolean) {
@@ -43,6 +47,8 @@ export class SpinnerComponent implements OnDestroy {
     @Input()
     positionClass: string = undefined;
 
+    @Output()
+    spinnerIsRunning = new EventEmitter<boolean>();
 
     @ViewChild('spinnerModal')
     private modal;
@@ -66,7 +72,7 @@ export class SpinnerComponent implements OnDestroy {
         }, this.delay);
     }
     private closeModal() {
-        if (this.isDelayedRunning) {
+        if (this.showSpinner) {
             $(this.modal.nativeElement).modal('toggle');
         }
     }
