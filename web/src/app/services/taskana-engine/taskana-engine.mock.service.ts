@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { UserInfoModel } from 'app/models/user-info';
+import { VersionModel } from '../../models/version';
 
 @Injectable()
 export class TaskanaEngineServiceMock {
@@ -26,6 +27,11 @@ export class TaskanaEngineServiceMock {
       return true;
     }
     return false;
+  }
+
+  getVersion(): Observable<VersionModel> {
+    const version = new VersionModel('1.0.0');
+    return of(version);
   }
 
   private findRole(roles2Find: Array<string>) {
