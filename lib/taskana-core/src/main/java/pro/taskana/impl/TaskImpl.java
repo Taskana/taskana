@@ -3,6 +3,7 @@ package pro.taskana.impl;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -307,6 +308,9 @@ public class TaskImpl implements Task {
 
     @Override
     public Map<String, String> getCustomAttributes() {
+        if (customAttributes == null) {
+            customAttributes = new HashMap<>();
+        }
         return customAttributes;
     }
 
@@ -317,6 +321,9 @@ public class TaskImpl implements Task {
 
     @Override
     public Map<String, String> getCallbackInfo() {
+        if (callbackInfo == null) {
+            callbackInfo = new HashMap<>();
+        }
         return callbackInfo;
     }
 
@@ -464,6 +471,9 @@ public class TaskImpl implements Task {
 
     @Override
     public List<Attachment> getAttachments() {
+        if (attachments == null) {
+            attachments = new ArrayList<>();
+        }
         return attachments;
     }
 

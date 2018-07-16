@@ -197,7 +197,7 @@ public class TestClassificationQuery implements ClassificationQuery {
 
     @Override
     public List<ClassificationSummary> list(int offset, int limit) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

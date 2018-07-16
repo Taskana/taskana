@@ -73,7 +73,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     @Override
     public List<ObjectReference> list() {
         LOGGER.debug("entry to list(), this = {}", this);
-        List<ObjectReference> result = null;
+        List<ObjectReference> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
@@ -91,7 +91,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     @Override
     public List<String> listValues(String columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
-        List<String> result = null;
+        List<String> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;
@@ -112,7 +112,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     @Override
     public List<ObjectReference> list(int offset, int limit) {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
-        List<ObjectReference> result = null;
+        List<ObjectReference> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);

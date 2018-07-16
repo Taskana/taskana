@@ -222,6 +222,16 @@ public class WorkbasketReportBuilderImplTest {
         assertEquals(expectedResult, actualResult);
     }
 
+    @Test(expected = InvalidArgumentException.class)
+    public void testlistTaskIdsForSelectedItemsIsEmptyResult()
+        throws NotAuthorizedException, InvalidArgumentException {
+        List<SelectedItem> selectedItems = new ArrayList<>();
+        List<String> result = cut.createWorkbasketReportBuilder()
+                .workbasketIdIn(Arrays.asList("DieGibtsGarantiertNed"))
+                .listTaskIdsForSelectedItems(selectedItems);
+        assertNotNull(result);
+    }
+
     @Test
     public void testListCustomAttributeValuesForCustomAttributeName()
         throws NotAuthorizedException {
@@ -270,5 +280,14 @@ public class WorkbasketReportBuilderImplTest {
 
         assertNotNull(actualResult);
         assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    public void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
+        throws NotAuthorizedException {
+        List<String> result = cut.createWorkbasketReportBuilder()
+                .workbasketIdIn(Arrays.asList("GibtsSicherNed"))
+                .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_14);
+        assertNotNull(result);
     }
 }
