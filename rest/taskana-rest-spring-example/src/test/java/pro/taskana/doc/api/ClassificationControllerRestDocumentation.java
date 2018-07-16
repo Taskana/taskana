@@ -105,7 +105,6 @@ public class ClassificationControllerRestDocumentation {
         classificationFieldDescriptionsMap.put("custom6", "A custom property with name \"6\"");
         classificationFieldDescriptionsMap.put("custom7", "A custom property with name \"7\"");
         classificationFieldDescriptionsMap.put("custom8", "A custom property with name \"8\"");
-        classificationFieldDescriptionsMap.put("validInDomain", "");
         classificationFieldDescriptionsMap.put("_links.getAllClassifications.href", "Link to all classifications");
         classificationFieldDescriptionsMap.put("_links.getAllClassifications.templated", "");
 
@@ -143,7 +142,6 @@ public class ClassificationControllerRestDocumentation {
             fieldWithPath("custom6").description(classificationFieldDescriptionsMap.get("custom6")),
             fieldWithPath("custom7").description(classificationFieldDescriptionsMap.get("custom7")),
             fieldWithPath("custom8").description(classificationFieldDescriptionsMap.get("custom8")),
-            fieldWithPath("validInDomain").description(classificationFieldDescriptionsMap.get("validInDomain")),
             fieldWithPath("_links.self.href").ignored()
         };
 
@@ -172,7 +170,6 @@ public class ClassificationControllerRestDocumentation {
             fieldWithPath("custom6").ignored(),
             fieldWithPath("custom7").ignored(),
             fieldWithPath("custom8").ignored(),
-            fieldWithPath("validInDomain").ignored(),
             fieldWithPath("_links.self.href").ignored()
         };
 
@@ -236,10 +233,7 @@ public class ClassificationControllerRestDocumentation {
                 .optional(),
             fieldWithPath("custom8").type("String")
                 .description(classificationFieldDescriptionsMap.get("custom8"))
-                .optional(),
-            fieldWithPath("validInDomain").type("Boolean")
-                .description(classificationFieldDescriptionsMap.get("validInDomain"))
-                .optional(),
+                .optional()
         };
     }
 
