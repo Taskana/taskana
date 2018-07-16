@@ -32,6 +32,6 @@
       required #accessItemName="ngModel" [(ngModel)]="value" [typeahead]="dataSource" typeaheadOptionField="name" [typeaheadItemTemplate]="customItemTemplate"
       (typeaheadOnSelect)="typeaheadOnSelect($event, index)" [typeaheadScrollable]="true" [typeaheadOptionsInScrollableView]="typeaheadOptionsInScrollableView"
       [typeaheadMinLength]="typeaheadMinLength" [typeaheadWaitMs]="typeaheadWaitMs" (typeaheadLoading)="changeTypeaheadLoading($event)"
-      placeholder="{{accessItemName.invalid? placeHolderMessage: ''}}" [@validation]="validationValue">
+      placeholder="{{displayError? placeHolderMessage: ''}}" [@validation]="validationValue">
   </div>
 </div>

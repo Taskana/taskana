@@ -4,9 +4,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 
-import { IconTypeComponent } from '../../administration/components/type-icon/icon-type.component';
 import { FilterComponent } from './filter.component';
-import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 import { configureTests } from 'app/app.test.configuration';
 
 describe('FilterComponent', () => {
@@ -18,7 +16,7 @@ describe('FilterComponent', () => {
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        declarations: [FilterComponent, IconTypeComponent, MapValuesPipe],
+        declarations: [],
         imports: [AngularSvgIconModule, FormsModule, HttpClientModule, HttpModule]
       })
     };

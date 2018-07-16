@@ -15,14 +15,6 @@ import { ICONTYPES } from 'app/models/type';
 import { ACTION } from 'app/models/action';
 import { Links } from 'app/models/links';
 
-import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
-import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
-import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
-import { TaskanaTypeAheadMockComponent } from 'app/shared/type-ahead/type-ahead.mock.component';
-
-import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
-import { RemoveNoneTypePipe } from 'app/shared/pipes/removeNoneType/remove-none-type.pipe';
-
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
@@ -42,7 +34,7 @@ const routes: Routes = [
 	{ path: 'someNewId', component: DummyDetailComponent }
 ];
 
-describe('InformationComponent', () => {
+describe('WorkbasketInformationComponent', () => {
 	let component: WorkbasketInformationComponent;
 	let fixture: ComponentFixture<WorkbasketInformationComponent>;
 	let debugElement, workbasketService, alertService, savingWorkbasketService, requestInProgressService;
@@ -50,9 +42,7 @@ describe('InformationComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-				declarations: [WorkbasketInformationComponent, IconTypeComponent, MapValuesPipe,
-					RemoveNoneTypePipe, SpinnerComponent, GeneralMessageModalComponent, DummyDetailComponent,
-					TaskanaTypeAheadMockComponent],
+				declarations: [WorkbasketInformationComponent, DummyDetailComponent],
 				imports: [FormsModule,
 					AngularSvgIconModule,
 					HttpClientModule,

@@ -33,6 +33,9 @@ import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.se
 import { WindowRefService } from 'app/services/window/window.service';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 import { RemoveConfirmationService } from './services/remove-confirmation/remove-confirmation.service';
+import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
+
+
 
 /**
  * Components
@@ -108,7 +111,8 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     TitlesService,
     CustomFieldsService,
     TaskanaEngineService,
-    RemoveConfirmationService
+    RemoveConfirmationService,
+    FormsValidatorService
   ],
   bootstrap: [AppComponent]
 })

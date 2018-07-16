@@ -16,6 +16,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { highlight } from 'app/shared/animations/validation.animation';
+import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 
 declare const $: any;
 @Component({
@@ -61,7 +62,6 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		])
 	});
 	toogleValidationAccessIdMap = new Map<number, boolean>();
-
 	private initialized = false;
 
 	setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
@@ -84,7 +84,8 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		private savingWorkbaskets: SavingWorkbasketService,
 		private requestInProgressService: RequestInProgressService,
 		private customFieldService: CustomFieldsService,
-		private formBuilder: FormBuilder) {
+		private formBuilder: FormBuilder,
+		private formsValidatorService: FormsValidatorService) {
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -130,6 +131,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	}
 
 	clear() {
+		this.formsValidatorService.formSubmitAttempt = false;
 		this.AccessItemsForm.reset();
 		this.setAccessItemsGroups(this.accessItemsResetClone);
 		this.accessItemsClone = this.cloneAccessItems(this.accessItemsResetClone);
@@ -141,8 +143,13 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		this.accessItemsClone.splice(index, 1);
 	}
 
+	isFieldValid(field: string, index: number): boolean {
+		return this.formsValidatorService.isFieldValid(this.accessItemsGroups[index], field);
+	}
+
 	onSubmit() {
 		let valid = true;
+		this.formsValidatorService.formSubmitAttempt = true;
 		for (let i = 0; i < this.accessItemsGroups.length; i++) {
 			if (this.accessItemsGroups.controls[i].invalid) {
 				const validationState = this.toogleValidationAccessIdMap.get(i);

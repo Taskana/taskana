@@ -10,8 +10,7 @@
     <div id="classification" class="panel panel-default classification">
       <div class="panel-heading">
         <div class="pull-right">
-          <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary"
-            data-toggle="tooltip" title="Save">
+          <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary" data-toggle="tooltip" title="Save">
             <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
           </button>
           <button type="button" (click)="onClear()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
@@ -32,17 +31,17 @@
               <label for="classification-key" class="control-label">Key</label>
               <input type="text" required #key="ngModel" [disabled]="action!== 'CREATE'? true : false" class="form-control" id="classification-key"
                 placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
-              <div *ngIf="!key.valid && action === 'CREATE'" class="required-text" [@validation]="this.toogleValidationMap.get('classification.key')">
-                * Key is required
-              </div>
+              <taskana-field-error-display *ngIf="action === 'CREATE'" [displayError]="!isFieldValid('classification.key')" [validationTrigger]="this.toogleValidationMap.get('classification.key')"
+                errorMessage="* Key is required">
+              </taskana-field-error-display>
             </div>
             <div class="form-group required">
               <label for="classification-name" class="control-label">Name</label>
               <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name" [(ngModel)]="classification.name"
                 name="classification.name">
-              <div *ngIf="!name.valid" class="required-text" [@validation]="this.toogleValidationMap.get('classification.name')">
-                * Name is required
-              </div>
+              <taskana-field-error-display [displayError]="!isFieldValid('classification.name')" [validationTrigger]="this.toogleValidationMap.get('classification.name')"
+                errorMessage="* Name is required">
+              </taskana-field-error-display>
             </div>
             <div class="form-group">
               <label for="classification-domain" class="control-label">Domain</label>

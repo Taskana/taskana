@@ -1,15 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Workbasket } from 'app/models/workbasket';
-import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
-import { ICONTYPES } from 'app/models/type';
-import { ErrorModel } from 'app/models/modal-error';
 import { ACTION } from 'app/models/action';
 
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
 import { DomainService } from 'app/services/domain/domain.service';

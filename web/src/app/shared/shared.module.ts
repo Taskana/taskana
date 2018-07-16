@@ -18,6 +18,7 @@ import { SortComponent } from './sort/sort.component';
 import { RemoveConfirmationComponent } from 'app/shared/remove-confirmation/remove-confirmation.component';
 import { FilterComponent } from 'app/shared/filter/filter.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
+import { FieldErrorDisplayComponent } from 'app/shared/field-error-display/field-error-display.component';
 
 /**
  * Pipes
@@ -34,9 +35,6 @@ import { MapToIterable } from './pipes/mapToIterable/mapToIterable';
  */
 import { HttpClientInterceptor } from './services/httpClientInterceptor/http-client-interceptor.service';
 import { AccessIdsService } from './services/access-ids/access-ids.service';
-import { FormsValidatorService } from './services/forms/forms-validator.service';
-
-
 
 const MODULES = [
   CommonModule,
@@ -65,7 +63,8 @@ const DECLARATIONS = [
   SortComponent,
   FilterComponent,
   IconTypeComponent,
-  RemoveConfirmationComponent
+  RemoveConfirmationComponent,
+  FieldErrorDisplayComponent
 ];
 
 @NgModule({
@@ -79,7 +78,6 @@ const DECLARATIONS = [
       multi: true
     },
     AccessIdsService,
-    FormsValidatorService
   ]
 })
 export class SharedModule {

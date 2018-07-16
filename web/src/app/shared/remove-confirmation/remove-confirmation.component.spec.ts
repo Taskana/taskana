@@ -10,7 +10,7 @@ describe('RemoveConfirmationComponent', () => {
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        declarations: [RemoveConfirmationComponent],
+        declarations: [],
         providers: []
       })
     };

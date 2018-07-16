@@ -1,8 +1,8 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router, Routes } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -31,27 +31,6 @@ import { WorkbasketInformationComponent } from './information/workbasket-informa
 import { AccessItemsComponent } from './access-items/access-items.component';
 import { DistributionTargetsComponent } from './distribution-targets/distribution-targets.component';
 import { DualListComponent } from './distribution-targets//dual-list/dual-list.component';
-import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
-import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
-import { AlertComponent } from 'app/shared/alert/alert.component';
-import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
-import { TaskanaTypeAheadMockComponent } from 'app/shared/type-ahead/type-ahead.mock.component';
-
-import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
-import { RemoveNoneTypePipe } from 'app/shared/pipes/removeNoneType/remove-none-type.pipe';
-import { SelectWorkBasketPipe } from 'app/shared/pipes/selectedWorkbasket/seleted-workbasket.pipe';
-
-
-
-@Component({
-	selector: 'taskana-filter',
-	template: ''
-})
-export class FilterComponent {
-
-	@Input()
-	target: string;
-}
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -78,10 +57,9 @@ describe('WorkbasketDetailsComponent', () => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
 				imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
-				declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent, SpinnerComponent,
-					IconTypeComponent, MapValuesPipe, RemoveNoneTypePipe, AlertComponent, GeneralMessageModalComponent, AccessItemsComponent,
-					DistributionTargetsComponent, FilterComponent, DualListComponent, DummyDetailComponent,
-					TaskanaTypeAheadMockComponent, SelectWorkBasketPipe],
+				declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
+					AccessItemsComponent,
+					DistributionTargetsComponent, DualListComponent, DummyDetailComponent],
 				providers: [WorkbasketService, MasterAndDetailService, ErrorModalService, RequestInProgressService,
 					AlertService, SavingWorkbasketService,
 					CustomFieldsService]
