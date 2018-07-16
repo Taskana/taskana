@@ -347,6 +347,9 @@ public class TaskSummaryImpl implements TaskSummary {
 
     @Override
     public List<AttachmentSummary> getAttachmentSummaries() {
+        if (attachmentSummaries == null) {
+            attachmentSummaries = new ArrayList<>();
+        }
         return attachmentSummaries;
     }
 

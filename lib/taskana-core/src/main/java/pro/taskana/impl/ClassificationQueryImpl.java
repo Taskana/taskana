@@ -374,7 +374,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public List<ClassificationSummary> list() {
         LOGGER.debug("entry to list(), this = {}", this);
-        List<ClassificationSummary> result = null;
+        List<ClassificationSummary> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_SUMMARYMAPPER, this);
@@ -392,7 +392,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public List<ClassificationSummary> list(int offset, int limit) {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
-        List<ClassificationSummary> result = null;
+        List<ClassificationSummary> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);
@@ -421,7 +421,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     @Override
     public List<String> listValues(String columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
-        List<String> result = null;
+        List<String> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;

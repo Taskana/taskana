@@ -117,6 +117,9 @@ public class AttachmentImpl implements Attachment {
 
     @Override
     public Map<String, String> getCustomAttributes() {
+        if (customAttributes == null) {
+            customAttributes = new HashMap<>();
+        }
         return customAttributes;
     }
 

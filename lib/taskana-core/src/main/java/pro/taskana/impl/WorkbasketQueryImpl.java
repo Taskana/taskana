@@ -371,7 +371,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     @Override
     public List<WorkbasketSummary> list() {
         LOGGER.debug("entry to list(), this = {}", this);
-        List<WorkbasketSummary> workbaskets = null;
+        List<WorkbasketSummary> workbaskets = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             handleCallerRolesAndAccessIds();
@@ -390,7 +390,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     @Override
     public List<String> listValues(String columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
-        List<String> result = null;
+        List<String> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;
@@ -412,7 +412,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     @Override
     public List<WorkbasketSummary> list(int offset, int limit) {
         LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
-        List<WorkbasketSummary> workbaskets = null;
+        List<WorkbasketSummary> workbaskets = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             RowBounds rowBounds = new RowBounds(offset, limit);

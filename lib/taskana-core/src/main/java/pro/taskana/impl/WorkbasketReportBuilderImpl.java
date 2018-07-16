@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -94,6 +95,9 @@ public class WorkbasketReportBuilderImpl extends ReportBuilder implements Workba
     }
 
     public List<CombinedClassificationFilter> getCombinedClassificationFilterIn() {
+        if (combinedClassificationFilter == null) {
+            combinedClassificationFilter = new ArrayList<>();
+        }
         return this.combinedClassificationFilter;
     }
 

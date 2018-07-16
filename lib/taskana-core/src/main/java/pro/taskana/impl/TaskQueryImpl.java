@@ -773,7 +773,7 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public List<String> listValues(String columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
-        List<String> result = null;
+        List<String> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;
