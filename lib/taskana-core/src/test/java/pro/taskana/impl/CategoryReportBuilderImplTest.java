@@ -209,6 +209,15 @@ public class CategoryReportBuilderImplTest {
     }
 
     @Test
+    public void testListTaskIdsForSelectedItemsIsEmptyResult() throws NotAuthorizedException, InvalidArgumentException {
+        SelectedItem selectedItem = new SelectedItem();
+        List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
+        List<String> result = cut.createCategoryReportBuilder()
+                .listTaskIdsForSelectedItems(selectedItems);
+        assertNotNull(result);
+    }
+
+    @Test
     public void testListCustomAttributeValuesForCustomAttributeName()
         throws NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
@@ -256,5 +265,13 @@ public class CategoryReportBuilderImplTest {
 
         assertNotNull(actualResult);
         assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    public void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws NotAuthorizedException {
+        List<String> result = cut.createCategoryReportBuilder()
+                .workbasketIdIn(Arrays.asList("DieGibtsSicherNed"))
+                .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
+        assertNotNull(result);
     }
 }

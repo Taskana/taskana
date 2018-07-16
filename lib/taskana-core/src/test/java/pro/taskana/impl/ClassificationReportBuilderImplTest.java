@@ -319,6 +319,17 @@ public class ClassificationReportBuilderImplTest {
     }
 
     @Test
+    public void testGetTaskIdsForSelectedItemsIsEmptyResult() throws NotAuthorizedException, InvalidArgumentException {
+        SelectedItem selectedItem = new SelectedItem();
+        selectedItem.setKey("GIBTSNED");
+        List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
+        List<String> result = cut.createClassificationReportBuilder()
+                .workbasketIdIn(Arrays.asList("DieGibtsEhNed"))
+                .listTaskIdsForSelectedItems(selectedItems);
+        assertNotNull(result);
+    }
+
+    @Test
     public void testListCustomAttributeValuesForCustomAttributeName()
         throws NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
@@ -366,6 +377,15 @@ public class ClassificationReportBuilderImplTest {
 
         assertNotNull(actualResult);
         assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    public void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
+        throws NotAuthorizedException {
+        List<String> result = cut.createClassificationReportBuilder()
+                .workbasketIdIn(Arrays.asList("DieGibtsGarantiertNed"))
+                .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_10);
+        assertNotNull(result);
     }
 
 }

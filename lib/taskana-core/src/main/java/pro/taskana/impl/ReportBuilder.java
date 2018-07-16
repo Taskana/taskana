@@ -1,6 +1,8 @@
 package pro.taskana.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +54,9 @@ public abstract class ReportBuilder {
     }
 
     public List<TimeIntervalColumnHeader> getColumnHeaders() {
+        if (columnHeaders == null) {
+            columnHeaders = new ArrayList<>();
+        }
         return this.columnHeaders;
     }
 
@@ -60,30 +65,51 @@ public abstract class ReportBuilder {
     }
 
     public List<String> getWorkbasketIdIn() {
+        if (workbasketIds == null) {
+            workbasketIds = new ArrayList<>();
+        }
         return this.workbasketIds;
     }
 
     public List<TaskState> getStateIn() {
+        if (states == null) {
+            states = new ArrayList<>();
+        }
         return this.states;
     }
 
     public List<String> getCategoryIn() {
+        if (categories == null) {
+            categories = new ArrayList<>();
+        }
         return this.categories;
     }
 
     public List<String> getDomainIn() {
+        if (domains == null) {
+            domains = new ArrayList<>();
+        }
         return this.domains;
     }
 
     public List<String> getClassificationIdsIn() {
+        if (classificationIds == null) {
+            classificationIds = new ArrayList<>();
+        }
         return this.classificationIds;
     }
 
     public List<String> getExcludedClassificationIdsIn() {
+        if (excludedClassificationIds == null) {
+            excludedClassificationIds = new ArrayList<>();
+        }
         return this.excludedClassificationIds;
     }
 
     public Map<CustomField, String> getCustomAttributeFilter() {
+        if (customAttributeFilter == null) {
+            customAttributeFilter = new HashMap<>();
+        }
         return this.customAttributeFilter;
     }
 
