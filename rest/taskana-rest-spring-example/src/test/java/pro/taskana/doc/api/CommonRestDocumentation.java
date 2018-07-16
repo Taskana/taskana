@@ -93,7 +93,6 @@ public class CommonRestDocumentation {
             fieldWithPath("custom6").ignored(),
             fieldWithPath("custom7").ignored(),
             fieldWithPath("custom8").ignored(),
-            fieldWithPath("validInDomain").ignored(),
             fieldWithPath("_links").description(selfLinkFieldDescriptionsMap.get("_links")),
             fieldWithPath("_links.self").description(selfLinkFieldDescriptionsMap.get("_links.self")),
             fieldWithPath("_links.self.href").description(selfLinkFieldDescriptionsMap.get("_links.self.href"))

@@ -31,8 +31,12 @@ public class ClassificationResource extends ResourceSupport {
     public String custom7;
     public String custom8;
 
-    public void setIsValidInDomain(Boolean validInDomain) {
-        isValidInDomain = validInDomain;
+    public Boolean getIsValidInDomain() {
+        return isValidInDomain;
+    }
+
+    public void setIsValidInDomain(Boolean isValidInDomain) {
+        this.isValidInDomain = isValidInDomain;
     }
 
     public String getClassificationId() {
@@ -89,10 +93,6 @@ public class ClassificationResource extends ResourceSupport {
 
     public void setDomain(String domain) {
         this.domain = domain;
-    }
-
-    public boolean isValidInDomain() {
-        return isValidInDomain;
     }
 
     public String getCreated() {

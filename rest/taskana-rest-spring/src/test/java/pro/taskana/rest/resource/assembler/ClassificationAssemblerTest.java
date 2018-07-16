@@ -45,7 +45,7 @@ public class ClassificationAssemblerTest {
         classification.setId("1");
         classification.setCategory("ABC");
         classification.setName("Classification 1");
-        classification.setIsValidInDomain(false);
+        classification.setIsValidInDomain(true);
         classification.setCustom1("Custom1");
         classification.setCustom2("Custom2");
         classification.setCustom3("Custom3");
@@ -94,6 +94,7 @@ public class ClassificationAssemblerTest {
         classificationResource.setApplicationEntryPoint("12");
         classificationResource.setServiceLevel("P1D");
         classificationResource.setDescription("Test");
+        classificationResource.setIsValidInDomain(true);
         // when
         ClassificationImpl classification = (ClassificationImpl) classificationResourceAssembler
             .toModel(classificationResource);

@@ -251,7 +251,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private removeClassificationConfirmation() {
-
     if (!this.classification || !this.classification.classificationId) {
       this.errorModalService.triggerError(
         new ErrorModel('There is no classification selected', 'Please check if you are creating a classification'));
@@ -273,6 +272,14 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.errorModalService.triggerError(new ErrorModel('There was error while removing your classification', error))
         this.afterRequest();
       })
+  }
+
+  validChanged(): void {
+    this.classification.isValidInDomain = !this.classification.isValidInDomain;
+  }
+
+  masterDomainSelected(): boolean {
+    return this.domainService.getSelectedDomainValue() === '';
   }
 
   ngOnDestroy(): void {

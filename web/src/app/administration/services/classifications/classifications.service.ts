@@ -18,6 +18,7 @@ import { Direction } from 'app/models/sorting';
 @Injectable()
 export class ClassificationsService {
 
+  private url = `${environment.taskanaRestUrl}/v1/classifications/`;
   private classificationSelected = new Subject<ClassificationDefinition>();
   private classificationSaved = new Subject<number>();
 
@@ -42,7 +43,7 @@ export class ClassificationsService {
     allPages: boolean = true): Observable<Array<Classification>> {
     return this.domainService.getSelectedDomain().mergeMap(domain => {
       return this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
-        `${environment.taskanaRestUrl}/v1/classifications/${TaskanaQueryParameters.getQueryParameters(
+        `${this.url}${TaskanaQueryParameters.getQueryParameters(
           sortBy, order, name,
           nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
           !allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined, domain)}`));
@@ -55,7 +56,7 @@ export class ClassificationsService {
 
   // GET
   getClassification(id: string): Observable<ClassificationDefinition> {
-    return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`)
+    return this.httpClient.get<ClassificationDefinition>(`${this.url}${id}`)
       .do((classification: ClassificationDefinition) => {
         if (classification) {
           this.classificationTypeService.selectClassificationType(classification.type);
@@ -66,7 +67,7 @@ export class ClassificationsService {
 
   // POST
   postClassification(classification: Classification): Observable<Classification> {
-    return this.httpClient.post<Classification>(`${environment.taskanaRestUrl}/v1/classifications`, classification);
+    return this.httpClient.post<Classification>(`${this.url}`, classification);
   }
 
   // PUT
@@ -114,8 +115,8 @@ export class ClassificationsService {
   }
 
   private buildHierarchy(classifications: Array<Classification>, type: string) {
-    const roots = []
-    const children = new Array<any>();
+    const roots = [];
+    const children = [];
 
     for (let index = 0, len = classifications.length; index < len; ++index) {
       const item = classifications[index];
