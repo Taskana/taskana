@@ -31,6 +31,9 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   @Input()
   validationValue;
 
+  @Input()
+  displayError;
+
   @ViewChild('inputTypeAhead')
   private inputTypeAhead;
 

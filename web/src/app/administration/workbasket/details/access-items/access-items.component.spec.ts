@@ -1,6 +1,6 @@
-import { SimpleChange, Component, forwardRef, Input } from '@angular/core';
+import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -15,9 +15,6 @@ import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-item
 import { ICONTYPES } from 'app/models/type';
 
 import { AccessItemsComponent } from './access-items.component';
-import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
-import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
-import { TaskanaTypeAheadMockComponent } from 'app/shared/type-ahead/type-ahead.mock.component';
 
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
@@ -36,7 +33,7 @@ describe('AccessItemsComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-				declarations: [SpinnerComponent, AccessItemsComponent, GeneralMessageModalComponent, TaskanaTypeAheadMockComponent],
+				declarations: [AccessItemsComponent],
 				imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
 				providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService,
 					CustomFieldsService]

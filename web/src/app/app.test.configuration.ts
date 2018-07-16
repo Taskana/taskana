@@ -22,6 +22,7 @@ import { OrientationService } from './services/orientation/orientation.service';
 import { SelectedRouteService } from './services/selected-route/selected-route';
 import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SharedModule } from './shared/shared.module';
 
 
 export const configureTests = (configure: (testBed: TestBed) => void) => {
@@ -35,7 +36,7 @@ export const configureTests = (configure: (testBed: TestBed) => void) => {
 
     configure(testBed);
     testBed.configureTestingModule({
-        imports: [BrowserAnimationsModule],
+        imports: [BrowserAnimationsModule, SharedModule],
         providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
         { provide: DomainService, useClass: DomainServiceMock }, CustomFieldsService, RemoveConfirmationService,
             AlertService, ErrorModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]

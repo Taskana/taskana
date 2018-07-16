@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Routes } from '@angular/router';
@@ -12,10 +12,7 @@ import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ClassificationListComponent } from './classification-list.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
-import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { ClassificationTypesSelectorComponent } from 'app/shared/classification-types-selector/classification-types-selector.component';
-import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
-import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { AlertService } from 'app/services/alert/alert.service';
@@ -30,17 +27,7 @@ import {
   ClassificationCategoriesService
 } from 'app/administration/services/classification-categories-service/classification-categories.service';
 import { Pair } from 'app/models/pair';
-
-@Component({
-  selector: 'taskana-tree',
-  template: ''
-})
-class TaskanaTreeComponent {
-  @Input() treeNodes;
-  @Input() selectNodeId;
-  @Input() filterText;
-  @Input() filterIcon;
-}
+import { TreeService } from 'app/services/tree/tree.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -50,7 +37,6 @@ class DummyDetailComponent {
 }
 
 const routes: Routes = [
-
   { path: ':id', component: DummyDetailComponent }
 ];
 
@@ -65,12 +51,12 @@ describe('ClassificationListComponent', () => {
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        declarations: [ClassificationListComponent, ImportExportComponent, SpinnerComponent, ClassificationTypesSelectorComponent,
-          TaskanaTreeComponent, DummyDetailComponent, IconTypeComponent, MapValuesPipe],
+        declarations: [ClassificationListComponent, ImportExportComponent, ClassificationTypesSelectorComponent,
+          DummyDetailComponent],
         imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpModule],
         providers: [
           HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
-          ErrorModalService, ClassificationTypesService, RequestInProgressService, ClassificationCategoriesService
+          ErrorModalService, ClassificationTypesService, RequestInProgressService, ClassificationCategoriesService, TreeService
         ]
       })
     };

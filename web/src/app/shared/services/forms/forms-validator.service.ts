@@ -5,8 +5,12 @@ import { AlertModel, AlertType } from 'app/models/alert';
 
 @Injectable()
 export class FormsValidatorService {
+
+    public formSubmitAttempt = false;
+
     constructor(
-        private alertService: AlertService) { }
+        private alertService: AlertService) {
+    }
 
     public validate(form: NgForm, toogleValidationMap: Map<any, boolean>): boolean {
         let valid = true;
@@ -21,5 +25,16 @@ export class FormsValidatorService {
             this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `There are some empty fields which are required.`))
         }
         return valid;
+    }
+
+    public isFieldValid(ngForm: NgForm, field: string) {
+        if (!ngForm || !ngForm.form.controls || !ngForm.form.controls[field]) {
+            return false;
+        }
+        if (!this.formSubmitAttempt) {
+            return true;
+        }
+        return (this.formSubmitAttempt && ngForm.form.controls[field].valid) ||
+            (ngForm.form.controls[field].touched && ngForm.form.controls[field].valid);
     }
 }

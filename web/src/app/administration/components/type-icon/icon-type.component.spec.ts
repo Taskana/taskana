@@ -13,8 +13,7 @@ describe('IconTypeComponent', () => {
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        imports: [AngularSvgIconModule, HttpClientModule, HttpModule],
-        declarations: [IconTypeComponent]
+        imports: [AngularSvgIconModule, HttpClientModule, HttpModule]
       })
     };
     configureTests(configure).then(testBed => {
