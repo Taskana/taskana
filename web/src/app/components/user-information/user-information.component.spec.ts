@@ -1,12 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 import { HttpModule } from '@angular/http';
 
 import { UserInformationComponent } from './user-information.component';
 
-import { UserInfoModel } from 'app/models/user-info';
 import { configureTests } from 'app/app.test.configuration';
 
 describe('UserInformationComponent', () => {

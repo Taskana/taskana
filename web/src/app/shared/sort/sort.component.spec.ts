@@ -1,5 +1,4 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {MapValuesPipe} from 'app/shared/pipes/mapValues/map-values.pipe';
 
 import {SortComponent} from './sort.component';
 import {configureTests} from 'app/app.test.configuration';
@@ -13,7 +12,7 @@ describe('SortComponent', () => {
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        declarations: [SortComponent, MapValuesPipe]
+        declarations: []
       });
     };
     configureTests(configure).then(testBed => {

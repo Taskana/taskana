@@ -1,5 +1,5 @@
 import { Input, Component, SimpleChange } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
@@ -21,30 +21,8 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 
 import { DualListComponent } from './dual-list/dual-list.component';
 import { DistributionTargetsComponent, Side } from './distribution-targets.component';
-import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
-import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
-import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
-import { SelectWorkBasketPipe } from 'app/shared/pipes/selectedWorkbasket/seleted-workbasket.pipe';
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 import { configureTests } from 'app/app.test.configuration';
-
-
-const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource({
-	'workbaskets': new Array<WorkbasketSummary>(
-		new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
-		new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', ''))
-}, new LinksWorkbasketSummary({ 'href': 'url' }));
-
-@Component({
-	selector: 'taskana-filter',
-	template: ''
-
-})
-export class FilterComponent {
-
-	@Input()
-	target: string;
-}
 
 describe('DistributionTargetsComponent', () => {
 	let component: DistributionTargetsComponent;
@@ -57,8 +35,7 @@ describe('DistributionTargetsComponent', () => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
 				imports: [AngularSvgIconModule, HttpClientModule, HttpModule, JsonpModule],
-				declarations: [DistributionTargetsComponent, SpinnerComponent, GeneralMessageModalComponent,
-					FilterComponent, SelectWorkBasketPipe, IconTypeComponent, DualListComponent],
+				declarations: [DistributionTargetsComponent, DualListComponent],
 				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
 				]
 			})

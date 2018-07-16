@@ -8,6 +8,7 @@ import { ErrorModalService } from './services/errorModal/error-modal.service';
 import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
 import { OrientationService } from './services/orientation/orientation.service';
 import { SelectedRouteService } from './services/selected-route/selected-route';
+import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 
 @Component({
 	selector: 'taskana-root',
@@ -39,13 +40,15 @@ export class AppComponent implements OnInit, OnDestroy {
 		private errorModalService: ErrorModalService,
 		private requestInProgressService: RequestInProgressService,
 		private orientationService: OrientationService,
-		private selectedRouteService: SelectedRouteService) {
+		private selectedRouteService: SelectedRouteService,
+		private formsValidatorService: FormsValidatorService) {
 	}
 
 	ngOnInit() {
 		this.routerSubscription = this.router.events.subscribe(event => {
 			if (event instanceof NavigationStart) {
 				this.selectedRouteService.selectRoute(event);
+				this.formsValidatorService.formSubmitAttempt = false;
 			}
 		});
 		this.errorModalSubscription = this.errorModalService.getError().subscribe((error: ErrorModel) => {

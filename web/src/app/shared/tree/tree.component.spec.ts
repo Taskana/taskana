@@ -38,7 +38,7 @@ describe('TaskanaTreeComponent', () => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [AngularSvgIconModule, HttpClientModule, HttpModule],
-        declarations: [TaskanaTreeComponent, TreeVendorComponent],
+        declarations: [TreeVendorComponent],
         providers: [TreeService, ClassificationCategoriesService]
 
       })

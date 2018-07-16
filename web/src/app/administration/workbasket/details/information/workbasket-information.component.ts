@@ -17,12 +17,10 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
-import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 
 @Component({
 	selector: 'taskana-workbasket-information',
-	animations: [highlight],
 	templateUrl: './workbasket-information.component.html',
 	styleUrls: ['./workbasket-information.component.scss']
 })
@@ -68,7 +66,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 	}
 
 	ngOnInit(): void {
-
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -85,33 +82,18 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 	}
 
 	onSubmit() {
+		this.formsValidatorService.formSubmitAttempt = true;
 		if (this.workbasketForm && this.formsValidatorService.validate(this.workbasketForm, this.toogleValidationMap)) {
 			this.onSave();
 		}
 	}
 
-	private onSave() {
-		this.beforeRequest();
-		if (!this.workbasket.workbasketId) {
-			this.postNewWorkbasket();
-			return true;
-		}
-
-		this.workbasketSubscription = (this.workbasketService.updateWorkbasket(this.workbasket._links.self.href, this.workbasket).subscribe(
-			workbasketUpdated => {
-				this.afterRequest();
-				this.workbasket = workbasketUpdated;
-				this.workbasketClone = { ...this.workbasket };
-				this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket ${workbasketUpdated.key} was saved successfully`))
-			},
-			error => {
-				this.afterRequest();
-				this.errorModalService.triggerError(new ErrorModel('There was error while saving your workbasket', error))
-			}
-		));
+	isFieldValid(field: string): boolean {
+		return this.formsValidatorService.isFieldValid(this.workbasketForm, field);
 	}
 
 	onClear() {
+		this.formsValidatorService.formSubmitAttempt = false;
 		this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'))
 		this.workbasket = { ...this.workbasketClone };
 	}
@@ -136,6 +118,27 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 				new ErrorModel(`There was an error removing distribution target for ${this.workbasket.workbasketId}.`, error))
 			this.requestInProgressService.setRequestInProgress(false);
 		});
+	}
+
+	private onSave() {
+		this.beforeRequest();
+		if (!this.workbasket.workbasketId) {
+			this.postNewWorkbasket();
+			return true;
+		}
+
+		this.workbasketSubscription = (this.workbasketService.updateWorkbasket(this.workbasket._links.self.href, this.workbasket).subscribe(
+			workbasketUpdated => {
+				this.afterRequest();
+				this.workbasket = workbasketUpdated;
+				this.workbasketClone = { ...this.workbasket };
+				this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Workbasket ${workbasketUpdated.key} was saved successfully`))
+			},
+			error => {
+				this.afterRequest();
+				this.errorModalService.triggerError(new ErrorModel('There was error while saving your workbasket', error))
+			}
+		));
 	}
 
 	private beforeRequest() {

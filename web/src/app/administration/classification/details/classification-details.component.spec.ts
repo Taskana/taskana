@@ -10,7 +10,6 @@ import { configureTests } from 'app/app.test.configuration';
 
 
 import { ClassificationDetailsComponent } from './classification-details.component';
-import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { ClassificationDefinition } from 'app/models/classification-definition';
 import { LinksClassification } from 'app/models/links-classfication';
 import { Pair } from 'app/models/pair';
@@ -53,7 +52,7 @@ describe('ClassificationDetailsComponent', () => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
-        declarations: [ClassificationDetailsComponent, SpinnerComponent, DummyDetailComponent],
+        declarations: [ClassificationDetailsComponent, DummyDetailComponent],
         providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
           TreeService, ClassificationTypesService, ClassificationCategoriesService,
           CustomFieldsService]

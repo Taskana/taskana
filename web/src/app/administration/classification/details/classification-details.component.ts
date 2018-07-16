@@ -83,7 +83,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private domainService: DomainService,
     private customFieldsService: CustomFieldsService,
     private removeConfirmationService: RemoveConfirmationService,
-    private formsValidatorService: FormsValidatorService) { }
+    private formsValidatorService: FormsValidatorService) {
+  }
 
   ngOnInit() {
     this.classificationTypeService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
@@ -91,7 +92,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     })
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
-        this.classification = undefined;
+        this.initProperties();
         if (classificationSelected) {
           this.fillClassificationInformation(classificationSelected);
         }
@@ -142,10 +143,20 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       `You are going to delete classification: ${this.classification.key}. Can you confirm this action?`);
   }
 
+  isFieldValid(field: string): boolean {
+    return this.formsValidatorService.isFieldValid(this.classificationForm, field);
+  }
+
   onSubmit() {
+    this.formsValidatorService.formSubmitAttempt = true;
     if (this.formsValidatorService.validate(this.classificationForm, this.toogleValidationMap)) {
-			this.onSave();
+      this.onSave();
     }
+  }
+
+  private initProperties() {
+    this.classification = undefined;
+    this.action = undefined
   }
 
   private onSave() {
@@ -177,6 +188,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   onClear() {
+    this.formsValidatorService.formSubmitAttempt = false;
     this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'))
     this.classification = { ...this.classificationClone };
   }
