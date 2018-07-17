@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'app/../environments/environment';
 import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationDefinition } from 'app/models/classification-definition';

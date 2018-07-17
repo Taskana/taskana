@@ -1,9 +1,8 @@
-import { Input, Component, SimpleChange } from '@angular/core';
+import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule, JsonpModule } from '@angular/http';
 
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
@@ -34,7 +33,7 @@ describe('DistributionTargetsComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-				imports: [AngularSvgIconModule, HttpClientModule, HttpModule, JsonpModule],
+				imports: [AngularSvgIconModule, HttpClientModule],
 				declarations: [DistributionTargetsComponent, DualListComponent],
 				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
 				]
@@ -46,7 +45,7 @@ describe('DistributionTargetsComponent', () => {
 			component.workbasket = workbasket;
 			workbasketService = TestBed.get(WorkbasketService);
 			spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
-				return Observable.of(new WorkbasketSummaryResource(
+				return of(new WorkbasketSummaryResource(
 					{
 						'workbaskets': new Array<WorkbasketSummary>(
 							new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
@@ -55,7 +54,7 @@ describe('DistributionTargetsComponent', () => {
 					}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 			})
 			spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
-				return Observable.of(new WorkbasketDistributionTargetsResource(
+				return of(new WorkbasketDistributionTargetsResource(
 					{
 						'distributionTargets': new Array<WorkbasketSummary>(
 							new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
@@ -122,7 +121,7 @@ describe('DistributionTargetsComponent', () => {
 		expect(component.distributionTargetsSelected.length).toBe(1);
 		expect(component.distributionTargetsSelectedClone.length).toBe(1);
 		spyOn(workbasketService, 'updateWorkBasketsDistributionTargets').and.callFake(() => {
-			return Observable.of(new WorkbasketDistributionTargetsResource(
+			return of(new WorkbasketDistributionTargetsResource(
 				{
 					'distributionTargets': new Array<WorkbasketSummary>(
 						new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),

@@ -4,9 +4,8 @@ import { WorkbasketInformationComponent } from './workbasket-information.compone
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs';
 import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 
@@ -46,7 +45,6 @@ describe('WorkbasketInformationComponent', () => {
 				imports: [FormsModule,
 					AngularSvgIconModule,
 					HttpClientModule,
-					HttpModule,
 					RouterTestingModule.withRoutes(routes)],
 				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
 					CustomFieldsService]
@@ -113,8 +111,8 @@ describe('WorkbasketInformationComponent', () => {
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
-		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(Observable.of(component.workbasket));
-		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(Observable.of(component.workbasket));
+		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(of(component.workbasket));
+		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(of(component.workbasket));
 		component.onSubmit();
 		expect(component.requestInProgress).toBeFalsy();
 
@@ -124,8 +122,8 @@ describe('WorkbasketInformationComponent', () => {
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
-		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(Observable.of(component.workbasket));
-		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(Observable.of(component.workbasket));
+		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(of(component.workbasket));
+		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(of(component.workbasket));
 		fixture.detectChanges();
 		component.onSubmit();
 		expect(workbasketService.triggerWorkBasketSaved).toHaveBeenCalled();
@@ -136,7 +134,7 @@ describe('WorkbasketInformationComponent', () => {
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
 		component.workbasket = workbasket
-		spyOn(workbasketService, 'createWorkbasket').and.returnValue(Observable.of(
+		spyOn(workbasketService, 'createWorkbasket').and.returnValue(of(
 			new Workbasket('someNewId', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 				'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 				'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }))));
@@ -155,7 +153,7 @@ describe('WorkbasketInformationComponent', () => {
 			component.workbasket = workbasket
 			component.action = ACTION.COPY;
 
-			spyOn(workbasketService, 'createWorkbasket').and.returnValue(Observable.of(
+			spyOn(workbasketService, 'createWorkbasket').and.returnValue(of(
 				new Workbasket('someNewId', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 					'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 					'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }, { 'href': 'someUrl' }, { 'href': 'someUrl' }))));
@@ -176,7 +174,7 @@ describe('WorkbasketInformationComponent', () => {
 			'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }, undefined, undefined, undefined, { 'href': 'someUrl' }));
 		component.workbasket = workbasket;
-		spyOn(workbasketService, 'removeDistributionTarget').and.returnValue(Observable.of(''));
+		spyOn(workbasketService, 'removeDistributionTarget').and.returnValue(of(''));
 		const requestInProgressServiceSpy = spyOn(requestInProgressService, 'setRequestInProgress');
 
 

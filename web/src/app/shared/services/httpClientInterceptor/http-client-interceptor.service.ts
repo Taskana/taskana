@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import { ErrorModel } from 'app/models/modal-error';
 
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { environment } from 'environments/environment';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class HttpClientInterceptor implements HttpInterceptor {
@@ -25,19 +23,17 @@ export class HttpClientInterceptor implements HttpInterceptor {
 		if (!environment.production) {
 			req = req.clone({ headers: req.headers.set('Authorization', 'Basic YWRtaW46YWRtaW4=') });
 		}
-		return next.handle(req).do(event => {
-
-		}, err => {
+		return next.handle(req).pipe(tap(() => { }, error => {
 			this.requestInProgressService.setRequestInProgress(false);
-			if (err instanceof HttpErrorResponse && (err.status === 401 || err.status === 403)) {
+			if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
 				this.errorModalService.triggerError(
-					new ErrorModel('You have no access to this resource ', err));
-			} else if (err instanceof HttpErrorResponse && (err.status === 404) && err.url.indexOf('environment-information.json')) {
+					new ErrorModel('You have no access to this resource ', error));
+			} else if (error instanceof HttpErrorResponse && (error.status === 404) && error.url.indexOf('environment-information.json')) {
 				// ignore this error message
 			} else {
 				this.errorModalService.triggerError(
-					new ErrorModel('There was error, please contact with your administrator ', err))
+					new ErrorModel('There was error, please contact with your administrator ', error))
 			}
-		});
+		}))
 	}
 }

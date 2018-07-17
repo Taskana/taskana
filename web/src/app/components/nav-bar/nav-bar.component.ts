@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from 'environments/environment';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { DomainService } from 'app/services/domain/domain.service';
 import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
 import { MonitorGuard } from 'app/guards/monitor-guard';

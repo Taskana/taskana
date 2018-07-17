@@ -1,7 +1,6 @@
 import { Injectable, HostListener } from '@angular/core';
 import { Orientation } from 'app/models/orientation';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 
 @Injectable()
 export class OrientationService {
