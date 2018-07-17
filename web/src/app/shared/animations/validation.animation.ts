@@ -1,4 +1,4 @@
-import { trigger, style, transition, animate, keyframes } from '@angular/core';
+import { trigger, style, transition, animate, keyframes } from '@angular/animations';
 
 export const highlight = trigger('validation', [
     transition('true => false, false => true, * => true', animate('1500ms', keyframes([

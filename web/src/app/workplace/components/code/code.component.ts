@@ -1,5 +1,4 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { trigger, transition, keyframes, style, animate, state } from '@angular/animations';
 import { opacity } from 'app/shared/animations/expand.animation';
 
 @Component({

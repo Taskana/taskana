@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/observable/combineLatest';
-import 'rxjs/add/operator/map'
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { mergeMap, tap } from 'rxjs/operators';
 
 import { Classification } from 'app/models/classification';
 import { ClassificationDefinition } from 'app/models/classification-definition';
@@ -41,27 +39,28 @@ export class ClassificationsService {
     keyLike: string = undefined,
     requiredPermission: string = undefined,
     allPages: boolean = true): Observable<Array<Classification>> {
-    return this.domainService.getSelectedDomain().mergeMap(domain => {
-      return this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
-        `${this.url}${TaskanaQueryParameters.getQueryParameters(
-          sortBy, order, name,
-          nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
-          !allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined, domain)}`));
+    return this.domainService.getSelectedDomain().pipe(
+      mergeMap(domain => {
+        return this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
+          `${environment.taskanaRestUrl}/v1/classifications/${TaskanaQueryParameters.getQueryParameters(
+            sortBy, order, name,
+            nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
+            !allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined, domain)}`));
 
-    }).do(() => {
-      this.domainService.domainChangedComplete();
-    });
+      }),
+      tap(() => { this.domainService.domainChangedComplete(); })
+    )
   }
 
 
   // GET
   getClassification(id: string): Observable<ClassificationDefinition> {
-    return this.httpClient.get<ClassificationDefinition>(`${this.url}${id}`)
-      .do((classification: ClassificationDefinition) => {
+    return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`)
+      .pipe(tap((classification: ClassificationDefinition) => {
         if (classification) {
           this.classificationTypeService.selectClassificationType(classification.type);
         }
-      });
+      }));
   }
 
 
@@ -100,18 +99,18 @@ export class ClassificationsService {
 
   // #endregion
 
-  private getClassificationObservable(clasisficationRef: Observable<any>): Observable<any> {
+  private getClassificationObservable(classificationRef: Observable<any>): Observable<any> {
     const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
-    return Observable.combineLatest(
-      clasisficationRef,
-      classificationTypes
-
-    ).map((data: any[]) => {
-      if (!data[0]._embedded) {
-        return [];
+    return combineLatest(
+      classificationRef,
+      classificationTypes,
+      (classification: any, classificationType) => {
+        if (!classification._embedded) {
+          return [];
+        }
+        return this.buildHierarchy(classification._embedded.classificationSummaryResourceList, classificationType);
       }
-      return this.buildHierarchy(data[0]._embedded.classificationSummaryResourceList, data[1]);
-    })
+    )
   }
 
   private buildHierarchy(classifications: Array<Classification>, type: string) {

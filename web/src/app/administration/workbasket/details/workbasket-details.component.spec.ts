@@ -5,8 +5,7 @@ import { Router, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs';
 
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
@@ -56,7 +55,7 @@ describe('WorkbasketDetailsComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-				imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
+				imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule],
 				declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
 					AccessItemsComponent,
 					DistributionTargetsComponent, DualListComponent, DummyDetailComponent],
@@ -73,10 +72,10 @@ describe('WorkbasketDetailsComponent', () => {
 			fixture.detectChanges();
 			masterAndDetailService = TestBed.get(MasterAndDetailService);
 			workbasketService = TestBed.get(WorkbasketService);
-			spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => { return Observable.of(true) })
-			spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => { return Observable.of('id1') })
+			spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => { return of(true) })
+			spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => { return of('id1') })
 			spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
-				return Observable.of(new WorkbasketSummaryResource(
+				return of(new WorkbasketSummaryResource(
 					{
 						'workbaskets': new Array<WorkbasketSummary>(
 							new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
@@ -84,13 +83,13 @@ describe('WorkbasketDetailsComponent', () => {
 					}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 			})
 
-			spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return Observable.of(workbasket) })
+			spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return of(workbasket) })
 			spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => {
-				return Observable.of(new WorkbasketAccessItemsResource(
+				return of(new WorkbasketAccessItemsResource(
 					{ 'accessItems': new Array<WorkbasketAccessItems>() }, new Links({ 'href': 'url' })))
 			})
 			spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
-				return Observable.of(new WorkbasketSummaryResource(
+				return of(new WorkbasketSummaryResource(
 					{ 'workbaskets': new Array<WorkbasketSummary>() }, new LinksWorkbasketSummary({ 'href': 'url' })))
 			})
 			done();
