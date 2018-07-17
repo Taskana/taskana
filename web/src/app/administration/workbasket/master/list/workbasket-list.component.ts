@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 
 import {WorkbasketSummaryResource} from 'app/models/workbasket-summary-resource';
 import {WorkbasketSummary} from 'app/models/workbasket-summary';

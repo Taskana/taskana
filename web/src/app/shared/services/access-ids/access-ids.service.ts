@@ -4,7 +4,7 @@ import { environment } from 'environments/environment';
 
 
 import { AccessIdDefinition } from 'app/models/access-id';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class AccessIdsService {
@@ -16,7 +16,7 @@ export class AccessIdsService {
 
   getAccessItemsInformation(token: string): Observable<Array<AccessIdDefinition>> {
     if (!token || token.length < 3) {
-      return Observable.of([]);
+      return of([]);
     }
     return this.httpClient.get<Array<AccessIdDefinition>>(`${this.url}?searchFor=${token}`);
   };

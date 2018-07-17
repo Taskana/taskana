@@ -10,7 +10,7 @@ import {
   ClassificationCategoriesService
 } from 'app/administration/services/classification-categories-service/classification-categories.service';
 import { Pair } from 'app/models/pair';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'taskana-tree',

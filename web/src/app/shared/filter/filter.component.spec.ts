@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 
 import { FilterComponent } from './filter.component';
 import { configureTests } from 'app/app.test.configuration';
@@ -17,7 +16,7 @@ describe('FilterComponent', () => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         declarations: [],
-        imports: [AngularSvgIconModule, FormsModule, HttpClientModule, HttpModule]
+        imports: [AngularSvgIconModule, FormsModule, HttpClientModule]
       })
     };
     configureTests(configure).then(testBed => {

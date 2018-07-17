@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Task} from 'app/workplace/models/task';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TaskService} from 'app/workplace/services/task.service';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 import {SortingModel} from 'app/models/sorting';
 import {Workbasket} from 'app/models/workbasket';
 import {FilterModel} from 'app/models/filter';

@@ -1,10 +1,9 @@
 import {Task} from 'app/workplace/models/task';
-import {Observable} from 'rxjs/Observable';
+import {Observable, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 import {TaskResource} from 'app/workplace/models/task-resource';
-import {Subject} from 'rxjs/Subject';
 import {Direction} from 'app/models/sorting';
 
 @Injectable()

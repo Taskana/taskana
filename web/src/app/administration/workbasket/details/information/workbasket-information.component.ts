@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
 
 import { ICONTYPES } from 'app/models/type';

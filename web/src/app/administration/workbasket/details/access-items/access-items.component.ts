@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { FormBuilder, Validators, FormArray } from '@angular/forms';
 
 import { Workbasket } from 'app/models/workbasket';

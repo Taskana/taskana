@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { AlertModule } from 'ngx-bootstrap';
 import { ChartsModule } from 'ng2-charts';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -21,7 +20,6 @@ const MODULES = [
   CommonModule,
   MonitorRoutingModule,
   FormsModule,
-  HttpModule,
   AlertModule.forRoot(),
   ChartsModule,
   TabsModule.forRoot(),
