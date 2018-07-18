@@ -990,9 +990,14 @@ public class TaskServiceImpl implements TaskService {
         try {
             taskanaEngine.openConnection();
             if (taskIds == null) {
-                throw new InvalidArgumentException("TaskIds can´t be NULL as parameter for deleteTasks().");
+                throw new InvalidArgumentException("List of TaskIds must not be null.");
             }
+
             BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+
+            if (taskIds.isEmpty()) {
+                return bulkLog;
+            }
 
             List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds);
 

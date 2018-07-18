@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.TaskanaTransactionProvider;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.JobMapper;
+import pro.taskana.transaction.TaskanaTransactionProvider;
 
 /**
  * This is the runner for all jobs scheduled in the Job table.
@@ -28,17 +28,17 @@ public class JobRunner {
     private TaskanaEngineImpl taskanaEngine;
     private JobMapper jobMapper;
     private int maxRetryCount;
-    private TaskanaTransactionProvider<BulkOperationResults<String, Exception>> txProvider;
+    private TaskanaTransactionProvider<Object> txProvider;
 
     public JobRunner(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         jobMapper = this.taskanaEngine.getSqlSession().getMapper(JobMapper.class);
-        maxRetryCount = taskanaEngine.getConfiguration().getMaxNumberOfRetriesOfFailedTaskUpdates();
+        maxRetryCount = taskanaEngine.getConfiguration().getMaxNumberOfJobRetries();
         txProvider = null;
     }
 
     public void registerTransactionProvider(
-        TaskanaTransactionProvider<BulkOperationResults<String, Exception>> txProvider) {
+        TaskanaTransactionProvider<Object> txProvider) {
         this.txProvider = txProvider;
     }
 
@@ -101,7 +101,9 @@ public class JobRunner {
         BulkOperationResults<String, Exception> log;
         try {
             if (txProvider != null) {
-                log = txProvider.executeInTransaction(() -> {   // each job in its own transaction
+                log = (BulkOperationResults<String, Exception>) txProvider.executeInTransaction(() -> {   // each job in
+                                                                                                          // its own
+                                                                                                          // transaction
                     try {
                         taskanaEngine.openConnection();
                         return runSingleJob(job);
