@@ -1,9 +1,8 @@
-package pro.taskana;
+package pro.taskana.transaction;
 
 /**
  * This class provides support for transactions.
  *
- * @author bbr
  * @param <T>
  *            the type of the returned objects.
  */
@@ -11,4 +10,5 @@ package pro.taskana;
 public interface TaskanaTransactionProvider<T> {
 
     T executeInTransaction(TaskanaCallable<T> action);
+
 }

@@ -44,8 +44,8 @@ public class TaskanaEngineConfiguration {
     private static final String H2_DRIVER = "org.h2.Driver";
     private static final String TASKANA_PROPERTIES = "/taskana.properties";
     private static final String TASKANA_ROLES_SEPARATOR = "|";
-    private static final String TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION = "taskana.jobs.taskupdate.batchSize";
-    private static final String TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES = "taskana.jobs.taskupdate.maxRetries";
+    private static final String TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION = "taskana.jobs.batchSize";
+    private static final String TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES = "taskana.jobs.maxRetries";
 
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
@@ -75,7 +75,7 @@ public class TaskanaEngineConfiguration {
 
     // Properties for task-update Job execution on classification change
     private int maxNumberOfTaskUpdatesPerTransaction;
-    private int maxNumberOfRetriesOfFailedTaskUpdates;
+    private int maxNumberOfJobRetries;
 
     // List of configured domain names
     protected List<String> domains = new ArrayList<String>();
@@ -147,14 +147,14 @@ public class TaskanaEngineConfiguration {
 
         String retries = props.getProperty(TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES);
         if (retries == null || retries.isEmpty()) {
-            maxNumberOfRetriesOfFailedTaskUpdates = 3;
+            maxNumberOfJobRetries = 3;
         } else {
-            maxNumberOfRetriesOfFailedTaskUpdates = Integer.parseInt(retries);
+            maxNumberOfJobRetries = Integer.parseInt(retries);
         }
 
         LOGGER.debug(
             "Configured number of task updates per transaction: {}, number of retries of failed task updates: {}",
-            maxNumberOfTaskUpdatesPerTransaction, maxNumberOfRetriesOfFailedTaskUpdates);
+            maxNumberOfTaskUpdatesPerTransaction, maxNumberOfJobRetries);
     }
 
     private void initDomains(Properties props) {
@@ -312,8 +312,8 @@ public class TaskanaEngineConfiguration {
         return maxNumberOfTaskUpdatesPerTransaction;
     }
 
-    public int getMaxNumberOfRetriesOfFailedTaskUpdates() {
-        return maxNumberOfRetriesOfFailedTaskUpdates;
+    public int getMaxNumberOfJobRetries() {
+        return maxNumberOfJobRetries;
     }
 
     public void setPropertiesFileName(String propertiesFileName) {

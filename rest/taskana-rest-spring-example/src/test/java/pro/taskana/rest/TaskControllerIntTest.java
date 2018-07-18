@@ -86,15 +86,15 @@ public class TaskControllerIntTest {
     public void testGetAllTasksByWorkbasketId() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"); // teamlead_1
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?workbasket-id=WBI:100000000000000000000000000000000007",
+            "http://127.0.0.1:" + port + "/v1/tasks?workbasket-id=WBI:100000000000000000000000000000000001",
             HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
-        assertEquals(20, response.getBody().getContent().size());
+        assertEquals(22, response.getBody().getContent().size());
     }
 
     @Test
@@ -188,19 +188,21 @@ public class TaskControllerIntTest {
         headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // Role Admin
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=por.value&order=desc&page=15&page-size=5", HttpMethod.GET,
+            "http://127.0.0.1:" + port
+                + "/v1/tasks?state=READY,CLAIMED&sortBy=por.value&order=desc&page=15&page-size=5",
+            HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
-        assertEquals(3, response.getBody().getContent().size());
-        assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=15"));
-        assertEquals("TKI:000000000000000000000000000000000039",
+        assertEquals(1, response.getBody().getContent().size());
+        assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=14"));
+        assertEquals("TKI:100000000000000000000000000000000000",
             response.getBody().getContent().iterator().next().getTaskId());
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?sortBy=por.value&order=desc&page=15&page-size=5"));
+            .endsWith("/v1/tasks?state=READY,CLAIMED&sortBy=por.value&order=desc&page=15&page-size=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")
@@ -226,7 +228,7 @@ public class TaskControllerIntTest {
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
         assertEquals(25, response.getBody().getContent().size());
-        
+
         response = template.exchange(
             "http://127.0.0.1:" + port + "/v1/tasks?sortBy=due&order=desc&page=5&page-size=5", HttpMethod.GET,
             request,
