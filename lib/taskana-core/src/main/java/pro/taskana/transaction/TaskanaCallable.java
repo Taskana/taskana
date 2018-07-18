@@ -1,4 +1,4 @@
-package pro.taskana;
+package pro.taskana.transaction;
 
 /**
  * represents a callable Object.

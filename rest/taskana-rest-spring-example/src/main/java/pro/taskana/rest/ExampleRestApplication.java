@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
@@ -18,6 +19,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import pro.taskana.jobs.TransactionalJobsConfiguration;
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.ldap.LdapClient;
 import pro.taskana.ldap.LdapConfiguration;
@@ -28,7 +30,8 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 @SpringBootApplication
 @EnableScheduling
-@Import({SampleConfiguration.class, LdapConfiguration.class, RestConfiguration.class})
+@ComponentScan(basePackages = "pro.taskana")
+@Import({TransactionalJobsConfiguration.class, LdapConfiguration.class, RestConfiguration.class})
 public class ExampleRestApplication {
 
     @Autowired
