@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, OnDestroy, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, OnDestroy, SimpleChanges, OnChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
 import { ErrorModel } from 'app/models/modal-error';
@@ -146,7 +145,6 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 	}
 
 	performFilter(dualListFilter: any) {
-
 		dualListFilter.side === Side.RIGHT ? this.distributionTargetsRight = undefined : this.distributionTargetsLeft = undefined;
 		this.onRequest(dualListFilter.side, false);
 		this.workbasketFilterSubscription = this.workbasketService.getWorkBasketsSummary(true, undefined, undefined, undefined,
