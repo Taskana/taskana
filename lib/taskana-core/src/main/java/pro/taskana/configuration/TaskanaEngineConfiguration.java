@@ -44,8 +44,8 @@ public class TaskanaEngineConfiguration {
     private static final String H2_DRIVER = "org.h2.Driver";
     private static final String TASKANA_PROPERTIES = "/taskana.properties";
     private static final String TASKANA_ROLES_SEPARATOR = "|";
-    private static final String TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION = "taskana.jobs.batchSize";
-    private static final String TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES = "taskana.jobs.maxRetries";
+    private static final String TASKANA_JOB_BATCHSIZE = "taskana.jobs.batchSize";
+    private static final String TASKANA_JOB_RETRIES = "taskana.jobs.maxRetries";
 
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
@@ -74,8 +74,8 @@ public class TaskanaEngineConfiguration {
     private List<LocalDate> customHolidays;
 
     // Properties for task-update Job execution on classification change
-    private int maxNumberOfTaskUpdatesPerTransaction;
-    private int maxNumberOfJobRetries;
+    private int jobBatchSize = 100;
+    private int maxNumberOfJobRetries = 3;
 
     // List of configured domain names
     protected List<String> domains = new ArrayList<String>();
@@ -138,23 +138,19 @@ public class TaskanaEngineConfiguration {
     }
 
     private void initJobParameters(Properties props) {
-        String taskUpdates = props.getProperty(TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION);
-        if (taskUpdates == null || taskUpdates.isEmpty()) {
-            maxNumberOfTaskUpdatesPerTransaction = 50;
-        } else {
-            maxNumberOfTaskUpdatesPerTransaction = Integer.parseInt(taskUpdates);
+        String jobBatchSizeProperty = props.getProperty(TASKANA_JOB_BATCHSIZE);
+        if (jobBatchSizeProperty != null && !jobBatchSizeProperty.isEmpty()) {
+            jobBatchSize = Integer.parseInt(jobBatchSizeProperty);
         }
 
-        String retries = props.getProperty(TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES);
-        if (retries == null || retries.isEmpty()) {
-            maxNumberOfJobRetries = 3;
-        } else {
-            maxNumberOfJobRetries = Integer.parseInt(retries);
+        String maxNumberOfJobRetriesProperty = props.getProperty(TASKANA_JOB_RETRIES);
+        if (maxNumberOfJobRetriesProperty != null && !maxNumberOfJobRetriesProperty.isEmpty()) {
+            maxNumberOfJobRetries = Integer.parseInt(maxNumberOfJobRetriesProperty);
         }
 
         LOGGER.debug(
             "Configured number of task updates per transaction: {}, number of retries of failed task updates: {}",
-            maxNumberOfTaskUpdatesPerTransaction, maxNumberOfJobRetries);
+            jobBatchSize, maxNumberOfJobRetries);
     }
 
     private void initDomains(Properties props) {
@@ -309,7 +305,7 @@ public class TaskanaEngineConfiguration {
     }
 
     public int getMaxNumberOfTaskUpdatesPerTransaction() {
-        return maxNumberOfTaskUpdatesPerTransaction;
+        return jobBatchSize;
     }
 
     public int getMaxNumberOfJobRetries() {
