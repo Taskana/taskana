@@ -8,6 +8,9 @@ import { RouterModule } from '@angular/router';
 import { TreeModule } from 'angular-tree-component';
 import { TypeaheadModule } from 'ngx-bootstrap';
 
+/**
+ * Components
+ */
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { AlertComponent } from 'app/shared/alert/alert.component';
@@ -44,7 +47,7 @@ const MODULES = [
   AngularSvgIconModule,
   HttpClientModule,
   RouterModule,
-  TreeModule,
+  TreeModule
 ];
 
 const DECLARATIONS = [
