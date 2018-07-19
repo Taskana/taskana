@@ -92,7 +92,7 @@ public class TaskCleanupJobIntTest {
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
-        assertEquals(71, response.getBody().getContent().size());
+        assertEquals(73, response.getBody().getContent().size());
 
         // wait until the next trigger time + 2 seconds to give JobScheduler a chance to run
         String cron = env.getProperty("taskana.jobscheduler.async.cron");
@@ -122,7 +122,7 @@ public class TaskCleanupJobIntTest {
         Thread.sleep(delay);
         LOGGER.info("Sleeping ended. Continuing .... ");
 
-        // verify the 25 completed tasks have been deleted.
+        // verify the 6 completed tasks have been deleted.
         template = getRestTemplate();
         headers = new HttpHeaders();
         headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // Role Admin
@@ -133,7 +133,7 @@ public class TaskCleanupJobIntTest {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         // TODO
-        assertEquals(66, response.getBody().getContent().size());
+        assertEquals(67, response.getBody().getContent().size());
     }
 
     private void verifyTaskIsModifiedAfter(String taskId, Instant before) throws InvalidArgumentException {
