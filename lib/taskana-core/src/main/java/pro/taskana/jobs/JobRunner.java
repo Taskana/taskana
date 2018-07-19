@@ -15,14 +15,12 @@ public class JobRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
     private TaskanaEngine taskanaEngine;
     private TaskanaTransactionProvider<Object> txProvider;
-    private int batchSize = 50;
     private int maxRetryCount;
     private int attempt = 0;
 
     public JobRunner(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = taskanaEngine;
         maxRetryCount = taskanaEngine.getConfiguration().getMaxNumberOfJobRetries();
-        batchSize = taskanaEngine.getConfiguration().getMaxNumberOfTaskUpdatesPerTransaction();
     }
 
     public void registerTransactionProvider(
