@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
@@ -40,7 +39,8 @@ import pro.taskana.rest.resource.DistributionTargetResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
+    properties = {"devMode=true"})
 public class WorkbasketControllerIntTest {
 
     String url = "http://127.0.0.1:";
@@ -64,6 +64,16 @@ public class WorkbasketControllerIntTest {
             new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
+    }
+
+    @Test
+    public void testGetAllWorkbasketsBusinessAdminHasOpenPermission() {
+        ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = template.exchange(
+            url + port + "/v1/workbaskets?required-permission=OPEN", HttpMethod.GET, request,
+            new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
+            });
+        assertNotNull(response.getBody().getLink(Link.REL_SELF));
+        assertEquals(3, response.getBody().getContent().size());
     }
 
     @Test
