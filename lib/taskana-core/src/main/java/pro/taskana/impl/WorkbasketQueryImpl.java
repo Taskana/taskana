@@ -707,18 +707,20 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             // if user is admin or businessadmin, don't check read permission on workbasket.
             // in addition, if user is admin or businessadmin and no accessIds were specified, don't join with access
             // list
-            // if this query is used to augment task, a business admin should be treated like a normal user
+            // if this query is used to augment task or a permission is given as filter criteria,
+            // a business admin should be treated like a normal user
+            //
             // (joinWithAccessList,checkReadPermission) can assume the following combinations:
             // (t,t) -> query performed by user
             // (f,f) -> admin queries w/o access ids specified
-            // (t,f) -> admin queries with access ids specified
+            // (t,f) -> admin queries with access ids specified or permissions given
             // (f,t) -> cannot happen, cannot be matched to meaningful query
             joinWithAccessList = true;
             checkReadPermission = true;
             if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)
                 || (taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN) && !usedToAugmentTasks)) {
                 checkReadPermission = false;
-                if (accessId == null) {
+                if (accessId == null && permission == null) {
                     joinWithAccessList = false;
                 }
             }
