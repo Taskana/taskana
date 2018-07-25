@@ -39,6 +39,13 @@ public interface TaskanaEngine {
     ClassificationService getClassificationService();
 
     /**
+     * The JobService can be user for all job operations.
+     *
+     * @return the JobService
+     */
+    JobService getJobService();
+
+    /**
      * The Taskana configuration.
      *
      * @return the TaskanaConfiguration
@@ -104,4 +111,5 @@ public interface TaskanaEngine {
         AUTOCOMMIT,
         EXPLICIT
     }
+
 }

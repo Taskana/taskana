@@ -26,12 +26,14 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.Classification;
+import pro.taskana.JobService;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.jobs.ScheduledJob;
 import pro.taskana.mappings.ClassificationMapper;
 import pro.taskana.mappings.JobMapper;
 
@@ -60,6 +62,9 @@ public class ClassificationServiceImplTest {
 
     @Mock
     private SqlSession sqlSessionMock;
+
+    @Mock
+    private JobService jobServiceMock;
 
     @Before
     public void setup() {
@@ -285,8 +290,7 @@ public class ClassificationServiceImplTest {
         ClassificationImpl oldClassification = (ClassificationImpl) createDummyClassification();
         oldClassification.setModified(now);
         doReturn(oldClassification).when(cutSpy).getClassification(classification.getKey(), classification.getDomain());
-        doReturn(sqlSessionMock).when(taskanaEngineImplMock).getSqlSession();
-        doReturn(new JobRunnerMock()).when(sqlSessionMock).getMapper(any());
+        doReturn(jobServiceMock).when(taskanaEngineImplMock).getJobService();
 
         cutSpy.updateClassification(classification);
 
@@ -444,28 +448,29 @@ public class ClassificationServiceImplTest {
         classificationImpl.setParentKey("");
         return classificationImpl;
     }
+
     /**
      * This is the mock of a jobRunner.
      */
     private class JobRunnerMock implements JobMapper {
 
         @Override
-        public void insertJob(Job job) {
+        public void insertJob(ScheduledJob job) {
 
         }
 
         @Override
-        public List<Job> findJobsToRun() {
+        public List<ScheduledJob> findJobsToRun() {
             return null;
         }
 
         @Override
-        public void update(Job job) {
+        public void update(ScheduledJob job) {
 
         }
 
         @Override
-        public void delete(Job job) {
+        public void delete(ScheduledJob job) {
 
         }
     }
