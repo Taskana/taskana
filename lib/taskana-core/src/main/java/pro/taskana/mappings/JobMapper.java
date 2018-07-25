@@ -11,8 +11,8 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import pro.taskana.impl.Job;
 import pro.taskana.impl.persistence.MapTypeHandler;
+import pro.taskana.jobs.ScheduledJob;
 
 /**
  * This class is the mybatis mapping of the JOB table.
@@ -20,50 +20,50 @@ import pro.taskana.impl.persistence.MapTypeHandler;
 public interface JobMapper {
 
     @Insert("<script>"
-        + "INSERT INTO TASKANA.JOB (JOB_ID, CREATED, STARTED, COMPLETED, STATE, TYPE, RETRY_COUNT, EXECUTOR, ERRORS, ARGUMENTS) "
+        + "INSERT INTO TASKANA.SCHEDULED_JOB (JOB_ID, PRIORITY, CREATED, DUE, STATE, LOCKED_BY, LOCK_EXPIRES, TYPE, RETRY_COUNT, ARGUMENTS) "
         + "VALUES ("
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
-        + "TASKANA.JOB_SEQ.NEXTVAL"
+        + "TASKANA.SCHEDULED_JOB_SEQ.NEXTVAL"
         + "</when>"
         + "<otherwise>"
-        + "nextval('TASKANA.JOB_SEQ')"
+        + "nextval('TASKANA.SCHEDULED_JOB_SEQ')"
         + "</otherwise>"
         + "</choose>"
-        + ", #{job.created}, #{job.started}, #{job.completed}, #{job.state}, #{job.type}, #{job.retryCount}, #{job.executor}, #{job.errors}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )"
+        + ", #{job.priority}, #{job.created}, #{job.due}, #{job.state}, #{job.lockedBy}, #{job.lockExpires}, #{job.type}, #{job.retryCount}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )"
         + "</script>")
-    void insertJob(@Param("job") Job job);
+    void insertJob(@Param("job") ScheduledJob job);
 
-    @Select("<script> SELECT   JOB_ID, CREATED, STARTED, COMPLETED, STATE, TYPE, RETRY_COUNT, EXECUTOR, ERRORS, ARGUMENTS "
-        + "FROM TASKANA.JOB "
-        + "WHERE STATE IN ( 'READY') "
-        + "ORDER BY JOB_ID "
+    @Select("<script> SELECT   JOB_ID, PRIORITY, CREATED, DUE, STATE, LOCKED_BY, LOCK_EXPIRES, TYPE, RETRY_COUNT, ARGUMENTS "
+        + "FROM TASKANA.SCHEDULED_JOB "
+        + "WHERE STATE IN ( 'READY') AND (DUE is null OR DUE &lt; CURRENT_TIMESTAMP) AND (LOCK_EXPIRES is null OR LOCK_EXPIRES &lt; CURRENT_TIMESTAMP) AND RETRY_COUNT > 0 "
+        + "ORDER BY PRIORITY DESC "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
+
     @Results(value = {
         @Result(property = "jobId", column = "JOB_ID"),
+        @Result(property = "priority", column = "PRIORITY"),
         @Result(property = "created", column = "CREATED"),
-        @Result(property = "started", column = "STARTED"),
-        @Result(property = "completed", column = "COMPLETED"),
+        @Result(property = "due", column = "DUE"),
         @Result(property = "state", column = "STATE"),
+        @Result(property = "lockedBy", column = "LOCKED_BY"),
+        @Result(property = "lockExpires", column = "LOCK_EXPIRES"),
         @Result(property = "type", column = "TYPE"),
         @Result(property = "retryCount", column = "RETRY_COUNT"),
-        @Result(property = "executor", column = "EXECUTOR"),
-        @Result(property = "errors", column = "ERRORS"),
         @Result(property = "arguments", column = "ARGUMENTS",
             javaType = Map.class, typeHandler = MapTypeHandler.class)
     })
-    List<Job> findJobsToRun();
+    List<ScheduledJob> findJobsToRun();
 
     @Update(
-        value = "UPDATE TASKANA.JOB SET CREATED = #{created}, STARTED = #{started}, COMPLETED = #{completed}, STATE = #{state}, "
-            + "TYPE = #{type}, RETRY_COUNT = #{retryCount},  EXECUTOR = #{executor}, "
-            + "ERRORS = #{errors}, "
+        value = "UPDATE TASKANA.SCHEDULED_JOB SET CREATED = #{created}, PRIORITY = #{priority}, DUE = #{due}, STATE = #{state}, "
+            + "LOCKED_BY = #{lockedBy}, LOCK_EXPIRES = #{lockExpires}, TYPE = #{type}, RETRY_COUNT = #{retryCount}, "
             + "ARGUMENTS = #{arguments,jdbcType=CLOB ,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} "
             + "where JOB_ID = #{jobId}")
-    void update(Job job);
+    void update(ScheduledJob job);
 
     @Delete(
-        value = "DELETE FROM TASKANA.JOB WHERE JOB_ID = #{jobId}")
-    void delete(Job job);
+        value = "DELETE FROM TASKANA.SCHEDULED_JOB WHERE JOB_ID = #{jobId}")
+    void delete(ScheduledJob job);
 }

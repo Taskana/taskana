@@ -144,7 +144,7 @@ public class TaskServiceImpl implements TaskService {
     private Task cancelClaim(String taskId, boolean forceUnclaim)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         String userId = CurrentUserContext.getUserid();
-        LOGGER.debug("entry to cancelClaim(taskId = {}), userId = {}, forceUnclaim = {}", taskId, userId,
+        LOGGER.debug("entry to cancelClaim(taskId = {}), userId = {}, forceUnclaim = {})", taskId, userId,
             forceUnclaim);
         TaskImpl task = null;
         try {
@@ -1391,15 +1391,15 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    BulkOperationResults<String, Exception> refreshPriorityAndDueDate(String taskId)
+    public void refreshPriorityAndDueDate(String taskId)
         throws ClassificationNotFoundException {
-        LOGGER.debug("entry to classificationChanged(taskId = {})", taskId);
+        LOGGER.debug("entry to refreshPriorityAndDueDate(taskId = {})", taskId);
         TaskImpl task = null;
         BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();
         try {
             taskanaEngine.openConnection();
             if (taskId == null || taskId.isEmpty()) {
-                return bulkLog;
+                return;
             }
 
             task = taskMapper.findById(taskId);
@@ -1420,10 +1420,9 @@ public class TaskServiceImpl implements TaskService {
 
             task.setModified(Instant.now());
             taskMapper.update(task);
-            return bulkLog;
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from deleteTask(). ");
+            LOGGER.debug("exit from refreshPriorityAndDueDate(). ");
         }
 
     }

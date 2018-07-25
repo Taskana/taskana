@@ -3,16 +3,10 @@ package pro.taskana.jobs;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.PostConstruct;
 import javax.security.auth.Subject;
 
 import org.slf4j.Logger;
@@ -21,10 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
-import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.security.UserPrincipal;
 import pro.taskana.transaction.TaskanaTransactionProvider;
 
@@ -34,9 +26,7 @@ import pro.taskana.transaction.TaskanaTransactionProvider;
 @Component
 public class JobScheduler {
 
-    private final long untilDays = 14;
     private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
-    private static AtomicBoolean jobRunning = new AtomicBoolean(false);
 
     @Autowired
     private TaskanaEngine taskanaEngine;
@@ -44,41 +34,28 @@ public class JobScheduler {
     @Autowired
     TaskanaTransactionProvider<Object> springTransactionProvider;
 
+    @PostConstruct
+    public void scheduleCleanupJob() {
+        LOGGER.debug("Entry to scheduleCleanupJob.");
+        TaskCleanupJob.initializeSchedule(taskanaEngine);
+        LOGGER.debug("Exit from scheduleCleanupJob.");
+    }
+
     @Scheduled(cron = "${taskana.jobscheduler.async.cron}")
     public void triggerJobs() {
         LOGGER.info("AsyncJobs started.");
-        boolean otherJobActive = jobRunning.getAndSet(true);
-        if (!otherJobActive) {  // only one job should be active at any time
-            try {
-                pro.taskana.impl.JobRunner runner = new pro.taskana.impl.JobRunner(taskanaEngine);
-                runner.registerTransactionProvider(springTransactionProvider);
-                LOGGER.info("Running Jobs");
-                BulkOperationResults<String, Exception> result = runner.runJobs();
-                Map<String, Exception> errors = result.getErrorMap();
-                LOGGER.info("AsyncJobs completed. Result = {} ", LoggerUtils.mapToString(errors));
-            } finally {
-                jobRunning.set(false);
-            }
-        } else {
-            LOGGER.info("AsyncJobs: Don't run Jobs because already another JobRunner is running");
-        }
-    }
-
-    @Scheduled(cron = "${taskana.jobscheduler.cleanup.cron}")
-    public void triggerTaskCleanupJob() {
-        LOGGER.info("CleanupJob started.");
         try {
-            runTaskCleanupJobAsAdmin();
-            LOGGER.info("CleanupJob completed.");
+            runAsyncJobsAsAdmin();
+            LOGGER.info("AsyncJobs completed.");
         } catch (PrivilegedActionException e) {
-            LOGGER.error("CleanupJob failed.", e);
+            LOGGER.info("AsyncJobs failed.", e);
         }
     }
 
     /*
      * Creates an admin subject and runs the job using the subject.
      */
-    private void runTaskCleanupJobAsAdmin() throws PrivilegedActionException {
+    private void runAsyncJobsAsAdmin() throws PrivilegedActionException {
         Subject.doAs(getAdminSubject(),
             new PrivilegedExceptionAction<Object>() {
 
@@ -88,14 +65,8 @@ public class JobScheduler {
                     try {
                         JobRunner runner = new JobRunner(taskanaEngine);
                         runner.registerTransactionProvider(springTransactionProvider);
-                        Instant completedBefore = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
-                            .atZone(ZoneId.systemDefault())
-                            .minusDays(untilDays)
-                            .toInstant();
-
-                        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, completedBefore);
-                        runner.runJobWithRetries(job);
-
+                        LOGGER.info("Running Jobs");
+                        runner.runJobs();
                         return "Successful";
                     } catch (Throwable e) {
                         throw new Exception(e);

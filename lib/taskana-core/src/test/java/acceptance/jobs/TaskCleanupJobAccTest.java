@@ -24,7 +24,6 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.jobs.JobRunner;
 import pro.taskana.jobs.TaskCleanupJob;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -49,14 +48,13 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
         long totalTasksCount = taskService.createTaskQuery().count();
         assertEquals(72, totalTasksCount);
 
-        JobRunner runner = new JobRunner(taskanaEngine);
         Instant completedBefore = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
             .atZone(ZoneId.systemDefault())
             .minusDays(14)
             .toInstant();
 
-        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, completedBefore);
-        runner.runJob(job);
+        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
+        job.run();
 
         totalTasksCount = taskService.createTaskQuery().count();
         assertEquals(66, totalTasksCount);
@@ -70,14 +68,13 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
 
         Task createdTask = createAndCompleteTask();
 
-        JobRunner runner = new JobRunner(taskanaEngine);
         Instant completeUntilDate = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
             .atZone(ZoneId.systemDefault())
             .minusDays(14)
             .toInstant();
 
-        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, completeUntilDate);
-        runner.runJob(job);
+        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
+        job.run();
 
         Task completedCreatedTask = taskService.getTask(createdTask.getId());
         assertNotNull(completedCreatedTask);

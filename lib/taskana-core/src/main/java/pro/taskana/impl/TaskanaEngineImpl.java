@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.ClassificationService;
+import pro.taskana.JobService;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
@@ -151,6 +152,12 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         SqlSession session = this.sessionManager;
         return new ClassificationServiceImpl(this, session.getMapper(ClassificationMapper.class),
             session.getMapper(TaskMapper.class));
+    }
+
+    @Override
+    public JobService getJobService() {
+        SqlSession session = this.sessionManager;
+        return new JobServiceImpl(this, session.getMapper(JobMapper.class));
     }
 
     @Override
@@ -389,4 +396,5 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     public boolean domainExists(String domain) {
         return getConfiguration().getDomains().contains(domain);
     }
+
 }
