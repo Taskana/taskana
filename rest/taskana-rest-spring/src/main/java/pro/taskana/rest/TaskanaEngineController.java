@@ -33,7 +33,10 @@ public class TaskanaEngineController {
     }
 
     @GetMapping(path = "/v1/classification-categories", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<String>> getClassificationCategories() {
+    public ResponseEntity<List<String>> getClassificationCategories(String type) {
+        if (type != null) {
+            return new ResponseEntity<>(taskanaEngineConfiguration.getClassificationCategories(type), HttpStatus.OK);
+        }
         return new ResponseEntity<>(taskanaEngineConfiguration.getClassificationCategories(), HttpStatus.OK);
     }
 
