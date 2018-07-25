@@ -13,6 +13,7 @@ import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TimeInterval;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 
@@ -191,98 +192,98 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery custom1In(String... custom1In) {
-        this.custom1In = custom1In;
+    public ClassificationQuery customAttributeIn(String number, String... customIn) throws InvalidArgumentException {
+        int num = 0;
+        try {
+            num = Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                e.getCause());
+        }
+        if (customIn.length == 0) {
+            throw new InvalidArgumentException(
+                "At least one string has to be provided as a search parameter");
+        }
+
+        switch (num) {
+            case 1:
+                this.custom1In = customIn;
+                break;
+            case 2:
+                this.custom2In = customIn;
+                break;
+            case 3:
+                this.custom3In = customIn;
+                break;
+            case 4:
+                this.custom4In = customIn;
+                break;
+            case 5:
+                this.custom5In = customIn;
+                break;
+            case 6:
+                this.custom6In = customIn;
+                break;
+            case 7:
+                this.custom7In = customIn;
+                break;
+            case 8:
+                this.custom8In = customIn;
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 8");
+        }
+
         return this;
     }
 
     @Override
-    public ClassificationQuery custom1Like(String... custom1Like) {
-        this.custom1Like = toUpperCopy(custom1Like);
-        return this;
-    }
+    public ClassificationQuery customAttributeLike(String number, String... customLike) throws InvalidArgumentException {
+        int num = 0;
+        try {
+            num = Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                e.getCause());
+        }
+        if (customLike.length == 0) {
+            throw new InvalidArgumentException(
+                "At least one string has to be provided as a search parameter");
+        }
 
-    @Override
-    public ClassificationQuery custom2In(String... custom2In) {
-        this.custom2In = custom2In;
-        return this;
-    }
+        switch (num) {
+            case 1:
+                this.custom1Like = toUpperCopy(customLike);
+                break;
+            case 2:
+                this.custom2Like = toUpperCopy(customLike);
+                break;
+            case 3:
+                this.custom3Like = toUpperCopy(customLike);
+                break;
+            case 4:
+                this.custom4Like = toUpperCopy(customLike);
+                break;
+            case 5:
+                this.custom5Like = toUpperCopy(customLike);
+                break;
+            case 6:
+                this.custom6Like = toUpperCopy(customLike);
+                break;
+            case 7:
+                this.custom7Like = toUpperCopy(customLike);
+                break;
+            case 8:
+                this.custom8Like = toUpperCopy(customLike);
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+        }
 
-    @Override
-    public ClassificationQuery custom2Like(String... custom2Like) {
-        this.custom2Like = toUpperCopy(custom2Like);
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom3In(String... custom3In) {
-        this.custom3In = custom3In;
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom3Like(String... custom3Like) {
-        this.custom3Like = toUpperCopy(custom3Like);
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom4In(String... custom4In) {
-        this.custom4In = custom4In;
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom4Like(String... custom4Like) {
-        this.custom4Like = toUpperCopy(custom4Like);
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom5In(String... custom5In) {
-        this.custom5In = custom5In;
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom5Like(String... custom5Like) {
-        this.custom5Like = toUpperCopy(custom5Like);
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom6In(String... custom6In) {
-        this.custom6In = custom6In;
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom6Like(String... custom6Like) {
-        this.custom6Like = toUpperCopy(custom6Like);
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom7In(String... custom7In) {
-        this.custom7In = custom7In;
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom7Like(String... custom7Like) {
-        this.custom7Like = toUpperCopy(custom7Like);
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom8In(String... custom8In) {
-        this.custom8In = custom8In;
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom8Like(String... custom8Like) {
-        this.custom8Like = toUpperCopy(custom8Like);
         return this;
     }
 
@@ -332,43 +333,37 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery orderByCustom1(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_1", sortDirection);
-    }
+    public ClassificationQuery orderByCustomAttribute(String number, SortDirection sortDirection) throws InvalidArgumentException {
+        int num = 0;
+        try {
+            num = Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                e.getCause());
+        }
 
-    @Override
-    public ClassificationQuery orderByCustom2(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_2", sortDirection);
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom3(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_3", sortDirection);
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom4(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_4", sortDirection);
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom5(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_5", sortDirection);
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom6(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_6", sortDirection);
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom7(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_7", sortDirection);
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom8(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_8", sortDirection);
+        switch (num) {
+            case 1:
+                return addOrderCriteria("CUSTOM_1", sortDirection);
+            case 2:
+                return addOrderCriteria("CUSTOM_2", sortDirection);
+            case 3:
+                return addOrderCriteria("CUSTOM_3", sortDirection);
+            case 4:
+                return addOrderCriteria("CUSTOM_4", sortDirection);
+            case 5:
+                return addOrderCriteria("CUSTOM_5", sortDirection);
+            case 6:
+                return addOrderCriteria("CUSTOM_6", sortDirection);
+            case 7:
+                return addOrderCriteria("CUSTOM_7", sortDirection);
+            case 8:
+                return addOrderCriteria("CUSTOM_8", sortDirection);
+            default:
+                throw new InvalidArgumentException(
+                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+        }
     }
 
     @Override
