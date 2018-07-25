@@ -109,82 +109,12 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery custom1In(String... customFields) {
+    public ClassificationQuery customAttributeIn(String num, String... customFields) {
         return this;
     }
 
     @Override
-    public ClassificationQuery custom1Like(String... custom1Like) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom2In(String... custom2In) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom2Like(String... custom2Like) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom3In(String... custom3In) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom3Like(String... custom3Like) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom4In(String... custom4In) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom4Like(String... custom4Like) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom5In(String... custom5In) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom5Like(String... custom5Like) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom6In(String... custom6In) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom6Like(String... custom6Like) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom7In(String... custom7In) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom7Like(String... custom7Like) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom8In(String... custom8In) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery custom8Like(String... custom8Like) {
+    public ClassificationQuery customAttributeLike(String num, String... custom1Like) {
         return this;
     }
 
@@ -256,42 +186,7 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery orderByCustom1(SortDirection sortDirection) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom2(SortDirection sortDirection) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom3(SortDirection sortDirection) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom4(SortDirection sortDirection) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom5(SortDirection sortDirection) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom6(SortDirection sortDirection) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom7(SortDirection sortDirection) {
-        return this;
-    }
-
-    @Override
-    public ClassificationQuery orderByCustom8(SortDirection sortDirection) {
+    public ClassificationQuery orderByCustomAttribute(String num, SortDirection sortDirection) {
         return this;
     }
 

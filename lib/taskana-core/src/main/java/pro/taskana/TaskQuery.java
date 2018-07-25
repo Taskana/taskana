@@ -682,104 +682,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
     TaskQuery orderByWorkbasketKey(SortDirection sortDirection);
 
     /**
-     * This method sorts the query result according to the custom1 value.
+     * This method sorts the query result according to the value of a custom field.
+     * The custom field is choosen by parameter num.
      *
+     * @param num
+     *            identifies which custom attribute is affected. Taskana concatenates "custom_" with num and the
+     *            resulting String must match the name of the database column that contains the custom attribute. Valid
+     *            values are "1", "2" .. "16"
      * @param sortDirection
      *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
      *            the result is sorted in ascending order
      * @return the query
+     * @throws InvalidArgumentException when number is not a valid number between 1 and 16
      */
-    TaskQuery orderByCustom1(SortDirection sortDirection);
-
-    /**
-     * This method sorts the query result according to the custom2 value.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    TaskQuery orderByCustom2(SortDirection sortDirection);
-
-    /**
-     * This method sorts the query result according to the custom3 value.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    TaskQuery orderByCustom3(SortDirection sortDirection);
-
-    /**
-     * This method sorts the query result according to the custom4 value.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    TaskQuery orderByCustom4(SortDirection sortDirection);
-
-    /**
-     * This method sorts the query result according to the custom5 value.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    TaskQuery orderByCustom5(SortDirection sortDirection);
-
-    /**
-     * This method sorts the query result according to the custom6 value.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    TaskQuery orderByCustom6(SortDirection sortDirection);
-
-    /**
-     * This method sorts the query result according to the custom7 value.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    TaskQuery orderByCustom7(SortDirection sortDirection);
-
-    /**
-     * This method sorts the query result according to the custom8 value.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    TaskQuery orderByCustom8(SortDirection sortDirection);
-
-    /**
-     * This method sorts the query result according to the custom9 value.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    TaskQuery orderByCustom9(SortDirection sortDirection);
-
-    /**
-     * This method sorts the query result according to the custom10 value.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    TaskQuery orderByCustom10(SortDirection sortDirection);
+    TaskQuery orderByCustomAttribute(String num, SortDirection sortDirection) throws InvalidArgumentException;
 
     /**
      * Filter for summaries which are containing one of the given taskIds.
