@@ -1,5 +1,6 @@
 package pro.taskana.jobs;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,22 +23,25 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskCleanupJob.class);
 
     // Parameter
-    private Instant completedBefore;
+    private Instant firstRun;
+    private Duration runEvery;
+    private Duration minimumAge;
 
-    // Results
-    private BulkOperationResults<String, TaskanaException> results;
-
-    public TaskCleanupJob(TaskanaEngine taskanaEngine, Instant completedBefore) {
-        super(taskanaEngine);
-        this.completedBefore = completedBefore;
+    public TaskCleanupJob(TaskanaEngine taskanaEngine, ScheduledJob scheduledJob) {
+        super(taskanaEngine, scheduledJob);
+        firstRun = taskanaEngine.getConfiguration().getTaskCleanupJobFirstRun();
+        runEvery = taskanaEngine.getConfiguration().getTaskCleanupJobRunEvery();
+        minimumAge = taskanaEngine.getConfiguration().getTaskCleanupJobMinimumAge();
     }
 
     @Override
     public void run() throws TaskanaException {
+        Instant completedBefore = Instant.now().minus(minimumAge);
         LOGGER.info("Running job to delete all tasks completed before ({})", completedBefore.toString());
         try {
             List<TaskSummary> tasksCompletedBefore = getTasksCompletedBefore(completedBefore);
             deleteTasks(tasksCompletedBefore);
+            scheduleNextCleanupJob();
             LOGGER.info("Job ended successfully.");
         } catch (InvalidArgumentException e) {
             throw new TaskanaException("Error while processing TaskCleanupJob.", e);
@@ -45,7 +49,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     }
 
     private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
-        return taskanaEngine.getTaskService()
+        return taskanaEngineImpl.getTaskService()
             .createTaskQuery()
             .completedWithin(new TimeInterval(null, untilDate))
             .list();
@@ -55,11 +59,41 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
         List<String> tasksIdsToBeDeleted = tasksToBeDeleted.stream()
             .map(task -> task.getTaskId())
             .collect(Collectors.toList());
-        results = taskanaEngine.getTaskService().deleteTasks(tasksIdsToBeDeleted);
+        BulkOperationResults<String, TaskanaException> results = taskanaEngineImpl.getTaskService()
+            .deleteTasks(tasksIdsToBeDeleted);
         LOGGER.info("{} tasks deleted.", tasksIdsToBeDeleted.size() - results.getFailedIds().size());
         for (String failedId : results.getFailedIds()) {
             LOGGER.warn("Task with id {} could not be deleted. Reason: {}", failedId, results.getErrorForId(failedId));
         }
+    }
+
+    public void scheduleNextCleanupJob() {
+        LOGGER.debug("Entry to scheduleNextCleanupJob.");
+        ScheduledJob job = new ScheduledJob();
+        job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
+        job.setDue(getNextDueForTaskCleanupJob());
+        taskanaEngineImpl.getJobService().createJob(job);
+        LOGGER.debug("Exit from scheduleNextCleanupJob.");
+    }
+
+    private Instant getNextDueForTaskCleanupJob() {
+        Instant nextRunAt = firstRun;
+        while (nextRunAt.isBefore(Instant.now())) {
+            nextRunAt = nextRunAt.plus(runEvery);
+        }
+        LOGGER.info("Scheduling next run of the TaskCleanupJob for {}", nextRunAt);
+        return nextRunAt;
+    }
+
+    /**
+     * Initializes the TaskCleanupJob schedule. <br>
+     * All scheduled cleanup jobs are cancelled/deleted and a new one is scheduled.
+     *
+     * @param taskanaEngine
+     */
+    public static void initializeSchedule(TaskanaEngine taskanaEngine) {
+        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
+        job.scheduleNextCleanupJob();
     }
 
 }

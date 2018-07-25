@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -37,8 +36,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.scheduling.TriggerContext;
-import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -121,28 +118,7 @@ public class AsyncUpdateJobIntTest {
         assertEquals(200, con.getResponseCode());
         con.disconnect();
 
-        // wait until the next trigger time + 2 seconds to give JobScheduler a chance to run
-        String cron = env.getProperty("taskana.jobscheduler.async.cron");
-        CronTrigger trigger = new CronTrigger(cron);
-        TriggerContext context = new TriggerContext() {
-
-            @Override
-            public Date lastScheduledExecutionTime() {
-                return null;
-            }
-
-            @Override
-            public Date lastActualExecutionTime() {
-                return null;
-            }
-
-            @Override
-            public Date lastCompletionTime() {
-                return null;
-            }
-        };
-        Date now = new Date();
-        long delay = trigger.nextExecutionTime(context).getTime() - now.getTime() + 2000;
+        long delay = 16000;
 
         LOGGER.info("About to sleep for " + delay / 1000
             + " seconds to give JobScheduler a chance to process the classification change");
@@ -207,7 +183,7 @@ public class AsyncUpdateJobIntTest {
         TaskResource taskResource = taskResponse.getBody();
         Task task = taskResourceAssembler.toModel(taskResource);
 
-        assertTrue(!before.isAfter(task.getModified()));
+        assertTrue("Task " + task.getId() + " has not been refreshed.", !before.isAfter(task.getModified()));
     }
 
     /**
