@@ -185,10 +185,10 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsWithCustom1() {
+    public void testGetClassificationsWithCustom1() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            .custom1Like("VNR,RVNR,KOLVNR", "VNR")
+            .customAttributeIn("1", "VNR,RVNR,KOLVNR", "VNR")
             .domainIn("DOMAIN_A")
             .list();
         assertNotNull(classifications);
@@ -196,10 +196,10 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsWithCustom1Like() {
+    public void testGetClassificationsWithCustom1Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
-            .custom1Like("%RVNR%")
+            .customAttributeLike("1", "%RVNR%")
             .domainIn("DOMAIN_A")
             .typeIn("TASK")
             .list();
@@ -208,11 +208,11 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsWithParentAndCustom2() {
+    public void testGetClassificationsWithParentAndCustom2() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .parentIdIn("CLI:100000000000000000000000000000000004")
-            .custom2Like("TEXT_1", "TEXT_2")
+            .customAttributeIn("2", "TEXT_1", "TEXT_2")
             .list();
         // zwei tests
         assertNotNull(classifications);
@@ -323,127 +323,127 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom1In() {
+    public void testQueryForCustom1In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom1In("VNR,RVNR,KOLVNR, ANR", "VNR")
+                .customAttributeIn("1", "VNR,RVNR,KOLVNR, ANR", "VNR")
                 .list();
         assertEquals(17, results.size());
     }
 
     @Test
-    public void testQueryForCustom2In() {
+    public void testQueryForCustom2In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom2In("CUSTOM2", "custom2")
+                .customAttributeIn("2", "CUSTOM2", "custom2")
                 .list();
         assertEquals(3, results.size());
     }
 
     @Test
-    public void testQueryForCustom3In() {
+    public void testQueryForCustom3In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom3In("Custom3", "custom3")
+                .customAttributeIn("3", "Custom3", "custom3")
                 .list();
         assertEquals(3, results.size());
     }
 
     @Test
-    public void testQueryForCustom4In() {
+    public void testQueryForCustom4In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom4In("custom4")
+                .customAttributeIn("4", "custom4")
                 .list();
         assertEquals(3, results.size());
     }
 
     @Test
-    public void testQueryForCustom5In() {
+    public void testQueryForCustom5In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom5In("custom5")
+                .customAttributeIn("5", "custom5")
                 .list();
         assertEquals(3, results.size());
     }
 
     @Test
-    public void testQueryForCustom6In() {
+    public void testQueryForCustom6In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom6In("custom6")
+                .customAttributeIn("6", "custom6")
                 .list();
         assertEquals(3, results.size());
     }
 
     @Test
-    public void testQueryForCustom7In() {
+    public void testQueryForCustom7In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom7In("custom7", "custom_7")
+                .customAttributeIn("7", "custom7", "custom_7")
                 .list();
         assertEquals(3, results.size());
     }
 
     @Test
-    public void testQueryForCustom8In() {
+    public void testQueryForCustom8In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom8In("custom_8", "custom8")
+                .customAttributeIn("8", "custom_8", "custom8")
                 .list();
         assertEquals(3, results.size());
     }
 
     @Test
-    public void testQueryForCustom3Like() {
+    public void testQueryForCustom3Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom3Like("cus%")
+                .customAttributeLike("3", "cus%")
                 .list();
         assertEquals(4, results.size());
     }
 
     @Test
-    public void testQueryForCustom4Like() {
+    public void testQueryForCustom4Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom4Like("cus%")
+                .customAttributeLike("4", "cus%")
                 .list();
         assertEquals(4, results.size());
     }
 
     @Test
-    public void testQueryForCustom5Like() {
+    public void testQueryForCustom5Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom5Like("cus%")
+                .customAttributeLike("5", "cus%")
                 .list();
         assertEquals(4, results.size());
     }
 
     @Test
-    public void testQueryForCustom6Like() {
+    public void testQueryForCustom6Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom6Like("cus%")
+                .customAttributeLike("6", "cus%")
                 .list();
         assertEquals(4, results.size());
     }
 
     @Test
-    public void testQueryForCustom7Like() {
+    public void testQueryForCustom7Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom7Like("cus%")
+                .customAttributeLike("7", "cus%")
                 .list();
         assertEquals(4, results.size());
     }
 
     @Test
-    public void testQueryForCustom8Like() {
+    public void testQueryForCustom8Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .custom8Like("cus%")
+                .customAttributeLike("8", "cus%")
                 .list();
         assertEquals(4, results.size());
     }
@@ -542,10 +542,10 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom1Desc() {
+    public void testQueryForOrderByCustom1Desc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .orderByCustom1(desc)
+                .orderByCustomAttribute("1", desc)
                 .orderByDomain(asc)
                 .orderByServiceLevel(desc)
                 .list();
@@ -553,10 +553,10 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom2Asc() {
+    public void testQueryForOrderByCustom2Asc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .orderByCustom2(asc)
+                .orderByCustomAttribute("2", asc)
                 .orderByName(asc)
                 .orderByParentKey(asc)
                 .orderByDomain(asc)
@@ -565,60 +565,60 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom3Desc() {
+    public void testQueryForOrderByCustom3Desc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .orderByCustom3(desc)
+                .orderByCustomAttribute("3", desc)
                 .orderByName(asc)
                 .list();
         assertEquals("CLI:100000000000000000000000000000000014", results.get(0).getId());
     }
 
     @Test
-    public void testQueryForOrderByCustom4Asc() {
+    public void testQueryForOrderByCustom4Asc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .orderByCustom4(asc)
+                .orderByCustomAttribute("4", asc)
                 .orderByName(asc)
                 .list();
         assertEquals("CLI:100000000000000000000000000000000010", results.get(results.size() - 5).getId());
     }
 
     @Test
-    public void testQueryForOrderByCustom5Desc() {
+    public void testQueryForOrderByCustom5Desc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .orderByCustom5(desc)
+                .orderByCustomAttribute("5", desc)
                 .orderByName(asc)
                 .list();
         assertEquals("CLI:100000000000000000000000000000000011", results.get(0).getId());
     }
 
     @Test
-    public void testQueryForOrderByCustom6Asc() {
+    public void testQueryForOrderByCustom6Asc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .orderByCustom6(asc)
+                .orderByCustomAttribute("6", asc)
                 .orderByName(asc)
                 .list();
         assertEquals("CLI:100000000000000000000000000000000010", results.get(results.size() - 4).getId());
     }
 
     @Test
-    public void testQueryForOrderByCustom7Desc() {
+    public void testQueryForOrderByCustom7Desc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .orderByCustom7(desc)
+                .orderByCustomAttribute("7", desc)
                 .orderByName(asc)
                 .list();
         assertEquals("CLI:100000000000000000000000000000000011", results.get(0).getId());
     }
 
     @Test
-    public void testQueryForOrderByCustom8Asc() {
+    public void testQueryForOrderByCustom8Asc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
-                .orderByCustom8(asc)
+                .orderByCustomAttribute("8", asc)
                 .orderByName(asc)
                 .list();
         assertEquals("CLI:100000000000000000000000000000000010", results.get(results.size() - 4).getId());

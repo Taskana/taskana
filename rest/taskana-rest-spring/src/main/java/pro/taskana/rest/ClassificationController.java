@@ -194,7 +194,7 @@ public class ClassificationController extends AbstractPagingController {
     }
 
     private ClassificationQuery applyFilterParams(ClassificationQuery query,
-        MultiValueMap<String, String> params) {
+        MultiValueMap<String, String> params) throws InvalidArgumentException {
         if (params.containsKey(NAME)) {
             String[] names = extractCommaSeparatedFields(params.get(NAME));
             query.nameIn(names);
@@ -225,35 +225,35 @@ public class ClassificationController extends AbstractPagingController {
             params.remove(TYPE);
         }
         if (params.containsKey(CUSTOM_1_LIKE)) {
-            query.custom1Like(LIKE + params.get(CUSTOM_1_LIKE).get(0) + LIKE);
+            query.customAttributeLike("1", LIKE + params.get(CUSTOM_1_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_1_LIKE);
         }
         if (params.containsKey(CUSTOM_2_LIKE)) {
-            query.custom2Like(LIKE + params.get(CUSTOM_2_LIKE).get(0) + LIKE);
+            query.customAttributeLike("2", LIKE + params.get(CUSTOM_2_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_2_LIKE);
         }
         if (params.containsKey(CUSTOM_3_LIKE)) {
-            query.custom3Like(LIKE + params.get(CUSTOM_3_LIKE).get(0) + LIKE);
+            query.customAttributeLike("3", LIKE + params.get(CUSTOM_3_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_3_LIKE);
         }
         if (params.containsKey(CUSTOM_4_LIKE)) {
-            query.custom4Like(LIKE + params.get(CUSTOM_4_LIKE).get(0) + LIKE);
+            query.customAttributeLike("4", LIKE + params.get(CUSTOM_4_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_4_LIKE);
         }
         if (params.containsKey(CUSTOM_5_LIKE)) {
-            query.custom5Like(LIKE + params.get(CUSTOM_5_LIKE).get(0) + LIKE);
+            query.customAttributeLike("5", LIKE + params.get(CUSTOM_5_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_5_LIKE);
         }
         if (params.containsKey(CUSTOM_6_LIKE)) {
-            query.custom6Like(LIKE + params.get(CUSTOM_6_LIKE).get(0) + LIKE);
+            query.customAttributeLike("6", LIKE + params.get(CUSTOM_6_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_6_LIKE);
         }
         if (params.containsKey(CUSTOM_7_LIKE)) {
-            query.custom7Like(LIKE + params.get(CUSTOM_7_LIKE).get(0) + LIKE);
+            query.customAttributeLike("7", LIKE + params.get(CUSTOM_7_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_7_LIKE);
         }
         if (params.containsKey(CUSTOM_8_LIKE)) {
-            query.custom8Like(LIKE + params.get(CUSTOM_8_LIKE).get(0) + LIKE);
+            query.customAttributeLike("8", LIKE + params.get(CUSTOM_8_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_8_LIKE);
         }
         return query;
