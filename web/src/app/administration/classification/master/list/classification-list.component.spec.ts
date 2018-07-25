@@ -19,7 +19,6 @@ import { ClassificationsService } from 'app/administration/services/classificati
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
 import {
@@ -45,7 +44,7 @@ describe('ClassificationListComponent', () => {
   let fixture: ComponentFixture<ClassificationListComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
   const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
-  let classificationsService, classificationTypesService, classificationCategoriesService;
+  let classificationsService, classificationCategoriesService;
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
@@ -55,7 +54,7 @@ describe('ClassificationListComponent', () => {
         imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule],
         providers: [
           HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
-          ErrorModalService, ClassificationTypesService, RequestInProgressService, ClassificationCategoriesService, TreeService
+          ErrorModalService, RequestInProgressService, ClassificationCategoriesService, TreeService
         ]
       })
     };
@@ -64,10 +63,9 @@ describe('ClassificationListComponent', () => {
       component = fixture.componentInstance;
 
       classificationsService = testBed.get(ClassificationsService);
-      classificationTypesService = testBed.get(ClassificationTypesService);
       classificationCategoriesService = testBed.get(ClassificationCategoriesService);
       spyOn(classificationsService, 'getClassifications').and.returnValue(of(treeNodes));
-      spyOn(classificationTypesService, 'getClassificationTypes')
+      spyOn(classificationCategoriesService, 'getClassificationTypes')
         .and.returnValue(of(classificationTypes));
       spyOn(classificationCategoriesService, 'getCategories').and.returnValue(of(new Array<string>('cat1', 'cat2')));
       spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));

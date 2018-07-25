@@ -16,7 +16,6 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
-import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
 // tslint:disable:max-line-length
@@ -78,7 +77,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private requestInProgressService: RequestInProgressService,
     private alertService: AlertService,
     private treeService: TreeService,
-    private classificationTypeService: ClassificationTypesService,
     private categoryService: ClassificationCategoriesService,
     private domainService: DomainService,
     private customFieldsService: CustomFieldsService,
@@ -87,7 +85,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.classificationTypeService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
+    this.categoryService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
       this.classificationTypes = classificationTypes;
     })
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
@@ -119,7 +117,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe(showDetail => {
       this.showDetail = showDetail;
     });
-
 
     this.categoriesSubscription = this.categoryService.getCategories().subscribe((categories: Array<string>) => {
       this.categories = categories;
@@ -247,7 +244,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classification.parentKey = classificationSelected.key;
     this.classification.category = classificationSelected.category;
     this.classification.domain = this.domainService.getSelectedDomainValue();
-    this.selectedClassificationSubscription = this.classificationTypeService.getSelectedClassificationType().subscribe(type => {
+    this.selectedClassificationSubscription = this.categoryService.getSelectedClassificationType().subscribe(type => {
       if (this.classification) { this.classification.type = type; }
     });
     this.addDateToClassification();
