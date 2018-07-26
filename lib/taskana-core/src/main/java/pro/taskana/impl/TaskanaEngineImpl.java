@@ -203,6 +203,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             this.connection = connection;
             // disabling auto commit for passed connection in order to gain full control over the connection management
             connection.setAutoCommit(false);
+            connection.setSchema(taskanaEngineConfiguration.getSchemaName());
             mode = ConnectionManagementMode.EXPLICIT;
             sessionManager.startManagedSession(connection);
         } else if (this.connection != null) {
@@ -227,9 +228,17 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     /**
      * Open the connection to the database. to be called at the begin of each Api call that accesses the database
+     *
      */
     void openConnection() {
         initSqlSession();
+        try {
+            this.sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
+        } catch (SQLException e) {
+            throw new SystemException(
+                "Method openConnection() could not open a connection to the database. No schema has been created.",
+                e.getCause());
+        }
         if (mode != ConnectionManagementMode.EXPLICIT) {
             pushSessionToStack(this.sessionManager);
         }

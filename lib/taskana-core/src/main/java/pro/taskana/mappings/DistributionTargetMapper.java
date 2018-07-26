@@ -12,28 +12,28 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface DistributionTargetMapper {
 
-    @Insert("INSERT INTO TASKANA.DISTRIBUTION_TARGETS (SOURCE_ID, TARGET_ID) VALUES (#{sourceId}, #{targetId})")
+    @Insert("INSERT INTO DISTRIBUTION_TARGETS (SOURCE_ID, TARGET_ID) VALUES (#{sourceId}, #{targetId})")
     void insert(@Param("sourceId") String sourceId, @Param("targetId") String targetId);
 
-    @Delete("DELETE FROM TASKANA.DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID = #{targetId}")
+    @Delete("DELETE FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID = #{targetId}")
     void delete(@Param("sourceId") String sourceId, @Param("targetId") String targetId);
 
-    @Select("<script>SELECT TARGET_ID FROM TASKANA.DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} "
+    @Select("<script>SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> findBySourceId(@Param("sourceId") String sourceId);
 
-    @Select("<script>SELECT count(*) FROM TASKANA.DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID = #{targetId}"
+    @Select("<script>SELECT count(*) FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID = #{targetId}"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     int getNumberOfDistributionTargets(@Param("sourceId") String sourceId, @Param("targetId") String targetId);
 
-    @Delete("<script>DELETE FROM TASKANA.DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID IN (<foreach item='target' collection='targetId' separator=',' > #{target} </foreach>)</script>")
+    @Delete("<script>DELETE FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId} AND TARGET_ID IN (<foreach item='target' collection='targetId' separator=',' > #{target} </foreach>)</script>")
     void deleteMultipleBySourceId(@Param("sourceId") String sourceId, @Param("targetId") List<String> targetId);
 
-    @Delete("DELETE FROM TASKANA.DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId}")
+    @Delete("DELETE FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{sourceId}")
     void deleteAllDistributionTargetsBySourceId(@Param("sourceId") String sourceId);
 
-    @Delete("DELETE FROM TASKANA.DISTRIBUTION_TARGETS WHERE TARGET_ID = #{targetId}")
+    @Delete("DELETE FROM DISTRIBUTION_TARGETS WHERE TARGET_ID = #{targetId}")
     void deleteAllDistributionTargetsByTargetId(@Param("targetId") String targetId);
 }
