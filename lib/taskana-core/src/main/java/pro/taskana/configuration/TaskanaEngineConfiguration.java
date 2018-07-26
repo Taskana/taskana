@@ -43,6 +43,7 @@ public class TaskanaEngineConfiguration {
     private static final String USER_NAME = "sa";
     private static final String USER_PASSWORD = "sa";
     private static final String JDBC_H2_MEM_TASKANA = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA";
+    private static final String SCHEMA_NAME = "taskana.schema.name";
     private static final String H2_DRIVER = "org.h2.Driver";
     private static final String TASKANA_PROPERTIES = "/taskana.properties";
     private static final String TASKANA_ROLES_SEPARATOR = "|";
@@ -56,7 +57,7 @@ public class TaskanaEngineConfiguration {
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
     private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";
     protected static final String TASKANA_SCHEMA_VERSION = "1.0.2"; // must match the VERSION value in table
-                                                                    // TASKANA.TASKANA_SCHEMA_VERSION
+    // TASKANA_SCHEMA_VERSION
 
     // Taskana properties file
     protected String propertiesFileName = TASKANA_PROPERTIES;
@@ -64,6 +65,7 @@ public class TaskanaEngineConfiguration {
     // Taskana datasource configuration
     protected DataSource dataSource;
     protected DbSchemaCreator dbSchemaCreator;
+    protected String schemaName;
 
     // Taskana role configuration
     protected String rolesSeparator = TASKANA_ROLES_SEPARATOR;
@@ -119,15 +121,16 @@ public class TaskanaEngineConfiguration {
             this.rolesSeparator = rolesSeparator;
         }
 
-        initTaskanaProperties(this.propertiesFileName, this.rolesSeparator);
-
         if (dataSource != null) {
             this.dataSource = dataSource;
         } else {
             // use default In Memory datasource
             this.dataSource = createDefaultDataSource();
         }
-        dbSchemaCreator = new DbSchemaCreator(this.dataSource);
+
+        initTaskanaProperties(this.propertiesFileName, this.rolesSeparator);
+
+        dbSchemaCreator = new DbSchemaCreator(this.dataSource, this.getSchemaName());
         dbSchemaCreator.run();
 
         if (!dbSchemaCreator.isValidSchemaVersion(TASKANA_SCHEMA_VERSION)) {
@@ -140,6 +143,7 @@ public class TaskanaEngineConfiguration {
     public void initTaskanaProperties(String propertiesFile, String rolesSeparator) {
         LOGGER.debug("Reading taskana configuration from {} with role separator {}", propertiesFile, rolesSeparator);
         Properties props = readPropertiesFromFile(propertiesFile);
+        initSchemaName(props);
         initTaskanaRoles(props, rolesSeparator);
         initJobParameters(props);
         initDomains(props);
@@ -236,7 +240,26 @@ public class TaskanaEngineConfiguration {
                 classificationCategories.add(st.nextToken().trim().toUpperCase());
             }
         }
-        LOGGER.debug("Configured domains: {}", domains);
+        LOGGER.debug("Configured classification categories : {}", domains);
+    }
+
+    private void initSchemaName(Properties props) {
+        String schemaName = props.getProperty(SCHEMA_NAME);
+        if (schemaName != null && !schemaName.isEmpty()) {
+            try {
+                if (TaskanaEngineImpl.isPostgreSQL(
+                    this.dataSource.getConnection().getMetaData().getDatabaseProductName())) {
+                    this.setSchemaName(schemaName.toLowerCase());
+                } else {
+                    this.setSchemaName(schemaName);
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Internal System error, could not read dataSource connection.");
+                throw new SystemException(
+                    "Internal System error, could not read dataSource connection.");
+            }
+        }
+        LOGGER.debug("Working schema: {}", this.getSchemaName());
     }
 
     private void initTaskanaRoles(Properties props, String rolesSeparator) {
@@ -435,6 +458,14 @@ public class TaskanaEngineConfiguration {
 
     public Duration getTaskCleanupJobMinimumAge() {
         return taskCleanupJobMinimumAge;
+    }
+
+    public String getSchemaName() {
+        return schemaName;
+    }
+
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
     }
 
     /**
