@@ -25,14 +25,16 @@ public class DbSchemaCreator {
     private static final String DB_SCHEMA_POSTGRES = SQL + "/taskana-schema-postgres.sql";
     private static final String DB_SCHEMA_DETECTION = SQL + "/schema-detection.sql";
     private DataSource dataSource;
+    private String schemaName;
     private StringWriter outWriter = new StringWriter();
     private PrintWriter logWriter = new PrintWriter(outWriter);
     private StringWriter errorWriter = new StringWriter();
     private PrintWriter errorLogWriter = new PrintWriter(errorWriter);
 
-    public DbSchemaCreator(DataSource dataSource) {
+    public DbSchemaCreator(DataSource dataSource, String schema) {
         super();
         this.dataSource = dataSource;
+        this.schemaName = schema;
     }
 
     private static String selectDbScriptFileName(String dbProductName) {
@@ -47,9 +49,9 @@ public class DbSchemaCreator {
      */
     public void run() throws SQLException {
         Connection connection = dataSource.getConnection();
+        connection.setSchema(schemaName);
         ScriptRunner runner = new ScriptRunner(connection);
         LOGGER.debug(connection.getMetaData().toString());
-
         runner.setStopOnError(true);
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
@@ -82,17 +84,18 @@ public class DbSchemaCreator {
         SqlRunner runner = null;
         try {
             Connection connection = dataSource.getConnection();
+            connection.setSchema(this.schemaName);
             runner = new SqlRunner(connection);
             LOGGER.debug(connection.getMetaData().toString());
 
-            String query = "select VERSION from TASKANA.TASKANA_SCHEMA_VERSION where "
-                + "VERSION = (select max(VERSION) from TASKANA.TASKANA_SCHEMA_VERSION) "
+            String query = "select VERSION from TASKANA_SCHEMA_VERSION where "
+                + "VERSION = (select max(VERSION) from TASKANA_SCHEMA_VERSION) "
                 + "AND VERSION = ?";
 
             Map<String, Object> queryResult = runner.selectOne(query, expectedVersion);
             if (queryResult == null || queryResult.isEmpty()) {
                 LOGGER.error(
-                    "Schema version not valid. The VERSION property in table TASKANA.TASKANA_SCHEMA_VERSION has not the expected value {}",
+                    "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION has not the expected value {}",
                     expectedVersion);
                 return false;
             } else {
@@ -102,7 +105,7 @@ public class DbSchemaCreator {
 
         } catch (Exception e) {
             LOGGER.error(
-                "Schema version not valid. The VERSION property in table TASKANA.TASKANA_SCHEMA_VERSION has not the expected value {}",
+                "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION has not the expected value {}",
                 expectedVersion);
             return false;
         } finally {
