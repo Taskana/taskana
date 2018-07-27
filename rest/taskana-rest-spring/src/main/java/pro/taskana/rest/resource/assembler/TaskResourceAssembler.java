@@ -31,6 +31,9 @@ public class TaskResourceAssembler
     @Autowired
     private WorkbasketSummaryResourceAssembler workbasketAssembler;
 
+    @Autowired
+    private AttachmentResourcesAssembler attachmentAssembler;
+
     public TaskResourceAssembler() {
         super(TaskController.class, TaskResource.class);
     }
@@ -58,6 +61,7 @@ public class TaskResourceAssembler
         resource.setClassificationSummaryResource(
             classificationAssembler.toResource(task.getClassificationSummary()));
         resource.setWorkbasketSummaryResource(workbasketAssembler.toResource(task.getWorkbasketSummary()));
+        resource.setAttachments(attachmentAssembler.toResources(task.getAttachments()));
         try {
             if (task.getCustomAttribute("1") != null) {
                 resource.setCustom1(task.getCustomAttribute("1"));
@@ -136,6 +140,7 @@ public class TaskResourceAssembler
         }
         task.setClassificationSummary(classificationAssembler.toModel(resource.getClassificationSummaryResource()));
         task.setWorkbasketSummary(workbasketAssembler.toModel(resource.getWorkbasketSummaryResource()));
+        task.setAttachments(attachmentAssembler.toModel(resource.getAttachments()));
         if (resource.getCustom1() != null) {
             task.setCustom1(resource.getCustom1());
         }

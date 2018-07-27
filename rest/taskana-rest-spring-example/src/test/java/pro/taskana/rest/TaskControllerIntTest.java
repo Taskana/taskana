@@ -1,6 +1,7 @@
 package pro.taskana.rest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -18,6 +19,7 @@ import java.util.Collections;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -289,6 +291,30 @@ public class TaskControllerIntTest {
         assertNotNull(response.getBody().getLink(Link.REL_FIRST));
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+    }
+    
+    @Test
+    public void testGetTaskWithAttachments() throws IOException {
+        URL url = new URL("http://127.0.0.1:" + port + "/v1/tasks/TKI:000000000000000000000000000000000002");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
+        assertEquals(200, con.getResponseCode());
+        
+        BufferedReader in = new BufferedReader(
+            new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+        String response = content.toString();
+        assertFalse(response.contains("\"attachments\":[]"));
+        int start = response.indexOf("created", response.indexOf("created") + 1);
+        String createdString = response.substring(start + 10, start + 30);
+        assertTrue(createdString.matches("\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)"));
     }
 
     @Test

@@ -29,13 +29,14 @@ public class SampleDataGenerator {
     private static final String WORKBASKET_ACCESS_LIST = SQL + TEST_DATA + "/workbasket-access-list.sql";
     private static final String CLASSIFICATION = SQL + TEST_DATA + "/classification.sql";
     private static final String OBJECT_REFERENCE = SQL + TEST_DATA + "/object-reference.sql";
+    private static final String ATTACHMENT = SQL + TEST_DATA + "/attachment.sql";
     private ScriptRunner runner;
 
     DataSource dataSource;
 
     public SampleDataGenerator(DataSource dataSource) throws SQLException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(dataSource.getConnection().getMetaData().toString());
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(dataSource.getConnection().getMetaData().toString());
         }
         this.dataSource = dataSource;
 
@@ -69,6 +70,8 @@ public class SampleDataGenerator {
             new InputStreamReader(this.getClass().getResourceAsStream(CLASSIFICATION), StandardCharsets.UTF_8)));
         runner.runScript(new BufferedReader(
             new InputStreamReader(this.getClass().getResourceAsStream(TASK), StandardCharsets.UTF_8)));
+        runner.runScript(new BufferedReader(
+            new InputStreamReader(this.getClass().getResourceAsStream(ATTACHMENT), StandardCharsets.UTF_8)));
         runner.runScript(new BufferedReader(new InputStreamReader(
             this.getClass().getResourceAsStream(WORKBASKET_ACCESS_LIST), StandardCharsets.UTF_8)));
         runner.runScript(new BufferedReader(
@@ -76,7 +79,7 @@ public class SampleDataGenerator {
 
         runner.closeConnection();
 
-        LOGGER.debug(outWriter.toString());
+        LOGGER.trace(outWriter.toString());
         if (!errorWriter.toString().trim().isEmpty()) {
             LOGGER.error(errorWriter.toString());
         }
