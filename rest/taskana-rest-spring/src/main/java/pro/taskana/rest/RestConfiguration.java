@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,9 @@ import pro.taskana.ldap.LdapClient;
 @ComponentScan
 @EnableTransactionManagement
 public class RestConfiguration {
+
+    @Value("${taskana.schemaName:TASKANA}")
+    private String schemaName;
 
     @Bean
     public ClassificationService getClassificationService(TaskanaEngine taskanaEngine) {
@@ -62,7 +66,7 @@ public class RestConfiguration {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public TaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) throws SQLException {
-        return new SpringTaskanaEngineConfiguration(dataSource, true, true);
+        return new SpringTaskanaEngineConfiguration(dataSource, true, true, schemaName);
     }
 
     @Bean

@@ -85,7 +85,8 @@ public class TaskServiceImplIntExplicitTest {
     @Before
     public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
+            TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -176,7 +177,8 @@ public class TaskServiceImplIntExplicitTest {
         DataSource ds = TaskanaEngineConfiguration.createDefaultDataSource();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(ds, false);
-        TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false);
+        TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false,
+            null);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
         Connection connection = ds.getConnection();
         te.setConnection(connection);
@@ -382,7 +384,8 @@ public class TaskServiceImplIntExplicitTest {
 
         // Set up Security for this Test
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, true);
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, true,
+            TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);

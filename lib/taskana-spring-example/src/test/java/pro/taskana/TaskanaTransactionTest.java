@@ -2,7 +2,13 @@ package pro.taskana;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
@@ -17,6 +23,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pro.taskana.exceptions.DomainNotFoundException;
+import pro.taskana.exceptions.InvalidWorkbasketException;
+import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAlreadyExistException;
+import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.impl.WorkbasketImpl;
+import pro.taskana.impl.util.IdGenerator;
+
 /**
  *
  */
@@ -26,11 +41,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles({"inmemorydb", "dev"})
 public class TaskanaTransactionTest {
 
+    private static final int POOL_TIME_TO_WAIT = 50;
+
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private TaskanaEngine taskanaEngine;
 
     @Before
     public void before() {
@@ -102,6 +125,7 @@ public class TaskanaTransactionTest {
         assertThat(responseEntity.getBody(), containsString("tests: 2"));
 
         assertAfter(2, 2);
+
     }
 
     @Test
@@ -115,6 +139,27 @@ public class TaskanaTransactionTest {
         assertThat(responseEntity.getBody(), containsString("tests: 2"));
 
         assertAfter(0, 0);
+    }
+
+    @Test
+    public void testTransactionCustomDbWithSchemaSetToTaskana()
+        throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, DomainNotFoundException,
+        InvalidWorkbasketException, WorkbasketAlreadyExistException {
+
+        TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        Connection connection = dataSource.getConnection();
+
+        assertNotEquals(connection.getSchema(), "PUBLIC");
+        jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('1', 'test')");
+        jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('2', 'test2')");
+        int result = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
+        assertEquals(2, result);
+        Workbasket wbCreated = taskanaEngine.getWorkbasketService()
+            .createWorkbasket(createWorkBasket("key1", "workbasket1"));
+        Workbasket wb = taskanaEngineImpl.getWorkbasketService().getWorkbasket(wbCreated.getId());
+        assertNotNull(wb);
+        result = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
+        assertEquals(2, result);
     }
 
     private void assertBefore(int workbaskets, int tests) {
@@ -156,4 +201,15 @@ public class TaskanaTransactionTest {
             throw new RuntimeException("error get customdb.tests: " + tests.getBody());
         }
     }
+
+    private Workbasket createWorkBasket(String key, String name) {
+        WorkbasketImpl workbasket = (WorkbasketImpl) taskanaEngine.getWorkbasketService().newWorkbasket(key,
+            "DOMAIN_A");
+        String id1 = IdGenerator.generateWithPrefix("TWB");
+        workbasket.setId(id1);
+        workbasket.setName(name);
+        workbasket.setType(WorkbasketType.GROUP);
+        return workbasket;
+    }
+
 }

@@ -13,13 +13,13 @@ import pro.taskana.TaskanaEngine;
 public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration {
 
     public SpringTaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
-        boolean securityEnabled) throws SQLException {
-        super(dataSource, useManagedTransactions, securityEnabled);
+        boolean securityEnabled, String schemaName) throws SQLException {
+        super(dataSource, useManagedTransactions, securityEnabled, schemaName);
     }
 
     public SpringTaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
-        boolean securityEnabled, String propertiesFileName, String propertiesSeparator) throws SQLException {
-        super(dataSource, useManagedTransactions, securityEnabled, propertiesFileName, propertiesSeparator);
+        boolean securityEnabled, String propertiesFileName, String propertiesSeparator, String schemaName) throws SQLException {
+        super(dataSource, useManagedTransactions, securityEnabled, propertiesFileName, propertiesSeparator, schemaName);
     }
 
     /**
