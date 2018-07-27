@@ -1,7 +1,10 @@
 package pro.taskana.configuration;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,6 +27,8 @@ public class DbSchemaCreator {
     private static final String DB_SCHEMA = SQL + "/taskana-schema.sql";
     private static final String DB_SCHEMA_POSTGRES = SQL + "/taskana-schema-postgres.sql";
     private static final String DB_SCHEMA_DETECTION = SQL + "/schema-detection.sql";
+    private static final String DB_SCHEMA_DETECTION_POSTGRES = SQL + "/schema-detection-postgres.sql";
+
     private DataSource dataSource;
     private String schemaName;
     private StringWriter outWriter = new StringWriter();
@@ -41,6 +46,10 @@ public class DbSchemaCreator {
         return "PostgreSQL".equals(dbProductName) ? DB_SCHEMA_POSTGRES : DB_SCHEMA;
     }
 
+    private static String selectDbSchemaDetectionScript(String dbProductName) {
+        return "PostgreSQL".equals(dbProductName) ? DB_SCHEMA_DETECTION_POSTGRES : DB_SCHEMA_DETECTION;
+    }
+
     /**
      * Run all db scripts.
      *
@@ -49,16 +58,16 @@ public class DbSchemaCreator {
      */
     public void run() throws SQLException {
         Connection connection = dataSource.getConnection();
-        connection.setSchema(schemaName);
         ScriptRunner runner = new ScriptRunner(connection);
         LOGGER.debug(connection.getMetaData().toString());
         runner.setStopOnError(true);
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
         try {
-            if (!isSchemaPreexisting(runner)) {
-                runner.runScript(new InputStreamReader(this.getClass()
+            if (!isSchemaPreexisting(runner, connection.getMetaData().getDatabaseProductName())) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass()
                     .getResourceAsStream(selectDbScriptFileName(connection.getMetaData().getDatabaseProductName()))));
+                runner.runScript(getSqlSchemaNameParsed(reader));
             }
         } finally {
             runner.closeConnection();
@@ -69,9 +78,11 @@ public class DbSchemaCreator {
         }
     }
 
-    private boolean isSchemaPreexisting(ScriptRunner runner) {
+    private boolean isSchemaPreexisting(ScriptRunner runner, String productName) {
         try {
-            runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_SCHEMA_DETECTION)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass()
+                .getResourceAsStream(selectDbSchemaDetectionScript(productName))));
+            runner.runScript(getSqlSchemaNameParsed(reader));
         } catch (Exception e) {
             LOGGER.debug("Schema does not exist.");
             return false;
@@ -121,5 +132,23 @@ public class DbSchemaCreator {
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    private StringReader getSqlSchemaNameParsed(BufferedReader reader) throws SQLException {
+
+        StringBuffer content = new StringBuffer();
+        try {
+            String line = "";
+            while (line != null) {
+                line = reader.readLine();
+                if (line != null) {
+                    content.append(line.replaceAll("%schemaName%", schemaName) + System.lineSeparator());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.error("SchemaName sql parsing failed for schemaName {}", schemaName);
+        }
+        return new StringReader(content.toString());
     }
 }

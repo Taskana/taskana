@@ -64,7 +64,8 @@ public class ClassificationServiceImplIntAutoCommitTest {
     @Before
     public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false);
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false,
+            TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
