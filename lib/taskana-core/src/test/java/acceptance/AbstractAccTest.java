@@ -48,7 +48,8 @@ public abstract class AbstractAccTest {
             cleaner.clearDb(dataSource, dropTables[0]);
         }
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
+            TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         cleaner.clearDb(dataSource, false);

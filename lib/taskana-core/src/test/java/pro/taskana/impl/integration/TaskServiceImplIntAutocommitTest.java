@@ -81,7 +81,8 @@ public class TaskServiceImplIntAutocommitTest {
     @Before
     public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false);
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false,
+            TaskanaEngineConfigurationTest.getSchemaName());
 
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -157,7 +158,8 @@ public class TaskServiceImplIntAutocommitTest {
         WorkbasketAlreadyExistException, DomainNotFoundException {
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(TaskanaEngineConfiguration.createDefaultDataSource(), false);
-        TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false);
+        TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false,
+            null);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
         ((TaskanaEngineImpl) te).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         TaskServiceImpl taskServiceImpl = (TaskServiceImpl) te.getTaskService();
@@ -291,7 +293,8 @@ public class TaskServiceImplIntAutocommitTest {
 
         // Set up Security for this Test
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, true);
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, true,
+            TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
