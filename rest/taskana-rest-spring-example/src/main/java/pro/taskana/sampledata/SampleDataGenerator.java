@@ -3,6 +3,7 @@ package pro.taskana.sampledata;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
@@ -30,20 +31,25 @@ public class SampleDataGenerator {
     private static final String OBJECT_REFERENCE = SQL + TEST_DATA + "/object-reference.sql";
     private ScriptRunner runner;
 
+    DataSource dataSource;
+
     public SampleDataGenerator(DataSource dataSource) throws SQLException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(dataSource.getConnection().getMetaData().toString());
         }
+        this.dataSource = dataSource;
+
         runner = new ScriptRunner(dataSource.getConnection());
     }
 
-    public void generateSampleData() {
+    public void generateSampleData(String schemaName) {
         StringWriter outWriter = new StringWriter();
         PrintWriter logWriter = new PrintWriter(outWriter);
 
         StringWriter errorWriter = new StringWriter();
         PrintWriter errorLogWriter = new PrintWriter(errorWriter);
         try {
+            runner.runScript(selectSchemaScript(dataSource.getConnection().getMetaData().getDatabaseProductName(), schemaName));
             runner.setStopOnError(false);
             runner.runScript(new BufferedReader(
                 new InputStreamReader(this.getClass().getResourceAsStream(CLEAR), StandardCharsets.UTF_8)));
@@ -74,6 +80,12 @@ public class SampleDataGenerator {
         if (!errorWriter.toString().trim().isEmpty()) {
             LOGGER.error(errorWriter.toString());
         }
+    }
+
+    private StringReader selectSchemaScript(String dbProductName, String schemaName) {
+        return new StringReader("PostgreSQL".equals(dbProductName) ?
+            "SET search_path TO " + schemaName + ";" :
+            "SET SCHEMA " + schemaName + ";");
     }
 
 }

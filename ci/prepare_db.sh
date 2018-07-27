@@ -41,6 +41,7 @@ function main {
       echo 'jdbcUrl=jdbc:db2://localhost:49999/tskdb' >> $propFile
       echo 'dbUserName=db2inst1' >> $propFile
       echo 'dbPassword=db2inst1-pwd' >> $propFile
+      echo 'schemaName=TASKANA' >> $propFile
       ;;
     DB2_11_1)
       if [[ -z `docker ps -aq -f name=^/taskana-db2_11_1$ -f status=running` ]]; then
@@ -54,6 +55,7 @@ function main {
       echo 'jdbcUrl=jdbc:db2://localhost:50000/tskdb' >> $propFile
       echo 'dbUserName=db2inst1' >> $propFile
       echo 'dbPassword=db2inst1-pwd' >> $propFile
+      echo 'schemaName=TASKANA' >> $propFile
       ;;
     POSTGRES)
       if [[ -z `docker ps -aq -f name=^/taskana-postgres$ -f status=running` ]]; then
@@ -67,6 +69,7 @@ function main {
       echo 'jdbcUrl=jdbc:postgresql://localhost:50001/postgres' >> $propFile
       echo 'dbUserName=postgres' >> $propFile   
       echo 'dbPassword=postgres' >> $propFile
+      echo 'schemaName=taskana' >> $propFile
       ;;
     *)
       echo "unknown database '$1'" >&2
