@@ -1162,7 +1162,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
             userName = "admin")
     @Test
-    public void testQueryForOrderWithDirectionNull() throws InvalidArgumentException {
+    public void testQueryForOrderWithDirectionNull() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
                 .orderByPrimaryObjectReferenceSystemInstance(null)

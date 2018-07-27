@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
-import pro.taskana.AttachmentSummary;
 import pro.taskana.ObjectReference;
 import pro.taskana.TaskState;
 
@@ -41,7 +40,7 @@ public class TaskSummaryResource extends ResourceSupport {
     private boolean isTransferred;
     // All objects have to be serializable
     private Map<String, String> customAttributes = Collections.emptyMap();
-    private List<AttachmentSummary> attachmentSummaries = new ArrayList<>();
+    private List<AttachmentSummaryResource> attachmentSummaryResources = new ArrayList<>();
     private String custom1;
     private String custom2;
     private String custom3;
@@ -235,12 +234,12 @@ public class TaskSummaryResource extends ResourceSupport {
         this.customAttributes = customAttributes;
     }
 
-    public List<AttachmentSummary> getAttachmentSummaries() {
-        return attachmentSummaries;
+    public List<AttachmentSummaryResource> getAttachmentSummaries() {
+        return attachmentSummaryResources;
     }
 
-    public void setAttachments(List<AttachmentSummary> attachmentSummaries) {
-        this.attachmentSummaries = attachmentSummaries;
+    public void setAttachmentSummaries(List<AttachmentSummaryResource> attachmentSummaryResources) {
+        this.attachmentSummaryResources = attachmentSummaryResources;
     }
 
     public String getCustom1() {
