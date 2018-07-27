@@ -44,7 +44,7 @@ public class TaskanaProducers {
             properties.load(propertyStream);
             dataSource = (DataSource) ctx.lookup(properties.getProperty("datasource.jndi"));
             logger.debug("---------------> " + dataSource.getConnection().getMetaData());
-            this.taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, true, false);
+            this.taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, true, false, "TASKANA");
         } catch (NamingException | SQLException | IOException e) {
             logger.error("Could not start Taskana: ", e);
         }

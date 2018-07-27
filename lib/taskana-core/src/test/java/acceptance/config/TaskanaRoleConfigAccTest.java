@@ -24,7 +24,8 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
 
     public TaskanaRoleConfigAccTest() throws SQLException {
-        super(new TaskanaEngineConfiguration(TaskanaEngineConfigurationTest.getDataSource(), true));
+        super(new TaskanaEngineConfiguration(TaskanaEngineConfigurationTest.getDataSource(), true,
+            TaskanaEngineConfigurationTest.getSchemaName()));
     }
 
     @Test
