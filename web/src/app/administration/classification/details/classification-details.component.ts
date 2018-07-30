@@ -92,6 +92,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     })
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
+        if (this.classification && this.classification.classificationId === classificationSelected.classificationId) { return; }
         this.initProperties();
         if (classificationSelected) {
           this.fillClassificationInformation(classificationSelected);
@@ -111,7 +112,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.fillClassificationInformation(this.selectedClassification ? this.selectedClassification : new ClassificationDefinition())
       }
 
-      if (id && id !== '') {
+      if (!this.classification || this.classification.classificationId !== id && id && id !== '') {
         this.selectClassification(id);
       }
     });
