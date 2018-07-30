@@ -21,13 +21,13 @@ import pro.taskana.impl.persistence.MapTypeHandler;
  */
 public interface AttachmentMapper {
 
-    @Insert("INSERT INTO TASKANA.ATTACHMENT (ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES) "
+    @Insert("INSERT INTO ATTACHMENT (ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES) "
         + "VALUES (#{att.id}, #{att.taskId}, #{att.created}, #{att.modified}, #{att.classificationSummary.key}, #{att.classificationSummary.id}, #{att.objectReference.company}, #{att.objectReference.system}, #{att.objectReference.systemInstance}, "
         + " #{att.objectReference.type}, #{att.objectReference.value}, #{att.channel}, #{att.received}, #{att.customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )")
     void insert(@Param("att") AttachmentImpl att);
 
     @Select("<script> SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
-        + "FROM TASKANA.ATTACHMENT "
+        + "FROM ATTACHMENT "
         + "WHERE TASK_ID = #{taskId} "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
@@ -51,7 +51,7 @@ public interface AttachmentMapper {
     List<AttachmentImpl> findAttachmentsByTaskId(@Param("taskId") String taskId);
 
     @Select("<script> SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
-        + "FROM TASKANA.ATTACHMENT "
+        + "FROM ATTACHMENT "
         + "WHERE ID = #{attachmentId} "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
@@ -75,7 +75,7 @@ public interface AttachmentMapper {
     AttachmentImpl getAttachment(@Param("attachmentId") String attachmentId);
 
     @Select("<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED "
-        + "FROM TASKANA.ATTACHMENT "
+        + "FROM ATTACHMENT "
         + "<where>"
         + "TASK_ID IN (<foreach collection='array' item='item' separator=',' >#{item}</foreach>)"
         + "</where>"
@@ -98,17 +98,17 @@ public interface AttachmentMapper {
     })
     List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(String[] taskIds);
 
-    @Delete("DELETE FROM TASKANA.ATTACHMENT WHERE ID=#{attachmentId}")
+    @Delete("DELETE FROM ATTACHMENT WHERE ID=#{attachmentId}")
     void deleteAttachment(@Param("attachmentId") String attachmentId);
 
-    @Update("UPDATE TASKANA.ATTACHMENT SET TASK_ID = #{taskId}, CREATED = #{created}, MODIFIED = #{modified},"
+    @Update("UPDATE ATTACHMENT SET TASK_ID = #{taskId}, CREATED = #{created}, MODIFIED = #{modified},"
         + " CLASSIFICATION_KEY = #{classificationSummary.key}, CLASSIFICATION_ID = #{classificationSummary.id}, REF_COMPANY = #{objectReference.company}, REF_SYSTEM = #{objectReference.system},"
         + " REF_INSTANCE = #{objectReference.systemInstance}, REF_TYPE = #{objectReference.type}, REF_VALUE = #{objectReference.value},"
         + " CHANNEL = #{channel}, RECEIVED = #{received}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}"
         + " WHERE ID = #{id}")
     void update(AttachmentImpl attachment);
 
-    @Select("<script> select CUSTOM_ATTRIBUTES from TASKANA.ATTACHMENT where id = #{attachmentId}"
+    @Select("<script> select CUSTOM_ATTRIBUTES from ATTACHMENT where id = #{attachmentId}"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
@@ -117,7 +117,7 @@ public interface AttachmentMapper {
     })
     String getCustomAttributesAsString(@Param("attachmentId") String attachmentId);
 
-    @Select("<script> SELECT DISTINCT TASK_ID FROM TASKANA.ATTACHMENT WHERE CLASSIFICATION_ID = #{classificationId} "
+    @Select("<script> SELECT DISTINCT TASK_ID FROM ATTACHMENT WHERE CLASSIFICATION_ID = #{classificationId} "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {

@@ -37,23 +37,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        
-        http.csrf()
-                .disable()
-                .authenticationProvider(jaasAuthProvider())
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/docs/**")
-                .permitAll()
-                .antMatchers(HttpMethod.GET, "/**")
-                .authenticated()
-                .and()
-                .httpBasic()
-                .and()
-                .addFilter(new JaasApiIntegrationFilter());
+
+        http.csrf().disable()
+            .authenticationProvider(jaasAuthProvider())
+            .authorizeRequests()
+            .antMatchers(HttpMethod.GET, "/docs/**")
+            .permitAll()
+            .antMatchers(HttpMethod.GET, "/**")
+            .authenticated()
+            .and()
+            .httpBasic()
+            .and()
+            .addFilter(new JaasApiIntegrationFilter());
 
         if (devMode) {
+            http.headers().frameOptions().sameOrigin()
+                .and().authorizeRequests().antMatchers("/h2-console/**").permitAll();
             return;
         }
+
         http
                 .authorizeRequests()
                 .anyRequest().authenticated()

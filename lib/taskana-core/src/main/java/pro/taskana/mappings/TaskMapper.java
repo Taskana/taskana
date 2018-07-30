@@ -24,7 +24,7 @@ public interface TaskMapper {
 
     @Select("<script>SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CUSTOM_ATTRIBUTES, "
         + "CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 "
-        + "FROM TASKANA.TASK "
+        + "FROM TASK "
         + "WHERE ID = #{id} "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
@@ -81,7 +81,7 @@ public interface TaskMapper {
     })
     TaskImpl findById(@Param("id") String id);
 
-    @Insert("INSERT INTO TASKANA.TASK(ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE,  CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, "
+    @Insert("INSERT INTO TASK(ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE,  CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, "
         + "POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, "
         + "CUSTOM_9, CUSTOM_10, CUSTOM_11,  CUSTOM_12,  CUSTOM_13,  CUSTOM_14,  CUSTOM_15,  CUSTOM_16 ) "
         + "VALUES(#{id}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{creator}, #{description}, #{note}, #{priority}, #{state}, #{classificationSummary.category}, "
@@ -94,7 +94,7 @@ public interface TaskMapper {
     @Options(keyProperty = "id", keyColumn = "ID")
     void insert(TaskImpl task);
 
-    @Update("UPDATE TASKANA.TASK SET CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, NOTE = #{note}, "
+    @Update("UPDATE TASK SET CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, NOTE = #{note}, "
         + " PRIORITY = #{priority}, STATE = #{state}, CLASSIFICATION_CATEGORY = #{classificationSummary.category}, CLASSIFICATION_KEY = #{classificationSummary.key}, CLASSIFICATION_ID = #{classificationSummary.id}, "
         + "WORKBASKET_ID = #{workbasketSummary.id}, WORKBASKET_KEY = #{workbasketSummary.key}, DOMAIN = #{workbasketSummary.domain}, "
         + "BUSINESS_PROCESS_ID = #{businessProcessId}, PARENT_BUSINESS_PROCESS_ID = #{parentBusinessProcessId}, OWNER = #{owner}, POR_COMPANY = #{primaryObjRef.company}, POR_SYSTEM = #{primaryObjRef.system}, "
@@ -106,15 +106,15 @@ public interface TaskMapper {
         + "WHERE ID = #{id}")
     void update(TaskImpl task);
 
-    @Delete("DELETE FROM TASKANA.TASK WHERE ID = #{id}")
+    @Delete("DELETE FROM TASK WHERE ID = #{id}")
     void delete(String id);
 
-    @Delete("<script>DELETE FROM TASKANA.TASK WHERE ID IN(<foreach item='item' collection='ids' separator=',' >#{item}</foreach>)</script>")
+    @Delete("<script>DELETE FROM TASK WHERE ID IN(<foreach item='item' collection='ids' separator=',' >#{item}</foreach>)</script>")
     void deleteMultiple(@Param("ids") List<String> ids);
 
     @Select("<script>SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, "
         + "CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 "
-        + "FROM TASKANA.TASK "
+        + "FROM TASK "
         + "WHERE CLASSIFICATION_ID = #{classificationId} "
         + "AND STATE IN ( 'READY','CLAIMED') "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
@@ -168,7 +168,7 @@ public interface TaskMapper {
     List<TaskSummaryImpl> findTasksAffectedByClassificationChange(@Param("classificationId") String classificationId);
 
     @Update("<script>"
-        + " UPDATE TASKANA.TASK SET MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}, WORKBASKET_KEY = #{referencetask.workbasketSummary.key}, WORKBASKET_ID= #{referencetask.workbasketSummary.id}, "
+        + " UPDATE TASK SET MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}, WORKBASKET_KEY = #{referencetask.workbasketSummary.key}, WORKBASKET_ID= #{referencetask.workbasketSummary.id}, "
         + " DOMAIN = #{referencetask.domain}, OWNER = #{referencetask.owner}, IS_READ = #{referencetask.isRead}, IS_TRANSFERRED = #{referencetask.isTransferred}"
         + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
         + "</script>")
@@ -176,13 +176,13 @@ public interface TaskMapper {
         @Param("referencetask") TaskSummaryImpl referencetask);
 
     @Update("<script>"
-        + " UPDATE TASKANA.TASK SET COMPLETED = #{referencetask.completed}, MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}"
+        + " UPDATE TASK SET COMPLETED = #{referencetask.completed}, MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}"
         + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
         + "</script>")
     void updateCompleted(@Param("taskIds") List<String> taskIds,
         @Param("referencetask") TaskSummaryImpl referencetask);
 
-    @Select("<script>SELECT ID, STATE, WORKBASKET_ID FROM TASKANA.TASK "
+    @Select("<script>SELECT ID, STATE, WORKBASKET_ID FROM TASK "
         + "WHERE ID IN( <foreach item='item' collection='taskIds' separator=',' >#{item}</foreach> ) "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
@@ -193,13 +193,13 @@ public interface TaskMapper {
     List<MinimalTaskSummary> findExistingTasks(@Param("taskIds") List<String> taskIds);
 
     @Update("<script>"
-        + " UPDATE TASKANA.TASK SET CLASSIFICATION_CATEGORY = #{newCategory} "
+        + " UPDATE TASK SET CLASSIFICATION_CATEGORY = #{newCategory} "
         + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
         + "</script>")
     void updateClassificationCategoryOnChange(@Param("taskIds") List<String> taskIds,
         @Param("newCategory") String newCategory);
 
-    @Update("<script>UPDATE TASKANA.TASK SET  "
+    @Update("<script>UPDATE TASK SET  "
         + "<if test='fields.custom1'>CUSTOM_1 = #{task.custom1}, </if> "
         + "<if test='fields.custom2'>CUSTOM_2 = #{task.custom2}, </if> "
         + "<if test='fields.custom3'>CUSTOM_3 = #{task.custom3}, </if> "
@@ -222,7 +222,7 @@ public interface TaskMapper {
     void updateTasks(@Param("taskIds") List<String> taskIds, @Param("task") TaskImpl task,
         @Param("fields") CustomPropertySelector fields);
 
-    @Select("<script>SELECT ID, STATE FROM TASKANA.TASK "
+    @Select("<script>SELECT ID, STATE FROM TASK "
         + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
         + "AND STATE IN ( 'READY','CLAIMED') "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
@@ -231,7 +231,7 @@ public interface TaskMapper {
         @Result(property = "taskId", column = "ID")})
     List<String> filterTaskIdsForNotCompleted(@Param("taskIds") List<String> taskIds);
 
-    @Select("<script>SELECT COUNT(ID) FROM TASKANA.TASK WHERE "
+    @Select("<script>SELECT COUNT(ID) FROM TASK WHERE "
         + "WORKBASKET_ID = #{workbasketId} "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
