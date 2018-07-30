@@ -1,6 +1,8 @@
 $background-color: #224562;
 $background-color-sidenav: #175263;
 $selected-border-color: #22a39f;
+$unselected-text: #9d9d9d;
+
 .navbar-inverse {
     border:none;
     background-color: $background-color;
@@ -76,6 +78,14 @@ h2.navbar-brand{
 .nav-content{
     margin-top: 5px;
 }
+
+.nav-version {
+    color: $unselected-text;
+    margin: 5px;
+    position: absolute;
+    bottom: 5px;
+    font-size: 8px;
+}
  
 /*
  * All side bar links styling.
@@ -119,7 +129,7 @@ h2.navbar-brand{
 
 .menu,.submenu > span {
     padding-left: 12px;
-    color: #9d9d9d;
+    color: $unselected-text;
     outline: none;
     
 }
@@ -138,7 +148,7 @@ h2.navbar-brand{
 }
 
 a {
-    color: #9d9d9d;
+    color: $unselected-text;
     &:hover{
         color:white;
     }

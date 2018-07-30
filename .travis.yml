@@ -18,7 +18,7 @@ stages:
 
 env:
   global:
-    - NODE_VERSION=6
+    - NODE_VERSION=8
   matrix:
     - DB=H2 
     - DB=DB2_10_5
@@ -39,7 +39,7 @@ jobs:
     - stage: Build
       install:
         - nvm install $NODE_VERSION
-          && (cd web && npm install)
+          && (cd web && npm install && npm rebuild node-sass)
           && ci/change_version.sh -m "lib/ rest/" -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
       script:
         - (cd web && npm run build:prod)

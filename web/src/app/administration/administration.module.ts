@@ -2,7 +2,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {Ng2AutoCompleteModule} from 'ng2-auto-complete';
 import {AngularSvgIconModule} from 'angular-svg-icon';
 import {AlertModule, TypeaheadModule} from 'ngx-bootstrap';
 import {SharedModule} from 'app/shared/shared.module';
@@ -38,7 +37,6 @@ const MODULES = [
   CommonModule,
   FormsModule,
   ReactiveFormsModule,
-  Ng2AutoCompleteModule,
   AngularSvgIconModule,
   AlertModule,
   SharedModule,

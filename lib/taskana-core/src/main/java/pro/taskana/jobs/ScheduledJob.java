@@ -1,4 +1,4 @@
-package pro.taskana.impl;
+package pro.taskana.jobs;
 
 import java.time.Instant;
 import java.util.Map;
@@ -8,20 +8,20 @@ import java.util.Map;
  *
  * @author bbr
  */
-public class Job {
+public class ScheduledJob {
 
     private Integer jobId;
+    private Integer priority;
     private Instant created;
-    private Instant started;
-    private Instant completed;
+    private Instant due;
     private State state;
+    private String lockedBy;
+    private Instant lockExpires;
     private Type type;
     private int retryCount;
-    private String executor;
-    private String errors;
     Map<String, String> arguments;
 
-    public Job() {
+    public ScheduledJob() {
         created = Instant.now();
         state = State.READY;
         retryCount = 0;
@@ -35,6 +35,14 @@ public class Job {
         this.jobId = jobId;
     }
 
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
     public Instant getCreated() {
         return created;
     }
@@ -43,20 +51,12 @@ public class Job {
         this.created = created;
     }
 
-    public Instant getStarted() {
-        return started;
+    public Instant getDue() {
+        return due;
     }
 
-    public void setStarted(Instant started) {
-        this.started = started;
-    }
-
-    public Instant getCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(Instant completed) {
-        this.completed = completed;
+    public void setDue(Instant due) {
+        this.due = due;
     }
 
     public State getState() {
@@ -67,12 +67,20 @@ public class Job {
         this.state = state;
     }
 
-    public String getExecutor() {
-        return executor;
+    public String getLockedBy() {
+        return lockedBy;
     }
 
-    public void setExecutor(String executor) {
-        this.executor = executor;
+    public void setLockedBy(String lockedBy) {
+        this.lockedBy = lockedBy;
+    }
+
+    public Instant getLockExpires() {
+        return lockExpires;
+    }
+
+    public void setLockExpires(Instant lockExpires) {
+        this.lockExpires = lockExpires;
     }
 
     public Map<String, String> getArguments() {
@@ -99,40 +107,29 @@ public class Job {
         this.retryCount = retryCount;
     }
 
-    public String getErrors() {
-        return errors;
-    }
-
-    public void setErrors(String errors) {
-        this.errors = errors;
-        if (this.errors != null && this.errors.length() > 4096) {
-            this.errors = errors.substring(0, 4095);
-        }
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Job [jobId=");
+        builder.append("ScheduledJob [jobId=");
         builder.append(jobId);
+        builder.append(", priority=");
+        builder.append(priority);
         builder.append(", created=");
         builder.append(created);
-        builder.append(", started=");
-        builder.append(started);
-        builder.append(", completed=");
-        builder.append(completed);
+        builder.append(", due=");
+        builder.append(due);
         builder.append(", state=");
         builder.append(state);
+        builder.append(", lockedBy=");
+        builder.append(lockedBy);
+        builder.append(", lockExpires=");
+        builder.append(lockExpires);
         builder.append(", type=");
         builder.append(type);
         builder.append(", retryCount=");
         builder.append(retryCount);
-        builder.append(", executor=");
-        builder.append(executor);
         builder.append(", arguments=");
         builder.append(arguments);
-        builder.append(", errors=");
-        builder.append(errors);
         builder.append("]");
         return builder.toString();
     }
@@ -144,9 +141,7 @@ public class Job {
      */
     public enum State {
         READY,
-        RUNNING,
-        FAILED,
-        COMPLETED
+        FAILED
     }
 
     /**
@@ -154,6 +149,7 @@ public class Job {
      */
     public enum Type {
         CLASSIFICATIONCHANGEDJOB,
-        UPDATETASKSJOB;
+        UPDATETASKSJOB,
+        TASKCLEANUPJOB;
     }
 }

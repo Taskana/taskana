@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,13 +46,16 @@ public class TaskanaEngineConfiguration {
     private static final String H2_DRIVER = "org.h2.Driver";
     private static final String TASKANA_PROPERTIES = "/taskana.properties";
     private static final String TASKANA_ROLES_SEPARATOR = "|";
-    private static final String TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION = "taskana.jobs.taskupdate.batchSize";
-    private static final String TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES = "taskana.jobs.taskupdate.maxRetries";
+    private static final String TASKANA_JOB_BATCHSIZE = "taskana.jobs.batchSize";
+    private static final String TASKANA_JOB_RETRIES = "taskana.jobs.maxRetries";
+    private static final String TASKANA_JOB_TASK_CLEANUP_RUN_EVERY = "taskana.jobs.cleanup.runEvery";
+    private static final String TASKANA_JOB_TASK_CLEANUP_FIRST_RUN = "taskana.jobs.cleanup.firstRunAt";
+    private static final String TASKANA_JOB_TASK_CLEANUP_MINIMUM_AGE = "taskana.jobs.cleanup.minimumAge";
 
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
     private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";
-    protected static final String TASKANA_SCHEMA_VERSION = "0.9.2"; // must match the VERSION value in table
+    protected static final String TASKANA_SCHEMA_VERSION = "1.0.2"; // must match the VERSION value in table
                                                                     // TASKANA.TASKANA_SCHEMA_VERSION
 
     // Taskana properties file
@@ -73,9 +78,14 @@ public class TaskanaEngineConfiguration {
     private boolean germanPublicHolidaysEnabled;
     private List<LocalDate> customHolidays;
 
-    // Properties for task-update Job execution on classification change
-    private int maxNumberOfTaskUpdatesPerTransaction;
-    private int maxNumberOfRetriesOfFailedTaskUpdates;
+    // Properties for generalo job execution
+    private int jobBatchSize = 100;
+    private int maxNumberOfJobRetries = 3;
+
+    // Properties for the cleanup job
+    private Instant taskCleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
+    private Duration taskCleanupJobRunEvery = Duration.parse("P1D");
+    private Duration taskCleanupJobMinimumAge = Duration.parse("P14D");
 
     // List of configured domain names
     protected List<String> domains = new ArrayList<String>();
@@ -138,23 +148,62 @@ public class TaskanaEngineConfiguration {
     }
 
     private void initJobParameters(Properties props) {
-        String taskUpdates = props.getProperty(TASKANA_JOB_TASK_UPDATES_PER_TRANSACTION);
-        if (taskUpdates == null || taskUpdates.isEmpty()) {
-            maxNumberOfTaskUpdatesPerTransaction = 50;
-        } else {
-            maxNumberOfTaskUpdatesPerTransaction = Integer.parseInt(taskUpdates);
+        String jobBatchSizeProperty = props.getProperty(TASKANA_JOB_BATCHSIZE);
+        if (jobBatchSizeProperty != null && !jobBatchSizeProperty.isEmpty()) {
+            try {
+                jobBatchSize = Integer.parseInt(jobBatchSizeProperty);
+            } catch (Exception e) {
+                LOGGER.warn("Could not parse jobBatchSizeProperty ({}). Using default. Exception: {} ",
+                    jobBatchSizeProperty, e.getMessage());
+            }
         }
 
-        String retries = props.getProperty(TASKANA_JOB_RETRIES_FOR_FAILED_TASK_UPDATES);
-        if (retries == null || retries.isEmpty()) {
-            maxNumberOfRetriesOfFailedTaskUpdates = 3;
-        } else {
-            maxNumberOfRetriesOfFailedTaskUpdates = Integer.parseInt(retries);
+        String maxNumberOfJobRetriesProperty = props.getProperty(TASKANA_JOB_RETRIES);
+        if (maxNumberOfJobRetriesProperty != null && !maxNumberOfJobRetriesProperty.isEmpty()) {
+            try {
+                maxNumberOfJobRetries = Integer.parseInt(maxNumberOfJobRetriesProperty);
+            } catch (Exception e) {
+                LOGGER.warn("Could not parse maxNumberOfJobRetriesProperty ({}). Using default. Exception: {} ",
+                    maxNumberOfJobRetriesProperty, e.getMessage());
+            }
         }
 
-        LOGGER.debug(
-            "Configured number of task updates per transaction: {}, number of retries of failed task updates: {}",
-            maxNumberOfTaskUpdatesPerTransaction, maxNumberOfRetriesOfFailedTaskUpdates);
+        String taskCleanupJobFirstRunProperty = props.getProperty(TASKANA_JOB_TASK_CLEANUP_FIRST_RUN);
+        if (taskCleanupJobFirstRunProperty != null && !taskCleanupJobFirstRunProperty.isEmpty()) {
+            try {
+                taskCleanupJobFirstRun = Instant.parse(taskCleanupJobFirstRunProperty);
+            } catch (Exception e) {
+                LOGGER.warn("Could not parse taskCleanupJobFirstRunProperty ({}). Using default. Exception: {} ",
+                    taskCleanupJobFirstRunProperty, e.getMessage());
+            }
+        }
+
+        String taskCleanupJobRunEveryProperty = props.getProperty(TASKANA_JOB_TASK_CLEANUP_RUN_EVERY);
+        if (taskCleanupJobRunEveryProperty != null && !taskCleanupJobRunEveryProperty.isEmpty()) {
+            try {
+                taskCleanupJobRunEvery = Duration.parse(taskCleanupJobRunEveryProperty);
+            } catch (Exception e) {
+                LOGGER.warn("Could not parse taskCleanupJobRunEveryProperty ({}). Using default. Exception: {} ",
+                    taskCleanupJobRunEveryProperty, e.getMessage());
+            }
+        }
+
+        String taskCleanupJobMinimumAgeProperty = props.getProperty(TASKANA_JOB_TASK_CLEANUP_MINIMUM_AGE);
+        if (taskCleanupJobMinimumAgeProperty != null && !taskCleanupJobMinimumAgeProperty.isEmpty()) {
+            try {
+                taskCleanupJobMinimumAge = Duration.parse(taskCleanupJobMinimumAgeProperty);
+            } catch (Exception e) {
+                LOGGER.warn("Could not parse taskCleanupJobMinimumAgeProperty ({}). Using default. Exception: {} ",
+                    taskCleanupJobMinimumAgeProperty, e.getMessage());
+            }
+        }
+
+        LOGGER.debug("Configured number of task updates per transaction: {}", jobBatchSize);
+        LOGGER.debug("Number of retries of failed task updates: {}", maxNumberOfJobRetries);
+        LOGGER.debug("TaskCleanupJob configuration: first run at {}", taskCleanupJobFirstRun);
+        LOGGER.debug("TaskCleanupJob configuration: runs every {}", taskCleanupJobRunEvery);
+        LOGGER.debug("TaskCleanupJob configuration: minimum age of tasks to be cleanup up is {}",
+            taskCleanupJobMinimumAge);
     }
 
     private void initDomains(Properties props) {
@@ -309,11 +358,11 @@ public class TaskanaEngineConfiguration {
     }
 
     public int getMaxNumberOfTaskUpdatesPerTransaction() {
-        return maxNumberOfTaskUpdatesPerTransaction;
+        return jobBatchSize;
     }
 
-    public int getMaxNumberOfRetriesOfFailedTaskUpdates() {
-        return maxNumberOfRetriesOfFailedTaskUpdates;
+    public int getMaxNumberOfJobRetries() {
+        return maxNumberOfJobRetries;
     }
 
     public void setPropertiesFileName(String propertiesFileName) {
@@ -376,6 +425,18 @@ public class TaskanaEngineConfiguration {
         this.classificationCategories = classificationCategories;
     }
 
+    public Instant getTaskCleanupJobFirstRun() {
+        return taskCleanupJobFirstRun;
+    }
+
+    public Duration getTaskCleanupJobRunEvery() {
+        return taskCleanupJobRunEvery;
+    }
+
+    public Duration getTaskCleanupJobMinimumAge() {
+        return taskCleanupJobMinimumAge;
+    }
+
     /**
      * Helper method to determine whether all access ids (user Id and group ids) should be used in lower case.
      *
@@ -384,4 +445,5 @@ public class TaskanaEngineConfiguration {
     public static boolean shouldUseLowerCaseForAccessIds() {
         return true;
     }
+
 }

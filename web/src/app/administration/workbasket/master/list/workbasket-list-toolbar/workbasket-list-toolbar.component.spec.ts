@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { Router, Routes } from '@angular/router';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SharedModule } from 'app/shared/shared.module';
@@ -16,8 +15,6 @@ import { Links } from 'app/models/links';
 import { FilterModel } from 'app/models/filter';
 import { SortingModel } from 'app/models/sorting';
 
-import { FilterComponent } from 'app/shared/filter/filter.component';
-import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
@@ -46,7 +43,7 @@ describe('WorkbasketListToolbarComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-				imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, HttpModule,
+				imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule,
 					HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule, AppModule],
 				declarations: [WorkbasketListToolbarComponent, DummyDetailComponent, ImportExportComponent],
 				providers: [
@@ -60,7 +57,7 @@ describe('WorkbasketListToolbarComponent', () => {
 			fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
 			workbasketService = TestBed.get(WorkbasketService);
 			router = TestBed.get(Router);
-			spyOn(workbasketService, 'deleteWorkbasket').and.returnValue(Observable.of(''));
+			spyOn(workbasketService, 'deleteWorkbasket').and.returnValue(of(''));
 			spyOn(workbasketService, 'triggerWorkBasketSaved');
 
 			debugElement = fixture.debugElement.nativeElement;

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, SimpleChanges, OnChanges } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';

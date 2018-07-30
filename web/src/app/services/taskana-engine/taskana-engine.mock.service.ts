@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { of, Observable } from 'rxjs';
 import { UserInfoModel } from 'app/models/user-info';
+import { VersionModel } from '../../models/version';
 
 @Injectable()
 export class TaskanaEngineServiceMock {
@@ -15,7 +16,7 @@ export class TaskanaEngineServiceMock {
   // GET
   getUserInformation(): Promise<any> {
     this.currentUserInfo = new UserInfoModel('userid', [''], ['admin']);
-    return Observable.of().toPromise();
+    return of(undefined).toPromise();
   }
 
   hasRole(roles2Find: Array<string>): boolean {
@@ -26,6 +27,11 @@ export class TaskanaEngineServiceMock {
       return true;
     }
     return false;
+  }
+
+  getVersion(): Observable<VersionModel> {
+    const version = new VersionModel('1.0.0');
+    return of(version);
   }
 
   private findRole(roles2Find: Array<string>) {

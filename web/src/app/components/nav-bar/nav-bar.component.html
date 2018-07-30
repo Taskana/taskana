@@ -61,6 +61,9 @@
         <span (click)="toogleNavBar()" routerLink="{{workplaceUrl}}" aria-controls="Workplace" routerLinkActive="active">Workplace</span>
       </div>
     </div>
+    <div class="nav-version">
+    	<p id="taskana-version"> Taskana version: {{version}} </p>
+    </div>
   </div>
   <div *ngIf="showNavbar" class="navbar-backdrop" (click)="toogleNavBar()"></div>
 </nav>

@@ -1,7 +1,7 @@
+
+import { throwError as observableThrowError, Observable, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { environment } from 'environments/environment';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
@@ -13,6 +13,7 @@ import { Direction } from 'app/models/sorting';
 import { DomainService } from 'app/services/domain/domain.service';
 import { WorkbasketResource } from '../../models/workbasket-resource';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
+import { mergeMap, tap, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class WorkbasketService {
@@ -46,18 +47,19 @@ export class WorkbasketService {
 			return this.workbasketSummaryRef;
 		}
 
-		return this.domainService.getSelectedDomain().mergeMap(domain => {
+		return this.domainService.getSelectedDomain().pipe(mergeMap(domain => {
 			return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
 				`${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters.getQueryParameters(
 					sortBy, order, name,
 					nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
 					!allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined, domain)}`)
-				.do(workbaskets => {
+				.pipe(tap((workbaskets => {
 					return workbaskets;
-				});
-		}).do(() => {
+				})))
+		}), tap(() => {
 			this.domainService.domainChangedComplete();
-		});
+		}));
+
 	}
 	// GET
 	getWorkBasket(id: string): Observable<Workbasket> {
@@ -78,8 +80,9 @@ export class WorkbasketService {
 	// PUT
 	updateWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {
 		return this.httpClient
-			.put<Workbasket>(url, workbasket)
-			.catch(this.handleError);
+			.put<Workbasket>(url, workbasket).pipe(
+				catchError(this.handleError)
+			);
 	}
 	// DELETE
 	deleteWorkbasket(url: string) {
@@ -146,7 +149,7 @@ export class WorkbasketService {
 			errMsg = error.message ? error.message : error.toString();
 		}
 		console.error(errMsg);
-		return Observable.throw(errMsg);
+		return observableThrowError(errMsg);
 	}
 
 

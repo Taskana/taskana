@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {SortingModel} from 'app/models/sorting';
 import {FilterModel} from 'app/models/filter';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 import {WorkbasketSummary} from 'app/models/workbasket-summary';
 
 import {ErrorModalService} from 'app/services/errorModal/error-modal.service';

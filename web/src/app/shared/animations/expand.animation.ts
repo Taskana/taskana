@@ -1,4 +1,4 @@
-import { trigger, style, transition, animate, keyframes, state } from '@angular/core';
+import { trigger, style, transition, animate, keyframes, state } from '@angular/animations';
 
 export const expandDown =
     trigger('toggleDown', [

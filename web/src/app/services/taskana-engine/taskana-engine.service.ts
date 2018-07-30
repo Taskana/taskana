@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { UserInfoModel } from 'app/models/user-info';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { VersionModel } from 'app/models/version';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Injectable()
@@ -17,11 +18,10 @@ export class TaskanaEngineService {
 
   // GET
   getUserInformation(): Promise<any> {
-    return this.httpClient.get<any>(`${environment.taskanaRestUrl}/v1/current-user-info`).map(
+    return this.httpClient.get<any>(`${environment.taskanaRestUrl}/v1/current-user-info`).pipe(map(
       data => {
         this.currentUserInfo = data
-      }
-    ).toPromise();
+      })).toPromise();
   }
 
   hasRole(roles2Find: Array<string>): boolean {
@@ -32,6 +32,10 @@ export class TaskanaEngineService {
       return true;
     }
     return false;
+  }
+
+  getVersion(): Observable<VersionModel> {
+      return this.httpClient.get<VersionModel>(`${environment.taskanaRestUrl}/v1/version`);
   }
 
   private findRole(roles2Find: Array<string>) {

@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import pro.taskana.exceptions.InvalidArgumentException;
+
 /**
  * ClassificationQuery for generating dynamic sql.
  */
@@ -169,148 +171,30 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
     ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike);
 
     /**
-     * Add custom1 to your query.
+     * Add a custom to your query.
      *
-     * @param custom1In
-     *            filter for custom1
+     * @param num
+     *            the number of the custom as String (eg "4")
+     * @param customIn
+     *            filter for this custom
      * @return the query
+     * @throws InvalidArgumentException
+     *            when the number of the custom is incorrect.
      */
-    ClassificationQuery custom1In(String... custom1In);
+    ClassificationQuery customAttributeIn(String num, String... customIn) throws InvalidArgumentException;
 
     /**
-     * Add custom1 to your query.
+     * Add a custom to your query.
      *
-     * @param custom1Like
-     *            filter for custom1 with a LIKE-query
+     * @param num
+     *            the number of the custom as String (eg "4")
+     * @param customLike
+     *            filter for this custom with a LIKE-query
      * @return the query
+     * @throws InvalidArgumentException
+     *            when the number of the custom is incorrect.
      */
-    ClassificationQuery custom1Like(String... custom1Like);
-
-    /**
-     * Add custom2 to your query.
-     *
-     * @param custom2In
-     *            filter for custom2
-     * @return the query
-     */
-    ClassificationQuery custom2In(String... custom2In);
-
-    /**
-     * Add custom2 to your query.
-     *
-     * @param custom2Like
-     *            filter for custom2 with a LIKE-query
-     * @return the query
-     */
-    ClassificationQuery custom2Like(String... custom2Like);
-
-    /**
-     * Add custom3 to your query.
-     *
-     * @param custom3In
-     *            filter for custom3
-     * @return the query
-     */
-    ClassificationQuery custom3In(String... custom3In);
-
-    /**
-     * Add custom3 to your query.
-     *
-     * @param custom3Like
-     *            filter for custom3 with a LIKE-query
-     * @return the query
-     */
-    ClassificationQuery custom3Like(String... custom3Like);
-
-    /**
-     * Add custom4 to your query.
-     *
-     * @param custom4In
-     *            filter for custom4
-     * @return the query
-     */
-    ClassificationQuery custom4In(String... custom4In);
-
-    /**
-     * Add custom4 to your query.
-     *
-     * @param custom4Like
-     *            filter for custom4 with a LIKE-query
-     * @return the query
-     */
-    ClassificationQuery custom4Like(String... custom4Like);
-
-    /**
-     * Add custom5 to your query.
-     *
-     * @param custom5In
-     *            filter for custom5
-     * @return the query
-     */
-    ClassificationQuery custom5In(String... custom5In);
-
-    /**
-     * Add custom5 to your query.
-     *
-     * @param custom5Like
-     *            filter for custom5 with a LIKE-query
-     * @return the query
-     */
-    ClassificationQuery custom5Like(String... custom5Like);
-
-    /**
-     * Add custom6 to your query.
-     *
-     * @param custom6In
-     *            filter for custom6
-     * @return the query
-     */
-    ClassificationQuery custom6In(String... custom6In);
-
-    /**
-     * Add custom6 to your query.
-     *
-     * @param custom6Like
-     *            filter for custom6 with a LIKE-query
-     * @return the query
-     */
-    ClassificationQuery custom6Like(String... custom6Like);
-
-    /**
-     * Add custom7 to your query.
-     *
-     * @param custom7In
-     *            filter for custom7
-     * @return the query
-     */
-    ClassificationQuery custom7In(String... custom7In);
-
-    /**
-     * Add custom7 to your query.
-     *
-     * @param custom7Like
-     *            filter for custom7 with a LIKE-query
-     * @return the query
-     */
-    ClassificationQuery custom7Like(String... custom7Like);
-
-    /**
-     * Add custom8 to your query.
-     *
-     * @param custom8In
-     *            filter for custom8
-     * @return the query
-     */
-    ClassificationQuery custom8In(String... custom8In);
-
-    /**
-     * Add custom8 to your query.
-     *
-     * @param custom8Like
-     *            filter for custom8 with a LIKE-query
-     * @return the query
-     */
-    ClassificationQuery custom8Like(String... custom8Like);
+    ClassificationQuery customAttributeLike(String num, String... customLike) throws InvalidArgumentException;
 
     /**
      * Sort the query result by key.
@@ -403,82 +287,16 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
     ClassificationQuery orderByApplicationEntryPoint(SortDirection sortDirection);
 
     /**
-     * Sort the query result by custom property 1.
+     * Sort the query result by a custom.
      *
+     * @param num
+     *            the number of the custom as String (eg "4")
      * @param sortDirection
      *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
      *            the result is sorted in ascending order
      * @return the query
+     * @throws InvalidArgumentException
+     *            when the number of the custom is incorrect.
      */
-    ClassificationQuery orderByCustom1(SortDirection sortDirection);
-
-    /**
-     * Sort the query result by custom property 2.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    ClassificationQuery orderByCustom2(SortDirection sortDirection);
-
-    /**
-     * Sort the query result by custom property 3.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    ClassificationQuery orderByCustom3(SortDirection sortDirection);
-
-    /**
-     * Sort the query result by custom property 4.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    ClassificationQuery orderByCustom4(SortDirection sortDirection);
-
-    /**
-     * Sort the query result by custom property 5.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    ClassificationQuery orderByCustom5(SortDirection sortDirection);
-
-    /**
-     * Sort the query result by custom property 6.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    ClassificationQuery orderByCustom6(SortDirection sortDirection);
-
-    /**
-     * Sort the query result by custom property 7.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    ClassificationQuery orderByCustom7(SortDirection sortDirection);
-
-    /**
-     * Sort the query result by custom property 8.
-     *
-     * @param sortDirection
-     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
-     *            the result is sorted in ascending order
-     * @return the query
-     */
-    ClassificationQuery orderByCustom8(SortDirection sortDirection);
+    ClassificationQuery orderByCustomAttribute(String num, SortDirection sortDirection) throws InvalidArgumentException;
 }

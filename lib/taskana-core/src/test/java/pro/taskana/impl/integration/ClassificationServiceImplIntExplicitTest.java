@@ -301,10 +301,10 @@ public class ClassificationServiceImplIntExplicitTest {
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .descriptionLike("DESC1")
-            .custom1In("custom1")
+            .customAttributeIn("1", "custom1")
             .list();
         Assert.assertEquals(1, list.size());
-        list = classificationService.createClassificationQuery().custom1In("custom2").list();
+        list = classificationService.createClassificationQuery().customAttributeIn("1", "custom2").list();
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery()
             .descriptionLike("DESC1")

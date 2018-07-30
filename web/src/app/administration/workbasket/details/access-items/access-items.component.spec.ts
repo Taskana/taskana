@@ -2,9 +2,8 @@ import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs';
 import { configureTests } from 'app/app.test.configuration';
 
 import { Workbasket } from 'app/models/workbasket';
@@ -34,7 +33,7 @@ describe('AccessItemsComponent', () => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
 				declarations: [AccessItemsComponent],
-				imports: [FormsModule, AngularSvgIconModule, HttpClientModule, HttpModule, ReactiveFormsModule],
+				imports: [FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule],
 				providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService,
 					CustomFieldsService]
 
@@ -47,7 +46,7 @@ describe('AccessItemsComponent', () => {
 				new Links(undefined, undefined, { 'href': 'someurl' }));
 			workbasketService = TestBed.get(WorkbasketService);
 			alertService = TestBed.get(AlertService);
-			spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(Observable.of(new WorkbasketAccessItemsResource(
+			spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsResource(
 				{
 					'accessItems': new Array<WorkbasketAccessItems>(
 						new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false,
@@ -55,8 +54,8 @@ describe('AccessItemsComponent', () => {
 						new WorkbasketAccessItems('id2', '1', 'accessID2'))
 				}, new Links({ 'href': 'someurl' })
 			)));
-			spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(Observable.of(true)),
-				spyOn(alertService, 'triggerAlert').and.returnValue(Observable.of(true)),
+			spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true)),
+				spyOn(alertService, 'triggerAlert').and.returnValue(of(true)),
 				debugElement = fixture.debugElement.nativeElement;
 			component.ngOnChanges({
 				active: new SimpleChange(undefined, 'accessItems', true)

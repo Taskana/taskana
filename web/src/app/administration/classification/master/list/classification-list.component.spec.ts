@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs';
 import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { HttpModule } from '@angular/http';
 
 import { TreeNodeModel } from 'app/models/tree-node';
 
@@ -53,7 +52,7 @@ describe('ClassificationListComponent', () => {
       testBed.configureTestingModule({
         declarations: [ClassificationListComponent, ImportExportComponent, ClassificationTypesSelectorComponent,
           DummyDetailComponent],
-        imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpModule],
+        imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule],
         providers: [
           HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
           ErrorModalService, ClassificationTypesService, RequestInProgressService, ClassificationCategoriesService, TreeService
@@ -67,10 +66,10 @@ describe('ClassificationListComponent', () => {
       classificationsService = testBed.get(ClassificationsService);
       classificationTypesService = testBed.get(ClassificationTypesService);
       classificationCategoriesService = testBed.get(ClassificationCategoriesService);
-      spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
+      spyOn(classificationsService, 'getClassifications').and.returnValue(of(treeNodes));
       spyOn(classificationTypesService, 'getClassificationTypes')
-        .and.returnValue(Observable.of(classificationTypes));
-      spyOn(classificationCategoriesService, 'getCategories').and.returnValue(Observable.of(new Array<string>('cat1', 'cat2')));
+        .and.returnValue(of(classificationTypes));
+      spyOn(classificationCategoriesService, 'getCategories').and.returnValue(of(new Array<string>('cat1', 'cat2')));
       spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
       fixture.detectChanges();
       done();

@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { ErrorModel } from './models/modal-error';
 
@@ -50,10 +50,13 @@ export class AppComponent implements OnInit, OnDestroy {
 				this.selectedRouteService.selectRoute(event);
 				this.formsValidatorService.formSubmitAttempt = false;
 			}
-		});
+		})
+
 		this.errorModalSubscription = this.errorModalService.getError().subscribe((error: ErrorModel) => {
 			if (typeof error.message === 'string') {
 				this.modalErrorMessage = error.message
+			} else if (error.message.error instanceof ProgressEvent) {
+				this.modalErrorMessage = error.message.message;
 			} else {
 				this.modalErrorMessage = error.message.error ? (error.message.error.error + ' ' + error.message.error.message) : error.message.message;
 			}
