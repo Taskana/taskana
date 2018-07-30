@@ -13,6 +13,7 @@ import pro.taskana.TaskanaRole;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
+import pro.taskana.rest.resource.VersionResource;
 import pro.taskana.security.CurrentUserContext;
 
 /**
@@ -58,4 +59,20 @@ public class TaskanaEngineController {
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
+    /**
+     * Get the current application version.
+     *
+     * @return The current version.
+     */
+    @GetMapping(path = "/v1/version", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<VersionResource> currentVersion() {
+        String version = TaskanaEngineController.class.getPackage().getImplementationVersion();
+        if (version == null) {
+            version = "1.0-DEFAULT";
+        }
+        VersionResource resource = new VersionResource();
+        resource.setVersion(version);
+        return new ResponseEntity<>(resource,
+            HttpStatus.OK);
+    }
 }

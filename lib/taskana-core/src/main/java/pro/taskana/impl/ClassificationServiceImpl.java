@@ -29,8 +29,9 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.jobs.ClassificationChangedJob;
+import pro.taskana.jobs.ScheduledJob;
 import pro.taskana.mappings.ClassificationMapper;
-import pro.taskana.mappings.JobMapper;
 import pro.taskana.mappings.TaskMapper;
 
 /**
@@ -217,17 +218,14 @@ public class ClassificationServiceImpl implements ClassificationService {
 
             if (priorityChanged || serviceLevelChanged) {
                 Map<String, String> args = new HashMap<>();
-                args.put(TaskUpdateJobExecutor.CLASSIFICATION_ID, classificationImpl.getId());
-                args.put(TaskUpdateJobExecutor.PRIORITY_CHANGED, String.valueOf(priorityChanged));
-                args.put(TaskUpdateJobExecutor.SERVICE_LEVEL_CHANGED,
+                args.put(ClassificationChangedJob.CLASSIFICATION_ID, classificationImpl.getId());
+                args.put(ClassificationChangedJob.PRIORITY_CHANGED, String.valueOf(priorityChanged));
+                args.put(ClassificationChangedJob.SERVICE_LEVEL_CHANGED,
                     String.valueOf(serviceLevelChanged));
-                Job job = new Job();
-                job.setCreated(Instant.now());
-                job.setState(Job.State.READY);
-                job.setExecutor(ClassificationChangedJobExecutor.class.getName());
+                ScheduledJob job = new ScheduledJob();
                 job.setArguments(args);
-                job.setType(Job.Type.CLASSIFICATIONCHANGEDJOB);
-                taskanaEngine.getSqlSession().getMapper(JobMapper.class).insertJob(job);
+                job.setType(ScheduledJob.Type.CLASSIFICATIONCHANGEDJOB);
+                taskanaEngine.getJobService().createJob(job);
             }
 
             LOGGER.debug("Method updateClassification() updated the classification {}.",
