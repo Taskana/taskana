@@ -73,7 +73,7 @@ public class TaskanaEngineControllerIntTest {
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<List<String>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classification-categories", HttpMethod.GET, request,
+                "http://127.0.0.1:" + port + "/v1/classification-categories/?type=TASK", HttpMethod.GET, request,
             new ParameterizedTypeReference<List<String>>() {
             });
         assertTrue(response.getBody().contains("MANUAL"));

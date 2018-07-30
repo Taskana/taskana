@@ -30,7 +30,6 @@ import {SavingWorkbasketService} from './services/saving-workbaskets/saving-work
 import {ClassificationDefinitionService} from './services/classification-definition/classification-definition.service';
 import {WorkbasketDefinitionService} from './services/workbasket-definition/workbasket-definition.service';
 import {ClassificationsService} from './services/classifications/classifications.service';
-import {ClassificationTypesService} from './services/classification-types/classification-types.service';
 import {ClassificationCategoriesService} from './services/classification-categories-service/classification-categories.service';
 
 const MODULES = [
@@ -68,7 +67,6 @@ const DECLARATIONS = [
     WorkbasketDefinitionService,
     SavingWorkbasketService,
     ClassificationsService,
-    ClassificationTypesService,
     ClassificationCategoriesService,
   ]
 })
