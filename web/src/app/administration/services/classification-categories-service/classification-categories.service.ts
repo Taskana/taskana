@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
-import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { Observable ,  ReplaySubject } from 'rxjs';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { Pair } from 'app/models/pair';
 

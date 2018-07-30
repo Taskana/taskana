@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, ViewChild, forwardRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { highlight } from 'app/shared/animations/validation.animation';
+import { mergeMap } from 'rxjs/operators';
 
 
 @Component({
@@ -85,13 +86,12 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   }
 
   ngOnInit() {
-
   }
 
   initializeDataSource() {
     this.dataSource = Observable.create((observer: any) => {
       observer.next(this.value);
-    }).mergeMap((token: string) => this.getUsersAsObservable(token));
+    }).pipe(mergeMap((token: string) => this.getUsersAsObservable(token)));
     this.accessIdsService.getAccessItemsInformation(this.value).subscribe(items => {
       if (items.length > 0) {
         this.dataSource.selected = items.find(item => item.accessId === this.value);

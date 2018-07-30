@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from 'environments/environment';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { DomainService } from 'app/services/domain/domain.service';
 import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
 import { MonitorGuard } from 'app/guards/monitor-guard';
@@ -9,6 +9,7 @@ import { WindowRefService } from 'app/services/window/window.service';
 import { UserGuard } from 'app/guards/user-guard';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { expandRight } from 'app/shared/animations/expand.animation';
+import { VersionModel } from 'app/models/version';
 @Component({
   selector: 'taskana-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -29,6 +30,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   showNavbar = false;
   domains: Array<string> = [];
   selectedDomain: string;
+  version: string;
 
   adminUrl = './administration';
   monitorUrl = './monitor';
@@ -58,6 +60,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
     this.domainService.getSelectedDomain().subscribe(domain => {
       this.selectedDomain = domain;
+    });
+
+    this.taskanaEngineService.getVersion().subscribe(restVersion => {
+      this.version = restVersion.version;
     });
 
     this.administrationAccess = this.taskanaEngineService.hasRole(BusinessAdminGuard.roles);

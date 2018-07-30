@@ -5,7 +5,7 @@ import {Workbasket} from 'app/models/workbasket';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {TaskService} from 'app/workplace/services/task.service';
 import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 
 
 @Component({

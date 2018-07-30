@@ -1,7 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 import { IconTypeComponent } from './icon-type.component';
 import { configureTests } from 'app/app.test.configuration';
 
@@ -13,7 +12,7 @@ describe('IconTypeComponent', () => {
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        imports: [AngularSvgIconModule, HttpClientModule, HttpModule]
+        imports: [AngularSvgIconModule, HttpClientModule]
       })
     };
     configureTests(configure).then(testBed => {

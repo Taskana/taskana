@@ -4,7 +4,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTests } from 'app/app.test.configuration';
 
@@ -66,10 +66,10 @@ describe('ClassificationDetailsComponent', () => {
       classificationCategoriesService = TestBed.get(ClassificationCategoriesService);
       classificationsService = TestBed.get(ClassificationsService);
       removeConfirmationService = TestBed.get(RemoveConfirmationService);
-      spyOn(classificationsService, 'getClassifications').and.returnValue(Observable.of(treeNodes));
-      spyOn(classificationTypesService, 'getClassificationTypes').and.returnValue(Observable.of([]));
-      spyOn(classificationCategoriesService, 'getCategories').and.returnValue(Observable.of(['firstCategory', 'secondCategory']));
-      spyOn(classificationsService, 'deleteClassification').and.returnValue(Observable.of(true));
+      spyOn(classificationsService, 'getClassifications').and.returnValue(of(treeNodes));
+      spyOn(classificationTypesService, 'getClassificationTypes').and.returnValue(of([]));
+      spyOn(classificationCategoriesService, 'getCategories').and.returnValue(of(['firstCategory', 'secondCategory']));
+      spyOn(classificationsService, 'deleteClassification').and.returnValue(of(true));
       spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
       component.classification = new ClassificationDefinition('id1', undefined, undefined, undefined, undefined, undefined, undefined,
         undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,

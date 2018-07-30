@@ -50,7 +50,7 @@
 						<td *ngIf="accessIdField.lookupField else accessIdInput" class="input-group text-align text-width taskana-type-ahead" [ngClass]="{
 							'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
 							'has-error': !accessItem.value.accessId }">
-							<taskana-type-ahead [(ngModel)]="accessItem.value.accessId" formControlName="accessId" placeHolderMessage="* Access id is required"
+							<taskana-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required"
 							 [validationValue]="toogleValidationAccessIdMap.get(index)" [displayError]="!isFieldValid('accessItem.value.accessId', index)"></taskana-type-ahead>
 						</td>
 						<ng-template #accessIdInput>

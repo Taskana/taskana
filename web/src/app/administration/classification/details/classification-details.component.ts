@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { ClassificationDefinition } from 'app/models/classification-definition';
 import { ACTION } from 'app/models/action';
@@ -92,7 +92,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     })
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
-        if (this.classification ? this.classification.classificationId === classificationSelected.classificationId : false) { return; }
+        if (this.classification && this.classification.classificationId === classificationSelected.classificationId) { return; }
         this.initProperties();
         if (classificationSelected) {
           this.fillClassificationInformation(classificationSelected);
@@ -111,9 +111,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         }
         this.fillClassificationInformation(this.selectedClassification ? this.selectedClassification : new ClassificationDefinition())
       }
-        if (this.classification ? this.classification.classificationId !== id : true && id && id !== '') {
-          this.selectClassification(id);
-        }
+
+      if (!this.classification || this.classification.classificationId !== id && id && id !== '') {
+        this.selectClassification(id);
+      }
     });
 
     this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe(showDetail => {

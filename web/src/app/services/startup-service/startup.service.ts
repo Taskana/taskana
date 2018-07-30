@@ -1,11 +1,12 @@
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from 'app/../environments/environment';
-import { Injectable, Inject, Injector } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class StartupService {
@@ -27,32 +28,32 @@ export class StartupService {
             () => this.geCustomizedFieldsFilePromise()
         ).then(
             () => this.taskanaEngineService.getUserInformation()
-            ).catch(error => {
-                this.router.navigate(['no-role']);
-            });
+        ).catch(error => {
+            this.router.navigate(['no-role']);
+        });
     }
 
     getEnvironmentFilePromise() {
-        return this.httpClient.get<any>('environments/data-sources/environment-information.json').map(jsonFile => {
+        return this.httpClient.get<any>('environments/data-sources/environment-information.json').pipe(map(jsonFile => {
             if (jsonFile) {
                 environment.taskanaRestUrl = jsonFile.taskanaRestUrl === '' ?
                     environment.taskanaRestUrl : jsonFile.taskanaRestUrl;
                 this.customFieldsService.initCustomFields('EN', jsonFile);
             }
-        }).toPromise()
+        })).toPromise()
             .catch(() => {
-                return Observable.of(true)
+                return of(true)
             });
     }
 
     geCustomizedFieldsFilePromise() {
-        return this.httpClient.get<any>('environments/data-sources/taskana-customization.json').map(jsonFile => {
+        return this.httpClient.get<any>('environments/data-sources/taskana-customization.json').pipe(map(jsonFile => {
             if (jsonFile) {
                 this.customFieldsService.initCustomFields('EN', jsonFile);
             }
-        }).toPromise()
+        })).toPromise()
             .catch(() => {
-                return Observable.of(true)
+                return of(true)
             });
     }
 

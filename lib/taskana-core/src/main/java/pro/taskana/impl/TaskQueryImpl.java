@@ -649,53 +649,53 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public TaskQuery orderByCustom1(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_1", sortDirection);
-    }
+    public TaskQuery orderByCustomAttribute(String number, SortDirection sortDirection) throws InvalidArgumentException {
+        int num = 0;
+        try {
+            num = Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                e.getCause());
+        }
 
-    @Override
-    public TaskQuery orderByCustom2(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_2", sortDirection);
-    }
-
-    @Override
-    public TaskQuery orderByCustom3(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_3", sortDirection);
-    }
-
-    @Override
-    public TaskQuery orderByCustom4(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_4", sortDirection);
-    }
-
-    @Override
-    public TaskQuery orderByCustom5(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_5", sortDirection);
-    }
-
-    @Override
-    public TaskQuery orderByCustom6(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_6", sortDirection);
-    }
-
-    @Override
-    public TaskQuery orderByCustom7(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_7", sortDirection);
-    }
-
-    @Override
-    public TaskQuery orderByCustom8(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_8", sortDirection);
-    }
-
-    @Override
-    public TaskQuery orderByCustom9(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_9", sortDirection);
-    }
-
-    @Override
-    public TaskQuery orderByCustom10(SortDirection sortDirection) {
-        return addOrderCriteria("CUSTOM_10", sortDirection);
+        switch (num) {
+            case 1:
+                return addOrderCriteria("CUSTOM_1", sortDirection);
+            case 2:
+                return addOrderCriteria("CUSTOM_2", sortDirection);
+            case 3:
+                return addOrderCriteria("CUSTOM_3", sortDirection);
+            case 4:
+                return addOrderCriteria("CUSTOM_4", sortDirection);
+            case 5:
+                return addOrderCriteria("CUSTOM_5", sortDirection);
+            case 6:
+                return addOrderCriteria("CUSTOM_6", sortDirection);
+            case 7:
+                return addOrderCriteria("CUSTOM_7", sortDirection);
+            case 8:
+                return addOrderCriteria("CUSTOM_8", sortDirection);
+            case 9:
+                return addOrderCriteria("CUSTOM_9", sortDirection);
+            case 10:
+                return addOrderCriteria("CUSTOM_10", sortDirection);
+            case 11:
+                return addOrderCriteria("CUSTOM_11", sortDirection);
+            case 12:
+                return addOrderCriteria("CUSTOM_12", sortDirection);
+            case 13:
+                return addOrderCriteria("CUSTOM_13", sortDirection);
+            case 14:
+                return addOrderCriteria("CUSTOM_14", sortDirection);
+            case 15:
+                return addOrderCriteria("CUSTOM_15", sortDirection);
+            case 16:
+                return addOrderCriteria("CUSTOM_16", sortDirection);
+            default:
+                throw new InvalidArgumentException(
+                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+        }
     }
 
     @Override

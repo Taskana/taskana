@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subject } from 'rxjs/Subject';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 
 @Injectable()
 export class DomainServiceMock {
@@ -15,7 +13,7 @@ export class DomainServiceMock {
 
   // GET
   getDomains(): Observable<string[]> {
-    return Observable.of<string[]>([]);
+    return of<string[]>([]);
   }
 
   getSelectedDomain(): Observable<string> {
