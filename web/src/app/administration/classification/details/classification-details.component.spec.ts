@@ -24,10 +24,8 @@ import { TreeNodeModel } from 'app/models/tree-node';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
-import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
-
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -45,7 +43,7 @@ describe('ClassificationDetailsComponent', () => {
   let fixture: ComponentFixture<ClassificationDetailsComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
 
-  let classificationsService, classificationTypesService, classificationCategoriesService,
+  let classificationsService, classificationCategoriesService,
     treeService, removeConfirmationService;
 
   beforeEach(done => {
@@ -54,7 +52,7 @@ describe('ClassificationDetailsComponent', () => {
         imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
         declarations: [ClassificationDetailsComponent, DummyDetailComponent],
         providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
-          TreeService, ClassificationTypesService, ClassificationCategoriesService,
+          TreeService, ClassificationCategoriesService,
           CustomFieldsService]
       })
     };
@@ -62,12 +60,11 @@ describe('ClassificationDetailsComponent', () => {
       fixture = TestBed.createComponent(ClassificationDetailsComponent);
       component = fixture.componentInstance;
       classificationsService = TestBed.get(ClassificationsService);
-      classificationTypesService = TestBed.get(ClassificationTypesService);
       classificationCategoriesService = TestBed.get(ClassificationCategoriesService);
       classificationsService = TestBed.get(ClassificationsService);
       removeConfirmationService = TestBed.get(RemoveConfirmationService);
       spyOn(classificationsService, 'getClassifications').and.returnValue(of(treeNodes));
-      spyOn(classificationTypesService, 'getClassificationTypes').and.returnValue(of([]));
+      spyOn(classificationCategoriesService, 'getClassificationTypes').and.returnValue(of([]));
       spyOn(classificationCategoriesService, 'getCategories').and.returnValue(of(['firstCategory', 'secondCategory']));
       spyOn(classificationsService, 'deleteClassification').and.returnValue(of(true));
       spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
