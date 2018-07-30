@@ -7,7 +7,6 @@ import { Classification } from 'app/models/classification';
 import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
-import { ClassificationTypesService } from 'app/administration/services/classification-types/classification-types.service';
 import {
 	ClassificationCategoriesService
 } from 'app/administration/services/classification-categories-service/classification-categories.service';
@@ -43,7 +42,6 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 		private classificationService: ClassificationsService,
 		private router: Router,
 		private route: ActivatedRoute,
-		private classificationTypeService: ClassificationTypesService,
 		private categoryService: ClassificationCategoriesService) {
 	}
 
@@ -53,12 +51,13 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 			.subscribe(value => {
 				this.performRequest(true);
 			})
-		this.selectedClassificationSubscription = this.classificationTypeService.getSelectedClassificationType().subscribe(value => {
-			this.classificationTypeSelected = value;
+		this.selectedClassificationSubscription = this.categoryService.getSelectedClassificationType().subscribe(value => {
+		  this.classificationTypeSelected = value;
 			this.performRequest();
 		})
 
-		this.categoriesSubscription = this.categoryService.getCategories().subscribe((categories: Array<string>) => {
+    this.categoriesSubscription =
+        this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
 			this.categories = categories;
 		});
 	}
@@ -66,12 +65,13 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	selectClassificationType(classificationTypeSelected: string) {
 		this.classifications = [];
 		this.requestInProgress = true;
-		this.classificationTypeService.selectClassificationType(classificationTypeSelected);
+		this.categoryService.selectClassificationType(classificationTypeSelected);
 		this.classificationService.getClassifications()
 			.subscribe((classifications: Array<TreeNodeModel>) => {
 				this.classifications = classifications;
 				this.requestInProgress = false;
-			});
+      });
+      this.selectClassification(undefined);
 	}
 
 	selectClassification(id: string) {
@@ -110,7 +110,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 			.subscribe((classifications: Array<TreeNodeModel>) => {
 				this.requestInProgress = false;
 				this.classifications = classifications;
-				this.classificationTypeServiceSubscription = this.classificationTypeService.getClassificationTypes()
+				this.classificationTypeServiceSubscription = this.categoryService.getClassificationTypes()
 					.subscribe((classificationsTypes: Array<string>) => {
 						this.classificationsTypes = classificationsTypes;
 					});

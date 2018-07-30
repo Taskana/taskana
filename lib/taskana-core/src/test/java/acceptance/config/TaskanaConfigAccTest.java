@@ -41,12 +41,12 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
     @Test
     public void testClassificationCategories() {
-        assertEquals(4, getConfiguration().getClassificationCategories().size());
-        assertTrue(getConfiguration().getClassificationCategories().contains("EXTERNAL"));
-        assertTrue(getConfiguration().getClassificationCategories().contains("MANUAL"));
-        assertTrue(getConfiguration().getClassificationCategories().contains("AUTOMATIC"));
-        assertTrue(getConfiguration().getClassificationCategories().contains("PROCESS"));
-        assertFalse(getConfiguration().getClassificationCategories().contains("manual"));
+        assertEquals(4, getConfiguration().getClassificationCategoriesByType("TASK").size());
+        assertTrue(getConfiguration().getClassificationCategoriesByType("TASK").contains("EXTERNAL"));
+        assertTrue(getConfiguration().getClassificationCategoriesByType("TASK").contains("MANUAL"));
+        assertTrue(getConfiguration().getClassificationCategoriesByType("TASK").contains("AUTOMATIC"));
+        assertTrue(getConfiguration().getClassificationCategoriesByType("TASK").contains("PROCESS"));
+        assertFalse(getConfiguration().getClassificationCategoriesByType("TASK").contains("manual"));
     }
 
 }

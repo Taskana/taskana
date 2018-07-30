@@ -214,7 +214,7 @@
                             <groupId>commons-logging</groupId>
                         </exclusion>
                     </exclusions>
-                </dependency>                
+                </dependency>
         </dependencies>
 
         <build>
