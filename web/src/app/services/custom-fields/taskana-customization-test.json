@@ -1,0 +1,22 @@
+{
+  "EN": {
+      "classifications": {
+          "information": {
+              "custom1": {
+                  "field": "Classification custom 1",
+                  "visible": true
+              },
+              "custom3": {
+                  "field": "",
+                  "visible": false
+              }
+          },
+          "categories": {
+              "EXTERNAL": "assets/icons/categories/external.svg",
+              "MANUAL": "assets/icons/categories/manual.svg",
+              "AUTOMATIC": "assets/icons/categories/automatic.svg",
+              "PROCESS": "assets/icons/categories/process.svg"
+          }
+      }
+  }
+}
