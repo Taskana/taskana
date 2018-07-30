@@ -94,7 +94,7 @@ public class TaskanaEngineConfiguration {
     protected List<String> classificationTypes = new ArrayList<String>();
 
     // List of configured classification categories
-    protected List<String> classificationCategories = new ArrayList<String>();
+    protected Map<String, List<String>> classificationCategories = new HashMap<String, List<String>>();
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions)
         throws SQLException {
@@ -231,9 +231,17 @@ public class TaskanaEngineConfiguration {
     private void initClassificationCategories(Properties props) {
         String classificationCategoryNames = props.getProperty(TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY);
         if (classificationCategoryNames != null && !classificationCategoryNames.isEmpty()) {
-            StringTokenizer st = new StringTokenizer(classificationCategoryNames, ",");
-            while (st.hasMoreTokens()) {
-                classificationCategories.add(st.nextToken().trim().toUpperCase());
+            String classificationType;
+            List<String> classificationCategoriesAux;
+            for (String type : classificationTypes) {
+                classificationCategoriesAux = new ArrayList<>();
+                classificationType = classificationCategoryNames.substring(classificationCategoryNames.toUpperCase().indexOf(type) + type.length() + 1, classificationCategoryNames.indexOf(";"));
+                classificationCategoryNames = classificationCategoryNames.substring(classificationCategoryNames.indexOf(";") + ";".length());
+                StringTokenizer st = new StringTokenizer(classificationType, ",");
+                while (st.hasMoreTokens()) {
+                    classificationCategoriesAux.add(st.nextToken().trim().toUpperCase());
+                }
+                classificationCategories.put(type, classificationCategoriesAux);
             }
         }
         LOGGER.debug("Configured domains: {}", domains);
@@ -418,10 +426,17 @@ public class TaskanaEngineConfiguration {
     }
 
     public List<String> getClassificationCategories() {
+        List<String> classificationCategories = new ArrayList<>();
+        for (Map.Entry<String, List<String>> type : this.classificationCategories.entrySet()) {
+            classificationCategories.addAll(type.getValue());
+        }
         return classificationCategories;
     }
 
-    public void setClassificationCategories(List<String> classificationCategories) {
+    public List<String> getClassificationCategories(String type) {
+        return classificationCategories.get(type);
+    }
+    public void setClassificationCategories(Map<String, List<String>> classificationCategories) {
         this.classificationCategories = classificationCategories;
     }
 
