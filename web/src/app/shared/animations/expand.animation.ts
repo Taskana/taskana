@@ -2,21 +2,7 @@ import { trigger, style, transition, animate, keyframes, state } from '@angular/
 
 export const expandDown =
     trigger('toggleDown', [
-        state('*', style({ opacity: '1' })),
-        state('void', style({ opacity: '0' })),
-        transition('void => *', animate('300ms ease-in', keyframes([
-            style({ opacity: 0, height: '0px' }),
-            style({ opacity: 0.5, height: '50px' }),
-            style({ opacity: 1, height: '*' })]))),
-        transition('* => void', animate('300ms ease-out', keyframes([
-            style({ opacity: 1, height: '*' }),
-            style({ opacity: 0.5, height: '50px' }),
-            style({ opacity: 0, height: '0px' })])))
-    ]);
-
-export const expandDownWithoutNgIf =
-  trigger('toggleDownWithoutNgIf', [
-      state('true', style({ opacity: '1', display: 'block' })),
+      state('true', style({ opacity: '1', display: 'initial' })),
       state('false', style({ opacity: '0', display: 'none' })),
       transition('false => true', animate('300ms ease-in', keyframes([
           style({ opacity: 0, height: '0px' }),
@@ -26,7 +12,7 @@ export const expandDownWithoutNgIf =
           style({ opacity: 1, height: '*' }),
           style({ opacity: 0.5, height: '50px' }),
           style({ opacity: 0, height: '0px' })])))
-  ]);
+    ]);
 
 export const expandRight = trigger('toggleRight', [
     transition('void => *', animate('300ms ease-in', keyframes([

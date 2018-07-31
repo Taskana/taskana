@@ -2,13 +2,13 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { FilterModel } from 'app/models/filter';
 import { Side } from '../distribution-targets.component';
-import { expandDownWithoutNgIf } from 'app/shared/animations/expand.animation';
+import { expandDown } from 'app/shared/animations/expand.animation';
 
 @Component({
 	selector: 'taskana-dual-list',
 	templateUrl: './dual-list.component.html',
 	styleUrls: ['./dual-list.component.scss'],
-	animations: [expandDownWithoutNgIf]
+	animations: [expandDown]
 })
 export class DualListComponent implements OnInit {
 
