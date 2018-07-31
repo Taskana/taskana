@@ -93,7 +93,8 @@ describe('DistributionTargetsComponent', () => {
 		expect(repeteadElemens).toBeFalsy();
 	});
 	it('should filter left list and keep selected elements as selected', () => {
-		component.performFilter({ filterBy: new FilterModel(), side: Side.LEFT });
+		component.performFilter({ filterBy: new FilterModel({
+      name: 'someName', owner: 'someOwner', description: 'someDescription', key: 'someKey'}), side: Side.LEFT });
 		component.distributionTargetsLeft = new Array<WorkbasketSummary>(
 			new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' }))
 		)
