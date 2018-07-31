@@ -37,7 +37,7 @@ public interface QueryMapper {
         + "AS (SELECT ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_KEY, "
         + " CLASSIFICATION_CATEGORY, CLASSIFICATION_ID, WORKBASKET_ID, DOMAIN, WORKBASKET_KEY, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, "
         + "POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, "
-        + "CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 FROM TASKANA.TASK t "
+        + "CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 FROM TASK t "
         + "<where> "
         + "<if test='taskIds != null'>AND ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
         + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
@@ -123,7 +123,7 @@ public interface QueryMapper {
         + " CLASSIFICATION_CATEGORY, CLASSIFICATION_ID, WORKBASKET_ID, DOMAIN, WORKBASKET_KEY, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, "
         + "POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, "
         + "CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16, "
-        + "(SELECT 1 FROM TASKANA.WORKBASKET_ACCESS_LIST s WHERE "
+        + "(SELECT 1 FROM WORKBASKET_ACCESS_LIST s WHERE "
         + "<if test='accessIdIn != null'> "
         + "s.ACCESS_ID IN (<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) and "
         + "</if>"
@@ -140,11 +140,11 @@ public interface QueryMapper {
         + "</when>"
         + "<otherwise>"
         + "SELECT t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.CREATOR, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.CLASSIFICATION_CATEGORY, t.CLASSIFICATION_ID, t.WORKBASKET_ID, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10, t.CUSTOM_11, t.CUSTOM_12, t.CUSTOM_13, t.CUSTOM_14, t.CUSTOM_15, t.CUSTOM_16 "
-        + "FROM TASKANA.TASK t "
+        + "FROM TASK t "
         + "<where>"
         + "<if test='accessIdIn != null'> "
         + "AND t.WORKBASKET_ID IN ( "
-        + "SELECT WID from (SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ FROM TASKANA.WORKBASKET_ACCESS_LIST AS s    where "
+        + "SELECT WID from (SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ FROM WORKBASKET_ACCESS_LIST AS s    where "
         + "ACCESS_ID IN (<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
         + "group by WORKBASKET_ID ) AS f where max_read = 1 ) "
         + "</if> "
@@ -275,7 +275,7 @@ public interface QueryMapper {
     List<TaskSummaryImpl> queryTaskSummaries(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT ID, KEY, PARENT_ID, PARENT_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8 "
-        + "FROM TASKANA.CLASSIFICATION "
+        + "FROM CLASSIFICATION "
         + "<where>"
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
         + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
@@ -337,7 +337,7 @@ public interface QueryMapper {
     List<ClassificationSummaryImpl> queryClassificationSummaries(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
-        + "FROM TASKANA.OBJECT_REFERENCE "
+        + "FROM OBJECT_REFERENCE "
         + "<where>"
         + "<if test='company != null'>AND COMPANY IN(<foreach item='item' collection='company' separator=',' >#{item}</foreach>)</if> "
         + "<if test='system != null'>AND SYSTEM IN(<foreach item='item' collection='system' separator=',' >#{item}</foreach>)</if> "
@@ -358,7 +358,7 @@ public interface QueryMapper {
 
     @Select("<script>"
         + "SELECT DISTINCT "
-        + "w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.CUSTOM_1, w.CUSTOM_2, w.CUSTOM_3, w.CUSTOM_4, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from TASKANA.WORKBASKET w "
+        + "w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.CUSTOM_1, w.CUSTOM_2, w.CUSTOM_3, w.CUSTOM_4, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
         + "<if test = 'joinWithAccessList'> "
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
@@ -374,7 +374,7 @@ public interface QueryMapper {
         + "MAX(PERM_CUSTOM_8::int) as MAX_CUSTOM_8, MAX(PERM_CUSTOM_9::int) as MAX_CUSTOM_9, MAX(PERM_CUSTOM_10::int) as MAX_CUSTOM_10, MAX(PERM_CUSTOM_11::int) as MAX_CUSTOM_11, MAX(PERM_CUSTOM_12::int) as MAX_CUSTOM_12 "
         + "</otherwise>"
         + "</choose>"
-        + "FROM TASKANA.WORKBASKET_ACCESS_LIST where ACCESS_ID IN (<if test='accessId != null'><foreach item='item' collection='accessId' separator=',' >#{item}</foreach></if>) group by WORKBASKET_ID ) a "
+        + "FROM WORKBASKET_ACCESS_LIST where ACCESS_ID IN (<if test='accessId != null'><foreach item='item' collection='accessId' separator=',' >#{item}</foreach></if>) group by WORKBASKET_ID ) a "
         + "on (w.ID = a.WID)"
         + "</if> "
         + "<where> 1=1 "
@@ -462,7 +462,7 @@ public interface QueryMapper {
         + "SELECT "
         + "ID, WORKBASKET_ID, ACCESS_ID, ACCESS_NAME, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, "
         + "PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
-        + "from TASKANA.WORKBASKET_ACCESS_LIST "
+        + "from WORKBASKET_ACCESS_LIST "
         + "<where>"
         + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='workbasketIdIn != null'>AND WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
@@ -499,7 +499,7 @@ public interface QueryMapper {
     @Select("<script> "
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
-        + "WITH X (ID, WORKBASKET_ID) AS (SELECT ID, WORKBASKET_ID FROM TASKANA.TASK t "
+        + "WITH X (ID, WORKBASKET_ID) AS (SELECT ID, WORKBASKET_ID FROM TASK t "
         + "<where> "
         + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
         + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
@@ -576,7 +576,7 @@ public interface QueryMapper {
         + "<if test='custom16Like != null'>AND (<foreach item='item' collection='custom16Like' separator=' OR '>UPPER(t.CUSTOM_16) LIKE #{item}</foreach>)</if> "
         + "</where> "
         + "), Y (ID, FLAG) AS "
-        + "(SELECT ID, (SELECT 1 FROM TASKANA.WORKBASKET_ACCESS_LIST s WHERE "
+        + "(SELECT ID, (SELECT 1 FROM WORKBASKET_ACCESS_LIST s WHERE "
         + "<if test='accessIdIn != null'> "
         + "s.ACCESS_ID IN (<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) and "
         + "</if>"
@@ -588,11 +588,11 @@ public interface QueryMapper {
         + "with UR "
         + "</when>"
         + "<otherwise>"
-        + "SELECT COUNT(ID) FROM TASKANA.TASK t "
+        + "SELECT COUNT(ID) FROM TASK t "
         + "<where>"
         + "<if test='accessIdIn != null'> "
         + "AND t.WORKBASKET_ID IN ( "
-        + "select WID from (select WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ FROM TASKANA.WORKBASKET_ACCESS_LIST AS s where "
+        + "select WID from (select WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ FROM WORKBASKET_ACCESS_LIST AS s where "
         + "ACCESS_ID IN (<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
         + "group by WORKBASKET_ID ) AS f where max_read = 1 ) "
         + "</if> "
@@ -675,7 +675,7 @@ public interface QueryMapper {
         + "</script>")
     Long countQueryTasks(TaskQueryImpl taskQuery);
 
-    @Select("<script>SELECT COUNT(ID) FROM TASKANA.CLASSIFICATION "
+    @Select("<script>SELECT COUNT(ID) FROM CLASSIFICATION "
         + "<where>"
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
         + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
@@ -716,7 +716,7 @@ public interface QueryMapper {
         + "</script>")
     Long countQueryClassifications(ClassificationQueryImpl classificationQuery);
 
-    @Select("<script>SELECT COUNT(ID) FROM TASKANA.OBJECT_REFERENCE "
+    @Select("<script>SELECT COUNT(ID) FROM OBJECT_REFERENCE "
         + "<where>"
         + "<if test='company != null'>AND COMPANY IN(<foreach item='item' collection='company' separator=',' >#{item}</foreach>)</if> "
         + "<if test='system != null'>AND SYSTEM IN(<foreach item='item' collection='system' separator=',' >#{item}</foreach>)</if> "
@@ -729,7 +729,7 @@ public interface QueryMapper {
     Long countQueryObjectReferences(ObjectReferenceQueryImpl objectReference);
 
     @Select("<script>"
-        + "SELECT COUNT(w.ID) from TASKANA.WORKBASKET w "
+        + "SELECT COUNT(w.ID) from WORKBASKET w "
         + "<if test = 'joinWithAccessList'> "
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
@@ -745,7 +745,7 @@ public interface QueryMapper {
         + "MAX(PERM_CUSTOM_8::int) as MAX_CUSTOM_8, MAX(PERM_CUSTOM_9::int) as MAX_CUSTOM_9, MAX(PERM_CUSTOM_10::int) as MAX_CUSTOM_10, MAX(PERM_CUSTOM_11::int) as MAX_CUSTOM_11, MAX(PERM_CUSTOM_12::int) as MAX_CUSTOM_12 "
         + "</otherwise>"
         + "</choose>"
-        + "FROM TASKANA.WORKBASKET_ACCESS_LIST where ACCESS_ID IN (<if test='accessId != null'><foreach item='item' collection='accessId' separator=',' >#{item}</foreach></if>) group by WORKBASKET_ID ) a "
+        + "FROM WORKBASKET_ACCESS_LIST where ACCESS_ID IN (<if test='accessId != null'><foreach item='item' collection='accessId' separator=',' >#{item}</foreach></if>) group by WORKBASKET_ID ) a "
         + "on (w.ID = a.WID)"
         + "</if> "
         + "<where> 1=1 "
@@ -811,7 +811,7 @@ public interface QueryMapper {
         + "</script>")
     Long countQueryWorkbaskets(WorkbasketQueryImpl workbasketQuery);
 
-    @Select("<script>SELECT COUNT(ID) from TASKANA.WORKBASKET_ACCESS_LIST "
+    @Select("<script>SELECT COUNT(ID) from WORKBASKET_ACCESS_LIST "
         + "<where>"
         + "<if test='workbasketIdIn != null'>AND WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
         + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
@@ -821,12 +821,12 @@ public interface QueryMapper {
     Long countQueryWorkbasketAccessItems(WorkbasketAccessItemQueryImpl accessItem);
 
     @Select("<script>SELECT DISTINCT ${columnName} "
-        + "FROM TASKANA.TASK t "
+        + "FROM TASK t "
         + "<where>"
         + "<if test='!orderBy.isEmpty()'>${columnName} IS NOT NULL</if> "
         + "<if test='accessIdIn != null'> "
         + "AND t.WORKBASKET_ID IN ( "
-        + "select WID from (select WORKBASKET_ID as WID, MAX(PERM_READ) as MAX_READ FROM TASKANA.WORKBASKET_ACCESS_LIST where "
+        + "select WID from (select WORKBASKET_ID as WID, MAX(PERM_READ) as MAX_READ FROM WORKBASKET_ACCESS_LIST where "
         + "ACCESS_ID IN (<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
         + "group by WORKBASKET_ID ) where max_read = 1 ) "
         + "</if> "
@@ -910,7 +910,7 @@ public interface QueryMapper {
     List<String> queryTaskColumnValues(TaskQueryImpl taskQuery);
 
     @Select("<script>SELECT DISTINCT ${columnName} "
-        + "FROM TASKANA.CLASSIFICATION"
+        + "FROM CLASSIFICATION"
         + "<where>"
         + "<if test='!orderBy.isEmpty()'>${columnName} IS NOT NULL</if> "
         + "<if test='key != null'>AND KEY IN(<foreach item='item' collection='key' separator=',' >#{item}</foreach>)</if> "
@@ -954,7 +954,7 @@ public interface QueryMapper {
     List<String> queryClassificationColumnValues(ClassificationQueryImpl classificationQuery);
 
     @Select("<script>SELECT DISTINCT ${columnName} "
-        + "FROM TASKANA.OBJECT_REFERENCE "
+        + "FROM OBJECT_REFERENCE "
         + "<where>"
         + "<if test='company != null'>AND COMPANY IN(<foreach item='item' collection='company' separator=',' >#{item}</foreach>)</if> "
         + "<if test='system != null'>AND SYSTEM IN(<foreach item='item' collection='system' separator=',' >#{item}</foreach>)</if> "
@@ -967,7 +967,7 @@ public interface QueryMapper {
     List<String> queryObjectReferenceColumnValues(ObjectReferenceQueryImpl objectReference);
 
     @Select("<script>SELECT DISTINCT ${columnName} "
-        + "FROM TASKANA.WORKBASKET w "
+        + "FROM WORKBASKET w "
         + "<if test = 'joinWithAccessList'> "
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
@@ -983,7 +983,7 @@ public interface QueryMapper {
         + "MAX(PERM_CUSTOM_8::int) as MAX_CUSTOM_8, MAX(PERM_CUSTOM_9::int) as MAX_CUSTOM_9, MAX(PERM_CUSTOM_10::int) as MAX_CUSTOM_10, MAX(PERM_CUSTOM_11::int) as MAX_CUSTOM_11, MAX(PERM_CUSTOM_12::int) as MAX_CUSTOM_12 "
         + "</otherwise>"
         + "</choose>"
-        + "FROM TASKANA.WORKBASKET_ACCESS_LIST where ACCESS_ID IN (<if test='accessId != null'><foreach item='item' collection='accessId' separator=',' >#{item}</foreach></if>) group by WORKBASKET_ID ) a "
+        + "FROM WORKBASKET_ACCESS_LIST where ACCESS_ID IN (<if test='accessId != null'><foreach item='item' collection='accessId' separator=',' >#{item}</foreach></if>) group by WORKBASKET_ID ) a "
         + "on (w.ID = a.WID)"
         + "</if> "
         + "<where>"
@@ -1061,7 +1061,7 @@ public interface QueryMapper {
     List<String> queryWorkbasketColumnValues(WorkbasketQueryImpl workbasketQuery);
 
     @Select("<script>SELECT DISTINCT ${columnName} "
-        + "FROM TASKANA.WORKBASKET_ACCESS_LIST "
+        + "FROM WORKBASKET_ACCESS_LIST "
         + "<where>"
         + "<if test='!orderBy.isEmpty()'>${columnName} IS NOT NULL</if> "
         + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "

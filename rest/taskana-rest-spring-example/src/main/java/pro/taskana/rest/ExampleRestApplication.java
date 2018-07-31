@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -34,6 +35,9 @@ import pro.taskana.sampledata.SampleDataGenerator;
 @Import({TransactionalJobsConfiguration.class, LdapConfiguration.class, RestConfiguration.class})
 public class ExampleRestApplication {
 
+    @Value("${taskana.schemaName:TASKANA}")
+    public String schemaName;
+
     @Autowired
     private LdapClient ldapClient;
 
@@ -46,7 +50,7 @@ public class ExampleRestApplication {
     @ConfigurationProperties(prefix = "datasource")
     public DataSourceProperties dataSourceProperties() {
         DataSourceProperties props = new DataSourceProperties();
-        props.setUrl("jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA");
+        props.setUrl("jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0");
         return props;
     }
 
@@ -64,7 +68,7 @@ public class ExampleRestApplication {
     @DependsOn("taskanaEngineConfiguration") // generate sample data after schema was inserted
     public SampleDataGenerator generateSampleData(DataSource dataSource) throws SQLException {
         SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource);
-        sampleDataGenerator.generateSampleData();
+        sampleDataGenerator.generateSampleData(schemaName);
         return sampleDataGenerator;
     }
 

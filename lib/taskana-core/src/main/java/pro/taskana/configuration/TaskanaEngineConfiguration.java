@@ -56,7 +56,8 @@ public class TaskanaEngineConfiguration {
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
     private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";
     protected static final String TASKANA_SCHEMA_VERSION = "1.0.2"; // must match the VERSION value in table
-                                                                    // TASKANA.TASKANA_SCHEMA_VERSION
+    // TASKANA_SCHEMA_VERSION
+    private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
     // Taskana properties file
     protected String propertiesFileName = TASKANA_PROPERTIES;
@@ -64,6 +65,7 @@ public class TaskanaEngineConfiguration {
     // Taskana datasource configuration
     protected DataSource dataSource;
     protected DbSchemaCreator dbSchemaCreator;
+    protected String schemaName;
 
     // Taskana role configuration
     protected String rolesSeparator = TASKANA_ROLES_SEPARATOR;
@@ -96,18 +98,19 @@ public class TaskanaEngineConfiguration {
     // List of configured classification categories
     protected List<String> classificationCategories = new ArrayList<String>();
 
-    public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions)
+    public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions, String schemaName)
         throws SQLException {
-        this(dataSource, useManagedTransactions, true);
+        this(dataSource, useManagedTransactions, true, schemaName);
     }
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
-        boolean securityEnabled) throws SQLException {
-        this(dataSource, useManagedTransactions, securityEnabled, null, null);
+        boolean securityEnabled, String schemaName) throws SQLException {
+        this(dataSource, useManagedTransactions, securityEnabled, null, null, schemaName);
     }
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
-        boolean securityEnabled, String propertiesFileName, String rolesSeparator) throws SQLException {
+        boolean securityEnabled, String propertiesFileName, String rolesSeparator, String schemaName)
+        throws SQLException {
         this.useManagedTransactions = useManagedTransactions;
         this.securityEnabled = securityEnabled;
 
@@ -119,15 +122,17 @@ public class TaskanaEngineConfiguration {
             this.rolesSeparator = rolesSeparator;
         }
 
-        initTaskanaProperties(this.propertiesFileName, this.rolesSeparator);
-
         if (dataSource != null) {
             this.dataSource = dataSource;
         } else {
             // use default In Memory datasource
             this.dataSource = createDefaultDataSource();
         }
-        dbSchemaCreator = new DbSchemaCreator(this.dataSource);
+
+        initSchemaName(schemaName);
+        initTaskanaProperties(this.propertiesFileName, this.rolesSeparator);
+
+        dbSchemaCreator = new DbSchemaCreator(this.dataSource, this.getSchemaName());
         dbSchemaCreator.run();
 
         if (!dbSchemaCreator.isValidSchemaVersion(TASKANA_SCHEMA_VERSION)) {
@@ -236,7 +241,17 @@ public class TaskanaEngineConfiguration {
                 classificationCategories.add(st.nextToken().trim().toUpperCase());
             }
         }
-        LOGGER.debug("Configured domains: {}", domains);
+        LOGGER.debug("Configured classification categories : {}", domains);
+    }
+
+    private void initSchemaName(String schemaName) {
+        if (schemaName != null && !schemaName.isEmpty()) {
+            this.setSchemaName(schemaName);
+        } else {
+            this.setSchemaName(DEFAULT_SCHEMA_NAME);
+        }
+
+        LOGGER.debug("Using schema name {}", this.getSchemaName());
     }
 
     private void initTaskanaRoles(Properties props, String rolesSeparator) {
@@ -435,6 +450,14 @@ public class TaskanaEngineConfiguration {
 
     public Duration getTaskCleanupJobMinimumAge() {
         return taskCleanupJobMinimumAge;
+    }
+
+    public String getSchemaName() {
+        return schemaName;
+    }
+
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
     }
 
     /**

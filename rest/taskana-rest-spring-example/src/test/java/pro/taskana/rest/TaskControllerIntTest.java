@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -52,6 +53,9 @@ import pro.taskana.sampledata.SampleDataGenerator;
     properties = {"devMode=true"})
 public class TaskControllerIntTest {
 
+    @Value("${taskana.schemaName:TASKANA}")
+    public String schemaName;
+
     @LocalServerPort
     int port;
 
@@ -62,7 +66,7 @@ public class TaskControllerIntTest {
         SampleDataGenerator sampleDataGenerator;
         try {
             sampleDataGenerator = new SampleDataGenerator(dataSource);
-            sampleDataGenerator.generateSampleData();
+            sampleDataGenerator.generateSampleData(schemaName);
         } catch (SQLException e) {
             throw new SystemException("tried to reset DB and caught Exception " + e, e);
         }

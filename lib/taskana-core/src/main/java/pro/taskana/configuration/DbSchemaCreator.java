@@ -1,7 +1,10 @@
 package pro.taskana.configuration;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,19 +27,27 @@ public class DbSchemaCreator {
     private static final String DB_SCHEMA = SQL + "/taskana-schema.sql";
     private static final String DB_SCHEMA_POSTGRES = SQL + "/taskana-schema-postgres.sql";
     private static final String DB_SCHEMA_DETECTION = SQL + "/schema-detection.sql";
+    private static final String DB_SCHEMA_DETECTION_POSTGRES = SQL + "/schema-detection-postgres.sql";
+
     private DataSource dataSource;
+    private String schemaName;
     private StringWriter outWriter = new StringWriter();
     private PrintWriter logWriter = new PrintWriter(outWriter);
     private StringWriter errorWriter = new StringWriter();
     private PrintWriter errorLogWriter = new PrintWriter(errorWriter);
 
-    public DbSchemaCreator(DataSource dataSource) {
+    public DbSchemaCreator(DataSource dataSource, String schema) {
         super();
         this.dataSource = dataSource;
+        this.schemaName = schema;
     }
 
     private static String selectDbScriptFileName(String dbProductName) {
         return "PostgreSQL".equals(dbProductName) ? DB_SCHEMA_POSTGRES : DB_SCHEMA;
+    }
+
+    private static String selectDbSchemaDetectionScript(String dbProductName) {
+        return "PostgreSQL".equals(dbProductName) ? DB_SCHEMA_DETECTION_POSTGRES : DB_SCHEMA_DETECTION;
     }
 
     /**
@@ -49,14 +60,14 @@ public class DbSchemaCreator {
         Connection connection = dataSource.getConnection();
         ScriptRunner runner = new ScriptRunner(connection);
         LOGGER.debug(connection.getMetaData().toString());
-
         runner.setStopOnError(true);
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
         try {
-            if (!isSchemaPreexisting(runner)) {
-                runner.runScript(new InputStreamReader(this.getClass()
+            if (!isSchemaPreexisting(runner, connection.getMetaData().getDatabaseProductName())) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass()
                     .getResourceAsStream(selectDbScriptFileName(connection.getMetaData().getDatabaseProductName()))));
+                runner.runScript(getSqlSchemaNameParsed(reader));
             }
         } finally {
             runner.closeConnection();
@@ -67,9 +78,11 @@ public class DbSchemaCreator {
         }
     }
 
-    private boolean isSchemaPreexisting(ScriptRunner runner) {
+    private boolean isSchemaPreexisting(ScriptRunner runner, String productName) {
         try {
-            runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(DB_SCHEMA_DETECTION)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass()
+                .getResourceAsStream(selectDbSchemaDetectionScript(productName))));
+            runner.runScript(getSqlSchemaNameParsed(reader));
         } catch (Exception e) {
             LOGGER.debug("Schema does not exist.");
             return false;
@@ -82,17 +95,18 @@ public class DbSchemaCreator {
         SqlRunner runner = null;
         try {
             Connection connection = dataSource.getConnection();
+            connection.setSchema(this.schemaName);
             runner = new SqlRunner(connection);
             LOGGER.debug(connection.getMetaData().toString());
 
-            String query = "select VERSION from TASKANA.TASKANA_SCHEMA_VERSION where "
-                + "VERSION = (select max(VERSION) from TASKANA.TASKANA_SCHEMA_VERSION) "
+            String query = "select VERSION from TASKANA_SCHEMA_VERSION where "
+                + "VERSION = (select max(VERSION) from TASKANA_SCHEMA_VERSION) "
                 + "AND VERSION = ?";
 
             Map<String, Object> queryResult = runner.selectOne(query, expectedVersion);
             if (queryResult == null || queryResult.isEmpty()) {
                 LOGGER.error(
-                    "Schema version not valid. The VERSION property in table TASKANA.TASKANA_SCHEMA_VERSION has not the expected value {}",
+                    "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION has not the expected value {}",
                     expectedVersion);
                 return false;
             } else {
@@ -102,7 +116,7 @@ public class DbSchemaCreator {
 
         } catch (Exception e) {
             LOGGER.error(
-                "Schema version not valid. The VERSION property in table TASKANA.TASKANA_SCHEMA_VERSION has not the expected value {}",
+                "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION has not the expected value {}",
                 expectedVersion);
             return false;
         } finally {
@@ -118,5 +132,23 @@ public class DbSchemaCreator {
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    private StringReader getSqlSchemaNameParsed(BufferedReader reader) throws SQLException {
+
+        StringBuffer content = new StringBuffer();
+        try {
+            String line = "";
+            while (line != null) {
+                line = reader.readLine();
+                if (line != null) {
+                    content.append(line.replaceAll("%schemaName%", schemaName) + System.lineSeparator());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.error("SchemaName sql parsing failed for schemaName {}", schemaName);
+        }
+        return new StringReader(content.toString());
     }
 }

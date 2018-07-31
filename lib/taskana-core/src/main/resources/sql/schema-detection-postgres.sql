@@ -1,3 +1,3 @@
-SET SCHEMA %schemaName%;
+SET search_path TO %schemaName%;
 
 SELECT COUNT(*) FROM TASKANA_SCHEMA_VERSION;

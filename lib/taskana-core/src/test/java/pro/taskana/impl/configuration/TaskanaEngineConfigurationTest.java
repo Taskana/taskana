@@ -27,13 +27,15 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 public class TaskanaEngineConfigurationTest {
 
     private static DataSource dataSource = null;
+    private static String schemaName = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfigurationTest.class);
     private static final int POOL_TIME_TO_WAIT = 50;
 
     @Test
     public void testCreateTaskanaEngine() throws SQLException {
         DataSource ds = getDataSource();
-        TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false);
+        TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false,
+            TaskanaEngineConfigurationTest.getSchemaName());
 
         TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
 
@@ -76,7 +78,7 @@ public class TaskanaEngineConfigurationTest {
         // ds.setUser("sa");
 
         String jdbcDriver = "org.h2.Driver";
-        String jdbcUrl = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA";
+        String jdbcUrl = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0";
         String dbUserName = "sa";
         String dbPassword = "sa";
         DataSource ds = new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver,
@@ -85,6 +87,30 @@ public class TaskanaEngineConfigurationTest {
         ((PooledDataSource) ds).forceCloseAll();  // otherwise the MyBatis pool is not initialized correctly
 
         return ds;
+    }
+
+    /**
+     * returns the SchemaName used for Junit test. If the file {user.home}/taskanaUnitTest.properties is present, the
+     * SchemaName is created according to the property schemaName.
+     * a sample properties file for DB2 looks as follows:
+     * jdbcDriver=com.ibm.db2.jcc.DB2Driver jdbcUrl=jdbc:db2://localhost:50000/tskdb dbUserName=db2user
+     * dbPassword=db2password schemaName=TASKANA If any of these properties is missing, or the file doesn't exist, the default schemaName
+     * TASKANA is created used.
+     *
+     * @return String for unit test
+     */
+    public static String getSchemaName() {
+        if (schemaName == null) {
+            String userHomeDirectroy = System.getProperty("user.home");
+            String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+            File f = new File(propertiesFileName);
+            if (f.exists() && !f.isDirectory()) {
+                schemaName = getSchemaNameFromPropertiesObject(propertiesFileName);
+            } else {
+                schemaName = "TASKANA";
+            }
+        }
+        return schemaName;
     }
 
     /**
@@ -142,6 +168,36 @@ public class TaskanaEngineConfigurationTest {
         }
 
         return ds;
+    }
+
+    static String getSchemaNameFromPropertiesObject(String propertiesFileName) {
+        String schemaName = "TASKANA";
+        try (InputStream input = new FileInputStream(propertiesFileName)) {
+            Properties prop = new Properties();
+            prop.load(input);
+            boolean propertiesFileIsComplete = true;
+            String warningMessage = "";
+            schemaName = prop.getProperty("schemaName");
+            if (schemaName == null || schemaName.length() == 0) {
+                propertiesFileIsComplete = false;
+                warningMessage += ", schemaName property missing";
+            }
+
+            if (!propertiesFileIsComplete) {
+                LOGGER.warn("propertiesFile " + propertiesFileName + " is incomplete" + warningMessage);
+                LOGGER.warn("Using default Datasource for Test");
+                schemaName = "TASKANA";
+            }
+
+        } catch (FileNotFoundException e) {
+            LOGGER.warn("getSchemaNameFromPropertiesObject caught Exception " + e);
+            LOGGER.warn("Using default schemaName for Test");
+        } catch (IOException e) {
+            LOGGER.warn("createDataSourceFromProperties caught Exception " + e);
+            LOGGER.warn("Using default Datasource for Test");
+        }
+
+        return schemaName;
     }
 
 }

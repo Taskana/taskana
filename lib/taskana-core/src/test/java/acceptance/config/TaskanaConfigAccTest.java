@@ -20,7 +20,8 @@ import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 public class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
     public TaskanaConfigAccTest() throws SQLException {
-        super(new TaskanaEngineConfiguration(TaskanaEngineConfigurationTest.getDataSource(), true));
+        super(new TaskanaEngineConfiguration(TaskanaEngineConfigurationTest.getDataSource(), true,
+            TaskanaEngineConfigurationTest.getSchemaName()));
     }
 
     @Test
