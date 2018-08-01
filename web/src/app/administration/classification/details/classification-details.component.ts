@@ -90,6 +90,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     })
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
+        if (this.classification && this.classification.classificationId === classificationSelected.classificationId) { return; }
         this.initProperties();
         if (classificationSelected) {
           this.fillClassificationInformation(classificationSelected);
@@ -109,7 +110,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.fillClassificationInformation(this.selectedClassification ? this.selectedClassification : new ClassificationDefinition())
       }
 
-      if (id && id !== '') {
+
+      if (!this.classification || this.classification.classificationId !== id && id && id !== '') {
         this.selectClassification(id);
       }
     });
@@ -177,6 +179,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.classification = classification;
           this.afterRequest();
           this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
+          this.cloneClassification(classification);
         }, error => {
           this.errorModalService.triggerError(new ErrorModel('There was error while saving your classification', error))
           this.afterRequest();
@@ -227,7 +230,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       this.initClassificationOnCreation(classificationSelected);
     } else {
       this.classification = classificationSelected;
-      this.classificationClone = { ...classificationSelected };
+      this.cloneClassification(classificationSelected);
       this.checkDomainAndRedirect();
     }
   }
@@ -248,7 +251,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       if (this.classification) { this.classification.type = type; }
     });
     this.addDateToClassification();
-    this.classificationClone = { ...this.classification };
+    this.cloneClassification(this.classification);
   }
 
   private checkDomainAndRedirect() {
@@ -281,6 +284,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.errorModalService.triggerError(new ErrorModel('There was error while removing your classification', error))
         this.afterRequest();
       })
+  }
+
+  private cloneClassification (classification: ClassificationDefinition) {
+    this.classificationClone = { ...classification };
   }
 
   validChanged(): void {

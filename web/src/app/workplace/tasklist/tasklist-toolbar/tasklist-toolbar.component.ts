@@ -1,27 +1,16 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {animate, keyframes, style, transition, trigger} from '@angular/animations';
-import {Task} from 'app/workplace/models/task';
-import {Workbasket} from 'app/models/workbasket';
-import {TaskService} from 'app/workplace/services/task.service';
-import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
-import {SortingModel} from 'app/models/sorting';
-import {FilterModel} from 'app/models/filter';
-import {TaskanaType} from 'app/models/taskana-type';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Task } from 'app/workplace/models/task';
+import { Workbasket } from 'app/models/workbasket';
+import { TaskService } from 'app/workplace/services/task.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { SortingModel } from 'app/models/sorting';
+import { FilterModel } from 'app/models/filter';
+import { TaskanaType } from 'app/models/taskana-type';
+import { expandDown } from 'app/shared/animations/expand.animation';
 
 @Component({
   selector: 'taskana-tasklist-toolbar',
-  animations: [
-    trigger('toggle', [
-        transition('void => *', animate('300ms ease-in', keyframes([
-          style({height: '0px'}),
-          style({height: '50px'}),
-          style({height: '*'})]))),
-        transition('* => void', animate('300ms ease-out', keyframes([
-          style({height: '*'}),
-          style({height: '50px'}),
-          style({height: '0px'})])))
-      ]
-    )],
+  animations: [expandDown],
   templateUrl: './tasklist-toolbar.component.html',
   styleUrls: ['./tasklist-toolbar.component.scss']
 })
@@ -33,7 +22,7 @@ export class TaskListToolbarComponent implements OnInit {
   @Output() performFilter = new EventEmitter<FilterModel>();
 
   sortingFields = new Map([['name', 'Name'], ['priority', 'Priority'], ['due', 'Due'], ['planned', 'Planned']]);
-  filterParams = {name: '', key: '', owner: '', priority: '', state: ''};
+  filterParams = { name: '', key: '', owner: '', priority: '', state: '' };
   tasks: Task[] = [];
 
   workbasketNames: string[] = [];
@@ -46,7 +35,7 @@ export class TaskListToolbarComponent implements OnInit {
   filterType = TaskanaType.TASKS;
 
   constructor(private taskService: TaskService,
-              private workbasketService: WorkbasketService) {
+    private workbasketService: WorkbasketService) {
   }
 
   ngOnInit() {
@@ -83,14 +72,14 @@ export class TaskListToolbarComponent implements OnInit {
   getTasks(workbasketId: string) {
     this.taskService.findTasksWithWorkbasket(workbasketId, undefined, undefined,
       undefined, undefined, undefined, undefined).subscribe(
-      tasks => {
-        this.tasks.length = 0;
-        if (!tasks || tasks._embedded === undefined) {
-          return;
-        }
-        this.tasks = tasks._embedded.tasks;
-        this.tasksChanged.emit(this.tasks);
-      });
+        tasks => {
+          this.tasks.length = 0;
+          if (!tasks || tasks._embedded === undefined) {
+            return;
+          }
+          this.tasks = tasks._embedded.tasks;
+          this.tasksChanged.emit(this.tasks);
+        });
   }
 
   sorting(sort: SortingModel) {
