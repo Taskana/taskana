@@ -621,6 +621,70 @@ include::../../../{snippets}/GetCountByStateDocTest/response-fields.adoc[]
 
 == Other Resources (using the TaskanaEngineController)
 
+These resources are directly connected to the Taskana Engine endpoint.
+
+=== Domains-Resource
+
+This resource provides information which Domains exist in the system.
+
+==== Example Request
+
+include::../../../{snippets}/GetAllDomainsDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/GetAllDomainsDocTest/http-response.adoc[]
+
+==== Response Structure
+
+include::../../../{snippets}/GetAllDomainsDocTest/response-fields.adoc[]
+
+=== Classification-Categories-Resource
+
+This resource provides information which Classification Categories exist in the system.
+
+==== Example Request
+
+include::../../../{snippets}/GetAllClassificationCategoriesDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/GetAllClassificationCategoriesDocTest/http-response.adoc[]
+
+==== Response Structure
+
+include::../../../{snippets}/GetAllClassificationCategoriesDocTest/response-fields.adoc[]
+
+=== Classification-Types-Resource
+
+This resource provides information which Classification Types exist in the system.
+
+==== Example Request
+
+include::../../../{snippets}/GetAllClassificationTypesDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/GetAllClassificationTypesDocTest/http-response.adoc[]
+
+==== Response Structure
+
+include::../../../{snippets}/GetAllClassificationTypesDocTest/response-fields.adoc[]
+
+=== Current-User-Info-Resource
+
+This resource provides information about the current user.
+
+include::../../../{snippets}/GetCurrentUserInfoDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/GetCurrentUserInfoDocTest/http-response.adoc[]
+
+==== Response Structure
+
+include::../../../{snippets}/GetCurrentUserInfoDocTest/response-fields.adoc[]
+
 [[resource-subsets]]
 == Resource-Subsets
 
