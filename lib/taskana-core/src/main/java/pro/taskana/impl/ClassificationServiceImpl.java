@@ -290,7 +290,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         }
 
         if (classification.getCategory() != null
-                && !taskanaEngine.getConfiguration().getClassificationCategoriesByType(classification.getType()).contains(classification.getCategory())) {
+                && !taskanaEngine.getConfiguration().getClassificationCategoriesByTypeMap(classification.getType()).contains(classification.getCategory())) {
             throw new InvalidArgumentException("Given classification category " + classification.getCategory() + " with type " + classification.getType()
                 + " is not valid according to the configuration.");
         }

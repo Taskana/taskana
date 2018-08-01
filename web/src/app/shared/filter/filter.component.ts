@@ -1,7 +1,7 @@
-import {AfterContentInit, Component, EventEmitter, Input, Output, OnInit} from '@angular/core';
-import {ICONTYPES} from 'app/models/type';
-import {FilterModel} from 'app/models/filter';
-import {TaskanaType} from 'app/models/taskana-type';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { ICONTYPES } from 'app/models/type';
+import { FilterModel } from 'app/models/filter';
+import { TaskanaType } from 'app/models/taskana-type';
 
 @Component({
   selector: 'taskana-filter',
@@ -10,11 +10,12 @@ import {TaskanaType} from 'app/models/taskana-type';
 })
 export class FilterComponent implements OnInit {
 
-  @Input() allTypes: Map<string, string>;
+  @Input() allTypes: Map<string, string> = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
+  ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
 
-  @Input() filterParams: any;
+  @Input() filterParams = { name: '', key: '', type: '', description: '', owner: '' };
 
-  @Input() filterType: TaskanaType;
+  @Input() filterType = TaskanaType.WORKBASKETS;
 
   @Output() performFilter = new EventEmitter<FilterModel>();
 

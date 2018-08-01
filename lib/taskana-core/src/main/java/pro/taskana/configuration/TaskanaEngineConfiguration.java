@@ -93,7 +93,7 @@ public class TaskanaEngineConfiguration {
     // List of configured classification types
     protected List<String> classificationTypes = new ArrayList<String>();
 
-    protected Map<String, List<String>> classificationCategoriesByType = new HashMap<String, List<String>>();
+    protected Map<String, List<String>> classificationCategoriesByTypeMap = new HashMap<String, List<String>>();
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions)
         throws SQLException {
@@ -240,7 +240,7 @@ public class TaskanaEngineConfiguration {
                     while (st.hasMoreTokens()) {
                         classificationCategoriesAux.add(st.nextToken().trim().toUpperCase());
                     }
-                    classificationCategoriesByType.put(type, classificationCategoriesAux);
+                    classificationCategoriesByTypeMap.put(type, classificationCategoriesAux);
                 }
             }
         }
@@ -425,19 +425,19 @@ public class TaskanaEngineConfiguration {
         this.classificationTypes = classificationTypes;
     }
 
-    public List<String> getClassificationCategoriesByType() {
+    public List<String> getAllClassificationCategories() {
         List<String> classificationCategories = new ArrayList<>();
-        for (Map.Entry<String, List<String>> type : this.classificationCategoriesByType.entrySet()) {
+        for (Map.Entry<String, List<String>> type : this.classificationCategoriesByTypeMap.entrySet()) {
             classificationCategories.addAll(type.getValue());
         }
         return classificationCategories;
     }
 
-    public List<String> getClassificationCategoriesByType(String type) {
-        return classificationCategoriesByType.get(type);
+    public List<String> getClassificationCategoriesByTypeMap(String type) {
+        return classificationCategoriesByTypeMap.get(type);
     }
     public void setClassificationCategoriesByType(Map<String, List<String>> classificationCategoriesByType) {
-        this.classificationCategoriesByType = classificationCategoriesByType;
+        this.classificationCategoriesByTypeMap = classificationCategoriesByType;
     }
 
     public Instant getTaskCleanupJobFirstRun() {
