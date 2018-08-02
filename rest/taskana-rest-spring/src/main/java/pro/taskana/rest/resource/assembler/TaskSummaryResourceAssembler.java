@@ -17,6 +17,7 @@ public class TaskSummaryResourceAssembler
 
     private WorkbasketSummaryResourceAssembler workbasketAssembler = new WorkbasketSummaryResourceAssembler();
     private ClassificationSummaryResourceAssembler classificationAssembler = new ClassificationSummaryResourceAssembler();
+    private AttachmentSummaryResourcesAssembler attachmentsAssembler = new AttachmentSummaryResourcesAssembler();
 
     public TaskSummaryResourceAssembler() {
         super(TaskController.class, TaskSummaryResource.class);
@@ -44,6 +45,7 @@ public class TaskSummaryResourceAssembler
         resource.setClassificationSummaryResource(
             classificationAssembler.toResource(taskSummary.getClassificationSummary()));
         resource.setWorkbasketSummaryResource(workbasketAssembler.toResource(taskSummary.getWorkbasketSummary()));
+        resource.setAttachmentSummaries(attachmentsAssembler.toResources(taskSummary.getAttachmentSummaries()));
         try {
             if (taskSummary.getCustomAttribute("1") != null) {
                 resource.setCustom1(taskSummary.getCustomAttribute("1"));

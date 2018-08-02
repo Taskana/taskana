@@ -59,7 +59,8 @@ public class ProvideCategoryReportAccTest {
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource, true);
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false);
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
+            TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         ((TaskanaEngineImpl) taskanaEngine).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);

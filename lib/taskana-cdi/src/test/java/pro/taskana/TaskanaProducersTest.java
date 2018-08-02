@@ -30,7 +30,7 @@ public class TaskanaProducersTest {
         deployment.addAllDependencies();
         deployment.addDependency("org.mybatis:mybatis:3.4.2");
         deployment.addDependency("org.mybatis:mybatis-cdi:1.0.0");
-        deployment.addDependency("pro.taskana:taskana-core:1.0.2-SNAPSHOT");
+        deployment.addDependency("pro.taskana:taskana-core:1.0.3-SNAPSHOT");
         deployment.addAsResource("META-INF/beans.xml");
         deployment.addAsResource("taskana.properties");
         deployment.addAsResource("project-defaults.yml");
@@ -52,7 +52,7 @@ public class TaskanaProducersTest {
         Class.forName("org.h2.Driver");
         int resultCount = 0;
         try (Connection conn = DriverManager.getConnection(
-            "jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA",
+            "jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0",
             "SA", "SA")) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASKANA.TASK");
 
@@ -71,7 +71,7 @@ public class TaskanaProducersTest {
         Class.forName("org.h2.Driver");
         int resultCount = 0;
         try (Connection conn = DriverManager.getConnection(
-            "jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA",
+            "jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0",
             "SA", "SA")) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT ID, OWNER FROM TASKANA.TASK");
 

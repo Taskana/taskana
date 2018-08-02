@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.Attachment;
 import pro.taskana.ObjectReference;
 import pro.taskana.TaskState;
 
@@ -39,7 +38,7 @@ public class TaskResource extends ResourceSupport {
     private boolean isTransferred;
     // All objects have to be serializable
     private Map<String, String> customAttributes = Collections.emptyMap();
-    private List<Attachment> attachments = new ArrayList<>();
+    private List<AttachmentResource> attachments = new ArrayList<>();
     private String custom1;
     private String custom2;
     private String custom3;
@@ -233,11 +232,11 @@ public class TaskResource extends ResourceSupport {
         this.customAttributes = customAttributes;
     }
 
-    public List<Attachment> getAttachments() {
+    public List<AttachmentResource> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<Attachment> attachments) {
+    public void setAttachments(List<AttachmentResource> attachments) {
         this.attachments = attachments;
     }
 
