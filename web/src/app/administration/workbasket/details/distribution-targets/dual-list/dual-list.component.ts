@@ -2,16 +2,15 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { FilterModel } from 'app/models/filter';
 import { Side } from '../distribution-targets.component';
-import { expandDown } from 'app/shared/animations/expand.animation';
+import { expandDownWithoutNgIf } from 'app/shared/animations/expand.animation';
 
 @Component({
 	selector: 'taskana-dual-list',
 	templateUrl: './dual-list.component.html',
 	styleUrls: ['./dual-list.component.scss'],
-	animations: [expandDown]
+	animations: [expandDownWithoutNgIf]
 })
 export class DualListComponent implements OnInit {
-
 
 	@Input() distributionTargets: Array<WorkbasketSummary>;
 	@Output() distributionTargetsChange = new EventEmitter<Array<WorkbasketSummary>>();
@@ -39,5 +38,5 @@ export class DualListComponent implements OnInit {
 
 	performAvailableFilter(filterModel: FilterModel) {
 		this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
-	}
+  }
 }
