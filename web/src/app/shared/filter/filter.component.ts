@@ -1,14 +1,15 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
 import { ICONTYPES } from 'app/models/type';
 import { FilterModel } from 'app/models/filter';
 import { TaskanaType } from 'app/models/taskana-type';
+import { FilterService } from 'app/shared/services/filter/filter.service';
 
 @Component({
   selector: 'taskana-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent implements OnInit, OnDestroy {
 
   @Input() allTypes: Map<string, string> = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
   ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
@@ -24,11 +25,16 @@ export class FilterComponent implements OnInit {
   lastFilterKey: string;
   toggleDropDown = false;
 
-  constructor() {
+  constructor(
+    private filterService: FilterService) {
   }
 
   ngOnInit(): void {
     this.initializeFilterModel();
+    if (!this.filter) {
+      this.filter = new FilterModel(this.filterParams);
+    }
+
     if (this.filterParams) {
       this.filterParamKeys = Object.keys(this.filterParams);
       this.lastFilterKey = this.filterParamKeys[this.filterParamKeys.length - 1];
@@ -51,7 +57,7 @@ export class FilterComponent implements OnInit {
   }
 
   initializeFilterModel(): void {
-    this.filter = new FilterModel(this.filterParams);
+    this.filter = this.filterService.getFilter();
   }
 
   checkUppercaseFilterType(filterType: string) {
@@ -74,5 +80,11 @@ export class FilterComponent implements OnInit {
       }
     }
     return unusedKeys;
+  }
+
+  ngOnDestroy(): void {
+    this.filterParams = { name: this.filter.filterParams.name, key: this.filter.filterParams.key, type: this.filter.filterParams.type,
+      description: this.filter.filterParams.description, owner: this.filter.filterParams.owner };
+    this.filterService.setFilter( new FilterModel(this.filterParams));
   }
 }
