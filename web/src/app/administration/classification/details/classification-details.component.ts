@@ -110,7 +110,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.fillClassificationInformation(this.selectedClassification ? this.selectedClassification : new ClassificationDefinition())
       }
 
-
       if (!this.classification || this.classification.classificationId !== id && id && id !== '') {
         this.selectClassification(id);
       }
