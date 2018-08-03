@@ -95,8 +95,7 @@ public class TaskanaEngineConfiguration {
     // List of configured classification types
     protected List<String> classificationTypes = new ArrayList<String>();
 
-    // List of configured classification categories
-    protected List<String> classificationCategories = new ArrayList<String>();
+    protected Map<String, List<String>> classificationCategoriesByTypeMap = new HashMap<String, List<String>>();
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions, String schemaName)
         throws SQLException {
@@ -234,11 +233,20 @@ public class TaskanaEngineConfiguration {
     }
 
     private void initClassificationCategories(Properties props) {
-        String classificationCategoryNames = props.getProperty(TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY);
-        if (classificationCategoryNames != null && !classificationCategoryNames.isEmpty()) {
-            StringTokenizer st = new StringTokenizer(classificationCategoryNames, ",");
-            while (st.hasMoreTokens()) {
-                classificationCategories.add(st.nextToken().trim().toUpperCase());
+        if (classificationTypes != null && !classificationTypes.isEmpty()) {
+            String classificationCategoryNames;
+            StringTokenizer st;
+            List<String> classificationCategoriesAux;
+            for (String type : classificationTypes) {
+                classificationCategoriesAux = new ArrayList<>();
+                classificationCategoryNames = props.getProperty(TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY + "." + type.toLowerCase());
+                if (classificationCategoryNames != null && !classificationCategoryNames.isEmpty()) {
+                    st = new StringTokenizer(classificationCategoryNames, ",");
+                    while (st.hasMoreTokens()) {
+                        classificationCategoriesAux.add(st.nextToken().trim().toUpperCase());
+                    }
+                    classificationCategoriesByTypeMap.put(type, classificationCategoriesAux);
+                }
             }
         }
         LOGGER.debug("Configured classification categories : {}", domains);
@@ -432,12 +440,19 @@ public class TaskanaEngineConfiguration {
         this.classificationTypes = classificationTypes;
     }
 
-    public List<String> getClassificationCategories() {
+    public List<String> getAllClassificationCategories() {
+        List<String> classificationCategories = new ArrayList<>();
+        for (Map.Entry<String, List<String>> type : this.classificationCategoriesByTypeMap.entrySet()) {
+            classificationCategories.addAll(type.getValue());
+        }
         return classificationCategories;
     }
 
-    public void setClassificationCategories(List<String> classificationCategories) {
-        this.classificationCategories = classificationCategories;
+    public List<String> getClassificationCategoriesByType(String type) {
+        return classificationCategoriesByTypeMap.get(type);
+    }
+    public void setClassificationCategoriesByType(Map<String, List<String>> classificationCategoriesByType) {
+        this.classificationCategoriesByTypeMap = classificationCategoriesByType;
     }
 
     public Instant getTaskCleanupJobFirstRun() {

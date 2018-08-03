@@ -8,7 +8,7 @@ import { Classification } from 'app/models/classification';
 import { ClassificationDefinition } from 'app/models/classification-definition';
 
 import { ClassificationResource } from 'app/models/classification-resource';
-import { ClassificationTypesService } from '../classification-types/classification-types.service';
+import { ClassificationCategoriesService } from '../classification-categories-service/classification-categories.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Direction } from 'app/models/sorting';
@@ -22,7 +22,7 @@ export class ClassificationsService {
 
   constructor(
     private httpClient: HttpClient,
-    private classificationTypeService: ClassificationTypesService,
+    private classificationCategoriesService: ClassificationCategoriesService,
     private domainService: DomainService) {
   }
 
@@ -58,7 +58,7 @@ export class ClassificationsService {
     return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`)
       .pipe(tap((classification: ClassificationDefinition) => {
         if (classification) {
-          this.classificationTypeService.selectClassificationType(classification.type);
+          this.classificationCategoriesService.selectClassificationType(classification.type);
         }
       }));
   }
@@ -100,7 +100,7 @@ export class ClassificationsService {
   // #endregion
 
   private getClassificationObservable(classificationRef: Observable<any>): Observable<any> {
-    const classificationTypes = this.classificationTypeService.getSelectedClassificationType();
+    const classificationTypes = this.classificationCategoriesService.getSelectedClassificationType();
     return combineLatest(
       classificationRef,
       classificationTypes,
@@ -131,7 +131,6 @@ export class ClassificationsService {
     }
     return roots;
   }
-
 
   private findChildren(parent: any, children: Array<any>) {
     if (children[parent.classificationId]) {
