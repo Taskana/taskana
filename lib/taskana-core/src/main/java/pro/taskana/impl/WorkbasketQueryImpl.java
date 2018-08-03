@@ -717,8 +717,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             // (f,t) -> cannot happen, cannot be matched to meaningful query
             joinWithAccessList = true;
             checkReadPermission = true;
-            if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)
-                || (taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN) && !usedToAugmentTasks)) {
+            if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN) && accessId == null) {
+                checkReadPermission = false;
+                joinWithAccessList = false;
+            } else if (taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN) && !usedToAugmentTasks) {
                 checkReadPermission = false;
                 if (accessId == null && permission == null) {
                     joinWithAccessList = false;
