@@ -137,7 +137,7 @@ public class DbSchemaCreator {
         this.dataSource = dataSource;
     }
 
-    private StringReader getSqlSchemaNameParsed(BufferedReader reader) throws SQLException {
+    private StringReader getSqlSchemaNameParsed(BufferedReader reader) {
 
         StringBuffer content = new StringBuffer();
         try {
