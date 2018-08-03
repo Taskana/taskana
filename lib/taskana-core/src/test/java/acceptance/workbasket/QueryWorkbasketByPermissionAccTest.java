@@ -154,4 +154,14 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         Assert.assertEquals(3, results.size());
     }
 
+    @WithAccessId(userName = "admin")
+    @Test
+    public void testSkipAuthorizationCheckForAdminWhileQueryingWorkbaskets() {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
+            .callerHasPermission(WorkbasketPermission.OPEN)
+            .list();
+        Assert.assertEquals(25, results.size());
+    }
+
 }
