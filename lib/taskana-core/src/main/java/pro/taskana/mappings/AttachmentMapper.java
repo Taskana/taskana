@@ -14,6 +14,7 @@ import org.apache.ibatis.type.ClobTypeHandler;
 
 import pro.taskana.impl.AttachmentImpl;
 import pro.taskana.impl.AttachmentSummaryImpl;
+import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
 
 /**
@@ -74,10 +75,19 @@ public interface AttachmentMapper {
     })
     AttachmentImpl getAttachment(@Param("attachmentId") String attachmentId);
 
-    @Select("<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED "
+    @Select("<script>SELECT DISTINCT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED "
         + "FROM ATTACHMENT "
         + "<where>"
-        + "TASK_ID IN (<foreach collection='array' item='item' separator=',' >#{item}</foreach>)"
+        + "TASK_ID IN (<foreach collection='taskIds' item='item' separator=',' >#{item}</foreach>) "
+        + "<if test='taskQuery.attachmentClassificationKeyIn != null'>AND CLASSIFICATION_KEY IN(<foreach collection='taskQuery.attachmentClassificationKeyIn' item='item' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='taskQuery.attachmentClassificationKeyLike != null'>AND (<foreach item='item' collection='taskQuery.attachmentClassificationKeyLike' separator=' OR '>UPPER(CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='taskQuery.attachmentclassificationIdIn != null'>AND CLASSIFICATION_ID IN(<foreach collection='taskQuery.attachmentclassificationIdIn' item='item' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='taskQuery.attachmentclassificationIdLike != null'>AND (<foreach item='item' collection='taskQuery.attachmentclassificationIdLike' separator=' OR '>UPPER(CLASSIFICATION_ID) LIKE #{item}</foreach>)</if> "
+        + "<if test='taskQuery.attachmentChannelIn != null'>AND CHANNEL IN(<foreach collection='taskQuery.attachmentChannelIn' item='item' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='taskQuery.attachmentChannelLike != null'>AND (<foreach item='item' collection='taskQuery.attachmentChannelLike' separator=' OR '>UPPER(CHANNEL) LIKE #{item}</foreach>)</if> "
+        + "<if test='taskQuery.attachmentReferenceIn != null'>AND REF_VALUE IN(<foreach collection='taskQuery.attachmentReferenceIn' item='item' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='taskQuery.attachmentReferenceLike != null'>AND (<foreach item='item' collection='taskQuery.attachmentReferenceLike' separator=' OR '>UPPER(REF_VALUE) LIKE #{item}</foreach>)</if> "
+        + "<if test='taskQuery.attachmentReceivedIn !=null'> AND ( <foreach item='item' collection='taskQuery.attachmentReceivedIn' separator=' OR ' > ( <if test='item.begin!=null'> RECEIVED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> RECEIVED &lt;=#{item.end} </if>)</foreach>)</if> "
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
@@ -96,7 +106,7 @@ public interface AttachmentMapper {
         @Result(property = "channel", column = "CHANNEL"),
         @Result(property = "received", column = "RECEIVED")
     })
-    List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(String[] taskIds);
+    List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(@Param("taskIds") String[] taskIds, @Param("taskQuery") TaskQueryImpl taskQuery);
 
     @Delete("DELETE FROM ATTACHMENT WHERE ID=#{attachmentId}")
     void deleteAttachment(@Param("attachmentId") String attachmentId);
