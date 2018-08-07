@@ -731,7 +731,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries) {
+    List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries, TaskQueryImpl taskQuery) {
         LOGGER.debug("entry to augmentTaskSummariesByContainedSummaries()");
         List<TaskSummary> result = new ArrayList<>();
         if (taskSummaries == null || taskSummaries.isEmpty()) {
@@ -743,7 +743,7 @@ public class TaskServiceImpl implements TaskService {
 
         LOGGER.debug("augmentTaskSummariesByContainedSummaries() about to query for attachmentSummaries ");
         List<AttachmentSummaryImpl> attachmentSummaries = attachmentMapper
-            .findAttachmentSummariesByTaskIds(taskIdArray);
+            .findAttachmentSummariesByTaskIds(taskIdArray, taskQuery);
 
         List<ClassificationSummary> classifications = findClassificationsForTasksAndAttachments(taskSummaries,
             attachmentSummaries);

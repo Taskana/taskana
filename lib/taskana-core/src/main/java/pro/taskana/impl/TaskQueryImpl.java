@@ -108,6 +108,15 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] custom15Like;
     private String[] custom16In;
     private String[] custom16Like;
+    private String[] attachmentClassificationKeyIn;
+    private String[] attachmentClassificationKeyLike;
+    private String[] attachmentClassificationIdIn;
+    private String[] attachmentClassificationIdLike;
+    private String[] attachmentChannelIn;
+    private String[] attachmentChannelLike;
+    private String[] attachmentReferenceIn;
+    private String[] attachmentReferenceLike;
+    private TimeInterval[] attachmentReceivedIn;
     private String[] accessIdIn;
     private boolean filterByAccessIdIn;
     private TimeInterval[] createdIn;
@@ -118,6 +127,9 @@ public class TaskQueryImpl implements TaskQuery {
     private TimeInterval[] dueIn;
     private List<String> orderBy;
     private List<String> orderColumns;
+
+    private boolean joinWithAttachments = false;
+    private boolean joinWithAttachmentsOrderBy = false;
 
     TaskQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
@@ -559,6 +571,74 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
+    public TaskQuery attachmentClassificationKeyIn(String... attachmentClassificationKeys) {
+        joinWithAttachments = true;
+        this.attachmentClassificationKeyIn = attachmentClassificationKeys;
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentClassificationKeyLike(String... attachmentClassificationKey) {
+        joinWithAttachments = true;
+        this.attachmentClassificationKeyLike = attachmentClassificationKey;
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentClassificationIdIn(String... attachmentClassificationId) {
+        joinWithAttachments = true;
+        this.attachmentClassificationIdIn = attachmentClassificationId;
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentClassificationIdLike(String... attachmentClassificationId) {
+        joinWithAttachments = true;
+        this.attachmentClassificationIdLike = attachmentClassificationId;
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentChannelIn(String... attachmentChannel) {
+        joinWithAttachments = true;
+        this.attachmentChannelIn = attachmentChannel;
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentChannelLike(String... attachmentChannel) {
+        joinWithAttachments = true;
+        this.attachmentChannelLike = attachmentChannel;
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentReferenceValueIn(String... referenceValue) {
+        joinWithAttachments = true;
+        this.attachmentReferenceIn = referenceValue;
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentReferenceValueLike(String... referenceValue) {
+        joinWithAttachments = true;
+        this.attachmentReferenceLike = referenceValue;
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentReceivedWithin(TimeInterval... receivedIn) {
+        joinWithAttachments = true;
+        this.attachmentReceivedIn = receivedIn;
+        for (TimeInterval ti : receivedIn) {
+            if (!ti.isValid()) {
+                throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
+            }
+        }
+        return this;
+    }
+
+    @Override
     public TaskQuery orderByClassificationKey(SortDirection sortDirection) {
         return addOrderCriteria("CLASSIFICATION_KEY", sortDirection);
     }
@@ -644,12 +724,48 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
+    public TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection) {
+        joinWithAttachments = true;
+        joinWithAttachmentsOrderBy = true;
+        return addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByAttachmentClassificationId(SortDirection sortDirection) {
+        joinWithAttachments = true;
+        joinWithAttachmentsOrderBy = true;
+        return addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByAttachmentChannel(SortDirection sortDirection) {
+        joinWithAttachments = true;
+        joinWithAttachmentsOrderBy = true;
+        return addOrderCriteria("a.CHANNEL", sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByAttachmentReference(SortDirection sortDirection) {
+        joinWithAttachments = true;
+        joinWithAttachmentsOrderBy = true;
+        return addOrderCriteria("a.REF_VALUE", sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByAttachmentReceived(SortDirection sortDirection) {
+        joinWithAttachments = true;
+        joinWithAttachmentsOrderBy = true;
+        return addOrderCriteria("a.RECEIVED", sortDirection);
+    }
+
+    @Override
     public TaskQuery orderByNote(SortDirection sortDirection) {
         return addOrderCriteria("NOTE", sortDirection);
     }
 
     @Override
-    public TaskQuery orderByCustomAttribute(String number, SortDirection sortDirection) throws InvalidArgumentException {
+    public TaskQuery orderByCustomAttribute(String number, SortDirection sortDirection)
+        throws InvalidArgumentException {
         int num = 0;
         try {
             num = Integer.parseInt(number);
@@ -742,7 +858,7 @@ public class TaskQueryImpl implements TaskQuery {
                 LOGGER.debug("mapper returned {} resulting Objects: {} ", tasks.size(),
                     LoggerUtils.listToString(tasks));
             }
-            result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
+            result = taskService.augmentTaskSummariesByContainedSummaries(tasks, this);
             return result;
         } finally {
             taskanaEngine.returnConnection();
@@ -803,7 +919,7 @@ public class TaskQueryImpl implements TaskQuery {
             setupAccessIds();
             RowBounds rowBounds = new RowBounds(offset, limit);
             List<TaskSummaryImpl> tasks = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
-            result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
+            result = taskService.augmentTaskSummariesByContainedSummaries(tasks, this);
             return result;
         } catch (PersistenceException e) {
             if (e.getMessage().contains("ERRORCODE=-4470")) {
@@ -837,7 +953,7 @@ public class TaskQueryImpl implements TaskQuery {
             }
             List<TaskSummaryImpl> tasks = new ArrayList<>();
             tasks.add(taskSummaryImpl);
-            List<TaskSummary> augmentedList = taskService.augmentTaskSummariesByContainedSummaries(tasks);
+            List<TaskSummary> augmentedList = taskService.augmentTaskSummariesByContainedSummaries(tasks, this);
             result = augmentedList.get(0);
 
             return result;
@@ -861,6 +977,14 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from count(). Returning result {} ", rowCount);
         }
+    }
+
+    public boolean isJoinWithAttachments() {
+        return joinWithAttachments;
+    }
+
+    public void setJoinWithAttachments(boolean joinWithAttachments) {
+        this.joinWithAttachments = joinWithAttachments;
     }
 
     private void checkOpenAndReadPermissionForSpecifiedWorkbaskets() {
@@ -1219,6 +1343,78 @@ public class TaskQueryImpl implements TaskQuery {
 
     public String getColumnName() {
         return columnName;
+    }
+
+    public String[] getAttachmentClassificationKeyIn() {
+        return attachmentClassificationKeyIn;
+    }
+
+    public void setAttachmentClassificationKeyIn(String[] attachmentClassificationKeyIn) {
+        this.attachmentClassificationKeyIn = attachmentClassificationKeyIn;
+    }
+
+    public String[] getAttachmentClassificationKeyLike() {
+        return attachmentClassificationKeyLike;
+    }
+
+    public void setAttachmentClassificationKeyLike(String[] attachmentClassificationKeyLike) {
+        this.attachmentClassificationKeyLike = attachmentClassificationKeyLike;
+    }
+
+    public String[] getAttachmentClassificationIdIn() {
+        return attachmentClassificationIdIn;
+    }
+
+    public void setAttachmentClassificationIdIn(String[] attachmentClassificationIdIn) {
+        this.attachmentClassificationIdIn = attachmentClassificationIdIn;
+    }
+
+    public String[] getAttachmentClassificationIdLike() {
+        return attachmentClassificationIdLike;
+    }
+
+    public void setAttachmentClassificationIdLike(String[] attachmentclassificationIdLike) {
+        this.attachmentClassificationIdLike = attachmentclassificationIdLike;
+    }
+
+    public String[] getAttachmentChannelIn() {
+        return attachmentChannelIn;
+    }
+
+    public void setAttachmentChannelIn(String[] attachmentChannelIn) {
+        this.attachmentChannelIn = attachmentChannelIn;
+    }
+
+    public String[] getAttachmentChannelLike() {
+        return attachmentChannelLike;
+    }
+
+    public void setAttachmentChannelLike(String[] attachmentChannelLike) {
+        this.attachmentChannelLike = attachmentChannelLike;
+    }
+
+    public String[] getAttachmentReferenceIn() {
+        return attachmentReferenceIn;
+    }
+
+    public void setAttachmentReferenceIn(String[] attachmentReferenceIn) {
+        this.attachmentReferenceIn = attachmentReferenceIn;
+    }
+
+    public String[] getAttachmentReferenceLike() {
+        return attachmentReferenceLike;
+    }
+
+    public void setAttachmentReferenceLike(String[] attachmentReferenceLike) {
+        this.attachmentReferenceLike = attachmentReferenceLike;
+    }
+
+    public TimeInterval[] getAttachmentReceivedIn() {
+        return attachmentReceivedIn;
+    }
+
+    public void setAttachmentReceivedIn(TimeInterval[] attachmentReceivedIn) {
+        this.attachmentReceivedIn = attachmentReceivedIn;
     }
 
     private TaskQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
