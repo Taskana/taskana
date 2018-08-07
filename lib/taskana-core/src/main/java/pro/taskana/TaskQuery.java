@@ -454,6 +454,99 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      */
     TaskQuery customAttributeLike(String num, String... searchArguments) throws InvalidArgumentException;
 
+
+    /**
+     * Add the attachment classification keys for exact matching to your query.
+     *
+     * @param attachmentClassificationKeys
+     *            the attachmentClassificationKeys values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery attachmentClassificationKeyIn(String... attachmentClassificationKeys);
+
+    /**
+     * Add the attachment classification Keys for pattern matching to your query. It will be compared in SQL with the LIKE
+     * operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+     * combined with the OR keyword.
+     *
+     * @param attachmentClassificationKey
+     *            the attachmentClassificationKeys values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery attachmentClassificationKeyLike(String... attachmentClassificationKey);
+
+
+    /**
+     * Add the attachment classification Ids for exact matching to your query.
+     *
+     * @param attachmentClassificationId
+     *            the attachmentClassificationId values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery attachmentClassificationIdIn(String... attachmentClassificationId);
+
+    /**
+     * Add the values of attachment classification ids for pattern matching to your query. They will be compared in SQL
+     * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments
+     * they are combined with the OR keyword.
+     *
+     * @param attachmentClassificationId
+     *            the attachmentClassificationId values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery attachmentClassificationIdLike(String... attachmentClassificationId);
+
+    /**
+     * Add the values of attachment channel for exact matching to your query.
+     *
+     * @param attachmentChannel
+     *            the attachmentChannel values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery attachmentChannelIn(String... attachmentChannel);
+
+    /**
+     * Add the values of attachment channel for pattern matching to your query. They will be compared in SQL
+     * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments
+     * they are combined with the OR keyword.
+     *
+     * @param attachmentChannel
+     *            the attachmentChannel values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery attachmentChannelLike(String... attachmentChannel);
+
+    /**
+     * Add the values of reference values for exact matching to your query.
+     *
+     * @param referenceValue
+     *            the referenceValue values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery attachmentReferenceValueIn(String... referenceValue);
+
+    /**
+     * Add the values of reference values for pattern matching to your query. They will be compared in SQL
+     * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments
+     * they are combined with the OR keyword.
+     *
+     * @param referenceValue
+     *            the referenceValue values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery attachmentReferenceValueLike(String... referenceValue);
+
+
+    /**
+     * Add your received-dates to your query.
+     *
+     * @param receivedIn
+     *            the {@link TimeInterval} within which the searched-for tasks attachment were received the last time.
+     * @return the query
+     */
+
+    TaskQuery attachmentReceivedWithin(TimeInterval... receivedIn);
+
     /**
      * This method provides a query builder for quering the database.
      *
@@ -715,4 +808,64 @@ public interface TaskQuery extends BaseQuery<TaskSummary> {
      * @return the query
      */
     TaskQuery orderByWorkbasketId(SortDirection sortDirection);
+
+    /**
+     * This method sorts the query result according to the attachment classification key.
+     * (Should only be used if there is one attachment per task in other case the result would be wrong.)
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection);
+
+
+    /**
+     * This method sorts the query result according to the attachment classification id.
+     * (Should only be used if there is one attachment per task in other case the result would be wrong.)
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    TaskQuery orderByAttachmentClassificationId(SortDirection sortDirection);
+
+    /**
+     * This method sorts the query result according to the attachment channel.
+     * (Should only be used if there is one attachment per task in other case the result would be wrong.)
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    TaskQuery orderByAttachmentChannel(SortDirection sortDirection);
+
+
+
+    /**
+     * This method sorts the query result according to the attachment reference value.
+     * (Should only be used if there is one attachment per task in other case the result would be wrong.)
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    TaskQuery orderByAttachmentReference(SortDirection sortDirection);
+
+
+    /**
+     * This method sorts the query result according to the attachment received.
+     * (Should only be used if there is one attachment per task in other case the result would be wrong.)
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    TaskQuery orderByAttachmentReceived(SortDirection sortDirection);
+
 }

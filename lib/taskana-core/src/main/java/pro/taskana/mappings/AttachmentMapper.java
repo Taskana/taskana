@@ -74,10 +74,10 @@ public interface AttachmentMapper {
     })
     AttachmentImpl getAttachment(@Param("attachmentId") String attachmentId);
 
-    @Select("<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED "
+    @Select("<script>SELECT DISTINCT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED "
         + "FROM ATTACHMENT "
         + "<where>"
-        + "TASK_ID IN (<foreach collection='array' item='item' separator=',' >#{item}</foreach>)"
+        + "TASK_ID IN (<foreach collection='taskIds' item='item' separator=',' >#{item}</foreach>) "
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
@@ -96,7 +96,7 @@ public interface AttachmentMapper {
         @Result(property = "channel", column = "CHANNEL"),
         @Result(property = "received", column = "RECEIVED")
     })
-    List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(String[] taskIds);
+    List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(@Param("taskIds") String[] taskIds);
 
     @Delete("DELETE FROM ATTACHMENT WHERE ID=#{attachmentId}")
     void deleteAttachment(@Param("attachmentId") String attachmentId);

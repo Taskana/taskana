@@ -7,7 +7,9 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +39,9 @@ public class TaskQueryImplTest {
     private SqlSession sqlSession;
 
     @Mock
+    private SqlSessionManager sqlSessionManager;
+
+    @Mock
     ClassificationServiceImpl classificationService;
 
     @Mock
@@ -45,6 +50,12 @@ public class TaskQueryImplTest {
     @Before
     public void setup() {
         when(taskanaEngine.getTaskService()).thenReturn(taskServiceMock);
+
+        Configuration configuration = new org.apache.ibatis.session.Configuration();
+        configuration.setDatabaseId("h2");
+        this.taskanaEngine.sessionManager = sqlSessionManager;
+        when(taskanaEngine.sessionManager.getConfiguration()).thenReturn(configuration);
+
         taskQueryImpl = new TaskQueryImpl(taskanaEngine);
     }
 
