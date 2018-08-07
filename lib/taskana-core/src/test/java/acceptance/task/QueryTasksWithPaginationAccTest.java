@@ -181,4 +181,16 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         assertThat(count, equalTo(22L));
     }
 
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testCountOfTaskQueryWithAttachmentChannelFilter() {
+        TaskService taskService = taskanaEngine.getTaskService();
+        long count = taskService.createTaskQuery()
+            .attachmentChannelIn("ch6")
+            .count();
+        assertThat(count, equalTo(2L));
+    }
+
 }
