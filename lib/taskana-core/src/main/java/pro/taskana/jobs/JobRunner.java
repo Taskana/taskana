@@ -126,7 +126,7 @@ public class JobRunner {
     private void runScheduledJob(ScheduledJob scheduledJob) {
         LOGGER.debug("entry to runScheduledJob(job = {})", scheduledJob);
         try {
-            TaskanaJob job = AbstractTaskanaJob.createFromScheduledJob(taskanaEngine, scheduledJob);
+            TaskanaJob job = AbstractTaskanaJob.createFromScheduledJob(taskanaEngine, txProvider, scheduledJob);
             job.run();
         } catch (Exception e) {
             LOGGER.error("Error running job: {} ", scheduledJob.getType(), e);

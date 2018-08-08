@@ -3,12 +3,6 @@ package acceptance.jobs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,12 +42,7 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
         long totalTasksCount = taskService.createTaskQuery().count();
         assertEquals(72, totalTasksCount);
 
-        Instant completedBefore = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
-            .atZone(ZoneId.systemDefault())
-            .minusDays(14)
-            .toInstant();
-
-        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
+        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
         job.run();
 
         totalTasksCount = taskService.createTaskQuery().count();
@@ -68,12 +57,7 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
 
         Task createdTask = createAndCompleteTask();
 
-        Instant completeUntilDate = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
-            .atZone(ZoneId.systemDefault())
-            .minusDays(14)
-            .toInstant();
-
-        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
+        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
         job.run();
 
         Task completedCreatedTask = taskService.getTask(createdTask.getId());

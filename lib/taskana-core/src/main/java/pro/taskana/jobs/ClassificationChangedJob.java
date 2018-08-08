@@ -14,6 +14,7 @@ import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.transaction.TaskanaTransactionProvider;
 
 /**
  * This class executes a job of type CLASSIFICATIONCHANGEDJOB.
@@ -34,8 +35,9 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
     private boolean priorityChanged;
     private boolean serviceLevelChanged;
 
-    public ClassificationChangedJob(TaskanaEngine engine, ScheduledJob job) {
-        super(engine, job);
+    public ClassificationChangedJob(TaskanaEngine engine, TaskanaTransactionProvider<Object> txProvider,
+        ScheduledJob job) {
+        super(engine, txProvider, job);
         Map<String, String> args = job.getArguments();
         classificationId = args.get(CLASSIFICATION_ID);
         priorityChanged = Boolean.parseBoolean(args.get(PRIORITY_CHANGED));
