@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.impl.TaskServiceImpl;
+import pro.taskana.transaction.TaskanaTransactionProvider;
 
 /**
  * This class executes a job of type CLASSIFICATIONCHANGEDJOB.
@@ -25,8 +26,8 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
 
     private List<String> affectedTaskIds;
 
-    public TaskRefreshJob(TaskanaEngine engine, ScheduledJob job) {
-        super(engine, job);
+    public TaskRefreshJob(TaskanaEngine engine, TaskanaTransactionProvider<Object> txProvider, ScheduledJob job) {
+        super(engine, txProvider, job);
         Map<String, String> args = job.getArguments();
         String taskIdsString = args.get(ARG_TASK_IDS);
         affectedTaskIds = Arrays.asList(taskIdsString.split(","));
