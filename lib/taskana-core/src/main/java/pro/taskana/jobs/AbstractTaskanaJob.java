@@ -7,6 +7,7 @@ import java.util.List;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.transaction.TaskanaTransactionProvider;
 
 /**
  * Abstract base for all background jobs of TASKANA.
@@ -14,21 +15,25 @@ import pro.taskana.impl.TaskanaEngineImpl;
 public abstract class AbstractTaskanaJob implements TaskanaJob {
 
     protected TaskanaEngineImpl taskanaEngineImpl;
+    protected TaskanaTransactionProvider<Object> txProvider;
     protected ScheduledJob scheduledJob;
 
-    public AbstractTaskanaJob(TaskanaEngine taskanaEngine, ScheduledJob job) {
+    public AbstractTaskanaJob(TaskanaEngine taskanaEngine, TaskanaTransactionProvider<Object> txProvider,
+        ScheduledJob job) {
         this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.txProvider = txProvider;
         this.scheduledJob = job;
     }
 
-    public static TaskanaJob createFromScheduledJob(TaskanaEngine engine, ScheduledJob job) throws TaskanaException {
+    public static TaskanaJob createFromScheduledJob(TaskanaEngine engine, TaskanaTransactionProvider<Object> txProvider,
+        ScheduledJob job) throws TaskanaException {
         switch (job.getType()) {
             case CLASSIFICATIONCHANGEDJOB:
-                return new ClassificationChangedJob(engine, job);
+                return new ClassificationChangedJob(engine, txProvider, job);
             case UPDATETASKSJOB:
-                return new TaskRefreshJob(engine, job);
+                return new TaskRefreshJob(engine, txProvider, job);
             case TASKCLEANUPJOB:
-                return new TaskCleanupJob(engine, job);
+                return new TaskCleanupJob(engine, txProvider, job);
             default:
                 throw new TaskanaException(
                     "No matching job found for " + job.getType() + " of ScheduledJob " + job.getJobId() + ".");
