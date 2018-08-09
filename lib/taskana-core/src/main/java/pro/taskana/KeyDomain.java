@@ -53,23 +53,30 @@ public class KeyDomain {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         KeyDomain other = (KeyDomain) obj;
         if (domain == null) {
-            if (other.domain != null)
+            if (other.domain != null) {
                 return false;
-        } else if (!domain.equals(other.domain))
+            }
+        } else if (!domain.equals(other.domain)) {
             return false;
+        }
         if (key == null) {
-            if (other.key != null)
+            if (other.key != null) {
                 return false;
-        } else if (!key.equals(other.key))
+            }
+        } else if (!key.equals(other.key)) {
             return false;
+        }
         return true;
     }
 
