@@ -47,7 +47,8 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 	toogleValidationMap = new Map<string, boolean>();
 
 	private workbasketSubscription: Subscription;
-	private routeSubscription: Subscription;
+  private routeSubscription: Subscription;
+  private savingValidationSubscription: Subscription;
 	@ViewChild('WorkbasketForm') workbasketForm: NgForm;
 
 	constructor(private workbasketService: WorkbasketService,
@@ -83,9 +84,11 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
 	onSubmit() {
 		this.formsValidatorService.formSubmitAttempt = true;
-		if (this.workbasketForm && this.formsValidatorService.validate(this.workbasketForm, this.toogleValidationMap)) {
-			this.onSave();
-		}
+    this.formsValidatorService.validateFormInformation(this.workbasketForm, this.toogleValidationMap).then(value => {
+      if (value) {
+        this.onSave();
+      }
+    });
 	}
 
 	isFieldValid(field: string): boolean {
@@ -196,7 +199,8 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
 	ngOnDestroy() {
 		if (this.workbasketSubscription) { this.workbasketSubscription.unsubscribe(); }
-		if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
+    if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
+    if (this.savingValidationSubscription) { this.savingValidationSubscription.unsubscribe(); }
 	}
 
 }

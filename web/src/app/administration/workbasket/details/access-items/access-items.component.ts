@@ -67,7 +67,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
 		const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
 		AccessItemsFormGroups.map(accessItemGroup => {
-			accessItemGroup.controls['accessId'].setValidators(Validators.required);
+      accessItemGroup.controls['accessId'].setValidators(Validators.required);
 		});
 		const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);
 		this.AccessItemsForm.setControl('accessItemsGroups', AccessItemsFormArray);
@@ -85,7 +85,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		private requestInProgressService: RequestInProgressService,
 		private customFieldService: CustomFieldsService,
 		private formBuilder: FormBuilder,
-		private formsValidatorService: FormsValidatorService) {
+    private formsValidatorService: FormsValidatorService) {
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -148,20 +148,12 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	}
 
 	onSubmit() {
-		let valid = true;
-		this.formsValidatorService.formSubmitAttempt = true;
-		for (let i = 0; i < this.accessItemsGroups.length; i++) {
-			if (this.accessItemsGroups.controls[i].invalid) {
-				const validationState = this.toogleValidationAccessIdMap.get(i);
-				validationState ? this.toogleValidationAccessIdMap.set(i, !validationState) : this.toogleValidationAccessIdMap.set(i, true);
-				valid = false;
-			}
-		}
-		if (!valid) {
-			this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `There are some empty fields which are required.`))
-			return false;
-		}
-		this.onSave();
+    this.formsValidatorService.formSubmitAttempt = true;
+    this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toogleValidationAccessIdMap).then(value => {
+      if (value) {
+        this.onSave();
+      }
+    });
 	}
 
 	checkAll(row: number, value: any) {
