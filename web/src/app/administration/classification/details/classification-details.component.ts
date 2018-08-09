@@ -147,9 +147,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
-    if (this.formsValidatorService.validate(this.classificationForm, this.toogleValidationMap)) {
-      this.onSave();
-    }
+    this.formsValidatorService.validateFormInformation(this.classificationForm, this.toogleValidationMap).then(value => {
+      if (value) {
+        this.onSave();
+      }
+    });
   }
 
   private initProperties() {

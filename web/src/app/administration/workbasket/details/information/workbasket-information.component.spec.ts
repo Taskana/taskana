@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +20,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
+import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -36,7 +37,7 @@ const routes: Routes = [
 describe('WorkbasketInformationComponent', () => {
 	let component: WorkbasketInformationComponent;
 	let fixture: ComponentFixture<WorkbasketInformationComponent>;
-	let debugElement, workbasketService, alertService, savingWorkbasketService, requestInProgressService;
+	let debugElement, workbasketService, alertService, savingWorkbasketService, requestInProgressService, formsValidatorService;
 
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
@@ -47,7 +48,7 @@ describe('WorkbasketInformationComponent', () => {
 					HttpClientModule,
 					RouterTestingModule.withRoutes(routes)],
 				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
-					CustomFieldsService]
+					CustomFieldsService, FormsValidatorService]
 
 			})
 		};
@@ -58,7 +59,9 @@ describe('WorkbasketInformationComponent', () => {
 			workbasketService = TestBed.get(WorkbasketService);
 			alertService = TestBed.get(AlertService);
 			savingWorkbasketService = TestBed.get(SavingWorkbasketService);
-			requestInProgressService = TestBed.get(RequestInProgressService);
+      requestInProgressService = TestBed.get(RequestInProgressService);
+
+      formsValidatorService = TestBed.get(FormsValidatorService);
 
 			spyOn(alertService, 'triggerAlert');
 			fixture.detectChanges();
@@ -95,8 +98,7 @@ describe('WorkbasketInformationComponent', () => {
 		expect(component.workbasket.type).toEqual('GROUP');
 	});
 
-
-	it('should create a copy of workbasket when workbasket is selected', () => {
+  it('should create a copy of workbasket when workbasket is selected', () => {
 		expect(component.workbasketClone).toBeUndefined();
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2', 'orgLevel3', 'orgLevel4', null);
@@ -107,29 +109,35 @@ describe('WorkbasketInformationComponent', () => {
 		expect(component.workbasket.workbasketId).toEqual(component.workbasketClone.workbasketId);
 	});
 
-	it('should reset requestInProgress after saving request is done', fakeAsync(() => {
+	it('should reset requestInProgress after saving request is done', () => {
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
+    fixture.detectChanges();
 		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(of(component.workbasket));
 		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(of(component.workbasket));
 		component.onSubmit();
 		expect(component.requestInProgress).toBeFalsy();
 
-	}));
+	});
 
-	it('should trigger triggerWorkBasketSaved method after saving request is done', () => {
+	it('should trigger triggerWorkBasketSaved method after saving request is done', async(() => {
 		component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
 		spyOn(workbasketService, 'updateWorkbasket').and.returnValue(of(component.workbasket));
-		spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(of(component.workbasket));
-		fixture.detectChanges();
-		component.onSubmit();
-		expect(workbasketService.triggerWorkBasketSaved).toHaveBeenCalled();
-	});
+    spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(of(component.workbasket));
+    fixture.detectChanges();
 
-	it('should post a new workbasket when no workbasketId is defined and update workbasket', () => {
+    spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
+    component.onSubmit();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+		  expect(workbasketService.triggerWorkBasketSaved).toHaveBeenCalled();
+    })
+	}));
+
+	it('should post a new workbasket when no workbasketId is defined and update workbasket', async(() => {
 		const workbasket = new Workbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 			'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 			'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }));
@@ -138,14 +146,18 @@ describe('WorkbasketInformationComponent', () => {
 			new Workbasket('someNewId', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
 				'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
 				'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }))));
-		fixture.detectChanges();
-		component.onSubmit();
-		expect(alertService.triggerAlert).toHaveBeenCalled();
-		expect(component.workbasket.workbasketId).toBe('someNewId');
-	});
+    fixture.detectChanges();
+    spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
+    component.onSubmit();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(alertService.triggerAlert).toHaveBeenCalled();
+      expect(component.workbasket.workbasketId).toBe('someNewId');
+    })
+	}));
 
 	it('should post a new workbasket, new distribution targets and new access ' +
-		'items when no workbasketId is defined and action is copy', () => {
+		'items when no workbasketId is defined and action is copy', async(() => {
 			const workbasket = new Workbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC,
 				'modified', 'name', 'description', 'owner', 'custom1', 'custom2',
 				'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
@@ -160,13 +172,17 @@ describe('WorkbasketInformationComponent', () => {
 
 			spyOn(savingWorkbasketService, 'triggerDistributionTargetSaving');
 			spyOn(savingWorkbasketService, 'triggerAccessItemsSaving');
-			fixture.detectChanges();
-			component.onSubmit();
-			expect(alertService.triggerAlert).toHaveBeenCalled();
-			expect(component.workbasket.workbasketId).toBe('someNewId');
-			expect(savingWorkbasketService.triggerDistributionTargetSaving).toHaveBeenCalled();
-			expect(savingWorkbasketService.triggerAccessItemsSaving).toHaveBeenCalled();
-		});
+      fixture.detectChanges();
+      spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
+      component.onSubmit();
+      fixture.whenStable().then(() => {
+        fixture.detectChanges();
+        expect(alertService.triggerAlert).toHaveBeenCalled();
+        expect(component.workbasket.workbasketId).toBe('someNewId');
+        expect(savingWorkbasketService.triggerDistributionTargetSaving).toHaveBeenCalled();
+        expect(savingWorkbasketService.triggerAccessItemsSaving).toHaveBeenCalled();
+      })
+		}));
 
 	it('should trigger requestInProgress service true before  and requestInProgress false after remove a workbasket', () => {
 		const workbasket = new Workbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC,
@@ -177,7 +193,6 @@ describe('WorkbasketInformationComponent', () => {
 		spyOn(workbasketService, 'removeDistributionTarget').and.returnValue(of(''));
 		const requestInProgressServiceSpy = spyOn(requestInProgressService, 'setRequestInProgress');
 
-
 		component.removeDistributionTargets();
 		expect(requestInProgressServiceSpy).toHaveBeenCalledWith(true);
 		workbasketService.removeDistributionTarget().subscribe(() => {
@@ -186,6 +201,5 @@ describe('WorkbasketInformationComponent', () => {
 			expect(requestInProgressServiceSpy).toHaveBeenCalledWith(false);
 		});
 	})
-
 
 });

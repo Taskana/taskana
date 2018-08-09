@@ -99,7 +99,6 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
     });
   }
 
-
   getUsersAsObservable(token: string): Observable<any> {
     return this.accessIdsService.getAccessItemsInformation(token);
   }

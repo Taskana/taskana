@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { TestBed, async, inject, fakeAsync } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Router, Routes, ActivatedRoute, NavigationStart, RouterEvent } from '@angular/router';
+import { Router, Routes } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { MasterAndDetailService } from '../../services/masterAndDetail/master-and-detail.service'
