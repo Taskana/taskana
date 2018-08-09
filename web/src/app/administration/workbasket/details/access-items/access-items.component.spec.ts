@@ -1,5 +1,5 @@
 import { SimpleChange } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -21,12 +21,13 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
-
+import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
+import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 
 describe('AccessItemsComponent', () => {
 	let component: AccessItemsComponent;
 	let fixture: ComponentFixture<AccessItemsComponent>;
-	let workbasketService, debugElement, alertService;
+	let workbasketService, debugElement, alertService, accessIdsService, formsValidatorService;
 
 
 	beforeEach(done => {
@@ -35,8 +36,7 @@ describe('AccessItemsComponent', () => {
 				declarations: [AccessItemsComponent],
 				imports: [FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule],
 				providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService,
-					CustomFieldsService]
-
+					CustomFieldsService, AccessIdsService, FormsValidatorService]
 			})
 		};
 		configureTests(configure).then(testBed => {
@@ -56,7 +56,12 @@ describe('AccessItemsComponent', () => {
 			)));
 			spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true)),
 				spyOn(alertService, 'triggerAlert').and.returnValue(of(true)),
-				debugElement = fixture.debugElement.nativeElement;
+        debugElement = fixture.debugElement.nativeElement;
+      accessIdsService = TestBed.get(AccessIdsService);
+      spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
+        'accessID1', 'accessID2'
+      )));
+      formsValidatorService = TestBed.get(FormsValidatorService);
 			component.ngOnChanges({
 				active: new SimpleChange(undefined, 'accessItems', true)
 			});
@@ -90,12 +95,18 @@ describe('AccessItemsComponent', () => {
 		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr').length).toBe(1);
 	});
 
-	it('should show alert successfull after saving', () => {
-		component.onSubmit();
-		expect(alertService.triggerAlert).toHaveBeenCalledWith(
-			new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`));
-	});
+	it('should show alert successfull after saving', async(() => {
+    fixture.detectChanges();
+    spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
+    component.onSubmit();
 
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(alertService.triggerAlert).toHaveBeenCalledWith(
+        new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`));
+    })
+    fixture.detectChanges();
+  }));
 
 	it('should keep accessItemsClone length to previous value after clearing the form.', () => {
 		expect(component.accessItemsClone.length).toBe(2);
