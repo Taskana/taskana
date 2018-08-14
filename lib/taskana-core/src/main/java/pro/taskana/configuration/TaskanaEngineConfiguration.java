@@ -51,6 +51,7 @@ public class TaskanaEngineConfiguration {
     private static final String TASKANA_JOB_TASK_CLEANUP_RUN_EVERY = "taskana.jobs.cleanup.runEvery";
     private static final String TASKANA_JOB_TASK_CLEANUP_FIRST_RUN = "taskana.jobs.cleanup.firstRunAt";
     private static final String TASKANA_JOB_TASK_CLEANUP_MINIMUM_AGE = "taskana.jobs.cleanup.minimumAge";
+    private static final String TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENTE_BUSINESS = "taskana.jobs.cleanup.allCompletedSameParentBusiness";
 
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
@@ -88,6 +89,7 @@ public class TaskanaEngineConfiguration {
     private Instant taskCleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
     private Duration taskCleanupJobRunEvery = Duration.parse("P1D");
     private Duration taskCleanupJobMinimumAge = Duration.parse("P14D");
+    private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
 
     // List of configured domain names
     protected List<String> domains = new ArrayList<String>();
@@ -202,12 +204,24 @@ public class TaskanaEngineConfiguration {
             }
         }
 
+        String taskCleanupJobAllCompletedSameParentBusinessProperty = props.getProperty(TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENTE_BUSINESS);
+        if (taskCleanupJobAllCompletedSameParentBusinessProperty != null && !taskCleanupJobAllCompletedSameParentBusinessProperty.isEmpty()) {
+            try {
+                taskCleanupJobAllCompletedSameParentBusiness = Boolean.parseBoolean(taskCleanupJobAllCompletedSameParentBusinessProperty);
+            } catch (Exception e) {
+                LOGGER.warn("Could not parse taskCleanupJobAllCompletedSameParentBusinessProperty ({}). Using default. Exception: {} ",
+                        taskCleanupJobAllCompletedSameParentBusinessProperty, e.getMessage());
+            }
+        }
+
         LOGGER.debug("Configured number of task updates per transaction: {}", jobBatchSize);
         LOGGER.debug("Number of retries of failed task updates: {}", maxNumberOfJobRetries);
         LOGGER.debug("TaskCleanupJob configuration: first run at {}", taskCleanupJobFirstRun);
         LOGGER.debug("TaskCleanupJob configuration: runs every {}", taskCleanupJobRunEvery);
         LOGGER.debug("TaskCleanupJob configuration: minimum age of tasks to be cleanup up is {}",
-            taskCleanupJobMinimumAge);
+                taskCleanupJobMinimumAge);
+        LOGGER.debug("TaskCleanupJob configuration: all completed task with the same parent business property id {}",
+                taskCleanupJobAllCompletedSameParentBusiness);
     }
 
     private void initDomains(Properties props) {
@@ -465,6 +479,14 @@ public class TaskanaEngineConfiguration {
 
     public Duration getTaskCleanupJobMinimumAge() {
         return taskCleanupJobMinimumAge;
+    }
+
+    public void setTaskCleanupJobAllCompletedSameParentBusiness(boolean taskCleanupJobAllCompletedSameParentBusiness) {
+        this.taskCleanupJobAllCompletedSameParentBusiness = taskCleanupJobAllCompletedSameParentBusiness;
+    }
+
+    public boolean isTaskCleanupJobAllCompletedSameParentBusiness() {
+        return taskCleanupJobAllCompletedSameParentBusiness;
     }
 
     public String getSchemaName() {
