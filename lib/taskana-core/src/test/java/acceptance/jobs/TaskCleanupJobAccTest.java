@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import acceptance.AbstractAccTest;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
@@ -21,6 +22,9 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.jobs.TaskCleanupJob;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Acceptance test for all "jobs tasks runner" scenarios.
@@ -38,23 +42,45 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
     @WithAccessId(userName = "admin")
     @Test
     public void shouldCleanCompletedTasksUntilDate() throws Exception {
-
         long totalTasksCount = taskService.createTaskQuery().count();
         assertEquals(72, totalTasksCount);
+
+        taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(false);
 
         TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
         job.run();
 
         totalTasksCount = taskService.createTaskQuery().count();
         assertEquals(66, totalTasksCount);
-
     }
 
     @WithAccessId(userName = "admin")
     @Test
-    public void shouldNotCleanCompleteTasksAfterDefinedDay()
-        throws Exception {
+    public void shouldCleanCompletedTasksUntilDateWithSameParentBussiness() throws Exception {
+        long totalTasksCount = taskService.createTaskQuery().count();
+        assertEquals(67, totalTasksCount);
 
+        taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+
+        List<TaskSummary> tasks = taskService.createTaskQuery().parentBusinessProcessIdIn("DOC_0000000000000000006").list();
+        List<String> ids = new ArrayList<>();
+        tasks.forEach(item -> {
+            if (item.getCompleted() == null) {
+                ids.add(item.getTaskId());
+            }
+        });
+        taskService.deleteTasks(ids);
+
+        TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
+        job.run();
+
+        totalTasksCount = taskService.createTaskQuery().count();
+        assertEquals(66, totalTasksCount);
+    }
+
+    @WithAccessId(userName = "admin")
+    @Test
+    public void shouldNotCleanCompleteTasksAfterDefinedDay() throws Exception {
         Task createdTask = createAndCompleteTask();
 
         TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
@@ -62,7 +88,6 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
 
         Task completedCreatedTask = taskService.getTask(createdTask.getId());
         assertNotNull(completedCreatedTask);
-
     }
 
     private Task createAndCompleteTask() throws NotAuthorizedException, WorkbasketNotFoundException,

@@ -2,16 +2,16 @@ package pro.taskana.jobs;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.BulkOperationResults;
-import pro.taskana.TaskSummary;
-import pro.taskana.TaskanaEngine;
-import pro.taskana.TimeInterval;
+import pro.taskana.*;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.transaction.TaskanaTransactionProvider;
@@ -23,11 +23,14 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskCleanupJob.class);
 
+    private static BaseQuery.SortDirection asc = BaseQuery.SortDirection.ASCENDING;
+
     // Parameter
     private Instant firstRun;
     private Duration runEvery;
     private Duration minimumAge;
     private int batchSize;
+    private boolean allCompletedSameParentBusiness;
 
     public TaskCleanupJob(TaskanaEngine taskanaEngine, TaskanaTransactionProvider<Object> txProvider,
         ScheduledJob scheduledJob) {
@@ -36,6 +39,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
         runEvery = taskanaEngine.getConfiguration().getTaskCleanupJobRunEvery();
         minimumAge = taskanaEngine.getConfiguration().getTaskCleanupJobMinimumAge();
         batchSize = taskanaEngine.getConfiguration().getMaxNumberOfTaskUpdatesPerTransaction();
+        allCompletedSameParentBusiness = taskanaEngine.getConfiguration().isTaskCleanupJobAllCompletedSameParentBusiness();
     }
 
     @Override
@@ -61,10 +65,40 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     }
 
     private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
-        return taskanaEngineImpl.getTaskService()
-            .createTaskQuery()
-            .completedWithin(new TimeInterval(null, untilDate))
-            .list();
+        List<TaskSummary> taskList = taskanaEngineImpl.getTaskService()
+                .createTaskQuery()
+                .completedWithin(new TimeInterval(null, untilDate))
+                .orderByBusinessProcessId(asc)
+                .list();
+
+        if (allCompletedSameParentBusiness) {
+            Map<String, Long> numberParentTasksShouldHave = new HashMap<>();
+            Map<String, Long> countParentTask = new HashMap<>();
+            for (TaskSummary task : taskList) {
+                numberParentTasksShouldHave.put(task.getParentBusinessProcessId(), taskanaEngineImpl.getTaskService().createTaskQuery().parentBusinessProcessIdIn(task.getParentBusinessProcessId()).count());
+                countParentTask.merge(task.getParentBusinessProcessId(), 1L, Long::sum);
+            }
+
+            List<String> idsList = new ArrayList<>();
+            numberParentTasksShouldHave.forEach((k, v) -> {
+                if (v.compareTo(countParentTask.get(k)) == 0) {
+                    idsList.add(k);
+                }
+            });
+
+            if (idsList.isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            String[] ids = new String[idsList.size()];
+            ids = idsList.toArray(ids);
+            taskList = taskanaEngineImpl.getTaskService()
+                    .createTaskQuery()
+                    .parentBusinessProcessIdIn(ids)
+                    .list();
+        }
+
+        return taskList;
     }
 
     private int deleteTasksTransactionally(List<TaskSummary> tasksToBeDeleted) {
