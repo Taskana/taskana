@@ -12,12 +12,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.TaskState;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.QueryItem;
 import pro.taskana.impl.report.Report;
 import pro.taskana.impl.report.ReportColumnHeader;
 import pro.taskana.impl.report.ReportRow;
+import pro.taskana.impl.report.impl.ClassificationReport;
 import pro.taskana.impl.report.impl.TaskStatusReport;
+import pro.taskana.impl.report.impl.WorkbasketReport;
 import pro.taskana.rest.MonitorController;
 import pro.taskana.rest.resource.ReportResource;
 
@@ -29,14 +32,32 @@ public class ReportAssembler {
 
     public ReportResource toResource(TaskStatusReport report, List<String> domains, List<TaskState> states)
         throws NotAuthorizedException {
-        ReportResource resource = toResource(report);
+        ReportResource resource = toReportResource(report);
         resource.add(
-            linkTo(methodOn(MonitorController.class).getTaskStatusReport(domains, states))
+            linkTo(methodOn(MonitorController.class).getTasksStatusReport(domains, states))
                 .withSelfRel().expand());
         return resource;
     }
 
-    private <I extends QueryItem, H extends ReportColumnHeader<? super I>> ReportResource toResource(
+    public ReportResource toResource(ClassificationReport report)
+        throws NotAuthorizedException, InvalidArgumentException {
+        ReportResource resource = toReportResource(report);
+        resource.add(
+            linkTo(methodOn(MonitorController.class).getTasksClassificationReport())
+                .withSelfRel().expand());
+        return resource;
+    }
+
+    public ReportResource toResource(WorkbasketReport report, int daysInPast, List<TaskState> states)
+        throws NotAuthorizedException, InvalidArgumentException {
+        ReportResource resource = toReportResource(report);
+        resource.add(
+            linkTo(methodOn(MonitorController.class).getTasksWorkbasketReport(daysInPast, states))
+                .withSelfRel().expand());
+        return resource;
+    }
+
+    private <I extends QueryItem, H extends ReportColumnHeader<? super I>> ReportResource toReportResource(
         Report<I, H> report) {
         String[] header = report.getColumnHeaders()
             .stream()

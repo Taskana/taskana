@@ -82,7 +82,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		this.router.navigate(['./'], { relativeTo: this.route.parent });
 	}
 
-	seclectTab(tab) {
+	selectTab(tab) {
 		this.tabSelected = this.action === ACTION.CREATE ? 'information' : tab;
 	}
 
