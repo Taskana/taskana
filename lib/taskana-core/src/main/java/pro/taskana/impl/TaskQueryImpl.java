@@ -34,6 +34,7 @@ public class TaskQueryImpl implements TaskQuery {
     private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryTaskSummaries";
     private static final String LINK_TO_MAPPER_DB2 = "pro.taskana.mappings.QueryMapper.queryTaskSummariesDb2";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryTasks";
+    private static final String LINK_TO_COUNTER_DB2 = "pro.taskana.mappings.QueryMapper.countQueryTasksDb2";
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryTaskColumnValues";
     private static final String TIME_INTERVAL = "TimeInterval ";
     private static final String IS_INVALID = " is invalid.";
@@ -883,6 +884,12 @@ public class TaskQueryImpl implements TaskQuery {
             : LINK_TO_MAPPER;
     }
 
+    public String getLinkToCounterTaskScript() {
+        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+            ? LINK_TO_COUNTER_DB2
+            : LINK_TO_COUNTER;
+    }
+
     private void setupAccessIds() {
         if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN) || !filterByAccessIdIn) {
             this.accessIdIn = null;
@@ -985,7 +992,7 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngine.openConnection();
             checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
-            rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+            rowCount = taskanaEngine.getSqlSession().selectOne(getLinkToCounterTaskScript(), this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
             taskanaEngine.returnConnection();
