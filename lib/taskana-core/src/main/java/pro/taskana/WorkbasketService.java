@@ -88,6 +88,17 @@ public interface WorkbasketService {
     WorkbasketAccessItem newWorkbasketAccessItem(String workbasketId, String accessId);
 
     /**
+     * Returns a new WorkbasketAccessItemExtended which is not persisted.
+     *
+     * @param workbasketId
+     *            the workbasket id used to identify the referenced workbasket
+     * @param accessId
+     *            the group id or user id for which access is controlled
+     * @return new WorkbasketAccessItem
+     */
+    WorkbasketAccessItemExtended newWorkbasketAccessItemExtended(String workbasketId, String accessId);
+
+    /**
      * Create and persist a new {@link WorkbasketAccessItem} with a WorkbasketId, an accessId and permissions.
      *
      * @param workbasketAccessItem
@@ -203,6 +214,15 @@ public interface WorkbasketService {
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
     WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws NotAuthorizedException;
+
+    /**
+     * This method provides a query builder for querying the database.
+     *
+     * @return a {@link WorkbasketAccessItemExtendedQuery}
+     * @throws NotAuthorizedException
+     *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
+     */
+    WorkbasketAccessItemExtendedQuery createWorkbasketAccessItemExtendedQuery() throws NotAuthorizedException;
 
     /**
      * Returns a new workbasket which is not persisted.
