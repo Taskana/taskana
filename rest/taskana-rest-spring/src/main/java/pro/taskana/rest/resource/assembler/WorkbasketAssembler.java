@@ -1,14 +1,8 @@
 package pro.taskana.rest.resource.assembler;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
-import java.time.Instant;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -16,6 +10,11 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketResource;
+
+import java.time.Instant;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Transforms {@link Workbasket} to its resource counterpart {@link WorkbasketResource} and vice versa.
@@ -48,15 +47,15 @@ public class WorkbasketAssembler {
     }
 
     private WorkbasketResource addLinks(WorkbasketResource resource, Workbasket wb)
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+            throws NotAuthorizedException, WorkbasketNotFoundException {
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
         resource.add(linkTo(methodOn(WorkbasketController.class).getDistributionTargets(wb.getId()))
-            .withRel("distributionTargets"));
+                .withRel("distributionTargets"));
         resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
-            .withRel("accessItems"));
+                .withRel("accessItems"));
         resource.add(linkTo(WorkbasketController.class).withRel("allWorkbaskets"));
         resource.add(linkTo(methodOn(WorkbasketController.class).removeDistributionTargetForWorkbasketId(wb.getId()))
-            .withRel("removeDistributionTargets"));
+                .withRel("removeDistributionTargets"));
         return resource;
     }
 }

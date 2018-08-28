@@ -35,17 +35,28 @@ public class AccessIdController {
 
     @GetMapping
     public ResponseEntity<List<AccessIdResource>> validateAccessIds(
-        @RequestParam String searchFor) throws InvalidArgumentException {
+        @RequestParam String searchFor, @RequestParam(required = false) boolean searchInGroups) throws InvalidArgumentException {
         if (searchFor.length() < ldapClient.getMinSearchForLength()) {
             throw new InvalidArgumentException("searchFor string '" + searchFor + "' is too short. Minimum searchFor length = "
                 + ldapClient.getMinSearchForLength());
         }
         if (ldapClient.useLdap()) {
-            return new ResponseEntity<>(ldapClient.searchUsersAndGroups(searchFor), HttpStatus.OK);
+            List<AccessIdResource> accessIdUsers = ldapClient.searchUsersAndGroups(searchFor);
+            if (searchInGroups) {
+                List<AccessIdResource> accessIdGroups = ldapClient.searchGroupsofUsersIsMember(searchFor);
+                accessIdUsers.addAll(accessIdGroups);
+            }
+            return new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
         } else if (ldapCache != null) {
-            return new ResponseEntity<>(
-                ldapCache.findMatchingAccessId(searchFor, ldapClient.getMaxNumberOfReturnedAccessIds()),
-                HttpStatus.OK);
+            if (searchInGroups) {
+                return new ResponseEntity<>(
+                        ldapCache.findGroupsOfUser(searchFor, ldapClient.getMaxNumberOfReturnedAccessIds()),
+                        HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(
+                        ldapCache.findMatchingAccessId(searchFor, ldapClient.getMaxNumberOfReturnedAccessIds()),
+                        HttpStatus.OK);
+            }
         } else {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
         }
