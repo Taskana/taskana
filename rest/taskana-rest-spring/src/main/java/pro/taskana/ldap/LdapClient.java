@@ -1,10 +1,5 @@
 package pro.taskana.ldap;
 
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.naming.directory.SearchControls;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +12,14 @@ import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.rest.resource.AccessIdResource;
+
+import javax.annotation.PostConstruct;
+import javax.naming.directory.SearchControls;
+import java.util.List;
 
 /**
  * Class for Ldap access.
@@ -51,6 +49,7 @@ public class LdapClient {
     private String groupSearchFilterName;
     private String groupSearchFilterValue;
     private String groupNameAttribute;
+    private String groupsOfUser;
     private int minSearchForLength;
     private int maxNumberOfReturnedAccessIds;
 
@@ -85,6 +84,7 @@ public class LdapClient {
             groupSearchFilterName = getGroupSearchFilterName();
             groupSearchFilterValue = getGroupSearchFilterValue();
             groupNameAttribute = getGroupNameAttribute();
+            groupsOfUser = getGroupsOfUser();
 
             ldapTemplate.setDefaultCountLimit(maxNumberOfReturnedAccessIds);
 
@@ -120,6 +120,9 @@ public class LdapClient {
             if (groupNameAttribute == null) {
                 message += " taskana.ldap.groupNameAttribute is not configured.";
             }
+            if (groupsOfUser == null) {
+                message += " taskana.ldap.groupsOfUser is not configured.";
+            }
             if (!message.equals(emptyMessage)) {
                 throw new SystemException(message);
             }
@@ -131,12 +134,9 @@ public class LdapClient {
         LOGGER.debug("entry to searchUsersAndGroups(name = {})", name);
         if (!active) {
             throw new SystemException(
-                "LdapClient was called but is not active due to missing configuration: " + message);
+                    "LdapClient was called but is not active due to missing configuration: " + message);
         }
-        if (name == null || name.length() < minSearchForLength) {
-            throw new InvalidArgumentException("searchFor string " + name + " is too short. Minimum Length = "
-                + getMinSearchForLength());
-        }
+        testMinSearchForLength(name);
 
         List<AccessIdResource> users = searchUsersByName(name);
         users.addAll(searchGroupsByName(name));
@@ -146,7 +146,7 @@ public class LdapClient {
 
         List<AccessIdResource> result = users.subList(0, Math.min(users.size(), maxNumberOfReturnedAccessIds));
         LOGGER.debug("exit from searchUsersAndGroups(name = {}). Returning {} users and groups: {}", name, users.size(),
-            LoggerUtils.listToString(result));
+                LoggerUtils.listToString(result));
 
         return result;
     }
@@ -155,12 +155,9 @@ public class LdapClient {
         LOGGER.debug("entry to searchUsersByName(name = {}).", name);
         if (!active) {
             throw new SystemException(
-                "LdapClient was called but is not active due to missing configuration: " + message);
+                    "LdapClient was called but is not active due to missing configuration: " + message);
         }
-        if (name == null || name.length() < minSearchForLength) {
-            throw new InvalidArgumentException("searchFor string " + name + " is too short. Minimum Length = "
-                + getMinSearchForLength());
-        }
+        testMinSearchForLength(name);
 
         final AndFilter andFilter = new AndFilter();
         andFilter.and(new EqualsFilter(getUserSearchFilterName(), getUserSearchFilterValue()));
@@ -172,12 +169,12 @@ public class LdapClient {
         andFilter.and(orFilter);
 
         String[] userAttributesToReturn = {getUserFirstnameAttribute(), getUserLastnameAttribute(),
-            getUserIdAttribute()};
+                getUserIdAttribute()};
 
         final List<AccessIdResource> accessIds = ldapTemplate.search(getUserSearchBase(), andFilter.encode(),
-            SearchControls.SUBTREE_SCOPE, userAttributesToReturn, new UserContextMapper());
+                SearchControls.SUBTREE_SCOPE, userAttributesToReturn, new UserContextMapper());
         LOGGER.debug("exit from searchUsersByName. Retrieved the following users: {}.",
-            LoggerUtils.listToString(accessIds));
+                LoggerUtils.listToString(accessIds));
         return accessIds;
 
     }
@@ -186,12 +183,9 @@ public class LdapClient {
         LOGGER.debug("entry to searchGroupsByName(name = {}).", name);
         if (!active) {
             throw new SystemException(
-                "LdapClient was called but is not active due to missing configuration: " + message);
+                    "LdapClient was called but is not active due to missing configuration: " + message);
         }
-        if (name == null || name.length() < minSearchForLength) {
-            throw new InvalidArgumentException("searchFor string " + name + " is too short. Minimum Length = "
-                + getMinSearchForLength());
-        }
+        testMinSearchForLength(name);
 
         final AndFilter andFilter = new AndFilter();
         andFilter.and(new EqualsFilter(getGroupSearchFilterName(), getGroupSearchFilterValue()));
@@ -210,11 +204,40 @@ public class LdapClient {
         }
 
         final List<AccessIdResource> accessIds = ldapTemplate.search(getGroupSearchBase(), andFilter.encode(),
-            SearchControls.SUBTREE_SCOPE, groupAttributesToReturn, new GroupContextMapper());
+                SearchControls.SUBTREE_SCOPE, groupAttributesToReturn, new GroupContextMapper());
         LOGGER.debug("Exit from searchGroupsByName. Retrieved the following groups: {}",
-            LoggerUtils.listToString(accessIds));
+                LoggerUtils.listToString(accessIds));
         return accessIds;
 
+    }
+
+    public List<AccessIdResource> searchGroupsofUsersIsMember(final String name) throws InvalidArgumentException {
+        LOGGER.debug("entry to searchGroupsofUsersIsMember(name = {}).", name);
+        if (!active) {
+            throw new SystemException(
+                    "LdapClient was called but is not active due to missing configuration: " + message);
+        }
+        testMinSearchForLength(name);
+
+        final AndFilter andFilter = new AndFilter();
+        andFilter.and(new WhitespaceWildcardsFilter(getGroupNameAttribute(), ""));
+        andFilter.and(new EqualsFilter(getGroupsOfUser(), name));
+
+        String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
+
+        final List<AccessIdResource> accessIds = ldapTemplate.search(getGroupSearchBase(), andFilter.encode(),
+                SearchControls.SUBTREE_SCOPE, userAttributesToReturn, new GroupContextMapper());
+        LOGGER.debug("exit from searchGroupsofUsersIsMember. Retrieved the following users: {}.",
+                LoggerUtils.listToString(accessIds));
+        return accessIds;
+
+    }
+
+    private void testMinSearchForLength(final String name) throws InvalidArgumentException {
+        if (name == null || name.length() < minSearchForLength) {
+            throw new InvalidArgumentException("searchFor string " + name + " is too short. Minimum Length = "
+                    + getMinSearchForLength());
+        }
     }
 
     public boolean useLdap() {
@@ -280,6 +303,10 @@ public class LdapClient {
 
     public int getMaxNumberOfReturnedAccessIds() {
         return maxNumberOfReturnedAccessIds;
+    }
+
+    public String getGroupsOfUser() {
+        return env.getProperty("taskana.ldap.groupsOfUser");
     }
 
     /**
