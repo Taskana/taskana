@@ -1,12 +1,8 @@
 package pro.taskana.rest.resource.assembler;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -14,6 +10,9 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Transforms {@link WorkbasketAccessItem} to its resource counterpart {@link WorkbasketAccessItemResource} and vice
@@ -26,7 +25,7 @@ public class WorkbasketAccessItemAssembler {
     private WorkbasketService workbasketService;
 
     public WorkbasketAccessItemResource toResource(WorkbasketAccessItem wbAccItem)
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+            throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketAccessItemResource resource = new WorkbasketAccessItemResource();
         BeanUtils.copyProperties(wbAccItem, resource);
         // property is named different, so it needs to be set by hand
@@ -37,7 +36,7 @@ public class WorkbasketAccessItemAssembler {
 
     public WorkbasketAccessItem toModel(WorkbasketAccessItemResource wbAccItemRecource) {
         WorkbasketAccessItemImpl wbAccItemModel = (WorkbasketAccessItemImpl) workbasketService.newWorkbasketAccessItem(
-            wbAccItemRecource.workbasketId, wbAccItemRecource.accessId);
+                wbAccItemRecource.workbasketId, wbAccItemRecource.accessId);
         BeanUtils.copyProperties(wbAccItemRecource, wbAccItemModel);
 
         wbAccItemModel.setId(wbAccItemRecource.accessItemId);
@@ -45,11 +44,11 @@ public class WorkbasketAccessItemAssembler {
     }
 
     private WorkbasketAccessItemResource addLinks(WorkbasketAccessItemResource resource, WorkbasketAccessItem wbAccItem)
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+            throws NotAuthorizedException, WorkbasketNotFoundException {
 
         resource.add(
-            linkTo(methodOn(WorkbasketController.class).getWorkbasket(wbAccItem.getWorkbasketId()))
-                .withRel("workbasket"));
+                linkTo(methodOn(WorkbasketController.class).getWorkbasket(wbAccItem.getWorkbasketId()))
+                        .withRel("workbasket"));
         return resource;
     }
 }

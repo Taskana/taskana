@@ -21,4 +21,12 @@ public interface LdapCache {
      * @return a List of access ids for users and group where the name or id contains the search string.
      */
     List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumerOfReturnedAccessIds);
+
+    /**
+     *
+     * @param searchFor the search string. The search is performed over names and ids of group .
+     * @param maxNumerOfReturnedAccessIds
+     * @return
+     */
+    List<AccessIdResource> findGroupsOfUser(String searchFor, int maxNumerOfReturnedAccessIds);
 }
