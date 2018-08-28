@@ -14,6 +14,7 @@ set -e # fail fast
 #H   - H2
 #H   - DB2_10_5
 #H   - DB2_11_1
+#H   - POSTGRES_10_4
 # Arguments:
 #   $1: exit code
 function helpAndExit {
