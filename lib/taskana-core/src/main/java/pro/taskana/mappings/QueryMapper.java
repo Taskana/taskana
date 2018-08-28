@@ -12,6 +12,8 @@ import pro.taskana.impl.ClassificationSummaryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.impl.TaskSummaryImpl;
+import pro.taskana.impl.WorkbasketAccessItemExtendedImpl;
+import pro.taskana.impl.WorkbasketAccessItemExtendedQueryImpl;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.impl.WorkbasketAccessItemQueryImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
@@ -608,6 +610,48 @@ public interface QueryMapper {
         @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
         @Result(property = "permCustom12", column = "PERM_CUSTOM_12")})
     List<WorkbasketAccessItemImpl> queryWorkbasketAccessItems(WorkbasketAccessItemQueryImpl accessItemQuery);
+
+    @Select("<script>"
+        + "SELECT "
+        + "WBA.ID, WORKBASKET_ID, WB.KEY, ACCESS_ID, ACCESS_NAME, PERM_READ, PERM_OPEN, PERM_APPEND, PERM_TRANSFER, PERM_DISTRIBUTE, PERM_CUSTOM_1, PERM_CUSTOM_2, "
+        + "PERM_CUSTOM_3, PERM_CUSTOM_4, PERM_CUSTOM_5, PERM_CUSTOM_6, PERM_CUSTOM_7, PERM_CUSTOM_8, PERM_CUSTOM_9, PERM_CUSTOM_10, PERM_CUSTOM_11, PERM_CUSTOM_12 "
+        + "from WORKBASKET_ACCESS_LIST AS WBA LEFT JOIN WORKBASKET AS WB ON WORKBASKET_ID = WB.ID"
+        + "<where>"
+        + "<if test='idIn != null'>AND ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketIdIn != null'>AND WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyIn != null'>AND WB.KEY IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR '>UPPER(WB.KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='accessIdLike != null'>AND (<foreach item='item' collection='accessIdLike' separator=' OR '>UPPER(ACCESS_ID) LIKE #{item}</foreach>)</if> "
+        + "<if test='!orderColumns.isEmpty()'>AND (<foreach item='item' collection='orderColumns' separator='OR ' >${item} IS NOT NULL </foreach>)</if> "
+        + "</where>"
+        + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
+    @Results({
+        @Result(property = "id", column = "ID"),
+        @Result(property = "workbasketId", column = "WORKBASKET_ID"),
+        @Result(property = "workbasketKey", column = "KEY"),
+        @Result(property = "accessId", column = "ACCESS_ID"),
+        @Result(property = "accessName", column = "ACCESS_NAME"),
+        @Result(property = "permRead", column = "PERM_READ"),
+        @Result(property = "permOpen", column = "PERM_OPEN"),
+        @Result(property = "permAppend", column = "PERM_APPEND"),
+        @Result(property = "permTransfer", column = "PERM_TRANSFER"),
+        @Result(property = "permDistribute", column = "PERM_DISTRIBUTE"),
+        @Result(property = "permCustom1", column = "PERM_CUSTOM_1"),
+        @Result(property = "permCustom2", column = "PERM_CUSTOM_2"),
+        @Result(property = "permCustom3", column = "PERM_CUSTOM_3"),
+        @Result(property = "permCustom4", column = "PERM_CUSTOM_4"),
+        @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
+        @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
+        @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
+        @Result(property = "permCustom8", column = "PERM_CUSTOM_8"),
+        @Result(property = "permCustom9", column = "PERM_CUSTOM_9"),
+        @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
+        @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
+        @Result(property = "permCustom12", column = "PERM_CUSTOM_12")})
+    List<WorkbasketAccessItemExtendedImpl> queryWorkbasketAccessItemsExtended(WorkbasketAccessItemExtendedQueryImpl accessItemExtendedQuery);
 
     @Select("<script> "
         + "<choose>"
@@ -1241,4 +1285,20 @@ public interface QueryMapper {
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     List<String> queryWorkbasketAccessItemColumnValues(WorkbasketAccessItemQueryImpl accessItemQuery);
+
+    @Select("<script>SELECT DISTINCT ${columnName} "
+        + "FROM WORKBASKET_ACCESS_LIST AS WBA LEFT JOIN WORKBASKET AS WB ON WORKBASKET_ID = WB.ID"
+        + "<where>"
+        + "<if test='!orderBy.isEmpty()'>${columnName} IS NOT NULL</if> "
+        + "<if test='idIn != null'>AND WBA.ID IN(<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketIdIn != null'>AND WORKBASKET_ID IN(<foreach item='item' collection='workbasketIdIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyIn != null'>AND WB.KEY IN(<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR '>UPPER(WB.KEY) LIKE #{item}</foreach>)</if> "
+        + "<if test='accessIdIn != null'>AND ACCESS_ID IN(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) </if> "
+        + "<if test='accessIdLike != null'>AND (<foreach item='item' collection='accessIdLike' separator=' OR '>UPPER(ACCESS_ID) LIKE #{item}</foreach>)</if> "
+        + "</where>"
+        + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
+    List<String> queryWorkbasketAccessItemExtendedColumnValues(WorkbasketAccessItemExtendedQueryImpl accessItemExtendedQuery);
 }
