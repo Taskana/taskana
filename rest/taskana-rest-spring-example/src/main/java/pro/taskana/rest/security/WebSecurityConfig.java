@@ -12,16 +12,14 @@ import org.springframework.security.authentication.jaas.JaasAuthenticationProvid
 import org.springframework.security.authentication.jaas.JaasNameCallbackHandler;
 import org.springframework.security.authentication.jaas.JaasPasswordCallbackHandler;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.jaasapi.JaasApiIntegrationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -39,40 +37,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable()
+            .httpBasic()
+            .and()
             .authenticationProvider(jaasAuthProvider())
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/docs/**")
-            .permitAll()
-            .antMatchers(HttpMethod.GET, "/**")
-            .authenticated()
-            .and()
-            .httpBasic()
+            .antMatchers(HttpMethod.GET, "/docs/**").permitAll()
             .and()
             .addFilter(new JaasApiIntegrationFilter());
 
         if (devMode) {
             http.headers().frameOptions().sameOrigin()
                 .and().authorizeRequests().antMatchers("/h2-console/**").permitAll();
-            return;
+        } else {
+            AddLoginPageConfiguration(http);
         }
 
-        http
-                .authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
     }
 
     @Bean
     public JaasAuthenticationProvider jaasAuthProvider() {
         JaasAuthenticationProvider authenticationProvider = new JaasAuthenticationProvider();
-        authenticationProvider.setAuthorityGranters(new AuthorityGranter[]{new SampleRoleGranter()});
-        authenticationProvider.setCallbackHandlers(new JaasAuthenticationCallbackHandler[]{
-                new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()});
+        authenticationProvider.setAuthorityGranters(new AuthorityGranter[] {new SampleRoleGranter()});
+        authenticationProvider.setCallbackHandlers(new JaasAuthenticationCallbackHandler[] {
+            new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()});
         authenticationProvider.setLoginContextName("taskana");
         authenticationProvider.setLoginConfig(new ClassPathResource("pss_jaas.config"));
         return authenticationProvider;
@@ -102,5 +89,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);
         return bean;
+    }
+
+    private void AddLoginPageConfiguration(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+            .anyRequest().fullyAuthenticated()
+            .and()
+            .formLogin().loginPage("/login").failureUrl("/login?error")
+            .permitAll()
+            .and()
+            .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+            .logoutSuccessUrl("/login").deleteCookies("JSESSIONID")
+            .invalidateHttpSession(true);
     }
 }
