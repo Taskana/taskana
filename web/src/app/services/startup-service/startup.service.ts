@@ -7,6 +7,7 @@ import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 import { map } from 'rxjs/operators';
+import { WindowRefService } from 'app/services/window/window.service';
 
 @Injectable()
 export class StartupService {
@@ -17,7 +18,8 @@ export class StartupService {
         private titlesService: TitlesService,
         private customFieldsService: CustomFieldsService,
         private taskanaEngineService: TaskanaEngineService,
-        private injector: Injector) { }
+        private injector: Injector,
+        private window: WindowRefService) { }
 
     load(): Promise<any> {
         return this.loadEnvironment();
@@ -29,7 +31,7 @@ export class StartupService {
         ).then(
             () => this.taskanaEngineService.getUserInformation()
         ).catch(error => {
-            this.router.navigate(['no-role']);
+            this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
         });
     }
 
