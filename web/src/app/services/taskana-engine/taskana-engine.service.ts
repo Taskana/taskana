@@ -35,7 +35,13 @@ export class TaskanaEngineService {
   }
 
   getVersion(): Observable<VersionModel> {
-      return this.httpClient.get<VersionModel>(`${environment.taskanaRestUrl}/v1/version`);
+    return this.httpClient.get<VersionModel>(`${environment.taskanaRestUrl}/v1/version`);
+  }
+
+  logout(): Observable<string> {
+    return this.httpClient
+      .post<string>(`${environment.taskanaRestUrl}/logout`, '');
+
   }
 
   private findRole(roles2Find: Array<string>) {
