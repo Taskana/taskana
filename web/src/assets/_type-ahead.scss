@@ -1,12 +1,13 @@
 
 typeahead-container >ul.dropdown-menu{
-    width: 215px;
+    max-width: 600px;
     & >li.active {
         &>a {
-            background-color: $green;
+            background-color: $blue;
         }
         &>a:hover {
-            background-color: $green;
+            background-color: $blue;
         }
     }
 }
+

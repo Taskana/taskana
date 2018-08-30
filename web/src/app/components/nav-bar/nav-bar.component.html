@@ -1,5 +1,5 @@
-<nav class="navbar navbar-fixed-top">
-  <div class="navbar no-border-radius navbar-inverse no-gutter col-xs-12">
+<nav class="navbar main navbar-fixed-top">
+  <div class="navbar  no-border-radius navbar-inverse no-gutter col-xs-12">
     <div class="pull-left col-sm-3 col-md-4">
       <button type="button" *ngIf="!showNavbar" class="btn btn-default navbar-toggle show pull-left" (click)="toogleNavBar();"
         aria-expanded="true" aria-controls="navbar" data-toggle="tooltip" title="Menu">
@@ -52,6 +52,10 @@
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('classifications') !== -1}">
           <span (click)="toogleNavBar()" class="col-xs-6" routerLink="administration/classifications" aria-controls="Classifications"
             routerLinkActive="active">Classifications</span>
+        </div>
+        <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('access-items-management') !== -1}">
+          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="administration/access-items-management" aria-controls="Access items"
+            routerLinkActive="active">Access items</span>
         </div>
       </div>
       <div *ngIf="monitorAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('monitor') !== -1}">
