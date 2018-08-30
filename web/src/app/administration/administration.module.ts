@@ -16,7 +16,6 @@ import {WorkbasketInformationComponent} from './workbasket/details/information/w
 import {DistributionTargetsComponent} from './workbasket/details/distribution-targets/distribution-targets.component';
 import {DualListComponent} from './workbasket/details/distribution-targets/dual-list/dual-list.component';
 import {AccessItemsComponent} from './workbasket/details/access-items/access-items.component';
-import {IconTypeComponent} from './components/type-icon/icon-type.component';
 import {PaginationComponent} from './workbasket/master/list/pagination/pagination.component';
 import {ClassificationListComponent} from './classification/master/list/classification-list.component';
 import {ClassificationDetailsComponent} from './classification/details/classification-details.component';
@@ -31,6 +30,7 @@ import {ClassificationDefinitionService} from './services/classification-definit
 import {WorkbasketDefinitionService} from './services/workbasket-definition/workbasket-definition.service';
 import {ClassificationsService} from './services/classifications/classifications.service';
 import {ClassificationCategoriesService} from './services/classification-categories-service/classification-categories.service';
+import { AccessItemsManagementComponent } from 'app/administration/access-items-management/access-items-management.component';
 
 const MODULES = [
   CommonModule,
@@ -55,7 +55,8 @@ const DECLARATIONS = [
   ClassificationListComponent,
   ImportExportComponent,
   ClassificationTypesSelectorComponent,
-  ClassificationDetailsComponent
+  ClassificationDetailsComponent,
+  AccessItemsManagementComponent
 ];
 
 @NgModule({

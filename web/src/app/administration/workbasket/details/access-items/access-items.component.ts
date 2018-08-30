@@ -35,19 +35,19 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	active: string;
 	badgeMessage = '';
 
-	accessIdField = this.customFieldService.getCustomField('Owner', 'workbaskets.access-items.accessId');
-	custom1Field = this.customFieldService.getCustomField('Custom 1', 'workbaskets.access-items.custom1');
-	custom2Field = this.customFieldService.getCustomField('Custom 2', 'workbaskets.access-items.custom2');
-	custom3Field = this.customFieldService.getCustomField('Custom 3', 'workbaskets.access-items.custom3');
-	custom4Field = this.customFieldService.getCustomField('Custom 4', 'workbaskets.access-items.custom4');
-	custom5Field = this.customFieldService.getCustomField('Custom 5', 'workbaskets.access-items.custom5');
-	custom6Field = this.customFieldService.getCustomField('Custom 6', 'workbaskets.access-items.custom6');
-	custom7Field = this.customFieldService.getCustomField('Custom 7', 'workbaskets.access-items.custom7');
-	custom8Field = this.customFieldService.getCustomField('Custom 8', 'workbaskets.access-items.custom8');
-	custom9Field = this.customFieldService.getCustomField('Custom 9', 'workbaskets.access-items.custom9');
-	custom10Field = this.customFieldService.getCustomField('Custom 10', 'workbaskets.access-items.custom10');
-	custom11Field = this.customFieldService.getCustomField('Custom 11', 'workbaskets.access-items.custom11');
-	custom12Field = this.customFieldService.getCustomField('Custom 12', 'workbaskets.access-items.custom12');
+	accessIdField = this.customFieldsService.getCustomField('Owner', 'workbaskets.access-items.accessId');
+	custom1Field = this.customFieldsService.getCustomField('Custom 1', 'workbaskets.access-items.custom1');
+	custom2Field = this.customFieldsService.getCustomField('Custom 2', 'workbaskets.access-items.custom2');
+	custom3Field = this.customFieldsService.getCustomField('Custom 3', 'workbaskets.access-items.custom3');
+	custom4Field = this.customFieldsService.getCustomField('Custom 4', 'workbaskets.access-items.custom4');
+	custom5Field = this.customFieldsService.getCustomField('Custom 5', 'workbaskets.access-items.custom5');
+	custom6Field = this.customFieldsService.getCustomField('Custom 6', 'workbaskets.access-items.custom6');
+	custom7Field = this.customFieldsService.getCustomField('Custom 7', 'workbaskets.access-items.custom7');
+	custom8Field = this.customFieldsService.getCustomField('Custom 8', 'workbaskets.access-items.custom8');
+	custom9Field = this.customFieldsService.getCustomField('Custom 9', 'workbaskets.access-items.custom9');
+	custom10Field = this.customFieldsService.getCustomField('Custom 10', 'workbaskets.access-items.custom10');
+	custom11Field = this.customFieldsService.getCustomField('Custom 11', 'workbaskets.access-items.custom11');
+	custom12Field = this.customFieldsService.getCustomField('Custom 12', 'workbaskets.access-items.custom12');
 
 	accessItemsResource: WorkbasketAccessItemsResource;
 	accessItemsClone: Array<WorkbasketAccessItems>;
@@ -83,7 +83,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		private errorModalService: ErrorModalService,
 		private savingWorkbaskets: SavingWorkbasketService,
 		private requestInProgressService: RequestInProgressService,
-		private customFieldService: CustomFieldsService,
+		private customFieldsService: CustomFieldsService,
 		private formBuilder: FormBuilder,
     private formsValidatorService: FormsValidatorService) {
 	}

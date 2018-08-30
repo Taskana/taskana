@@ -1,17 +1,17 @@
-$background-color: #224562;
-$background-color-sidenav: #175263;
-$selected-border-color: #22a39f;
-$unselected-text: #9d9d9d;
+@import './src/assets/_variables';
+
+.navbar.main:before  {
+    @include degraded-bar(right, 100%, 5px)
+}
 
 .navbar-inverse {
     border:none;
-    background-color: $background-color;
-    box-shadow: 0px 1px 10px -1px $background-color;
-    
+    background-color: $dark-green;
+    box-shadow: 0px 1px 5px -1px black;
 }
 
 .navbar-toggle{
-    margin: 5px 0px;
+    margin: 3px 0px;
     font-size: 20px;
     &.logout{
         font-size: 20px;
@@ -20,7 +20,7 @@ $unselected-text: #9d9d9d;
     
 }
 button.navbar-toggle:hover > span{
-    color:$selected-border-color;
+    color:$aquamarine;
 }
 ul.nav > p {
     white-space: nowrap;
@@ -36,15 +36,15 @@ ul.nav > p {
 svg-icon.logo {
     float: left;
     width: 150px;
-    height: 55px;
-    padding: 6px 5px 5px 5px;
+    height: 50px;
+    padding: 5px;
 }
 
 h2.navbar-brand{
     vertical-align: middle;
     text-decoration: none;
     color: white;
-    padding: 17px 0px 0px 0px;
+    padding: 15px 0px 0px 0px;
     font-size: 20px;
 }
 
@@ -66,10 +66,10 @@ h2.navbar-brand{
         cursor: pointer;
         > button {
             color: white;
-            background-color: $background-color;
+            background-color: $dark-green;
             border: none;
             font-size: 16px;
-            border-bottom: 1px solid grey;
+            border-bottom: 1px solid $dark-green;
             margin-left:5px;
         }
     }
@@ -80,11 +80,10 @@ h2.navbar-brand{
 }
 
 .nav-version {
-    color: $unselected-text;
-    margin: 5px;
+    color: $grey;
     position: absolute;
     bottom: 5px;
-    font-size: 8px;
+    font-size: 12px;
 }
  
 /*
@@ -106,22 +105,22 @@ h2.navbar-brand{
 .sidenav {
     position:fixed;
     z-index:999;
-    margin-top: -1px;
     box-shadow: none;
     height: 100%;
-    background-color: $background-color-sidenav;
-    box-shadow: 3px 0px 10px -1px $background-color;
+    background-color: $dark-green;
+    box-shadow: 3px 0px 10px -1px $dark-green;
 }
 
 .navbar {
-    height: 55px;
+    height: 50px;
     margin-bottom: 0px;
+  
 }
 
 .menu,.submenu > span {
     margin-top: 15px;
     font-size: 20px;
-    
+    width: 100%;
     font-family: inherit;
     font-weight: 500;
     line-height: 1.1;
@@ -129,7 +128,7 @@ h2.navbar-brand{
 
 .menu,.submenu > span {
     padding-left: 12px;
-    color: $unselected-text;
+    color: $grey;
     outline: none;
     
 }
@@ -137,8 +136,7 @@ h2.navbar-brand{
     background-color: transparent;
      &> span{
         padding-left: 10px;
-        border-left: $selected-border-color 5px solid;
-        
+        border-left: $pallete-green 5px solid;
         color: white;
     }
 }
@@ -148,7 +146,7 @@ h2.navbar-brand{
 }
 
 a {
-    color: $unselected-text;
+    color: $grey;
     &:hover{
         color:white;
     }

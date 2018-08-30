@@ -1,7 +1,7 @@
 <taskana-spinner [isRunning]="requestInProgress" class="floating"></taskana-spinner>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
     <div class="panel-heading">
-        <div class="pull-right">
+        <div class="pull-right btn-group">
             <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary" data-toggle="tooltip" title="Save">
                 <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
             </button>
@@ -30,7 +30,7 @@
                     <input type="text" required #key="ngModel" class="form-control" id="wb-key" placeholder="Key" [(ngModel)]="workbasket.key"
                         name="workbasket.key">
                     <taskana-field-error-display [displayError]="!isFieldValid('workbasket.key')" [validationTrigger]="this.toogleValidationMap.get('workbasket.key')"
-                        errorMessage="* Key is required">
+                        errorMessage="* Key is required" >
                     </taskana-field-error-display>
                 </div>
                 <div class="form-group required">
@@ -41,11 +41,11 @@
                         errorMessage="* Name is required">
                     </taskana-field-error-display>
                 </div>
-                <div class="form-group required">
-                    <label for="wb-owner" class="control-label">Owner</label>
+                <div class="input-group form-group required">
+                    <label for="wb-owner" class="control-label ">Owner</label>
                     <taskana-type-ahead *ngIf="ownerField.lookupField else ownerInput" required #owner="ngModel" name="workbasket.owner" [(ngModel)]="workbasket.owner"
                         placeHolderMessage="* Owner is required" [validationValue]="this.toogleValidationMap.get('workbasket.owner')"
-                        [displayError]="!isFieldValid('workbasket.owner')"></taskana-type-ahead>
+                        [displayError]="!isFieldValid('workbasket.owner')" width="100%"></taskana-type-ahead>
                     <ng-template #ownerInput>
                         <input type="text" required #owner="ngModel" class="form-control" id="wb-owner" placeholder="Owner" [(ngModel)]="workbasket.owner"
                             name="workbasket.owner">
