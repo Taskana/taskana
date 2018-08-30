@@ -6,17 +6,17 @@
                 <a (click)="backClicked()">
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
             </li>
-            <li role="presentation" class="active" (click)="seclectTab('information')" [ngClass]="{'active':tabSelected === 'information'}">
+            <li role="presentation" class="active" (click)="selectTab('information')" [ngClass]="{'active':tabSelected === 'information'}">
                 <a aria-controls="work baskets" role="tab" aria-expanded="true">
                     Information</a>
             </li>
-            <li role="presentation" (click)="seclectTab('accessItems')" [ngClass]="{
+            <li role="presentation" (click)="selectTab('accessItems')" [ngClass]="{
                 'disabled': action ==='CREATE',
                 'active':tabSelected === 'accessItems'}">
                 <a aria-controls="Acccess" role="tab" aria-expanded="true">
                     Access</a>
             </li>
-            <li role="presentation" (click)="seclectTab('distributionTargets')" [ngClass]="{
+            <li role="presentation" (click)="selectTab('distributionTargets')" [ngClass]="{
                 'disabled': action ==='CREATE',
                 'active':tabSelected === 'distributionTargets'}">
                 <a aria-controls="distribution targets" role="tab" data-toggle="tab" aria-expanded="true">
