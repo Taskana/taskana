@@ -12,10 +12,14 @@ export class TaskanaQueryParameters {
     static OWNERLIKE = 'owner-like';
     static TYPE = 'type';
     static KEY = 'key';
+    static WORKBASKET_KEY = 'workbasket-key';
     static KEYLIKE = 'key-like';
 
     // Access
     static REQUIREDPERMISSION = 'required-permission';
+    static ACCESSIDS = 'access-ids';
+    static ACCESSIDLIKE = 'access-id-like';
+    static WORKBASKETKEYLIKE = 'workbasket-key-like';
 
     // Pagination
     static PAGE = 'page';
@@ -25,7 +29,6 @@ export class TaskanaQueryParameters {
 
     // Domain
     static DOMAIN = 'domain';
-
 
     public static getQueryParameters(sortBy: string = undefined,
         order: string = undefined,
@@ -40,7 +43,10 @@ export class TaskanaQueryParameters {
         requiredPermission: string = undefined,
         page: number = undefined,
         pageSize: number = undefined,
-        domain: string = undefined): string {
+        domain: string = undefined,
+        accessIds: string = undefined,
+        accessIdLike: string = undefined,
+        workbasketKeyLike: string = undefined): string {
         let query = '?';
         query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
         query += order ? `${this.ORDER}=${order}&` : '';
@@ -55,7 +61,10 @@ export class TaskanaQueryParameters {
         query += requiredPermission ? `${this.REQUIREDPERMISSION}=${requiredPermission}&` : '';
         query += page ? `${this.PAGE}=${page}&` : '';
         query += pageSize ? `${this.PAGESIZE}=${pageSize}&` : '';
-        query += domain !== undefined ? `${this.DOMAIN}=${domain}&` : '';
+        query += domain ? `${this.DOMAIN}=${domain}&` : '';
+        query += accessIds ? `${this.ACCESSIDS}=${accessIds}&` : '';
+        query += accessIdLike ? `${this.ACCESSIDLIKE}=${accessIdLike}&` : '';
+        query += workbasketKeyLike ? `${this.WORKBASKETKEYLIKE}=${workbasketKeyLike}&` : '';
 
         if (query.lastIndexOf('&') === query.length - 1) {
             query = query.slice(0, query.lastIndexOf('&'))

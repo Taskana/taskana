@@ -9,7 +9,6 @@ import { WindowRefService } from 'app/services/window/window.service';
 import { UserGuard } from 'app/guards/user-guard';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { expandRight } from 'app/shared/animations/expand.animation';
-import { VersionModel } from 'app/models/version';
 @Component({
   selector: 'taskana-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -25,6 +24,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   titleAdministration = 'Administration';
   titleWorkbaskets = 'Workbaskets';
   titleClassifications = 'Classifications';
+  titleAccessItems = 'Access items';
   titleMonitor = 'Monitor';
   titleWorkplace = 'Workplace';
   showNavbar = false;
@@ -101,6 +101,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
       this.title = this.titleMonitor;
     } else if (value.indexOf('workplace') === 0) {
       this.title = this.titleWorkplace;
+    } else if (value.indexOf('access-items') === 0) {
+      this.title = this.titleAccessItems;
     }
   }
 

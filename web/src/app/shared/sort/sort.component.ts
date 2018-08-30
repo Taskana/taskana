@@ -9,6 +9,7 @@ import {Direction, SortingModel} from 'app/models/sorting';
 export class SortComponent implements OnInit {
   @Input() sortingFields: Map<string, string>;
   @Input() enabled = true;
+  @Input() menuPosition = 'right';
 
   @Output() performSorting = new EventEmitter<SortingModel>();
 

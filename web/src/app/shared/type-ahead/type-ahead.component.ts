@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, forwardRef, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
@@ -6,7 +6,7 @@ import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.serv
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { highlight } from 'app/shared/animations/validation.animation';
 import { mergeMap } from 'rxjs/operators';
-
+import { AccessIdDefinition } from 'app/models/access-id';
 
 @Component({
   selector: 'taskana-type-ahead',
@@ -34,6 +34,15 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
 
   @Input()
   displayError;
+
+  @Input()
+  width;
+
+  @Input()
+  disable;
+
+  @Output()
+  onSelect = new EventEmitter<AccessIdDefinition>();
 
   @ViewChild('inputTypeAhead')
   private inputTypeAhead;
@@ -107,11 +116,13 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
     if (event && event.item) {
       this.value = event.item.accessId;
       this.dataSource.selected = event.item;
+      this.onSelect.emit(this.dataSource.selected)
     }
     this.setTyping(false);
   }
 
   setTyping(value) {
+    if (this.disable) { return true; }
     if (value) {
       setTimeout(() => {
         this.inputTypeAhead.nativeElement.focus();
@@ -127,6 +138,13 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
 
   join(text: string, str: string) {
     return text.toLocaleLowerCase().split(str).join(`<strong>${str}</strong>`);
+  }
+
+  clear() {
+    this.value = null;
+    this.innerValue = null;
+    this.dataSource.selected = null
+    this.onSelect.emit(this.dataSource.selected)
   }
 
 }
