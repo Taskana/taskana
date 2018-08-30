@@ -19,6 +19,8 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.WorkbasketAccesItemExtendedResource;
 import pro.taskana.rest.resource.assembler.WorkbasketAccessItemExtendedAssembler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -85,7 +87,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     private WorkbasketAccessItemExtendedQuery getAccessIds(WorkbasketAccessItemExtendedQuery query,
                                                            MultiValueMap<String, String> params) throws InvalidArgumentException {
         if (params.containsKey(ACCESS_IDS)) {
-            String[] accessIds = extractCommaSeparatedFields(params.get(ACCESS_IDS));
+            String[] accessIds = extractVerticalBarSeparatedFields(params.get(ACCESS_IDS));
             query.accessIdIn(accessIds);
             params.remove(ACCESS_IDS);
         }
@@ -140,6 +142,14 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         params.remove(SORT_BY);
         params.remove(SORT_DIRECTION);
         return query;
+    }
+
+    private String[] extractVerticalBarSeparatedFields(List<String> searchFor) {
+        List<String> values = new ArrayList<>();
+        if (searchFor != null) {
+            searchFor.forEach(item -> values.addAll(Arrays.asList(item.split("\\|"))));
+        }
+        return values.toArray(new String[0]);
     }
 
 }

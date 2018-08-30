@@ -1,25 +1,34 @@
-$blue: #2e9eca;
-$grey: #ddd;
-$invalid: #a94442;
+@import './src/assets/_colors';
+
 .wrapper-text {
+    min-width: 150px;
     height: 47px;
     & label {
-        width: 100%;
         margin-bottom: 0px;
         padding-left: 12px;
         font-style: italic;
+        overflow: hidden;
      }
-    & div {
-        width: 100%;
-        border-bottom: 1px solid $grey;
-        margin-top:6px;
-        padding-left: 12px;
+    &> div{
+        &> div {
+            border-bottom: 1px solid $light-grey;
+            margin-top:6px;
+            padding-left: 12px;
+            min-width: 175px;
+        }
     }
     > div{
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        padding-left: 12px;
+        padding-right: 35px;
+    }
+  
+}
+.custom-form-control {
+    height: 50px;
+    &  .input-group{
+        width: 100%;
     }
 }
 
@@ -29,32 +38,42 @@ $invalid: #a94442;
     border: none;
     padding: 0px;
     border-radius: 0px;
-    //margin-top: 18px;
-    height: 22px;
-    border-bottom: 1px solid $grey;
+    min-width: 150px;
+    height: 28px;
+    border-bottom: 1px solid $light-grey;
     &:focus{
-        border-bottom: 1px solid $blue;
+        border-bottom: 1px solid $aquamarine;
     }
     padding-left: 12px;
+    padding-right: 35px;
     
 }
 
 .field-label-wrapper{
     position: relative;
-    //left: 8px;
+    height: 28px;
+    padding-left: 12px;
     box-sizing: content-box;
     overflow: hidden;
     pointer-events: none;    
 }
 
-
 .form-control:focus {
     border-color: none;
     box-shadow: none;
 }
+
 .loading {
     position: absolute;
+    top: 0px;
     right: 0;
+}
+
+.btn.rounded {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -67,4 +86,8 @@ $invalid: #a94442;
 
 ::-ms-input-placeholder { /* Microsoft Edge */
     color: $invalid;
+}
+
+.disable {
+    cursor: not-allowed;
 }

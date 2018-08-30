@@ -7,10 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-<<<<<<< HEAD
-import pro.taskana.WorkbasketAccessItem;
-=======
->>>>>>> a89fa20c... TSK-694 - Show list of all access items valid for a user (REST)
 import pro.taskana.WorkbasketAccessItemExtended;
 import pro.taskana.WorkbasketService;
 import pro.taskana.impl.WorkbasketAccessItemExtendedImpl;
