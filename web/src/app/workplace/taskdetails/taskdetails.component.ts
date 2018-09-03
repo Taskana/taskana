@@ -40,6 +40,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.taskService.getTask(id).subscribe(task => {
       this.requestInProgress = false;
       this.task = task;
+      this.taskService.selectTask(task);
     }, err => {
       this.errorModalService.triggerError(
         new ErrorModel('An error occurred while fetching the task', err));
