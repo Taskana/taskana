@@ -13,6 +13,9 @@ import { SortingModel } from 'app/models/sorting';
 import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { ErrorModel } from 'app/models/modal-error';
+import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+import { AlertModel, AlertType } from 'app/models/alert';
+import { AlertService } from 'app/services/alert/alert.service';
 
 @Component({
   selector: 'taskana-access-items-management',
@@ -71,6 +74,8 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     private accessIdsService: AccessIdsService,
     private formsValidatorService: FormsValidatorService,
     private requestInProgressService: RequestInProgressService,
+    private removeConfirmationService: RemoveConfirmationService,
+    private alertService: AlertService,
     private errorModalService: ErrorModalService) { }
 
 
@@ -136,6 +141,41 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
           );
         })
 
+  }
+
+  revokeAccess() {
+    this.removeConfirmationService.setRemoveConfirmation(
+      this.onRemoveConfirmed.bind(this),
+      `You are going to delete all access related: ${
+        this.accessIdSelected
+      }. Can you confirm this action?`
+    );
+  }
+
+  private onRemoveConfirmed() {
+    this.requestInProgressService.setRequestInProgress(true);
+    this.accessIdsService.removeAccessItemsPermissions(this.accessIdSelected)
+    .subscribe(
+      response => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.alertService.triggerAlert(
+          new AlertModel(
+            AlertType.SUCCESS,
+            `${this.accessIdSelected
+            } was removed successfully`
+          )
+        );
+        this.searchForAccessItemsWorkbaskets();
+    },
+    error => {
+      this.requestInProgressService.setRequestInProgress(false);
+      this.errorModalService.triggerError(
+        new ErrorModel(
+          `You can't delete a group`,
+          error
+        )
+      );
+    });
   }
 
   private unSubscribe(subscription: Subscription): void {

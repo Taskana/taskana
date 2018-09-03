@@ -36,12 +36,17 @@ export class AccessIdsService {
     }
 
     return this.accessItemsRef = this.httpClient.get<AccessItemsWorkbasketResource>(encodeURI(
-      `${environment.taskanaRestUrl}/v1/workbasket-access/${TaskanaQueryParameters.getQueryParameters(sortModel.sortBy,
+      `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(sortModel.sortBy,
     sortModel.sortDirection,
         undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
         accessIds.map((values: AccessIdDefinition) => {
           return values.accessId
         }).join('|'),
         accessIdLike, workbasketKeyLike)}`))
+  }
+
+  removeAccessItemsPermissions(accessId: string) {
+    return this.httpClient
+    .delete<AccessItemsWorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=` + accessId)
   }
 }

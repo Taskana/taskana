@@ -307,6 +307,10 @@ public class LdapClient {
         return env.getProperty("taskana.ldap.groupsOfUser");
     }
 
+    public boolean isGroup(String accessId) {
+        return accessId.contains(getGroupSearchBase());
+    }
+
     /**
      * Context Mapper for user entries.
      */
