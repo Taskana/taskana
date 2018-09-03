@@ -635,6 +635,45 @@ include::../../../{snippets}/GetTaskClassificationReportDocTest/http-response.ad
 
 Same as task status report
 
+== WorkbasketAccessItems-Resource
+
+=== GET a list of all workbasketAccessItems
+
+A `GET` return all workbasketAccessItems that correspond the given data.
+
+==== Example Request
+
+include::../../../{snippets}/GetWorkbasketAccessItemsDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/GetWorkbasketAccessItemsDocTest/http-response.adoc[]
+
+==== Response Structure
+
+include::../../../{snippets}/GetWorkbasketAccessItemsDocTest/response-fields.adoc[]
+
+=== Filter and sort options
+
+The list generated in the response can be filtered using following parameters in the uri: +
+workbasket-key | workbasket-key-like | access-id | access-id-like +
+name | name-like | key | key-like | owner | owner-like | description-like | domain | +
+
+It can also be sorted by using this set of parameters: +
+sortBy = { workbasket-key | access-id } | order={ desc | asc }
+
+=== Delete a workbasketAccessItems
+
+A `DELETE` request is used to delete a workbasketAccessItems.
+
+==== Example request
+
+include::../../../{snippets}/RemoveWorkbasketAccessItemsDocTest/http-request.adoc[]
+
+==== Example response
+
+include::../../../{snippets}/RemoveWorkbasketAccessItemsDocTest/http-response.adoc[]
+
 == Other Resources (using the TaskanaEngineController)
 
 These resources are directly connected to the Taskana Engine endpoint.

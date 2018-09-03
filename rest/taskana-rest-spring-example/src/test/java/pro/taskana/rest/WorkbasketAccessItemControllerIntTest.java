@@ -3,8 +3,10 @@ package pro.taskana.rest;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
@@ -23,6 +25,7 @@ import java.util.Collections;
 
 import static org.junit.Assert.*;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {"devMode=true"})
@@ -45,7 +48,7 @@ public class WorkbasketAccessItemControllerIntTest {
     @Test
     public void testGetAllWorkbasketAccessItems() {
         ResponseEntity<PagedResources<WorkbasketAccesItemExtendedResource>> response = template.exchange(
-                url + port + "/v1/workbasket-access", HttpMethod.GET, request,
+                url + port + "/v1/workbasket-access-items", HttpMethod.GET, request,
                 new ParameterizedTypeReference<PagedResources<WorkbasketAccesItemExtendedResource>>() {
                 });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
@@ -53,7 +56,7 @@ public class WorkbasketAccessItemControllerIntTest {
 
     @Test
     public void testGetWorkbasketAccessItemsKeepingFilters() {
-        String parameters = "/v1/workbasket-access/?sort-by=workbasket-key&order=asc&page=1&page-size=9&access-ids=user_1_1";
+        String parameters = "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=1&page-size=9&access-ids=user_1_1";
         ResponseEntity<PagedResources<WorkbasketAccesItemExtendedResource>> response = template.exchange(
                 url + port + parameters, HttpMethod.GET, request,
                 new ParameterizedTypeReference<PagedResources<WorkbasketAccesItemExtendedResource>>() {
@@ -69,7 +72,7 @@ public class WorkbasketAccessItemControllerIntTest {
     public void testThrowsExceptionIfInvalidFilterIsUsed() {
         try {
             template.exchange(
-                    url + port + "/v1/workbasket-access/?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1", HttpMethod.GET, request,
+                    url + port + "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1", HttpMethod.GET, request,
                     new ParameterizedTypeReference<PagedResources<WorkbasketAccesItemExtendedResource>>() {
                     });
             fail();
@@ -81,7 +84,7 @@ public class WorkbasketAccessItemControllerIntTest {
 
     @Test
     public void testGetSecondPageSortedByWorkbasketKey() {
-        String parameters = "/v1/workbasket-access/?sort-by=workbasket-key&order=asc&page=2&page-size=9&access-ids=user_1_1";
+        String parameters = "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=2&page-size=9&access-ids=user_1_1";
         ResponseEntity<PagedResources<WorkbasketAccesItemExtendedResource>> response = template.exchange(
                 url + port + parameters, HttpMethod.GET, request,
                 new ParameterizedTypeReference<PagedResources<WorkbasketAccesItemExtendedResource>>() {
@@ -99,6 +102,30 @@ public class WorkbasketAccessItemControllerIntTest {
         assertEquals(1, response.getBody().getMetadata().getTotalElements());
         assertEquals(1, response.getBody().getMetadata().getTotalPages());
         assertEquals(1, response.getBody().getMetadata().getNumber());
+    }
+
+    @Test
+    public void testRemoveWorkbasketAccessItemsOfUser() {
+        String parameters = "/v1/workbasket-access-items/?access-id=user_1_1";
+        ResponseEntity<Void> response = template.exchange(
+                url + port + parameters, HttpMethod.DELETE, request,
+                new ParameterizedTypeReference<Void>() {
+                });
+        assertNull(response.getBody());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    public void testGetBadRequestIfTryingToDeleteAccessItemsForGroup() {
+        String parameters = "/v1/workbasket-access-items/?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
+        try {
+        ResponseEntity<Void> response = template.exchange(
+                url + port + parameters, HttpMethod.DELETE, request,
+                new ParameterizedTypeReference<Void>() {
+                });
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
     }
 
     /**

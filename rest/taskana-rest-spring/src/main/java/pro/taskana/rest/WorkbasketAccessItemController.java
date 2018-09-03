@@ -10,6 +10,7 @@ import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.ldap.LdapClient;
 import pro.taskana.rest.resource.WorkbasketAccesItemExtendedResource;
 import pro.taskana.rest.resource.assembler.WorkbasketAccessItemExtendedAssembler;
 
@@ -29,7 +31,7 @@ import pro.taskana.rest.resource.assembler.WorkbasketAccessItemExtendedAssembler
  */
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
-@RequestMapping(path = "/v1/workbasket-access", produces = "application/hal+json")
+@RequestMapping(path = "/v1/workbasket-access-items", produces = "application/hal+json")
 public class WorkbasketAccessItemController extends AbstractPagingController {
 
     private static final String LIKE = "%";
@@ -46,8 +48,19 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     private static final String PAGING_PAGE_SIZE = "page-size";
 
     @Autowired
+    LdapClient ldapClient;
+
+    @Autowired
     private WorkbasketService workbasketService;
 
+    /**
+     * This GET method return all workbasketAccessItems that correspond the given data.
+     *
+     * @param params filter, order and access ids.
+     * @return all WorkbasketAccesItemExtendedResource.
+     * @throws NotAuthorizedException   if the user is not authorized.
+     * @throws InvalidArgumentException if some argument is invalid.
+     */
     @GetMapping
     public ResponseEntity<PagedResources<WorkbasketAccesItemExtendedResource>> getWorkbasketAccessItems(
         @RequestParam MultiValueMap<String, String> params)
@@ -84,6 +97,34 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
             pageMetadata);
 
         return new ResponseEntity<>(pagedResources, HttpStatus.OK);
+    }
+
+    /**
+     * This DELETE method delete all workbasketAccessItems that correspond the given accessId.
+     *
+     * @param accessId which need remove his workbasketAccessItems.
+     * @return ResponseEntity if the user is not authorized.
+     * @throws NotAuthorizedException if the user is not authorized.
+     * @throws InvalidArgumentException if some argument is invalid.
+     */
+    @DeleteMapping
+    public ResponseEntity<Void> removeWorkbasketAccessItems(
+        @RequestParam("access-id") String accessId)
+        throws NotAuthorizedException, InvalidArgumentException {
+        if (!ldapClient.isGroup(accessId)) {
+            List<WorkbasketAccessItemExtended> workbasketAccessItemList = workbasketService.createWorkbasketAccessItemExtendedQuery()
+                .accessIdIn(accessId)
+                .list();
+
+            if (workbasketAccessItemList != null && !workbasketAccessItemList.isEmpty()) {
+                workbasketService.deleteWorkbasketAccessItemsForAccessId(accessId);
+            }
+        } else {
+            throw new InvalidArgumentException(
+                accessId + " corresponding to a group, not a user. You just can remove access items for a user");
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private WorkbasketAccessItemQuery.Extended getAccessIds(WorkbasketAccessItemQuery.Extended query,
