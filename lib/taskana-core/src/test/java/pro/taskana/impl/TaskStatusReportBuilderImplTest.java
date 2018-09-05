@@ -23,10 +23,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.impl.TaskQueryItem;
-import pro.taskana.impl.report.impl.TaskStatusReport;
+import pro.taskana.impl.report.TaskQueryItem;
 import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.report.TaskStatusReport;
 
 /**
  * Unit Test for TaskStatusReportBuilderImpl.
@@ -54,7 +55,7 @@ public class TaskStatusReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTaskStateReportWithoutFilters() throws NotAuthorizedException {
+    public void testGetTaskStateReportWithoutFilters() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskQueryItem queryItem1 = new TaskQueryItem();
         queryItem1.setCount(50);
@@ -85,7 +86,7 @@ public class TaskStatusReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTotalNumberOfTaskStateReport() throws NotAuthorizedException {
+    public void testGetTotalNumberOfTaskStateReport() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskQueryItem queryItem1 = new TaskQueryItem();
         queryItem1.setCount(50);

@@ -1,6 +1,6 @@
-package pro.taskana.impl.report.impl;
+package pro.taskana.impl.report;
 
-import pro.taskana.impl.report.ReportColumnHeader;
+import pro.taskana.report.ReportColumnHeader;
 
 /**
  * A TimeIntervalColumnHeader has a lower and an upper age limit which subdivide the count of tasks into different

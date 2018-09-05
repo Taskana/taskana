@@ -1,10 +1,13 @@
-package pro.taskana.impl.report;
+package pro.taskana.report;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 
 /**
  * A Report represents a an abstract table that consists of {@link ReportRow}s and a list of &lt;ColumnHeader&gt;s.
@@ -22,7 +25,7 @@ public abstract class Report<Item extends QueryItem, ColumnHeader extends Report
     private ReportRow<Item> sumRow;
     private String rowDesc;
 
-    public Report(List<ColumnHeader> columnHeaders, String rowDesc) {
+    protected Report(List<ColumnHeader> columnHeaders, String rowDesc) {
         this.rowDesc = rowDesc;
         sumRow = new ReportRow<>(columnHeaders.size());
         this.columnHeaders.addAll(columnHeaders);
@@ -83,5 +86,15 @@ public abstract class Report<Item extends QueryItem, ColumnHeader extends Report
 
     protected ReportRow<Item> createReportRow(int columnSize) {
         return new ReportRow<>(columnSize);
+    }
+
+    /**
+     * Builder for {@link Report}.
+     * @param <I> {@link QueryItem} whose value is relevant for this report.
+     * @param <H> {@link ReportColumnHeader} which can determine if an &lt;Item&gt; belongs into that column or not.
+     */
+    public interface Builder<I extends QueryItem, H extends ReportColumnHeader<? super I>> {
+
+        Report<I, H> buildReport() throws NotAuthorizedException, InvalidArgumentException;
     }
 }

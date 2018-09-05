@@ -30,10 +30,10 @@ import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.impl.CustomFieldValueReport;
-import pro.taskana.impl.report.impl.MonitorQueryItem;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.MonitorQueryItem;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.report.CustomFieldValueReport;
 
 /**
  * Unit Test for CustomFieldValueReportBuilderImpl.

@@ -33,11 +33,11 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.impl.report.ReportRow;
-import pro.taskana.impl.report.impl.DetailedClassificationReport;
-import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
-import pro.taskana.impl.report.impl.DetailedReportRow;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.DetailedReportRow;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
+import pro.taskana.report.ReportRow;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
