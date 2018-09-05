@@ -12,8 +12,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.impl.util.LoggerUtils;
 
 /**
@@ -34,7 +34,7 @@ public final class DaysToWorkingDaysConverter {
     private static boolean germanHolidaysEnabled;
     private static List<LocalDate> customHolidays;
 
-    private DaysToWorkingDaysConverter(List<TimeIntervalColumnHeader> columnHeaders,
+    private DaysToWorkingDaysConverter(List<? extends TimeIntervalColumnHeader> columnHeaders,
         Instant referenceDate) {
         easterSunday = getEasterSunday(LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).getYear());
         dateCreated = referenceDate;
@@ -52,7 +52,7 @@ public final class DaysToWorkingDaysConverter {
      * @throws InvalidArgumentException
      *             thrown if columnHeaders is null
      */
-    public static DaysToWorkingDaysConverter initialize(List<TimeIntervalColumnHeader> columnHeaders)
+    public static DaysToWorkingDaysConverter initialize(List<? extends TimeIntervalColumnHeader> columnHeaders)
         throws InvalidArgumentException {
         return initialize(columnHeaders, Instant.now());
     }
@@ -69,7 +69,7 @@ public final class DaysToWorkingDaysConverter {
      * @throws InvalidArgumentException
      *             thrown if columnHeaders or referenceDate is null
      */
-    public static DaysToWorkingDaysConverter initialize(List<TimeIntervalColumnHeader> columnHeaders,
+    public static DaysToWorkingDaysConverter initialize(List<? extends TimeIntervalColumnHeader> columnHeaders,
         Instant referenceDate) throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialize DaysToWorkingDaysConverter with columnHeaders: {}",
@@ -93,6 +93,30 @@ public final class DaysToWorkingDaysConverter {
                 smallestUpperLimit, dateCreated);
         }
         return instance;
+    }
+
+    private static int getSmallestUpperLimit(List<? extends TimeIntervalColumnHeader> columnHeaders) {
+        int smallestUpperLimit = 0;
+        for (TimeIntervalColumnHeader columnHeader : columnHeaders) {
+            if (columnHeader.getUpperAgeLimit() < smallestUpperLimit) {
+                smallestUpperLimit = columnHeader.getUpperAgeLimit();
+            }
+        }
+        return smallestUpperLimit;
+    }
+
+    private static int getLargestLowerLimit(List<? extends TimeIntervalColumnHeader> columnHeaders) {
+        int greatestLowerLimit = 0;
+        for (TimeIntervalColumnHeader columnHeader : columnHeaders) {
+            if (columnHeader.getUpperAgeLimit() > greatestLowerLimit) {
+                greatestLowerLimit = columnHeader.getLowerAgeLimit();
+            }
+        }
+        return greatestLowerLimit;
+    }
+
+    public static void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
+        germanHolidaysEnabled = germanPublicHolidaysEnabled;
     }
 
     /**
@@ -189,7 +213,7 @@ public final class DaysToWorkingDaysConverter {
     }
 
     private ArrayList<Integer> generateNegativeDaysToWorkingDays(
-        List<TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
+        List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
         int minUpperLimit = getSmallestUpperLimit(columnHeaders);
         ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
         daysToWorkingDays.add(0);
@@ -206,7 +230,7 @@ public final class DaysToWorkingDaysConverter {
     }
 
     private ArrayList<Integer> generatePositiveDaysToWorkingDays(
-        List<TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
+        List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
         int maxLowerLimit = getLargestLowerLimit(columnHeaders);
         ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
         daysToWorkingDays.add(0);
@@ -221,26 +245,6 @@ public final class DaysToWorkingDaysConverter {
             day++;
         }
         return daysToWorkingDays;
-    }
-
-    private static int getSmallestUpperLimit(List<TimeIntervalColumnHeader> columnHeaders) {
-        int smallestUpperLimit = 0;
-        for (TimeIntervalColumnHeader columnHeader : columnHeaders) {
-            if (columnHeader.getUpperAgeLimit() < smallestUpperLimit) {
-                smallestUpperLimit = columnHeader.getUpperAgeLimit();
-            }
-        }
-        return smallestUpperLimit;
-    }
-
-    private static int getLargestLowerLimit(List<TimeIntervalColumnHeader> columnHeaders) {
-        int greatestLowerLimit = 0;
-        for (TimeIntervalColumnHeader columnHeader : columnHeaders) {
-            if (columnHeader.getUpperAgeLimit() > greatestLowerLimit) {
-                greatestLowerLimit = columnHeader.getLowerAgeLimit();
-            }
-        }
-        return greatestLowerLimit;
     }
 
     private boolean isWorkingDay(int day, Instant referenceDate) {
@@ -310,16 +314,12 @@ public final class DaysToWorkingDaysConverter {
         return LocalDate.of(year, 3, 22).plusDays(d + e);
     }
 
-    public static void setCustomHolidays(List<LocalDate> holidays) {
-        customHolidays = holidays;
-    }
-
     public List<LocalDate> getCustomHolidays() {
         return customHolidays;
     }
 
-    public static void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
-        germanHolidaysEnabled = germanPublicHolidaysEnabled;
+    public static void setCustomHolidays(List<LocalDate> holidays) {
+        customHolidays = holidays;
     }
 
     public boolean isGermanPublicHolidayEnabled() {

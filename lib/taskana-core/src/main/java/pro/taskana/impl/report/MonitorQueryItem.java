@@ -1,6 +1,6 @@
-package pro.taskana.impl.report.impl;
+package pro.taskana.impl.report;
 
-import pro.taskana.impl.report.QueryItem;
+import pro.taskana.report.QueryItem;
 
 /**
  * The MonitorQueryItem entity contains the number of tasks for a key (e.g. workbasketKey) and age in days.

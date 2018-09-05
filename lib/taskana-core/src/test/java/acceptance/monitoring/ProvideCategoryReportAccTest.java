@@ -34,8 +34,8 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.impl.report.impl.CategoryReport;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.report.CategoryReport;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

@@ -25,7 +25,7 @@ import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

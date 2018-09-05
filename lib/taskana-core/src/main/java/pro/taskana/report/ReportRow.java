@@ -1,4 +1,4 @@
-package pro.taskana.impl.report;
+package pro.taskana.report;
 
 /**
  * A ReportRow represents a row in a {@link Report}.
