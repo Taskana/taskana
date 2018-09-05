@@ -31,11 +31,11 @@ import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.impl.CombinedClassificationFilter;
-import pro.taskana.impl.report.impl.MonitorQueryItem;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
-import pro.taskana.impl.report.impl.WorkbasketReport;
+import pro.taskana.impl.report.CombinedClassificationFilter;
+import pro.taskana.impl.report.MonitorQueryItem;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.report.WorkbasketReport;
 
 /**
  * Unit Test for WorkbasketReportBuilderImpl.
@@ -227,8 +227,8 @@ public class WorkbasketReportBuilderImplTest {
         throws NotAuthorizedException, InvalidArgumentException {
         List<SelectedItem> selectedItems = new ArrayList<>();
         List<String> result = cut.createWorkbasketReportBuilder()
-                .workbasketIdIn(Arrays.asList("DieGibtsGarantiertNed"))
-                .listTaskIdsForSelectedItems(selectedItems);
+            .workbasketIdIn(Arrays.asList("DieGibtsGarantiertNed"))
+            .listTaskIdsForSelectedItems(selectedItems);
         assertNotNull(result);
     }
 
@@ -286,8 +286,8 @@ public class WorkbasketReportBuilderImplTest {
     public void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
         throws NotAuthorizedException {
         List<String> result = cut.createWorkbasketReportBuilder()
-                .workbasketIdIn(Arrays.asList("GibtsSicherNed"))
-                .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_14);
+            .workbasketIdIn(Arrays.asList("GibtsSicherNed"))
+            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_14);
         assertNotNull(result);
     }
 }

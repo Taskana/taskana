@@ -33,7 +33,7 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.DaysToWorkingDaysConverter;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.TaskTestMapper;
 import pro.taskana.security.CurrentUserContext;

@@ -32,8 +32,8 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.impl.report.impl.CustomFieldValueReport;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.report.CustomFieldValueReport;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -57,7 +57,8 @@ public class ProvideCustomFieldValueReportAccTest {
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource, true);
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, TaskanaEngineConfigurationTest.getSchemaName());
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
+            TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);

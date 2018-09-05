@@ -31,13 +31,13 @@ import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.impl.ClassificationReport;
-import pro.taskana.impl.report.impl.DetailedClassificationReport;
-import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
-import pro.taskana.impl.report.impl.DetailedReportRow;
-import pro.taskana.impl.report.impl.MonitorQueryItem;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.DetailedReportRow;
+import pro.taskana.impl.report.MonitorQueryItem;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.report.ClassificationReport;
+import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
 
 /**
  * Unit Test for ClassificationReportBuilderImpl.
@@ -324,8 +324,8 @@ public class ClassificationReportBuilderImplTest {
         selectedItem.setKey("GIBTSNED");
         List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
         List<String> result = cut.createClassificationReportBuilder()
-                .workbasketIdIn(Arrays.asList("DieGibtsEhNed"))
-                .listTaskIdsForSelectedItems(selectedItems);
+            .workbasketIdIn(Arrays.asList("DieGibtsEhNed"))
+            .listTaskIdsForSelectedItems(selectedItems);
         assertNotNull(result);
     }
 
@@ -383,8 +383,8 @@ public class ClassificationReportBuilderImplTest {
     public void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
         throws NotAuthorizedException {
         List<String> result = cut.createClassificationReportBuilder()
-                .workbasketIdIn(Arrays.asList("DieGibtsGarantiertNed"))
-                .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_10);
+            .workbasketIdIn(Arrays.asList("DieGibtsGarantiertNed"))
+            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_10);
         assertNotNull(result);
     }
 
