@@ -15,18 +15,18 @@ export class MasterAndDetailComponent implements OnInit {
     private detailRoutes: Array<string> = ['/workbaskets/(detail', 'classifications/(detail', 'tasks/(detail'];
     private sub: any;
 
-    showDetail: Boolean = false;
+    showDetail = false;
     currentRoute = '';
     constructor(private route: ActivatedRoute, private router: Router, private masterAndDetailService: MasterAndDetailService) {
     }
 
     ngOnInit(): void {
         this.showDetail = this.showDetails();
-        this.masterAndDetailService.setShowDetail(this.showDetail ? true : false);
+        this.masterAndDetailService.setShowDetail(this.showDetail);
         this.router.events.subscribe(event => {
             if (event instanceof NavigationStart) {
                 this.showDetail = this.showDetails(event);
-                this.masterAndDetailService.setShowDetail(this.showDetail ? true : false);
+                this.masterAndDetailService.setShowDetail(this.showDetail);
             }
         });
     }
@@ -35,14 +35,14 @@ export class MasterAndDetailComponent implements OnInit {
         this.router.navigate(['../'], { relativeTo: this.route });
     }
 
-    private showDetails(event?: RouterEvent): Boolean {
+    private showDetails(event?: RouterEvent): boolean {
         if (event === undefined) {
             return this.checkUrl(this.router.url);
         }
         return this.checkUrl(event.url)
     }
 
-    private checkUrl(url: string): Boolean {
+    private checkUrl(url: string): boolean {
         this.checkRoute(url);
         for (const routeDetail of this.detailRoutes) {
             if (url.indexOf(routeDetail) !== -1) {

@@ -31,10 +31,10 @@ import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.impl.CategoryReport;
-import pro.taskana.impl.report.impl.MonitorQueryItem;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.MonitorQueryItem;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.report.CategoryReport;
 
 /**
  * Unit Test for CategoryBuilderImpl.
@@ -213,7 +213,7 @@ public class CategoryReportBuilderImplTest {
         SelectedItem selectedItem = new SelectedItem();
         List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
         List<String> result = cut.createCategoryReportBuilder()
-                .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems);
         assertNotNull(result);
     }
 
@@ -270,8 +270,8 @@ public class CategoryReportBuilderImplTest {
     @Test
     public void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws NotAuthorizedException {
         List<String> result = cut.createCategoryReportBuilder()
-                .workbasketIdIn(Arrays.asList("DieGibtsSicherNed"))
-                .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
+            .workbasketIdIn(Arrays.asList("DieGibtsSicherNed"))
+            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
         assertNotNull(result);
     }
 }

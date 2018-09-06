@@ -1,4 +1,4 @@
-package pro.taskana.impl.report;
+package pro.taskana.report;
 
 /**
  * The QueryItemPreprocessor is used when adding {@link QueryItem}s into a {@link Report}. It defines a processing

@@ -1,8 +1,10 @@
 package pro.taskana;
 
-import pro.taskana.impl.CustomFieldValueReportBuilderImpl;
-import pro.taskana.impl.TaskStatusReportBuilderImpl;
-import pro.taskana.impl.WorkbasketReportBuilderImpl;
+import pro.taskana.report.CategoryReport;
+import pro.taskana.report.ClassificationReport;
+import pro.taskana.report.CustomFieldValueReport;
+import pro.taskana.report.TaskStatusReport;
+import pro.taskana.report.WorkbasketReport;
 
 /**
  * The Task Monitor Service manages operations on tasks regarding the monitoring.
@@ -10,44 +12,44 @@ import pro.taskana.impl.WorkbasketReportBuilderImpl;
 public interface TaskMonitorService {
 
     /**
-     * Provides a {@link WorkbasketReportBuilderImpl} for creating a WorkbasketReport, list the task ids of this report
+     * Provides a {@link WorkbasketReport.Builder} for creating a {@link WorkbasketReport}, list the task ids of this report
      * and list the values of an entered custom attribute.
      *
-     * @return a {@link WorkbasketReportBuilderImpl}
+     * @return a {@link WorkbasketReport.Builder}
      */
-    WorkbasketReportBuilderImpl createWorkbasketReportBuilder();
+    WorkbasketReport.Builder createWorkbasketReportBuilder();
 
     /**
-     * Provides a {@link CategoryReportBuilder} for creating a CategoryReport, list the task ids of this report and list
+     * Provides a {@link CategoryReport.Builder} for creating a {@link CategoryReport}, list the task ids of this report and list
      * the values of an entered custom attribute.
      *
-     * @return a {@link CategoryReportBuilder}
+     * @return a {@link CategoryReport.Builder}
      */
-    CategoryReportBuilder createCategoryReportBuilder();
+    CategoryReport.Builder createCategoryReportBuilder();
 
     /**
-     * Provides a {@link ClassificationReportBuilder} for creating a ClassificationReport or a
+     * Provides a {@link ClassificationReport.Builder} for creating a {@link ClassificationReport} or a
      * DetailedClassificationReport, list the task ids of these reports and list the values of an entered custom
      * attribute.
      *
-     * @return a {@link ClassificationReportBuilder}
+     * @return a {@link ClassificationReport.Builder}
      */
-    ClassificationReportBuilder createClassificationReportBuilder();
+    ClassificationReport.Builder createClassificationReportBuilder();
 
     /**
-     * Provides a {@link CustomFieldValueReportBuilderImpl} for creating a CustomFieldValueReport and list the values of
+     * Provides a {@link CustomFieldValueReport.Builder} for creating a {@link CustomFieldValueReport} and list the values of
      * an entered custom attribute.
      *
      * @param customField
      *            the customField whose values should appear in the report
-     * @return a {@link CustomFieldValueReportBuilderImpl}
+     * @return a {@link CustomFieldValueReport.Builder}
      */
-    CustomFieldValueReportBuilderImpl createCustomFieldValueReportBuilder(CustomField customField);
+    CustomFieldValueReport.Builder createCustomFieldValueReportBuilder(CustomField customField);
 
     /**
-     * Provides a {@link TaskStatusReportBuilderImpl} for creating a TaskStatusReport.
+     * Provides a {@link TaskStatusReport.Builder} for creating a {@link TaskStatusReport}.
      *
-     * @return a {@link TaskStatusReportBuilderImpl}
+     * @return a {@link TaskStatusReport.Builder}
      */
-    TaskStatusReportBuilderImpl createTaskStatusReportBuilder();
+    TaskStatusReport.Builder createTaskStatusReportBuilder();
 }

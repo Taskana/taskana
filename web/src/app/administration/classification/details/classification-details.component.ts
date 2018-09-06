@@ -87,7 +87,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.categoryService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
       this.classificationTypes = classificationTypes;
-    })
+    });
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
         if (this.classification && this.classification.classificationId === classificationSelected.classificationId) { return; }

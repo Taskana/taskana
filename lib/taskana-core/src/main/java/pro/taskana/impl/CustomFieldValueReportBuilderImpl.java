@@ -1,91 +1,46 @@
 package pro.taskana.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.CustomField;
-import pro.taskana.CustomFieldValueReportBuilder;
-import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.impl.CustomFieldValueReport;
-import pro.taskana.impl.report.impl.DaysToWorkingDaysPreProcessor;
-import pro.taskana.impl.report.impl.MonitorQueryItem;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.DaysToWorkingDaysPreProcessor;
+import pro.taskana.impl.report.MonitorQueryItem;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.report.CustomFieldValueReport;
 
 /**
  * The implementation of CustomFieldValueReportBuilder.
  */
-public class CustomFieldValueReportBuilderImpl extends ReportBuilder implements CustomFieldValueReportBuilder {
+public class CustomFieldValueReportBuilderImpl
+    extends TimeIntervalReportBuilderImpl<CustomFieldValueReport.Builder, TimeIntervalColumnHeader>
+    implements CustomFieldValueReport.Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomFieldValueReportBuilderImpl.class);
 
-    public CustomField customField;
+    private CustomField customField;
 
-    public CustomFieldValueReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper,
+    CustomFieldValueReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper,
         CustomField customField) {
         super(taskanaEngine, taskMonitorMapper);
         this.customField = customField;
     }
 
     @Override
-    public CustomFieldValueReportBuilderImpl withColumnHeaders(List<TimeIntervalColumnHeader> columnHeaders) {
-        this.columnHeaders = columnHeaders;
+    protected CustomFieldValueReport.Builder _this() {
         return this;
     }
 
     @Override
-    public CustomFieldValueReportBuilderImpl inWorkingDays() {
-        this.inWorkingDays = true;
-        return this;
-    }
-
-    @Override
-    public CustomFieldValueReportBuilderImpl workbasketIdIn(List<String> workbasketIds) {
-        this.workbasketIds = workbasketIds;
-        return this;
-    }
-
-    @Override
-    public CustomFieldValueReportBuilderImpl stateIn(List<TaskState> states) {
-        this.states = states;
-        return this;
-    }
-
-    @Override
-    public CustomFieldValueReportBuilderImpl categoryIn(List<String> categories) {
-        this.categories = categories;
-        return this;
-    }
-
-    @Override
-    public CustomFieldValueReportBuilderImpl domainIn(List<String> domains) {
-        this.domains = domains;
-        return this;
-    }
-
-    @Override
-    public CustomFieldValueReportBuilderImpl classificationIdIn(List<String> classificationIds) {
-        this.classificationIds = classificationIds;
-        return this;
-    }
-
-    @Override
-    public CustomFieldValueReportBuilderImpl excludedClassificationIdIn(List<String> excludedClassificationIds) {
-        this.excludedClassificationIds = excludedClassificationIds;
-        return this;
-    }
-
-    @Override
-    public CustomFieldValueReportBuilderImpl customAttributeFilterIn(Map<CustomField, String> customAttributeFilter) {
-        this.customAttributeFilter = customAttributeFilter;
-        return this;
+    protected String determineDimension() {
+        return customField.name();
     }
 
     @Override
@@ -109,11 +64,6 @@ public class CustomFieldValueReportBuilderImpl extends ReportBuilder implements 
             this.taskanaEngine.returnConnection();
             LOGGER.debug("exit from buildReport().");
         }
-    }
-
-    @Override
-    public CustomField getCustomField() {
-        return customField;
     }
 
 }

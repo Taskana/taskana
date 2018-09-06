@@ -30,7 +30,7 @@ public class TaskanaProducersTest {
         deployment.addAllDependencies();
         deployment.addDependency("org.mybatis:mybatis:3.4.2");
         deployment.addDependency("org.mybatis:mybatis-cdi:1.0.0");
-        deployment.addDependency("pro.taskana:taskana-core:1.0.3-SNAPSHOT");
+        deployment.addDependency("pro.taskana:taskana-core:1.0.4-SNAPSHOT");
         deployment.addAsResource("META-INF/beans.xml");
         deployment.addAsResource("taskana.properties");
         deployment.addAsResource("project-defaults.yml");

@@ -11,10 +11,10 @@ import org.apache.ibatis.annotations.Select;
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
 import pro.taskana.impl.SelectedItem;
-import pro.taskana.impl.report.impl.CombinedClassificationFilter;
-import pro.taskana.impl.report.impl.DetailedMonitorQueryItem;
-import pro.taskana.impl.report.impl.MonitorQueryItem;
-import pro.taskana.impl.report.impl.TaskQueryItem;
+import pro.taskana.impl.report.CombinedClassificationFilter;
+import pro.taskana.impl.report.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.MonitorQueryItem;
+import pro.taskana.impl.report.TaskQueryItem;
 
 /**
  * This class is the mybatis mapping of task monitoring.

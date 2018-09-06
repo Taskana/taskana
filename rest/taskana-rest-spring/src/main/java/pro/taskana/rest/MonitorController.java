@@ -18,7 +18,7 @@ import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.rest.resource.ReportResource;
 import pro.taskana.rest.resource.assembler.ReportAssembler;
 
@@ -38,7 +38,8 @@ public class MonitorController {
     @GetMapping(path = "/tasks-status-report")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ReportResource> getTasksStatusReport(@RequestParam(required = false) List<String> domains,
-        @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException {
+        @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException,
+        InvalidArgumentException {
         return ResponseEntity.status(HttpStatus.OK)
             .body(reportAssembler.toResource(
                 taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),

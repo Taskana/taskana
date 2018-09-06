@@ -23,13 +23,14 @@ import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.impl.report.ReportRow;
-import pro.taskana.impl.report.impl.TaskQueryItem;
-import pro.taskana.impl.report.impl.TaskStatusColumnHeader;
-import pro.taskana.impl.report.impl.TaskStatusReport;
+import pro.taskana.impl.report.TaskQueryItem;
+import pro.taskana.impl.report.TaskStatusColumnHeader;
+import pro.taskana.report.ReportRow;
+import pro.taskana.report.TaskStatusReport;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -64,7 +65,7 @@ public class ProvideTaskStatusReportAccTest {
     }
 
     @Test(expected = NotAuthorizedException.class)
-    public void testRoleCheck() throws NotAuthorizedException {
+    public void testRoleCheck() throws NotAuthorizedException, InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         taskMonitorService.createTaskStatusReportBuilder().buildReport();
     }
@@ -72,7 +73,7 @@ public class ProvideTaskStatusReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testCompleteTaskStatusReport() throws NotAuthorizedException {
+    public void testCompleteTaskStatusReport() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         // when
@@ -104,7 +105,7 @@ public class ProvideTaskStatusReportAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testCompleteTaskStatusReportAsAdmin() throws NotAuthorizedException {
+    public void testCompleteTaskStatusReportAsAdmin() throws NotAuthorizedException, InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         taskMonitorService.createTaskStatusReportBuilder().buildReport();
     }
@@ -112,7 +113,7 @@ public class ProvideTaskStatusReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testCompleteTaskStatusReportWithDomainFilter() throws NotAuthorizedException {
+    public void testCompleteTaskStatusReportWithDomainFilter() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         // when
@@ -143,7 +144,7 @@ public class ProvideTaskStatusReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testCompleteTaskStatusReportWithStateFilter() throws NotAuthorizedException {
+    public void testCompleteTaskStatusReportWithStateFilter() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         // when

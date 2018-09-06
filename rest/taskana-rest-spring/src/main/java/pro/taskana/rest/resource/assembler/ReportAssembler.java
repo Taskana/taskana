@@ -14,13 +14,14 @@ import org.springframework.stereotype.Component;
 import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.QueryItem;
-import pro.taskana.impl.report.Report;
-import pro.taskana.impl.report.ReportColumnHeader;
-import pro.taskana.impl.report.ReportRow;
-import pro.taskana.impl.report.impl.ClassificationReport;
-import pro.taskana.impl.report.impl.TaskStatusReport;
-import pro.taskana.impl.report.impl.WorkbasketReport;
+import pro.taskana.report.QueryItem;
+import pro.taskana.report.Report;
+import pro.taskana.report.ReportColumnHeader;
+import pro.taskana.report.ReportRow;
+import pro.taskana.report.TaskStatusReport;
+import pro.taskana.report.ClassificationReport;
+import pro.taskana.report.WorkbasketReport;
+
 import pro.taskana.rest.MonitorController;
 import pro.taskana.rest.resource.ReportResource;
 
@@ -31,7 +32,7 @@ import pro.taskana.rest.resource.ReportResource;
 public class ReportAssembler {
 
     public ReportResource toResource(TaskStatusReport report, List<String> domains, List<TaskState> states)
-        throws NotAuthorizedException {
+        throws NotAuthorizedException, InvalidArgumentException {
         ReportResource resource = toReportResource(report);
         resource.add(
             linkTo(methodOn(MonitorController.class).getTasksStatusReport(domains, states))

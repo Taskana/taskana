@@ -6,6 +6,8 @@ import { TaskService } from 'app/workplace/services/task.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
 import { Task } from 'app/workplace/models/task';
+import {ErrorModel} from '../../models/modal-error';
+import {ErrorModalService} from '../../services/errorModal/error-modal.service';
 
 @Component({
   selector: 'taskana-task-details',
@@ -18,10 +20,12 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
 
   private routeSubscription: Subscription;
 
+
   constructor(private route: ActivatedRoute,
     private taskService: TaskService,
     private router: Router,
-    private removeConfirmationService: RemoveConfirmationService) {
+    private removeConfirmationService: RemoveConfirmationService,
+    private errorModalService: ErrorModalService) {
   }
 
   ngOnInit() {
@@ -36,6 +40,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.taskService.getTask(id).subscribe(task => {
       this.requestInProgress = false;
       this.task = task;
+      this.taskService.selectTask(task);
+    }, err => {
+      this.errorModalService.triggerError(
+        new ErrorModel('An error occurred while fetching the task', err));
     });
   }
 

@@ -27,7 +27,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	requestInProgress = false;
 	initialized = false;
 	inputValue: string;
-	categories = new Array<string>();
+	categories: Array<string> = [];
 	classifications: Array<Classification> = [];
 	classificationsTypes: Array<string> = [];
 	classificationTypeSelected: string;
@@ -50,11 +50,11 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 			.classificationSavedTriggered()
 			.subscribe(value => {
 				this.performRequest(true);
-			})
+			});
 		this.selectedClassificationSubscription = this.categoryService.getSelectedClassificationType().subscribe(value => {
 		  this.classificationTypeSelected = value;
 			this.performRequest();
-		})
+		});
 
     this.categoriesSubscription =
         this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {

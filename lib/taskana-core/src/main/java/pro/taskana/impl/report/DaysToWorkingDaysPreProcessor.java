@@ -1,10 +1,10 @@
-package pro.taskana.impl.report.impl;
+package pro.taskana.impl.report;
 
 import java.util.List;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.DaysToWorkingDaysConverter;
-import pro.taskana.impl.report.QueryItemPreprocessor;
+import pro.taskana.report.QueryItemPreprocessor;
 
 /**
  * Uses {@link DaysToWorkingDaysConverter} to convert an &lt;Item&gt;s age to working days.

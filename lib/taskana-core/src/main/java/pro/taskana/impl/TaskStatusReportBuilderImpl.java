@@ -6,18 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskState;
-import pro.taskana.TaskStatusReportBuilder;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.impl.TaskQueryItem;
-import pro.taskana.impl.report.impl.TaskStatusReport;
+import pro.taskana.impl.report.TaskQueryItem;
 import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.report.TaskStatusReport;
 
 /**
  * The implementation of TaskStatusReportBuilder.
  */
-public class TaskStatusReportBuilderImpl implements TaskStatusReportBuilder {
+public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskStatusReportBuilderImpl.class);
     private TaskanaEngineImpl taskanaEngine;
@@ -25,7 +24,7 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReportBuilder {
     private List<String> domains;
     private List<TaskState> states;
 
-    public TaskStatusReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    TaskStatusReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         this.taskMonitorMapper = taskMonitorMapper;
     }

@@ -53,6 +53,14 @@ export class TasklistComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.taskService.getSelectedTask().subscribe(
+      task => {
+        if (!this.currentBasket) {
+          this.selectedId = task.taskId;
+          this.currentBasket = task.workbasketSummaryResource;
+          this.getTasks();
+        }
+      });
   }
 
   loadTasks(tasks: Task[]) {

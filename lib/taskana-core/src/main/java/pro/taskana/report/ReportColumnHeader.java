@@ -1,4 +1,4 @@
-package pro.taskana.impl.report;
+package pro.taskana.report;
 
 /**
  * A ReportColumnHeader is an element of a {@link Report}.

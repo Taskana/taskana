@@ -1,9 +1,9 @@
-package pro.taskana.impl.report.impl;
+package pro.taskana.impl.report;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import pro.taskana.impl.report.ReportRow;
+import pro.taskana.report.ReportRow;
 
 /**
  * The DetailedReportRow extends the {@link ReportRow}.

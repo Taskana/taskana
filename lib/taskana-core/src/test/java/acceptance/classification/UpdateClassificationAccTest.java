@@ -29,7 +29,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.impl.DaysToWorkingDaysConverter;
 import pro.taskana.impl.TaskImpl;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.jobs.JobRunner;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;

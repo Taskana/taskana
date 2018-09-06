@@ -4,10 +4,12 @@ import { Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/models/workbasket';
 import { ACTION } from 'app/models/action';
+import { ErrorModel } from '../../../models/modal-error';
 
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
 import { DomainService } from 'app/services/domain/domain.service';
+import { ErrorModalService } from '../../../services/errorModal/error-modal.service';
 
 
 @Component({
@@ -37,7 +39,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		private route: ActivatedRoute,
 		private router: Router,
 		private masterAndDetailService: MasterAndDetailService,
-		private domainService: DomainService) { }
+		private domainService: DomainService,
+    private errorModalService: ErrorModalService) { }
 
 
 
@@ -63,7 +66,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 				this.action = ACTION.COPY;
 				this.workbasket.key = undefined;
 				this.workbasketCopy = this.workbasket;
-				id = undefined
+				id = undefined;
 				this.getWorkbasketInformation(id, this.selectedId);
 			}
 
@@ -110,7 +113,10 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 				this.workbasket = workbasket;
 				this.requestInProgress = false;
 				this.checkDomainAndRedirect();
-			});
+			}, err => {
+        this.errorModalService.triggerError(
+          new ErrorModel('An error occurred while fetching the workbasket', err));
+      });
 		}
 	}
 

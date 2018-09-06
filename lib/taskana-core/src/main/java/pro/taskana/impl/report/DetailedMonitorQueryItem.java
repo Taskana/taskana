@@ -1,4 +1,4 @@
-package pro.taskana.impl.report.impl;
+package pro.taskana.impl.report;
 
 /**
  * The DetailedMonitorQueryItem extends the {@link MonitorQueryItem}.

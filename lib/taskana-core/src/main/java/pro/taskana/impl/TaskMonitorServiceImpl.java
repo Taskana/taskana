@@ -1,21 +1,20 @@
 package pro.taskana.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pro.taskana.CategoryReportBuilder;
-import pro.taskana.ClassificationReportBuilder;
 import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.report.CategoryReport;
+import pro.taskana.report.ClassificationReport;
+import pro.taskana.report.CustomFieldValueReport;
+import pro.taskana.report.TaskStatusReport;
+import pro.taskana.report.WorkbasketReport;
 
 /**
  * This is the implementation of TaskMonitorService.
  */
 public class TaskMonitorServiceImpl implements TaskMonitorService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskMonitorServiceImpl.class);
     private TaskanaEngineImpl taskanaEngineImpl;
     private TaskMonitorMapper taskMonitorMapper;
 
@@ -26,27 +25,27 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public WorkbasketReportBuilderImpl createWorkbasketReportBuilder() {
+    public WorkbasketReport.Builder createWorkbasketReportBuilder() {
         return new WorkbasketReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
     }
 
     @Override
-    public CategoryReportBuilder createCategoryReportBuilder() {
+    public CategoryReport.Builder createCategoryReportBuilder() {
         return new CategoryReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
     }
 
     @Override
-    public ClassificationReportBuilder createClassificationReportBuilder() {
+    public ClassificationReport.Builder createClassificationReportBuilder() {
         return new ClassificationReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
     }
 
     @Override
-    public CustomFieldValueReportBuilderImpl createCustomFieldValueReportBuilder(CustomField customField) {
+    public CustomFieldValueReport.Builder createCustomFieldValueReportBuilder(CustomField customField) {
         return new CustomFieldValueReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper, customField);
     }
 
     @Override
-    public TaskStatusReportBuilderImpl createTaskStatusReportBuilder() {
+    public TaskStatusReport.Builder createTaskStatusReportBuilder() {
         return new TaskStatusReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
     }
 

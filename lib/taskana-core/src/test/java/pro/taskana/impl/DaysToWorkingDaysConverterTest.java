@@ -15,7 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.impl.report.impl.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.TimeIntervalColumnHeader;
 
 /**
  * Test for the DaysToWorkingDaysConverter.

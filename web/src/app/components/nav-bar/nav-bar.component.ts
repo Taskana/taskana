@@ -81,6 +81,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
 
   logout() {
+    this.taskanaEngineService.logout().subscribe(() => {
+    })
     this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/logout';
   }
 
