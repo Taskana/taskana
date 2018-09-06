@@ -272,7 +272,7 @@ svg-icon.fa-fw > svg {
 }
 
 
-taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets {
+taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets, taskana-monitor-tasks, taskana-monitor-workbaskets, taskana-monitor-classification-tasks {
     &> .panel{
         border: none;
         box-shadow: none;
@@ -281,6 +281,15 @@ taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbas
             height: 80vh;
             max-height: 80vh;
             overflow-y: auto;
+        }
+    }
+}
+
+taskana-monitor-tasks, taskana-monitor-workbaskets, taskana-monitor-classification-tasks {
+    &> .panel {
+        &> .panel-heading {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
         }
     }
 }
@@ -321,5 +330,9 @@ li.list-group-item:hover, {
 }
 
 .center-block {
+    text-align: center;
+}
+
+.align-center {
     text-align: center;
 }

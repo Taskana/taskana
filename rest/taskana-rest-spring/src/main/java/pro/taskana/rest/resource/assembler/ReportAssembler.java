@@ -19,6 +19,9 @@ import pro.taskana.report.Report;
 import pro.taskana.report.ReportColumnHeader;
 import pro.taskana.report.ReportRow;
 import pro.taskana.report.TaskStatusReport;
+import pro.taskana.report.ClassificationReport;
+import pro.taskana.report.WorkbasketReport;
+
 import pro.taskana.rest.MonitorController;
 import pro.taskana.rest.resource.ReportResource;
 
@@ -30,14 +33,32 @@ public class ReportAssembler {
 
     public ReportResource toResource(TaskStatusReport report, List<String> domains, List<TaskState> states)
         throws NotAuthorizedException, InvalidArgumentException {
-        ReportResource resource = toResource(report);
+        ReportResource resource = toReportResource(report);
         resource.add(
-            linkTo(methodOn(MonitorController.class).getTaskStatusReport(domains, states))
+            linkTo(methodOn(MonitorController.class).getTasksStatusReport(domains, states))
                 .withSelfRel().expand());
         return resource;
     }
 
-    private <I extends QueryItem, H extends ReportColumnHeader<? super I>> ReportResource toResource(
+    public ReportResource toResource(ClassificationReport report)
+        throws NotAuthorizedException, InvalidArgumentException {
+        ReportResource resource = toReportResource(report);
+        resource.add(
+            linkTo(methodOn(MonitorController.class).getTasksClassificationReport())
+                .withSelfRel().expand());
+        return resource;
+    }
+
+    public ReportResource toResource(WorkbasketReport report, int daysInPast, List<TaskState> states)
+        throws NotAuthorizedException, InvalidArgumentException {
+        ReportResource resource = toReportResource(report);
+        resource.add(
+            linkTo(methodOn(MonitorController.class).getTasksWorkbasketReport(daysInPast, states))
+                .withSelfRel().expand());
+        return resource;
+    }
+
+    private <I extends QueryItem, H extends ReportColumnHeader<? super I>> ReportResource toReportResource(
         Report<I, H> report) {
         String[] header = report.getColumnHeaders()
             .stream()

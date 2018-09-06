@@ -1,22 +1,28 @@
-<div class="row" *ngIf="isDataAvailable">
+<div class="row report" *ngIf="reportData">
   <div class="col-sm-12" style="margin-bottom: 10px">
-    <h4>{{meta.name}} ({{meta.date | date : 'dd.MM.yyyy HH:mm:ss'}})</h4>
-    <table class="table table-responsive table-condensed">
-      <tr>
-        <th>{{meta.rowDesc}}</th>
-        <th *ngFor="let header of meta.header">{{header}}</th>
-        <th>{{meta.totalDesc}}</th>
-      </tr>
-      <tr *ngFor="let row of rows | mapToIterable | orderBy:['key']">
-        <td>{{row.key}}</td>
-        <td *ngFor="let header of meta.header">{{row.val.cells[header]}}</td>
-        <th>{{row.val.total}}</th>
-      </tr>
-      <tr>
-        <th>{{meta.totalDesc}}</th>
-        <th *ngFor="let header of meta.header">{{sumRow.cells[header]}}</th>
-        <th>{{sumRow.total}}</th>
-      </tr>
+    <table class="table table-responsive table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>{{reportData.meta.rowDesc}}</th>
+          <th class="align-center" *ngFor="let header of reportData.meta.header">
+            {{header}}</th>
+          <th class="align-center">{{reportData.meta.totalDesc}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of reportData.rows | mapToIterable | orderBy:['key']">
+          <td>{{row.key}}</td>
+          <td *ngFor="let header of reportData.meta.header" class="align-center">{{row.val.cells[header]}}</td>
+          <th class="align-center">{{row.val.total}}</th>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>{{reportData.meta.totalDesc}}</th>
+          <th *ngFor="let header of reportData.meta.header" class="align-center">{{reportData.sumRow.cells[header]}}</th>
+          <th class="align-center">{{reportData.sumRow.total}}</th>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </div>

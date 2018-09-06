@@ -603,21 +603,37 @@ include::../../../{snippets}/GetTaskStatusReportDocTest/http-response.adoc[]
 
 include::../../../{snippets}/GetTaskStatusReportDocTest/response-fields.adoc[]
 
-=== Get a count of tasks sorted by state
+=== Get a tasks workbasket report
 
 A `GET` request is used to get the number of tasks sorted by state.
 
 ==== Example Request
 
-include::../../../{snippets}/GetCountByStateDocTest/http-request.adoc[]
+include::../../../{snippets}/GetTaskWorkbasketReportDocTest/http-request.adoc[]
 
 ==== Example Response
 
-include::../../../{snippets}/GetCountByStateDocTest/http-response.adoc[]
+include::../../../{snippets}/GetTaskWorkbasketReportDocTest/http-response.adoc[]
 
 ==== Response Structure
 
-include::../../../{snippets}/GetCountByStateDocTest/response-fields.adoc[]
+Same as task status report
+
+=== Get a tasks classification report
+
+A `GET` request is used to get the number of tasks sorted by state.
+
+==== Example Request
+
+include::../../../{snippets}/GetTaskClassificationReportDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/GetTaskClassificationReportDocTest/http-response.adoc[]
+
+==== Response Structure
+
+Same as task status report
 
 == Other Resources (using the TaskanaEngineController)
 
