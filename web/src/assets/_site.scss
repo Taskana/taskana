@@ -1,6 +1,4 @@
-.placeholder {
-    margin-bottom: 20px;
-}
+
 
 .placeholder img {
     display: inline-block;
@@ -201,6 +199,10 @@ svg-icon.fa-fw > svg {
     vertical-align: middle;
 }
 
+body{
+    overflow-y: hidden;
+}
+
 .table-center > tbody > tr > td {
     text-align: center;
     vertical-align: middle;
@@ -271,16 +273,46 @@ svg-icon.fa-fw > svg {
     margin-top: 4px;
 }
 
+.container {
+    @media (min-width: 1200px){
+        width: 100%;
+    }
+}
 
-taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets {
-    &> .panel{
+taskana-access-items-management, taskana-classification-details {
+    & .panel{
         border: none;
         box-shadow: none;
         margin-bottom: 0px;
         &> .panel-body {
-            height: 80vh;
-            max-height: 80vh;
+            height: calc(100vh - 108px);
+            max-height: calc(100vh - 108px);
             overflow-y: auto;
+        }
+    }
+}
+
+
+taskana-workbasket-details{
+    & .panel{
+        border: none;
+        box-shadow: none;
+        margin-bottom: 0px;
+        &> .panel-body {
+            height: calc(100vh - 160px);
+            max-height: calc(100vh - 160px);
+            overflow-y: auto;
+        }
+    }
+}
+
+
+
+taskana-monitor-tasks, taskana-monitor-workbaskets, taskana-monitor-classification-tasks, taskana-access-items-management {
+    & .panel {
+        &> .panel-heading {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
         }
     }
 }
@@ -322,4 +354,12 @@ li.list-group-item:hover, {
 
 .center-block {
     text-align: center;
+}
+
+.btn.rounded {
+    border-radius: 50%;
+    background-color: transparent;    
+    &:focus, &:active:focus {
+        outline: none;
+    }
 }

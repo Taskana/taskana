@@ -23,7 +23,9 @@ import { SelectedRouteService } from './services/selected-route/selected-route';
 import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 export const configureTests = (configure: (testBed: TestBed) => void) => {
     const testBed = getTestBed();
@@ -36,7 +38,7 @@ export const configureTests = (configure: (testBed: TestBed) => void) => {
 
     configure(testBed);
     testBed.configureTestingModule({
-        imports: [BrowserAnimationsModule, SharedModule],
+        imports: [BrowserAnimationsModule, SharedModule, FormsModule, ReactiveFormsModule, HttpClientModule, AngularSvgIconModule],
         providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
         { provide: DomainService, useClass: DomainServiceMock }, CustomFieldsService, RemoveConfirmationService,
             AlertService, ErrorModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]

@@ -7,6 +7,7 @@ import { MasterAndDetailComponent } from 'app/shared/master-and-detail/master-an
 import { ClassificationListComponent } from 'app/administration/classification/master/list/classification-list.component';
 import { ClassificationDetailsComponent } from 'app/administration/classification/details/classification-details.component';
 import { DomainGuard } from 'app/guards/domain-guard';
+import { AccessItemsManagementComponent } from './access-items-management/access-items-management.component';
 
 
 const routes: Routes = [
@@ -35,7 +36,7 @@ const routes: Routes = [
     {
         path: 'classifications',
         component: MasterAndDetailComponent,
-         canActivate: [DomainGuard],
+        canActivate: [DomainGuard],
         children: [
             {
                 path: '',
@@ -48,6 +49,11 @@ const routes: Routes = [
                 outlet: 'detail'
             }
         ]
+    },
+    {
+        path: 'access-items-management',
+        component: AccessItemsManagementComponent,
+        canActivate: [DomainGuard]
     },
     {
         path: '',

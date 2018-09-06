@@ -16,9 +16,9 @@ import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
 
 /**
- * WorkbasketAccessItemQuery for generating dynamic SQL.
+ * WorkbasketAccessItemQueryImpl for generating dynamic SQL.
  *
- * @author bbr
+ * @author mmr
  */
 public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery {
 

@@ -4,7 +4,7 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 /**
- * WorkbasketAccessItem Entity.
+ * WorkbasketAccessItemImpl Entity.
  */
 public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
