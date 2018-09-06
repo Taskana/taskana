@@ -1,3 +1,5 @@
 export enum ReportType {
-  WorkbasketStatus
+  TasksStatus,
+  WorkbasketStatus,
+  ClassificationStatus
 }

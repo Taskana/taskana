@@ -45,9 +45,8 @@ public class MonitorControllerRestDocumentation {
     
     private MockMvc mockMvc;
     
-    private FieldDescriptor[] taskStatusReportFieldDescriptors;
-    private FieldDescriptor[] countByStateFieldDescriptors;
-    
+    private FieldDescriptor[] taskReportFieldDescriptors;
+
     @Before
     public void setUp() {
         document("{methodName}",
@@ -62,7 +61,7 @@ public class MonitorControllerRestDocumentation {
                         .withRequestDefaults(prettyPrint()))
                         .build();
         
-        taskStatusReportFieldDescriptors = new FieldDescriptor[] {
+        taskReportFieldDescriptors = new FieldDescriptor[] {
                 fieldWithPath("meta").description("Object holding metainfo on the report"),
                 fieldWithPath("meta.name").description("Name of the report"),
                 fieldWithPath("meta.date").description("Date of the report creation"),
@@ -77,31 +76,37 @@ public class MonitorControllerRestDocumentation {
                 fieldWithPath("sumRow.total").description("Total number of tasks"),
                 fieldWithPath("_links.self.href").ignored()
         };
-        
-        countByStateFieldDescriptors = new FieldDescriptor[] {
-                fieldWithPath("[]..state").description("The state the tasks are in"),
-                fieldWithPath("[]..counter").description("Number of tasks in the corresponding state")
-        };
     }
     
     @Test
     public void getTaskStatusReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port + "/v1/monitor/taskStatusReport")
+                .get("http://127.0.0.1:" + port + "/v1/monitor/tasks-status-report")
                 .header("Authorization", "Basic YWRtaW46YWRtaW4="))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(MockMvcRestDocumentation.document("GetTaskStatusReportDocTest",
-                responseFields(taskStatusReportFieldDescriptors)));
+                responseFields(taskReportFieldDescriptors)));
     }
     
     @Test
-    public void getCountByState() throws Exception {
+    public void tasksWorkbasketReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port + "/v1/monitor/countByState?states=READY,CLAIMED,COMPLETED")
+                .get("http://127.0.0.1:" + port + "/v1/monitor/tasks-workbasket-report?daysInPast=4&states=READY,CLAIMED,COMPLETED")
                 .accept("application/hal+json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", "Basic YWRtaW46YWRtaW4="))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetCountByStateDocTest",
-                responseFields(countByStateFieldDescriptors)));
+        .andDo(MockMvcRestDocumentation.document("GetTaskWorkbasketReportDocTest",
+                responseFields(taskReportFieldDescriptors)));
+    }
+
+    @Test
+    public void tasksClassificationReport() throws Exception {
+        this.mockMvc.perform(RestDocumentationRequestBuilders
+            .get("http://127.0.0.1:" + port + "/v1/monitor/tasks-classification-report")
+            .accept("application/hal+json")
+            .header("Authorization", "Basic YWRtaW46YWRtaW4="))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcRestDocumentation.document("GetTaskClassificationReportDocTest",
+                responseFields(taskReportFieldDescriptors)));
     }
 }
