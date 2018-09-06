@@ -48,7 +48,8 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1", "admin"})
     @Test(expected = TaskNotFoundException.class)
-    public void testDeleteSingleTask() throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    public void testDeleteSingleTask()
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000036");
@@ -92,7 +93,8 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test(expected = TaskNotFoundException.class)
-    public void testBulkDeleteTask() throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
+    public void testBulkDeleteTask()
+        throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         ArrayList<String> taskIdList = new ArrayList<>();

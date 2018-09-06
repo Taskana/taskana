@@ -23,6 +23,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     private String orgLevel2;
     private String orgLevel3;
     private String orgLevel4;
+    private boolean markedForDeletion;
 
     WorkbasketSummaryImpl() {
     }
@@ -220,6 +221,15 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
 
     public void setOrgLevel4(String orgLevel4) {
         this.orgLevel4 = orgLevel4;
+    }
+
+    @Override
+    public boolean isMarkedForDeletion() {
+        return markedForDeletion;
+    }
+
+    public void setMarkedForDeletion(boolean markedForDeletion) {
+        this.markedForDeletion = markedForDeletion;
     }
 
     @Override

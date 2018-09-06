@@ -19,7 +19,6 @@ import java.util.Collections;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -222,7 +221,7 @@ public class TaskControllerIntTest {
     @Test
     public void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
         resetDb(); // required because ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
-                   // tasks and this test depends on the tasks as they are in sampledata
+        // tasks and this test depends on the tasks as they are in sampledata
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -262,7 +261,7 @@ public class TaskControllerIntTest {
     @Test
     public void testGetQueryByPorSecondPageSortedByType() {
         resetDb(); // required because ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
-                   // tasks and this test depends on the tasks as they are in sampledata
+        // tasks and this test depends on the tasks as they are in sampledata
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -292,7 +291,7 @@ public class TaskControllerIntTest {
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
     }
-    
+
     @Test
     public void testGetTaskWithAttachments() throws IOException {
         URL url = new URL("http://127.0.0.1:" + port + "/v1/tasks/TKI:000000000000000000000000000000000002");
@@ -300,7 +299,7 @@ public class TaskControllerIntTest {
         con.setRequestMethod("GET");
         con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
         assertEquals(200, con.getResponseCode());
-        
+
         BufferedReader in = new BufferedReader(
             new InputStreamReader(con.getInputStream()));
         String inputLine;
@@ -314,7 +313,8 @@ public class TaskControllerIntTest {
         assertFalse(response.contains("\"attachments\":[]"));
         int start = response.indexOf("created", response.indexOf("created") + 1);
         String createdString = response.substring(start + 10, start + 30);
-        assertTrue(createdString.matches("\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)"));
+        assertTrue(
+            createdString.matches("\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)"));
     }
 
     @Test
@@ -431,10 +431,11 @@ public class TaskControllerIntTest {
         assertEquals(400, con.getResponseCode());
         con.disconnect();
 
-        taskToCreateJson = "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
-            +
-            "\"workbasketSummaryResource\":{\"workbasketId\":\"\"}," +
-            "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+        taskToCreateJson =
+            "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
+                +
+                "\"workbasketSummaryResource\":{\"workbasketId\":\"\"}," +
+                "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
         url = new URL("http://127.0.0.1:" + port + "/v1/tasks");
         con = (HttpURLConnection) url.openConnection();
@@ -466,7 +467,7 @@ public class TaskControllerIntTest {
         // converter.setSupportedMediaTypes(ImmutableList.of(MediaTypes.HAL_JSON));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 

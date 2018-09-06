@@ -3,11 +3,13 @@ package pro.taskana.impl;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.Workbasket;
@@ -28,7 +30,6 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.DistributionTargetMapper;
-import pro.taskana.mappings.TaskMapper;
 import pro.taskana.mappings.WorkbasketAccessMapper;
 import pro.taskana.mappings.WorkbasketMapper;
 import pro.taskana.security.CurrentUserContext;
@@ -729,10 +730,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public void deleteWorkbasket(String workbasketId)
+    public boolean deleteWorkbasket(String workbasketId)
         throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException {
         LOGGER.debug("entry to deleteWorkbasket(workbasketId = {})", workbasketId);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+        HashMap response = new HashMap();
         try {
             taskanaEngine.openConnection();
             if (workbasketId == null || workbasketId.isEmpty()) {
@@ -740,26 +742,58 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             }
 
             // check if the workbasket does exist and is empty (Task)
-            Workbasket wb = this.getWorkbasket(workbasketId);
+            this.getWorkbasket(workbasketId);
 
-            long numTasksInWorkbasket = taskanaEngine.getSqlSession()
-                .getMapper(TaskMapper.class)
-                .countTasksInWorkbasket(workbasketId);
+            long numTasksInWorkbasket = taskanaEngine.getTaskService()
+                .createTaskQuery()
+                .workbasketIdIn(workbasketId)
+                .stateNotIn(
+                    TaskState.COMPLETED)
+                .count();
 
             if (numTasksInWorkbasket > 0) {
                 throw new WorkbasketInUseException(
-                    "Workbasket is used on tasks and can´t be deleted. WorkbasketId = \"" + workbasketId
-                        + "\" and WorkbasketKey = \"" + wb.getKey() + "\" in domain = \"" + wb.getDomain() + "\"");
+                    "Workbasket " + workbasketId + " contains non-completed tasks and can´t be marked for deletion.");
             }
 
-            // delete workbasket and sub-tables
-            distributionTargetMapper.deleteAllDistributionTargetsBySourceId(wb.getId());
-            distributionTargetMapper.deleteAllDistributionTargetsByTargetId(wb.getId());
-            workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(wb.getId());
-            workbasketMapper.delete(workbasketId);
+            numTasksInWorkbasket = taskanaEngine.getTaskService()
+                .createTaskQuery()
+                .workbasketIdIn(workbasketId)
+                .count();
+
+            if (numTasksInWorkbasket == 0) {
+                workbasketMapper.delete(workbasketId);
+                return false;
+            } else {
+                markWorkbasketForDeletion(workbasketId);
+                return true;
+            }
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from deleteWorkbasket(workbasketId = {})", workbasketId);
+        }
+    }
+
+    private void markWorkbasketForDeletion(String workbasketId)
+        throws NotAuthorizedException, InvalidArgumentException {
+        LOGGER.debug("entry to markWorkbasketForDeletion(workbasketId = {})", workbasketId);
+        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+        try {
+            taskanaEngine.openConnection();
+
+            if (workbasketId == null || workbasketId.isEmpty()) {
+                throw new InvalidArgumentException(
+                    "The WorkbasketId can´t be NULL or EMPTY for markWorkbasketForDeletion()");
+            }
+            WorkbasketImpl workbasket = workbasketMapper.findById(workbasketId);
+            workbasket.setMarkedForDeletion(true);
+            workbasketMapper.update(workbasket);
+            distributionTargetMapper.deleteAllDistributionTargetsBySourceId(workbasketId);
+            distributionTargetMapper.deleteAllDistributionTargetsByTargetId(workbasketId);
+            workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(workbasketId);
+        } finally {
+            taskanaEngine.returnConnection();
+            LOGGER.debug("exit from markWorkbasketForDeletion(workbasketId = {}).", workbasketId);
         }
     }
 

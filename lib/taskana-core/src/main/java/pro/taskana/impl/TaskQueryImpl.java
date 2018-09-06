@@ -2,6 +2,7 @@ package pro.taskana.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.ibatis.exceptions.PersistenceException;
@@ -420,7 +421,7 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery stateNotIn(TaskState... states) {
         // No benefit in introducing a new variable
-        List<TaskState> stateIn = Arrays.asList(TaskState.values());
+        List<TaskState> stateIn = new LinkedList<TaskState>(Arrays.asList(TaskState.values()));
         for (TaskState state : states) {
             stateIn.remove(state);
         }

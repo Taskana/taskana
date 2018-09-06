@@ -1,7 +1,7 @@
 @import './src/assets/_variables';
 
 .navbar.main:before  {
-    @include degraded-bar(right, 100%, 5px)
+    @include degraded-bar(right, 100%, 3px)
 }
 
 .navbar-inverse {
@@ -16,7 +16,7 @@
     &.logout{
         font-size: 20px;
     }
-    
+
 }
 button.navbar-toggle:hover > span{
     color:$aquamarine;
@@ -54,7 +54,8 @@ h2.navbar-brand{
     bottom: 0;
     top: 0;
     z-index: 990;
-
+    background-color: grey;
+    opacity: 0.5;
 }
 
 .domain-form {
@@ -84,7 +85,7 @@ h2.navbar-brand{
     bottom: 5px;
     font-size: 12px;
 }
- 
+
 /*
  * All side bar links styling.
 */
@@ -111,9 +112,9 @@ h2.navbar-brand{
 }
 
 .navbar {
-    height: 50px;
+    height: 52px;
     margin-bottom: 0px;
-  
+
 }
 
 .menu,.submenu > span {
@@ -129,7 +130,7 @@ h2.navbar-brand{
     padding-left: 12px;
     color: $grey;
     outline: none;
-    
+
 }
 .menu.selected,.submenu.selected {
     background-color: transparent;
@@ -140,7 +141,7 @@ h2.navbar-brand{
     }
 }
 
-.menu > .submenu{   
+.menu > .submenu{
     margin-left: 30px;
 }
 

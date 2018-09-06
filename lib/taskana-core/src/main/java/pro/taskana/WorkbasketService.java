@@ -326,6 +326,7 @@ public interface WorkbasketService {
      *
      * @param workbasketId
      *            Id of the workbasket which should be deleted.
+     * @return true if the workbasket is marked for deletion. False in another case.
      * @throws NotAuthorizedException
      *             if the current user got no permissions for this interaction.
      * @throws WorkbasketNotFoundException
@@ -335,7 +336,7 @@ public interface WorkbasketService {
      * @throws InvalidArgumentException
      *             if the workbasketId is NULL or EMPTY
      */
-    void deleteWorkbasket(String workbasketId)
+    boolean deleteWorkbasket(String workbasketId)
         throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException;
 
     /**

@@ -3,6 +3,9 @@ package acceptance.jobs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,9 +25,6 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.jobs.TaskCleanupJob;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Acceptance test for all "jobs tasks runner" scenarios.
@@ -62,7 +62,9 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
 
         taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
-        List<TaskSummary> tasks = taskService.createTaskQuery().parentBusinessProcessIdIn("DOC_0000000000000000006").list();
+        List<TaskSummary> tasks = taskService.createTaskQuery()
+            .parentBusinessProcessIdIn("DOC_0000000000000000006")
+            .list();
         List<String> ids = new ArrayList<>();
         tasks.forEach(item -> {
             if (item.getCompleted() == null) {

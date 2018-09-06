@@ -29,31 +29,31 @@ public class CompleteTaskAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(
-            userName = "user_1_1",
-            groupNames = {"group_1"})
+        userName = "user_1_1",
+        groupNames = {"group_1"})
     @Test
     public void testCompleteTask()
-            throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000001");
         assertNotNull(completedTask);
     }
 
     @WithAccessId(
-            userName = "user_1_1",
-            groupNames = {"group_1"})
+        userName = "user_1_1",
+        groupNames = {"group_1"})
     @Test
-    public void testCompleteTaskTwice() throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
+    public void testCompleteTaskTwice()
+        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000002");
         Task completedTask2 = taskService.completeTask("TKI:000000000000000000000000000000000002");
         assertEquals(completedTask, completedTask2);
     }
 
-
     @WithAccessId(
-            userName = "user_1_1",
-            groupNames = {"group_1"})
+        userName = "user_1_1",
+        groupNames = {"group_1"})
     @Test
     public void testCompleteTaskThrowsErrors() {
         TaskService taskService = taskanaEngine.getTaskService();

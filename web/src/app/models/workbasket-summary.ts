@@ -16,6 +16,7 @@ export class WorkbasketSummary {
         public orgLevel2: string = undefined,
         public orgLevel3: string = undefined,
         public orgLevel4: string = undefined,
+        public markedForDeletion: boolean = false,
         public _links: Links = undefined,
         public page: Page = undefined) {
     }

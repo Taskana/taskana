@@ -13,8 +13,8 @@ import { tap } from 'rxjs/operators';
 export class HttpClientInterceptor implements HttpInterceptor {
 
 	constructor(
-		private errorModalService: ErrorModalService,
-		private requestInProgressService: RequestInProgressService) {
+    private errorModalService: ErrorModalService,
+    private requestInProgressService: RequestInProgressService) {
 
 	}
 
@@ -30,7 +30,10 @@ export class HttpClientInterceptor implements HttpInterceptor {
 					new ErrorModel('You have no access to this resource ', error));
 			} else if (error instanceof HttpErrorResponse && (error.status === 404) && error.url.indexOf('environment-information.json')) {
 				// ignore this error message
-			} else {
+			} if (error.status === 400 && error.error.indexOf('mark')) {
+        this.errorModalService.triggerError(
+          new ErrorModel('There was error marking workbasket for deletion', error.error))
+      } else {
 				this.errorModalService.triggerError(
 					new ErrorModel('There was error, please contact with your administrator ', error))
 			}

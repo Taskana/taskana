@@ -56,7 +56,7 @@ public class TaskanaEngineConfiguration {
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
     private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";
-    protected static final String TASKANA_SCHEMA_VERSION = "1.0.2"; // must match the VERSION value in table
+    protected static final String TASKANA_SCHEMA_VERSION = "1.0.4"; // must match the VERSION value in table
     // TASKANA_SCHEMA_VERSION
     private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
@@ -204,13 +204,17 @@ public class TaskanaEngineConfiguration {
             }
         }
 
-        String taskCleanupJobAllCompletedSameParentBusinessProperty = props.getProperty(TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENTE_BUSINESS);
-        if (taskCleanupJobAllCompletedSameParentBusinessProperty != null && !taskCleanupJobAllCompletedSameParentBusinessProperty.isEmpty()) {
+        String taskCleanupJobAllCompletedSameParentBusinessProperty = props.getProperty(
+            TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENTE_BUSINESS);
+        if (taskCleanupJobAllCompletedSameParentBusinessProperty != null
+            && !taskCleanupJobAllCompletedSameParentBusinessProperty.isEmpty()) {
             try {
-                taskCleanupJobAllCompletedSameParentBusiness = Boolean.parseBoolean(taskCleanupJobAllCompletedSameParentBusinessProperty);
+                taskCleanupJobAllCompletedSameParentBusiness = Boolean.parseBoolean(
+                    taskCleanupJobAllCompletedSameParentBusinessProperty);
             } catch (Exception e) {
-                LOGGER.warn("Could not parse taskCleanupJobAllCompletedSameParentBusinessProperty ({}). Using default. Exception: {} ",
-                        taskCleanupJobAllCompletedSameParentBusinessProperty, e.getMessage());
+                LOGGER.warn(
+                    "Could not parse taskCleanupJobAllCompletedSameParentBusinessProperty ({}). Using default. Exception: {} ",
+                    taskCleanupJobAllCompletedSameParentBusinessProperty, e.getMessage());
             }
         }
 
@@ -219,9 +223,9 @@ public class TaskanaEngineConfiguration {
         LOGGER.debug("TaskCleanupJob configuration: first run at {}", taskCleanupJobFirstRun);
         LOGGER.debug("TaskCleanupJob configuration: runs every {}", taskCleanupJobRunEvery);
         LOGGER.debug("TaskCleanupJob configuration: minimum age of tasks to be cleanup up is {}",
-                taskCleanupJobMinimumAge);
+            taskCleanupJobMinimumAge);
         LOGGER.debug("TaskCleanupJob configuration: all completed task with the same parent business property id {}",
-                taskCleanupJobAllCompletedSameParentBusiness);
+            taskCleanupJobAllCompletedSameParentBusiness);
     }
 
     private void initDomains(Properties props) {
@@ -253,7 +257,8 @@ public class TaskanaEngineConfiguration {
             List<String> classificationCategoriesAux;
             for (String type : classificationTypes) {
                 classificationCategoriesAux = new ArrayList<>();
-                classificationCategoryNames = props.getProperty(TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY + "." + type.toLowerCase());
+                classificationCategoryNames = props.getProperty(
+                    TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY + "." + type.toLowerCase());
                 if (classificationCategoryNames != null && !classificationCategoryNames.isEmpty()) {
                     st = new StringTokenizer(classificationCategoryNames, ",");
                     while (st.hasMoreTokens()) {
@@ -465,6 +470,7 @@ public class TaskanaEngineConfiguration {
     public List<String> getClassificationCategoriesByType(String type) {
         return classificationCategoriesByTypeMap.get(type);
     }
+
     public void setClassificationCategoriesByType(Map<String, List<String>> classificationCategoriesByType) {
         this.classificationCategoriesByTypeMap = classificationCategoriesByType;
     }
