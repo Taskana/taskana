@@ -43,7 +43,7 @@ public class WorkbasketReportBuilderImpl
     @Override
     public WorkbasketReport buildReport() throws InvalidArgumentException, NotAuthorizedException {
         LOGGER.debug("entry to buildReport(), this = {}", this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR);
+        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
         try {
             this.taskanaEngine.openConnection();
             WorkbasketReport report = new WorkbasketReport(this.columnHeaders);

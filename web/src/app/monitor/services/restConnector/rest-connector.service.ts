@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
-import { State } from 'app/models/state';
-import { WorkbasketCounter } from 'app/monitor/models/workbasket-counter';
+import { ReportData } from '../../models/report-data';
+import { ChartData } from 'app/monitor/models/chart-data';
 
 @Injectable()
 export class RestConnectorService {
@@ -11,18 +11,44 @@ export class RestConnectorService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getTaskStatistics(): Observable<State[]> {
-    return this.httpClient.get<Array<State>>(environment.taskanaRestUrl + '/v1/monitor/countByState?states=READY,CLAIMED,COMPLETED')
+  getTaskStatusReport(): Observable<ReportData> {
+    return this.httpClient.get<ReportData>(environment.taskanaRestUrl + '/v1/monitor/tasks-status-report?states=READY,CLAIMED,COMPLETED')
   }
 
-
-  getWorkbasketStatistics(): Observable<WorkbasketCounter> {
-    return this.httpClient.get<WorkbasketCounter>(environment.taskanaRestUrl
-      + '/v1/monitor/taskcountByWorkbasketDaysAndState?daysInPast=5&states=READY,CLAIMED,COMPLETED')
+  getWorkbasketStatistics(): Observable<ReportData> {
+    return this.httpClient.get<ReportData>(environment.taskanaRestUrl
+      + '/v1/monitor/tasks-workbasket-report?daysInPast=5&states=READY,CLAIMED,COMPLETED');
   }
 
-  getTaskStatusReport(): Observable<Object> {
-    return this.httpClient.get(environment.taskanaRestUrl + '/v1/monitor/taskStatusReport')
+  getClassificationTasksReport(): Observable<ReportData> {
+    return this.httpClient.get<ReportData>(environment.taskanaRestUrl
+      + '/v1/monitor/tasks-classification-report');
   }
 
+  getChartData(source: ReportData): Array<ChartData> {
+    const result = new Array<ChartData>();
+
+    Object.keys(source.rows).forEach(key => {
+      const rowData = new ChartData();
+
+      rowData.label = key;
+      rowData.data = new Array<number>();
+
+      source.meta.header.forEach((headerValue: string) => {
+        rowData.data.push(source.rows[key].cells[headerValue]);
+      })
+
+      result.push(rowData)
+    })
+
+    return result;
+  }
+
+  getChartHeaders(source: ReportData): Array<string> {
+    const result = new Array<string>();
+    source.meta.header.forEach((header: string) => {
+      result.push(header);
+    })
+    return result;
+  }
 }

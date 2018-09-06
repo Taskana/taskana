@@ -3,9 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 
-import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
-import { MonitorGuard } from 'app/guards/monitor-guard';
-import { UserGuard } from 'app/guards/user-guard';
+import { BusinessAdminGuard } from './guards/business-admin-guard';
+import { MonitorGuard } from './guards/monitor-guard';
+import { UserGuard } from './guards/user-guard';
 import { NoAccessComponent } from './components/no-access/no-access.component';
 
 const appRoutes: Routes = [

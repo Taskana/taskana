@@ -43,7 +43,7 @@ public class ClassificationReportBuilderImpl
     @Override
     public ClassificationReport buildReport() throws InvalidArgumentException, NotAuthorizedException {
         LOGGER.debug("entry to buildReport(), this = {}", this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR);
+        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
         try {
             this.taskanaEngine.openConnection();
             ClassificationReport report = new ClassificationReport(this.columnHeaders);
@@ -62,7 +62,7 @@ public class ClassificationReportBuilderImpl
     @Override
     public DetailedClassificationReport buildDetailedReport() throws InvalidArgumentException, NotAuthorizedException {
         LOGGER.debug("entry to buildDetailedReport(), this = {}", this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR);
+        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
         try {
             this.taskanaEngine.openConnection();
             DetailedClassificationReport report = new DetailedClassificationReport(this.columnHeaders);

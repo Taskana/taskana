@@ -7,4 +7,11 @@ export class TaskanaDate {
     const datePipe = new DatePipe(dateLocale);
     return datePipe.transform(Date.now(), dateFormat) + 'Z';
   }
+
+  public static convertSimpleDate(date: Date): string {
+    const dateFormat = 'yyyy-MM-dd';
+    const dateLocale = 'en-US';
+    const datePipe = new DatePipe(dateLocale);
+    return datePipe.transform(date, dateFormat);
+  }
 }
