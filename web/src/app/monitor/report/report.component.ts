@@ -23,8 +23,4 @@ export class ReportComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
-  getClassificationHeadersText(header: string): string {
-    return this.restConnector.parseClassificationHeadersText(header, this.type === ReportType.WorkbasketStatus ? true : false);
-  }
 }

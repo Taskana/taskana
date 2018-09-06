@@ -32,7 +32,7 @@ export class WorkbasketComponent implements OnInit {
   ngOnInit() {
     this.restConnectorService.getWorkbasketStatistics().subscribe((data: ReportData) => {
       this.reportData = data;
-      this.lineChartLabels = this.restConnectorService.getChartHeaders(data, true);
+      this.lineChartLabels = this.restConnectorService.getChartHeaders(data);
       this.lineChartData = this.restConnectorService.getChartData(data);
     })
   }

@@ -19,6 +19,8 @@ import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.monitor.ClassificationTimeIntervalColumnHeader;
+import pro.taskana.monitor.WorkbasketTimeIntervalColumnHeader;
 import pro.taskana.rest.resource.ReportResource;
 import pro.taskana.rest.resource.assembler.ReportAssembler;
 
@@ -74,14 +76,14 @@ public class MonitorController {
 
     private List<TimeIntervalColumnHeader> getTaskClassificationTimeInterval() {
         return Stream.concat(Stream.concat(
-            Stream.of(new TimeIntervalColumnHeader(Integer.MIN_VALUE, -10),
-                new TimeIntervalColumnHeader(-10, -5)
+            Stream.of(new ClassificationTimeIntervalColumnHeader(Integer.MIN_VALUE, -10),
+                new ClassificationTimeIntervalColumnHeader(-10, -5)
             ),
             Stream.of(-4, -3, -2, -1, 0, 1, 2, 3, 4)
-                .map(TimeIntervalColumnHeader::new)
+                .map(ClassificationTimeIntervalColumnHeader::new)
             ),
-            Stream.of(new TimeIntervalColumnHeader(5, 10),
-                new TimeIntervalColumnHeader(10, Integer.MAX_VALUE)
+            Stream.of(new ClassificationTimeIntervalColumnHeader(5, 10),
+                new ClassificationTimeIntervalColumnHeader(10, Integer.MAX_VALUE)
             ))
             .collect(Collectors.toList());
     }
@@ -90,7 +92,7 @@ public class MonitorController {
 
         List<TimeIntervalColumnHeader> columnHeaders = new ArrayList<>();
         for (int i = 0; i <= daysInPast; i++) {
-            columnHeaders.add(new TimeIntervalColumnHeader(i - daysInPast));
+            columnHeaders.add(new WorkbasketTimeIntervalColumnHeader(i - daysInPast));
         }
         return columnHeaders;
     }

@@ -5,7 +5,7 @@
         <tr>
           <th>{{reportData.meta.rowDesc}}</th>
           <th class="align-center" *ngFor="let header of reportData.meta.header">
-            {{type === reportType.TasksStatus? header: getClassificationHeadersText(header)}}</th>
+            {{header}}</th>
           <th class="align-center">{{reportData.meta.totalDesc}}</th>
         </tr>
       </thead>
