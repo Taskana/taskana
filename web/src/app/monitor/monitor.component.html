@@ -1,10 +1,27 @@
 <div class="container">
-    <tabset #staticTabs>
-        <tab heading="Tasks">
-            <taskana-tasks></taskana-tasks>
-        </tab>
-        <tab heading="Workbaskets">
-            <taskana-workbasket></taskana-workbasket>
-        </tab>
-    </tabset>
+    <ul class="nav nav-tabs" role="tablist">
+        <li>
+            <a style="display: none"></a>
+        </li>
+        <li role="presentation" class="active">
+            <a href="#tasks-tab" data-toggle="tab" aria-controls="Tasks" role="tab" aria-expanded="true">Tasks</a>
+        </li>
+        <li role="presentation">
+            <a href="#workbaskets-tab" data-toggle="tab" aria-controls="Workbaskets" role="tab" aria-expanded="true">Workbaskets</a>
+        </li>
+        <li>
+            <a href="#classifications-tab" data-toggle="tab" aria-controls="Classifications" role="tab" data-toggle="tab" aria-expanded="true">Classifications</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="tasks-tab">
+            <taskana-monitor-tasks></taskana-monitor-tasks>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="workbaskets-tab">
+            <taskana-monitor-workbaskets></taskana-monitor-workbaskets>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="classifications-tab">
+            <taskana-monitor-classification-tasks></taskana-monitor-classification-tasks>
+        </div>
+    </div>
 </div>

@@ -7,12 +7,13 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MonitorRoutingModule } from './monitor-routing.module';
-import { SharedModule } from 'app/shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
 
-import { TasksComponent } from './tasks/tasks.component';
-import { WorkbasketComponent } from './workbasket/workbasket.component';
 import { ReportComponent } from './report/report.component';
 import { MonitorComponent } from './monitor.component';
+import { TasksComponent } from './tasks/tasks.component';
+import { WorkbasketComponent } from './workbasket/workbasket.component';
+import { ClassificationTasksComponent } from './classification-tasks/classification-tasks.component';
 
 import { RestConnectorService } from './services/restConnector/rest-connector.service';
 
@@ -31,7 +32,8 @@ const DECLARATIONS = [
   TasksComponent,
   WorkbasketComponent,
   ReportComponent,
-  MonitorComponent
+  MonitorComponent,
+  ClassificationTasksComponent
 ];
 
 @NgModule({

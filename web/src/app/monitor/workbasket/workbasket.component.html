@@ -1,22 +1,16 @@
-<div class="row" *ngIf="isDataAvailable">
-  <div class="col-md-12" style="margin-bottom: 10px">
-    <table class="table table-responsive table-condensed">
-      <tr>
-        <th>Workbaskets</th>
-        <th *ngFor="let label of lineChartLabels">{{label}}</th>
-      </tr>
-      <tr *ngFor="let d of lineChartData">
-        <td>{{d.label}}</td>
-        <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
-      </tr>
-    </table>
+<div *ngIf="reportData" class="panel panel-default">
+  <div class="panel-heading">
+    <h4>{{reportData.meta.name}} ({{reportData.meta.date | date : 'dd.MM.yyyy HH:mm:ss'}})</h4>
   </div>
-</div>
-<div class="row" *ngIf="isDataAvailable">
-  <div class="col-md-12">
-    <div style="display: block;">
-      <canvas baseChart width="400" height="400" [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
-        [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"></canvas>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xs-12 col-md-8 col-md-offset-2">
+        <div style="display: block;">
+          <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+            [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"></canvas>
+        </div>
+      </div>
     </div>
+    <taskana-report [type]="reportType" [reportData]="reportData"></taskana-report>
   </div>
 </div>

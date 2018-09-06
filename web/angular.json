@@ -21,7 +21,7 @@
               "src/environments/data-sources"
             ],
             "styles": [
-              "src/assets/_styles.scss"
+              "src/assets/_main.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -78,7 +78,7 @@
               "node_modules/bootstrap/dist/js/bootstrap.min.js"
             ],
             "styles": [
-              "src/assets/_styles.scss"
+              "src/assets/_main.scss"
             ],
             "assets": [
               "src/assets",
