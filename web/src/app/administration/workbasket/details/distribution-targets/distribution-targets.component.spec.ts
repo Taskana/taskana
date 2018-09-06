@@ -48,16 +48,16 @@ describe('DistributionTargetsComponent', () => {
 				return of(new WorkbasketSummaryResource(
 					{
 						'workbaskets': new Array<WorkbasketSummary>(
-							new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
-							new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
-							new WorkbasketSummary('id3', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
+							new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })),
+							new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })),
+							new WorkbasketSummary('id3', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })))
 					}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 			})
 			spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
 				return of(new WorkbasketDistributionTargetsResource(
 					{
 						'distributionTargets': new Array<WorkbasketSummary>(
-							new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
+							new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })))
 					}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 			})
 			component.ngOnChanges({
@@ -96,7 +96,7 @@ describe('DistributionTargetsComponent', () => {
 		component.performFilter({ filterBy: new FilterModel({
       name: 'someName', owner: 'someOwner', description: 'someDescription', key: 'someKey'}), side: Side.LEFT });
 		component.distributionTargetsLeft = new Array<WorkbasketSummary>(
-			new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' }))
+			new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' }))
 		)
 		expect(component.distributionTargetsLeft.length).toBe(1);
 		expect(component.distributionTargetsLeft[0].workbasketId).toBe('id1');
@@ -105,9 +105,9 @@ describe('DistributionTargetsComponent', () => {
 	});
 	it('should reset distribution target and distribution target selected on reset', () => {
 		component.distributionTargetsLeft.push(
-			new WorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })));
+			new WorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })));
 		component.distributionTargetsRight.push(
-			new WorkbasketSummary('id5', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })));
+			new WorkbasketSummary('id5', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })));
 
 		expect(component.distributionTargetsLeft.length).toBe(3);
 		expect(component.distributionTargetsRight.length).toBe(2);
@@ -125,8 +125,8 @@ describe('DistributionTargetsComponent', () => {
 			return of(new WorkbasketDistributionTargetsResource(
 				{
 					'distributionTargets': new Array<WorkbasketSummary>(
-						new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })),
-						new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', new Links({ 'href': 'someurl' })))
+						new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })),
+						new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })))
 				}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 		})
 		component.onSave();

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.BaseQuery.SortDirection;
+import pro.taskana.TaskService;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketPermission;
@@ -78,6 +79,9 @@ public class WorkbasketController extends AbstractPagingController {
 
     @Autowired
     private WorkbasketService workbasketService;
+
+    @Autowired
+    private TaskService taskService;
 
     @Autowired
     private WorkbasketResourceAssembler workbasketResourceAssembler;
@@ -138,12 +142,14 @@ public class WorkbasketController extends AbstractPagingController {
     }
 
     @DeleteMapping(path = "/{workbasketId}")
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> deleteWorkbasket(@PathVariable(value = "workbasketId") String workbasketId)
-        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
-        ResponseEntity<?> result = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        workbasketService.deleteWorkbasket(workbasketId);
-        return result;
+    @Transactional(rollbackFor = Exception.class, noRollbackFor = WorkbasketNotFoundException.class)
+    public ResponseEntity<?> markWorkbasketForDeletion(@PathVariable(value = "workbasketId") String workbasketId)
+        throws NotAuthorizedException, InvalidArgumentException,
+        WorkbasketNotFoundException, WorkbasketInUseException {
+        if (!workbasketService.deleteWorkbasket(workbasketId)) {
+            return new ResponseEntity<>("It not possible to mark the workbasket for deletion", HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PostMapping

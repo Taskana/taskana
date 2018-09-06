@@ -219,7 +219,8 @@ public interface TaskService {
      * @throws NotAuthorizedException
      *             if the current user has no read permission for the workbasket the task is in
      */
-    Task setTaskRead(String taskId, boolean isRead) throws TaskNotFoundException, NotAuthorizedException;
+    Task setTaskRead(String taskId, boolean isRead)
+        throws TaskNotFoundException, NotAuthorizedException;
 
     /**
      * This method provides a query builder for quering the database.
@@ -330,7 +331,8 @@ public interface TaskService {
      * @throws NotAuthorizedException
      *             if the current user is not member of role ADMIN
      */
-    void deleteTask(String taskId) throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
+    void deleteTask(String taskId)
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
     /**
      * Deletes the task with the given Id even if it is not completed.

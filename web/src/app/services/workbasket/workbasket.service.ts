@@ -1,4 +1,3 @@
-
 import { throwError as observableThrowError, Observable, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -83,10 +82,11 @@ export class WorkbasketService {
 			.put<Workbasket>(url, workbasket).pipe(
 				catchError(this.handleError)
 			);
-	}
-	// DELETE
-	deleteWorkbasket(url: string) {
-		return this.httpClient.delete(url);
+  }
+  // delete
+	markWorkbasketForDeletion(url: string): Observable<any> {
+		return this.httpClient
+			.delete<any>(url);
 	}
 	// GET
 	getWorkBasketAccessItems(url: string): Observable<WorkbasketAccessItemsResource> {
@@ -151,7 +151,6 @@ export class WorkbasketService {
 		console.error(errMsg);
 		return observableThrowError(errMsg);
 	}
-
 
 	// #endregion
 }

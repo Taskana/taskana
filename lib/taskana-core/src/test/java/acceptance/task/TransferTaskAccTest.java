@@ -311,7 +311,7 @@ public class TransferTaskAccTest extends AbstractAccTest {
         taskIdList.add("TKI:000000000000000000000000000000000024");
 
         BulkOperationResults<String, TaskanaException> results = taskService
-                .transferTasks("GPK_B_KSC_1", "DOMAIN_B", taskIdList);
+            .transferTasks("GPK_B_KSC_1", "DOMAIN_B", taskIdList);
         assertFalse(results.containsErrors());
 
         Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket("GPK_B_KSC_1", "DOMAIN_B");

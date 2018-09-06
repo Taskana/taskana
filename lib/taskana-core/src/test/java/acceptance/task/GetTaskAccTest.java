@@ -2,13 +2,12 @@ package acceptance.task;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
-
-import java.util.HashMap;
-
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
@@ -33,7 +32,8 @@ public class GetTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetTaskById() throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
+    public void testGetTaskById()
+        throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");

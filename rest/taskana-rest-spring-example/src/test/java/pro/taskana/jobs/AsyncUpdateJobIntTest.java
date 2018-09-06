@@ -165,7 +165,8 @@ public class AsyncUpdateJobIntTest {
 
     }
 
-    private void verifyTaskIsModifiedAfter(String taskId, Instant before) throws InvalidArgumentException {
+    private void verifyTaskIsModifiedAfter(String taskId, Instant before)
+        throws InvalidArgumentException {
         RestTemplate admTemplate = getRestTemplate();
         HttpHeaders admHeaders = new HttpHeaders();
         admHeaders.add("Authorization", "Basic YWRtaW46YWRtaW4=");  // admin:admin

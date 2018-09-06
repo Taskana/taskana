@@ -79,7 +79,7 @@ describe('WorkbasketDetailsComponent', () => {
 					{
 						'workbaskets': new Array<WorkbasketSummary>(
 							new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
-								new Links({ 'href': 'someurl' })))
+								false, new Links({ 'href': 'someurl' })))
 					}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
 			})
 
