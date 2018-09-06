@@ -93,7 +93,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().get(0).getObjectReference().getSystem(), equalTo("SYSTEM_B"));
         assertThat(task.getAttachments().get(0).getObjectReference().getSystemInstance(), equalTo("INSTANCE_B"));
         assertThat(task.getAttachments().get(0).getObjectReference().getType(), equalTo("ArchiveId"));
-        assertThat(task.getAttachments().get(0).getObjectReference().getValue(), equalTo("12345678901234567890123456789012345678901234567890"));
+        assertThat(task.getAttachments().get(0).getObjectReference().getValue(),
+            equalTo("12345678901234567890123456789012345678901234567890"));
         assertTrue(task.getPriority() == 99);
         assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
     }

@@ -454,7 +454,7 @@ public interface QueryMapper {
 
     @Select("<script>"
         + "SELECT DISTINCT "
-        + "w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.CUSTOM_1, w.CUSTOM_2, w.CUSTOM_3, w.CUSTOM_4, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4 from WORKBASKET w "
+        + "w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.CUSTOM_1, w.CUSTOM_2, w.CUSTOM_3, w.CUSTOM_4, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4, w.MARKED_FOR_DELETION from WORKBASKET w "
         + "<if test = 'joinWithAccessList'> "
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
@@ -550,7 +550,8 @@ public interface QueryMapper {
         @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
         @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
         @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORG_LEVEL_4")})
+        @Result(property = "orgLevel4", column = "ORG_LEVEL_4"),
+        @Result(property = "markedForDeletion", column = "MARKED_FOR_DELETION")})
     List<WorkbasketSummaryImpl> queryWorkbasketSummaries(WorkbasketQueryImpl workbasketQuery);
 
     @Select("<script>"

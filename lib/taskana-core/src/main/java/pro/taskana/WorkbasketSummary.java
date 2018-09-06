@@ -111,4 +111,11 @@ public interface WorkbasketSummary {
      */
     String getOrgLevel4();
 
+    /**
+     * Gets the markedForDeletion property of the workbasket.
+     *
+     * @return the workbasket's markedForDeletion property
+     */
+    boolean isMarkedForDeletion();
+
 }

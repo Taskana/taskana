@@ -37,6 +37,7 @@ public class WorkbasketSummaryResource extends ResourceSupport {
     public String orgLevel2;
     public String orgLevel3;
     public String orgLevel4;
+    private boolean markedForDeletion;
 
     public String getWorkbasketId() {
         return workbasketId;
@@ -156,5 +157,13 @@ public class WorkbasketSummaryResource extends ResourceSupport {
 
     public void setOrgLevel4(String orgLevel4) {
         this.orgLevel4 = orgLevel4;
+    }
+
+    public boolean getMarkedForDeletion() {
+        return markedForDeletion;
+    }
+
+    public void setMarkedForDeletion(boolean markedForDeletion) {
+        this.markedForDeletion = markedForDeletion;
     }
 }

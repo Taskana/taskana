@@ -223,6 +223,21 @@ public interface Workbasket {
     void setOrgLevel4(String orgLevel4);
 
     /**
+     * Return the value for the markedForDeletion attribute.
+     *
+     * @return markedForDeletion
+     */
+    boolean isMarkedForDeletion();
+
+    /**
+     * Sets the value for markedForDeletion attribute.
+     *
+     * @param markedForDeletion
+     *            the markedForDeletion property of the workbasket
+     */
+    void setMarkedForDeletion(boolean markedForDeletion);
+
+    /**
      * Return a summary of the current workbasket.
      *
      * @return the WorkbasketSummary object for the current work basket

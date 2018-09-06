@@ -315,7 +315,13 @@ public class TaskServiceImpl implements TaskService {
                     throw new InvalidArgumentException("Cannot create a task outside a workbasket");
                 }
 
-                task.setWorkbasketSummary(workbasket.asSummary());
+                if (!workbasket.isMarkedForDeletion()) {
+                    task.setWorkbasketSummary(workbasket.asSummary());
+                } else {
+                    throw new WorkbasketNotFoundException(workbasket.getId(),
+                        "The workbasket " + workbasket.getId() + " was marked for deletion");
+                }
+
                 task.setDomain(workbasket.getDomain());
 
                 workbasketService.checkAuthorization(task.getWorkbasketSummary().getId(),
@@ -424,7 +430,13 @@ public class TaskServiceImpl implements TaskService {
             task.setTransferred(true);
 
             // transfer task from source to destination workbasket
-            task.setWorkbasketSummary(destinationWorkbasket.asSummary());
+            if (!destinationWorkbasket.isMarkedForDeletion()) {
+                task.setWorkbasketSummary(destinationWorkbasket.asSummary());
+            } else {
+                throw new WorkbasketNotFoundException(destinationWorkbasket.getId(),
+                    "The workbasket " + destinationWorkbasket.getId() + " was marked for deletion");
+            }
+
             task.setModified(Instant.now());
             task.setState(TaskState.READY);
             task.setOwner(null);
@@ -464,7 +476,13 @@ public class TaskServiceImpl implements TaskService {
             task.setTransferred(true);
 
             // transfer task from source to destination workbasket
-            task.setWorkbasketSummary(destinationWorkbasket.asSummary());
+            if (!destinationWorkbasket.isMarkedForDeletion()) {
+                task.setWorkbasketSummary(destinationWorkbasket.asSummary());
+            } else {
+                throw new WorkbasketNotFoundException(destinationWorkbasket.getId(),
+                    "The workbasket " + destinationWorkbasket.getId() + " was marked for deletion");
+            }
+
             task.setModified(Instant.now());
             task.setState(TaskState.READY);
             task.setOwner(null);
@@ -951,7 +969,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(String taskId) throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    public void deleteTask(String taskId)
+        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         deleteTask(taskId, false);
     }
 

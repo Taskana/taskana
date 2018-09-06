@@ -104,9 +104,9 @@
 }
 
 .red {
-    color: crimson;
+    color: $invalid;
     & svg {
-        fill: crimson;
+        fill: $invalid;
     }
 }
 
@@ -286,8 +286,8 @@ taskana-monitor-workbaskets, taskana-monitor-classification-tasks, taskana-acces
         box-shadow: none;
         margin-bottom: 0px;
         &> .panel-body {
-            height: calc(100vh - 108px);
-            max-height: calc(100vh - 108px);
+            height: calc(100vh - 155px);
+            max-height: calc(100vh - 155px);
             overflow-y: auto;
         }
     }

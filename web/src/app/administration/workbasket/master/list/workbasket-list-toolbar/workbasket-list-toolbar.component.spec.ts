@@ -56,15 +56,15 @@ describe('WorkbasketListToolbarComponent', () => {
 		configureTests(configure).then(testBed => {
 			fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
 			workbasketService = TestBed.get(WorkbasketService);
-			router = TestBed.get(Router);
-			spyOn(workbasketService, 'deleteWorkbasket').and.returnValue(of(''));
+      router = TestBed.get(Router);
+			spyOn(workbasketService, 'markWorkbasketForDeletion').and.returnValue(of(''));
 			spyOn(workbasketService, 'triggerWorkBasketSaved');
 
 			debugElement = fixture.debugElement.nativeElement;
 			component = fixture.componentInstance;
 			component.workbaskets = new Array<WorkbasketSummary>(
 				new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1',
-					undefined, undefined, undefined, undefined, undefined, undefined, undefined, new Links({ 'href': 'selfLink' })));
+					undefined, undefined, undefined, undefined, undefined, undefined, undefined, false, new Links({ 'href': 'selfLink' })));
 
 			fixture.detectChanges();
 			done();

@@ -1,7 +1,6 @@
 package pro.taskana.impl;
 
 import java.time.Instant;
-
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
@@ -28,6 +27,7 @@ public class WorkbasketImpl implements Workbasket {
     private String orgLevel2;
     private String orgLevel3;
     private String orgLevel4;
+    private boolean markedForDeletion;
 
     WorkbasketImpl() {
     }
@@ -193,6 +193,16 @@ public class WorkbasketImpl implements Workbasket {
         this.orgLevel4 = orgLevel4;
     }
 
+    @Override
+    public boolean isMarkedForDeletion() {
+        return markedForDeletion;
+    }
+
+    @Override
+    public void setMarkedForDeletion(boolean markedForDeletion) {
+        this.markedForDeletion = markedForDeletion;
+    }
+
     public void setDomain(String domain) {
         this.domain = domain;
     }
@@ -211,6 +221,7 @@ public class WorkbasketImpl implements Workbasket {
         result.setOrgLevel2(this.getOrgLevel2());
         result.setOrgLevel3(this.getOrgLevel3());
         result.setOrgLevel4(this.getOrgLevel4());
+        result.setMarkedForDeletion(this.isMarkedForDeletion());
         return result;
     }
 

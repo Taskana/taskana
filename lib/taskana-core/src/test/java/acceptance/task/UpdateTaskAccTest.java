@@ -262,7 +262,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testUpdateTasksByPor() throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
+    public void testUpdateTasksByPor()
+        throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
         ObjectReference por = new ObjectReference();
         por.setCompany("00");
         por.setSystem("PASystem");

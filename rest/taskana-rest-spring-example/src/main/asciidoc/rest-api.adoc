@@ -262,6 +262,18 @@ include::../../../{snippets}/UpdateWorkbasketDocTest/http-response.adoc[]
 The response-body is essentially the same as for getting a single classification. +
 Therefore for the response fields you can refer to the structure of the <<workbasket, single workbasket>>.
 
+=== Mark workbasket for deletion
+
+A `DELETE` request is used to update a workbasket
+
+==== Example Request
+
+include::../../../{snippets}/MarkWorkbasketForDeletionDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/MarkWorkbasketForDeletionDocTest/http-response.adoc[]
+
 
 === Remove a workbasket as distribution-target
 

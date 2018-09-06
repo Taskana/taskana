@@ -2,12 +2,12 @@ package acceptance.workbasket;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -265,8 +265,8 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(
-            userName = "teamlead_1",
-            groupNames = {"group_1", "businessadmin"})
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
     @Test
     public void testDeleteAccessItemForAccessItemId() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -285,14 +285,14 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         workbasketService.setWorkbasketAccessItems(wbId, accessList);
 
         List<WorkbasketAccessItem> modifiedList = new ArrayList<>(
-                workbasketService.getWorkbasketAccessItems(wbId));
+            workbasketService.getWorkbasketAccessItems(wbId));
         for (WorkbasketAccessItem a : modifiedList) {
             if (!originalIds.contains(a.getId())) {
                 workbasketService.deleteWorkbasketAccessItem(a.getId());
             }
         }
         List<WorkbasketAccessItem> listEqualToOriginal = new ArrayList<>(
-                workbasketService.getWorkbasketAccessItems(wbId));
+            workbasketService.getWorkbasketAccessItems(wbId));
         assertEquals(originalList, listEqualToOriginal);
     }
 
