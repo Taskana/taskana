@@ -20,17 +20,17 @@ import pro.taskana.rest.TestConfiguration;
 import pro.taskana.rest.resource.WorkbasketResource;
 
 /**
- * Test for {@link WorkbasketAssembler}.
+ * Test for {@link WorkbasketResourceAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class WorkbasketAssemblerTest {
+public class WorkbasketResourceAssemblerTest {
 
     @Autowired
     WorkbasketService workbasketService;
     @Autowired
-    WorkbasketAssembler workbasketAssembler;
+    WorkbasketResourceAssembler workbasketResourceAssembler;
 
     @Test
     public void workbasketToResource() throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -52,7 +52,7 @@ public class WorkbasketAssemblerTest {
         ((WorkbasketImpl) workbasket).setCreated(Instant.parse("2010-01-01T12:00:00Z"));
         ((WorkbasketImpl) workbasket).setModified(Instant.parse("2010-01-01T12:00:00Z"));
         // when
-        WorkbasketResource workbasketResource = workbasketAssembler.toResource(workbasket);
+        WorkbasketResource workbasketResource = workbasketResourceAssembler.toResource(workbasket);
         // then
         testEquality(workbasket, workbasketResource);
     }
@@ -79,7 +79,7 @@ public class WorkbasketAssemblerTest {
         workbasketResource.setOwner("Lars");
         workbasketResource.setType(WorkbasketType.PERSONAL);
         // when
-        Workbasket workbasket = workbasketAssembler.toModel(workbasketResource);
+        Workbasket workbasket = workbasketResourceAssembler.toModel(workbasketResource);
         // then
         testEquality(workbasket, workbasketResource);
     }

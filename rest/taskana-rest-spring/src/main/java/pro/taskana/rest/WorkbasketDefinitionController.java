@@ -28,7 +28,7 @@ import pro.taskana.rest.resource.WorkbasketDefinition;
 import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
 import pro.taskana.rest.resource.assembler.WorkbasketDefinitionAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketAssembler;
+import pro.taskana.rest.resource.assembler.WorkbasketResourceAssembler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class WorkbasketDefinitionController {
     private WorkbasketDefinitionAssembler workbasketDefinitionAssembler;
 
     @Autowired
-    private WorkbasketAssembler workbasketAssembler;
+    private WorkbasketResourceAssembler workbasketResourceAssembler;
 
     @Autowired
     private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
@@ -110,11 +110,11 @@ public class WorkbasketDefinitionController {
                 if (systemIds.containsKey(logicalId(res))) {
                     res.workbasketId = systemIds.get(logicalId(res));
                     workbasket = workbasketService.updateWorkbasket(
-                        workbasketAssembler.toModel(res));
+                        workbasketResourceAssembler.toModel(res));
                 } else {
                     res.workbasketId = null;
                     workbasket = workbasketService.createWorkbasket(
-                        workbasketAssembler.toModel(res));
+                        workbasketResourceAssembler.toModel(res));
                 }
                 res.workbasketId = oldId;
 

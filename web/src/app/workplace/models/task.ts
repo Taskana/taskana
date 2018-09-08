@@ -22,6 +22,8 @@ export class Task {
               public priority: number,
               public classificationSummaryResource: Classification,
               public workbasketSummaryResource: Workbasket,
+              public customAttributes: Object,
+              public callbackInfo: Object,
               public custom1: string,
               public custom2: string,
               public custom3: string,
@@ -38,5 +40,27 @@ export class Task {
               public custom14: string,
               public custom15: string,
               public custom16: string) {
+  }
+}
+
+export class CustomAttribute {
+  key: string;
+  value: string;
+}
+
+export function convertToCustomAttributes(callbackInfo: boolean = false): CustomAttribute[] {
+  return Object.keys(callbackInfo ? this.callbackInfo : this.customAttributes)
+    .map(k => ({ key: k, value: (callbackInfo ? this.callbackInfo : this.customAttributes)[k] }));
+}
+
+export function saveCustomAttributes(attributes: CustomAttribute[], callbackInfo: boolean = false): void {
+  const att: Object = attributes.filter(attr => attr.key).reduce((acc, obj) => {
+    acc[obj.key] = obj.value;
+    return acc;
+  }, {});
+  if (callbackInfo) {
+    this.callbackInfo = att;
+  } else {
+    this.customAttributes = att;
   }
 }

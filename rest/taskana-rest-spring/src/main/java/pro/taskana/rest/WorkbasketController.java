@@ -46,7 +46,7 @@ import pro.taskana.rest.resource.WorkbasketSummaryResource;
 import pro.taskana.rest.resource.assembler.DistributionTargetListAssembler;
 import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
 import pro.taskana.rest.resource.assembler.WorkbasketAccessItemListAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketAssembler;
+import pro.taskana.rest.resource.assembler.WorkbasketResourceAssembler;
 import pro.taskana.rest.resource.assembler.WorkbasketSummaryResourcesAssembler;
 
 /**
@@ -80,7 +80,7 @@ public class WorkbasketController extends AbstractPagingController {
     private WorkbasketService workbasketService;
 
     @Autowired
-    private WorkbasketAssembler workbasketAssembler;
+    private WorkbasketResourceAssembler workbasketResourceAssembler;
 
     @Autowired
     private DistributionTargetListAssembler distributionTargetListAssembler;
@@ -133,7 +133,7 @@ public class WorkbasketController extends AbstractPagingController {
         throws WorkbasketNotFoundException, NotAuthorizedException {
         ResponseEntity<WorkbasketResource> result;
         Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
-        result = new ResponseEntity<>(workbasketAssembler.toResource(workbasket), HttpStatus.OK);
+        result = new ResponseEntity<>(workbasketResourceAssembler.toResource(workbasket), HttpStatus.OK);
         return result;
     }
 
@@ -151,9 +151,9 @@ public class WorkbasketController extends AbstractPagingController {
     public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource)
         throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
         WorkbasketNotFoundException, DomainNotFoundException {
-        Workbasket workbasket = workbasketAssembler.toModel(workbasketResource);
+        Workbasket workbasket = workbasketResourceAssembler.toModel(workbasketResource);
         workbasket = workbasketService.createWorkbasket(workbasket);
-        return new ResponseEntity<>(workbasketAssembler.toResource(workbasket), HttpStatus.CREATED);
+        return new ResponseEntity<>(workbasketResourceAssembler.toResource(workbasket), HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{workbasketId}")
@@ -164,9 +164,9 @@ public class WorkbasketController extends AbstractPagingController {
         throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException {
         ResponseEntity<WorkbasketResource> result;
         if (workbasketId.equals(workbasketResource.workbasketId)) {
-            Workbasket workbasket = workbasketAssembler.toModel(workbasketResource);
+            Workbasket workbasket = workbasketResourceAssembler.toModel(workbasketResource);
             workbasket = workbasketService.updateWorkbasket(workbasket);
-            result = ResponseEntity.ok(workbasketAssembler.toResource(workbasket));
+            result = ResponseEntity.ok(workbasketResourceAssembler.toResource(workbasket));
         } else {
             throw new InvalidWorkbasketException(
                 "Target-WB-ID('" + workbasketId

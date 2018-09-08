@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from 'app/workplace/services/task.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
-import { Task } from 'app/workplace/models/task';
+import {convertToCustomAttributes, saveCustomAttributes, CustomAttribute, Task} from 'app/workplace/models/task';
 import {ErrorModel} from '../../models/modal-error';
 import {ErrorModalService} from '../../services/errorModal/error-modal.service';
 
@@ -16,7 +16,10 @@ import {ErrorModalService} from '../../services/errorModal/error-modal.service';
 })
 export class TaskdetailsComponent implements OnInit, OnDestroy {
   task: Task = null;
+  customAttributes: CustomAttribute[] = [];
+  callbackInfo: CustomAttribute[] = [];
   requestInProgress = false;
+  tabSelected = 'general';
 
   private routeSubscription: Subscription;
 
@@ -49,6 +52,8 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
 
   updateTask() {
     this.requestInProgress = true;
+    saveCustomAttributes.bind(this.task)(this.customAttributes);
+    saveCustomAttributes.bind(this.task)(this.callbackInfo, true);
     this.taskService.updateTask(this.task).subscribe(task => {
       this.requestInProgress = false;
       this.task = task;
@@ -69,11 +74,31 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       `You are going to delete Task: ${this.task.taskId}. Can you confirm this action?`);
   }
 
+
   deleteTaskConfirmation(): void {
     this.taskService.deleteTask(this.task).subscribe();
     this.taskService.publishDeletedTask(this.task);
     this.task = null;
+    this.customAttributes = [];
     this.router.navigate([`/workplace/tasks`]);
+  }
+
+  selectTab(tab: string): void {
+    this.tabSelected = tab;
+  }
+
+  backClicked(): void {
+    this.task = undefined;
+    this.taskService.selectTask(this.task);
+    this.router.navigate(['./'], { relativeTo: this.route.parent });
+  }
+
+  linkAttributes(attr: CustomAttribute[], callbackInfo: boolean = false): void {
+    if (callbackInfo) {
+      this.callbackInfo = attr;
+    } else {
+      this.customAttributes = attr;
+    }
   }
 
   ngOnDestroy(): void {

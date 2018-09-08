@@ -94,6 +94,7 @@ public class TaskControllerRestDocumentation {
         taskFieldDescriptionsMap.put("primaryObjRef.type", "The type of the reference (contract, claim, policy, customer, ...)");
         taskFieldDescriptionsMap.put("primaryObjRef.value", "The value of the primary object reference");
         taskFieldDescriptionsMap.put("customAttributes", "A container for all additional information on the task in JSON representation");
+        taskFieldDescriptionsMap.put("callbackInfo", "A container for all callback information of the task in JSON representation");
         taskFieldDescriptionsMap.put("attachments", "");
         taskFieldDescriptionsMap.put("custom1", "A custom property with name \"1\"");
         taskFieldDescriptionsMap.put("custom2", "A custom property with name \"2\"");
@@ -152,6 +153,7 @@ public class TaskControllerRestDocumentation {
                 fieldWithPath("read").description(taskFieldDescriptionsMap.get("read")),
                 fieldWithPath("transferred").description(taskFieldDescriptionsMap.get("transferred")),
                 fieldWithPath("customAttributes").description(taskFieldDescriptionsMap.get("customAttributes")),
+                fieldWithPath("callbackInfo").description(taskFieldDescriptionsMap.get("callbackInfo")),
                 fieldWithPath("attachments").description(taskFieldDescriptionsMap.get("attachments")),
                 fieldWithPath("custom1").description(taskFieldDescriptionsMap.get("custom1")).type("String"),
                 fieldWithPath("custom2").description(taskFieldDescriptionsMap.get("custom2")).type("String"),
@@ -201,6 +203,7 @@ public class TaskControllerRestDocumentation {
                 fieldWithPath("read").description(taskFieldDescriptionsMap.get("read")),
                 fieldWithPath("transferred").description(taskFieldDescriptionsMap.get("transferred")),
                 fieldWithPath("customAttributes").ignored(),
+                fieldWithPath("callbackInfo").ignored(),
                 fieldWithPath("attachments").description(taskFieldDescriptionsMap.get("attachments")),
                 fieldWithPath("custom1").description(taskFieldDescriptionsMap.get("custom1")),
                 fieldWithPath("custom2").description(taskFieldDescriptionsMap.get("custom2")),
@@ -247,6 +250,7 @@ public class TaskControllerRestDocumentation {
                 fieldWithPath("owner").description(taskFieldDescriptionsMap.get("owner")).type("String").optional(),
                 fieldWithPath("primaryObjRef.id").description(taskFieldDescriptionsMap.get("primaryObjRef.id")).type("String").optional(),
                 fieldWithPath("customAttributes").description(taskFieldDescriptionsMap.get("customAttributes")).type("Object").optional(),
+                fieldWithPath("callbackInfo").description(taskFieldDescriptionsMap.get("callbackInfo")).type("Object").optional(),
                 fieldWithPath("attachments").description(taskFieldDescriptionsMap.get("attachments")).type("Array").optional(),
                 fieldWithPath("custom1").description(taskFieldDescriptionsMap.get("custom1")).type("String").optional(),
                 fieldWithPath("custom2").description(taskFieldDescriptionsMap.get("custom2")).type("String").optional(),
@@ -313,20 +317,19 @@ public class TaskControllerRestDocumentation {
         BufferedReader in = new BufferedReader(
             new InputStreamReader(con.getInputStream()));
         String inputLine;
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
         in.close();
         con.disconnect();
         String originalTask = content.toString();
-        String modifiedTask = new String(originalTask.toString());
-        
+
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .put("http://127.0.0.1:" + port + "/v1/tasks/TKI:100000000000000000000000000000000000")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
                 .contentType("application/json")
-                .content(modifiedTask))
+                .content(originalTask))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(MockMvcRestDocumentation.document("UpdateTaskDocTest",
                 requestFields(taskFieldDescriptors),
