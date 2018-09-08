@@ -17,14 +17,14 @@ export class TaskService {
   STATE = 'state';
 
   url = `${environment.taskanaRestUrl}/v1/tasks`;
-
-  private taskSelected = new Subject<Task>();
-
   taskChangedSource = new Subject<Task>();
   taskChangedStream = this.taskChangedSource.asObservable();
-
   taskDeletedSource = new Subject<Task>();
   taskDeletedStream = this.taskDeletedSource.asObservable();
+  private taskSelected = new Subject<Task>();
+
+  constructor(private httpClient: HttpClient) {
+  }
 
   publishUpdatedTask(task: Task) {
     this.taskChangedSource.next(task);
@@ -40,9 +40,6 @@ export class TaskService {
 
   getSelectedTask(): Observable<Task> {
     return this.taskSelected.asObservable();
-  }
-
-  constructor(private httpClient: HttpClient) {
   }
 
   /**

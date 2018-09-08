@@ -21,7 +21,7 @@ import pro.taskana.rest.resource.WorkbasketResource;
  * Transforms {@link Workbasket} to its resource counterpart {@link WorkbasketResource} and vice versa.
  */
 @Component
-public class WorkbasketAssembler {
+public class WorkbasketResourceAssembler {
 
     @Autowired
     private WorkbasketService workbasketService;
