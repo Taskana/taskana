@@ -9,6 +9,9 @@ import {AlertModule, TypeaheadModule} from 'ngx-bootstrap';
 import {TaskListToolbarComponent} from './tasklist/tasklist-toolbar/tasklist-toolbar.component';
 import {TasklistComponent} from './tasklist/tasklist.component';
 import {TaskdetailsComponent} from './taskdetails/taskdetails.component';
+import {TaskdetailsGeneralFieldsComponent} from './taskdetails/general/general-fields.component';
+import {TaskdetailsCustomFieldsComponent} from './taskdetails/custom/custom-fields.component';
+import {TaskdetailsAttributeComponent} from './taskdetails/attribute/attribute.component';
 import {TaskComponent} from './task/task.component';
 import {CodeComponent} from './components/code/code.component';
 
@@ -36,6 +39,9 @@ const DECLARATIONS = [
   TaskListToolbarComponent,
   TasklistComponent,
   TaskdetailsComponent,
+  TaskdetailsGeneralFieldsComponent,
+  TaskdetailsCustomFieldsComponent,
+  TaskdetailsAttributeComponent,
   TaskComponent,
   CodeComponent,
   OrderTasksByPipe

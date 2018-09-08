@@ -6,7 +6,7 @@
                 <a (click)="backClicked()">
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
             </li>
-            <li role="presentation" class="active" (click)="selectTab('information')" [ngClass]="{'active':tabSelected === 'information'}">
+            <li role="presentation" (click)="selectTab('information')" [ngClass]="{'active':tabSelected === 'information'}">
                 <a aria-controls="work baskets" role="tab" aria-expanded="true">
                     Information</a>
             </li>

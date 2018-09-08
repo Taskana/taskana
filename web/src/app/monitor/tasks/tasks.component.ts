@@ -11,7 +11,7 @@ import { ReportData } from 'app/monitor/models/report-data';
 export class TasksComponent implements OnInit {
 
 
-  pieChartLabels: string[] = ['Ready', 'Claimed', 'Completed'];
+  pieChartLabels: string[];
   pieChartData: number[] = [];
   pieChartType = 'pie';
   reportData: ReportData
@@ -23,6 +23,7 @@ export class TasksComponent implements OnInit {
   ngOnInit() {
     this.restConnectorService.getTaskStatusReport().subscribe((data: ReportData) => {
       this.reportData = data;
+      this.pieChartLabels = Object.keys(data.sumRow.cells);
       Object.keys(data.sumRow.cells).forEach(key => {
         this.pieChartData.push(data.sumRow.cells[key]);
       })

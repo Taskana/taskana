@@ -16,7 +16,7 @@ import pro.taskana.rest.resource.DistributionTargetResource;
  * Transforms WorkbasketSummary to its resource counterpart DistributionTargerResource and vice versa.
  */
 @Component
-public class DistributionTargetAssembler {
+public class DistributionTargetResourceAssembler {
 
     public DistributionTargetResource toResource(WorkbasketSummary summary)
         throws WorkbasketNotFoundException, NotAuthorizedException {

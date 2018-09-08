@@ -10,14 +10,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.rest.TestConfiguration;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 
 /**
- * Test for {@link WorkbasketSummaryAssembler}.
+ * Test for {@link WorkbasketSummaryResourceAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
@@ -25,12 +23,12 @@ import pro.taskana.rest.resource.WorkbasketSummaryResource;
 public class WorkbasketSummaryAssemblerTest {
 
     @Autowired
-    WorkbasketSummaryAssembler workbasketSummaryAssembler;
+    WorkbasketSummaryResourceAssembler workbasketSummaryAssembler;
     @Autowired
     WorkbasketService workbasketService;
 
     @Test
-    public void workbasketSummaryToResource() throws WorkbasketNotFoundException, NotAuthorizedException {
+    public void workbasketSummaryToResource() {
         // given
         WorkbasketSummaryImpl workbasketSummary = (WorkbasketSummaryImpl) workbasketService.newWorkbasket("1",
             "DOMAIN_A").asSummary();

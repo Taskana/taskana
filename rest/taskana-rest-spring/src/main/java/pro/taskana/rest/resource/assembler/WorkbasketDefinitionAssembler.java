@@ -33,7 +33,7 @@ public class WorkbasketDefinitionAssembler {
     private WorkbasketService workbasketService;
 
     @Autowired
-    private WorkbasketAssembler workbasketAssembler;
+    private WorkbasketResourceAssembler workbasketResourceAssembler;
 
     @Autowired
     private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
@@ -60,7 +60,7 @@ public class WorkbasketDefinitionAssembler {
             .stream()
             .map(WorkbasketSummary::getId)
             .collect(Collectors.toSet());
-        WorkbasketDefinition resource = new WorkbasketDefinition(workbasketAssembler.toResource(basket), distroTargets,
+        WorkbasketDefinition resource = new WorkbasketDefinition(workbasketResourceAssembler.toResource(basket), distroTargets,
             authorizations);
         return addLinks(resource, basket);
     }

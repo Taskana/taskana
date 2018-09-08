@@ -14,8 +14,7 @@ import { ErrorModalService } from '../../../services/errorModal/error-modal.serv
 
 @Component({
 	selector: 'taskana-workbasket-details',
-	templateUrl: './workbasket-details.component.html',
-	styleUrls: ['./workbasket-details.component.scss']
+	templateUrl: './workbasket-details.component.html'
 })
 export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 

@@ -38,6 +38,7 @@ public class TaskResource extends ResourceSupport {
     private boolean isTransferred;
     // All objects have to be serializable
     private Map<String, String> customAttributes = Collections.emptyMap();
+    private Map<String, String> callbackInfo = Collections.emptyMap();
     private List<AttachmentResource> attachments = new ArrayList<>();
     private String custom1;
     private String custom2;
@@ -230,6 +231,14 @@ public class TaskResource extends ResourceSupport {
 
     public void setCustomAttributes(Map<String, String> customAttributes) {
         this.customAttributes = customAttributes;
+    }
+
+    public Map<String, String> getCallbackInfo() {
+        return callbackInfo;
+    }
+
+    public void setCallbackInfo(Map<String, String> callbackInfo) {
+        this.callbackInfo = callbackInfo;
     }
 
     public List<AttachmentResource> getAttachments() {

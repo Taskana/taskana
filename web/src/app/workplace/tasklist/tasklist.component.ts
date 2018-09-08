@@ -60,6 +60,9 @@ export class TasklistComponent implements OnInit, OnDestroy {
           this.currentBasket = task.workbasketSummaryResource;
           this.getTasks();
         }
+        if (!task) {
+          this.selectedId = undefined;
+        }
       });
   }
 
