@@ -5,17 +5,14 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 import pro.taskana.WorkbasketAccessItemExtended;
 import pro.taskana.rest.WorkbasketAccessItemController;
 import pro.taskana.rest.resource.WorkbasketAccesItemExtendedResource;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
+
+import static pro.taskana.rest.resource.assembler.AbstractRessourcesAssembler.getBuilderForOriginalUri;
 
 /**
  * Transforms {@link WorkbasketAccessItemExtended} to its resource counterpart {@link WorkbasketAccesItemExtendedResource} and vice versa.
@@ -69,20 +66,6 @@ public class WorkbasketAccessItemExtendedAssembler extends ResourceAssemblerSupp
         }
 
         return pagedResources;
-    }
-
-    private UriComponentsBuilder getBuilderForOriginalUri() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest();
-        UriComponentsBuilder baseUri = ServletUriComponentsBuilder.fromServletMapping(request)
-                .path(request.getRequestURI());
-        for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-            for (String value : entry.getValue()) {
-                baseUri.queryParam(entry.getKey(), value);
-            }
-        }
-        UriComponentsBuilder original = baseUri;
-        return original;
     }
 
 }

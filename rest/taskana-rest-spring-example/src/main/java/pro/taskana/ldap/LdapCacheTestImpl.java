@@ -86,11 +86,7 @@ public class LdapCacheTestImpl implements LdapCache {
                     group3.add(group);
                     break;
             }
-            if (groupNumber != 3) {
-                groupNumber++;
-            } else {
-                groupNumber = 0;
-            }
+            groupNumber = (groupNumber + 1) % 4;
         }
 
         int countUser = 0;
@@ -111,11 +107,7 @@ public class LdapCacheTestImpl implements LdapCache {
                         break;
                 }
             }
-            if (countUser != 3) {
-                countUser++;
-            } else {
-                countUser = 0;
-            }
+            groupNumber = (groupNumber + 1) % 4;
         }
     }
 

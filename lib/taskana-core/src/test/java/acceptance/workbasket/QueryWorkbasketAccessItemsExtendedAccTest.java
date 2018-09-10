@@ -23,9 +23,6 @@ import pro.taskana.security.WithAccessId;
 @RunWith(JAASRunner.class)
 public class QueryWorkbasketAccessItemsExtendedAccTest extends AbstractAccTest {
 
-    private static SortDirection asc = SortDirection.ASCENDING;
-    private static SortDirection desc = SortDirection.DESCENDING;
-
     public QueryWorkbasketAccessItemsExtendedAccTest() {
         super();
     }

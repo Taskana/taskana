@@ -20,7 +20,7 @@ import pro.taskana.rest.resource.WorkbasketAccesItemExtendedResource;
 import pro.taskana.rest.resource.assembler.WorkbasketAccessItemExtendedAssembler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -147,7 +147,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     private String[] extractVerticalBarSeparatedFields(List<String> searchFor) {
         List<String> values = new ArrayList<>();
         if (searchFor != null) {
-            searchFor.forEach(item -> values.addAll(Arrays.asList(item.split("\\|"))));
+            searchFor.forEach(item -> Collections.addAll(values, item.split("\\|")));
         }
         return values.toArray(new String[0]);
     }

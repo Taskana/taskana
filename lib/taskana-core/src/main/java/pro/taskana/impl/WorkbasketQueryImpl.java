@@ -752,23 +752,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         }
     }
 
-    static String[] toUpperCopy(String... source) {
-        if (source == null || source.length == 0) {
-            return null;
-        } else {
-            String[] target = new String[source.length];
-            for (int i = 0; i < source.length; i++) {
-                target[i] = source[i].toUpperCase();
-            }
-            return target;
-        }
-    }
-
     private WorkbasketQuery addOrderCriteria(String colName, SortDirection sortDirection) {
-        String orderByDirection = " ASC";
-        if (sortDirection != null && SortDirection.DESCENDING.equals(sortDirection)) {
-            orderByDirection = " DESC";
-        }
+        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING.toString() : sortDirection.toString());
         orderBy.add(colName + orderByDirection);
         orderColumns.add(colName);
         return this;
