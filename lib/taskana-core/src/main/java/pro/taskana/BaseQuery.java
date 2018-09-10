@@ -85,8 +85,31 @@ public interface BaseQuery<T> {
      * @author bbr
      */
     enum SortDirection {
-        ASCENDING,
-        DESCENDING
+        ASCENDING("ASC"),
+        DESCENDING("DESC");
+
+        private final String sortDirection;
+
+        SortDirection(String sortDirection) {
+            this.sortDirection = sortDirection;
+        }
+
+        @Override
+        public String toString() {
+            return sortDirection;
+        }
+    }
+
+    default String[] toUpperCopy(String... source) {
+        if (source == null || source.length == 0) {
+            return null;
+        } else {
+            String[] target = new String[source.length];
+            for (int i = 0; i < source.length; i++) {
+                target[i] = source[i].toUpperCase();
+            }
+            return target;
+        }
     }
 
 }

@@ -138,10 +138,6 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
 
   }
 
-  revokeAccess() {
-
-  }
-
   private unSubscribe(subscription: Subscription): void {
     if (subscription) { subscription.unsubscribe(); }
   }

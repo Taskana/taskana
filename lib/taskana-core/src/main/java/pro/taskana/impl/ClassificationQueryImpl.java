@@ -463,10 +463,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     private ClassificationQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
-        String orderByDirection = " ASC";
-        if (sortDirection != null && SortDirection.DESCENDING.equals(sortDirection)) {
-            orderByDirection = " DESC";
-        }
+        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING.toString() : sortDirection.toString());
         orderBy.add(columnName + orderByDirection);
         orderColumns.add(columnName);
         return this;
@@ -618,14 +615,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     public List<String> getOrderColumns() {
         return orderColumns;
-    }
-
-    private String[] toUpperCopy(String... source) {
-        String[] target = new String[source.length];
-        for (int i = 0; i < source.length; i++) {
-            target[i] = source[i].toUpperCase();
-        }
-        return target;
     }
 
     @Override

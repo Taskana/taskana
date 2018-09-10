@@ -32,7 +32,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.rest.resource.AccessIdResource;
 
