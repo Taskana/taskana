@@ -1448,7 +1448,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     private TaskQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
-        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING.toString() : sortDirection.toString());
+        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
         orderBy.add(columnName + orderByDirection);
         orderColumns.add(columnName);
         return this;

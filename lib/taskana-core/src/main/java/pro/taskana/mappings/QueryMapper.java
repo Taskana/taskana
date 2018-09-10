@@ -7,15 +7,14 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.ObjectReference;
+import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.impl.ClassificationQueryImpl;
 import pro.taskana.impl.ClassificationSummaryImpl;
 import pro.taskana.impl.ObjectReferenceQueryImpl;
 import pro.taskana.impl.TaskQueryImpl;
 import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.WorkbasketAccessItemExtendedImpl;
-import pro.taskana.impl.WorkbasketAccessItemExtendedQueryImpl;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
-import pro.taskana.impl.WorkbasketAccessItemQueryImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 
@@ -28,6 +27,11 @@ public interface QueryMapper {
     String CLASSIFICATION_FINDBYKEYANDDOMAIN = "pro.taskana.mappings.ClassificationMapper.findByKeyAndDomain";
     String CLASSIFICATION_FINDBYID = "pro.taskana.mappings.ClassificationMapper.findById";
     String WORKBASKET_FINDSUMMARYBYKEY = "pro.taskana.mappings.WorkbasketMapper.findSummaryByKey";
+
+    static String fixColumnNames() {
+
+        return "";
+    }
 
     @Select("<script> "
         + "SELECT <if test=\"joinWithAttachments\">DISTINCT</if> t.ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, t.NAME, t.CREATOR, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, t.CLASSIFICATION_CATEGORY, t.CLASSIFICATION_ID, t.WORKBASKET_ID, t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10, t.CUSTOM_11, t.CUSTOM_12, t.CUSTOM_13, t.CUSTOM_14, t.CUSTOM_15, t.CUSTOM_16"
@@ -177,11 +181,6 @@ public interface QueryMapper {
         @Result(property = "custom15", column = "CUSTOM_15"),
         @Result(property = "custom16", column = "CUSTOM_16")})
     List<TaskSummaryImpl> queryTaskSummaries(TaskQueryImpl taskQuery);
-
-    static String fixColumnNames() {
-
-        return "";
-    }
 
     @Select("<script> "
         + "WITH X (ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, TCLASSIFICATION_KEY, "
@@ -609,7 +608,7 @@ public interface QueryMapper {
         @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
         @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
         @Result(property = "permCustom12", column = "PERM_CUSTOM_12")})
-    List<WorkbasketAccessItemImpl> queryWorkbasketAccessItems(WorkbasketAccessItemQueryImpl accessItemQuery);
+    List<WorkbasketAccessItemImpl> queryWorkbasketAccessItems(WorkbasketAccessItemQuery accessItemQuery);
 
     @Select("<script>"
         + "SELECT "
@@ -651,7 +650,8 @@ public interface QueryMapper {
         @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
         @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
         @Result(property = "permCustom12", column = "PERM_CUSTOM_12")})
-    List<WorkbasketAccessItemExtendedImpl> queryWorkbasketAccessItemsExtended(WorkbasketAccessItemExtendedQueryImpl accessItemExtendedQuery);
+    List<WorkbasketAccessItemExtendedImpl> queryWorkbasketAccessItemsExtended(
+        WorkbasketAccessItemQuery.Extended accessItemExtendedQuery);
 
     @Select("<script> "
         + "SELECT COUNT( <if test=\"joinWithAttachments\">DISTINCT</if>  t.ID) FROM TASK t "
@@ -750,7 +750,6 @@ public interface QueryMapper {
         + "</where>"
         + "</script>")
     Long countQueryTasks(TaskQueryImpl taskQuery);
-
 
     @Select("<script> "
         + "WITH X (ID, WORKBASKET_ID) AS (SELECT <if test=\"joinWithAttachments\">DISTINCT</if> t.ID, t.WORKBASKET_ID FROM TASK t "
@@ -998,7 +997,7 @@ public interface QueryMapper {
         + "</where>"
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
-    Long countQueryWorkbasketAccessItems(WorkbasketAccessItemQueryImpl accessItem);
+    Long countQueryWorkbasketAccessItems(WorkbasketAccessItemQuery accessItem);
 
     @Select("<script>SELECT DISTINCT ${columnName} "
         + "FROM TASK t LEFT JOIN ATTACHMENT AS a ON t.ID = a.TASK_ID "
@@ -1283,7 +1282,7 @@ public interface QueryMapper {
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
-    List<String> queryWorkbasketAccessItemColumnValues(WorkbasketAccessItemQueryImpl accessItemQuery);
+    List<String> queryWorkbasketAccessItemColumnValues(WorkbasketAccessItemQuery accessItemQuery);
 
     @Select("<script>SELECT DISTINCT ${columnName} "
         + "FROM WORKBASKET_ACCESS_LIST AS WBA LEFT JOIN WORKBASKET AS WB ON WORKBASKET_ID = WB.ID"
@@ -1299,5 +1298,6 @@ public interface QueryMapper {
         + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
-    List<String> queryWorkbasketAccessItemExtendedColumnValues(WorkbasketAccessItemExtendedQueryImpl accessItemExtendedQuery);
+    List<String> queryWorkbasketAccessItemExtendedColumnValues(
+        WorkbasketAccessItemQuery.Extended accessItemExtendedQuery);
 }

@@ -13,7 +13,6 @@ import pro.taskana.TaskanaRole;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemExtended;
-import pro.taskana.WorkbasketAccessItemExtendedQuery;
 import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketQuery;
@@ -232,7 +231,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             // add all
             if (!newItems.isEmpty()) {
-                newItems.stream().forEach(item -> workbasketAccessMapper.insert(item));
+                newItems.forEach(item -> workbasketAccessMapper.insert(item));
             }
         } finally {
             taskanaEngine.returnConnection();
@@ -450,7 +449,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     private List<WorkbasketPermission> getPermissionsFromWorkbasketAccessItem(
         WorkbasketAccessItem workbasketAccessItem) {
-        List<WorkbasketPermission> permissions = new ArrayList<WorkbasketPermission>();
+        List<WorkbasketPermission> permissions = new ArrayList<>();
         if (workbasketAccessItem == null) {
             return permissions;
         }
@@ -745,8 +744,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             long numTasksInWorkbasket = taskanaEngine.getSqlSession()
                 .getMapper(TaskMapper.class)
-                .countTasksInWorkbasket(workbasketId)
-                .longValue();
+                .countTasksInWorkbasket(workbasketId);
 
             if (numTasksInWorkbasket > 0) {
                 throw new WorkbasketInUseException(
@@ -772,9 +770,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     @Override
-    public WorkbasketAccessItemExtendedQuery createWorkbasketAccessItemExtendedQuery() throws NotAuthorizedException {
+    public WorkbasketAccessItemQuery.Extended createWorkbasketAccessItemExtendedQuery() throws NotAuthorizedException {
         taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
-        return new WorkbasketAccessItemExtendedQueryImpl(this.taskanaEngine);
+        return new WorkbasketAccessItemQueryImpl.Extended(this.taskanaEngine);
     }
 
 }
