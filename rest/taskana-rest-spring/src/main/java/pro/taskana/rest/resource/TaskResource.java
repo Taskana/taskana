@@ -3,7 +3,6 @@ package pro.taskana.rest.resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.hateoas.ResourceSupport;
 
@@ -37,8 +36,8 @@ public class TaskResource extends ResourceSupport {
     private boolean isRead;
     private boolean isTransferred;
     // All objects have to be serializable
-    private Map<String, String> customAttributes = Collections.emptyMap();
-    private Map<String, String> callbackInfo = Collections.emptyMap();
+    private List<CustomAttribute> customAttributes = Collections.emptyList();
+    private List<CustomAttribute> callbackInfo = Collections.emptyList();
     private List<AttachmentResource> attachments = new ArrayList<>();
     private String custom1;
     private String custom2;
@@ -225,19 +224,19 @@ public class TaskResource extends ResourceSupport {
         this.isTransferred = isTransferred;
     }
 
-    public Map<String, String> getCustomAttributes() {
+    public List<CustomAttribute> getCustomAttributes() {
         return customAttributes;
     }
 
-    public void setCustomAttributes(Map<String, String> customAttributes) {
+    public void setCustomAttributes(List<CustomAttribute> customAttributes) {
         this.customAttributes = customAttributes;
     }
 
-    public Map<String, String> getCallbackInfo() {
+    public List<CustomAttribute> getCallbackInfo() {
         return callbackInfo;
     }
 
-    public void setCallbackInfo(Map<String, String> callbackInfo) {
+    public void setCallbackInfo(List<CustomAttribute> callbackInfo) {
         this.callbackInfo = callbackInfo;
     }
 
@@ -375,5 +374,34 @@ public class TaskResource extends ResourceSupport {
 
     public void setCustom16(String custom16) {
         this.custom16 = custom16;
+    }
+
+    /**
+     * A CustomAttribute is a user customized attribute which is saved as a Map and can be retreived from
+     * either {@link pro.taskana.Task#getCustomAttributes()} or {@link pro.taskana.Task#getCallbackInfo()}.
+     */
+    public static class CustomAttribute {
+
+        private final String key;
+        private final String value;
+
+        @SuppressWarnings("unused")
+        public CustomAttribute() {
+            this(null, null);
+            //necessary for jackson.
+        }
+
+        public CustomAttribute(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 }

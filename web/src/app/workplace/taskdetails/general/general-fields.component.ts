@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
 
 @Component({
@@ -8,6 +8,7 @@ import { Task } from 'app/workplace/models/task';
 export class TaskdetailsGeneralFieldsComponent implements OnInit {
 
   @Input() task: Task;
+  @Output() taskChange: EventEmitter<Task> = new EventEmitter<Task>();
 
   constructor() {
   }

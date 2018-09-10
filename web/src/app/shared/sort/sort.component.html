@@ -1,4 +1,4 @@
-<div class="dropdown">
+<div class="dropdown dropdown-fix">
     <button [disabled]="!enabled" class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         <span class="glyphicon {{sort.sortDirection === 'asc'? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes' }} blue"
             data-toggle="tooltip" title="{{sort.sortDirection === 'asc'? 'A-Z' : 'Z-A' }}"></span>
@@ -16,13 +16,15 @@
             </button>
         </div>
         <div role="separator" class="divider"></div>
-        <li id="sort-by-{{sortingField.key}}" (click)="changeSortBy(sortingField.key)" *ngFor="let sortingField of sortingFields | mapValues">
-            <a>
-                <label>
-                    <span class="glyphicon {{sort.sortBy === sortingField.key? 'glyphicon-check': 'glyphicon-unchecked'}} blue" aria-hidden="true"></span>
-                    {{sortingField.value}}
-                </label>
-            </a>
-        </li>
+        <ul>
+            <li id="sort-by-{{sortingField.key}}" (click)="changeSortBy(sortingField.key)" *ngFor="let sortingField of sortingFields | mapValues">
+                <a>
+                   <label>
+                        <span class="glyphicon {{sort.sortBy === sortingField.key? 'glyphicon-check': 'glyphicon-unchecked'}} blue" aria-hidden="true"></span>
+                        {{sortingField.value}}
+                    </label>
+                </a>
+            </li>
+        </ul>
     </div>
 </div>
