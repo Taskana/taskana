@@ -30,15 +30,18 @@
 </ul>
 <div class="panel panel-default" *ngIf="task && !requestInProgress">
   <div class="panel-heading">
-    <div class="pull-right">
+    <div class="pull-right btn-group">
+      <button type="button" (click)="updateTask()" class="btn btn-default btn-primary" data-toggle="tooltip" title="Save">
+        <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
+      </button>
       <button type="button" title="Open task to work on it" class="btn btn-default" aria-label="Left Align"
               [disabled]="workOnTaskDisabled()" (click)="openTask(task.taskId)">
         <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
       </button>
-      <button type="button" title="Update Task" class="btn btn-default btn-primary" (click)="updateTask()">
-        <span class="glyphicon glyphicon-saved" aria-hidden="true"></span>
+      <button type="button" (click)="resetTask()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
+        <span class="glyphicon glyphicon-repeat blue" aria-hidden="true"></span>
       </button>
-      <button type="button" title="Delete Task" class="btn btn-default btn-danger" (click)="deleteTask()">
+      <button type="button" title="Delete Task" class="btn btn-default remove" (click)="deleteTask()">
         <span class="glyphicon glyphicon-remove"></span>
       </button>
     </div>
@@ -56,12 +59,10 @@
           <taskana-task-details-custom-fields [task]="task"></taskana-task-details-custom-fields>
         </div>
         <div role="tabpanel" class="tab-pane" [ngClass]="{'active':tabSelected === 'custom-attributes'}">
-          <taskana-task-details-attributes [task]="task"
-                                           (notify)="linkAttributes($event)"></taskana-task-details-attributes>
+          <taskana-task-details-attributes [attributes]="task.customAttributes"></taskana-task-details-attributes>
         </div>
         <div role="tabpanel" class="tab-pane" [ngClass]="{'active':tabSelected === 'callback-info'}">
-          <taskana-task-details-attributes [task]="task" [callbackInfo]="true"
-                                           (notify)="linkAttributes($event, true)"></taskana-task-details-attributes>
+          <taskana-task-details-attributes [attributes]="task.callbackInfo" [callbackInfo]="true"></taskana-task-details-attributes>
         </div>
       </div>
     </form>

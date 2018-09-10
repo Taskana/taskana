@@ -16,7 +16,6 @@ import { expandDown } from 'app/shared/animations/expand.animation';
 })
 export class TaskListToolbarComponent implements OnInit {
 
-  @Output() tasksChanged = new EventEmitter<Task[]>();
   @Output() basketChanged = new EventEmitter<Workbasket>();
   @Output() performSorting = new EventEmitter<SortingModel>();
   @Output() performFilter = new EventEmitter<FilterModel>();
@@ -45,6 +44,14 @@ export class TaskListToolbarComponent implements OnInit {
         this.workbasketNames.push(workbasket.name);
       });
     });
+    this.taskService.getSelectedTask().subscribe(t => {
+      if (!this.result) {
+        this.result = t.workbasketSummaryResource.name;
+        this.resultId = t.workbasketSummaryResource.workbasketId;
+        this.currentBasket = t.workbasketSummaryResource;
+        this.workbasketSelected = true;
+      }
+    })
   }
 
   searchBasket() {
@@ -57,29 +64,12 @@ export class TaskListToolbarComponent implements OnInit {
         }
       });
 
-      if (this.resultId.length > 0) {
-        this.getTasks(this.resultId);
-      } else {
-        this.tasks = [];
-        this.currentBasket = null;
-        this.tasksChanged.emit(this.tasks);
+      if (!this.resultId) {
+        this.currentBasket = undefined;
       }
       this.basketChanged.emit(this.currentBasket);
     }
     this.resultId = '';
-  }
-
-  getTasks(workbasketId: string) {
-    this.taskService.findTasksWithWorkbasket(workbasketId, undefined, undefined,
-      undefined, undefined, undefined, undefined).subscribe(
-        tasks => {
-          this.tasks.length = 0;
-          if (!tasks || tasks._embedded === undefined) {
-            return;
-          }
-          this.tasks = tasks._embedded.tasks;
-          this.tasksChanged.emit(this.tasks);
-        });
   }
 
   sorting(sort: SortingModel) {

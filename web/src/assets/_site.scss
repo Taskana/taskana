@@ -342,43 +342,7 @@ li.list-group-item:hover {
 }
 
 .align-center {
-  text-align: center;
-}
-  .nav.nav-tabs {
-    & > li {
-        & > a {
-            min-height: 52px;
-            padding-top: 15px;
-            border-radius: 0;
-            margin-right: 0;
-            &.has-changes {
-               border-bottom: solid #f0ad4e;
-            }
-            cursor: pointer;
-        }
-
-        &:first-child > a {
-            border-left: none;
-        }
-    }
-
-    & > li.active > a {
-        border-top: 3px solid #479ea9;
-        padding-top: 13px;
-        background-color: #f5f5f5;
-    }
-
-    & > p {
-       margin: 0px;
-    }
-
-    & > li.disabled {
-        cursor: not-allowed;
-    }
-
-    & > li.disabled > a {
-       pointer-events: none;
-    }
+    text-align: center;
 }
 
 .btn.rounded {
