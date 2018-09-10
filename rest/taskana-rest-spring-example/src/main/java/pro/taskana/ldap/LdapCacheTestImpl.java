@@ -1,6 +1,10 @@
 package pro.taskana.ldap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import pro.taskana.rest.resource.AccessIdResource;
@@ -17,100 +21,6 @@ public class LdapCacheTestImpl implements LdapCache {
      * and {@link List<AccessIdResource>} as value (groups of which the user is a member) .
      */
     private static Map<AccessIdResource, List<AccessIdResource>> users;
-
-    @Override
-    public List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumerOfReturnedAccessIds) {
-        return findAcessIdResource(searchFor, maxNumerOfReturnedAccessIds, false);
-    }
-
-    @Override
-    public List<AccessIdResource> findGroupsOfUser(String searchFor, int maxNumerOfReturnedAccessIds) {
-        if (users == null) {
-            addUsersToGroups();
-        }
-        return findAcessIdResource(searchFor, maxNumerOfReturnedAccessIds, true);
-    }
-
-    private List <AccessIdResource> findAcessIdResource (String searchFor, int maxNumerOfReturnedAccessIds, boolean groupMember) {
-        List<AccessIdResource> usersAndGroups = accessIds.stream()
-                .filter(t -> (t.getName().toLowerCase().contains(searchFor.toLowerCase())
-                        || t.getAccessId().toLowerCase().contains(searchFor.toLowerCase())))
-                .collect(Collectors.toList());
-
-        List<AccessIdResource> usersAndGroupsAux = new ArrayList<>(usersAndGroups);
-        if (groupMember) {
-            usersAndGroupsAux.forEach(item -> {
-                if (users.get(item) != null) {
-                    usersAndGroups.addAll(users.get(item));
-                }
-            });
-        }
-
-        usersAndGroups.sort((AccessIdResource a, AccessIdResource b) -> {
-            return a.getAccessId().compareToIgnoreCase(b.getAccessId());
-        });
-
-        List<AccessIdResource> result = usersAndGroups.subList(0,
-                Math.min(usersAndGroups.size(), maxNumerOfReturnedAccessIds));
-
-        return result;
-    }
-
-    private void addUsersToGroups() {
-        List<AccessIdResource> groups = new ArrayList<>();
-        users = new HashMap<>();
-
-        accessIds.forEach(item -> {
-            if (!item.getAccessId().contains("ou=groups")) {
-                users.put(item, new ArrayList<>());
-            } else {
-                groups.add(item);
-            }
-        });
-
-        int groupNumber = 0;
-        List<AccessIdResource> group0 = new ArrayList<>(), group1 = new ArrayList<>(), group2 = new ArrayList<>(), group3 = new ArrayList<>();
-
-        for (AccessIdResource group : groups) {
-            switch (groupNumber) {
-                case 0:
-                    group0.add(group);
-                    break;
-                case 1:
-                    group1.add(group);
-                    break;
-                case 2:
-                    group2.add(group);
-                    break;
-                case 3:
-                    group3.add(group);
-                    break;
-            }
-            groupNumber = (groupNumber + 1) % 4;
-        }
-
-        int countUser = 0;
-        for (AccessIdResource item : accessIds) {
-            if (!item.getAccessId().contains("ou=groups")) {
-                switch (countUser) {
-                    case 0:
-                        users.put(item, group0);
-                        break;
-                    case 1:
-                        users.put(item, group1);
-                        break;
-                    case 2:
-                        users.put(item, group2);
-                        break;
-                    case 3:
-                        users.put(item, group3);
-                        break;
-                }
-            }
-            groupNumber = (groupNumber + 1) % 4;
-        }
-    }
-
     private static List<AccessIdResource> accessIds = new ArrayList<>(Arrays.asList(
         new AccessIdResource("Martin, Rojas Miguel Angel", "user_1_1"),
         new AccessIdResource("Lengl, Marcel", "user_1_2"),
@@ -370,5 +280,99 @@ public class LdapCacheTestImpl implements LdapCache {
         new AccessIdResource("kfz", "cn=kfz,ou=groups,o=TaskanaTest"),
         new AccessIdResource("haftpflicht", "cn=haftpflicht,ou=groups,o=TaskanaTest"),
         new AccessIdResource("bauspar", "cn=bauspar,ou=groups,o=TaskanaTest")));
+
+    @Override
+    public List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumerOfReturnedAccessIds) {
+        return findAcessIdResource(searchFor, maxNumerOfReturnedAccessIds, false);
+    }
+
+    @Override
+    public List<AccessIdResource> findGroupsOfUser(String searchFor, int maxNumerOfReturnedAccessIds) {
+        if (users == null) {
+            addUsersToGroups();
+        }
+        return findAcessIdResource(searchFor, maxNumerOfReturnedAccessIds, true);
+    }
+
+    private List<AccessIdResource> findAcessIdResource(String searchFor, int maxNumerOfReturnedAccessIds,
+        boolean groupMember) {
+        List<AccessIdResource> usersAndGroups = accessIds.stream()
+            .filter(t -> (t.getName().toLowerCase().contains(searchFor.toLowerCase())
+                || t.getAccessId().toLowerCase().contains(searchFor.toLowerCase())))
+            .collect(Collectors.toList());
+
+        List<AccessIdResource> usersAndGroupsAux = new ArrayList<>(usersAndGroups);
+        if (groupMember) {
+            usersAndGroupsAux.forEach(item -> {
+                if (users.get(item) != null) {
+                    usersAndGroups.addAll(users.get(item));
+                }
+            });
+        }
+
+        usersAndGroups.sort((AccessIdResource a, AccessIdResource b) -> {
+            return a.getAccessId().compareToIgnoreCase(b.getAccessId());
+        });
+
+        List<AccessIdResource> result = usersAndGroups.subList(0,
+            Math.min(usersAndGroups.size(), maxNumerOfReturnedAccessIds));
+
+        return result;
+    }
+
+    private void addUsersToGroups() {
+        List<AccessIdResource> groups = new ArrayList<>();
+        users = new HashMap<>();
+
+        accessIds.forEach(item -> {
+            if (!item.getAccessId().contains("ou=groups")) {
+                users.put(item, new ArrayList<>());
+            } else {
+                groups.add(item);
+            }
+        });
+
+        int groupNumber = 0;
+        List<AccessIdResource> group0 = new ArrayList<>(), group1 = new ArrayList<>(), group2 = new ArrayList<>(), group3 = new ArrayList<>();
+
+        for (AccessIdResource group : groups) {
+            switch (groupNumber) {
+                case 0:
+                    group0.add(group);
+                    break;
+                case 1:
+                    group1.add(group);
+                    break;
+                case 2:
+                    group2.add(group);
+                    break;
+                case 3:
+                    group3.add(group);
+                    break;
+            }
+            groupNumber = (groupNumber + 1) % 4;
+        }
+
+        int countUser = 0;
+        for (AccessIdResource item : accessIds) {
+            if (!item.getAccessId().contains("ou=groups")) {
+                switch (countUser) {
+                    case 0:
+                        users.put(item, group0);
+                        break;
+                    case 1:
+                        users.put(item, group1);
+                        break;
+                    case 2:
+                        users.put(item, group2);
+                        break;
+                    case 3:
+                        users.put(item, group3);
+                        break;
+                }
+            }
+            groupNumber = (groupNumber + 1) % 4;
+        }
+    }
 
 }

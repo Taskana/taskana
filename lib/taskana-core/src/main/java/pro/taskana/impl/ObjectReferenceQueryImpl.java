@@ -211,7 +211,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     }
 
     private ObjectReferenceQuery addOrderCriteria(String colName, SortDirection sortDirection) {
-        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING.toString() : sortDirection.toString());
+        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
         orderBy.add(colName + orderByDirection);
         return this;
     }

@@ -753,7 +753,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     private WorkbasketQuery addOrderCriteria(String colName, SortDirection sortDirection) {
-        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING.toString() : sortDirection.toString());
+        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
         orderBy.add(colName + orderByDirection);
         orderColumns.add(colName);
         return this;
