@@ -5,9 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from 'app/workplace/services/task.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
-import {convertToCustomAttributes, saveCustomAttributes, CustomAttribute, Task} from 'app/workplace/models/task';
-import {ErrorModel} from '../../models/modal-error';
-import {ErrorModalService} from '../../services/errorModal/error-modal.service';
+import { Task } from 'app/workplace/models/task';
+import { ErrorModel } from '../../models/modal-error';
+import { ErrorModalService } from '../../services/errorModal/error-modal.service';
+import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
+import { AlertService } from '../../services/alert/alert.service';
+import { AlertModel, AlertType } from '../../models/alert';
 
 @Component({
   selector: 'taskana-task-details',
@@ -16,8 +19,7 @@ import {ErrorModalService} from '../../services/errorModal/error-modal.service';
 })
 export class TaskdetailsComponent implements OnInit, OnDestroy {
   task: Task = null;
-  customAttributes: CustomAttribute[] = [];
-  callbackInfo: CustomAttribute[] = [];
+  taskClone: Task = null;
   requestInProgress = false;
   tabSelected = 'general';
 
@@ -28,6 +30,8 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     private taskService: TaskService,
     private router: Router,
     private removeConfirmationService: RemoveConfirmationService,
+    private requestInProgressService: RequestInProgressService,
+    private alertService: AlertService,
     private errorModalService: ErrorModalService) {
   }
 
@@ -38,11 +42,19 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  resetTask(): void {
+    this.task = { ...this.taskClone };
+    this.task.customAttributes = this.taskClone.customAttributes.slice(0);
+    this.task.callbackInfo = this.taskClone.callbackInfo.slice(0);
+    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
+  }
+
   getTask(id: string): void {
     this.requestInProgress = true;
     this.taskService.getTask(id).subscribe(task => {
       this.requestInProgress = false;
       this.task = task;
+      this.cloneTask();
       this.taskService.selectTask(task);
     }, err => {
       this.errorModalService.triggerError(
@@ -51,14 +63,14 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   updateTask() {
-    this.requestInProgress = true;
-    saveCustomAttributes.bind(this.task)(this.customAttributes);
-    saveCustomAttributes.bind(this.task)(this.callbackInfo, true);
+    this.requestInProgressService.setRequestInProgress(true);
     this.taskService.updateTask(this.task).subscribe(task => {
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
       this.task = task;
+      this.cloneTask();
       this.taskService.publishUpdatedTask(task);
-    });
+      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Update successful!'))
+    }, err => {this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'Update not successful!'))});
   }
 
   openTask(taskId: string) {
@@ -79,7 +91,6 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.taskService.deleteTask(this.task).subscribe();
     this.taskService.publishDeletedTask(this.task);
     this.task = null;
-    this.customAttributes = [];
     this.router.navigate([`/workplace/tasks`]);
   }
 
@@ -93,17 +104,15 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['./'], { relativeTo: this.route.parent });
   }
 
-  linkAttributes(attr: CustomAttribute[], callbackInfo: boolean = false): void {
-    if (callbackInfo) {
-      this.callbackInfo = attr;
-    } else {
-      this.customAttributes = attr;
-    }
-  }
-
   ngOnDestroy(): void {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+  }
+
+  private cloneTask() {
+    this.taskClone = { ...this.task };
+    this.taskClone.customAttributes = this.task.customAttributes.slice(0);
+    this.taskClone.callbackInfo = this.task.callbackInfo.slice(0);
   }
 }

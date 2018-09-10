@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { convertToCustomAttributes, CustomAttribute, Task } from 'app/workplace/models/task';
+import { CustomAttribute } from 'app/workplace/models/task';
 
 @Component({
   selector: 'taskana-task-details-attributes',
@@ -8,20 +8,15 @@ import { convertToCustomAttributes, CustomAttribute, Task } from 'app/workplace/
 })
 export class TaskdetailsAttributeComponent implements OnInit {
 
-  @Input() task: Task;
   @Input() callbackInfo = false;
-  attributes: CustomAttribute[] = [];
+  @Input() attributes: CustomAttribute[] = [];
+  @Output() attributesChange: EventEmitter<CustomAttribute[]> = new EventEmitter<CustomAttribute[]>();
 
-  @Output() notify: EventEmitter<CustomAttribute[]> = new EventEmitter<CustomAttribute[]>();
 
   constructor() {
   }
 
   ngOnInit() {
-    if (this.task) {
-      this.attributes = convertToCustomAttributes.bind(this.task)(this.callbackInfo);
-      this.notify.emit(this.attributes);
-    }
   }
 
   addAttribute(): void {

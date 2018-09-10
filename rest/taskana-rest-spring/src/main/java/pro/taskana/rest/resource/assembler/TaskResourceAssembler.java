@@ -1,6 +1,8 @@
 package pro.taskana.rest.resource.assembler;
 
 import java.time.Instant;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,12 @@ public class TaskResourceAssembler
             classificationAssembler.toResource(task.getClassificationSummary()));
         resource.setWorkbasketSummaryResource(workbasketAssembler.toResource(task.getWorkbasketSummary()));
         resource.setAttachments(attachmentAssembler.toResources(task.getAttachments()));
+        resource.setCustomAttributes(task.getCustomAttributes().entrySet().stream()
+            .map(e -> new TaskResource.CustomAttribute(e.getKey(), e.getValue()))
+            .collect(Collectors.toList()));
+        resource.setCallbackInfo(task.getCallbackInfo().entrySet().stream()
+            .map(e -> new TaskResource.CustomAttribute(e.getKey(), e.getValue()))
+            .collect(Collectors.toList()));
         try {
             if (task.getCustomAttribute("1") != null) {
                 resource.setCustom1(task.getCustomAttribute("1"));
@@ -141,6 +149,12 @@ public class TaskResourceAssembler
         task.setClassificationSummary(classificationAssembler.toModel(resource.getClassificationSummaryResource()));
         task.setWorkbasketSummary(workbasketAssembler.toModel(resource.getWorkbasketSummaryResource()));
         task.setAttachments(attachmentAssembler.toModel(resource.getAttachments()));
+        task.setCustomAttributes(resource.getCustomAttributes().stream()
+            .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())
+            .collect(Collectors.toMap(TaskResource.CustomAttribute::getKey, TaskResource.CustomAttribute::getValue)));
+        task.setCallbackInfo(resource.getCallbackInfo().stream()
+            .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())
+            .collect(Collectors.toMap(TaskResource.CustomAttribute::getKey, TaskResource.CustomAttribute::getValue)));
         if (resource.getCustom1() != null) {
             task.setCustom1(resource.getCustom1());
         }

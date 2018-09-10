@@ -14,7 +14,7 @@ import {FilterModel} from 'app/models/filter';
 })
 export class TasklistComponent implements OnInit, OnDestroy {
 
-  @Input() tasks: Task[];
+  tasks: Task[];
 
   currentBasket: Workbasket;
   selectedId = '';
@@ -66,17 +66,14 @@ export class TasklistComponent implements OnInit, OnDestroy {
       });
   }
 
-  loadTasks(tasks: Task[]) {
-    this.tasks = tasks;
+  selectTask(taskId: string) {
+    this.selectedId = taskId;
+    this.router.navigate([{ outlets: { detail: `taskdetail/${this.selectedId}` } }], { relativeTo: this.route });
   }
 
   loadBasketID(workbasket: Workbasket) {
     this.currentBasket = workbasket;
-  }
-
-  selectTask(taskId: string) {
-    this.selectedId = taskId;
-    this.router.navigate([{outlets: {detail: `taskdetail/${this.selectedId}`}}], {relativeTo: this.route});
+    this.getTasks();
   }
 
   performSorting(sort: SortingModel) {
@@ -96,7 +93,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
       this.filterBy.filterParams.state)
       .subscribe(tasks => {
         this.requestInProgress = false;
-        this.tasks = tasks._embedded ? tasks._embedded.tasks : this.tasks;
+        this.tasks = tasks._embedded ? tasks._embedded.tasks : [];
       });
   }
 

@@ -14,10 +14,10 @@
 
     <div class="pull-right margin-right">
       <taskana-sort
-        [enabled]="tasks.length > 0"
+        [enabled]="currentBasket"
         [sortingFields]="sortingFields"
         (performSorting)="sorting($event)"></taskana-sort>
-      <button [disabled]="tasks.length === 0" class="btn btn-default collapsed" type="button"
+      <button [disabled]="!currentBasket" class="btn btn-default collapsed" type="button"
               id="collapsedMenufilterWb" aria-expanded="false"
               (click)="toolbarState=!toolbarState">
         <span class="glyphicon glyphicon-filter blue"></span>
