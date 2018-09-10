@@ -218,11 +218,11 @@ public interface WorkbasketService {
     /**
      * This method provides a query builder for querying the database.
      *
-     * @return a {@link WorkbasketAccessItemExtendedQuery}
+     * @return a {@link WorkbasketAccessItemQuery.Extended}
      * @throws NotAuthorizedException
      *             if the current user is not member of role BUSINESS_ADMIN or ADMIN
      */
-    WorkbasketAccessItemExtendedQuery createWorkbasketAccessItemExtendedQuery() throws NotAuthorizedException;
+    WorkbasketAccessItemQuery.Extended createWorkbasketAccessItemExtendedQuery() throws NotAuthorizedException;
 
     /**
      * Returns a new workbasket which is not persisted.

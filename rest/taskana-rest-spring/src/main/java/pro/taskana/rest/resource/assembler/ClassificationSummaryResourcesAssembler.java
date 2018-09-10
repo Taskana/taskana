@@ -1,17 +1,18 @@
 package pro.taskana.rest.resource.assembler;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static pro.taskana.rest.resource.assembler.AbstractRessourcesAssembler.getBuilderForOriginalUri;
+
+import java.util.List;
+
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import pro.taskana.ClassificationSummary;
 import pro.taskana.rest.ClassificationController;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
-
-import java.util.List;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static pro.taskana.rest.resource.assembler.AbstractRessourcesAssembler.getBuilderForOriginalUri;
 
 /**
  * @author HH
