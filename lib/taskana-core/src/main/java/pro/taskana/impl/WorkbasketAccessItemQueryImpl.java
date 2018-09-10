@@ -174,10 +174,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     }
 
     private WorkbasketAccessItemQuery addOrderCriteria(String colName, SortDirection sortDirection) {
-        String orderByDirection = " ASC";
-        if (sortDirection != null && SortDirection.DESCENDING.equals(sortDirection)) {
-            orderByDirection = " DESC";
-        }
+        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING.toString() : sortDirection.toString());
         orderBy.add(colName + orderByDirection);
         orderColumns.add(colName);
         return this;

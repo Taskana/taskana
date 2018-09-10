@@ -1,23 +1,17 @@
 package pro.taskana.rest.resource.assembler;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import pro.taskana.ClassificationSummary;
 import pro.taskana.rest.ClassificationController;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
+
+import java.util.List;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static pro.taskana.rest.resource.assembler.AbstractRessourcesAssembler.getBuilderForOriginalUri;
 
 /**
  * @author HH
@@ -57,20 +51,6 @@ public class ClassificationSummaryResourcesAssembler {
         }
 
         return pagedResources;
-    }
-
-    private UriComponentsBuilder getBuilderForOriginalUri() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-            .getRequest();
-        UriComponentsBuilder baseUri = ServletUriComponentsBuilder.fromServletMapping(request)
-            .path(request.getRequestURI());
-        for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-            for (String value : entry.getValue()) {
-                baseUri.queryParam(entry.getKey(), value);
-            }
-        }
-        UriComponentsBuilder original = baseUri;
-        return original;
     }
 
 }

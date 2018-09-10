@@ -23,7 +23,7 @@ public abstract class AbstractRessourcesAssembler {
         original = getBuilderForOriginalUri();
     }
 
-    protected UriComponentsBuilder getBuilderForOriginalUri() {
+    protected static UriComponentsBuilder getBuilderForOriginalUri() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
             .getRequest();
         UriComponentsBuilder baseUri = ServletUriComponentsBuilder.fromServletMapping(request)
