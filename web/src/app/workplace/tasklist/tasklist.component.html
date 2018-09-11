@@ -4,22 +4,28 @@
                             (performFilter)="performFilter($event)">
   </taskana-tasklist-toolbar>
   <div *ngIf="!requestInProgress">
-    <ul #taskList id="task-list-container" class="list-group">
-      <li class="list-group-item" *ngIf="tasks === undefined || tasks.length === 0" type="text">
-        <b>This Workbasket has no Tasks</b>
-      </li>
-      <li class="list-group-item" *ngFor="let task of tasks" [class.active]="task.taskId == selectedId"
-          type="text" (click)="selectTask(task.taskId)">
-        <div class="row">
-          <dl class="col-xs-10">
-            <dt data-toggle="tooltip" title="{{task.name}}">{{task.name}}</dt>
-            <dd data-toggle="tooltip" title="{{task.owner}}">Owner: {{task.owner}} &nbsp;</dd>
-            <dd data-toggle="tooltip" title="{{task.priority}}">Priority: {{task.priority}} &nbsp;</dd>
-            <dd data-toggle="tooltip" title="{{task.state}}">State: {{task.state}} &nbsp;</dd>
-          </dl>
-        </div>
-      </li>
-    </ul>
+    <div *ngIf="(tasks && tasks.length > 0); else empty_list">
+      <ul #taskList id="task-list-container" class="list-group">
+        <li class="list-group-item"
+            *ngFor="let task of tasks" [class.active]="task.taskId == selectedId"
+            type="text" (click)="selectTask(task.taskId)">
+          <div class="row">
+            <dl class="col-xs-10">
+              <dt data-toggle="tooltip" title="{{task.name}}">{{task.name}}</dt>
+              <dd data-toggle="tooltip" title="{{task.owner}}">Owner: {{task.owner}} &nbsp;</dd>
+              <dd data-toggle="tooltip" title="{{task.priority}}">Priority: {{task.priority}} &nbsp;</dd>
+              <dd data-toggle="tooltip" title="{{task.state}}">State: {{task.state}} &nbsp;</dd>
+            </dl>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <ng-template #empty_list>
+      <div class="col-xs-12 container-no-items center-block">
+        <h3 class="grey">Select a workbasket</h3>
+        <svg-icon class="img-responsive empty-icon workbasket-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
+      </div>
+    </ng-template>
   </div>
 </div>
 <taskana-code></taskana-code>
