@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Task} from 'app/workplace/models/task';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TaskService} from 'app/workplace/services/task.service';
@@ -6,6 +6,8 @@ import {Subscription} from 'rxjs';
 import {SortingModel} from 'app/models/sorting';
 import {Workbasket} from 'app/models/workbasket';
 import {FilterModel} from 'app/models/filter';
+import {AlertService} from 'app/services/alert/alert.service';
+import {AlertModel, AlertType} from 'app/models/alert';
 
 @Component({
   selector: 'taskana-task-list',
@@ -35,7 +37,8 @@ export class TasklistComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-              private taskService: TaskService) {
+              private taskService: TaskService,
+              private alertService: AlertService) {
     this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe(task => {
       for (let i = 0; i < this.tasks.length; i++) {
         if (this.tasks[i].taskId === task.taskId) {
@@ -68,7 +71,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
 
   selectTask(taskId: string) {
     this.selectedId = taskId;
-    this.router.navigate([{ outlets: { detail: `taskdetail/${this.selectedId}` } }], { relativeTo: this.route });
+    this.router.navigate([{outlets: {detail: `taskdetail/${this.selectedId}`}}], {relativeTo: this.route});
   }
 
   loadBasketID(workbasket: Workbasket) {
@@ -93,7 +96,12 @@ export class TasklistComponent implements OnInit, OnDestroy {
       this.filterBy.filterParams.state)
       .subscribe(tasks => {
         this.requestInProgress = false;
-        this.tasks = tasks._embedded ? tasks._embedded.tasks : [];
+        if (tasks._embedded) {
+          this.tasks = tasks._embedded.tasks;
+        } else {
+          this.tasks = [];
+          this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'The selected Workbasket is empty!'));
+        }
       });
   }
 
