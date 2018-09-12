@@ -19,9 +19,12 @@ import {CodeComponent} from './components/code/code.component';
 import {OrderTasksByPipe} from './util/orderTasksBy.pipe';
 
 import {TaskService} from './services/task.service';
+import {ClassificationsService} from 'app/services/classifications/classifications.service';
 import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
-import {SharedModule} from '../shared/shared.module';
+import {SharedModule} from 'app/shared/shared.module';
 import {CustomHttpClientInterceptor} from './services/custom-http-interceptor/custom-http-interceptor.service';
+import {ClassificationCategoriesService} from 'app/services/classifications/classification-categories.service';
+import {WorkplaceService} from './services/workplace.service';
 
 
 const MODULES = [
@@ -52,6 +55,9 @@ const DECLARATIONS = [
   imports: MODULES,
   providers: [
     TaskService,
+    ClassificationsService,
+    ClassificationCategoriesService,
+    WorkplaceService,
     WorkbasketService,
     {
       provide: HTTP_INTERCEPTORS,

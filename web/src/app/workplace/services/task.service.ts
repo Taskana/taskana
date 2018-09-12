@@ -5,6 +5,7 @@ import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 import {TaskResource} from 'app/workplace/models/task-resource';
 import {Direction} from 'app/models/sorting';
+import {Workbasket} from 'app/models/workbasket';
 
 @Injectable()
 export class TaskService {
@@ -17,11 +18,15 @@ export class TaskService {
   STATE = 'state';
 
   url = `${environment.taskanaRestUrl}/v1/tasks`;
+
   taskChangedSource = new Subject<Task>();
   taskChangedStream = this.taskChangedSource.asObservable();
   taskDeletedSource = new Subject<Task>();
   taskDeletedStream = this.taskDeletedSource.asObservable();
-  private taskSelected = new Subject<Task>();
+  taskAddedSource = new Subject<Task>();
+  taskAddedStream = this.taskAddedSource.asObservable();
+  taskSelectedSource = new Subject<Task>();
+  taskSelectedStream = this.taskSelectedSource.asObservable();
 
   constructor(private httpClient: HttpClient) {
   }
@@ -34,12 +39,16 @@ export class TaskService {
     this.taskDeletedSource.next(task);
   }
 
+  publishAddedTask(task: Task) {
+    this.taskAddedSource.next(task);
+  }
+
   selectTask(task: Task) {
-    this.taskSelected.next(task);
+    this.taskSelectedSource.next(task);
   }
 
   getSelectedTask(): Observable<Task> {
-    return this.taskSelected.asObservable();
+    return this.taskSelectedStream;
   }
 
   /**
@@ -80,6 +89,10 @@ export class TaskService {
 
   deleteTask(task: Task): Observable<Task> {
     return this.httpClient.delete<Task>(`${this.url}/${task.taskId}`);
+  }
+
+  createTask(task: Task): Observable<Task> {
+    return this.httpClient.post<Task>(`${this.url}`, task);
   }
 
   private getTaskQueryParameters(basketId: string,

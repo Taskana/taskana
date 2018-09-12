@@ -17,7 +17,7 @@ export class DomainGuard implements CanActivate {
             }),
             catchError(() => {
                 this.errorModalService.triggerError(new ErrorModel(
-                    'There was an error, please contact with your administrator', 'There was an error getting Domains'))
+                    'There was an error, please contact with your administrator', 'There was an error getting Domains'));
                 return of(false)
             })
         );
