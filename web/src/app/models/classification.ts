@@ -1,15 +1,15 @@
-import { Links } from 'app/models/links';
+import {Links} from 'app/models/links';
 
 export class Classification {
-  constructor(public classificationId: string,
-    public key: string,
-    public category: string,
-    public type: string,
-    public domain: string,
-    public name: string,
-    public parentId: string,
-    public priority: number,
-    public serviceLevel: string,
-    public _links: Links = new Links()) {
+  constructor(public classificationId: string = undefined,
+              public key: string = undefined,
+              public category: string = undefined,
+              public type: string = undefined,
+              public domain: string = undefined,
+              public name: string = undefined,
+              public parentId: string = undefined,
+              public priority: number = undefined,
+              public serviceLevel: string = undefined,
+              public _links: Links = new Links()) {
   }
 }
