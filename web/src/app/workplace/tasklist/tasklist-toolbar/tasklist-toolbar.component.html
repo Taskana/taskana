@@ -1,8 +1,15 @@
 <li id="tasklist-action-toolbar" class="list-group-item tab-align">
   <div class="row">
-    <div class="col-xs-9">
+    <div *ngIf="currentBasket">
+      <button (click)="createTask()" type="button"
+              class="btn btn-default pull-left green-blue"
+              title="Add Task to current Workbasket">
+        <span class="glyphicon glyphicon-plus"></span>
+      </button>
+    </div>
+    <div class="col-xs-8">
       <div class="input-group">
-        <input [(ngModel)]="result" [typeahead]="workbasketNames" class="form-control"
+        <input [(ngModel)]="resultName" [typeahead]="workbasketNames" class="form-control"
                (typeaheadOnSelect)="workbasketSelected = true" (typeaheadNoResults)="workbasketSelected = false"
                placeholder="Search for Workbasket ..."/>
         <span class="input-group-btn">
@@ -14,10 +21,9 @@
 
     <div class="pull-right margin-right">
       <taskana-sort
-        [enabled]="currentBasket"
         [sortingFields]="sortingFields"
         (performSorting)="sorting($event)"></taskana-sort>
-      <button [disabled]="!currentBasket" class="btn btn-default collapsed" type="button"
+      <button class="btn btn-default collapsed" type="button"
               id="collapsedMenufilterWb" aria-expanded="false"
               (click)="toolbarState=!toolbarState">
         <span class="glyphicon glyphicon-filter blue"></span>

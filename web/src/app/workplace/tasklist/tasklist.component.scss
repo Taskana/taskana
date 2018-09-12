@@ -3,7 +3,7 @@
 }
 
 .task-list-full-height {
-  height: calc(100vh - 55px);
+  // height: calc(100vh - 55px);
 }
 
 .row.list-group {
@@ -18,8 +18,7 @@
 ul {
   max-height: 90vh;
   margin-bottom: 10px;
-  overflow: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 a > label {

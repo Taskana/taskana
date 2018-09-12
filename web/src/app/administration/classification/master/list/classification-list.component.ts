@@ -6,10 +6,10 @@ import { TaskanaType } from 'app/models/taskana-type';
 import { Classification } from 'app/models/classification';
 import { TreeNodeModel } from 'app/models/tree-node';
 
-import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
+import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import {
 	ClassificationCategoriesService
-} from 'app/administration/services/classification-categories-service/classification-categories.service';
+} from 'app/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
 import { ClassificationDefinition } from '../../../../models/classification-definition';
 

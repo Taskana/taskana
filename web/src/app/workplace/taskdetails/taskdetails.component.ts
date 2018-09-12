@@ -1,16 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
 
-import { TaskService } from 'app/workplace/services/task.service';
-import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+import {TaskService} from 'app/workplace/services/task.service';
+import {RemoveConfirmationService} from 'app/services/remove-confirmation/remove-confirmation.service';
 
-import { Task } from 'app/workplace/models/task';
-import { ErrorModel } from '../../models/modal-error';
-import { ErrorModalService } from '../../services/errorModal/error-modal.service';
-import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
-import { AlertService } from '../../services/alert/alert.service';
-import { AlertModel, AlertType } from '../../models/alert';
+import {Task} from 'app/workplace/models/task';
+import {ErrorModel} from 'app/models/modal-error';
+import {ErrorModalService} from 'app/services/errorModal/error-modal.service';
+import {RequestInProgressService} from 'app/services/requestInProgress/request-in-progress.service';
+import {AlertService} from 'app/services/alert/alert.service';
+import {AlertModel, AlertType} from 'app/models/alert';
+import {TaskanaDate} from 'app/shared/util/taskana.date';
+import {ObjectReference} from 'app/workplace/models/object-reference';
+import {Workbasket} from 'app/models/workbasket';
+import {WorkplaceService} from 'app/workplace/services/workplace.service';
 
 @Component({
   selector: 'taskana-task-details',
@@ -18,63 +22,104 @@ import { AlertModel, AlertType } from '../../models/alert';
   styleUrls: ['./taskdetails.component.scss']
 })
 export class TaskdetailsComponent implements OnInit, OnDestroy {
-  task: Task = null;
-  taskClone: Task = null;
+  task: Task = undefined;
+  taskClone: Task = undefined;
   requestInProgress = false;
   tabSelected = 'general';
+  currentWorkbasket: Workbasket = undefined;
+  currentId: string = undefined;
 
   private routeSubscription: Subscription;
-
+  private workbasketSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
-    private taskService: TaskService,
-    private router: Router,
-    private removeConfirmationService: RemoveConfirmationService,
-    private requestInProgressService: RequestInProgressService,
-    private alertService: AlertService,
-    private errorModalService: ErrorModalService) {
+              private taskService: TaskService,
+              private workplaceService: WorkplaceService,
+              private router: Router,
+              private removeConfirmationService: RemoveConfirmationService,
+              private requestInProgressService: RequestInProgressService,
+              private alertService: AlertService,
+              private errorModalService: ErrorModalService) {
   }
 
   ngOnInit() {
+    this.currentWorkbasket = this.workplaceService.currentWorkbasket;
+    this.workbasketSubscription = this.workplaceService.getSelectedWorkbasket().subscribe(workbasket => {
+      this.currentWorkbasket = workbasket;
+    });
     this.routeSubscription = this.route.params.subscribe(params => {
-      const id = params['id'];
-      this.getTask(id);
+      this.currentId = params['id'];
+      if (!this.currentWorkbasket && this.currentId === 'new-task') {
+        this.router.navigate(['']);
+      }
+      this.getTask();
     });
   }
 
   resetTask(): void {
-    this.task = { ...this.taskClone };
+    this.task = {...this.taskClone};
     this.task.customAttributes = this.taskClone.customAttributes.slice(0);
     this.task.callbackInfo = this.taskClone.callbackInfo.slice(0);
+    this.task.primaryObjRef = {...this.taskClone.primaryObjRef};
     this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
   }
 
-  getTask(id: string): void {
+  getTask(): void {
     this.requestInProgress = true;
-    this.taskService.getTask(id).subscribe(task => {
+    if (this.currentId === 'new-task') {
       this.requestInProgress = false;
-      this.task = task;
+      this.task = new Task(undefined, new ObjectReference(), this.currentWorkbasket);
       this.cloneTask();
-      this.taskService.selectTask(task);
-    }, err => {
-      this.errorModalService.triggerError(
-        new ErrorModel('An error occurred while fetching the task', err));
-    });
+    } else {
+      this.taskService.getTask(this.currentId).subscribe(task => {
+        this.requestInProgress = false;
+        this.task = task;
+        this.cloneTask();
+        this.taskService.selectTask(task);
+      }, err => {
+        this.errorModalService.triggerError(
+          new ErrorModel('An error occurred while fetching the task', err));
+      });
+    }
+  }
+
+  onSave() {
+    this.requestInProgressService.setRequestInProgress(true);
+    this.currentId === 'new-task' ? this.createTask() : this.updateTask();
   }
 
   updateTask() {
-    this.requestInProgressService.setRequestInProgress(true);
     this.taskService.updateTask(this.task).subscribe(task => {
       this.requestInProgressService.setRequestInProgress(false);
       this.task = task;
       this.cloneTask();
       this.taskService.publishUpdatedTask(task);
       this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Update successful!'))
-    }, err => {this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'Update not successful!'))});
+    }, err => {
+      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'Update not successful!'))
+    });
   }
 
-  openTask(taskId: string) {
-    this.router.navigate([{ outlets: { detail: `task/${taskId}` } }], { relativeTo: this.route.parent });
+  createTask() {
+    this.addDateToTask();
+    this.taskService.createTask(this.task).subscribe(task => {
+      this.requestInProgressService.setRequestInProgress(false);
+      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Task ${this.currentId} was created successfully`));
+      this.task = task;
+      this.taskService.selectTask(this.task);
+      this.taskService.publishAddedTask(task);
+      this.router.navigate(['../' + task.taskId], {relativeTo: this.route});
+    });
+  }
+
+  private addDateToTask() {
+    const date = TaskanaDate.getDate();
+    this.task.created = date;
+    this.task.modified = date;
+  }
+
+  openTask() {
+    this.router.navigate([{outlets: {detail: `task/${this.currentId}`}}], {relativeTo: this.route.parent});
   }
 
   workOnTaskDisabled(): boolean {
@@ -83,9 +128,8 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
 
   deleteTask(): void {
     this.removeConfirmationService.setRemoveConfirmation(this.deleteTaskConfirmation.bind(this),
-      `You are going to delete Task: ${this.task.taskId}. Can you confirm this action?`);
+      `You are going to delete Task: ${this.currentId}. Can you confirm this action?`);
   }
-
 
   deleteTaskConfirmation(): void {
     this.taskService.deleteTask(this.task).subscribe();
@@ -101,7 +145,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   backClicked(): void {
     this.task = undefined;
     this.taskService.selectTask(this.task);
-    this.router.navigate(['./'], { relativeTo: this.route.parent });
+    this.router.navigate(['./'], {relativeTo: this.route.parent});
   }
 
   ngOnDestroy(): void {
@@ -111,8 +155,9 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   private cloneTask() {
-    this.taskClone = { ...this.task };
+    this.taskClone = {...this.task};
     this.taskClone.customAttributes = this.task.customAttributes.slice(0);
     this.taskClone.callbackInfo = this.task.callbackInfo.slice(0);
+    this.taskClone.primaryObjRef = {...this.task.primaryObjRef};
   }
 }
