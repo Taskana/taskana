@@ -48,9 +48,9 @@ public class TaskanaEngineConfiguration {
     private static final String TASKANA_ROLES_SEPARATOR = "|";
     private static final String TASKANA_JOB_BATCHSIZE = "taskana.jobs.batchSize";
     private static final String TASKANA_JOB_RETRIES = "taskana.jobs.maxRetries";
-    private static final String TASKANA_JOB_TASK_CLEANUP_RUN_EVERY = "taskana.jobs.cleanup.runEvery";
-    private static final String TASKANA_JOB_TASK_CLEANUP_FIRST_RUN = "taskana.jobs.cleanup.firstRunAt";
-    private static final String TASKANA_JOB_TASK_CLEANUP_MINIMUM_AGE = "taskana.jobs.cleanup.minimumAge";
+    private static final String TASKANA_JOB_CLEANUP_RUN_EVERY = "taskana.jobs.cleanup.runEvery";
+    private static final String TASKANA_JOB_CLEANUP_FIRST_RUN = "taskana.jobs.cleanup.firstRunAt";
+    private static final String TASKANA_JOB_CLEANUP_MINIMUM_AGE = "taskana.jobs.cleanup.minimumAge";
     private static final String TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENTE_BUSINESS = "taskana.jobs.cleanup.allCompletedSameParentBusiness";
 
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
@@ -86,9 +86,9 @@ public class TaskanaEngineConfiguration {
     private int maxNumberOfJobRetries = 3;
 
     // Properties for the cleanup job
-    private Instant taskCleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
-    private Duration taskCleanupJobRunEvery = Duration.parse("P1D");
-    private Duration taskCleanupJobMinimumAge = Duration.parse("P14D");
+    private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
+    private Duration cleanupJobRunEvery = Duration.parse("P1D");
+    private Duration cleanupJobMinimumAge = Duration.parse("P14D");
     private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
 
     // List of configured domain names
@@ -174,30 +174,30 @@ public class TaskanaEngineConfiguration {
             }
         }
 
-        String taskCleanupJobFirstRunProperty = props.getProperty(TASKANA_JOB_TASK_CLEANUP_FIRST_RUN);
+        String taskCleanupJobFirstRunProperty = props.getProperty(TASKANA_JOB_CLEANUP_FIRST_RUN);
         if (taskCleanupJobFirstRunProperty != null && !taskCleanupJobFirstRunProperty.isEmpty()) {
             try {
-                taskCleanupJobFirstRun = Instant.parse(taskCleanupJobFirstRunProperty);
+                cleanupJobFirstRun = Instant.parse(taskCleanupJobFirstRunProperty);
             } catch (Exception e) {
                 LOGGER.warn("Could not parse taskCleanupJobFirstRunProperty ({}). Using default. Exception: {} ",
                     taskCleanupJobFirstRunProperty, e.getMessage());
             }
         }
 
-        String taskCleanupJobRunEveryProperty = props.getProperty(TASKANA_JOB_TASK_CLEANUP_RUN_EVERY);
+        String taskCleanupJobRunEveryProperty = props.getProperty(TASKANA_JOB_CLEANUP_RUN_EVERY);
         if (taskCleanupJobRunEveryProperty != null && !taskCleanupJobRunEveryProperty.isEmpty()) {
             try {
-                taskCleanupJobRunEvery = Duration.parse(taskCleanupJobRunEveryProperty);
+                cleanupJobRunEvery = Duration.parse(taskCleanupJobRunEveryProperty);
             } catch (Exception e) {
                 LOGGER.warn("Could not parse taskCleanupJobRunEveryProperty ({}). Using default. Exception: {} ",
                     taskCleanupJobRunEveryProperty, e.getMessage());
             }
         }
 
-        String taskCleanupJobMinimumAgeProperty = props.getProperty(TASKANA_JOB_TASK_CLEANUP_MINIMUM_AGE);
+        String taskCleanupJobMinimumAgeProperty = props.getProperty(TASKANA_JOB_CLEANUP_MINIMUM_AGE);
         if (taskCleanupJobMinimumAgeProperty != null && !taskCleanupJobMinimumAgeProperty.isEmpty()) {
             try {
-                taskCleanupJobMinimumAge = Duration.parse(taskCleanupJobMinimumAgeProperty);
+                cleanupJobMinimumAge = Duration.parse(taskCleanupJobMinimumAgeProperty);
             } catch (Exception e) {
                 LOGGER.warn("Could not parse taskCleanupJobMinimumAgeProperty ({}). Using default. Exception: {} ",
                     taskCleanupJobMinimumAgeProperty, e.getMessage());
@@ -218,12 +218,12 @@ public class TaskanaEngineConfiguration {
             }
         }
 
-        LOGGER.debug("Configured number of task updates per transaction: {}", jobBatchSize);
+        LOGGER.debug("Configured number of task and workbasket updates per transaction: {}", jobBatchSize);
         LOGGER.debug("Number of retries of failed task updates: {}", maxNumberOfJobRetries);
-        LOGGER.debug("TaskCleanupJob configuration: first run at {}", taskCleanupJobFirstRun);
-        LOGGER.debug("TaskCleanupJob configuration: runs every {}", taskCleanupJobRunEvery);
-        LOGGER.debug("TaskCleanupJob configuration: minimum age of tasks to be cleanup up is {}",
-            taskCleanupJobMinimumAge);
+        LOGGER.debug("CleanupJob configuration: first run at {}", cleanupJobFirstRun);
+        LOGGER.debug("CleanupJob configuration: runs every {}", cleanupJobRunEvery);
+        LOGGER.debug("CleanupJob configuration: minimum age of tasks to be cleanup up is {}",
+                cleanupJobMinimumAge);
         LOGGER.debug("TaskCleanupJob configuration: all completed task with the same parent business property id {}",
             taskCleanupJobAllCompletedSameParentBusiness);
     }
@@ -399,7 +399,7 @@ public class TaskanaEngineConfiguration {
         return this.propertiesFileName;
     }
 
-    public int getMaxNumberOfTaskUpdatesPerTransaction() {
+    public int getMaxNumberOfUpdatesPerTransaction() {
         return jobBatchSize;
     }
 
@@ -475,16 +475,16 @@ public class TaskanaEngineConfiguration {
         this.classificationCategoriesByTypeMap = classificationCategoriesByType;
     }
 
-    public Instant getTaskCleanupJobFirstRun() {
-        return taskCleanupJobFirstRun;
+    public Instant getCleanupJobFirstRun() {
+        return cleanupJobFirstRun;
     }
 
-    public Duration getTaskCleanupJobRunEvery() {
-        return taskCleanupJobRunEvery;
+    public Duration getCleanupJobRunEvery() {
+        return cleanupJobRunEvery;
     }
 
-    public Duration getTaskCleanupJobMinimumAge() {
-        return taskCleanupJobMinimumAge;
+    public Duration getCleanupJobMinimumAge() {
+        return cleanupJobMinimumAge;
     }
 
     public void setTaskCleanupJobAllCompletedSameParentBusiness(boolean taskCleanupJobAllCompletedSameParentBusiness) {
