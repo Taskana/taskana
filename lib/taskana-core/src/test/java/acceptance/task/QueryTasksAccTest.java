@@ -71,7 +71,6 @@ public class QueryTasksAccTest extends AbstractAccTest {
         assertEquals(3, columnValueList.size());
     }
 
-
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"admin"})
@@ -85,6 +84,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         assertEquals(2, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
+            .attachmentReferenceValueLike("%")
             .listValues("REF_VALUE", null);
         assertNotNull(columnValueList);
         assertEquals(6, columnValueList.size());
@@ -93,7 +93,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .orderByAttachmentClassificationId(desc)
             .listValues("a.CLASSIFICATION_ID", null);
         assertNotNull(columnValueList);
-        assertEquals(11, columnValueList.size());
+        assertEquals(12, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
             .orderByClassificationKey(desc)
@@ -1100,6 +1100,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom1Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("1", "%")
             .orderByCustomAttribute("1", asc)
             .list();
         assertEquals("custom1", results.get(0).getCustomAttribute("1"));
@@ -1111,6 +1112,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom2Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("2", "%")
             .orderByCustomAttribute("2", desc)
             .list();
         assertEquals("custom2", results.get(0).getCustomAttribute("2"));
@@ -1122,6 +1124,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom3Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("3", "%")
             .orderByCustomAttribute("3", asc)
             .list();
         assertEquals("custom3", results.get(0).getCustomAttribute("3"));
@@ -1133,9 +1136,12 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom4Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("4", "%")
             .orderByCustomAttribute("4", desc)
             .list();
-        assertEquals("rty", results.get(0).getCustomAttribute("4"));
+
+        assertEquals("rty",
+            results.get(0).getCustomAttribute("4"));
     }
 
     @WithAccessId(
@@ -1144,6 +1150,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom5Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("5", "%")
             .orderByCustomAttribute("5", asc)
             .list();
         assertEquals("al", results.get(0).getCustomAttribute("5"));
@@ -1155,6 +1162,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom6Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("6", "%")
             .orderByCustomAttribute("6", desc)
             .list();
         assertEquals("vvg", results.get(0).getCustomAttribute("6"));
@@ -1167,6 +1175,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByCustomAttribute("7", asc)
+            .customAttributeLike("7", "%")
             .list();
         assertEquals("custom7", results.get(0).getCustomAttribute("7"));
     }
@@ -1178,6 +1187,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByCustomAttribute("8", desc)
+            .customAttributeLike("8", "%")
             .list();
         assertEquals("lnp", results.get(0).getCustomAttribute("8"));
     }
@@ -1188,6 +1198,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom9Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("9", "%")
             .orderByCustomAttribute("9", asc)
             .list();
         assertEquals("bbq", results.get(0).getCustomAttribute("9"));
@@ -1199,6 +1210,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom10Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("10", "%")
             .orderByCustomAttribute("10", desc)
             .list();
         assertEquals("ert", results.get(0).getCustomAttribute("10"));
@@ -1211,8 +1223,12 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByCustomAttribute("11", desc)
+            .customAttributeLike("11", "%")
             .list();
-        assertEquals("ert", results.get(0).getCustomAttribute("11"));
+
+        assertEquals("ert",
+            results.get(0).getCustomAttribute("11"));
+
     }
 
     @WithAccessId(
@@ -1221,6 +1237,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom12Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("12", "%")
             .orderByCustomAttribute("12", asc)
             .list();
         assertEquals("custom12", results.get(0).getCustomAttribute("12"));
@@ -1232,9 +1249,12 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom13Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("13", "%")
             .orderByCustomAttribute("13", desc)
             .list();
-        assertEquals("ert", results.get(0).getCustomAttribute("13"));
+
+        assertEquals("ert",
+            results.get(0).getCustomAttribute("13"));
     }
 
     @WithAccessId(
@@ -1243,6 +1263,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom14Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("14", "%")
             .orderByCustomAttribute("14", asc)
             .list();
         assertEquals("abc", results.get(0).getCustomAttribute("14"));
@@ -1254,9 +1275,12 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom15Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("15", "%")
             .orderByCustomAttribute("15", desc)
             .list();
-        assertEquals("ert", results.get(0).getCustomAttribute("15"));
+
+        assertEquals("ert",
+            results.get(0).getCustomAttribute("15"));
     }
 
     @WithAccessId(
@@ -1265,6 +1289,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom16Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
+            .customAttributeLike("16", "%")
             .orderByCustomAttribute("16", asc)
             .list();
         assertEquals("custom16", results.get(0).getCustomAttribute("16"));
@@ -1396,5 +1421,4 @@ public class QueryTasksAccTest extends AbstractAccTest {
         assertEquals("L1050", results.get(0).getClassificationSummary().getKey());
         assertEquals("T2000", results.get(results.size() - 1).getClassificationSummary().getKey());
     }
-
 }

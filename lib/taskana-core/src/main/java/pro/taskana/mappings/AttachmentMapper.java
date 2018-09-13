@@ -74,7 +74,7 @@ public interface AttachmentMapper {
     })
     AttachmentImpl getAttachment(@Param("attachmentId") String attachmentId);
 
-    @Select("<script>SELECT DISTINCT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED "
+    @Select("<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED "
         + "FROM ATTACHMENT "
         + "<where>"
         + "TASK_ID IN (<foreach collection='taskIds' item='item' separator=',' >#{item}</foreach>) "
