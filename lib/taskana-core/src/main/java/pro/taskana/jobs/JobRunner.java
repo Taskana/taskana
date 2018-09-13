@@ -63,11 +63,9 @@ public class JobRunner {
     }
 
     private ScheduledJob lockJobTransactionally(ScheduledJob job) {
-        ScheduledJob lockedJob = null;
+        ScheduledJob lockedJob;
         if (txProvider != null) {
-            lockedJob = (ScheduledJob) txProvider.executeInTransaction(() -> {
-                return lockJob(job);
-            });
+            lockedJob = (ScheduledJob) txProvider.executeInTransaction(() -> lockJob(job));
         } else {
             lockedJob = lockJob(job);
         }
@@ -101,25 +99,9 @@ public class JobRunner {
             jobService.deleteJob(scheduledJob);
         } catch (Exception e) {
             e.printStackTrace();
-            // transaction was rolled back -> split job into 2 half sized jobs
             LOGGER.warn(
                 "Processing of job " + scheduledJob.getJobId() + " failed. Trying to split it up into two pieces...",
                 e);
-            // rescheduleBisectedJob(bulkLog, job);
-            // List<String> objectIds;
-            // if (job.getType().equals(ScheduledJob.Type.UPDATETASKSJOB)) {
-            // String taskIdsAsString = job.getArguments().get(SingleJobExecutor.TASKIDS);
-            // objectIds = Arrays.asList(taskIdsAsString.split(","));
-            // } else if (job.getType().equals(ScheduledJob.Type.CLASSIFICATIONCHANGEDJOB)) {
-            // String classificationId = job.getArguments().get(SingleJobExecutor.CLASSIFICATION_ID);
-            // objectIds = Arrays.asList(classificationId);
-            // } else {
-            // throw new SystemException("Unknown Jobtype " + job.getType() + " encountered.");
-            // }
-            // for (String objectId : objectIds) {
-            // bulkLog.addError(objectId, e);
-            // }
-            // setJobFailed(job, bulkLog);
         }
     }
 

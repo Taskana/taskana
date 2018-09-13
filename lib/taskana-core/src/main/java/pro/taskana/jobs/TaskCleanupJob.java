@@ -39,10 +39,10 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     public TaskCleanupJob(TaskanaEngine taskanaEngine, TaskanaTransactionProvider<Object> txProvider,
         ScheduledJob scheduledJob) {
         super(taskanaEngine, txProvider, scheduledJob);
-        firstRun = taskanaEngine.getConfiguration().getTaskCleanupJobFirstRun();
-        runEvery = taskanaEngine.getConfiguration().getTaskCleanupJobRunEvery();
-        minimumAge = taskanaEngine.getConfiguration().getTaskCleanupJobMinimumAge();
-        batchSize = taskanaEngine.getConfiguration().getMaxNumberOfTaskUpdatesPerTransaction();
+        firstRun = taskanaEngine.getConfiguration().getCleanupJobFirstRun();
+        runEvery = taskanaEngine.getConfiguration().getCleanupJobRunEvery();
+        minimumAge = taskanaEngine.getConfiguration().getCleanupJobMinimumAge();
+        batchSize = taskanaEngine.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
         allCompletedSameParentBusiness = taskanaEngine.getConfiguration()
             .isTaskCleanupJobAllCompletedSameParentBusiness();
     }
@@ -62,10 +62,11 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
                 totalNumberOfTasksCompleted += deleteTasksTransactionally(tasksCompletedBefore.subList(0, upperLimit));
                 tasksCompletedBefore.subList(0, upperLimit).clear();
             }
-            scheduleNextCleanupJob();
             LOGGER.info("Job ended successfully. {} tasks deleted.", totalNumberOfTasksCompleted);
         } catch (Exception e) {
             throw new TaskanaException("Error while processing TaskCleanupJob.", e);
+        } finally {
+            scheduleNextCleanupJob();
         }
     }
 
@@ -80,11 +81,10 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
             Map<String, Long> numberParentTasksShouldHave = new HashMap<>();
             Map<String, Long> countParentTask = new HashMap<>();
             for (TaskSummary task : taskList) {
-                numberParentTasksShouldHave.put(task.getParentBusinessProcessId(),
-                    taskanaEngineImpl.getTaskService()
-                        .createTaskQuery()
-                        .parentBusinessProcessIdIn(task.getParentBusinessProcessId())
-                        .count());
+                numberParentTasksShouldHave.put(task.getParentBusinessProcessId(), taskanaEngineImpl.getTaskService()
+                    .createTaskQuery()
+                    .parentBusinessProcessIdIn(task.getParentBusinessProcessId())
+                    .count());
                 countParentTask.merge(task.getParentBusinessProcessId(), 1L, Long::sum);
             }
 
@@ -145,7 +145,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
         return tasksIdsToBeDeleted.size() - results.getFailedIds().size();
     }
 
-    public void scheduleNextCleanupJob() {
+    private void scheduleNextCleanupJob() {
         LOGGER.debug("Entry to scheduleNextCleanupJob.");
         ScheduledJob job = new ScheduledJob();
         job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
