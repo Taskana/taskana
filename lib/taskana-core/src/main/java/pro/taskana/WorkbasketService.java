@@ -6,6 +6,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -317,6 +318,18 @@ public interface WorkbasketService {
      *             if the workbasketId is NULL or EMPTY
      */
     boolean deleteWorkbasket(String workbasketId)
+        throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException;
+
+    /**
+     * Deletes a list of workbaskets.
+     *
+     * @param workbasketsIds
+     *            the ids of the workbaskets to delete.
+     * @return the result of the operations with Id and Exception for each failed workbasket deletion.
+     * @throws InvalidArgumentException
+     *             if the WorkbasketId parameter is NULL
+     */
+    BulkOperationResults<String, TaskanaException> deleteWorkbaskets(List<String> workbasketsIds)
         throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException;
 
     /**

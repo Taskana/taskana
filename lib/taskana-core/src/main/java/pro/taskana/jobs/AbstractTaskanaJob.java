@@ -34,6 +34,8 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
                 return new TaskRefreshJob(engine, txProvider, job);
             case TASKCLEANUPJOB:
                 return new TaskCleanupJob(engine, txProvider, job);
+            case WORKBASKETCLEANUPJOB:
+                return new WorkbasketCleanupJob(engine, txProvider, job);
             default:
                 throw new TaskanaException(
                     "No matching job found for " + job.getType() + " of ScheduledJob " + job.getJobId() + ".");
