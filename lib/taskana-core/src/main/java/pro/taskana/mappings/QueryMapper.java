@@ -1167,6 +1167,7 @@ public interface QueryMapper {
         + "<if test='orgLevel3Like != null'>AND (<foreach item='item' collection='orgLevel3Like' separator=' OR ' >UPPER(w.ORG_LEVEL_3) LIKE #{item}</foreach>)</if> "
         + "<if test='orgLevel4In != null'>AND w.ORG_LEVEL_4 IN(<foreach item='item' collection='orgLevel4In' separator=',' >#{item}</foreach>)</if> "
         + "<if test='orgLevel4Like != null'>AND (<foreach item='item' collection='orgLevel4Like' separator=' OR ' >UPPER(w.ORG_LEVEL_4) LIKE #{item}</foreach>)</if> "
+        + "<if test='isDeletionFlagActivated != null'>AND w.DELETION_FLAG = #{isDeletionFlagActivated}</if> "
         + "<if test = 'joinWithAccessList'> "
         + "<if test = 'checkReadPermission'> "
         + "AND (a.MAX_READ = 1 "
