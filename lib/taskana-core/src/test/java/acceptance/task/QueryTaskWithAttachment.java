@@ -16,7 +16,6 @@ import pro.taskana.AttachmentSummary;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.security.JAASRunner;
@@ -33,14 +32,14 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
     }
 
     @WithAccessId(
-            userName = "user_1_1",
-            groupNames = {"group_1"})
+        userName = "user_1_1",
+        groupNames = {"group_1"})
     @Test
     public void testGetAttachmentSummariesFromTask() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> tasks = taskService.createTaskQuery()
-                .classificationKeyIn("L110102")
-                .list();
+            .classificationKeyIn("L110102")
+            .list();
         assertEquals(1, tasks.size());
 
         List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
@@ -49,12 +48,12 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
     }
 
     @WithAccessId(
-            userName = "user_1_2")
+        userName = "user_1_2")
     @Test
     public void testGetNoAttachmentSummaryFromTask() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> tasks = taskService.createTaskQuery()
-                .list();
+            .list();
         assertEquals(20, tasks.size());
 
         List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
@@ -63,8 +62,8 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
     }
 
     @WithAccessId(
-            userName = "user_1_1",
-            groupNames = {"group_1"})
+        userName = "user_1_1",
+        groupNames = {"group_1"})
     @Test
     public void testIfNewTaskHasEmptyAttachmentList() {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -74,39 +73,42 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
     }
 
     @WithAccessId(
-            userName = "user_1_1",
-            groupNames = {"group_1"})
+        userName = "user_1_1",
+        groupNames = {"group_1"})
     @Test
-    public void testIfAttachmentSummariesAreCorrect()
-            throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
+    public void testIfAttachmentSummariesAreCorrectUsingTaskQueryAndGetTaskById()
+        throws TaskNotFoundException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         // find Task with ID TKI:00...00
         List<TaskSummary> tasks = taskService.createTaskQuery()
-                .classificationKeyIn("T2000")
-                .customAttributeIn("1", "custom1")
-                .list();
+            .idIn("TKI:000000000000000000000000000000000000")
+            .list();
         assertEquals(1, tasks.size());
+        List<AttachmentSummary> queryAttachmentSummaries = tasks.get(0).getAttachmentSummaries();
 
         Task originalTask = taskService.getTask("TKI:000000000000000000000000000000000000");
-        Attachment originalAttachment = originalTask.getAttachments().get(0);
+        List<Attachment> originalAttachments = originalTask.getAttachments();
 
-        // Test if it's the Summary of the Original Attachment
-        AttachmentSummary queryAttachmentSummary = tasks.get(0).getAttachmentSummaries().get(0);
-        assertEquals(originalAttachment.asSummary(), queryAttachmentSummary);
+        assertEquals(originalAttachments.size(), queryAttachmentSummaries.size());
 
-        // Test if the values are correct
-        assertEquals(originalAttachment.getChannel(), queryAttachmentSummary.getChannel());
-        assertEquals(originalAttachment.getClassificationSummary(), queryAttachmentSummary.getClassificationSummary());
-        assertEquals(originalAttachment.getCreated(), queryAttachmentSummary.getCreated());
-        assertEquals(originalAttachment.getId(), queryAttachmentSummary.getId());
-        assertEquals(originalAttachment.getModified(), queryAttachmentSummary.getModified());
-        assertEquals(originalAttachment.getObjectReference(), queryAttachmentSummary.getObjectReference());
-        assertEquals(originalAttachment.getReceived(), queryAttachmentSummary.getReceived());
-        assertEquals(originalAttachment.getTaskId(), queryAttachmentSummary.getTaskId());
+        for (int i = 0; i < queryAttachmentSummaries.size(); i++) {
+            // Test if it's the Summary of the Original Attachment
+            assertEquals(originalAttachments.get(i).asSummary(), queryAttachmentSummaries.get(i));
+            // Test if the values are correct
+            assertEquals(originalAttachments.get(i).getChannel(), queryAttachmentSummaries.get(i).getChannel());
+            assertEquals(originalAttachments.get(i).getClassificationSummary(),
+                queryAttachmentSummaries.get(i).getClassificationSummary());
+            assertEquals(originalAttachments.get(i).getCreated(), queryAttachmentSummaries.get(i).getCreated());
+            assertEquals(originalAttachments.get(i).getId(), queryAttachmentSummaries.get(i).getId());
+            assertEquals(originalAttachments.get(i).getModified(), queryAttachmentSummaries.get(i).getModified());
+            assertEquals(originalAttachments.get(i).getObjectReference(),
+                queryAttachmentSummaries.get(i).getObjectReference());
+            assertEquals(originalAttachments.get(i).getReceived(), queryAttachmentSummaries.get(i).getReceived());
+            assertEquals(originalAttachments.get(i).getTaskId(), queryAttachmentSummaries.get(i).getTaskId());
 
-        // Verify that they're not the same Object
-        assertNotEquals(originalAttachment.hashCode(), queryAttachmentSummary.hashCode());
-        assertNotEquals(originalAttachment.getClass(), queryAttachmentSummary.getClass());
+            // Verify that they're not the same Object
+            assertNotEquals(originalAttachments.get(i).hashCode(), queryAttachmentSummaries.get(i).hashCode());
+            assertNotEquals(originalAttachments.get(i).getClass(), queryAttachmentSummaries.get(i).getClass());
+        }
     }
-
 }
