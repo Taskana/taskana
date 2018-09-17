@@ -1,8 +1,8 @@
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right btn-group">
-			<button type="button" (click)="onSubmit()" [disabled]="action === 'COPY'" class="btn btn-default btn-primary" data-toggle="tooltip"
-			 title="Save">
+			<button type="button" (click)="onSubmit()" [disabled]="action === 'COPY'" class="btn btn-default btn-primary"
+			 data-toggle="tooltip" title="Save">
 				<span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
 			</button>
 			<button type="button" (click)="clear()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
@@ -47,18 +47,20 @@
 								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 							</button>
 						</td>
-						<td *ngIf="accessIdField.lookupField else accessIdInput" class="input-group text-align text-width taskana-type-ahead" [ngClass]="{
+						<td *ngIf="accessIdField.lookupField else accessIdInput" class="input-group text-align text-width taskana-type-ahead"
+						 [ngClass]="{
 							'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
 							'has-error': !accessItem.value.accessId }">
-							<taskana-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required"
-							 [validationValue]="toogleValidationAccessIdMap.get(index)" [displayError]="!isFieldValid('accessItem.value.accessId', index)"></taskana-type-ahead>
+							<taskana-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required" [validationValue]="toogleValidationAccessIdMap.get(index)"
+							 [displayError]="!isFieldValid('accessItem.value.accessId', index)" (onSelect)="accessItemSelected($event, index)"></taskana-type-ahead>
 						</td>
 						<ng-template #accessIdInput>
 							<td class="input-group text-align text-width">
 								<div [ngClass]="{ 'has-warning': (accessItemsClone[index].accessId !==accessItem.value.accessId), 'has-error':
 							 !accessItem.value.accessId && formSubmitAttempt}">
 									<input type="text" class="form-control" formControlName="accessId" placeholder="{{accessItem.invalid?
-							 '* Access id is required': ''}}" [@validation]="toogleValidationAccessIdMap.get(index)">
+							 '* Access id is required': ''}}"
+									 [@validation]="toogleValidationAccessIdMap.get(index)">
 								</div>
 							</td>
 						</ng-template>
