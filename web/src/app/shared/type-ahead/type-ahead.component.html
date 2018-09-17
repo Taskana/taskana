@@ -15,14 +15,11 @@
                    'disable': disable}" class="wrapper-text" (click)="setTyping(true)">
     <span>
       <label>
-        {{dataSource.selected?.accessId}}
+        {{dataSource.selected?.name}}
       </label>
     </span>
     <div class="input-group">
-      <div>{{dataSource.selected?.name}}</div>
-      <button *ngIf="!disable" type="button" (click)="clear()" title="clear search" class="btn rounded remove">
-        <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-      </button>
+      <div>{{dataSource.selected?.accessId}}</div>
     </div>
   </div>
   <div [ngClass]="{'hidden': dataSource.selected && !typing}">
@@ -31,13 +28,12 @@
         {{dataSource.selected?.name}}
       </label>
     </span>
-
     <div class="input-group">
       <input #inputTypeAhead class=" form-control input-text" [ngClass]="{'invalid': dataSource.length == null}" (blur)="typeaheadOnSelect({'item':dataSource.selected})" name="accessItem-{{index}}"
         required #accessItemName="ngModel" [(ngModel)]="value" [typeahead]="dataSource" typeaheadOptionField="name" [typeaheadItemTemplate]="customItemTemplate"
         (typeaheadOnSelect)="typeaheadOnSelect($event, index)" [typeaheadScrollable]="true" [typeaheadOptionsInScrollableView]="typeaheadOptionsInScrollableView"
         [typeaheadMinLength]="typeaheadMinLength" [typeaheadWaitMs]="typeaheadWaitMs" (typeaheadLoading)="changeTypeaheadLoading($event)"
-        placeholder="{{displayError? placeHolderMessage: ''}}" [@validation]="validationValue">
+        placeholder="{{displayError? placeHolderMessage: ''}}" [@validation]="validationValue" >
       <button *ngIf="!typeaheadLoading" type="button" title="search" class="btn rounded blue">
         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
       </button>

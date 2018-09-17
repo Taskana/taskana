@@ -49,19 +49,19 @@ describe('AccessItemsComponent', () => {
 			spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsResource(
 				{
 					'accessItems': new Array<WorkbasketAccessItems>(
-						new WorkbasketAccessItems('id1', '1', 'accessID1', false, false, false, false, false, false, false, false,
+						new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
 							false, false, false, false, false, false, false, false, false),
 						new WorkbasketAccessItems('id2', '1', 'accessID2'))
 				}, new Links({ 'href': 'someurl' })
 			)));
 			spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true)),
 				spyOn(alertService, 'triggerAlert').and.returnValue(of(true)),
-        debugElement = fixture.debugElement.nativeElement;
-      accessIdsService = TestBed.get(AccessIdsService);
-      spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
-        'accessID1', 'accessID2'
-      )));
-      formsValidatorService = TestBed.get(FormsValidatorService);
+				debugElement = fixture.debugElement.nativeElement;
+			accessIdsService = TestBed.get(AccessIdsService);
+			spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
+				'accessID1', 'accessID2'
+			)));
+			formsValidatorService = TestBed.get(FormsValidatorService);
 			component.ngOnChanges({
 				active: new SimpleChange(undefined, 'accessItems', true)
 			});
@@ -96,17 +96,17 @@ describe('AccessItemsComponent', () => {
 	});
 
 	it('should show alert successfull after saving', async(() => {
-    fixture.detectChanges();
-    spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
-    component.onSubmit();
+		fixture.detectChanges();
+		spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
+		component.onSubmit();
 
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      expect(alertService.triggerAlert).toHaveBeenCalledWith(
-        new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`));
-    })
-    fixture.detectChanges();
-  }));
+		fixture.whenStable().then(() => {
+			fixture.detectChanges();
+			expect(alertService.triggerAlert).toHaveBeenCalledWith(
+				new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`));
+		})
+		fixture.detectChanges();
+	}));
 
 	it('should keep accessItemsClone length to previous value after clearing the form.', () => {
 		expect(component.accessItemsClone.length).toBe(2);

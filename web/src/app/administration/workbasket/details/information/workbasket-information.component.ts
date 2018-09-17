@@ -273,15 +273,18 @@ export class WorkbasketInformationComponent
   private onRemoveConfirmed() {
     this.requestInProgressService.setRequestInProgress(true);
     this.workbasketService
-      .markWorkbasketForDeletion(
-        this.workbasket._links.self.href
-      )
+      .markWorkbasketForDeletion(this.workbasket._links.self.href)
       .subscribe(
         response => {
           this.requestInProgressService.setRequestInProgress(false);
           this.workbasketService.triggerWorkBasketSaved();
           this.alertService.triggerAlert(
-            new AlertModel(AlertType.SUCCESS, 'The Workbasket ' + this.workbasket.workbasketId + ' has been marked for deletion')
+            new AlertModel(
+              AlertType.SUCCESS,
+              'The Workbasket ' +
+                this.workbasket.workbasketId +
+                ' has been marked for deletion'
+            )
           );
           this.router.navigate(['administration/workbaskets']);
         },

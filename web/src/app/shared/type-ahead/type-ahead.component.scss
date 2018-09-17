@@ -5,14 +5,14 @@
     height: 47px;
     & label {
         margin-bottom: 0px;
-        padding-left: 12px;
+        padding: 0px 12px;
         font-style: italic;
         overflow: hidden;
      }
     &> div{
         &> div {
             border-bottom: 1px solid $light-grey;
-            margin-top:6px;
+            margin-top:3px;
             padding-left: 12px;
             min-width: 175px;
         }
@@ -21,7 +21,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        padding-right: 35px;
+        margin-right: 35px;
     }
 
 }

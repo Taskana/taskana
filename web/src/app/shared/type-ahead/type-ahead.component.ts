@@ -103,7 +103,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
     }).pipe(mergeMap((token: string) => this.getUsersAsObservable(token)));
     this.accessIdsService.getAccessItemsInformation(this.value).subscribe(items => {
       if (items.length > 0) {
-        this.dataSource.selected = items.find(item => item.accessId === this.value);
+        this.dataSource.selected = items.find(item => item.accessId.toLowerCase() === this.value.toLowerCase());
       }
     });
   }
@@ -139,12 +139,4 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   join(text: string, str: string) {
     return text.toLocaleLowerCase().split(str).join(`<strong>${str}</strong>`);
   }
-
-  clear() {
-    this.value = null;
-    this.innerValue = null;
-    this.dataSource.selected = null
-    this.onSelect.emit(this.dataSource.selected)
-  }
-
 }
