@@ -5,6 +5,7 @@ export class WorkbasketAccessItems {
         public accessItemId: string = '',
         public workbasketId: string = '',
         public accessId: string = '',
+        public accessName: string = '',
         public permRead: boolean = false,
         public permOpen: boolean = false,
         public permAppend: boolean = false,

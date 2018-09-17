@@ -17,8 +17,8 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { AccessIdDefinition } from 'app/models/access-id';
 
-declare const $: any;
 @Component({
 	selector: 'taskana-workbasket-access-items',
 	templateUrl: './access-items.component.html',
@@ -67,7 +67,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
 		const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
 		AccessItemsFormGroups.map(accessItemGroup => {
-      accessItemGroup.controls['accessId'].setValidators(Validators.required);
+			accessItemGroup.controls['accessId'].setValidators(Validators.required);
 		});
 		const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);
 		this.AccessItemsForm.setControl('accessItemsGroups', AccessItemsFormArray);
@@ -85,7 +85,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		private requestInProgressService: RequestInProgressService,
 		private customFieldsService: CustomFieldsService,
 		private formBuilder: FormBuilder,
-    private formsValidatorService: FormsValidatorService) {
+		private formsValidatorService: FormsValidatorService) {
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -124,10 +124,10 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 
 	addAccessItem() {
 		const newForm = this.formBuilder.group(
-			new WorkbasketAccessItems(undefined, this.workbasket.workbasketId, '', true));
+			new WorkbasketAccessItems(undefined, this.workbasket.workbasketId, '', '', true));
 		newForm.controls['accessId'].setValidators(Validators.required);
 		this.accessItemsGroups.push(newForm);
-		this.accessItemsClone.push(new WorkbasketAccessItems(undefined, this.workbasket.workbasketId, '', true));
+		this.accessItemsClone.push(new WorkbasketAccessItems(undefined, this.workbasket.workbasketId, '', '', true));
 	}
 
 	clear() {
@@ -148,12 +148,12 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	}
 
 	onSubmit() {
-    this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toogleValidationAccessIdMap).then(value => {
-      if (value) {
-        this.onSave();
-      }
-    });
+		this.formsValidatorService.formSubmitAttempt = true;
+		this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toogleValidationAccessIdMap).then(value => {
+			if (value) {
+				this.onSave();
+			}
+		});
 	}
 
 	checkAll(row: number, value: any) {
@@ -164,6 +164,11 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 				this.accessItemsGroups.controls[row].get(property).setValue(checkAll);
 			}
 		}
+	}
+
+	accessItemSelected(accessItem: AccessIdDefinition, row: number) {
+		this.accessItemsGroups.controls[row].get('accessId').setValue(accessItem.accessId);
+		this.accessItemsGroups.controls[row].get('accessName').setValue(accessItem.name);
 	}
 
 	private onSave() {
