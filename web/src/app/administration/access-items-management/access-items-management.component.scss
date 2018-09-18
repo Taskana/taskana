@@ -6,8 +6,8 @@
 }
 
 .required-header:after {
-    
-    content:" *"; 
+
+    content:" *";
     color: $invalid;
 }
 
@@ -31,3 +31,8 @@ td {
     word-wrap:break-word;
 }
 .min-width{ min-width: 135px;}
+
+.modal-title {
+  font-weight: bold;
+  display: inline;
+}

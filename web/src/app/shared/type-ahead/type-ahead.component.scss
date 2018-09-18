@@ -23,7 +23,7 @@
         white-space: nowrap;
         padding-right: 35px;
     }
-  
+
 }
 .custom-form-control {
     height: 50px;
@@ -46,7 +46,7 @@
     }
     padding-left: 12px;
     padding-right: 35px;
-    
+
 }
 
 .field-label-wrapper{
@@ -55,7 +55,7 @@
     padding-left: 12px;
     box-sizing: content-box;
     overflow: hidden;
-    pointer-events: none;    
+    pointer-events: none;
 }
 
 .form-control:focus {
@@ -73,7 +73,7 @@
     position: absolute;
     top: 0px;
     right: 0px;
-    
+
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -90,4 +90,8 @@
 
 .disable {
     cursor: not-allowed;
+}
+
+.invalid {
+  color: $invalid;
 }
