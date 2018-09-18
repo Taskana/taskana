@@ -41,6 +41,8 @@ public class ExampleRestApplication {
     @Autowired
     private LdapClient ldapClient;
 
+    @Autowired private LdapCacheTestImpl ldapCacheTest;
+
     public static void main(String[] args) {
         SpringApplication.run(ExampleRestApplication.class, args);
     }
@@ -75,7 +77,7 @@ public class ExampleRestApplication {
     @PostConstruct
     private void init() {
         if (!ldapClient.useLdap()) {
-            AccessIdController.setLdapCache(new LdapCacheTestImpl());
+            AccessIdController.setLdapCache(ldapCacheTest);
         }
     }
 }
