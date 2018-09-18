@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import pro.taskana.rest.resource.AccessIdResource;
 
 /**
@@ -14,6 +16,7 @@ import pro.taskana.rest.resource.AccessIdResource;
  *
  * @author bbr
  */
+@Component
 public class LdapCacheTestImpl implements LdapCache {
 
     /**
@@ -23,31 +26,31 @@ public class LdapCacheTestImpl implements LdapCache {
     private static Map<AccessIdResource, List<AccessIdResource>> users;
     private static List<AccessIdResource> accessIds = new ArrayList<>(Arrays.asList(
         new AccessIdResource("Martin, Rojas Miguel Angel", "user_1_1"),
-        new AccessIdResource("Lengl, Marcel", "user_1_2"),
         new AccessIdResource("Zorgati, Mustapha", "user_2_1"),
-        new AccessIdResource("Breier, Bernd", "user_2_2"),
-        new AccessIdResource("Meyer, Dominik", "teamlead_1"),
-        new AccessIdResource("Hagen, Holger", "teamlead_2"),
         new AccessIdResource("Behrendt, Maximilian", "max"),
+        new AccessIdResource("Bert, Ali", "teamlead_5"),
+        new AccessIdResource("Hagen, Holger", "teamlead_3"),
+        new AccessIdResource("Breier, Bernd", "user_2_2"),
+        new AccessIdResource("Fielmalz, Anke", "user017"),
+        new AccessIdResource("Behrendt, Maximilian", "max"),
+        new AccessIdResource("Breier, Bernd", "user_2_2"),
         new AccessIdResource("Ferrante, Elena", "elena"),
         new AccessIdResource("Mueller, Simone", "simone"),
         new AccessIdResource("Sirup, Aaron", "user001"),
-        new AccessIdResource("Kahn, Ada", "user002"),
+        new AccessIdResource("Nacho, recuerda", "user_1_2"),
         new AccessIdResource("Lass, Ada", "user003"),
         new AccessIdResource("Tion, Addi", "user004"),
         new AccessIdResource("Lette, Adi", "user005"),
+        new AccessIdResource("Admin", "teamlead_2"),
         new AccessIdResource("Native, Alter", "user006"),
         new AccessIdResource("Herum, Albert", "user007"),
-        new AccessIdResource("Bert, Ali", "user008"),
+        new AccessIdResource("Meyer, Dominik", "teamlead_1"),
         new AccessIdResource("Mente, Ali", "user009"),
-        new AccessIdResource("Mater, Alma", "user010"),
         new AccessIdResource("Nach, Alma", "user011"),
         new AccessIdResource("Gehzauch, Anders", "user012"),
         new AccessIdResource("Theke, Andi", "user013"),
         new AccessIdResource("Kreuz, Andreas", "user014"),
-        new AccessIdResource("Kette, Anka", "user015"),
         new AccessIdResource("Tiefsee, Anka", "user016"),
-        new AccessIdResource("Fielmalz, Anke", "user017"),
         new AccessIdResource("Fassen, Ann", "user018"),
         new AccessIdResource("Probe, Ann", "user019"),
         new AccessIdResource("Bolika, Anna", "user020"),
@@ -263,38 +266,41 @@ public class LdapCacheTestImpl implements LdapCache {
         new AccessIdResource("Hausver, Walter", "user230"),
         new AccessIdResource("Schuh, Wanda", "user231"),
         new AccessIdResource("Rahm, Wolf", "user232"),
-        new AccessIdResource("DevelopersGroup", "cn=DevelopersGroup,ou=groups,o=TaskanaTest"),
+
+        new AccessIdResource("businessadmin", "cn=businessadmin,ou=groups,o=TaskanaTest"),
         new AccessIdResource("UsersGroup", "cn=UsersGroup,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("sachbearbeiter", "cn=sachbearbeiter,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("leben", "cn=leben,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("chirurgie", "cn=chirurgie,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("zahn", "cn=zahn,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("knie", "cn=knie,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("schaden", "cn=schaden,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("kapital", "cn=kapital,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("ausland", "cn=ausland,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("teamlead", "cn=teamlead,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("gesundheit", "cn=gesundheit,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("vip", "cn=vip,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("manager", "cn=manager,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("kfz", "cn=kfz,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("haftpflicht", "cn=haftpflicht,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("bauspar", "cn=bauspar,ou=groups,o=TaskanaTest")));
+        new AccessIdResource("DevelopersGroup", "cn=DevelopersGroup,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("businessadmin", "cn=CustomersGroup,ou=groups,o=TaskanaTest"),
+
+        new AccessIdResource("user_domain_A", "cn=user_domain_A,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("monitor", "cn=monitor,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("user_domain_C", "cn=user_domain_C,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("user_domain_D", "cn=user_domain_D,ou=groups,o=TaskanaTest"),
+
+        new AccessIdResource("admin", "cn=admin,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("manager_domain_B", "cn=manager_domain_B,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("manager_domain_C", "cn=manager_domain_C,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("manager_domain_D", "cn=manager_domain_D,ou=groups,o=TaskanaTest"),
+
+        new AccessIdResource("teamlead_2", "cn=teamlead_2" + ",ou=groups,o=TaskanaTest"),
+        new AccessIdResource("teamlead_4", "cn=teamlead_4" + ",ou=groups,o=TaskanaTest"),
+        new AccessIdResource("team_3", "cn=team_3" + ",ou=groups,o=TaskanaTest"),
+        new AccessIdResource("team_4", "cn=team_4" + ",ou=groups,o=TaskanaTest")));
 
     @Override
     public List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumerOfReturnedAccessIds) {
-        return findAcessIdResource(searchFor, maxNumerOfReturnedAccessIds, false);
+        return findAccessIdResource(searchFor, maxNumerOfReturnedAccessIds, false);
     }
 
     @Override
-    public List<AccessIdResource> findGroupsOfUser(String searchFor, int maxNumerOfReturnedAccessIds) {
+    public List<AccessIdResource> findGroupsOfUser(String searchFor, int maxNumberOfReturnedAccessIds) {
         if (users == null) {
             addUsersToGroups();
         }
-        return findAcessIdResource(searchFor, maxNumerOfReturnedAccessIds, true);
+        return findAccessIdResource(searchFor, maxNumberOfReturnedAccessIds, true);
     }
 
-    private List<AccessIdResource> findAcessIdResource(String searchFor, int maxNumerOfReturnedAccessIds,
+    private List<AccessIdResource> findAccessIdResource(String searchFor, int maxNumerOfReturnedAccessIds,
         boolean groupMember) {
         List<AccessIdResource> usersAndGroups = accessIds.stream()
             .filter(t -> (t.getName().toLowerCase().contains(searchFor.toLowerCase())
@@ -371,7 +377,7 @@ public class LdapCacheTestImpl implements LdapCache {
                         break;
                 }
             }
-            groupNumber = (groupNumber + 1) % 4;
+            countUser = (countUser + 1) % 4;
         }
     }
 
