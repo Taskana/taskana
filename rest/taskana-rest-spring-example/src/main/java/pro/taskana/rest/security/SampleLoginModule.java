@@ -1,5 +1,6 @@
 package pro.taskana.rest.security;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.security.auth.Subject;
@@ -9,8 +10,12 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.spi.LoginModule;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
+import pro.taskana.ldap.LdapCacheTestImpl;
+import pro.taskana.rest.resource.AccessIdResource;
 import pro.taskana.security.GroupPrincipal;
 import pro.taskana.security.UserPrincipal;
 
@@ -38,27 +43,14 @@ public class SampleLoginModule extends UsernamePasswordAuthenticationFilter impl
     }
 
     private void addGroupSubjectsDerivedFromUsername() {
+        LdapCacheTestImpl ldapCacheTest = new LdapCacheTestImpl();
         String username = nameCallback.getName().toLowerCase();
-        char role = username.charAt(1);
-        switch (role) {
-            case 'u':
-                subject.getPrincipals()
-                    .add(new GroupPrincipal("user" + "_domain_" + username.charAt(0)));
-                break;
-            case 'm':
-                subject.getPrincipals()
-                    .add(new GroupPrincipal("manager" + "_domain_" + username.charAt(0)));
-                break;
-            case 'e':
-                subject.getPrincipals()
-                    .add(new GroupPrincipal("businessadmin"));
-                break;
-            default:
-                // necessary for checkstyle
-        }
-        if (username.length() > 6) {
-            subject.getPrincipals().add(new GroupPrincipal("team_" + username.substring(2, 6)));
-        }
+        List<AccessIdResource> groups = ldapCacheTest.findGroupsOfUser(username, Integer.MAX_VALUE);
+        groups.forEach((AccessIdResource group) -> {
+            if (group.getAccessId().contains("ou=groups")) {
+                subject.getPrincipals().add(new GroupPrincipal(group.getName()));
+            }
+        });
     }
 
     private void addUserPrincipalToSubject() {

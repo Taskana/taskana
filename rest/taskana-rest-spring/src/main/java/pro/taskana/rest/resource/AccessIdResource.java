@@ -7,8 +7,8 @@ package pro.taskana.rest.resource;
  */
 public class AccessIdResource {
 
-    public String name;
-    public String accessId;
+    private String name;
+    private String accessId;
 
     public AccessIdResource() {
 
