@@ -90,7 +90,7 @@ public class GenenalExceptionHandlingTest {
 
             AccessIdController.setLdapCache(new LdapCacheTestImpl());
             template.exchange(
-                server + port + "/v1/access-ids?searchFor=al", HttpMethod.GET, request,
+                server + port + "/v1/access-ids?search-for=al", HttpMethod.GET, request,
                 new ParameterizedTypeReference<List<AccessIdResource>>() {
 
                 });

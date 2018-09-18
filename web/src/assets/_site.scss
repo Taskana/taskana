@@ -353,3 +353,7 @@ li.list-group-item:hover {
         outline: none;
     }
 }
+
+.modal-backdrop.show {
+  background-color: $transparent-grey;
+}

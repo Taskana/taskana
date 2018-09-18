@@ -51,7 +51,7 @@ public class AccessIdValidationControllerTest {
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<List<AccessIdResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/access-ids?searchFor=ali", HttpMethod.GET, request,
+            "http://127.0.0.1:" + port + "/v1/access-ids?search-for=ali", HttpMethod.GET, request,
             new ParameterizedTypeReference<List<AccessIdResource>>() {
 
             });
@@ -73,7 +73,7 @@ public class AccessIdValidationControllerTest {
         HttpEntity<String> request = new HttpEntity<String>(headers);
         try {
             template.exchange(
-                "http://127.0.0.1:" + port + "/v1/access-ids?searchFor=al", HttpMethod.GET, request,
+                "http://127.0.0.1:" + port + "/v1/access-ids?search-for=al", HttpMethod.GET, request,
                 new ParameterizedTypeReference<List<AccessIdResource>>() {
 
                 });

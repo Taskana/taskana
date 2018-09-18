@@ -288,8 +288,8 @@ public class LdapCacheTestImpl implements LdapCache {
         new AccessIdResource("team_4", "cn=team_4" + ",ou=groups,o=TaskanaTest")));
 
     @Override
-    public List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumerOfReturnedAccessIds) {
-        return findAccessIdResource(searchFor, maxNumerOfReturnedAccessIds, false);
+    public List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumberOfReturnedAccessIds) {
+        return findAcessIdResource(searchFor, maxNumberOfReturnedAccessIds, false);
     }
 
     @Override
@@ -297,10 +297,17 @@ public class LdapCacheTestImpl implements LdapCache {
         if (users == null) {
             addUsersToGroups();
         }
-        return findAccessIdResource(searchFor, maxNumberOfReturnedAccessIds, true);
+        return findAcessIdResource(searchFor, maxNumberOfReturnedAccessIds, true);
     }
 
-    private List<AccessIdResource> findAccessIdResource(String searchFor, int maxNumerOfReturnedAccessIds,
+    @Override
+    public List<AccessIdResource> validateAccessId(String accessId) {
+        return accessIds.stream()
+            .filter(t -> (t.getAccessId().equalsIgnoreCase(accessId.toLowerCase())))
+            .collect(Collectors.toList());
+    }
+
+    private List<AccessIdResource> findAcessIdResource(String searchFor, int maxNumberOfReturnedAccessIds,
         boolean groupMember) {
         List<AccessIdResource> usersAndGroups = accessIds.stream()
             .filter(t -> (t.getName().toLowerCase().contains(searchFor.toLowerCase())
@@ -321,7 +328,7 @@ public class LdapCacheTestImpl implements LdapCache {
         });
 
         List<AccessIdResource> result = usersAndGroups.subList(0,
-            Math.min(usersAndGroups.size(), maxNumerOfReturnedAccessIds));
+            Math.min(usersAndGroups.size(), maxNumberOfReturnedAccessIds));
 
         return result;
     }

@@ -21,7 +21,11 @@ export class AccessIdsService {
     if (!token || token.length < 3) {
       return of([]);
     }
-    return this.httpClient.get<Array<AccessIdDefinition>>(`${this.url}?searchFor=${token}&searchInGroups=${searchInGroups}`);
+    if (searchInGroups) {
+      return this.httpClient.get<Array<AccessIdDefinition>>(`${this.url}/groups?access-id=${token}`);
+    } else {
+      return this.httpClient.get<Array<AccessIdDefinition>>(`${this.url}?search-for=${token}`);
+    }
   };
 
   getAccessItemsPermissions(
