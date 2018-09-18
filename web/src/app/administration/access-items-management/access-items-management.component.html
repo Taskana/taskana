@@ -1,10 +1,5 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <div class="pull-right btn-group">
-      <button *ngIf="AccessItemsForm" type="button" (click)="revokeAccess()" class="btn btn-default" data-toggle="tooltip" title="Revoke access">
-        <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>
-      </button>
-    </div>
     <h4 class="panel-header">Acces items management</h4>
   </div>
   <div class="panel-body">
@@ -13,8 +8,8 @@
         (onSelect)="onSelectAccessId($event)" displayError=true></taskana-type-ahead>
     </div>
     <div *ngIf="!AccessItemsForm" class="center-block no-detail col-xs-12">
-        <h3 class="grey">Select an access id</h3>
-        <svg-icon class="empty-icon" src="./assets/icons/users.svg"></svg-icon>
+      <h3 class="grey">Select an access id</h3>
+      <svg-icon class="empty-icon" src="./assets/icons/users.svg"></svg-icon>
     </div>
     <div *ngIf="AccessItemsForm" class="row col-xs-12">
       <form [formGroup]="AccessItemsForm">
@@ -50,7 +45,8 @@
               <th class="text-align"><input type="text" formControlName="accessIdFilter" (keyup.enter)="searchForAccessItemsWorkbaskets()"
                   class="form-control" placeholder="Access id filter"></th>
               <th>
-                <button type="button" (click)="searchForAccessItemsWorkbaskets()" class="btn btn-default" data-toggle="tooltip" title="Search">
+                <button type="button" (click)="searchForAccessItemsWorkbaskets()" class="btn btn-default" data-toggle="tooltip"
+                  title="Search">
                   <span class="glyphicon glyphicon-search blue" aria-hidden="true"></span>
                 </button>
               </th>
@@ -80,8 +76,9 @@
               </td>
               <td *ngIf="accessIdField.lookupField else accessIdInput" colspan="2" class="text-align text-width taskana-type-ahead">
                 <div>
-                  <taskana-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required" [validationValue]="toogleValidationAccessIdMap.get(index)"
-                    [displayError]="!isFieldValid('accessItem.value.accessId', index)" [disable]=true></taskana-type-ahead>
+                  <taskana-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required"
+                    [validationValue]="toogleValidationAccessIdMap.get(index)" [displayError]="!isFieldValid('accessItem.value.accessId', index)"
+                    [disable]=true></taskana-type-ahead>
                 </div>
               </td>
               <ng-template #accessIdInput>
@@ -163,6 +160,41 @@
             </tr>
           </tbody>
         </table>
+
+        <button *ngIf="!isGroup" class="pull-left btn-group" type="button" class="btn btn-primary" data-toggle="modal"
+          data-target="#myModal">
+          Belonging groups
+        </button>
+
+        <div class="modal" id="myModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h4 class="modal-title">Belonging groups</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body">
+                <ul *ngIf="belongingGroups !== undefined && belongingGroups.length > 0 " class="list-group">
+                  <li *ngFor="let group of belongingGroups" class="list-group-item">{{group.name}}</li>
+                </ul>
+                <p *ngIf="belongingGroups === undefined || belongingGroups.length === 0">The user is not associated to any groups</p>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="pull-right btn-group">
+          <button *ngIf="AccessItemsForm" type="button" class="btn btn-default" data-toggle="tooltip" title="Revoke access"
+            [disabled]=isGroup>
+            <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>
+          </button>
+        </div>
       </form>
     </div>
   </div>

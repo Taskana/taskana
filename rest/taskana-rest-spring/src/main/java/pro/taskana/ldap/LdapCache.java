@@ -16,17 +16,24 @@ public interface LdapCache {
      *
      * @param searchFor
      *            the search string. The search is performed over names and ids of users and groups.
-     * @param maxNumerOfReturnedAccessIds
+     * @param maxNumberOfReturnedAccessIds
      *            the maximum number of results to return.
      * @return a List of access ids for users and group where the name or id contains the search string.
      */
-    List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumerOfReturnedAccessIds);
+    List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumberOfReturnedAccessIds);
 
     /**
-     *
+     * Find the groups belong to a user.
      * @param searchFor the search string. The search is performed over names and ids of group .
-     * @param maxNumerOfReturnedAccessIds
+     * @param maxNumberOfReturnedAccessIds the maximum number of results to return.
      * @return
      */
-    List<AccessIdResource> findGroupsOfUser(String searchFor, int maxNumerOfReturnedAccessIds);
+    List<AccessIdResource> findGroupsOfUser(String searchFor, int maxNumberOfReturnedAccessIds);
+
+    /**
+     * Validate a access id.
+     * @param accessId the search string.
+     * @return the corresponding access id.
+     */
+    List<AccessIdResource> validateAccessId(String accessId);
 }

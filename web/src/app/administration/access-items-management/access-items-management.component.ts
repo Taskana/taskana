@@ -32,8 +32,11 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   accessItemPermissionsSubscription: Subscription;
   accessItemInformationsubscription: Subscription;
   accessIdsWithGroups: Array<AccessIdDefinition>;
+  belongingGroups: Array<AccessIdDefinition>;
   sortingFields = new Map([['workbasket-key', 'Workbasket Key'], ['access-id', 'Access id']]);
   sortModel: SortingModel;
+  isGroup: boolean;
+  groupsKey = 'ou=groups';
 
 
   accessIdField = this.customFieldsService.getCustomField('Owner', 'workbaskets.access-items.accessId');
@@ -89,11 +92,13 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     }
     if (!this.AccessItemsForm || this.accessIdPrevious !== selected.accessId) {
       this.accessIdPrevious = selected.accessId
+      this.isGroup = selected.accessId.includes(this.groupsKey);
 
       this.unSubscribe(this.accessItemInformationsubscription)
       this.accessItemInformationsubscription = this.accessIdsService.getAccessItemsInformation(selected.accessId, true)
         .subscribe((accessIdsWithGroups: Array<AccessIdDefinition>) => {
           this.accessIdsWithGroups = accessIdsWithGroups;
+          this.belongingGroups = accessIdsWithGroups.filter(item => item.accessId.includes(this.groupsKey));
           this.searchForAccessItemsWorkbaskets();
         },
           error => {
