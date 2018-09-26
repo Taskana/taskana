@@ -61,13 +61,10 @@ public class DbSchemaCreator {
      */
     public void run() throws SQLException {
         Connection connection = dataSource.getConnection();
-        ScriptRunner runner = new ScriptRunner(connection);
-        LOGGER.debug(connection.getMetaData().toString());
-        runner.setStopOnError(true);
-        runner.setLogWriter(logWriter);
-        runner.setErrorLogWriter(errorLogWriter);
+        LOGGER.debug("Using database of type {} with url '{}'", connection.getMetaData().getDatabaseProductName(), connection.getMetaData().getURL());
+        ScriptRunner runner = getScriptRunnerInstance(connection);
         try {
-            if (!isSchemaPreexisting(runner, connection.getMetaData().getDatabaseProductName())) {
+            if (!isSchemaPreexisting(connection)) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass()
                     .getResourceAsStream(selectDbScriptFileName(connection.getMetaData().getDatabaseProductName()))));
                 runner.runScript(getSqlSchemaNameParsed(reader));
@@ -81,10 +78,19 @@ public class DbSchemaCreator {
         }
     }
 
-    private boolean isSchemaPreexisting(ScriptRunner runner, String productName) {
+    private ScriptRunner getScriptRunnerInstance(Connection connection) {
+        ScriptRunner runner = new ScriptRunner(connection);
+        runner.setStopOnError(true);
+        runner.setLogWriter(logWriter);
+        runner.setErrorLogWriter(errorLogWriter);
+        return runner;
+        }
+
+    private boolean isSchemaPreexisting(Connection connection) {
+        ScriptRunner runner = getScriptRunnerInstance(connection);
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass()
-                .getResourceAsStream(selectDbSchemaDetectionScript(productName))));
+                .getResourceAsStream(selectDbSchemaDetectionScript(connection.getMetaData().getDatabaseProductName()))));
             runner.runScript(getSqlSchemaNameParsed(reader));
         } catch (Exception e) {
             LOGGER.debug("Schema does not exist.");
