@@ -38,6 +38,12 @@ public class ExampleRestApplication {
     @Value("${taskana.schemaName:TASKANA}")
     public String schemaName;
 
+    @Value("${generateSampleData:true}")
+    public boolean generateSampleData;
+
+    @Autowired
+    private SampleDataGenerator sampleDataGenerator;
+    
     @Autowired
     private LdapClient ldapClient;
 
@@ -67,8 +73,7 @@ public class ExampleRestApplication {
     @Bean
     @DependsOn("taskanaEngineConfiguration") // generate sample data after schema was inserted
     public SampleDataGenerator generateSampleData(DataSource dataSource) throws SQLException {
-        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource);
-        sampleDataGenerator.generateSampleData(schemaName);
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource);        
         return sampleDataGenerator;
     }
 
@@ -76,6 +81,9 @@ public class ExampleRestApplication {
     private void init() {
         if (!ldapClient.useLdap()) {
             AccessIdController.setLdapCache(new LdapCacheTestImpl());
+        }
+        if (generateSampleData) {
+        	sampleDataGenerator.generateSampleData(schemaName);
         }
     }
 }

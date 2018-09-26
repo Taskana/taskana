@@ -67,6 +67,12 @@
 			<artifactId>h2</artifactId>
 			<version>1.4.197</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.ibm.db2.jcc</groupId>
+			<artifactId>db2jcc4</artifactId>
+			<version>11.1.1.1</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/postgresql/postgresql -->
 		<!--  Postgresql driver dependency
 		<dependency>
@@ -193,4 +199,14 @@
 		</plugins>
 	</build>
 
+	<!--
+	  this repository is needed to fetch com.ibm.db2.jcc
+	-->
+	<repositories>
+		<repository>
+			<id>novatec public</id>
+			<name>novatec-repository</name>
+			<url>https://repository.novatec-gmbh.de/content/repositories/novatec/</url>
+		</repository>
+	</repositories>
 </project>
