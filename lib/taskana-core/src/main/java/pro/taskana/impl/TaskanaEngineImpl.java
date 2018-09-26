@@ -34,6 +34,7 @@ import pro.taskana.exceptions.ConnectionNotSetException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.UnsupportedDatabaseException;
+import pro.taskana.history.HistoryEventProducer;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.AttachmentMapper;
@@ -61,11 +62,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected SqlSessionManager sessionManager;
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
+    protected HistoryEventProducer historyEventProducer;
 
     protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();
+        this.historyEventProducer = HistoryEventProducer.getInstance();
     }
 
     public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
@@ -165,6 +168,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         return this.taskanaEngineConfiguration;
     }
 
+    public HistoryEventProducer getHistoryEventProducer() {
+        return this.historyEventProducer;
+    }
+
     /**
      * sets the connection management mode.
      *
@@ -228,7 +235,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     /**
      * Open the connection to the database. to be called at the begin of each Api call that accesses the database
-     *
      */
     void openConnection() {
         initSqlSession();
