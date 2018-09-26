@@ -243,7 +243,7 @@ public class TaskanaEngineConfiguration {
                 classificationTypes.add(st.nextToken().trim().toUpperCase());
             }
         }
-        LOGGER.debug("Configured domains: {}", domains);
+        LOGGER.debug("Configured classificationTypes: {}", classificationTypes);
     }
 
     private void initClassificationCategories(Properties props) {
