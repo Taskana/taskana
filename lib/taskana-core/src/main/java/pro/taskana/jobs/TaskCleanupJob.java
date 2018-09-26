@@ -11,7 +11,11 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.*;
+import pro.taskana.BaseQuery;
+import pro.taskana.BulkOperationResults;
+import pro.taskana.TaskSummary;
+import pro.taskana.TaskanaEngine;
+import pro.taskana.TimeInterval;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.transaction.TaskanaTransactionProvider;
@@ -39,7 +43,8 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
         runEvery = taskanaEngine.getConfiguration().getTaskCleanupJobRunEvery();
         minimumAge = taskanaEngine.getConfiguration().getTaskCleanupJobMinimumAge();
         batchSize = taskanaEngine.getConfiguration().getMaxNumberOfTaskUpdatesPerTransaction();
-        allCompletedSameParentBusiness = taskanaEngine.getConfiguration().isTaskCleanupJobAllCompletedSameParentBusiness();
+        allCompletedSameParentBusiness = taskanaEngine.getConfiguration()
+            .isTaskCleanupJobAllCompletedSameParentBusiness();
     }
 
     @Override
@@ -66,16 +71,20 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
     private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
         List<TaskSummary> taskList = taskanaEngineImpl.getTaskService()
-                .createTaskQuery()
-                .completedWithin(new TimeInterval(null, untilDate))
-                .orderByBusinessProcessId(asc)
-                .list();
+            .createTaskQuery()
+            .completedWithin(new TimeInterval(null, untilDate))
+            .orderByBusinessProcessId(asc)
+            .list();
 
         if (allCompletedSameParentBusiness) {
             Map<String, Long> numberParentTasksShouldHave = new HashMap<>();
             Map<String, Long> countParentTask = new HashMap<>();
             for (TaskSummary task : taskList) {
-                numberParentTasksShouldHave.put(task.getParentBusinessProcessId(), taskanaEngineImpl.getTaskService().createTaskQuery().parentBusinessProcessIdIn(task.getParentBusinessProcessId()).count());
+                numberParentTasksShouldHave.put(task.getParentBusinessProcessId(),
+                    taskanaEngineImpl.getTaskService()
+                        .createTaskQuery()
+                        .parentBusinessProcessIdIn(task.getParentBusinessProcessId())
+                        .count());
                 countParentTask.merge(task.getParentBusinessProcessId(), 1L, Long::sum);
             }
 
@@ -93,9 +102,9 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
             String[] ids = new String[idsList.size()];
             ids = idsList.toArray(ids);
             taskList = taskanaEngineImpl.getTaskService()
-                    .createTaskQuery()
-                    .parentBusinessProcessIdIn(ids)
-                    .list();
+                .createTaskQuery()
+                .parentBusinessProcessIdIn(ids)
+                .list();
         }
 
         return taskList;
@@ -159,6 +168,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
      * All scheduled cleanup jobs are cancelled/deleted and a new one is scheduled.
      *
      * @param taskanaEngine
+     *            the TASKANA engine.
      */
     public static void initializeSchedule(TaskanaEngine taskanaEngine) {
         TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);

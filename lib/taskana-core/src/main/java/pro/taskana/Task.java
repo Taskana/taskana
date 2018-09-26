@@ -159,7 +159,7 @@ public interface Task {
     /**
      * Returns the businessProcessId of a task.
      *
-     * @return businessProcessId
+     * @return businessProcessId Gets the business process id the task belongs to.
      */
     String getBusinessProcessId();
 
@@ -167,13 +167,14 @@ public interface Task {
      * Sets the external business process id.
      *
      * @param businessProcessId
+     *            Sets the business process id the task belongs to.
      */
     void setBusinessProcessId(String businessProcessId);
 
     /**
      * Returns the parentBusinessProcessId of a task.
      *
-     * @return parentBusinessProcessId
+     * @return parentBusinessProcessId Gets the parent business process id the task belongs to
      */
     String getParentBusinessProcessId();
 
@@ -181,6 +182,7 @@ public interface Task {
      * Sets the parent business process id to group associated processes.
      *
      * @param parentBusinessProcessId
+     *            Sets the parent business process id the task belongs to
      */
     void setParentBusinessProcessId(String parentBusinessProcessId);
 
