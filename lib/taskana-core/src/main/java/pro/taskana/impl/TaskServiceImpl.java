@@ -44,6 +44,8 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.history.HistoryEventProducer;
+import pro.taskana.history.api.TaskCompletionEvent;
 import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
@@ -69,6 +71,7 @@ public class TaskServiceImpl implements TaskService {
     private ClassificationServiceImpl classificationService;
     private TaskMapper taskMapper;
     private AttachmentMapper attachmentMapper;
+    private HistoryEventProducer historyEventProducer;
 
     TaskServiceImpl(TaskanaEngine taskanaEngine, TaskMapper taskMapper,
         AttachmentMapper attachmentMapper) {
@@ -84,6 +87,7 @@ public class TaskServiceImpl implements TaskService {
         this.workbasketService = taskanaEngine.getWorkbasketService();
         this.attachmentMapper = attachmentMapper;
         this.classificationService = (ClassificationServiceImpl) taskanaEngine.getClassificationService();
+        this.historyEventProducer = ((TaskanaEngineImpl) taskanaEngine).getHistoryEventProducer();
     }
 
     @Override
@@ -219,6 +223,12 @@ public class TaskServiceImpl implements TaskService {
             task.setOwner(userId);
             taskMapper.update(task);
             LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
+
+            if (HistoryEventProducer.isHistoryEnabled()) {
+                TaskCompletionEvent event = new TaskCompletionEvent(task);
+                historyEventProducer.createEvent(event);
+            }
+
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from completeTask()");
@@ -618,8 +628,10 @@ public class TaskServiceImpl implements TaskService {
         }
 
         // filter taskSummaries and update values
-        taskSummaries = taskSummaries.stream().filter(ts -> taskIds.contains(ts.getTaskId())).collect(
-            Collectors.toList());
+        taskSummaries = taskSummaries.stream()
+            .filter(ts -> taskIds.contains(ts.getTaskId()))
+            .collect(
+                Collectors.toList());
         if (!taskSummaries.isEmpty()) {
             Instant now = Instant.now();
             TaskSummaryImpl updateObject = new TaskSummaryImpl();
@@ -803,8 +815,10 @@ public class TaskServiceImpl implements TaskService {
             return new ArrayList<>();
         }
 
-        Set<String> classificationIdSet = taskSummaries.stream().map(t -> t.getClassificationSummary().getId()).collect(
-            Collectors.toSet());
+        Set<String> classificationIdSet = taskSummaries.stream()
+            .map(t -> t.getClassificationSummary().getId())
+            .collect(
+                Collectors.toSet());
 
         if (attachmentSummaries != null && !attachmentSummaries.isEmpty()) {
             for (AttachmentSummaryImpl att : attachmentSummaries) {
@@ -845,8 +859,10 @@ public class TaskServiceImpl implements TaskService {
             return;
         }
         // calculate parameters for workbasket query: workbasket keys
-        Set<String> workbasketIdSet = taskSummaries.stream().map(t -> t.getWorkbasketSummary().getId()).collect(
-            Collectors.toSet());
+        Set<String> workbasketIdSet = taskSummaries.stream()
+            .map(t -> t.getWorkbasketSummary().getId())
+            .collect(
+                Collectors.toSet());
         String[] workbasketIdArray = workbasketIdSet.toArray(new String[0]);
         // perform workbasket query
         LOGGER.debug("addWorkbasketSummariesToTaskSummaries() about to query workbaskets");
@@ -1500,8 +1516,10 @@ public class TaskServiceImpl implements TaskService {
         if (attachmentImpls == null || attachmentImpls.isEmpty()) {
             return result;
         }
-        Set<String> classificationIds = attachmentImpls.stream().map(t -> t.getClassificationSummary().getId()).collect(
-            Collectors.toSet());
+        Set<String> classificationIds = attachmentImpls.stream()
+            .map(t -> t.getClassificationSummary().getId())
+            .collect(
+                Collectors.toSet());
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .idIn(classificationIds.toArray(new String[0]))
             .list();
