@@ -14,4 +14,11 @@ export class TaskanaDate {
     const datePipe = new DatePipe(dateLocale);
     return datePipe.transform(date, dateFormat);
   }
+
+  public static getISODate(date: Date): string {
+    const dateFormat = 'yyyy-MM-ddTHH:mm:ss.sss';
+    const dateLocale = 'en-US';
+    const datePipe = new DatePipe(dateLocale);
+    return datePipe.transform(date, dateFormat) + 'Z';
+  }
 }

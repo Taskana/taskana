@@ -8,7 +8,7 @@ import { Classification } from 'app/models/classification';
 import { ClassificationDefinition } from 'app/models/classification-definition';
 
 import { ClassificationResource } from 'app/models/classification-resource';
-import { ClassificationCategoriesService } from '../classification-categories-service/classification-categories.service';
+import { ClassificationCategoriesService } from './classification-categories.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Direction } from 'app/models/sorting';

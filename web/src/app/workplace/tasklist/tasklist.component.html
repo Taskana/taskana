@@ -1,6 +1,5 @@
-<div class="task-list-full-height">
-  <taskana-tasklist-toolbar (basketChanged)="loadBasketID($event)"
-                            (performSorting)="performSorting($event)"
+<div class="task-list-full-height taskana-task-list">
+  <taskana-tasklist-toolbar (performSorting)="performSorting($event)"
                             (performFilter)="performFilter($event)">
   </taskana-tasklist-toolbar>
   <div *ngIf="!requestInProgress">

@@ -8,7 +8,7 @@ import { TaskanaTreeComponent } from './tree.component';
 import { TreeService } from 'app/services/tree/tree.service';
 import {
   ClassificationCategoriesService
-} from 'app/administration/services/classification-categories-service/classification-categories.service';
+} from 'app/services/classifications/classification-categories.service';
 import { configureTests } from 'app/app.test.configuration';
 import { Pair } from 'app/models/pair';
 

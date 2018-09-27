@@ -90,7 +90,7 @@ public class TaskController extends AbstractPagingController {
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<TaskSummaryResource>> getTasks(
-        @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
+            @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
 
         TaskQuery query = taskService.createTaskQuery();
         query = applyFilterParams(query, params);
@@ -107,9 +107,9 @@ public class TaskController extends AbstractPagingController {
             // paging
             long totalElements = query.count();
             pageMetadata = initPageMetadata(pageSize, page,
-                totalElements);
+                    totalElements);
             taskSummaries = query.listPage((int) pageMetadata.getNumber(),
-                (int) pageMetadata.getSize());
+                    (int) pageMetadata.getSize());
         } else if (page == null && pageSize == null) {
             // not paging
             taskSummaries = query.list();
@@ -119,7 +119,7 @@ public class TaskController extends AbstractPagingController {
 
         TaskSummaryResourcesAssembler taskSummaryResourcesAssembler = new TaskSummaryResourcesAssembler();
         PagedResources<TaskSummaryResource> pagedResources = taskSummaryResourcesAssembler.toResources(taskSummaries,
-            pageMetadata);
+                pageMetadata);
 
         return new ResponseEntity<>(pagedResources, HttpStatus.OK);
     }
@@ -127,40 +127,40 @@ public class TaskController extends AbstractPagingController {
     @GetMapping(path = "/{taskId}")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> getTask(@PathVariable String taskId)
-        throws TaskNotFoundException, NotAuthorizedException {
+            throws TaskNotFoundException, NotAuthorizedException {
         Task task = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(task),
-            HttpStatus.OK);
+                HttpStatus.OK);
         return result;
     }
 
     @PostMapping(path = "/{taskId}/claim")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> claimTask(@PathVariable String taskId, @RequestBody String userName)
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
+            throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         // TODO verify user
         taskService.claim(taskId);
         Task updatedTask = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
-            HttpStatus.OK);
+                HttpStatus.OK);
         return result;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/complete")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> completeTask(@PathVariable String taskId)
-        throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
+            throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
         taskService.forceCompleteTask(taskId);
         Task updatedTask = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
-            HttpStatus.OK);
+                HttpStatus.OK);
         return result;
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{taskId}")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> deleteTask(@PathVariable String taskId)
-        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+            throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         taskService.forceDeleteTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return result;
@@ -169,31 +169,31 @@ public class TaskController extends AbstractPagingController {
     @RequestMapping(method = RequestMethod.POST)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> createTask(@RequestBody TaskResource taskResource)
-        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        TaskAlreadyExistException, InvalidArgumentException {
+            throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+            TaskAlreadyExistException, InvalidArgumentException {
         Task createdTask = taskService.createTask(taskResourceAssembler.toModel(taskResource));
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(createdTask),
-            HttpStatus.CREATED);
+                HttpStatus.CREATED);
         return result;
     }
 
     @RequestMapping(path = "/{taskId}/transfer/{workbasketId}")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> transferTask(@PathVariable String taskId, @PathVariable String workbasketId)
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
+            throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
         Task updatedTask = taskService.transfer(taskId, workbasketId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
-            HttpStatus.OK);
+                HttpStatus.OK);
         return result;
     }
 
     @PutMapping(path = "/{taskId}")
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> updateTask(
-        @PathVariable(value = "taskId") String taskId,
-        @RequestBody TaskResource taskResource)
-        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
-        NotAuthorizedException, AttachmentPersistenceException {
+            @PathVariable(value = "taskId") String taskId,
+            @RequestBody TaskResource taskResource)
+            throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+            NotAuthorizedException, AttachmentPersistenceException {
         ResponseEntity<TaskResource> result;
         if (taskId.equals(taskResource.getTaskId())) {
             Task task = taskResourceAssembler.toModel(taskResource);
@@ -201,16 +201,16 @@ public class TaskController extends AbstractPagingController {
             result = ResponseEntity.ok(taskResourceAssembler.toResource(task));
         } else {
             throw new InvalidArgumentException(
-                "TaskId ('" + taskId
-                    + "') is not identical with the taskId of to object in the payload which should be updated. ID=('"
-                    + taskResource.getTaskId() + "')");
+                    "TaskId ('" + taskId
+                            + "') is not identical with the taskId of to object in the payload which should be updated. ID=('"
+                            + taskResource.getTaskId() + "')");
         }
 
         return result;
     }
 
     private TaskQuery applyFilterParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
-        throws InvalidArgumentException {
+            throws InvalidArgumentException {
 
         // apply filters
         if (params.containsKey(NAME)) {
@@ -290,7 +290,7 @@ public class TaskController extends AbstractPagingController {
     }
 
     private TaskQuery applySortingParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
-        throws InvalidArgumentException {
+            throws InvalidArgumentException {
 
         // sorting
         String sortBy = params.getFirst(SORT_BY);

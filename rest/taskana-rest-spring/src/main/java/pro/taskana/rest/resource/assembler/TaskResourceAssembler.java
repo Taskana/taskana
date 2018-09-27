@@ -22,7 +22,7 @@ import pro.taskana.rest.resource.TaskResource;
  */
 @Component
 public class TaskResourceAssembler
-    extends ResourceAssemblerSupport<Task, TaskResource> {
+        extends ResourceAssemblerSupport<Task, TaskResource> {
 
     @Autowired
     private TaskService taskService;
@@ -61,15 +61,15 @@ public class TaskResourceAssembler
             resource.setDue(task.getDue().toString());
         }
         resource.setClassificationSummaryResource(
-            classificationAssembler.toResource(task.getClassificationSummary()));
+                classificationAssembler.toResource(task.getClassificationSummary()));
         resource.setWorkbasketSummaryResource(workbasketAssembler.toResource(task.getWorkbasketSummary()));
         resource.setAttachments(attachmentAssembler.toResources(task.getAttachments()));
         resource.setCustomAttributes(task.getCustomAttributes().entrySet().stream()
-            .map(e -> new TaskResource.CustomAttribute(e.getKey(), e.getValue()))
-            .collect(Collectors.toList()));
+                .map(e -> new TaskResource.CustomAttribute(e.getKey(), e.getValue()))
+                .collect(Collectors.toList()));
         resource.setCallbackInfo(task.getCallbackInfo().entrySet().stream()
-            .map(e -> new TaskResource.CustomAttribute(e.getKey(), e.getValue()))
-            .collect(Collectors.toList()));
+                .map(e -> new TaskResource.CustomAttribute(e.getKey(), e.getValue()))
+                .collect(Collectors.toList()));
         try {
             if (task.getCustomAttribute("1") != null) {
                 resource.setCustom1(task.getCustomAttribute("1"));
@@ -150,11 +150,11 @@ public class TaskResourceAssembler
         task.setWorkbasketSummary(workbasketAssembler.toModel(resource.getWorkbasketSummaryResource()));
         task.setAttachments(attachmentAssembler.toModel(resource.getAttachments()));
         task.setCustomAttributes(resource.getCustomAttributes().stream()
-            .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())
-            .collect(Collectors.toMap(TaskResource.CustomAttribute::getKey, TaskResource.CustomAttribute::getValue)));
+                .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())
+                .collect(Collectors.toMap(TaskResource.CustomAttribute::getKey, TaskResource.CustomAttribute::getValue)));
         task.setCallbackInfo(resource.getCallbackInfo().stream()
-            .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())
-            .collect(Collectors.toMap(TaskResource.CustomAttribute::getKey, TaskResource.CustomAttribute::getValue)));
+                .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())
+                .collect(Collectors.toMap(TaskResource.CustomAttribute::getKey, TaskResource.CustomAttribute::getValue)));
         if (resource.getCustom1() != null) {
             task.setCustom1(resource.getCustom1());
         }
@@ -209,16 +209,16 @@ public class TaskResourceAssembler
 
     private void validateTaskResource(TaskResource resource) throws InvalidArgumentException {
         if (resource.getWorkbasketSummaryResource() == null
-            || resource.getWorkbasketSummaryResource().getWorkbasketId() == null
-            || resource.getWorkbasketSummaryResource().getWorkbasketId().isEmpty()) {
+                || resource.getWorkbasketSummaryResource().getWorkbasketId() == null
+                || resource.getWorkbasketSummaryResource().getWorkbasketId().isEmpty()) {
             throw new InvalidArgumentException(
-                "TaskResource must have a workbasket summary with a valid workbasketId.");
+                    "TaskResource must have a workbasket summary with a valid workbasketId.");
         }
         if (resource.getClassificationSummaryResource() == null
-            || resource.getClassificationSummaryResource().getKey() == null
-            || resource.getClassificationSummaryResource().getKey().isEmpty()) {
+                || resource.getClassificationSummaryResource().getKey() == null
+                || resource.getClassificationSummaryResource().getKey().isEmpty()) {
             throw new InvalidArgumentException(
-                "TaskResource must have a classification summary with a valid classification key.");
+                    "TaskResource must have a classification summary with a valid classification key.");
         }
     }
 
