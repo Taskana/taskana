@@ -8,6 +8,7 @@ import {Workbasket} from 'app/models/workbasket';
 import {FilterModel} from 'app/models/filter';
 import {AlertService} from 'app/services/alert/alert.service';
 import {AlertModel, AlertType} from 'app/models/alert';
+import {WorkplaceService} from 'app/workplace/services/workplace.service';
 
 @Component({
   selector: 'taskana-task-list',
@@ -34,10 +35,13 @@ export class TasklistComponent implements OnInit, OnDestroy {
 
   private taskChangeSubscription: Subscription;
   private taskDeletedSubscription: Subscription;
+  private taskAddedSubscription: Subscription;
+  private workbasketChangeSubscription: Subscription;
 
   constructor(private router: Router,
               private route: ActivatedRoute,
               private taskService: TaskService,
+              private workplaceService: WorkplaceService,
               private alertService: AlertService) {
     this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe(task => {
       for (let i = 0; i < this.tasks.length; i++) {
@@ -52,7 +56,15 @@ export class TasklistComponent implements OnInit, OnDestroy {
           this.tasks.splice(i, 1);
         }
       }
-    })
+    });
+    this.workbasketChangeSubscription = this.workplaceService.workbasketSelectedStream.subscribe(workbasket => {
+      this.currentBasket = workbasket;
+      this.getTasks();
+    });
+    this.taskAddedSubscription = this.taskService.taskAddedStream.subscribe(task => {
+      this.getTasks();
+      this.selectedId = task.taskId;
+    });
   }
 
   ngOnInit() {
@@ -74,11 +86,6 @@ export class TasklistComponent implements OnInit, OnDestroy {
     this.router.navigate([{outlets: {detail: `taskdetail/${this.selectedId}`}}], {relativeTo: this.route});
   }
 
-  loadBasketID(workbasket: Workbasket) {
-    this.currentBasket = workbasket;
-    this.getTasks();
-  }
-
   performSorting(sort: SortingModel) {
     this.sort = sort;
     this.getTasks();
@@ -91,22 +98,28 @@ export class TasklistComponent implements OnInit, OnDestroy {
 
   getTasks(): void {
     this.requestInProgress = true;
-    this.taskService.findTasksWithWorkbasket(this.currentBasket.workbasketId, this.sort.sortBy, this.sort.sortDirection,
-      this.filterBy.filterParams.name, this.filterBy.filterParams.owner, this.filterBy.filterParams.priority,
-      this.filterBy.filterParams.state)
-      .subscribe(tasks => {
-        this.requestInProgress = false;
-        if (tasks._embedded) {
-          this.tasks = tasks._embedded.tasks;
-        } else {
-          this.tasks = [];
-          this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'The selected Workbasket is empty!'));
-        }
-      });
+    if (this.currentBasket === undefined) {
+      this.requestInProgress = false;
+      this.tasks = [];
+    } else {
+      this.taskService.findTasksWithWorkbasket(this.currentBasket.workbasketId, this.sort.sortBy, this.sort.sortDirection,
+        this.filterBy.filterParams.name, this.filterBy.filterParams.owner, this.filterBy.filterParams.priority,
+        this.filterBy.filterParams.state)
+        .subscribe(tasks => {
+          this.requestInProgress = false;
+          if (tasks._embedded) {
+            this.tasks = tasks._embedded.tasks;
+          } else {
+            this.tasks = [];
+            this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'The selected Workbasket is empty!'));
+          }
+        });
+    }
   }
 
   ngOnDestroy(): void {
     this.taskChangeSubscription.unsubscribe();
     this.taskDeletedSubscription.unsubscribe();
+    this.workbasketChangeSubscription.unsubscribe();
   }
 }

@@ -15,11 +15,11 @@ import { LinksClassification } from 'app/models/links-classfication';
 import { Pair } from 'app/models/pair';
 
 // tslint:disable:max-line-length
-import { ClassificationCategoriesService } from 'app/administration/services/classification-categories-service/classification-categories.service';
+import { ClassificationCategoriesService } from 'app/services/classifications/classification-categories.service';
 // tslint:enable:max-line-length
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { ClassificationsService } from 'app/administration/services/classifications/classifications.service';
+import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import { TreeNodeModel } from 'app/models/tree-node';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { AlertService } from 'app/services/alert/alert.service';

@@ -28,8 +28,8 @@ import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
 import {SavingWorkbasketService} from './services/saving-workbaskets/saving-workbaskets.service';
 import {ClassificationDefinitionService} from './services/classification-definition/classification-definition.service';
 import {WorkbasketDefinitionService} from './services/workbasket-definition/workbasket-definition.service';
-import {ClassificationsService} from './services/classifications/classifications.service';
-import {ClassificationCategoriesService} from './services/classification-categories-service/classification-categories.service';
+import {ClassificationsService} from '../services/classifications/classifications.service';
+import {ClassificationCategoriesService} from 'app/services/classifications/classification-categories.service';
 import { AccessItemsManagementComponent } from 'app/administration/access-items-management/access-items-management.component';
 
 const MODULES = [
