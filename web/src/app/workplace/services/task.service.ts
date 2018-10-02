@@ -5,7 +5,6 @@ import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 import {TaskResource} from 'app/workplace/models/task-resource';
 import {Direction} from 'app/models/sorting';
-import {Workbasket} from 'app/models/workbasket';
 
 @Injectable()
 export class TaskService {
@@ -92,7 +91,7 @@ export class TaskService {
   }
 
   createTask(task: Task): Observable<Task> {
-    return this.httpClient.post<Task>(`${this.url}`, task);
+    return this.httpClient.post<Task>(this.url, task);
   }
 
   private getTaskQueryParameters(basketId: string,

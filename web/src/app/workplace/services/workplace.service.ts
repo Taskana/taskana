@@ -1,11 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs/index';
-import {Workbasket} from 'app/models/workbasket';
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { Workbasket } from 'app/models/workbasket';
 
 @Injectable()
 export class WorkplaceService {
-  currentWorkbasket: Workbasket = undefined;
-  workbasketSelectedSource = new Subject<Workbasket>();
+  // necessary because the TaskdetailsComponent is not always initialized when the first workbasket was selected.
+  currentWorkbasket: Workbasket;
+  private workbasketSelectedSource = new Subject<Workbasket>();
   workbasketSelectedStream = this.workbasketSelectedSource.asObservable();
 
   selectWorkbasket(workbasket: Workbasket) {

@@ -49,6 +49,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     });
     this.routeSubscription = this.route.params.subscribe(params => {
       this.currentId = params['id'];
+      // redirect if user enters through a deep-link
       if (!this.currentWorkbasket && this.currentId === 'new-task') {
         this.router.navigate(['']);
       }
@@ -69,7 +70,6 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     if (this.currentId === 'new-task') {
       this.requestInProgress = false;
       this.task = new Task(undefined, new ObjectReference(), this.currentWorkbasket);
-      this.cloneTask();
     } else {
       this.taskService.getTask(this.currentId).subscribe(task => {
         this.requestInProgress = false;
