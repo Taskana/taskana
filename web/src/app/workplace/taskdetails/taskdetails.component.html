@@ -35,16 +35,19 @@
               title="Save">
         <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
       </button>
-      <button type="button" title="Open task to work on it" class="btn btn-default" aria-label="Left Align"
-              [disabled]="workOnTaskDisabled()" (click)="openTask()">
-        <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
-      </button>
-      <button type="button" (click)="resetTask()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
-        <span class="glyphicon glyphicon-repeat blue" aria-hidden="true"></span>
-      </button>
-      <button type="button" title="Delete Task" class="btn btn-default remove" (click)="deleteTask()">
-        <span class="glyphicon glyphicon-remove"></span>
-      </button>
+      <ng-container *ngIf="currentId != 'new-task'">
+        <button type="button" title="Open task to work on it" class="btn btn-default" aria-label="Left Align"
+                [disabled]="workOnTaskDisabled()" (click)="openTask()">
+          <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+        </button>
+        <button type="button" (click)="resetTask()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
+          <span class="glyphicon glyphicon-repeat blue" aria-hidden="true"></span>
+        </button>
+        <button type="button" title="Delete Task" class="btn btn-default remove"
+                (click)="deleteTask()">
+          <span class="glyphicon glyphicon-remove"></span>
+        </button>
+      </ng-container>
     </div>
     <h4 class="panel-header">{{task.name}}&nbsp;
       <span *ngIf="!task.taskId" class="badge warning"> {{'Creating Task'}}</span>
