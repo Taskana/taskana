@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.BaseQuery;
 import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskService;
+import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -67,11 +68,20 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
     private List<String> getWorkbasketsMarkedForDeletion() throws InvalidArgumentException {
         List<String> workbasketList = taskanaEngineImpl.getWorkbasketService()
             .createWorkbasketQuery()
-            .deletionFlagEquals(true)
+            .markedForDeletion(true)
             .listValues("ID", BaseQuery.SortDirection.ASCENDING);
         workbasketList = excludeWorkbasketWithPendingTasks(workbasketList);
 
         return workbasketList;
+    }
+
+    private long getNumberTaskNotCompleted(String workbasketId) {
+        return taskanaEngineImpl.getTaskService()
+            .createTaskQuery()
+            .workbasketIdIn(workbasketId)
+            .stateNotIn(
+                TaskState.COMPLETED)
+            .count();
     }
 
     private List<String> excludeWorkbasketWithPendingTasks(List<String> workbasketList)
@@ -84,7 +94,7 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
             Iterator<String> iterator = workbasketList.iterator();
             while (iterator.hasNext()) {
                 String workbasketId = iterator.next();
-                if (taskService.allTasksCompletedByWorkbasketId(workbasketId)) {
+                if (getNumberTaskNotCompleted(workbasketId) == 0) {
                     workbasketDeletionList.add(workbasketId);
                 } else {
                     workbasketWithNonCompletedTasksList.add(workbasketId);
