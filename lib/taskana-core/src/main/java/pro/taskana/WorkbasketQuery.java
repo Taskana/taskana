@@ -485,10 +485,10 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
     /**
      * Add to your query if the Workbasket shall be marked for deletion.
      *
-     * @param deletionFlag
-     *            a simple flag showing if deletion flag is activated
+     * @param markedForDeletion
+     *            a simple flag showing if the workbasket is marked for deletion
      * @return the query
      */
-    WorkbasketQuery deletionFlagEquals(Boolean deletionFlag);
+    WorkbasketQuery markedForDeletion(boolean markedForDeletion);
 
 }

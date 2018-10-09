@@ -231,10 +231,4 @@ public interface TaskMapper {
         @Result(property = "taskId", column = "ID")})
     List<String> filterTaskIdsForNotCompleted(@Param("taskIds") List<String> taskIds);
 
-    @Select("<script>SELECT COUNT(ID) FROM TASK WHERE "
-        + "WORKBASKET_ID = #{workbasketId} "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>")
-    Long countTasksInWorkbasket(@Param("workbasketId") String workbasketId);
-
 }

@@ -549,7 +549,6 @@ public class WorkbasketServiceImplTest {
         verify(cutSpy, times(1)).getWorkbasket(wb.getId());
         verify(taskanaEngineImplMock, times(0)).getSqlSession();
         verify(sqlSessionMock, times(0)).getMapper(TaskMapper.class);
-        verify(taskMapperMock, times(0)).countTasksInWorkbasket(any());
 
         verify(workbasketMapperMock, times(1)).findById(wb.getId());
         verify(taskanaEngineImplMock, times(2)).returnConnection();
