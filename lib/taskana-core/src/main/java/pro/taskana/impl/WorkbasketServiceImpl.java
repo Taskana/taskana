@@ -727,6 +727,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException {
         LOGGER.debug("entry to deleteWorkbasket(workbasketId = {})", workbasketId);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+
         try {
             taskanaEngine.openConnection();
             if (workbasketId == null || workbasketId.isEmpty()) {
@@ -736,25 +737,26 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             // check if the workbasket does exist and is empty (Task)
             this.getWorkbasket(workbasketId);
 
-            long numTasksInWorkbasket = taskanaEngine.getTaskService()
+            long numTasksNotCompletedInWorkbasket = taskanaEngine.getTaskService()
                 .createTaskQuery()
                 .workbasketIdIn(workbasketId)
                 .stateNotIn(
                     TaskState.COMPLETED)
                 .count();
 
-            if (numTasksInWorkbasket > 0) {
+            if (numTasksNotCompletedInWorkbasket > 0) {
                 throw new WorkbasketInUseException(
                     "Workbasket " + workbasketId + " contains non-completed tasks and can´t be marked for deletion.");
             }
 
-            numTasksInWorkbasket = taskanaEngine.getTaskService()
+            long numTasksInWorkbasket = taskanaEngine.getTaskService()
                 .createTaskQuery()
                 .workbasketIdIn(workbasketId)
                 .count();
 
             if (numTasksInWorkbasket == 0) {
                 workbasketMapper.delete(workbasketId);
+                deleteReferencesToWorkbasket(workbasketId);
                 return true;
             } else {
                 markWorkbasketForDeletion(workbasketId);
@@ -780,22 +782,14 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             WorkbasketImpl workbasket = workbasketMapper.findById(workbasketId);
             workbasket.setMarkedForDeletion(true);
             workbasketMapper.update(workbasket);
-            deleteWorkbasketTablesReferences(workbasketId);
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from markWorkbasketForDeletion(workbasketId = {}).", workbasketId);
         }
     }
 
-    private void deleteWorkbasketTablesReferences(String workbasketId) {
-        // delete workbasket and sub-tables
-        distributionTargetMapper.deleteAllDistributionTargetsBySourceId(workbasketId);
-        distributionTargetMapper.deleteAllDistributionTargetsByTargetId(workbasketId);
-        workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(workbasketId);
-    }
-
     public BulkOperationResults<String, TaskanaException> deleteWorkbaskets(List<String> workbasketsIds)
-        throws NotAuthorizedException, InvalidArgumentException, WorkbasketInUseException, WorkbasketNotFoundException {
+        throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("entry to deleteWorkbaskets(workbasketId = {})", LoggerUtils.listToString(workbasketsIds));
 
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -805,16 +799,23 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             if (workbasketsIds == null || workbasketsIds.isEmpty()) {
                 throw new InvalidArgumentException("List of WorkbasketIds must not be null.");
             }
+            BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
-            List<String> existingWorkbasketIds = workbasketMapper.findExistingWorkbaskets(workbasketsIds);
-            BulkOperationResults<String, TaskanaException> bulkLog = cleanNonExistingWorkbasketExists(
-                existingWorkbasketIds,
-                workbasketsIds);
-
-            if (!existingWorkbasketIds.isEmpty()) {
-                Iterator<String> iterator = existingWorkbasketIds.iterator();
+            if (!workbasketsIds.isEmpty()) {
+                Iterator<String> iterator = workbasketsIds.iterator();
+                String workbasketIdForDeleting = null;
                 while (iterator.hasNext()) {
-                    deleteWorkbasket(iterator.next());
+                    try {
+                        workbasketIdForDeleting = iterator.next();
+                        deleteWorkbasket(workbasketIdForDeleting);
+                    } catch (WorkbasketInUseException ex) {
+                        bulkLog.addError(workbasketIdForDeleting, new WorkbasketInUseException(
+                            "Workbasket with id " + workbasketIdForDeleting + " is in use and will not be deleted."));
+                    } catch (TaskanaException ex) {
+                        bulkLog.addError(workbasketIdForDeleting, new TaskanaException(
+                            "Workbasket with id " + workbasketIdForDeleting
+                                + " Throw an exception and couldn't be deleted."));
+                    }
                 }
             }
             return bulkLog;
@@ -830,30 +831,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         return new WorkbasketAccessItemQueryImpl(this.taskanaEngine);
     }
 
-    private BulkOperationResults<String, TaskanaException> cleanNonExistingWorkbasketExists(
-        List<String> existingWorkbasketIds,
-        List<String> workbasketIds) {
-        BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
-        Iterator<String> workbasketIdIterator = existingWorkbasketIds.iterator();
-        while (workbasketIdIterator.hasNext()) {
-            String currentWorkbasketId = workbasketIdIterator.next();
-            if (currentWorkbasketId == null || currentWorkbasketId.equals("")) {
-                bulkLog.addError("",
-                    new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
-                workbasketIdIterator.remove();
-            } else {
-                String foundSummary = workbasketIds.stream()
-                    .filter(workbasketId -> currentWorkbasketId.equals(workbasketId))
-                    .findFirst()
-                    .orElse(null);
-                if (foundSummary == null) {
-                    bulkLog.addError(currentWorkbasketId, new WorkbasketNotFoundException(currentWorkbasketId,
-                        "Workbasket with id " + currentWorkbasketId + " was not found."));
-                    workbasketIdIterator.remove();
-                }
-            }
-        }
-        return bulkLog;
+    private void deleteReferencesToWorkbasket(String workbasketId) {
+        // deletes sub-tables workbasket references
+        distributionTargetMapper.deleteAllDistributionTargetsBySourceId(workbasketId);
+        distributionTargetMapper.deleteAllDistributionTargetsByTargetId(workbasketId);
+        workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(workbasketId);
     }
 
 }

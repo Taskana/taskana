@@ -2,8 +2,6 @@ package pro.taskana.jobs;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,14 +9,12 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.BaseQuery;
 import pro.taskana.BulkOperationResults;
-import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.transaction.TaskanaTransactionProvider;
 
 /**
@@ -64,36 +60,13 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
         }
     }
 
-    private List<String> getWorkbasketsMarkedForDeletion() throws InvalidArgumentException {
+    private List<String> getWorkbasketsMarkedForDeletion() {
         List<String> workbasketList = taskanaEngineImpl.getWorkbasketService()
             .createWorkbasketQuery()
-            .deletionFlagEquals(true)
+            .markedForDeletion(true)
             .listValues("ID", BaseQuery.SortDirection.ASCENDING);
-        workbasketList = excludeWorkbasketWithPendingTasks(workbasketList);
 
         return workbasketList;
-    }
-
-    private List<String> excludeWorkbasketWithPendingTasks(List<String> workbasketList)
-        throws InvalidArgumentException {
-        TaskService taskService = taskanaEngineImpl.getTaskService();
-        ArrayList<String> workbasketDeletionList = new ArrayList<>();
-        ArrayList<String> workbasketWithNonCompletedTasksList = new ArrayList<>();
-
-        if (!workbasketList.isEmpty()) {
-            Iterator<String> iterator = workbasketList.iterator();
-            while (iterator.hasNext()) {
-                String workbasketId = iterator.next();
-                if (taskService.allTasksCompletedByWorkbasketId(workbasketId)) {
-                    workbasketDeletionList.add(workbasketId);
-                } else {
-                    workbasketWithNonCompletedTasksList.add(workbasketId);
-                }
-            }
-        }
-        LOGGER.info("workbasket marked for deletion with non completed tasks {}.",
-            LoggerUtils.listToString(workbasketWithNonCompletedTasksList));
-        return workbasketDeletionList;
     }
 
     private int deleteWorkbasketsTransactionally(List<String> workbasketsToBeDeleted) {
