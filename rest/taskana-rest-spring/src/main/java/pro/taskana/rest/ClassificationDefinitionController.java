@@ -26,6 +26,7 @@ import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.assembler.ClassificationResourceAssembler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,13 +71,19 @@ public class ClassificationDefinitionController {
             .collect(Collectors.toMap(i -> i.getKey() + "|" + i.getDomain(), ClassificationSummary::getId));
 
         try {
+            Map<String, String> parentIdMapper = new HashMap<>();
+            String oldClassificationId;
             for (ClassificationResource classificationResource : classificationResources) {
                 if (systemIds.containsKey(classificationResource.key + "|" + classificationResource.domain)) {
                     classificationService.updateClassification(classificationResourceAssembler.toModel(classificationResource));
-
                 } else {
+                    oldClassificationId = classificationResource.classificationId;
                     classificationResource.classificationId = null;
-                    classificationService.createClassification(classificationResourceAssembler.toModel(classificationResource));
+                    if (parentIdMapper.get(classificationResource.getParentId()) != null) {
+                        classificationResource.setParentId(parentIdMapper.get(classificationResource.getParentId()));
+                    }
+                    Classification updatedClassification = classificationService.createClassification(classificationResourceAssembler.toModel(classificationResource));
+                    parentIdMapper.put(oldClassificationId, updatedClassification.getId());
                 }
             }
         } catch (NotAuthorizedException e) {
