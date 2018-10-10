@@ -270,23 +270,6 @@ include::../../../{snippets}/GetAllClassificationsDocTest/response-fields.adoc[]
 The response-body is essentially the same as for getting a single classification. +
 Therefore for the response fields you can refer to the structure of the <<workbasket, single workbasket>>.
 
-=== Delete workbasket
-
-A `DELETE` request to dalete a workbasket
-
-==== Example Request
-
-include::../../../{snippets}/MarkWorkbasketForDeletionDocTest/http-request.adoc[]
-
-==== Example Response
-
-include::../../../{snippets}/MarkWorkbasketForDeletionDocTest/http-response.adoc[]
-
-
-=== Remove a workbasket as distribution-target
-
-A `DELETE` request is used to remove a workbasket as a distribution-taregt.
-
 ==== Example Request
 
 === Filter and sort options
@@ -464,7 +447,7 @@ include::../../../{snippets}/UpdateWorkbasketDocTest/http-request.adoc[]
 
 ==== Request Structure
 
-The request-body is essentially the same as for getting a single classification. +
+The request-body is essentially the same as for getting a single workbasket. +
 Therefore for the request fields you can refer to the structure of the <<workbasket, single workbasket>>.
 
 ==== Example Response
@@ -473,8 +456,20 @@ include::../../../{snippets}/UpdateWorkbasketDocTest/http-response.adoc[]
 
 ==== Response Structure
 
-The response-body is essentially the same as for getting a single classification. +
+The response-body is essentially the same as for getting a single workbasket. +
 Therefore for the response fields you can refer to the structure of the <<workbasket, single workbasket>>.
+
+=== Delete workbasket
+
+A `DELETE` request to dalete a workbasket
+
+==== Example Request
+
+include::../../../{snippets}/MarkWorkbasketForDeletionDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/MarkWorkbasketForDeletionDocTest/http-response.adoc[]
 
 
 === Remove a workbasket as distribution-target
