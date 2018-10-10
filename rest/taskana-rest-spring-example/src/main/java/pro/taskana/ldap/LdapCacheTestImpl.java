@@ -32,8 +32,8 @@ public class LdapCacheTestImpl implements LdapCache {
         new AccessIdResource("Hagen, Holger", "teamlead_3"),
         new AccessIdResource("Breier, Bernd", "user_2_2"),
         new AccessIdResource("Fielmalz, Anke", "user017"),
-        new AccessIdResource("Behrendt, Maximilian", "max"),
-        new AccessIdResource("Breier, Bernd", "user_2_2"),
+        new AccessIdResource("Mente, Maximilian", "max_mente"),
+        new AccessIdResource("Theke, Bernd", "user_2_3"),
         new AccessIdResource("Ferrante, Elena", "elena"),
         new AccessIdResource("Mueller, Simone", "simone"),
         new AccessIdResource("Sirup, Aaron", "user001"),
@@ -267,25 +267,25 @@ public class LdapCacheTestImpl implements LdapCache {
         new AccessIdResource("Schuh, Wanda", "user231"),
         new AccessIdResource("Rahm, Wolf", "user232"),
 
-        new AccessIdResource("businessadmin", "cn=businessadmin,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("UsersGroup", "cn=UsersGroup,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("DevelopersGroup", "cn=DevelopersGroup,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("businessadmin", "cn=CustomersGroup,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("businessadmin", "cn=businessadmin,ou=groups,o=taskanatest"),
+        new AccessIdResource("UsersGroup", "cn=usersgroup,ou=groups,o=taskanatest"),
+        new AccessIdResource("DevelopersGroup", "cn=developersgroup,ou=groups,o=taskanatest"),
+        new AccessIdResource("businessadmin", "cn=customersgroup,ou=groups,o=taskanatest"),
 
-        new AccessIdResource("user_domain_A", "cn=user_domain_A,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("monitor", "cn=monitor,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("user_domain_C", "cn=user_domain_C,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("user_domain_D", "cn=user_domain_D,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("user_domain_A", "cn=user_domain_a,ou=groups,o=taskanatest"),
+        new AccessIdResource("monitor", "cn=monitor,ou=groups,o=taskanatest"),
+        new AccessIdResource("user_domain_C", "cn=user_domain_c,ou=groups,o=taskanatest"),
+        new AccessIdResource("user_domain_D", "cn=user_domain_d,ou=groups,o=taskanatest"),
 
-        new AccessIdResource("admin", "cn=admin,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("manager_domain_B", "cn=manager_domain_B,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("manager_domain_C", "cn=manager_domain_C,ou=groups,o=TaskanaTest"),
-        new AccessIdResource("manager_domain_D", "cn=manager_domain_D,ou=groups,o=TaskanaTest"),
+        new AccessIdResource("admin", "cn=admin,ou=groups,o=taskanatest"),
+        new AccessIdResource("manager_domain_B", "cn=manager_domain_b,ou=groups,o=taskanatest"),
+        new AccessIdResource("manager_domain_C", "cn=manager_domain_c,ou=groups,o=taskanatest"),
+        new AccessIdResource("manager_domain_D", "cn=manager_domain_d,ou=groups,o=taskanatest"),
 
-        new AccessIdResource("teamlead_2", "cn=teamlead_2" + ",ou=groups,o=TaskanaTest"),
-        new AccessIdResource("teamlead_4", "cn=teamlead_4" + ",ou=groups,o=TaskanaTest"),
-        new AccessIdResource("team_3", "cn=team_3" + ",ou=groups,o=TaskanaTest"),
-        new AccessIdResource("team_4", "cn=team_4" + ",ou=groups,o=TaskanaTest")));
+        new AccessIdResource("teamlead_2", "cn=teamlead_2" + ",ou=groups,o=taskanatest"),
+        new AccessIdResource("teamlead_4", "cn=teamlead_4" + ",ou=groups,o=taskanatest"),
+        new AccessIdResource("team_3", "cn=team_3" + ",ou=groups,o=taskanatest"),
+        new AccessIdResource("team_4", "cn=team_4" + ",ou=groups,o=taskanatest")));
 
     @Override
     public List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumerOfReturnedAccessIds) {
