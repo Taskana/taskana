@@ -10,6 +10,7 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
     private String id;
     private String workbasketId;
+    private String workbasketKey;
     private String accessId;
     private String accessName;
     private boolean permRead;
@@ -58,6 +59,15 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
     public void setWorkbasketId(String workbasketId) {
         this.workbasketId = workbasketId;
+    }
+
+    @Override
+    public String getWorkbasketKey() {
+        return workbasketKey;
+    }
+
+    public void setWorkbasketKey(String workbasketKey) {
+        this.workbasketKey = workbasketKey;
     }
 
     /*
@@ -408,6 +418,8 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         builder.append(id);
         builder.append(", workbasketId=");
         builder.append(workbasketId);
+        builder.append(", workbasketKey=");
+        builder.append(workbasketKey);
         builder.append(", accessId=");
         builder.append(accessId);
         builder.append(", permRead=");

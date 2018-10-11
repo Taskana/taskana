@@ -12,6 +12,7 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.rest.TestConfiguration;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
@@ -33,6 +34,7 @@ public class WorkbasketAccessItemAssemblerTest {
         throws NotAuthorizedException, WorkbasketNotFoundException {
         // given
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "2");
+        ((WorkbasketAccessItemImpl) accessItem).setWorkbasketKey("workbasketKey");
         accessItem.setPermDistribute(false);
         accessItem.setPermOpen(true);
         accessItem.setPermAppend(false);
@@ -62,6 +64,7 @@ public class WorkbasketAccessItemAssemblerTest {
         // given
         WorkbasketAccessItemResource resource = new WorkbasketAccessItemResource();
         resource.setAccessId("10");
+        resource.setWorkbasketKey("workbasketKey");
         resource.setAccessItemId("120");
         resource.setWorkbasketId("1");
         resource.setPermRead(true);
@@ -90,6 +93,7 @@ public class WorkbasketAccessItemAssemblerTest {
     private void testEquality(WorkbasketAccessItem accessItem,
         WorkbasketAccessItemResource resource) {
         Assert.assertEquals(accessItem.getAccessId(), resource.accessId);
+        Assert.assertEquals(accessItem.getWorkbasketKey(), resource.workbasketKey);
         Assert.assertEquals(accessItem.getId(), resource.accessItemId);
         Assert.assertEquals(accessItem.getWorkbasketId(), resource.workbasketId);
         Assert.assertEquals(accessItem.isPermAppend(), resource.permAppend);

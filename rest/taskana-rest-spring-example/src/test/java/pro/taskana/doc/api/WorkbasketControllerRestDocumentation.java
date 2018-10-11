@@ -107,6 +107,7 @@ public class WorkbasketControllerRestDocumentation {
 
         accessItemFieldDescriptionsMap.put("_embedded.accessItems.accessItemId", "Unique ID");
         accessItemFieldDescriptionsMap.put("_embedded.accessItems.workbasketId", "The workbasket");
+        accessItemFieldDescriptionsMap.put("_embedded.accessItems.workbasketKey", "The workbasket key");
         accessItemFieldDescriptionsMap.put("_embedded.accessItems.accessId",
             "The access id, this ACL entry refers to. This could be either a userid or a full qualified group id (both lower case)");
         accessItemFieldDescriptionsMap.put("_embedded.accessItems.accessName", "");
@@ -115,7 +116,7 @@ public class WorkbasketControllerRestDocumentation {
         accessItemFieldDescriptionsMap.put("_embedded.accessItems.permOpen",
             "The permission to view the content (the tasks) of a workbasket");
         accessItemFieldDescriptionsMap.put("_embedded.accessItems.permAppend",
-            "The permission to add tasks to the workbasket (required for creation and tranferring of tasks)");
+            "The permission to add tasks to the workbasket (required for creation and transferring of tasks)");
         accessItemFieldDescriptionsMap.put("_embedded.accessItems.permTransfer",
             "The permission to transfer tasks (out of the current workbasket)");
         accessItemFieldDescriptionsMap.put("_embedded.accessItems.permDistribute",
@@ -199,11 +200,12 @@ public class WorkbasketControllerRestDocumentation {
         };
 
         accessItemFieldDescriptors = new FieldDescriptor[] {
-
             fieldWithPath("_embedded.accessItems[].accessItemId").description(
                 accessItemFieldDescriptionsMap.get("_embedded.accessItems.accessItemId")),
             fieldWithPath("_embedded.accessItems[].workbasketId").description(
                 accessItemFieldDescriptionsMap.get("_embedded.accessItems.workbasketId")),
+            fieldWithPath("_embedded.accessItems[].workbasketKey").description(
+                accessItemFieldDescriptionsMap.get("_embedded.accessItems.workbasketKey")),
             fieldWithPath("_embedded.accessItems[].accessId").description(
                 accessItemFieldDescriptionsMap.get("_embedded.accessItems.accessId")),
             fieldWithPath("_embedded.accessItems[].accessName").description(
