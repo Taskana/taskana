@@ -14,7 +14,6 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.WorkbasketAccessItemExtended;
 import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketQuery;
@@ -154,14 +153,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     @Override
     public WorkbasketAccessItem newWorkbasketAccessItem(String workbasketId, String accessId) {
         WorkbasketAccessItemImpl accessItem = new WorkbasketAccessItemImpl();
-        accessItem.setWorkbasketId(workbasketId);
-        accessItem.setAccessId(accessId);
-        return accessItem;
-    }
-
-    @Override
-    public WorkbasketAccessItemExtended newWorkbasketAccessItemExtended(String workbasketId, String accessId) {
-        WorkbasketAccessItemExtendedImpl accessItem = new WorkbasketAccessItemExtendedImpl();
         accessItem.setWorkbasketId(workbasketId);
         accessItem.setAccessId(accessId);
         return accessItem;
@@ -801,12 +792,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws NotAuthorizedException {
         taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
         return new WorkbasketAccessItemQueryImpl(this.taskanaEngine);
-    }
-
-    @Override
-    public WorkbasketAccessItemQuery.Extended createWorkbasketAccessItemExtendedQuery() throws NotAuthorizedException {
-        taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
-        return new WorkbasketAccessItemQueryImpl.Extended(this.taskanaEngine);
     }
 
 }

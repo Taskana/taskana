@@ -2,10 +2,16 @@ package pro.taskana.rest.resource.assembler;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static pro.taskana.rest.resource.assembler.AbstractRessourcesAssembler.getBuilderForOriginalUri;
+
+import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
@@ -51,5 +57,35 @@ public class WorkbasketAccessItemAssembler {
             linkTo(methodOn(WorkbasketController.class).getWorkbasket(wbAccItem.getWorkbasketId()))
                 .withRel("workbasket"));
         return resource;
+    }
+
+    public PagedResources<WorkbasketAccessItemResource> toResources(List<WorkbasketAccessItem> workbasketAccessItems,
+        PagedResources.PageMetadata pageMetadata) {
+        WorkbasketAccessItemsAssembler assembler = new WorkbasketAccessItemsAssembler();
+        List<WorkbasketAccessItemResource> resources = assembler.toResources(workbasketAccessItems);
+
+        PagedResources<WorkbasketAccessItemResource> pagedResources = new PagedResources<WorkbasketAccessItemResource>(
+            resources,
+            pageMetadata);
+
+        UriComponentsBuilder original = getBuilderForOriginalUri();
+        pagedResources.add(new Link(original.toUriString()).withSelfRel());
+        if (pageMetadata != null) {
+            pagedResources.add(new Link(original.replaceQueryParam("page", 1).toUriString()).withRel(Link.REL_FIRST));
+            pagedResources.add(new Link(original.replaceQueryParam("page", pageMetadata.getTotalPages()).toUriString())
+                .withRel(Link.REL_LAST));
+            if (pageMetadata.getNumber() > 1) {
+                pagedResources
+                    .add(new Link(original.replaceQueryParam("page", pageMetadata.getNumber() - 1).toUriString())
+                        .withRel(Link.REL_PREVIOUS));
+            }
+            if (pageMetadata.getNumber() < pageMetadata.getTotalPages()) {
+                pagedResources
+                    .add(new Link(original.replaceQueryParam("page", pageMetadata.getNumber() + 1).toUriString())
+                        .withRel(Link.REL_NEXT));
+            }
+        }
+
+        return pagedResources;
     }
 }

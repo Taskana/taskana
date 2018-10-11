@@ -1,7 +1,13 @@
 package pro.taskana.rest;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -13,22 +19,27 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.hal.Jackson2HalModule;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import pro.taskana.rest.resource.WorkbasketAccesItemExtendedResource;
 
-import java.util.Collections;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.Assert.*;
+import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"devMode=true"})
+    properties = {"devMode=true"})
 public class WorkbasketAccessItemControllerIntTest {
 
     String url = "http://127.0.0.1:";
@@ -47,34 +58,36 @@ public class WorkbasketAccessItemControllerIntTest {
 
     @Test
     public void testGetAllWorkbasketAccessItems() {
-        ResponseEntity<PagedResources<WorkbasketAccesItemExtendedResource>> response = template.exchange(
-                url + port + "/v1/workbasket-access-items", HttpMethod.GET, request,
-                new ParameterizedTypeReference<PagedResources<WorkbasketAccesItemExtendedResource>>() {
-                });
+        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = template.exchange(
+            url + port + "/v1/workbasket-access-items", HttpMethod.GET, request,
+            new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
+            });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
     }
 
     @Test
     public void testGetWorkbasketAccessItemsKeepingFilters() {
         String parameters = "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=1&page-size=9&access-ids=user_1_1";
-        ResponseEntity<PagedResources<WorkbasketAccesItemExtendedResource>> response = template.exchange(
-                url + port + parameters, HttpMethod.GET, request,
-                new ParameterizedTypeReference<PagedResources<WorkbasketAccesItemExtendedResource>>() {
-                });
+        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = template.exchange(
+            url + port + parameters, HttpMethod.GET, request,
+            new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
+            });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
-                .getLink(Link.REL_SELF)
-                .getHref()
-                .endsWith(parameters));
+            .getLink(Link.REL_SELF)
+            .getHref()
+            .endsWith(parameters));
     }
 
     @Test
     public void testThrowsExceptionIfInvalidFilterIsUsed() {
         try {
             template.exchange(
-                    url + port + "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1", HttpMethod.GET, request,
-                    new ParameterizedTypeReference<PagedResources<WorkbasketAccesItemExtendedResource>>() {
-                    });
+                url + port
+                    + "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
+                HttpMethod.GET, request,
+                new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
+                });
             fail();
         } catch (HttpClientErrorException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
@@ -85,17 +98,17 @@ public class WorkbasketAccessItemControllerIntTest {
     @Test
     public void testGetSecondPageSortedByWorkbasketKey() {
         String parameters = "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=2&page-size=9&access-ids=user_1_1";
-        ResponseEntity<PagedResources<WorkbasketAccesItemExtendedResource>> response = template.exchange(
-                url + port + parameters, HttpMethod.GET, request,
-                new ParameterizedTypeReference<PagedResources<WorkbasketAccesItemExtendedResource>>() {
-                });
+        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = template.exchange(
+            url + port + parameters, HttpMethod.GET, request,
+            new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
+            });
         assertEquals(1, response.getBody().getContent().size());
         assertEquals("user_1_1", response.getBody().getContent().iterator().next().accessId);
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
-                .getLink(Link.REL_SELF)
-                .getHref()
-                .endsWith(parameters));
+            .getLink(Link.REL_SELF)
+            .getHref()
+            .endsWith(parameters));
         assertNotNull(response.getBody().getLink(Link.REL_FIRST));
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertEquals(9, response.getBody().getMetadata().getSize());
@@ -108,9 +121,9 @@ public class WorkbasketAccessItemControllerIntTest {
     public void testRemoveWorkbasketAccessItemsOfUser() {
         String parameters = "/v1/workbasket-access-items/?access-id=user_1_1";
         ResponseEntity<Void> response = template.exchange(
-                url + port + parameters, HttpMethod.DELETE, request,
-                new ParameterizedTypeReference<Void>() {
-                });
+            url + port + parameters, HttpMethod.DELETE, request,
+            new ParameterizedTypeReference<Void>() {
+            });
         assertNull(response.getBody());
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
@@ -119,7 +132,7 @@ public class WorkbasketAccessItemControllerIntTest {
     public void testGetBadRequestIfTryingToDeleteAccessItemsForGroup() {
         String parameters = "/v1/workbasket-access-items/?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
         try {
-        ResponseEntity<Void> response = template.exchange(
+            ResponseEntity<Void> response = template.exchange(
                 url + port + parameters, HttpMethod.DELETE, request,
                 new ParameterizedTypeReference<Void>() {
                 });

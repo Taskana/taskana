@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.BaseQuery;
-import pro.taskana.WorkbasketAccessItemExtended;
+import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.ldap.LdapClient;
-import pro.taskana.rest.resource.WorkbasketAccesItemExtendedResource;
-import pro.taskana.rest.resource.assembler.WorkbasketAccessItemExtendedAssembler;
+import pro.taskana.rest.resource.WorkbasketAccessItemResource;
+import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
 
 /**
  * Controller for Workbasket access.
@@ -57,22 +57,22 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
      * This GET method return all workbasketAccessItems that correspond the given data.
      *
      * @param params filter, order and access ids.
-     * @return all WorkbasketAccesItemExtendedResource.
+     * @return all WorkbasketAccesItemResource.
      * @throws NotAuthorizedException   if the user is not authorized.
      * @throws InvalidArgumentException if some argument is invalid.
      */
     @GetMapping
-    public ResponseEntity<PagedResources<WorkbasketAccesItemExtendedResource>> getWorkbasketAccessItems(
+    public ResponseEntity<PagedResources<WorkbasketAccessItemResource>> getWorkbasketAccessItems(
         @RequestParam MultiValueMap<String, String> params)
         throws NotAuthorizedException, InvalidArgumentException {
 
-        WorkbasketAccessItemQuery.Extended query = workbasketService.createWorkbasketAccessItemExtendedQuery();
+        WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery();
         query = getAccessIds(query, params);
         query = applyFilterParams(query, params);
         query = applySortingParams(query, params);
 
         PagedResources.PageMetadata pageMetadata = null;
-        List<WorkbasketAccessItemExtended> workbasketAccessItemsExtended;
+        List<WorkbasketAccessItem> workbasketAccessItems;
         String page = params.getFirst(PAGING_PAGE);
         String pageSize = params.getFirst(PAGING_PAGE_SIZE);
         params.remove(PAGING_PAGE);
@@ -82,18 +82,18 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
             // paging
             long totalElements = query.count();
             pageMetadata = initPageMetadata(pageSize, page, totalElements);
-            workbasketAccessItemsExtended = query.listPage((int) pageMetadata.getNumber(),
+            workbasketAccessItems = query.listPage((int) pageMetadata.getNumber(),
                 (int) pageMetadata.getSize());
         } else if (page == null && pageSize == null) {
             // not paging
-            workbasketAccessItemsExtended = query.list();
+            workbasketAccessItems = query.list();
         } else {
             throw new InvalidArgumentException("Paging information is incomplete.");
         }
 
-        WorkbasketAccessItemExtendedAssembler assembler = new WorkbasketAccessItemExtendedAssembler();
-        PagedResources<WorkbasketAccesItemExtendedResource> pagedResources = assembler.toResources(
-            workbasketAccessItemsExtended,
+        WorkbasketAccessItemAssembler assembler = new WorkbasketAccessItemAssembler();
+        PagedResources<WorkbasketAccessItemResource> pagedResources = assembler.toResources(
+            workbasketAccessItems,
             pageMetadata);
 
         return new ResponseEntity<>(pagedResources, HttpStatus.OK);
@@ -112,7 +112,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         @RequestParam("access-id") String accessId)
         throws NotAuthorizedException, InvalidArgumentException {
         if (!ldapClient.isGroup(accessId)) {
-            List<WorkbasketAccessItemExtended> workbasketAccessItemList = workbasketService.createWorkbasketAccessItemExtendedQuery()
+            List<WorkbasketAccessItem> workbasketAccessItemList = workbasketService.createWorkbasketAccessItemQuery()
                 .accessIdIn(accessId)
                 .list();
 
@@ -127,7 +127,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    private WorkbasketAccessItemQuery.Extended getAccessIds(WorkbasketAccessItemQuery.Extended query,
+    private WorkbasketAccessItemQuery getAccessIds(WorkbasketAccessItemQuery query,
         MultiValueMap<String, String> params) throws InvalidArgumentException {
         if (params.containsKey(ACCESS_IDS)) {
             String[] accessIds = extractVerticalBarSeparatedFields(params.get(ACCESS_IDS));
@@ -137,7 +137,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         return query;
     }
 
-    private WorkbasketAccessItemQuery.Extended applyFilterParams(WorkbasketAccessItemQuery.Extended query,
+    private WorkbasketAccessItemQuery applyFilterParams(WorkbasketAccessItemQuery query,
         MultiValueMap<String, String> params) throws InvalidArgumentException {
         if (params.containsKey(WORKBASKET_KEY)) {
             String[] keys = extractCommaSeparatedFields(params.get(WORKBASKET_KEY));
@@ -160,7 +160,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         return query;
     }
 
-    private WorkbasketAccessItemQuery.Extended applySortingParams(WorkbasketAccessItemQuery.Extended query,
+    private WorkbasketAccessItemQuery applySortingParams(WorkbasketAccessItemQuery query,
         MultiValueMap<String, String> params)
         throws IllegalArgumentException {
         // sorting
