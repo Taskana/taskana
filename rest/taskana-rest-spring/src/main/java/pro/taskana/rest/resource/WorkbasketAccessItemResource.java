@@ -17,6 +17,9 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
     public String workbasketId;
 
     @NotNull
+    public String workbasketKey;
+
+    @NotNull
     public String accessId;
 
     public String accessName;
@@ -53,6 +56,14 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
 
     public void setWorkbasketId(String workbasketId) {
         this.workbasketId = workbasketId;
+    }
+
+    public String getWorkbasketKey() {
+        return workbasketKey;
+    }
+
+    public void setWorkbasketKey(String workbasketKey) {
+        this.workbasketKey = workbasketKey;
     }
 
     public String getAccessId() {

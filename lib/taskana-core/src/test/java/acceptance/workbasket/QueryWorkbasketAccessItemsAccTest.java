@@ -47,6 +47,11 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         assertNotNull(columnValueList);
         assertEquals(9, columnValueList.size());
 
+        columnValueList = workbasketService.createWorkbasketAccessItemQuery()
+            .listValues("WB.KEY", null);
+        assertNotNull(columnValueList);
+        assertEquals(24, columnValueList.size());
+
         long countEntries = workbasketService.createWorkbasketAccessItemQuery().count();
         assertTrue(columnValueList.size() < countEntries);  // DISTINCT
     }
@@ -106,6 +111,36 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
             .workbasketIdIn("WBI:100000000000000000000000000000000006", "WBI:100000000000000000000000000000000002")
             .list();
         Assert.assertEquals(3L, results.size());
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
+    @Test
+    public void testQueryAccessItemsForAccessIdsWorkbasketKeyLike()
+        throws NotAuthorizedException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
+            .workbasketKeyLike("GPK_KSC%")
+            .list();
+        Assert.assertEquals(4L, results.size());
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
+    @Test
+    public void testQueryAccessItemsForAccessIdsWorkbasketKeyLikeAndOrderAsc()
+        throws NotAuthorizedException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        List<WorkbasketAccessItem> results = workbasketService.createWorkbasketAccessItemQuery()
+            .workbasketKeyLike("GPK_KSC%")
+            .orderByWorkbasketKey(SortDirection.ASCENDING)
+            .list();
+        Assert.assertEquals(4L, results.size());
+        Assert.assertEquals("GPK_KSC", results.get(0).getWorkbasketKey());
+        Assert.assertEquals("GPK_KSC_2", results.get(3).getWorkbasketKey());
+
     }
 
     @WithAccessId(
