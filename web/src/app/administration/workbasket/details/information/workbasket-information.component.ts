@@ -278,18 +278,17 @@ export class WorkbasketInformationComponent
         response => {
           this.requestInProgressService.setRequestInProgress(false);
           this.workbasketService.triggerWorkBasketSaved();
-          this.alertService.triggerAlert(
-            new AlertModel(
-              AlertType.SUCCESS,
-              'The Workbasket ' +
-                this.workbasket.workbasketId +
-                ' has been marked for deletion'
-            )
-          );
+          if (response) {
+            this.errorModalService.triggerError(
+              new ErrorModel('There was an error marking workbasket for deletion',
+              'It not possible to mark the workbasket for deletion, It has been deleted.')
+            );
+          } else {
+            this.alertService.triggerAlert(
+              new AlertModel(AlertType.SUCCESS, 'The Workbasket ' + this.workbasket.workbasketId + ' has been marked for deletion')
+            );
+          }
           this.router.navigate(['administration/workbaskets']);
-        },
-        error => {
-          this.requestInProgressService.setRequestInProgress(false);
         }
       );
   }
