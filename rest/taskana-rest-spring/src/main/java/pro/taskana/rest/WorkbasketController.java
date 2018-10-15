@@ -146,10 +146,7 @@ public class WorkbasketController extends AbstractPagingController {
     public ResponseEntity<?> markWorkbasketForDeletion(@PathVariable(value = "workbasketId") String workbasketId)
         throws NotAuthorizedException, InvalidArgumentException,
         WorkbasketNotFoundException, WorkbasketInUseException {
-        if (!workbasketService.deleteWorkbasket(workbasketId)) {
-            return new ResponseEntity<>("It not possible to mark the workbasket for deletion", HttpStatus.BAD_REQUEST);
-        }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+            return new ResponseEntity<>(workbasketService.deleteWorkbasket(workbasketId), HttpStatus.ACCEPTED);
     }
 
     @PostMapping
