@@ -150,6 +150,7 @@ public class ScheduledJob {
     public enum Type {
         CLASSIFICATIONCHANGEDJOB,
         UPDATETASKSJOB,
-        TASKCLEANUPJOB;
+        TASKCLEANUPJOB,
+        WORKBASKETCLEANUPJOB;
     }
 }

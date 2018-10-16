@@ -67,6 +67,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] orgLevel3Like;
     private String[] orgLevel4In;
     private String[] orgLevel4Like;
+    private boolean markedForDeletion;
+
     private TaskanaEngineImpl taskanaEngine;
     private List<String> orderBy;
     private List<String> orderColumns;
@@ -273,6 +275,12 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
 
     @Override
+    public WorkbasketQuery markedForDeletion(boolean markedForDeletion) {
+        this.markedForDeletion = markedForDeletion;
+        return this;
+    }
+
+    @Override
     public WorkbasketQuery orderByName(SortDirection sortDirection) {
         return addOrderCriteria("NAME", sortDirection);
     }
@@ -396,7 +404,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             this.columnName = columnName;
             handleCallerRolesAndAccessIds();
             this.orderBy.clear();
-            this.addOrderCriteria(columnName, sortDirection);
+            //this.addOrderCriteria(columnName, sortDirection);
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
             return result;
         } finally {
@@ -587,6 +595,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return orgLevel4Like;
     }
 
+    public boolean isMarkedForDeletion() {
+        return markedForDeletion;
+    }
+
     public String[] getOwnerLike() {
         return ownerLike;
     }
@@ -688,6 +700,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         builder.append(Arrays.toString(orgLevel4In));
         builder.append(", orgLevel4Like=");
         builder.append(Arrays.toString(orgLevel4Like));
+        builder.append(", markedForDeletion=");
+        builder.append(markedForDeletion);
         builder.append(", orderBy=");
         builder.append(orderBy);
         builder.append(", joinWithAccessList=");

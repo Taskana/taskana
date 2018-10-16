@@ -38,6 +38,7 @@ public class JobScheduler {
     public void scheduleCleanupJob() {
         LOGGER.debug("Entry to scheduleCleanupJob.");
         TaskCleanupJob.initializeSchedule(taskanaEngine);
+        WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
         LOGGER.debug("Exit from scheduleCleanupJob.");
     }
 

@@ -20,7 +20,6 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
     /**
      * Add your keys to your query. The keys are compared case-insensitively to the keys of workbaskets with the IN
      * operator.
-     *
      * @param key
      *            the keys as Strings
      * @return the query
@@ -482,4 +481,14 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
      * @return the query
      */
     WorkbasketQuery orgLevel4Like(String... orgLevel4);
+
+    /**
+     * Add to your query if the Workbasket shall be marked for deletion.
+     *
+     * @param markedForDeletion
+     *            a simple flag showing if the workbasket is marked for deletion
+     * @return the query
+     */
+    WorkbasketQuery markedForDeletion(boolean markedForDeletion);
+
 }
