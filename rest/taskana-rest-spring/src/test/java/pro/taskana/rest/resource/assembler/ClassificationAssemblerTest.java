@@ -45,6 +45,7 @@ public class ClassificationAssemblerTest {
         classification.setId("1");
         classification.setCategory("ABC");
         classification.setName("Classification 1");
+        classification.setType("AB");
         classification.setIsValidInDomain(true);
         classification.setCustom1("Custom1");
         classification.setCustom2("Custom2");

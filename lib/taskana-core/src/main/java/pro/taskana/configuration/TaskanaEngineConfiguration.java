@@ -246,6 +246,9 @@ public class TaskanaEngineConfiguration {
             while (st.hasMoreTokens()) {
                 classificationTypes.add(st.nextToken().trim().toUpperCase());
             }
+        } else {
+            LOGGER.error("Internal System error. Configuration issue on classification type");
+            throw new SystemException("Internal System error. Configuration issue on classification type");
         }
         LOGGER.debug("Configured classificationTypes: {}", classificationTypes);
     }
@@ -265,6 +268,9 @@ public class TaskanaEngineConfiguration {
                         classificationCategoriesAux.add(st.nextToken().trim().toUpperCase());
                     }
                     classificationCategoriesByTypeMap.put(type, classificationCategoriesAux);
+                } else {
+                    LOGGER.error("Internal System error. Configuration issue on classification categories by type");
+                    throw new SystemException("Internal System error. Configuration issue on classification categories by type");
                 }
             }
         }

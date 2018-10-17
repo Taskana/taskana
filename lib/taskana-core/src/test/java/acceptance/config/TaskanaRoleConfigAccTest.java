@@ -118,6 +118,9 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
                 writer.println("taskana.roles.Admin =hOlGeR " + delimiter + "name=Stefan,Organisation=novatec");
                 writer.println("  taskana.roles.businessadmin  = name=ebe, ou = bpm " + delimiter + " konstantin ");
                 writer.println(" taskana.roles.user = ");
+                writer.println(" taskana.classification.types= TASK , document");
+                writer.println(" taskana.classification.categories.task= EXTERNAL, manual, autoMAtic, Process");
+                writer.println(" taskana.classification.categories.document= EXTERNAL");
             } catch (IOException e) {
                 throw e;
             }
@@ -142,6 +145,9 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
                 writer.println("taskana.roles.Admin =hOlGeR|Stefan");
                 writer.println("  taskana.roles.businessadmin  = ebe  | konstantin ");
                 writer.println(" taskana.roles.user = nobody");
+                writer.println(" taskana.classification.types= TASK , document");
+                writer.println(" taskana.classification.categories.task= EXTERNAL, manual, autoMAtic, Process");
+                writer.println(" taskana.classification.categories.document= EXTERNAL");
             } catch (IOException e) {
                 throw e;
             }

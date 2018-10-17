@@ -1,17 +1,26 @@
 package acceptance.classification;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.h2.store.fs.FileUtils;
 import org.junit.Test;
+
 import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.SystemException;
 
 /**
  * Acceptance test for all "get classification" scenarios.
@@ -123,4 +132,76 @@ public class GetClassificationAccTest extends AbstractAccTest {
         assertEquals("", classification.getDomain());
         assertEquals(999L, classification.getPriority());
     }
+
+    @Test(expected = SystemException.class)
+    public void testDoesNotExistPropertyClassificationTypeOrItIsEmpty() throws IOException {
+        String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", false, false);
+        String delimiter = ";";
+        try {
+            taskanaEngine.getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
+        } finally {
+            deleteFile(propertiesFileName);
+        }
+    }
+
+    @Test(expected = SystemException.class)
+    public void testDoesNotExistPropertyClassificatioCategoryOrItIsEmpty() throws IOException {
+        String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", true, false);
+        String delimiter = ";";
+        try {
+            taskanaEngine.getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
+        } finally {
+            deleteFile(propertiesFileName);
+        }
+    }
+
+    @Test
+    public void testWithCategoriesAndClassificationFilled() throws IOException {
+        taskanaEngineConfiguration.setClassificationTypes(new ArrayList<String>());
+        taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<String, List<String>>());
+        String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", true, true);
+        String delimiter = ";";
+        try {
+            taskanaEngine.getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
+        } finally {
+            deleteFile(propertiesFileName);
+        }
+        assertFalse(taskanaEngineConfiguration.getClassificationTypes().isEmpty());
+        assertFalse(taskanaEngineConfiguration.getClassificationCategoriesByType(taskanaEngineConfiguration.getClassificationTypes().get(0)).isEmpty());
+        assertEquals(taskanaEngineConfiguration.getClassificationTypes().size(), 2);
+        assertEquals(taskanaEngineConfiguration.getClassificationCategoriesByType(taskanaEngineConfiguration.getClassificationTypes().get(0)).size(), 4);
+        assertEquals(taskanaEngineConfiguration.getClassificationCategoriesByType(taskanaEngineConfiguration.getClassificationTypes().get(1)).size(), 1);
+    }
+
+    private String createNewConfigFile(String filename, boolean addingTypes, boolean addingClassification) throws IOException {
+        String userHomeDirectroy = System.getProperty("user.home");
+        String propertiesFileName = userHomeDirectroy + filename;
+        File f = new File(propertiesFileName);
+        if (!f.exists()) {
+            try (PrintWriter writer = new PrintWriter(propertiesFileName, "UTF-8")) {
+                writer.println("taskana.roles.Admin =Holger|Stefan");
+                writer.println("taskana.roles.businessadmin  = ebe  | konstantin ");
+                writer.println("taskana.roles.user = nobody");
+                if (addingTypes) {
+                    writer.println("taskana.classification.types= TASK , document");
+                }
+                if (addingClassification) {
+                    writer.println("taskana.classification.categories.task= EXTERNAL, manual, autoMAtic, Process");
+                    writer.println("taskana.classification.categories.document= EXTERNAL");
+                }
+            } catch (IOException e) {
+                throw e;
+            }
+        }
+        return propertiesFileName;
+    }
+
+    private void deleteFile(String propertiesFileName) {
+        System.out.println("about to delete " + propertiesFileName);
+        File f = new File(propertiesFileName);
+        if (f.exists() && !f.isDirectory()) {
+            FileUtils.delete(propertiesFileName);
+        }
+    }
+
 }
