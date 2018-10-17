@@ -246,6 +246,8 @@ public class TaskanaEngineConfiguration {
             while (st.hasMoreTokens()) {
                 classificationTypes.add(st.nextToken().trim().toUpperCase());
             }
+        } else {
+            LOGGER.warn("Configuration issue. Classification type is missing");
         }
         LOGGER.debug("Configured classificationTypes: {}", classificationTypes);
     }
@@ -265,6 +267,8 @@ public class TaskanaEngineConfiguration {
                         classificationCategoriesAux.add(st.nextToken().trim().toUpperCase());
                     }
                     classificationCategoriesByTypeMap.put(type, classificationCategoriesAux);
+                } else {
+                    LOGGER.warn("Configuration issue. Classification categories by type is missing");
                 }
             }
         }
