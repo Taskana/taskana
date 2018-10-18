@@ -173,14 +173,14 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy-resources</id>
+						<id>copy-rest-docs</id>
 						<phase>prepare-package</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
 							<outputDirectory>
-								${project.build.outputDirectory}/static/docs
+								${project.build.outputDirectory}/static/docs/rest
 							</outputDirectory>
 							<resources>
 								<resource>
@@ -190,6 +190,63 @@
 								</resource>
 								<resource>
 									<directory>${project.basedir}/src/js</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-taskana-core-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.outputDirectory}/static/docs/java/taskana-core
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										../../lib/taskana-core/target/apidocs
+									</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-taskana-cdi-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.outputDirectory}/static/docs/java/taskana-cdi
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										../../lib/taskana-cdi/target/apidocs
+									</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-taskana-spring-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.outputDirectory}/static/docs/java/taskana-spring
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										../../lib/taskana-spring/target/apidocs
+									</directory>
 								</resource>
 							</resources>
 						</configuration>
