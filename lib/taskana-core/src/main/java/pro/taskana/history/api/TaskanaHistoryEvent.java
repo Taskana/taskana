@@ -9,7 +9,7 @@ import pro.taskana.security.CurrentUserContext;
  */
 public class TaskanaHistoryEvent {
 
-    protected String id;
+    protected long id;
     protected String type;
     protected String userId;
     protected Instant created;
@@ -19,11 +19,11 @@ public class TaskanaHistoryEvent {
         userId = CurrentUserContext.getUserid();
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
