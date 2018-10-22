@@ -1,4 +1,4 @@
-import { Injectable, HostListener } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Orientation } from 'app/models/orientation';
 import { BehaviorSubject ,  Observable } from 'rxjs';
 

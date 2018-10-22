@@ -22,6 +22,7 @@ import { RemoveConfirmationComponent } from 'app/shared/remove-confirmation/remo
 import { FilterComponent } from 'app/shared/filter/filter.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { FieldErrorDisplayComponent } from 'app/shared/field-error-display/field-error-display.component';
+import { PaginationComponent } from './pagination/pagination.component';
 
 /**
  * Pipes
@@ -67,7 +68,8 @@ const DECLARATIONS = [
   FilterComponent,
   IconTypeComponent,
   RemoveConfirmationComponent,
-  FieldErrorDisplayComponent
+  FieldErrorDisplayComponent,
+  PaginationComponent
 ];
 
 @NgModule({
