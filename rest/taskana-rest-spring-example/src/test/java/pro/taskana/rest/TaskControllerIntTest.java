@@ -156,7 +156,7 @@ public class TaskControllerIntTest {
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?por.type=VNR&por.value=22334455&sortBy=por.value&order=desc",
+            "http://127.0.0.1:" + port + "/v1/tasks?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc",
             HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
@@ -164,7 +164,7 @@ public class TaskControllerIntTest {
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?por.type=VNR&por.value=22334455&sortBy=por.value&order=desc"));
+            .endsWith("/v1/tasks?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc"));
     }
 
     @Test
@@ -194,7 +194,7 @@ public class TaskControllerIntTest {
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
             "http://127.0.0.1:" + port
-                + "/v1/tasks?state=READY,CLAIMED&sortBy=por.value&order=desc&page=15&page-size=5",
+                + "/v1/tasks?state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5",
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
@@ -207,7 +207,7 @@ public class TaskControllerIntTest {
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?state=READY,CLAIMED&sortBy=por.value&order=desc&page=15&page-size=5"));
+            .endsWith("/v1/tasks?state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")
@@ -228,14 +228,14 @@ public class TaskControllerIntTest {
         HttpEntity<String> request = new HttpEntity<String>(headers);
 
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=due&order=desc", HttpMethod.GET,
+            "http://127.0.0.1:" + port + "/v1/tasks?sort-by=due&order=desc", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
         assertEquals(25, response.getBody().getContent().size());
 
         response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks?sortBy=due&order=desc&page=5&page-size=5", HttpMethod.GET,
+            "http://127.0.0.1:" + port + "/v1/tasks?sort-by=due&order=desc&page=5&page-size=5", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
             });
@@ -247,7 +247,7 @@ public class TaskControllerIntTest {
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
-            .endsWith("/v1/tasks?sortBy=due&order=desc&page=5&page-size=5"));
+            .endsWith("/v1/tasks?sort-by=due&order=desc&page=5&page-size=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")
@@ -268,7 +268,7 @@ public class TaskControllerIntTest {
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
             "http://127.0.0.1:" + port
-                + "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sortBy=por.type&order=asc&page=2&page-size=5",
+                + "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&page=2&page-size=5",
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
@@ -281,7 +281,7 @@ public class TaskControllerIntTest {
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith(
-                "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sortBy=por.type&order=asc&page=2&page-size=5"));
+                "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&page=2&page-size=5"));
         assertNotNull(response.getBody().getLink("allTasks"));
         assertTrue(response.getBody()
             .getLink("allTasks")

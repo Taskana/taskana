@@ -61,7 +61,6 @@ describe('ClassificationDetailsComponent', () => {
       component = fixture.componentInstance;
       classificationsService = TestBed.get(ClassificationsService);
       classificationCategoriesService = TestBed.get(ClassificationCategoriesService);
-      classificationsService = TestBed.get(ClassificationsService);
       removeConfirmationService = TestBed.get(RemoveConfirmationService);
       spyOn(classificationsService, 'getClassifications').and.returnValue(of(treeNodes));
       spyOn(classificationCategoriesService, 'getClassificationTypes').and.returnValue(of([]));

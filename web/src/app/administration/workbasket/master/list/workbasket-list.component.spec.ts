@@ -6,14 +6,11 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SharedModule } from 'app/shared/shared.module';
-import { AppModule } from 'app/app.module';
 
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { FilterModel } from 'app/models/filter';
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
-
 
 import { WorkbasketListComponent } from './workbasket-list.component';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar/workbasket-list-toolbar.component';
@@ -24,6 +21,7 @@ import { ClassificationDefinitionService } from 'app/administration/services/cla
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { configureTests } from 'app/app.test.configuration';
+import { Page } from 'app/models/page';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -38,18 +36,10 @@ class DummyDetailComponent {
 })
 class PaginationComponent {
   @Input()
-  workbasketsResource: any;
+  page: Page;
   @Output()
   workbasketsResourceChange = new EventEmitter<any>();
   @Output() changePage = new EventEmitter<any>();
-}
-
-@Component({
-  selector: 'taskana-filter',
-  template: ''
-})
-class FilterComponent {
-
 }
 
 const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource({
@@ -75,14 +65,16 @@ describe('WorkbasketListComponent', () => {
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        declarations: [WorkbasketListComponent, DummyDetailComponent, WorkbasketListToolbarComponent,
-          PaginationComponent, ImportExportComponent],
+        declarations: [
+          WorkbasketListComponent,
+          DummyDetailComponent,
+          WorkbasketListToolbarComponent,
+          ImportExportComponent
+        ],
         imports: [
           AngularSvgIconModule,
           HttpClientModule,
-          RouterTestingModule.withRoutes(routes),
-          SharedModule,
-          AppModule
+          RouterTestingModule.withRoutes(routes)
         ],
         providers: [
           WorkbasketService,

@@ -62,6 +62,7 @@ export class TaskListToolbarComponent implements OnInit {
 
   searchBasket() {
     this.toolbarState = false;
+    this.workbasketSelected = true;
     if (this.workbaskets) {
       this.workbaskets.forEach(workbasket => {
         if (workbasket.name === this.resultName) {
