@@ -16,7 +16,6 @@ import {WorkbasketInformationComponent} from './workbasket/details/information/w
 import {DistributionTargetsComponent} from './workbasket/details/distribution-targets/distribution-targets.component';
 import {DualListComponent} from './workbasket/details/distribution-targets/dual-list/dual-list.component';
 import {AccessItemsComponent} from './workbasket/details/access-items/access-items.component';
-import {PaginationComponent} from './workbasket/master/list/pagination/pagination.component';
 import {ClassificationListComponent} from './classification/master/list/classification-list.component';
 import {ClassificationDetailsComponent} from './classification/details/classification-details.component';
 import {ImportExportComponent} from './components/import-export/import-export.component';
@@ -51,7 +50,6 @@ const DECLARATIONS = [
   WorkbasketInformationComponent,
   DistributionTargetsComponent,
   DualListComponent,
-  PaginationComponent,
   ClassificationListComponent,
   ImportExportComponent,
   ClassificationTypesSelectorComponent,

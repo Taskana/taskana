@@ -1,0 +1,19 @@
+<ul id="wb-pagination" class="pagination vertical-center">
+	<li>
+		<a (click)="changeToPage(1)" aria-label="First">
+			First</a>
+	</li>
+	<li *ngFor="let pageNumber of page?.totalPages |
+				spreadNumber:  page?.number: maxPagesAvailable:  page?.totalPages">
+		<a *ngIf="pageNumber + 1 !== page?.number" (click)="changeToPage(pageNumber+1)">{{pageNumber + 1}}</a>
+		<a *ngIf="pageNumber + 1 === page?.number" class="pagination">
+			<input [(ngModel)]="pageSelected" (keyup.enter)="changeToPage(pageSelected)" type="text" (blur)="changeToPage(pageSelected)">
+		</a>
+	</li>
+	<li>
+		<a (click)="changeToPage(page?.totalPages)" aria-label="Last">Last</a>
+	</li>
+</ul>
+<span class="footer pull-right">
+	<i [innerHTML]="getPagesTextToShow()"></i>
+</span>

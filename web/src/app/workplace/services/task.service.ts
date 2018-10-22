@@ -5,6 +5,7 @@ import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 import {TaskResource} from 'app/workplace/models/task-resource';
 import {Direction} from 'app/models/sorting';
+import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 
 @Injectable()
 export class TaskService {
@@ -15,6 +16,10 @@ export class TaskService {
   OWNER = 'owner';
   PRIORITY = 'priority';
   STATE = 'state';
+
+  // Pagination
+  PAGE = 'page';
+  PAGESIZE = 'page-size';
 
   url = `${environment.taskanaRestUrl}/v1/tasks`;
 
@@ -55,14 +60,25 @@ export class TaskService {
    * @param {string} sortBy name of field, that the tasks should be sorted by, default is priority
    * @returns {Observable<TaskResource>}
    */
+  /**
+   * @param  {string} basketId the id of workbasket
+   * @param {string} sortBy name of field, that the tasks should be sorted by, default is priority
+   * @param {string} sortDirection ASC or DESC
+   * @param {string} name the name of the task
+   * @param {string} owner the owner of the task
+   * @param {string} priority the priority of the task
+   * @param {string} statethe state of the task
+   */
   findTasksWithWorkbasket(basketId: string,
                           sortBy = 'priority',
                           sortDirection: string = Direction.ASC,
                           name: string,
                           owner: string,
                           priority: string,
-                          state: string): Observable<TaskResource> {
-    const url = `${this.url}${this.getTaskQueryParameters(basketId, sortBy, sortDirection, name, owner, priority, state)}`;
+                          state: string,
+                          allPages: boolean = false): Observable<TaskResource> {
+    const url = `${this.url}${this.getTaskQueryParameters(basketId, sortBy, sortDirection, name, owner, priority, state,
+       !allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined)}`;
     return this.httpClient.get<TaskResource>(url);
   }
 
@@ -100,7 +116,9 @@ export class TaskService {
                                  name: string,
                                  owner: string,
                                  priority: string,
-                                 state: string): string {
+                                 state: string,
+                                 page: number = undefined,
+                                 pageSize: number = undefined): string {
     let query = '?';
     query += basketId ? `${this.WORKBASKET_ID}=${basketId}&` : '';
     query += `${this.SORT_BY}=${sortBy}&`;
@@ -109,10 +127,12 @@ export class TaskService {
     query += owner ? `${this.OWNER}=${owner}&` : '';
     query += priority ? `${this.PRIORITY}=${priority}&` : '';
     query += state ? `${this.STATE}=${state}&` : '';
+    query += page ? `${this.PAGE}=${page}&` : '';
+    query += pageSize ? `${this.PAGESIZE}=${pageSize}&` : '';
 
     if (query.lastIndexOf('&') === query.length - 1) {
       query = query.slice(0, query.lastIndexOf('&'))
     }
-    return query;
+    return query === '?' ? '' : query;
   }
 }

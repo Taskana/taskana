@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -24,6 +24,9 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   workbaskets: Array<WorkbasketSummary> = [];
   requestInProgress = false;
 
+  pageSelected = 1;
+  pageSize = 9;
+
   sort: SortingModel = new SortingModel();
   filterBy: FilterModel = new FilterModel({name: '', owner: '', type: '', description: '', key: ''});
 
@@ -38,8 +41,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     private workbasketService: WorkbasketService,
     private router: Router,
     private route: ActivatedRoute,
-    private orientationService: OrientationService,
-    private cd: ChangeDetectorRef) {
+    private orientationService: OrientationService) {
   }
 
   ngOnInit() {
@@ -50,6 +52,9 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
         this.selectedId = workbasketIdSelected;
       }, 0);
     });
+
+    TaskanaQueryParameters.page = this.pageSelected;
+    TaskanaQueryParameters.pageSize = this.pageSize;
 
     this.workbasketServiceSavedSubscription = this.workbasketService.workbasketSavedTriggered().subscribe(value => {
       this.performRequest();
@@ -85,7 +90,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     const unusedHeight = 145;
     const totalHeight = window.innerHeight;
     const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
-    TaskanaQueryParameters.pageSize = cards;
+    cards > 0 ? TaskanaQueryParameters.pageSize = cards : TaskanaQueryParameters.pageSize = 1;
     this.performRequest();
   }
 
