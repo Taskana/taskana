@@ -1,13 +1,13 @@
-<div class="task-list-full-height taskana-task-list">
-  <taskana-tasklist-toolbar (performSorting)="performSorting($event)"
-                            (performFilter)="performFilter($event)">
-  </taskana-tasklist-toolbar>
-  <div *ngIf="!requestInProgress">
+<div class="taskana-task-list">
+  <div #wbToolbar>
+    <taskana-tasklist-toolbar (performSorting)="performSorting($event)" (performFilter)="performFilter($event)" (importSucessful)="refreshWorkbasketList()">
+    </taskana-tasklist-toolbar>
+  </div>
+  <div *ngIf="!requestInProgress" class="footer-space-task">
     <div *ngIf="(tasks && tasks.length > 0); else empty_list">
       <ul #taskList id="task-list-container" class="list-group">
-        <li class="list-group-item"
-            *ngFor="let task of tasks" [class.active]="task.taskId == selectedId"
-            type="text" (click)="selectTask(task.taskId)">
+        <li class="list-group-item" *ngFor="let task of tasks" [class.active]="task.taskId == selectedId" type="text"
+          (click)="selectTask(task.taskId)">
           <div class="row">
             <dl class="col-xs-10">
               <dt data-toggle="tooltip" title="{{task.name}}">{{task.name}}</dt>
@@ -26,5 +26,6 @@
       </div>
     </ng-template>
   </div>
+  <taskana-pagination *ngIf="tasks && tasks.length > 0" [(page)]="page" [type]="type" (changePage)="changePage($event)"></taskana-pagination>
 </div>
 <taskana-code></taskana-code>

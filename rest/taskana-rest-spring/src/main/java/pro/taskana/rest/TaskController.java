@@ -75,7 +75,7 @@ public class TaskController extends AbstractPagingController {
     private static final String DUE = "due";
     private static final String PLANNED = "planned";
 
-    private static final String SORT_BY = "sortBy";
+    private static final String SORT_BY = "sort-by";
     private static final String SORT_DIRECTION = "order";
 
     private static final String PAGING_PAGE = "page";

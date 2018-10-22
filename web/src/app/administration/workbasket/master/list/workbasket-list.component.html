@@ -1,41 +1,42 @@
 <div class="workbasket-list-full-height">
-    <div class="footer-space">
-        <div #wbToolbar>
-            <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)" (performSorting)="performSorting($event)"
-            (importSucessful)="refreshWorkbasketList()"></taskana-workbasket-list-toolbar>
-        </div>
-        <div *ngIf="(workbaskets && workbaskets.length > 0) else empty_workbaskets">
-            <ul #wbList id="wb-list-container" class="list-group">
-                <li class="list-group-item no-space">
-                    <div class="row"></div>
-                </li>
-                <li class="list-group-item" *ngFor="let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId"
-                    type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
-                    <div class="row">
-                        <dl class="col-xs-1">
-                            <taskana-icon-type class="vertical-align" [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
-                        </dl>
-                        <dl class="col-xs-10">
-                            <dt data-toggle="tooltip" title="{{workbasket.name}}">{{workbasket.name}},
-                                <i data-toggle="tooltip" title="{{workbasket.key}}">{{workbasket.key}} </i>
-                            </dt>
-                            <dd data-toggle="tooltip" title="{{workbasket.description}}">{{workbasket.description}} &nbsp;</dd>
-                            <dd data-toggle="tooltip" title="{{workbasket.owner}}">{{workbasket.owner}} &nbsp;</dd>
-                        </dl>
-                        <dl *ngIf="workbasket.markedForDeletion">
-                            <span class="{{workbasket.workbasketId === selectedId ? 'white': 'red' }} glyphicon glyphicon-exclamation-sign" aria-hidden="true" data-toggle="tooltip" title="Marked for deletion"></span>
-                        </dl>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
-        <ng-template #empty_workbaskets>
-            <div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
-                <h3 class="grey">There are no workbaskets</h3>
-                <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
-            </div>
-        </ng-template>
+  <div class="footer-space-workbasket">
+    <div #wbToolbar>
+      <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)"
+        (performSorting)="performSorting($event)" (importSucessful)="refreshWorkbasketList()"></taskana-workbasket-list-toolbar>
     </div>
-    <taskana-pagination [(workbasketsResource)]="workbasketsResource" (changePage)="changePage($event)"></taskana-pagination>
+    <div *ngIf="(workbaskets && workbaskets.length > 0) else empty_workbaskets">
+      <ul #wbList id="wb-list-container" class="list-group">
+        <li class="list-group-item no-space">
+          <div class="row"></div>
+        </li>
+        <li class="list-group-item" *ngFor="let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId"
+          type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
+          <div class="row">
+            <dl class="col-xs-1">
+              <taskana-icon-type class="vertical-align" [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
+            </dl>
+            <dl class="col-xs-10">
+              <dt data-toggle="tooltip" title="{{workbasket.name}}">{{workbasket.name}},
+                <i data-toggle="tooltip" title="{{workbasket.key}}">{{workbasket.key}} </i>
+              </dt>
+              <dd data-toggle="tooltip" title="{{workbasket.description}}">{{workbasket.description}} &nbsp;</dd>
+              <dd data-toggle="tooltip" title="{{workbasket.owner}}">{{workbasket.owner}} &nbsp;</dd>
+            </dl>
+            <dl *ngIf="workbasket.markedForDeletion">
+              <span class="{{workbasket.workbasketId === selectedId ? 'white': 'red' }} glyphicon glyphicon-exclamation-sign"
+                aria-hidden="true" data-toggle="tooltip" title="Marked for deletion"></span>
+            </dl>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
+    <ng-template #empty_workbaskets>
+      <div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
+        <h3 class="grey">There are no workbaskets</h3>
+        <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
+      </div>
+    </ng-template>
+  </div>
+  <taskana-pagination [(page)]="workbasketsResource !== undefined ? workbasketsResource.page : workbasketsResource" [type]="type" (changePage)="changePage($event)"></taskana-pagination>
 </div>

@@ -2,10 +2,6 @@
   cursor: pointer;
 }
 
-.task-list-full-height {
-  // height: calc(100vh - 55px);
-}
-
 .row.list-group {
   margin-left: 2px;
 }
@@ -41,10 +37,6 @@ dt > i {
 
 li > div.row > dl {
   margin-bottom: 0px;
-}
-
-li > div.row > dl:first-child {
-  margin-left: 10px;
 }
 
 .no-space {

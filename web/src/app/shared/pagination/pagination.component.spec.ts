@@ -1,10 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SimpleChange } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'app/shared/shared.module';
 
 import { PaginationComponent } from './pagination.component';
-import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { Page } from 'app/models/page';
 import { configureTests } from 'app/app.test.configuration';
 
@@ -17,9 +16,6 @@ describe('PaginationComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-				declarations: [
-					PaginationComponent
-				],
 				imports: [FormsModule, SharedModule]
 			})
 		};
@@ -43,13 +39,13 @@ describe('PaginationComponent', () => {
 	});
 
 	it('should create 3 pages if total pages are 3', () => {
-		component.workbasketsResource = new WorkbasketSummaryResource(undefined, undefined, new Page(6, 3, 3, 1));
+		component.page = new Page(6, 3, 3, 1);
 		fixture.detectChanges();
 		expect(debugElement.querySelectorAll('#wb-pagination > li').length).toBe(5);
 	});
 
 	it('should emit change if previous page was different than current one', () => {
-		component.workbasketsResource = new WorkbasketSummaryResource(undefined, undefined, new Page(6, 3, 3, 1));
+		component.page = new Page(6, 3, 3, 1);
 		component.previousPageSelected = 2;
 		fixture.detectChanges();
 		component.changePage.subscribe(value => {
@@ -59,7 +55,7 @@ describe('PaginationComponent', () => {
 	});
 
 	it('should not emit change if previous page was the same than current one', () => {
-		component.workbasketsResource = new WorkbasketSummaryResource(undefined, undefined, new Page(6, 3, 3, 1));
+		component.page = new Page(6, 3, 3, 1);
 		component.previousPageSelected = 2;
 		fixture.detectChanges();
 		component.changePage.subscribe(value => {
@@ -69,7 +65,7 @@ describe('PaginationComponent', () => {
 	});
 
 	it('should emit totalPages if page is more than page.totalPages', () => {
-		component.workbasketsResource = new WorkbasketSummaryResource(undefined, undefined, new Page(6, 3, 3, 1));
+		component.page = new Page(6, 3, 3, 1);
 		component.previousPageSelected = 2;
 		fixture.detectChanges();
 		component.changePage.subscribe(value => {
@@ -79,7 +75,7 @@ describe('PaginationComponent', () => {
 	});
 
 	it('should emit 1 if page is less than 1', () => {
-		component.workbasketsResource = new WorkbasketSummaryResource(undefined, undefined, new Page(6, 3, 3, 1));
+		component.page = new Page(6, 3, 3, 1);
 		component.previousPageSelected = 2;
 		fixture.detectChanges();
 		component.changePage.subscribe(value => {
@@ -91,7 +87,7 @@ describe('PaginationComponent', () => {
 	it('should change pageSelected onChanges', () => {
 		expect(component.pageSelected).toBe(1);
 		component.ngOnChanges({
-			workbasketsResource: new SimpleChange(null, new WorkbasketSummaryResource(undefined, undefined, new Page(6, 3, 3, 2)), true)
+			page: new SimpleChange(null, new Page(6, 3, 3, 2), true)
 		});
 		fixture.detectChanges();
 		expect(component.pageSelected).toBe(2);
@@ -99,17 +95,20 @@ describe('PaginationComponent', () => {
 	});
 
 	it('should getPagesTextToShow return 7 of 13 with size < totalElements', () => {
-		component.workbasketsResource = new WorkbasketSummaryResource(undefined, undefined, new Page(7, 13, 3, 2));
+    component.page = new Page(7, 13, 3, 2);
+    component.type = 'workbaskets';
 		expect(component.getPagesTextToShow()).toBe('7 of 13 workbaskets');
 	});
 
 	it('should getPagesTextToShow return 6 of 6 with size > totalElements', () => {
-		component.workbasketsResource = new WorkbasketSummaryResource(undefined, undefined, new Page(7, 6, 3, 2));
-		expect(component.getPagesTextToShow()).toBe('6 of 6 workbaskets');
+    component.page = new Page(7, 6, 3, 2);
+    component.type = 'tasks';
+		expect(component.getPagesTextToShow()).toBe('6 of 6 tasks');
 	});
 
 	it('should getPagesTextToShow return  of  with totalElements = 0', () => {
-		component.workbasketsResource = new WorkbasketSummaryResource(undefined, undefined, new Page(7, 0, 0, 0));
+    component.page = new Page(7, 0, 0, 0);
+    component.type = 'workbaskets';
 		expect(component.getPagesTextToShow()).toBe('0 of 0 workbaskets');
 	});
 
