@@ -2,6 +2,7 @@ package acceptance.workbasket;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -213,7 +214,7 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
         taskService.forceCompleteTask(task.getId());
 
         markedForDeletion = workbasketService.deleteWorkbasket(wb.getId());
-        assertTrue(markedForDeletion);
+        assertFalse(markedForDeletion);
 
         wb = workbasketService.getWorkbasket(wb.getId());
         assertTrue(wb.isMarkedForDeletion());

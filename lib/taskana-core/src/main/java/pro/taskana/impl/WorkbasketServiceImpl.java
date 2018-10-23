@@ -757,10 +757,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             if (numTasksInWorkbasket == 0) {
                 workbasketMapper.delete(workbasketId);
                 deleteReferencesToWorkbasket(workbasketId);
-                return false;
+                return true;
             } else {
                 markWorkbasketForDeletion(workbasketId);
-                return true;
+                return false;
             }
         } finally {
             taskanaEngine.returnConnection();

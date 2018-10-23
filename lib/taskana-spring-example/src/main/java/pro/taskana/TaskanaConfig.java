@@ -15,10 +15,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import pro.taskana.ClassificationService;
-import pro.taskana.TaskService;
-import pro.taskana.TaskanaEngine;
-import pro.taskana.WorkbasketService;
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 
 /**
@@ -93,6 +89,6 @@ public class TaskanaConfig {
 
     @Bean
     public ExampleBootstrap exampleBootstrap() {
-      return new ExampleBootstrap() ;
+        return new ExampleBootstrap();
     }
 }

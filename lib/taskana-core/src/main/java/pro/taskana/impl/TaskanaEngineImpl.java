@@ -68,7 +68,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();
-        this.historyEventProducer = HistoryEventProducer.getInstance();
+        this.historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
     }
 
     public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
