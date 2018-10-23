@@ -5,32 +5,55 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.jobs.TaskCleanupJob;
+import pro.taskana.jobs.WorkbasketCleanupJob;
+import pro.taskana.transaction.TaskanaTransactionProvider;
 
 /**
  *
@@ -39,6 +62,7 @@ import pro.taskana.impl.util.IdGenerator;
 @SpringBootTest(classes = TaskanaConfigTestApplication.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"inmemorydb", "dev"})
+@Import({TransactionalJobsConfiguration.class})
 public class TaskanaTransactionTest {
 
     private static final int POOL_TIME_TO_WAIT = 50;
@@ -54,6 +78,15 @@ public class TaskanaTransactionTest {
 
     @Autowired
     private TaskanaEngine taskanaEngine;
+
+    @Autowired
+    TaskanaTransactionProvider<Object> springTransactionProvider;
+
+    @Captor
+    private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
+
+    @Mock
+    private Appender mockAppender;
 
     @Before
     public void before() {
@@ -162,6 +195,81 @@ public class TaskanaTransactionTest {
         assertEquals(2, result);
     }
 
+    @Test
+    public void testWorkbasketCleanupJobTransaction() {
+        try {
+            ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger(WorkbasketCleanupJob.class);
+            logger.addAppender(mockAppender);
+
+            WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+            workbasketService.createWorkbasket(createWorkBasket("key1", "wb1"));
+            workbasketService.createWorkbasket(createWorkBasket("key2", "wb2"));
+            workbasketService.createWorkbasket(createWorkBasket("key3", "wb3"));
+            TaskService taskService = taskanaEngine.getTaskService();
+            ClassificationService classificationService = taskanaEngine.getClassificationService();
+            classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+            taskService.createTask(createTask("key1", "TEST"));
+            taskService.createTask(createTask("key2", "TEST"));
+            taskService.createTask(createTask("key3", "TEST"));
+
+            assertEquals(workbasketService.createWorkbasketQuery()
+                .count(), 3);
+            assertEquals(taskService.createTaskQuery()
+                .count(), 3);
+
+            List<TaskSummary> tasks = taskService.createTaskQuery()
+                .workbasketKeyDomainIn(new KeyDomain("key1", "DOMAIN_A"))
+                .list();
+            taskService.claim(tasks.get(0).getTaskId());
+            taskService.completeTask(tasks.get(0).getTaskId());
+            tasks = taskService.createTaskQuery()
+                .workbasketKeyDomainIn(new KeyDomain("key2", "DOMAIN_A"))
+                .list();
+            taskService.claim(tasks.get(0).getTaskId());
+            taskService.completeTask(tasks.get(0).getTaskId());
+            workbasketService.deleteWorkbasket(workbasketService.getWorkbasket("key1", "DOMAIN_A").getId());
+            workbasketService.deleteWorkbasket(workbasketService.getWorkbasket("key2", "DOMAIN_A").getId());
+
+            // Clean two tasks, key1 and key2.
+            TaskCleanupJob taskCleanupJob = new TaskCleanupJob(taskanaEngine, springTransactionProvider, null);
+            taskCleanupJob.run();
+
+            tasks = taskService.createTaskQuery()
+                .workbasketKeyDomainIn(new KeyDomain("key3", "DOMAIN_A"))
+                .list();
+            taskService.claim(tasks.get(0).getTaskId());
+            taskService.completeTask(tasks.get(0).getTaskId());
+
+            try {
+                workbasketService.deleteWorkbasket(workbasketService.getWorkbasket("key3", "DOMAIN_A").getId());
+            } catch (TaskanaException ex) {
+                assertEquals(ex.getMessage().contains("contains non-completed tasks"), true);
+            }
+
+            WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, springTransactionProvider, null);
+            job.run();
+
+            verify(mockAppender, times(7)).doAppend(captorLoggingEvent.capture());
+
+            List<LoggingEvent> allValues = captorLoggingEvent.getAllValues();
+            Optional<LoggingEvent> result = allValues.stream().filter(event -> event.getLevel().equals(
+                ch.qos.logback.classic.Level.WARN)).findFirst();
+            assertTrue(result.isPresent());
+            assertTrue(result.get()
+                .getFormattedMessage()
+                .contains("Workbasket with id " + workbasketService.getWorkbasket("key3", "DOMAIN_A")
+                    .getId() + " could not be deleted. Reason: {}"));
+
+            assertNull(workbasketService.getWorkbasket("key1", "DOMAIN_A"));
+            assertNull(workbasketService.getWorkbasket("key2", "DOMAIN_A"));
+
+            logger.detachAppender(mockAppender);
+        } catch (TaskanaException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void assertBefore(int workbaskets, int tests) {
         assertWorkbaskets("before", workbaskets);
         assertCustomdbTests("before", tests);
@@ -212,4 +320,21 @@ public class TaskanaTransactionTest {
         return workbasket;
     }
 
+    private Task createTask(String key, String classificationKey) {
+        TaskImpl task = (TaskImpl) taskanaEngine.getTaskService().newTask(key,
+            "DOMAIN_A");
+        task.setClassificationKey(classificationKey);
+        task.setPrimaryObjRef(createDefaultObjRef());
+        return task;
+    }
+
+    private static ObjectReference createDefaultObjRef() {
+        ObjectReference objRef = new ObjectReference();
+        objRef.setCompany("company");
+        objRef.setSystem("system");
+        objRef.setSystemInstance("instance");
+        objRef.setType("type");
+        objRef.setValue("value");
+        return objRef;
+    }
 }

@@ -22,7 +22,7 @@ import pro.taskana.transaction.TaskanaTransactionProvider;
  */
 public class WorkbasketCleanupJob extends AbstractTaskanaJob {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskCleanupJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketCleanupJob.class);
 
     // Parameter
     private Instant firstRun;
