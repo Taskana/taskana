@@ -807,7 +807,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 while (iterator.hasNext()) {
                     try {
                         workbasketIdForDeleting = iterator.next();
-                        deleteWorkbasket(workbasketIdForDeleting);
+                        if (!deleteWorkbasket(workbasketIdForDeleting)) {
+                            bulkLog.addError(workbasketIdForDeleting, new WorkbasketInUseException(
+                                "Workbasket with id " + workbasketIdForDeleting
+                                    + " contains completed tasks not deleted and will not be deleted."));
+                        }
                     } catch (WorkbasketInUseException ex) {
                         bulkLog.addError(workbasketIdForDeleting, new WorkbasketInUseException(
                             "Workbasket with id " + workbasketIdForDeleting + " is in use and will not be deleted."));
