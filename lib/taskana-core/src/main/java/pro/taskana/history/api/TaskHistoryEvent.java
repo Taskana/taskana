@@ -33,11 +33,13 @@ public class TaskHistoryEvent extends TaskanaHistoryEvent {
         if (!task.getAttachments().isEmpty()) {
             attachmentClassificationKey = task.getAttachments().get(0).getClassificationSummary().getKey();
         }
-        porCompany = task.getPrimaryObjRef().getCompany();
-        porSystem = task.getPrimaryObjRef().getSystem();
-        porInstance = task.getPrimaryObjRef().getSystemInstance();
-        porType = task.getPrimaryObjRef().getType();
-        porValue = task.getPrimaryObjRef().getValue();
+        if (task.getPrimaryObjRef() != null) {
+            porCompany = task.getPrimaryObjRef().getCompany();
+            porSystem = task.getPrimaryObjRef().getSystem();
+            porInstance = task.getPrimaryObjRef().getSystemInstance();
+            porType = task.getPrimaryObjRef().getType();
+            porValue = task.getPrimaryObjRef().getValue();
+        }
     }
 
     public String getTaskId() {
