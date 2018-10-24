@@ -29,6 +29,7 @@ function main {
   if [[ "$1" == "H2" ]]; then
     (cd $REL/../web && npm run test)
     mvn clean verify -q -f $REL/../lib/ -B
+  	mvn clean verify -q -f $REL/../lib/ -B -pl taskana-spring-example -P history.plugin 
     mvn clean install -q -f $REL/../rest/ -B
   else
     mvn clean verify -q -f $REL/../lib/taskana-core -B
