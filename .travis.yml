@@ -19,7 +19,7 @@ stages:
 env:
   global:
     - NODE_VERSION=8
-    - DEPLOY_REPO=Taskan/taskana
+    - DEPLOY_REPO=Taskana/taskana
   matrix:
     - DB=H2 
     - DB=DB2_10_5
