@@ -30,6 +30,7 @@ function main {
     (cd $REL/../web && npm run test)
     mvn clean verify -q -f $REL/../lib/ -B
     mvn clean install -q -f $REL/../rest/ -B
+	mvn clean verify -q -f $REL/../rest/ -B -pl taskana-rest-spring-example -P history.plugin 
   else
     mvn clean verify -q -f $REL/../lib/taskana-core -B
   fi

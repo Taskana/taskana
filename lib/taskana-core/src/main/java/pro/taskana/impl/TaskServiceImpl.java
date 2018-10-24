@@ -223,10 +223,8 @@ public class TaskServiceImpl implements TaskService {
             task.setOwner(userId);
             taskMapper.update(task);
             LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
-
             if (HistoryEventProducer.isHistoryEnabled()) {
-                TaskCompletionEvent event = new TaskCompletionEvent(task);
-                historyEventProducer.createEvent(event);
+                historyEventProducer.createEvent(new TaskCompletionEvent(task));
             }
 
         } finally {
