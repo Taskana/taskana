@@ -22,7 +22,6 @@ public final class HistoryEventProducer {
     private ServiceLoader<TaskanaHistory> serviceLoader;
     private boolean enabled = false;
 
-
     public static synchronized HistoryEventProducer getInstance(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         if (emitterInstance == null) {
             emitterInstance = new HistoryEventProducer(taskanaEngineConfiguration);

@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,6 +85,8 @@ public class AsyncUpdateJobIntTest {
 
         // 1st step: get old classification :
         Instant before = Instant.now();
+        ObjectMapper mapper = new ObjectMapper();
+        String updatedClassification;
 
         ResponseEntity<ClassificationResource> response = template.exchange(
             "http://127.0.0.1:" + port + "/v1/classifications/CLI:100000000000000000000000000000000003",
@@ -103,7 +104,7 @@ public class AsyncUpdateJobIntTest {
         classification.setServiceLevel("P5D");
         classification.setPriority(1000);
 
-        String updatedClassification = new JSONObject(classification).toString();
+        updatedClassification = mapper.writeValueAsString(classification);
 
         URL url = new URL(server + port + "/v1/classifications/CLI:100000000000000000000000000000000003");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -201,7 +202,7 @@ public class AsyncUpdateJobIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 

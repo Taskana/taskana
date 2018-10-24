@@ -11,7 +11,6 @@ public class TaskCompletionEvent extends TaskHistoryEvent {
         super(completedTask);
         type = "TASK_COMPLETED";
         created = completedTask.getCompleted();
-
     }
 
 }
