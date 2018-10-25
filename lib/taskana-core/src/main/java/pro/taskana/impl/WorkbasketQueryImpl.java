@@ -14,6 +14,7 @@ import pro.taskana.TaskanaRole;
 import pro.taskana.TimeInterval;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketQuery;
+import pro.taskana.WorkbasketQueryColumnName;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -34,7 +35,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbaskets";
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasketColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
-    private String columnName;
+    private WorkbasketQueryColumnName columnName;
     private String[] accessId;
     private String[] idIn;
     private WorkbasketPermission permission;
@@ -395,8 +396,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         }
     }
 
-    @Override
-    public List<String> listValues(String columnName, SortDirection sortDirection) {
+    public List<String> listValues(WorkbasketQueryColumnName columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
         List<String> result = new ArrayList<>();
         try {
@@ -614,7 +614,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         return orderColumns;
     }
 
-    public String getColumnName() {
+    public WorkbasketQueryColumnName getColumnName() {
         return columnName;
     }
 

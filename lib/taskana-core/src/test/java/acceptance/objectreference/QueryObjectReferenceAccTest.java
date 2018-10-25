@@ -3,6 +3,9 @@ package acceptance.objectreference;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import static pro.taskana.ObjectReferenceQueryColumnName.COMPANY;
+import static pro.taskana.ObjectReferenceQueryColumnName.SYSTEM;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -24,16 +27,16 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     public void testQueryObjectReferenceValuesForColumnName() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
         List<String> columnValues = taskQuery.createObjectReferenceQuery()
-            .listValues("COMPANY", null);
+            .listValues(COMPANY, null);
         assertEquals(3, columnValues.size());
 
         columnValues = taskQuery.createObjectReferenceQuery()
-            .listValues("SYSTEM", null);
+            .listValues(SYSTEM, null);
         assertEquals(3, columnValues.size());
 
         columnValues = taskQuery.createObjectReferenceQuery()
             .systemIn("System1")
-            .listValues("SYSTEM", null);
+            .listValues(SYSTEM, null);
         assertEquals(1, columnValues.size());
     }
 

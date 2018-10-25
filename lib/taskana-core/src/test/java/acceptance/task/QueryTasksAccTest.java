@@ -6,6 +6,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import static pro.taskana.TaskQueryColumnName.OWNER;
+import static pro.taskana.TaskQueryColumnName.STATE;
+import static pro.taskana.TaskQueryColumnName.CHANNEL;
+import static pro.taskana.TaskQueryColumnName.REF_VALUE;
+import static pro.taskana.TaskQueryColumnName.ACLASSIFICATION_ID;
+import static pro.taskana.TaskQueryColumnName.CLASSIFICATION_KEY;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,12 +68,12 @@ public class QueryTasksAccTest extends AbstractAccTest {
         List<String> columnValueList = taskService.createTaskQuery()
             .ownerLike("%user%")
             .orderByOwner(desc)
-            .listValues("OWNER", null);
+            .listValues(OWNER, null);
         assertNotNull(columnValueList);
         assertEquals(3, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
-            .listValues("STATE", null);
+            .listValues(STATE, null);
         assertNotNull(columnValueList);
         assertEquals(3, columnValueList.size());
     }
@@ -79,25 +86,25 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> columnValueList = taskService.createTaskQuery()
             .attachmentReferenceValueIn("val4")
-            .listValues("CHANNEL", null);
+            .listValues(CHANNEL, null);
         assertNotNull(columnValueList);
         assertEquals(2, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
             .attachmentReferenceValueLike("%")
-            .listValues("REF_VALUE", null);
+            .listValues(REF_VALUE, null);
         assertNotNull(columnValueList);
         assertEquals(6, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
             .orderByAttachmentClassificationId(desc)
-            .listValues("a.CLASSIFICATION_ID", null);
+            .listValues(ACLASSIFICATION_ID, null);
         assertNotNull(columnValueList);
         assertEquals(12, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
             .orderByClassificationKey(desc)
-            .listValues("t.CLASSIFICATION_KEY", null);
+            .listValues(CLASSIFICATION_KEY, null);
         assertNotNull(columnValueList);
         assertEquals(7, columnValueList.size());
     }

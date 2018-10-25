@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.BaseQuery;
 import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.WorkbasketQueryColumnName;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaException;
@@ -64,7 +65,7 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
         List<String> workbasketList = taskanaEngineImpl.getWorkbasketService()
             .createWorkbasketQuery()
             .markedForDeletion(true)
-            .listValues("ID", BaseQuery.SortDirection.ASCENDING);
+            .listValues(WorkbasketQueryColumnName.ID, BaseQuery.SortDirection.ASCENDING);
 
         return workbasketList;
     }

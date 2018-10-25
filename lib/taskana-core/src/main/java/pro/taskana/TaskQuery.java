@@ -5,7 +5,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 /**
  * TaskQuery for generating dynamic sql.
  */
-public interface TaskQuery extends BaseQuery<TaskSummary> {
+public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
 
     /**
      * Add your names to your query.

@@ -5,7 +5,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 /**
  * ClassificationQuery for generating dynamic sql.
  */
-public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
+public interface ClassificationQuery extends BaseQuery<ClassificationSummary, ClassificationQueryColumnName> {
 
     /**
      * Add your key to your query.
@@ -299,4 +299,5 @@ public interface ClassificationQuery extends BaseQuery<ClassificationSummary> {
      *            when the number of the custom is incorrect.
      */
     ClassificationQuery orderByCustomAttribute(String num, SortDirection sortDirection) throws InvalidArgumentException;
+
 }
