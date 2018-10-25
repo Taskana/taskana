@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pro.taskana.ClassificationQuery;
+import pro.taskana.ClassificationQueryColumnName;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TimeInterval;
 
@@ -196,7 +197,7 @@ public class TestClassificationQuery implements ClassificationQuery {
     }
 
     @Override
-    public List<String> listValues(String dbColumnName, SortDirection sortDirection) {
+    public List<String> listValues(ClassificationQueryColumnName dbColumnName, SortDirection sortDirection) {
         return new ArrayList<>();
     }
 

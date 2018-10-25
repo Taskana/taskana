@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.KeyDomain;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
+import pro.taskana.TaskQueryColumnName;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
@@ -42,7 +43,7 @@ public class TaskQueryImpl implements TaskQuery {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
     private TaskanaEngineImpl taskanaEngine;
     private TaskServiceImpl taskService;
-    private String columnName;
+    private TaskQueryColumnName columnName;
     private String[] nameIn;
     private String[] nameLike;
     private String[] creatorIn;
@@ -908,14 +909,14 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     @Override
-    public List<String> listValues(String columnName, SortDirection sortDirection) {
+    public List<String> listValues(TaskQueryColumnName columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
         List<String> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;
             this.orderBy.clear();
-            this.addOrderCriteria(columnName, sortDirection);
+            this.addOrderCriteria(columnName.toString(), sortDirection);
             checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
@@ -1372,7 +1373,7 @@ public class TaskQueryImpl implements TaskQuery {
         return workbasketIdIn;
     }
 
-    public String getColumnName() {
+    public TaskQueryColumnName getColumnName() {
         return columnName;
     }
 
@@ -1451,7 +1452,7 @@ public class TaskQueryImpl implements TaskQuery {
     private TaskQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
         String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
         orderBy.add(columnName + orderByDirection);
-        orderColumns.add(columnName);
+        orderColumns.add(columnName.toString());
         return this;
     }
 

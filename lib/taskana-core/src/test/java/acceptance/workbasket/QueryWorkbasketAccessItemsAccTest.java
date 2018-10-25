@@ -5,6 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import static pro.taskana.AccessItemQueryColumnName.WORKBASKET_ID;
+import static pro.taskana.AccessItemQueryColumnName.ACCESS_ID;
+import static pro.taskana.AccessItemQueryColumnName.WORKBASKET_KEY;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,17 +42,17 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     public void testQueryWorkbasketAccessItemValuesForColumnName() throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<String> columnValueList = workbasketService.createWorkbasketAccessItemQuery()
-            .listValues("WORKBASKET_ID", null);
+            .listValues(WORKBASKET_ID, null);
         assertNotNull(columnValueList);
         assertEquals(24, columnValueList.size());
 
         columnValueList = workbasketService.createWorkbasketAccessItemQuery()
-            .listValues("ACCESS_ID", null);
+            .listValues(ACCESS_ID, null);
         assertNotNull(columnValueList);
         assertEquals(9, columnValueList.size());
 
         columnValueList = workbasketService.createWorkbasketAccessItemQuery()
-            .listValues("WB.KEY", null);
+            .listValues(WORKBASKET_KEY, null);
         assertNotNull(columnValueList);
         assertEquals(24, columnValueList.size());
 

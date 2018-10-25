@@ -7,7 +7,7 @@ package pro.taskana;
  * @param <T> the workbasket access item
  */
 public interface AbstractWorkbasketAccessItemQuery<Q extends AbstractWorkbasketAccessItemQuery<Q, T>, T extends WorkbasketAccessItem>
-    extends BaseQuery<T> {
+    extends BaseQuery<T, AccessItemQueryColumnName> {
 
     /**
      * Add your unique entry id to your query as filter.

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationSummary;
+import pro.taskana.ClassificationQueryColumnName;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TimeInterval;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -29,7 +30,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryClassificationColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
     private TaskanaEngineImpl taskanaEngine;
-    private String columnName;
+    private ClassificationQueryColumnName columnName;
     private String[] key;
     private String[] idIn;
     private String[] parentId;
@@ -414,14 +415,14 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public List<String> listValues(String columnName, SortDirection sortDirection) {
+    public List<String> listValues(ClassificationQueryColumnName columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
         List<String> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;
             this.orderBy.clear();
-            this.addOrderCriteria(columnName, sortDirection);
+            this.addOrderCriteria(columnName.toString(), sortDirection);
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
             return result;
         } finally {
@@ -464,8 +465,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     private ClassificationQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
         String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
-        orderBy.add(columnName + orderByDirection);
-        orderColumns.add(columnName);
+        orderBy.add(columnName.toString() + orderByDirection);
+        orderColumns.add(columnName.toString());
         return this;
     }
 
@@ -605,7 +606,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         return custom8Like;
     }
 
-    public String getColumnName() {
+    public ClassificationQueryColumnName getColumnName() {
         return columnName;
     }
 

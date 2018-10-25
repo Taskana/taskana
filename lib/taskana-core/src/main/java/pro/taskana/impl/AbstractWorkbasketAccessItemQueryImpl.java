@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.AbstractWorkbasketAccessItemQuery;
+import pro.taskana.AccessItemQueryColumnName;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.exceptions.TaskanaRuntimeException;
@@ -27,7 +28,7 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<Q extends AbstractWorkbaske
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbasketAccessItems";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWorkbasketAccessItemQueryImpl.class);
-    private String columnName;
+    private AccessItemQueryColumnName columnName;
     private String[] accessIdIn;
     private String[] workbasketIdIn;
     private String[] idIn;
@@ -103,14 +104,14 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<Q extends AbstractWorkbaske
     }
 
     @Override
-    public List<String> listValues(String columnName, SortDirection sortDirection) {
+    public List<String> listValues(AccessItemQueryColumnName columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, _this());
         List<String> result = null;
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;
             this.orderBy.clear();
-            this.addOrderCriteria(columnName, sortDirection);
+            this.addOrderCriteria(columnName.toString(), sortDirection);
             result = taskanaEngine.getSqlSession().selectList(getLinkToValueMapper(), _this());
             return result;
         } finally {
@@ -207,7 +208,7 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<Q extends AbstractWorkbaske
         return orderColumns;
     }
 
-    public String getColumnName() {
+    public AccessItemQueryColumnName getColumnName() {
         return columnName;
     }
 
