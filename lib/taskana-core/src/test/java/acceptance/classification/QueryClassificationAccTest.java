@@ -3,6 +3,11 @@ package acceptance.classification;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import static pro.taskana.ClassificationQueryColumnName.NAME;
+import static pro.taskana.ClassificationQueryColumnName.TYPE;
+import static pro.taskana.ClassificationQueryColumnName.CREATED;
+import static pro.taskana.ClassificationQueryColumnName.VALID_IN_DOMAIN;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,30 +44,30 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     public void testQueryClassificationValuesForColumnName() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<String> columnValueList = classificationService.createClassificationQuery()
-            .listValues("NAME", null);
+            .listValues(NAME, null);
         assertNotNull(columnValueList);
         assertEquals(16, columnValueList.size());
 
         columnValueList = classificationService.createClassificationQuery()
-            .listValues("TYPE", null);
+            .listValues(TYPE, null);
         assertNotNull(columnValueList);
         assertEquals(2, columnValueList.size());
 
         columnValueList = classificationService.createClassificationQuery()
             .domainIn("")
-            .listValues("TYPE", null);
+            .listValues(TYPE, null);
         assertNotNull(columnValueList);
         assertEquals(2, columnValueList.size());
 
         columnValueList = classificationService.createClassificationQuery()
             .domainIn("")
-            .listValues("CREATED", null);
+            .listValues(CREATED, null);
         assertNotNull(columnValueList);
 
         columnValueList = classificationService.createClassificationQuery()
             .domainIn("")
             .validInDomainEquals(false)
-            .listValues("VALID_IN_DOMAIN", null);
+            .listValues(VALID_IN_DOMAIN, null);
         assertNotNull(columnValueList);
         assertEquals(1, columnValueList.size());    // all are false in ""
     }

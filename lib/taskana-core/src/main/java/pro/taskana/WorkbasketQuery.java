@@ -6,7 +6,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 /**
  * WorkitemQuery for generating dynamic sql.
  */
-public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary> {
+public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, WorkbasketQueryColumnName> {
 
     /**
      * Add your ids to your query. The ids are compared to the ids of workbaskets with the IN operator.

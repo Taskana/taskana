@@ -8,8 +8,10 @@ import java.util.List;
  * @author EH
  * @param <T>
  *            specifies the return type of the follwing methods
+ * @param <U>
+ *            specifies the type of the enum used
  */
-public interface BaseQuery<T> {
+public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
 
     /**
      * This method will return a list of defined {@link T} objects. In case of a TaskQuery, this method can throw a
@@ -44,7 +46,7 @@ public interface BaseQuery<T> {
      *            the result is sorted in ascending order
      * @return a list of all existing values.
      */
-    List<String> listValues(String dbColumnName, SortDirection sortDirection);
+    List<String> listValues(U dbColumnName, SortDirection sortDirection);
 
     /**
      * This method will return all results for page X with a size of Y of the current query.<br>

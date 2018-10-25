@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import static pro.taskana.WorkbasketQueryColumnName.NAME;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,14 +96,14 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryWorkbasketValuesForColumnName() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<String> columnValueList = workbasketService.createWorkbasketQuery()
-            .listValues("NAME", null);
+            .listValues(NAME, null);
         assertNotNull(columnValueList);
         assertEquals(10, columnValueList.size());
 
         columnValueList = workbasketService.createWorkbasketQuery()
             .nameLike("%korb%")
             .orderByName(asc)
-            .listValues("NAME", SortDirection.DESCENDING);  // will override
+            .listValues(NAME, SortDirection.DESCENDING);  // will override
         assertNotNull(columnValueList);
         assertEquals(4, columnValueList.size());
     }

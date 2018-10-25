@@ -9,6 +9,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.AccessItemQueryColumnName;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemQuery;
@@ -24,7 +25,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryWorkbasketAccessItems";
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryWorkbasketAccessItemColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
-    private String columnName;
+    private AccessItemQueryColumnName columnName;
     private String[] accessIdIn;
     private String[] accessIdLike;
     private String[] workbasketIdIn;
@@ -120,14 +121,14 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     }
 
     @Override
-    public List<String> listValues(String columnName, SortDirection sortDirection) {
+    public List<String> listValues(AccessItemQueryColumnName columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
         List<String> result = null;
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;
             this.orderBy.clear();
-            this.addOrderCriteria(columnName, sortDirection);
+            this.addOrderCriteria(columnName.toString(), sortDirection);
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
             return result;
         } finally {
@@ -228,7 +229,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         return orderColumns;
     }
 
-    public String getColumnName() {
+    public AccessItemQueryColumnName getColumnName() {
         return columnName;
     }
 

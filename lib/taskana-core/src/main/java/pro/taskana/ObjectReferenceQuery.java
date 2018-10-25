@@ -3,7 +3,7 @@ package pro.taskana;
 /**
  * ObjectReferenceQuery for generating dynamic sql.
  */
-public interface ObjectReferenceQuery extends BaseQuery<ObjectReference> {
+public interface ObjectReferenceQuery extends BaseQuery<ObjectReference, ObjectReferenceQueryColumnName> {
 
     /**
      * Add your company to your query.

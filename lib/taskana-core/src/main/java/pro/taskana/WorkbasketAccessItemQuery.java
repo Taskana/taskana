@@ -3,7 +3,7 @@ package pro.taskana;
 /**
  * WorkbasketAccessItemQuery for generating dynamic SQL.
  */
-public interface WorkbasketAccessItemQuery extends BaseQuery<WorkbasketAccessItem> {
+public interface WorkbasketAccessItemQuery extends BaseQuery<WorkbasketAccessItem, AccessItemQueryColumnName> {
 
     /**
      * Add your unique entry id to your query as filter.
@@ -102,4 +102,5 @@ public interface WorkbasketAccessItemQuery extends BaseQuery<WorkbasketAccessIte
      * @return the query
      */
     WorkbasketAccessItemQuery orderById(SortDirection sortDirection);
+
 }

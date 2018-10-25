@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.ObjectReference;
 import pro.taskana.ObjectReferenceQuery;
+import pro.taskana.ObjectReferenceQueryColumnName;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
@@ -27,7 +28,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryObjectReferenceColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceQueryImpl.class);
     private TaskanaEngineImpl taskanaEngine;
-    private String columnName;
+    private ObjectReferenceQueryColumnName columnName;
     private String[] company;
     private String[] system;
     private String[] systemInstance;
@@ -89,14 +90,14 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     }
 
     @Override
-    public List<String> listValues(String columnName, SortDirection sortDirection) {
+    public List<String> listValues(ObjectReferenceQueryColumnName columnName, SortDirection sortDirection) {
         LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
         List<String> result = new ArrayList<>();
         try {
             taskanaEngine.openConnection();
             this.columnName = columnName;
             this.orderBy.clear();
-            this.addOrderCriteria(columnName, sortDirection);
+            this.addOrderCriteria(columnName.toString(), sortDirection);
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
             return result;
         } finally {
@@ -192,7 +193,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         this.value = value;
     }
 
-    public String getColumnName() {
+    public ObjectReferenceQueryColumnName getColumnName() {
         return columnName;
     }
 
