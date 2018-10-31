@@ -1,14 +1,13 @@
 <div class="container-scrollable">
   <taskana-spinner [isRunning]="requestInProgress" class="floating" (spinnerIsRunning)="spinnerRunning($event)"></taskana-spinner>
   <div id="classification-details" *ngIf="classification && !spinnerIsRunning">
-    <ul class="nav nav-tabs" role="tablist">
-      <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
-        <a (click)="backClicked()">
-          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
-      </li>
-    </ul>
     <div id="classification" class="panel panel-default classification">
       <div class="panel-heading">
+        <div *ngIf="showDetail" class="pull-left btn-group align-header">
+          <button (click)="backClicked()" class="btn btn-default no-style blue visible-xs visible-sm hidden">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back
+          </button>
+        </div>
         <div class="pull-right btn-group">
           <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary" data-toggle="tooltip" title="Save">
             <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
@@ -18,6 +17,7 @@
           </button>
           <button type="button" (click)="removeClassification()" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+
           </button>
         </div>
         <h4 class="panel-header">{{classification.name}}&nbsp; [{{classification.type}}]
@@ -29,54 +29,62 @@
           <div class="col-md-6">
             <div class="form-group required">
               <label for="classification-key" class="control-label">Key</label>
-              <input type="text" required #key="ngModel" [disabled]="action!== 'CREATE'? true : false" class="form-control" id="classification-key"
-                placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
-              <taskana-field-error-display *ngIf="action === 'CREATE'" [displayError]="!isFieldValid('classification.key')" [validationTrigger]="this.toogleValidationMap.get('classification.key')"
-                errorMessage="* Key is required">
+              <input type="text" required #key="ngModel" [disabled]="action!== 'CREATE'? true : false" class="form-control"
+                id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
+              <taskana-field-error-display *ngIf="action === 'CREATE'" [displayError]="!isFieldValid('classification.key')"
+                [validationTrigger]="this.toogleValidationMap.get('classification.key')" errorMessage="* Key is required">
               </taskana-field-error-display>
             </div>
             <div class="form-group required">
               <label for="classification-name" class="control-label">Name</label>
-              <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name" [(ngModel)]="classification.name"
-                name="classification.name">
+              <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name"
+                [(ngModel)]="classification.name" name="classification.name">
               <taskana-field-error-display [displayError]="!isFieldValid('classification.name')" [validationTrigger]="this.toogleValidationMap.get('classification.name')"
                 errorMessage="* Name is required">
               </taskana-field-error-display>
             </div>
-            <div class="form-group">
-              <label for="classification-domain" class="control-label">Domain</label>
-              <input type="text" disabled #domain="ngModel" class="form-control" id="classification-domain" placeholder="Domain" [(ngModel)]="classification.domain"
-                name="classification.domain">
+            <div class="row">
+
+              <div class="form-group col-xs-6 required">
+                <label for="classification-category" class="control-label">Category</label>
+                <div class="input-group">
+                  <div class="input-group-btn">
+                    <button class="btn btn-default vertical-align" type="button" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="true">
+                      <span class="text-top ">
+                        <svg-icon class="blue fa-fw" src="{{getCategoryIcon(classification.category).name}}"
+                          data-toggle="tooltip" [title]="getCategoryIcon(classification.category).text"></svg-icon>
+                      </span>
+                      {{classification.category}}
+                      <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu " aria-labelledby="dropdownMenu">
+                      <li>
+                        <a *ngFor="let category of categories" (click)="selectCategory(category)">
+                          <span class="text-top">
+                            <svg-icon class="blue fa-fw" src="{{getCategoryIcon(category).name}}" data-toggle="tooltip"
+                              [title]="getCategoryIcon(category).text"></svg-icon>
+                          </span>
+                          {{category}}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-xs-6">
+                <label for="classification-domain" class="control-label">Domain</label>
+                <input type="text" disabled #domain="ngModel" class="form-control" id="classification-domain"
+                  placeholder="Domain" [(ngModel)]="classification.domain" name="classification.domain">
 
                 <a *ngIf="!masterDomainSelected()" (click)="validChanged()">
-                    <label>
-                      <b>Valid in Domain:</b> 
-                      <span class="glyphicon {{classification.isValidInDomain ? 'glyphicon-check': 'glyphicon-unchecked'}} blue"
-                        aria-hidden="true"></span>
-                    </label>
-                  </a>
-            </div>
-
-            <div class="form-group required">
-              <label for="classification-category" class="control-label">Category</label>
-              <div class="dropdown clearfix btn-group">
-                <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  <span class="text-top">
-                    <svg-icon class="blue fa-fw" src="{{getCategoryIcon(classification.category).name}}" data-toggle="tooltip" [title]="getCategoryIcon(classification.category).text"></svg-icon>
-                  </span>
-                  {{classification.category}}
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-                  <li>
-                    <a *ngFor="let category of categories" (click)="selectCategory(category)">
-                      <span class="text-top">
-                        <svg-icon class="blue fa-fw" src="{{getCategoryIcon(category).name}}" data-toggle="tooltip" [title]="getCategoryIcon(category).text"></svg-icon>
-                      </span>
-                      {{category}}
-                    </a>
-                  </li>
-                </ul>
+                  <label>
+                    <b>Valid in Domain:</b>
+                    <span class="glyphicon {{classification.isValidInDomain ? 'glyphicon-check': 'glyphicon-unchecked'}} blue"
+                      aria-hidden="true"></span>
+                  </label>
+                </a>
               </div>
             </div>
             <div class="form-group">
@@ -86,8 +94,8 @@
             </div>
             <div class="form-group">
               <label for="classification-service-level" class="control-label">Service Level</label>
-              <input type="text" class="form-control" id="classification-service-level" placeholder="Service Level" [(ngModel)]="classification.serviceLevel"
-                name="classification.serviceLevel">
+              <input type="text" class="form-control" id="classification-service-level" placeholder="Service Level"
+                [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel">
             </div>
             <div class="form-group">
               <label for="classification-application-entry-point" class="control-label">Application entry point</label>
@@ -96,50 +104,50 @@
             </div>
             <div class="form-group">
               <label for="classification-description" class="control-label">Description</label>
-              <textarea class="form-control" rows="5" id="classification-description" placeholder="Description" [(ngModel)]="classification.description"
-                name="classification.description"></textarea>
+              <textarea class="form-control" rows="5" id="classification-description" placeholder="Description"
+                [(ngModel)]="classification.description" name="classification.description"></textarea>
             </div>
           </div>
           <div class="col-md-6">
             <div *ngIf="custom1Field.visible" class="form-group">
               <label for="classification-custom-1" class="control-label">{{custom1Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-1" placeholder="{{custom1Field.field}}" [(ngModel)]="classification.custom1"
-                name="classification.custom1">
+              <input type="text" class="form-control" id="classification-custom-1" placeholder="{{custom1Field.field}}"
+                [(ngModel)]="classification.custom1" name="classification.custom1">
             </div>
             <div *ngIf="custom2Field.visible" class="form-group">
               <label for="classification-custom-2" class="control-label">{{custom2Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-2" placeholder="{{custom2Field.field}}" [(ngModel)]="classification.custom2"
-                name="classification.custom2">
+              <input type="text" class="form-control" id="classification-custom-2" placeholder="{{custom2Field.field}}"
+                [(ngModel)]="classification.custom2" name="classification.custom2">
             </div>
             <div *ngIf="custom3Field.visible" class="form-group">
               <label for="classification-custom-3" class="control-label">{{custom3Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-3" placeholder="{{custom3Field.field}}" [(ngModel)]="classification.custom3"
-                name="classification.custom3">
+              <input type="text" class="form-control" id="classification-custom-3" placeholder="{{custom3Field.field}}"
+                [(ngModel)]="classification.custom3" name="classification.custom3">
             </div>
             <div *ngIf="custom4Field.visible" class="form-group">
               <label for="classification-custom-4" class="control-label">{{custom4Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-4" placeholder="{{custom4Field.field}}" [(ngModel)]="classification.custom4"
-                name="classification.custom4">
+              <input type="text" class="form-control" id="classification-custom-4" placeholder="{{custom4Field.field}}"
+                [(ngModel)]="classification.custom4" name="classification.custom4">
             </div>
             <div *ngIf="custom5Field.visible" class="form-group">
               <label for="classification-custom-5" class="control-label">{{custom5Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-5" placeholder="{{custom5Field.field}}" [(ngModel)]="classification.custom5"
-                name="classification.custom5">
+              <input type="text" class="form-control" id="classification-custom-5" placeholder="{{custom5Field.field}}"
+                [(ngModel)]="classification.custom5" name="classification.custom5">
             </div>
             <div *ngIf="custom6Field.visible" class="form-group">
               <label for="classification-custom-6" class="control-label">{{custom6Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-6" placeholder="{{custom6Field.field}}" [(ngModel)]="classification.custom6"
-                name="classification.custom6">
+              <input type="text" class="form-control" id="classification-custom-6" placeholder="{{custom6Field.field}}"
+                [(ngModel)]="classification.custom6" name="classification.custom6">
             </div>
             <div *ngIf="custom7Field.visible" class="form-group">
               <label for="classification-custom-7" class="control-label">{{custom7Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-7" placeholder="{{custom7Field.field}}" [(ngModel)]="classification.custom7"
-                name="classification.custom7">
+              <input type="text" class="form-control" id="classification-custom-7" placeholder="{{custom7Field.field}}"
+                [(ngModel)]="classification.custom7" name="classification.custom7">
             </div>
             <div *ngIf="custom8Field.visible" class="form-group">
               <label for="classification-custom-8" class="control-label">{{custom8Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-8" placeholder="{{custom8Field.field}}" [(ngModel)]="classification.custom8"
-                name="classification.custom8">
+              <input type="text" class="form-control" id="classification-custom-8" placeholder="{{custom8Field.field}}"
+                [(ngModel)]="classification.custom8" name="classification.custom8">
             </div>
           </div>
         </form>

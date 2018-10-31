@@ -1,167 +1,117 @@
 <ng-container *ngIf="task && !requestInProgress">
-  <div class="col-md-12">
-    <div class="form-group">
-      <label for="task-description" class="control-label">Description</label>
-      <textarea class="form-control" id="task-description"
-                placeholder="Task has no description"
-                [(ngModel)]="task.description"
-                name="task.description"></textarea>
-    </div>
-  </div>
+  <form #TaskForm="ngForm">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="form-group col-xs-6 required">
+          <label for="task-name" class="control-label">Name</label>
+          <input type="text" class="form-control" id="task-name" placeholder="Name" [(ngModel)]="task.name" name="task.name">
+          <taskana-field-error-display [displayError]="!isFieldValid('task.name')" [validationTrigger]="this.toogleValidationMap.get('task.name')"
+            errorMessage="* Name is required">
+          </taskana-field-error-display>
+        </div>
+        <div class="form-group col-xs-6 required">
+          <label for="task.primaryObjRef.company" class="control-label">Company</label>
+          <input type="text" class="form-control" id="task.primaryObjRef.company" required placeholder="Company description"
+            [(ngModel)]="task.primaryObjRef.company" name="task.primaryObjRef.company">
+          <taskana-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.company')" [validationTrigger]="this.toogleValidationMap.get('task.primaryObjRef.company')"
+            errorMessage="* Company is required">
+          </taskana-field-error-display>
+        </div>
 
-  <div class="col-md-6">
-    <div class="form-group required">
-      <label for="task-objectRef-company" class="control-label">Reference Company</label>
-      <input type="text" class="form-control" id="task-objectRef-company" required
-             placeholder="Company description not provided"
-             [(ngModel)]="task.primaryObjRef.company"
-             name="task-objectRef-company">
-    </div>
-    <div class="form-group required">
-      <label for="task-objectRef-system" class="control-label">Reference System</label>
-      <input type="text" class="form-control" id="task-objectRef-system" required
-             placeholder="System description not provided"
-             [(ngModel)]="task.primaryObjRef.system"
-             name="task-objectRef-system">
-    </div>
-    <div class="form-group required">
-      <label for="task-objectRef-system-instance" class="control-label">Reference System Instance</label>
-      <input type="text" class="form-control" id="task-objectRef-system-instance" required
-             placeholder="System Instance description not provided"
-             [(ngModel)]="task.primaryObjRef.systemInstance"
-             name="task-objectRef-system-instance">
-    </div>
-    <div class="form-group">
-      <label for="task-owner" class="control-label">Owner</label>
-      <input type="text" class="form-control" id="task-owner"
-             placeholder="Task has no owner"
-             [(ngModel)]="task.owner"
-             name="task.owner">
-    </div>
-    <div class="form-group">
-      <label for="task-priority" disabled class="control-label">Priority</label>
-      <input type="text" class="form-control" id="task-priority"
-             placeholder="Task has no priority"
-             [(ngModel)]="task.priority"
-             name="task.priority">
-    </div>
-    <div class="form-group">
-      <label for="task-note" class="control-label">Note</label>
-      <input type="text" class="form-control" id="task-note"
-             placeholder="Task has no Note"
-             [(ngModel)]="task.note"
-             name="task.note">
-    </div>
-    <div *ngIf="task.taskId" class="form-group">
-      <label for="task-modified" class="control-label">Modification Date</label>
-      <input type="text" disabled class="form-control" id="task-modified"
-             placeholder="Task has not been modified"
-             [(ngModel)]="task.modified"
-             name="task.modified">
-    </div>
-    <div *ngIf="task.taskId" class="form-group">
-      <label for="task-completed" class="control-label">Completion Date</label>
-      <input type="text" disabled class="form-control" id="task-completed"
-             placeholder="Task has not been completed"
-             [(ngModel)]="task.completed"
-             name="task.completed">
-    </div>
-    <div *ngIf="task.taskId" class="form-group">
-      <label for="task-state" class="control-label">State</label>
-      <input type="text" disabled class="form-control" id="task-state"
-             placeholder="Task has no State"
-             [(ngModel)]="task.state"
-             name="task.state">
-    </div>
-    <div *ngIf="task.taskId" class="form-group">
-      <label for="task-read" class="control-label">Task Read?</label>
-      <input type="text" disabled class="form-control" id="task-read"
-             placeholder="Task not been read"
-             [(ngModel)]="task.read"
-             name="task.read">
-    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-group required">
-      <label for="task-objectRef-type" class="control-label">Reference Type</label>
-      <input type="text" class="form-control" id="task-objectRef-type" required
-             placeholder="Reference Type is not provided"
-             [(ngModel)]="task.primaryObjRef.type"
-             name="task-objectRef-type">
-    </div>
-    <div class="form-group required">
-      <label for="task-objectRef-value" class="control-label">Reference Value</label>
-      <input type="text" class="form-control" id="task-objectRef-value" required
-             placeholder="Reference Value is not provided"
-             [(ngModel)]="task.primaryObjRef.value"
-             name="task-objectRef-value">
-    </div>
-    <div class="form-group required">
-      <div class="dropdown clearfix btn-group">
-        <label for="classificationDropdownMenu" class="control-label">Classification</label><br>
-        <button class="btn btn-default" type="button" id="classificationDropdownMenu" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="true">
-          {{task.classificationSummaryResource ? selectedClassification.name :
-          'Task does not belong to a Classification'}}
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-          <li>
-            <a *ngFor="let classification of classifications" (click)="selectClassification(classification)">
-              {{classification.name}}
-            </a>
-          </li>
-        </ul>
+      </div>
+      <div class="row">
+        <div class="form-group col-xs-6 required">
+          <label for="task.primaryObjRef.system" class="control-label">System</label>
+          <input type="text" class="form-control" id="task.primaryObjRef.system" required placeholder="System description"
+            [(ngModel)]="task.primaryObjRef.system" name="task.primaryObjRef.system">
+          <taskana-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.system')" [validationTrigger]="this.toogleValidationMap.get('task.primaryObjRef.system')"
+            errorMessage="* System is required">
+          </taskana-field-error-display>
+        </div>
+        <div class="form-group col-xs-6 required">
+          <label for="task.primaryObjRef.systemInstance" class="control-label">System instance</label>
+          <input type="text" class="form-control" id="task.primaryObjRef.systemInstance" required placeholder="System Instance description"
+            [(ngModel)]="task.primaryObjRef.systemInstance" name="task.primaryObjRef.systemInstance">
+          <taskana-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.systemInstance')"
+            [validationTrigger]="this.toogleValidationMap.get('task.primaryObjRef.systemInstance')" errorMessage="* System instance is required">
+          </taskana-field-error-display>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-xs-6 required">
+          <label for="task.primaryObjRef.type" class="control-label">Reference type</label>
+          <input type="text" class="form-control" id="task.primaryObjRef.type" required placeholder="Reference type"
+            [(ngModel)]="task.primaryObjRef.type" name="task.primaryObjRef.type">
+          <taskana-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.type')" [validationTrigger]="this.toogleValidationMap.get('task.primaryObjRef.type')"
+            errorMessage="* Reference type is required">
+          </taskana-field-error-display>
+        </div>
+        <div class="form-group col-xs-6 required">
+          <label for="task.primaryObjRef.value" class="control-label">Reference value</label>
+          <input type="text" class="form-control" id="task.primaryObjRef.value" required placeholder="Reference value"
+            [(ngModel)]="task.primaryObjRef.value" name="task.primaryObjRef.value">
+          <taskana-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.value')" [validationTrigger]="this.toogleValidationMap.get('task.primaryObjRef.value')"
+            errorMessage="* Reference value is required">
+          </taskana-field-error-display>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-xs-6 required">
+          <label for="wb-type" class="control-label">Classification</label>
+          <div class="input-group" dropdown>
+            <button class="btn btn-default" type="button" dropdownToggle id="task.classificationSummaryResource"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" name="">
+              {{task.classificationSummaryResource?.name }}
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" *dropdownMenu>
+              <li>
+                <a *ngFor="let classification of classifications" (click)="selectClassification(classification)">
+                  {{classification.name}}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="form-group col-xs-6">
+          <label for="task-priority" disabled class="control-label">Priority</label>
+          <input type="text" class="form-control" id="task-priority" placeholder="Priority" [(ngModel)]="task.priority"
+            name="task.priority">
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-xs-12">
+          <div class="form-group">
+            <label for="task-note" class="control-label">Note</label>
+            <textarea class="form-control" rows="2" id="task-note" placeholder="Note" [(ngModel)]="task.note" name="task.note"></textarea>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label for="task-parent-business-p-id" class="control-label">Parent Business Process ID</label>
-      <input type="text" class="form-control" id="task-parent-business-p-id"
-             placeholder="Task has no Parent Business Process ID"
-             [(ngModel)]="task.parentBusinessProcessId"
-             name="task.parentBusinessProcessId">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="task-due" class="control-label">Due date</label>
+        <input type="text" class="form-control" id="task-due" placeholder="Due date" [(ngModel)]="task.due" name="task.due">
+      </div>
+      <div class="input-group form-group col-xs-12">
+        <label for="wb-owner" class="control-label ">Owner</label>
+        <taskana-type-ahead *ngIf="ownerField?.lookupField else ownerInput" #owner="ngModel" name="task.owner"
+          [(ngModel)]="task.owner" width="100%" [isRequired]="false"></taskana-type-ahead>
+        <ng-template #ownerInput>
+          <input type="text" #task.owner="ngModel" class="form-control" id="ts-owner" placeholder="Owner" [(ngModel)]="task.owner"
+            name="task.owner">
+        </ng-template>
+      </div>
+      <div class="form-group">
+        <label for="task-parent-business-p-id" class="control-label">Parent business process id</label>
+        <input type="text" class="form-control" id="task-parent-business-p-id" placeholder="Parent business process iD"
+          [(ngModel)]="task.parentBusinessProcessId" name="task.parentBusinessProcessId">
+      </div>
+      <div class="form-group">
+        <label for="task-business-p-id" class="control-label">Business process iD</label>
+        <input type="text" class="form-control" id="task-business-p-id" placeholder="Business process id" [(ngModel)]="task.businessProcessId"
+          name="task.businessProcessId">
+      </div>
     </div>
-    <div class="form-group">
-      <label for="task-business-p-id" class="control-label">Business Process ID</label>
-      <input type="text" class="form-control" id="task-business-p-id"
-             placeholder="Task has no Business Process ID"
-             [(ngModel)]="task.businessProcessId"
-             name="task.businessProcessId">
-    </div>
-    <div class="form-group">
-      <label for="task-due" class="control-label">Due Date</label>
-      <input type="text" class="form-control" id="task-due"
-             placeholder="Task has no deadline"
-             [(ngModel)]="task.due"
-             name="task.due">
-    </div>
-    <div *ngIf="task.taskId" class="form-group">
-      <label for="task-claimed" class="control-label">Claim Date</label>
-      <input type="text" disabled class="form-control" id="task-claimed"
-             placeholder="Task has not been claimed"
-             [(ngModel)]="task.claimed"
-             name="task.claimed">
-    </div>
-    <div *ngIf="task.taskId" class="form-group">
-      <label for="task-planned" class="control-label">Planned Date</label>
-      <input type="text" disabled class="form-control" id="task-planned"
-             placeholder="Task has no planned date set"
-             [(ngModel)]="task.planned"
-             name="task.planned">
-    </div>
-    <div *ngIf="task.taskId" class="form-group">
-      <label for="task-created" class="control-label">Creation Date</label>
-      <input type="text" disabled class="form-control" id="task-created"
-             placeholder="Task has not been created"
-             [(ngModel)]="task.created"
-             name="task.created">
-    </div>
-    <div *ngIf="task.taskId" class="form-group">
-      <label for="task-transferred" class="control-label">Task Transferred?</label>
-      <input type="text" disabled class="form-control" id="task-transferred"
-             placeholder="Task not been transferred"
-             [(ngModel)]="task.transferred"
-             name="task.transferred">
-    </div>
-  </div>
+  </form>
 </ng-container>

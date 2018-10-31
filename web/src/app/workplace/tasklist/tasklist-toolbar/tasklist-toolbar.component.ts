@@ -1,14 +1,14 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {Task} from 'app/workplace/models/task';
-import {Workbasket} from 'app/models/workbasket';
-import {TaskService} from 'app/workplace/services/task.service';
-import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
-import {SortingModel} from 'app/models/sorting';
-import {FilterModel} from 'app/models/filter';
-import {TaskanaType} from 'app/models/taskana-type';
-import {expandDown} from 'app/shared/animations/expand.animation';
-import {ActivatedRoute, Router} from '@angular/router';
-import {WorkplaceService} from 'app/workplace/services/workplace.service';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Task } from 'app/workplace/models/task';
+import { Workbasket } from 'app/models/workbasket';
+import { TaskService } from 'app/workplace/services/task.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { SortingModel } from 'app/models/sorting';
+import { FilterModel } from 'app/models/filter';
+import { TaskanaType } from 'app/models/taskana-type';
+import { expandDown } from 'app/shared/animations/expand.animation';
+import { ActivatedRoute, Router } from '@angular/router';
+import { WorkplaceService } from 'app/workplace/services/workplace.service';
 
 @Component({
   selector: 'taskana-tasklist-toolbar',
@@ -23,7 +23,7 @@ export class TaskListToolbarComponent implements OnInit {
 
 
   sortingFields = new Map([['name', 'Name'], ['priority', 'Priority'], ['due', 'Due'], ['planned', 'Planned']]);
-  filterParams = {name: '', key: '', owner: '', priority: '', state: ''};
+  filterParams = { name: '', key: '', owner: '', priority: '', state: '' };
   tasks: Task[] = [];
 
   workbasketNames: string[] = [];
@@ -36,10 +36,10 @@ export class TaskListToolbarComponent implements OnInit {
   filterType = TaskanaType.TASKS;
 
   constructor(private taskService: TaskService,
-              private workbasketService: WorkbasketService,
-              private workplaceService: WorkplaceService,
-              private router: Router,
-              private route: ActivatedRoute) {
+    private workbasketService: WorkbasketService,
+    private workplaceService: WorkplaceService,
+    private router: Router,
+    private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -91,6 +91,6 @@ export class TaskListToolbarComponent implements OnInit {
 
   createTask() {
     this.taskService.selectTask(undefined);
-    this.router.navigate([{outlets: {detail: 'taskdetail/new-task'}}], {relativeTo: this.route});
+    this.router.navigate([{ outlets: { detail: 'taskdetail/new-task' } }], { relativeTo: this.route });
   }
 }

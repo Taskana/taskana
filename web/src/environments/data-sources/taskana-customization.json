@@ -57,6 +57,13 @@
                 "AUTOMATIC": "assets/icons/categories/automatic.svg",
                 "PROCESS": "assets/icons/categories/process.svg"
             }
+        },
+        "tasks": {
+            "information": {
+                "owner": {
+                    "lookupField": true
+                }
+            }
         }
     }
 }

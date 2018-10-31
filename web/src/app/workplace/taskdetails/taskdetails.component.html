@@ -1,50 +1,25 @@
 <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
-
-<ul class="nav nav-tabs" role="tablist" *ngIf="task && !requestInProgress">
-  <li class="visible-xs visible-sm hidden">
-    <a (click)="backClicked()">
-      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back</a>
-  </li>
-  <li role="presentation" (click)="selectTab('general')" [ngClass]="{'active':tabSelected === 'general'}">
-    <a role="tab" aria-expanded="true">
-      General Fields
-    </a>
-  </li>
-  <li role="presentation" (click)="selectTab('custom')" [ngClass]="{'active':tabSelected === 'custom'}">
-    <a role="tab" aria-expanded="true">
-      Custom Fields
-    </a>
-  </li>
-  <li role="presentation" (click)="selectTab('custom-attributes')"
-      [ngClass]="{'active':tabSelected === 'custom-attributes'}">
-    <a role="tab" aria-expanded="true">
-      Custom Attributes
-    </a>
-  </li>
-  <li role="presentation" (click)="selectTab('callback-info')"
-      [ngClass]="{'active':tabSelected === 'callback-info'}">
-    <a role="tab" aria-expanded="true">
-      Callback Information
-    </a>
-  </li>
-</ul>
 <div class="panel panel-default" *ngIf="task && !requestInProgress">
   <div class="panel-heading">
+    <div *ngIf="showDetail" class="pull-left btn-group align-header">
+      <button (click)="backClicked()" class="btn btn-default no-style blue visible-xs visible-sm hidden">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back
+      </button>
+    </div>
     <div class="pull-right btn-group">
-      <button type="button" (click)="onSave()" class="btn btn-default btn-primary" data-toggle="tooltip"
-              title="Save">
+      <button type="button" (click)="toggleFormValidation = !toggleFormValidation" class="btn btn-default btn-primary"
+        data-toggle="tooltip" title="Save">
         <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
       </button>
       <ng-container *ngIf="currentId != 'new-task'">
         <button type="button" title="Open task to work on it" class="btn btn-default" aria-label="Left Align"
-                [disabled]="workOnTaskDisabled()" (click)="openTask()">
-          <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+          [disabled]="workOnTaskDisabled()" (click)="openTask()">
+          <span class="glyphicon glyphicon-new-window blue" aria-hidden="true"></span>
         </button>
         <button type="button" (click)="resetTask()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
           <span class="glyphicon glyphicon-repeat blue" aria-hidden="true"></span>
         </button>
-        <button type="button" title="Delete Task" class="btn btn-default remove"
-                (click)="deleteTask()">
+        <button type="button" title="Delete Task" class="btn btn-default remove" (click)="deleteTask()">
           <span class="glyphicon glyphicon-remove"></span>
         </button>
       </ng-container>
@@ -53,25 +28,53 @@
       <span *ngIf="!task.taskId" class="badge warning"> {{'Creating Task'}}</span>
     </h4>
   </div>
-
   <div class="panel-body">
-    <form #TaskForm="ngForm">
-      <div class="tab-content">
-        <div role="tabpanel" class="tab-pane" [ngClass]="{'active':tabSelected === 'general'}">
-          <taskana-task-details-general-fields [_task]="task"></taskana-task-details-general-fields>
-        </div>
-
-        <div role="tabpanel" class="tab-pane" [ngClass]="{'active':tabSelected === 'custom'}">
-          <taskana-task-details-custom-fields [task]="task"></taskana-task-details-custom-fields>
-        </div>
-        <div role="tabpanel" class="tab-pane" [ngClass]="{'active':tabSelected === 'custom-attributes'}">
-          <taskana-task-details-attributes [attributes]="task.customAttributes"></taskana-task-details-attributes>
-        </div>
-        <div role="tabpanel" class="tab-pane" [ngClass]="{'active':tabSelected === 'callback-info'}">
-          <taskana-task-details-attributes [attributes]="task.callbackInfo"
-                                           [callbackInfo]="true"></taskana-task-details-attributes>
-        </div>
-      </div>
-    </form>
+    <accordion *ngIf="task && !requestInProgress">
+      <accordion-group panelClass="customClass" isOpen="true" (isOpenChange)="accordion1State = $event" >
+        <button class="btn  btn-block clearfix" accordion-heading>
+          <div class="pull-left float-left">1 - Information</div>
+          <span class="float-right pull-right glyphicon blue" [ngClass]="{
+              'glyphicon-chevron-up': !accordion1State,
+              'glyphicon-chevron-down': accordion1State}"></span>
+        </button>
+        <taskana-task-details-general-fields [task]="task" [saveToggleTriggered]="toggleFormValidation" (formValid)="onSubmit()"></taskana-task-details-general-fields>
+      </accordion-group>
+      <accordion-group panelClass="customClass" (isOpenChange)="accordion2State = $event">
+        <button class="btn  btn-block clearfix" accordion-heading>
+          <div class="pull-left float-left">2 - Status details</div>
+          <span class="float-right pull-right glyphicon blue" [ngClass]="{
+              'glyphicon-chevron-up': !accordion2State,
+              'glyphicon-chevron-down': accordion2State}"></span>
+        </button>
+        <taskana-general-fields-extension [task]="task"></taskana-general-fields-extension>
+      </accordion-group>
+      <accordion-group panelClass="customClass" (isOpenChange)="accordion3State = $event">
+        <button class="btn  btn-block clearfix" accordion-heading>
+          <div class="pull-left float-left">3 - Custom fields</div>
+          <span class="float-right pull-right glyphicon blue" [ngClass]="{
+              'glyphicon-chevron-up': !accordion3State,
+              'glyphicon-chevron-down': accordion3State}"></span>
+        </button>
+        <taskana-task-details-custom-fields [task]="task"></taskana-task-details-custom-fields>
+      </accordion-group>
+      <accordion-group panelClass="customClass" (isOpenChange)="accordion4State = $event">
+        <button class="btn  btn-block clearfix" accordion-heading>
+          <div class="pull-left float-left">4 - Custom attributes</div>
+          <span class="float-right pull-right glyphicon blue" [ngClass]="{
+              'glyphicon-chevron-up': !accordion4State,
+              'glyphicon-chevron-down': accordion4State}"></span>
+        </button>
+        <taskana-task-details-attributes [attributes]="task.customAttributes"></taskana-task-details-attributes>
+      </accordion-group>
+      <accordion-group panelClass="customClass" (isOpenChange)="accordion5State = $event">
+        <button class="btn  btn-block clearfix" accordion-heading>
+          <div class="pull-left float-left">5 - Callback information</div>
+          <span class="float-right pull-right glyphicon blue" [ngClass]="{
+              'glyphicon-chevron-up': !accordion5State,
+              'glyphicon-chevron-down': accordion5State}"></span>
+        </button>
+        <taskana-task-details-attributes [attributes]="task.callbackInfo" [callbackInfo]="true"></taskana-task-details-attributes>
+      </accordion-group>
+    </accordion>
   </div>
 </div>

@@ -2,16 +2,16 @@ import { trigger, style, transition, animate, keyframes, state } from '@angular/
 
 export const expandDown =
     trigger('toggleDown', [
-      state('true', style({ opacity: '1', display: 'initial' })),
-      state('false', style({ opacity: '0', display: 'none' })),
-      transition('false => true', animate('300ms ease-in', keyframes([
-          style({ opacity: 0, height: '0px' }),
-          style({ opacity: 0.5, height: '50px' }),
-          style({ opacity: 1, height: '*' })]))),
-      transition('true => false', animate('300ms ease-out', keyframes([
-          style({ opacity: 1, height: '*' }),
-          style({ opacity: 0.5, height: '50px' }),
-          style({ opacity: 0, height: '0px' })])))
+        state('true', style({ opacity: '1', display: 'initial' })),
+        state('false', style({ opacity: '0', display: 'none' })),
+        transition('false => true', animate('300ms ease-in', keyframes([
+            style({ opacity: 0, height: '0px' }),
+            style({ opacity: 0.5, height: '50px' }),
+            style({ opacity: 1, height: '*' })]))),
+        transition('true => false', animate('300ms ease-out', keyframes([
+            style({ opacity: 1, height: '*' }),
+            style({ opacity: 0.5, height: '50px' }),
+            style({ opacity: 0, height: '0px' })])))
     ]);
 
 export const expandRight = trigger('toggleRight', [

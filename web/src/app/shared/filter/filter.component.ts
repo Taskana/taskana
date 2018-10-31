@@ -36,7 +36,7 @@ export class FilterComponent implements OnInit {
   }
 
   selectType(type: ICONTYPES) {
-    this.filter.filterParams.type = type;
+    this.filter.filterParams.type = (type === ICONTYPES.ALL) ? '' : type;
   }
 
   clear() {
