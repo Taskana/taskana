@@ -17,7 +17,6 @@
     border-radius: 0px;
 }
 
-
 /*
  * Base structure
  */
@@ -154,18 +153,11 @@ svg-icon.fa-fw > svg {
     min-width: 0px;
 }
 
-.footer-space-workbasket {
-  max-height: calc(100vh - 140px);
-  height: calc(100vh - 140px);
+.footer-space-pagination-list {
+  max-height: calc(100vh - 130px);
+  height: calc(100vh - 130px);
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-.footer-space-task {
-  max-height: calc(100vh - 182px);
-    height: calc(100vh - 150px);
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
 .margin-right {
@@ -286,8 +278,8 @@ body{
     }
 }
 
-taskana-workbasket-information,taskana-task-details, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets, taskana-monitor-tasks,
-taskana-monitor-workbaskets, taskana-monitor-classification-tasks, taskana-access-items-management, taskana-classification-details,taskana-workbasket-details {
+taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets, taskana-workbasket-details, taskana-monitor-tasks,
+taskana-monitor-workbaskets, taskana-monitor-classification-tasks {
     & .panel{
         border: none;
         box-shadow: none;
@@ -300,8 +292,17 @@ taskana-monitor-workbaskets, taskana-monitor-classification-tasks, taskana-acces
     }
 }
 
-.taskana-workbasket-list, .taskana-task-list {
-  height: calc(100vh - 55px);
+taskana-task-details, taskana-classification-details, taskana-access-items-management, taskana-task {
+    & .panel{
+        border: none;
+        box-shadow: none;
+        margin-bottom: 0px;
+        &> .panel-body {
+            height: calc(100vh - 100px);
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+    }
 }
 
 taskana-monitor-tasks, taskana-monitor-workbaskets, taskana-monitor-classification-tasks, taskana-access-items-management {
@@ -330,6 +331,7 @@ li.list-group-item:hover {
 
 .vertical-right-divider {
     border-right: 1px solid #ccc;
+    height: calc(100vh - 55px);
 }
 .horizontal-bottom-divider {
     border-bottom: 1px solid #ccc;
@@ -340,12 +342,21 @@ li.list-group-item:hover {
     width: 150px;
     height: 150px;
     fill: grey;
+    color: grey;
     margin: 20px auto;
+    font-size: 100px;
 }
 
+.btn.no-style{
+    border: none;
+    background-color: transparent;
+}
+.align-header{
+    margin-top: 3px;
+}
 .container-no-items {
     top: 20vh;
-    height: 60vh;
+    height: 40vh;
 }
 
 .center-block {
@@ -366,4 +377,7 @@ li.list-group-item:hover {
 
 .modal-backdrop.show {
   background-color: $transparent-grey;
+}
+.padding-right.pull-right {
+    padding-right: 15px;
 }

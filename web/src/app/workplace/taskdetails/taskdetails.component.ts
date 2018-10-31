@@ -1,20 +1,21 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import {TaskService} from 'app/workplace/services/task.service';
-import {RemoveConfirmationService} from 'app/services/remove-confirmation/remove-confirmation.service';
+import { TaskService } from 'app/workplace/services/task.service';
+import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
-import {Task} from 'app/workplace/models/task';
-import {ErrorModel} from 'app/models/modal-error';
-import {ErrorModalService} from 'app/services/errorModal/error-modal.service';
-import {RequestInProgressService} from 'app/services/requestInProgress/request-in-progress.service';
-import {AlertService} from 'app/services/alert/alert.service';
-import {AlertModel, AlertType} from 'app/models/alert';
-import {TaskanaDate} from 'app/shared/util/taskana.date';
-import {ObjectReference} from 'app/workplace/models/object-reference';
-import {Workbasket} from 'app/models/workbasket';
-import {WorkplaceService} from 'app/workplace/services/workplace.service';
+import { Task } from 'app/workplace/models/task';
+import { ErrorModel } from 'app/models/modal-error';
+import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { AlertService } from 'app/services/alert/alert.service';
+import { AlertModel, AlertType } from 'app/models/alert';
+import { TaskanaDate } from 'app/shared/util/taskana.date';
+import { ObjectReference } from 'app/workplace/models/object-reference';
+import { Workbasket } from 'app/models/workbasket';
+import { WorkplaceService } from 'app/workplace/services/workplace.service';
+import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 
 @Component({
   selector: 'taskana-task-details',
@@ -28,18 +29,21 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   tabSelected = 'general';
   currentWorkbasket: Workbasket = undefined;
   currentId: string = undefined;
+  showDetail = false;
 
   private routeSubscription: Subscription;
   private workbasketSubscription: Subscription;
+  private masterAndDetailSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
-              private taskService: TaskService,
-              private workplaceService: WorkplaceService,
-              private router: Router,
-              private removeConfirmationService: RemoveConfirmationService,
-              private requestInProgressService: RequestInProgressService,
-              private alertService: AlertService,
-              private errorModalService: ErrorModalService) {
+    private taskService: TaskService,
+    private workplaceService: WorkplaceService,
+    private router: Router,
+    private removeConfirmationService: RemoveConfirmationService,
+    private requestInProgressService: RequestInProgressService,
+    private alertService: AlertService,
+    private errorModalService: ErrorModalService,
+    private masterAndDetailService: MasterAndDetailService) {
   }
 
   ngOnInit() {
@@ -55,13 +59,16 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       }
       this.getTask();
     });
+    this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe(showDetail => {
+      this.showDetail = showDetail;
+    });
   }
 
   resetTask(): void {
-    this.task = {...this.taskClone};
+    this.task = { ...this.taskClone };
     this.task.customAttributes = this.taskClone.customAttributes.slice(0);
     this.task.callbackInfo = this.taskClone.callbackInfo.slice(0);
-    this.task.primaryObjRef = {...this.taskClone.primaryObjRef};
+    this.task.primaryObjRef = { ...this.taskClone.primaryObjRef };
     this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
   }
 
@@ -83,43 +90,13 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSave() {
-    this.requestInProgressService.setRequestInProgress(true);
-    this.currentId === 'new-task' ? this.createTask() : this.updateTask();
+  onSubmit() {
+    this.onSave();
   }
 
-  updateTask() {
-    this.taskService.updateTask(this.task).subscribe(task => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.task = task;
-      this.cloneTask();
-      this.taskService.publishUpdatedTask(task);
-      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Update successful!'))
-    }, err => {
-      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'Update not successful!'))
-    });
-  }
-
-  createTask() {
-    this.addDateToTask();
-    this.taskService.createTask(this.task).subscribe(task => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Task ${this.currentId} was created successfully`));
-      this.task = task;
-      this.taskService.selectTask(this.task);
-      this.taskService.publishAddedTask(task);
-      this.router.navigate(['../' + task.taskId], {relativeTo: this.route});
-    });
-  }
-
-  private addDateToTask() {
-    const date = TaskanaDate.getDate();
-    this.task.created = date;
-    this.task.modified = date;
-  }
 
   openTask() {
-    this.router.navigate([{outlets: {detail: `task/${this.currentId}`}}], {relativeTo: this.route.parent});
+    this.router.navigate([{ outlets: { detail: `task/${this.currentId}` } }], { relativeTo: this.route.parent });
   }
 
   workOnTaskDisabled(): boolean {
@@ -142,22 +119,69 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.tabSelected = tab;
   }
 
+
   backClicked(): void {
     this.task = undefined;
     this.taskService.selectTask(this.task);
-    this.router.navigate(['./'], {relativeTo: this.route.parent});
+    this.router.navigate(['./'], { relativeTo: this.route.parent });
+  }
+
+  private onSave() {
+    this.currentId === 'new-task' ? this.createTask() : this.updateTask();
+  }
+
+  private updateTask() {
+    this.requestInProgressService.setRequestInProgress(true);
+    this.taskService.updateTask(this.task).subscribe(task => {
+      this.requestInProgressService.setRequestInProgress(false);
+      this.task = task;
+      this.cloneTask();
+      this.taskService.publishUpdatedTask(task);
+      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Updating was successful.'))
+    }, err => {
+      this.requestInProgressService.setRequestInProgress(false);
+      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while updating.'))
+    });
+  }
+
+  private createTask() {
+    this.requestInProgressService.setRequestInProgress(true);
+    this.addDateToTask();
+    this.taskService.createTask(this.task).subscribe(task => {
+      this.requestInProgressService.setRequestInProgress(false);
+      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Task ${this.currentId} was created successfully.`));
+      this.task = task;
+      this.taskService.selectTask(this.task);
+      this.taskService.publishAddedTask(task);
+      this.router.navigate(['../' + task.taskId], { relativeTo: this.route });
+    }, err => {
+      this.requestInProgressService.setRequestInProgress(false);
+      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while creating a new task.'))
+    });
+  }
+
+  private addDateToTask() {
+    const date = TaskanaDate.getDate();
+    this.task.created = date;
+    this.task.modified = date;
+  }
+
+  private cloneTask() {
+    this.taskClone = { ...this.task };
+    this.taskClone.customAttributes = this.task.customAttributes.slice(0);
+    this.taskClone.callbackInfo = this.task.callbackInfo.slice(0);
+    this.taskClone.primaryObjRef = { ...this.task.primaryObjRef };
   }
 
   ngOnDestroy(): void {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
+      if (this.workbasketSubscription) {
+        this.workbasketSubscription.unsubscribe();
+      }
+      if (this.masterAndDetailSubscription) {
+        this.masterAndDetailSubscription.unsubscribe();
+      }
     }
-  }
-
-  private cloneTask() {
-    this.taskClone = {...this.task};
-    this.taskClone.customAttributes = this.task.customAttributes.slice(0);
-    this.taskClone.callbackInfo = this.task.callbackInfo.slice(0);
-    this.taskClone.primaryObjRef = {...this.task.primaryObjRef};
   }
 }

@@ -3,10 +3,10 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { AlertModule } from 'ngx-bootstrap';
 import { RouterModule } from '@angular/router';
 import { TreeModule } from 'angular-tree-component';
-import { TypeaheadModule } from 'ngx-bootstrap';
+import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 /**
  * Components
@@ -33,6 +33,7 @@ import { SelectWorkBasketPipe } from './pipes/selectedWorkbasket/seleted-workbas
 import { SpreadNumberPipe } from './pipes/spreadNumber/spread-number';
 import { OrderBy } from './pipes/orderBy/orderBy';
 import { MapToIterable } from './pipes/mapToIterable/mapToIterable';
+import { NumberToArray } from './pipes/numberToArray/numberToArray';
 
 /**
  * Services
@@ -45,6 +46,7 @@ const MODULES = [
   FormsModule,
   AlertModule.forRoot(),
   TypeaheadModule.forRoot(),
+  AccordionModule.forRoot(),
   AngularSvgIconModule,
   HttpClientModule,
   RouterModule,
@@ -62,6 +64,7 @@ const DECLARATIONS = [
   RemoveNoneTypePipe,
   SelectWorkBasketPipe,
   SpreadNumberPipe,
+  NumberToArray,
   OrderBy,
   MapToIterable,
   SortComponent,
@@ -69,7 +72,7 @@ const DECLARATIONS = [
   IconTypeComponent,
   RemoveConfirmationComponent,
   FieldErrorDisplayComponent,
-  PaginationComponent
+  PaginationComponent,
 ];
 
 @NgModule({

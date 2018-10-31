@@ -53,21 +53,21 @@ export class TaskService {
    * @param  {string} basketId the id of workbasket
    * @param {string} sortBy name of field, that the tasks should be sorted by, default is priority
    * @param {string} sortDirection ASC or DESC
-   * @param {string} name the name of the task
-   * @param {string} owner the owner of the task
+   * @param {string} nameLike the name of the task
+   * @param {string} ownerLike the owner of the task
    * @param {string} priority the priority of the task
-   * @param {string} statethe state of the task
+   * @param {string} state the state of the task
    */
   findTasksWithWorkbasket(basketId: string,
                           sortBy = 'priority',
                           sortDirection: string = Direction.ASC,
-                          name: string,
-                          owner: string,
+                          nameLike: string,
+                          ownerLike: string,
                           priority: string,
                           state: string,
                           allPages: boolean = false): Observable<TaskResource> {
     const url = `${this.url}${TaskanaQueryParameters.getQueryParameters(
-      sortBy, sortDirection, name, undefined, undefined, owner, undefined, undefined, undefined, undefined, undefined,
+      sortBy, sortDirection, undefined, nameLike, undefined, undefined, ownerLike, undefined, undefined, undefined, undefined,
       !allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined,
       undefined, undefined, undefined, undefined, basketId, priority, state)}`;
     return this.httpClient.get<TaskResource>(url);

@@ -1,5 +1,9 @@
-.dropdown-menu.show {
+.dropdown-menu.show, .modal-backdrop.show, .fade.show  {
   display: block;
   opacity: 1;
   visibility: visible;
+}
+
+.modal.fade .modal-dialog {
+  transform: translate(0,0);
 }

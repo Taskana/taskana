@@ -59,7 +59,7 @@ export class SpinnerComponent implements OnDestroy {
 
     private runSpinner(value) {
         this.currentTimeout = setTimeout(() => {
-            if (this.isModal) { $(this.modal.nativeElement).modal('toggle'); }
+            if (this.isModal) { $(this.modal.nativeElement).modal('show'); }
             this.isDelayedRunning = value;
             this.cancelTimeout();
             this.requestTimeout = setTimeout(() => {
@@ -73,7 +73,7 @@ export class SpinnerComponent implements OnDestroy {
     }
     private closeModal() {
         if (this.showSpinner) {
-            $(this.modal.nativeElement).modal('toggle');
+            $(this.modal.nativeElement).modal('hide');
         }
     }
 

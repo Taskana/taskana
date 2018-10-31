@@ -1,5 +1,3 @@
-import { Direction } from 'app/models/sorting';
-
 export class TaskanaQueryParameters {
   // Sorting
   static SORTBY = 'sort-by';
@@ -16,7 +14,7 @@ export class TaskanaQueryParameters {
   static WORKBASKET_KEY = 'workbasket-key';
   static KEYLIKE = 'key-like';
   static PRIORITY = 'priority';
-  static STATE = 'state';
+  static STATELIKE = 'state-like';
   static WORKBASKET_ID = 'workbasket-id';
 
   // Access
@@ -54,7 +52,7 @@ export class TaskanaQueryParameters {
     workbasketKeyLike: string = undefined,
     basketId: string = undefined,
     priority: string = undefined,
-    state: string = undefined,
+    stateLike: string = undefined,
   ): string {
     let query = '?';
     query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
@@ -66,7 +64,7 @@ export class TaskanaQueryParameters {
     query += ownerLike ? `${this.OWNERLIKE}=${ownerLike}&` : '';
     query += basketId ? `${this.WORKBASKET_ID}=${basketId}&` : '';
     query += priority ? `${this.PRIORITY}=${priority}&` : '';
-    query += state ? `${this.STATE}=${state}&` : '';
+    query += stateLike ? `${this.STATELIKE}=${stateLike}&` : '';
     query += type ? `${this.TYPE}=${type}&` : '';
     query += key ? `${this.KEY}=${key}&` : '';
     query += keyLike ? `${this.KEYLIKE}=${keyLike}&` : '';
