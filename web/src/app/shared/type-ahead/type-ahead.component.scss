@@ -11,8 +11,8 @@
      }
     &> div{
         &> div {
-            border-bottom: 1px solid $light-grey;
-            margin-top:3px;
+            border-bottom: 1px solid $pallete-blue;
+            margin-top: 2px;
             padding-left: 12px;
             min-width: 175px;
         }
@@ -26,7 +26,8 @@
 
 }
 .custom-form-control {
-    height: 50px;
+    margin-top: -5px;
+    height: 40px;
     &  .input-group{
         width: 100%;
     }
@@ -40,7 +41,7 @@
     border-radius: 0px;
     min-width: 150px;
     height: 28px;
-    border-bottom: 1px solid $light-grey;
+    border-bottom: 1px solid $pallete-blue;
     &:focus{
         border-bottom: 1px solid $aquamarine;
     }
@@ -56,6 +57,9 @@
     box-sizing: content-box;
     overflow: hidden;
     pointer-events: none;
+    label{
+        margin-bottom: 1px;
+    }
 }
 
 .form-control:focus {
@@ -93,5 +97,5 @@
 }
 
 .invalid {
-  color: $invalid;
+    border-bottom: 1px solid $invalid;
 }

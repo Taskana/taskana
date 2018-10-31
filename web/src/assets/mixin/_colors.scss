@@ -1,0 +1,17 @@
+@mixin colors {
+    &-red {
+        background-color: $invalid;
+    }
+    &-green {
+        background-color: $pallete-green;
+    }
+    &-orange {
+        background-color: $brown;
+    }
+}
+
+.badge{
+    @include colors;
+}
+
+

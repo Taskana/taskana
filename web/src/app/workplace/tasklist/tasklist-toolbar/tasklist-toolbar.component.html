@@ -1,35 +1,23 @@
 <li id="tasklist-action-toolbar" class="list-group-item tab-align">
   <div class="row">
     <div *ngIf="currentBasket" class="col-xs-2">
-      <button (click)="createTask()" type="button"
-              class="btn btn-default pull-left green-blue"
-              title="Add Task to current Workbasket">
+      <button (click)="createTask()" type="button" class="btn btn-default pull-left green-blue" title="Add Task to current Workbasket">
         <span class="glyphicon glyphicon-plus"></span>
       </button>
     </div>
-    <div class="col-xs-7">
-      <input [(ngModel)]="resultName" [typeahead]="workbasketNames" class="form-control"
-              (typeaheadOnSelect)="searchBasket()" (typeaheadNoResults)="workbasketSelected = false"
-              placeholder="Search for Workbasket ..."/>
+    <div class="col-xs-6">
+      <input [(ngModel)]="resultName" [typeahead]="workbasketNames" class="form-control" (typeaheadOnSelect)="searchBasket()"
+        (typeaheadNoResults)="workbasketSelected = false" placeholder="Search for Workbasket ..." />
     </div>
-
-    <div class="pull-right margin-right">
-      <taskana-sort
-        [sortingFields]="sortingFields"
-        (performSorting)="sorting($event)"></taskana-sort>
-      <button class="btn btn-default collapsed" type="button"
-              id="collapsedMenufilterWb" aria-expanded="false"
-              (click)="toolbarState=!toolbarState">
+    <div *ngIf="currentBasket" class="pull-right margin-right">
+      <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState">
         <span class="glyphicon glyphicon-filter blue"></span>
-      </button>
+        </button>
+        <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group"></taskana-sort>
     </div>
-
   </div>
   <div [@toggleDown]="toolbarState" class="row no-overflow">
-    <taskana-filter
-      [filterParams]="filterParams"
-      [filterType]="filterType"
-      (performFilter)="filtering($event)">
+    <taskana-filter [filterParams]="filterParams" [filterType]="filterType" (performFilter)="filtering($event)">
     </taskana-filter>
   </div>
 </li>

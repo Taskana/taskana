@@ -1,18 +1,16 @@
 <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <div class="pull-right">
-      <button type="button" (click)="navigateBack()" class="btn btn-default"><span title="Cancel and return to task detail"
-                                                                            class="glyphicon glyphicon-arrow-left text-muted"></span>
+    <div class="pull-left btn-group align-header">
+      <button (click)="navigateBack()" class="btn btn-default no-style blue " title="Cancel and return to task detail">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back
       </button>
-
+    </div>
+    <div class="pull-right">
       <div class="dropdown" style="display: inline">
         <button type="button" data-toggle="dropdown" aria-expanded="true" class="btn btn-default dropdown-toggle">
-            <span
-              title="Transfer task to another workbasket"
-              class="glyphicon glyphicon-transfer text-muted"></span>
+          <span title="Transfer task to another workbasket" class="glyphicon glyphicon-transfer text-muted"></span>
         </button>
-
         <ul class="dropdown-menu dropdown-menu-right">
           <li *ngFor="let workbasket of workbaskets">
             <a class="dropdown-item" (click)="transferTask(workbasket)">
@@ -21,42 +19,42 @@
           </li>
         </ul>
       </div>
-      <button type="button" (click)="completeTask()" class="btn btn-default"><span
-        title="Complete task and return to task list"
-        class="glyphicon glyphicon-ok blue text-success"></span>
+      <button type="button" (click)="completeTask()" class="btn btn-default"><span title="Complete task and return to task list"
+          class="glyphicon glyphicon-ok blue text-success"></span>
       </button>
     </div>
-    <div class="panel-header"><h4><b>{{task?.name}}</b></h4></div>
+    <div class="panel-header">
+      <h4><b>{{task?.name}}</b></h4>
+    </div>
   </div>
 
   <div class="panel-body" *ngIf="task">
-    <form #TaskForm="ngForm">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="task-description" class="control-label">Description</label>
-          <textarea class="form-control" disabled rows="5" id="task-description" placeholder="Description"
-                    [(ngModel)]="task.description"
-                    name="task.description"></textarea>
+    <div class="row">
+      <form #TaskForm="ngForm">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="task-description" class="control-label">Description</label>
+            <textarea class="form-control" disabled rows="5" id="task-description" placeholder="Description"
+              [(ngModel)]="task.description" name="task.description"></textarea>
+          </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="task-note" class="control-label">Note</label>
-          <input type="text" disabled class="form-control" id="task-note" placeholder="Task has no Note"
-                 [(ngModel)]="task.note"
-                 name="task.note">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="task-note" class="control-label">Note</label>
+            <input type="text" disabled class="form-control" id="task-note" placeholder="Task has no Note" [(ngModel)]="task.note"
+              name="task.note">
+          </div>
+          <div class="form-group">
+            <label for="task-due" class="control-label">Due Date</label>
+            <input type="text" disabled class="form-control" id="task-due" placeholder="No deadline set" [(ngModel)]="task.due"
+              name="task.due">
+          </div>
         </div>
-        <div class="form-group">
-          <label for="task-due" class="control-label">Due Date</label>
-          <input type="text" disabled class="form-control" id="task-due" placeholder="No deadline set"
-                 [(ngModel)]="task.due"
-                 name="task.due">
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
+    <div class="row">
+      <iframe class="col-xs-12" [src]="link"></iframe>
+    </div>
+
   </div>
 </div>
-
-<iframe [src]="link"></iframe>
-
-

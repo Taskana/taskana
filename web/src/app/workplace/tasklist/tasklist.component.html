@@ -1,20 +1,37 @@
-<div class="taskana-task-list">
+<div class="footer-space-pagination-list">
   <div #wbToolbar>
-    <taskana-tasklist-toolbar (performSorting)="performSorting($event)" (performFilter)="performFilter($event)" (importSucessful)="refreshWorkbasketList()">
+    <taskana-tasklist-toolbar (performSorting)="performSorting($event)" (performFilter)="performFilter($event)"
+      (importSucessful)="refreshWorkbasketList()">
     </taskana-tasklist-toolbar>
   </div>
-  <div *ngIf="!requestInProgress" class="footer-space-task">
+  <div *ngIf="!requestInProgress">
     <div *ngIf="(tasks && tasks.length > 0); else empty_list">
       <ul #taskList id="task-list-container" class="list-group">
         <li class="list-group-item" *ngFor="let task of tasks" [class.active]="task.taskId == selectedId" type="text"
           (click)="selectTask(task.taskId)">
           <div class="row">
-            <dl class="col-xs-10">
-              <dt data-toggle="tooltip" title="{{task.name}}">{{task.name}}</dt>
-              <dd data-toggle="tooltip" title="{{task.owner}}">Owner: {{task.owner}} &nbsp;</dd>
-              <dd data-toggle="tooltip" title="{{task.priority}}">Priority: {{task.priority}} &nbsp;</dd>
-              <dd data-toggle="tooltip" title="{{task.state}}">State: {{task.state}} &nbsp;</dd>
+            <dl class="col-xs-2">
+              <span data-toggle="tooltip" class="badge" [ngClass]="{
+                'badge-red': task.priority <=5,
+                'badge-orange': (task.priority > 5 && task.priority <=15),
+                'badge-green': task.priority > 15}"
+                title="{{task.priority}}">{{task.priority}}</span>
             </dl>
+            <dl class="col-xs-8">
+              <dt>
+                <span data-toggle="tooltip" title="{{task.name}}">{{task.name}}</span>
+                <i *ngIf="task.owner" data-toggle="tooltip" title="{{task.owner}}">, {{task.owner}}</i>
+              </dt>
+            </dl>
+          </div>
+          <div class="row">
+            <dl class="col-xs-3 col-xs-offset-2">
+              <dd data-toggle="tooltip" title="{{task.state}}">{{task.state}}</dd>
+            </dl>
+            <dl class="pull-right padding-right">
+              <i data-toggle="tooltip" title="{{task.due}}">Due: {{displayDate(task.due)}}</i>
+            </dl>
+
           </div>
         </li>
       </ul>
@@ -26,6 +43,6 @@
       </div>
     </ng-template>
   </div>
-  <taskana-pagination *ngIf="tasks && tasks.length > 0" [(page)]="page" [type]="type" (changePage)="changePage($event)"></taskana-pagination>
 </div>
+<taskana-pagination *ngIf="tasks && tasks.length > 0" [(page)]="tasksPageInformation" [type]="type" (changePage)="changePage($event)"></taskana-pagination>
 <taskana-code></taskana-code>

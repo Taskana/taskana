@@ -96,7 +96,7 @@ export class WorkbasketInformationComponent
     ]);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.workbasketClone = { ...this.workbasket };
@@ -138,7 +138,7 @@ export class WorkbasketInformationComponent
     this.removeConfirmationService.setRemoveConfirmation(
       this.onRemoveConfirmed.bind(this),
       `You are going to delete workbasket: ${
-        this.workbasket.key
+      this.workbasket.key
       }. Can you confirm this action?`
     );
   }
@@ -162,7 +162,7 @@ export class WorkbasketInformationComponent
             new AlertModel(
               AlertType.SUCCESS,
               `DistributionTarget for workbasketID: ${
-                this.workbasket.workbasketId
+              this.workbasket.workbasketId
               } was removed successfully`
             )
           );
@@ -171,7 +171,7 @@ export class WorkbasketInformationComponent
           this.errorModalService.triggerError(
             new ErrorModel(
               `There was an error removing distribution target for ${
-                this.workbasket.workbasketId
+              this.workbasket.workbasketId
               }.`,
               error
             )
@@ -281,7 +281,7 @@ export class WorkbasketInformationComponent
           if (response) {
             this.errorModalService.triggerError(
               new ErrorModel('There was an error marking workbasket for deletion',
-              'It not possible to mark the workbasket for deletion, It has been deleted.')
+                'It not possible to mark the workbasket for deletion, It has been deleted.')
             );
           } else {
             this.alertService.triggerAlert(

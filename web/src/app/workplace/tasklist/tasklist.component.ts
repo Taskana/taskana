@@ -1,18 +1,19 @@
-import {Component, OnDestroy, OnInit, ViewChild, ElementRef} from '@angular/core';
-import {Task} from 'app/workplace/models/task';
-import {ActivatedRoute, Router} from '@angular/router';
-import {TaskService} from 'app/workplace/services/task.service';
-import {Subscription} from 'rxjs';
-import {SortingModel} from 'app/models/sorting';
-import {Workbasket} from 'app/models/workbasket';
-import {FilterModel} from 'app/models/filter';
-import {AlertService} from 'app/services/alert/alert.service';
-import {AlertModel, AlertType} from 'app/models/alert';
-import {WorkplaceService} from 'app/workplace/services/workplace.service';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Task } from 'app/workplace/models/task';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TaskService } from 'app/workplace/services/task.service';
+import { Subscription } from 'rxjs';
+import { SortingModel } from 'app/models/sorting';
+import { Workbasket } from 'app/models/workbasket';
+import { FilterModel } from 'app/models/filter';
+import { AlertService } from 'app/services/alert/alert.service';
+import { AlertModel, AlertType } from 'app/models/alert';
+import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { Page } from 'app/models/page';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Orientation } from 'app/models/orientation';
+import { Page } from 'app/models/page';
+import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 @Component({
   selector: 'taskana-task-list',
@@ -22,10 +23,7 @@ import { Orientation } from 'app/models/orientation';
 export class TasklistComponent implements OnInit, OnDestroy {
 
   tasks: Task[];
-
-  page: Page;
-  pageSelected = 1;
-  pageSize = 6;
+  tasksPageInformation: Page;
   type = 'tasks';
   currentBasket: Workbasket;
   selectedId = '';
@@ -50,11 +48,11 @@ export class TasklistComponent implements OnInit, OnDestroy {
   private orientationSubscription: Subscription;
 
   constructor(private router: Router,
-              private route: ActivatedRoute,
-              private taskService: TaskService,
-              private workplaceService: WorkplaceService,
-              private alertService: AlertService,
-              private orientationService: OrientationService) {
+    private route: ActivatedRoute,
+    private taskService: TaskService,
+    private workplaceService: WorkplaceService,
+    private alertService: AlertService,
+    private orientationService: OrientationService) {
     this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe(task => {
       for (let i = 0; i < this.tasks.length; i++) {
         if (this.tasks[i].taskId === task.taskId) {
@@ -90,9 +88,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
         if (!task) {
           this.selectedId = undefined;
         }
-    });
-    TaskanaQueryParameters.page = this.pageSelected;
-    TaskanaQueryParameters.pageSize = this.pageSize;
+      });
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
       this.refreshWorkbasketList();
     })
@@ -100,7 +96,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
 
   selectTask(taskId: string) {
     this.selectedId = taskId;
-    this.router.navigate([{outlets: {detail: `taskdetail/${this.selectedId}`}}], {relativeTo: this.route});
+    this.router.navigate([{ outlets: { detail: `taskdetail/${this.selectedId}` } }], { relativeTo: this.route });
   }
 
   performSorting(sort: SortingModel) {
@@ -126,7 +122,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
   calculateHeightCard() {
     if (this.toolbarElement && this.currentBasket) {
       const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
-      const cardHeight = 95;
+      const cardHeight = 53;
       const unusedHeight = 140;
       const totalHeight = window.innerHeight;
       const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
@@ -152,11 +148,13 @@ export class TasklistComponent implements OnInit, OnDestroy {
             this.tasks = [];
             this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'The selected Workbasket is empty!'));
           }
-          if (tasks.page) {
-            this.page = tasks.page;
-          }
+          this.tasksPageInformation = tasks.page;
         });
     }
+  }
+
+  displayDate(date: string): string {
+    return TaskanaDate.getDateToDisplay(date);
   }
 
   ngOnDestroy(): void {

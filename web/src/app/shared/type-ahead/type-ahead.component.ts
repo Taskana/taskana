@@ -41,6 +41,9 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   @Input()
   disable;
 
+  @Input()
+  isRequired = true;
+
   @Output()
   onSelect = new EventEmitter<AccessIdDefinition>();
 

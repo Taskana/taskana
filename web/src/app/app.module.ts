@@ -35,8 +35,6 @@ import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine
 import { RemoveConfirmationService } from './services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
 
-
-
 /**
  * Components
  */
