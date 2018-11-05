@@ -26,6 +26,7 @@ import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.assembler.ClassificationResourceAssembler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,21 +65,11 @@ public class ClassificationDefinitionController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<String> importClassifications(
         @RequestBody List<ClassificationResource> classificationResources) throws InvalidArgumentException {
-        Map<String, String> systemIds = classificationService.createClassificationQuery()
-            .list()
-            .stream()
-            .collect(Collectors.toMap(i -> i.getKey() + "|" + i.getDomain(), ClassificationSummary::getId));
 
         try {
-            for (ClassificationResource classificationResource : classificationResources) {
-                if (systemIds.containsKey(classificationResource.key + "|" + classificationResource.domain)) {
-                    classificationService.updateClassification(classificationResourceAssembler.toModel(classificationResource));
-
-                } else {
-                    classificationResource.classificationId = null;
-                    classificationService.createClassification(classificationResourceAssembler.toModel(classificationResource));
-                }
-            }
+            Map<String, String[]> childToParentRelation = this.getChildToParentRelation(classificationResources);
+            Map<String, String> idMapping = this.insertClassificationsWithoutParentChildAndNewIds(classificationResources);
+            this.insertParentChildRelations(childToParentRelation, idMapping);
         } catch (NotAuthorizedException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -90,9 +81,59 @@ public class ClassificationDefinitionController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
             // TODO why is this occuring???
         } catch (ConcurrencyException e) {
+
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
 
+    }
+
+    private Map<String, String[]> getChildToParentRelation(List<ClassificationResource> classificationResources) throws InvalidArgumentException {
+        Map<String, String[]> childAndParent = new HashMap<>();
+        for (ClassificationResource cl : classificationResources) {
+            if (cl.getParentId() != null || cl.getParentKey() != null) {
+                String[] parentValues = new String[2];
+                parentValues[0] = cl.getParentId();
+                parentValues[1] = cl.getParentKey();
+                childAndParent.put(cl.classificationId, parentValues);
+            }
+        }
+        return childAndParent;
+    }
+
+    private Map<String, String> insertClassificationsWithoutParentChildAndNewIds(List<ClassificationResource> classificationResources)
+            throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException, DomainNotFoundException,
+            ClassificationAlreadyExistException {
+        Map<String, String> idMapping = new HashMap<>();
+        Map<String, String> systemIds = classificationService.createClassificationQuery()
+            .list()
+            .stream()
+            .collect(Collectors.toMap(i -> i.getKey() + "|" + i.getDomain(), ClassificationSummary::getId));
+
+        for (ClassificationResource classificationResource : classificationResources) {
+            String oldId = classificationResource.getClassificationId();
+            String newId;
+            classificationResource.setParentId(null);
+            classificationResource.setParentKey(null);
+            if (systemIds.containsKey(classificationResource.key + "|" + classificationResource.domain)) {
+                newId = classificationService.updateClassification(classificationResourceAssembler.toModel(classificationResource)).getId();
+            } else {
+                classificationResource.classificationId = null;
+                newId = classificationService.createClassification(classificationResourceAssembler.toModel(classificationResource)).getId();
+            }
+            idMapping.put(oldId, newId);
+        }
+        return idMapping;
+    }
+
+    private void insertParentChildRelations(Map<String, String[]> childToParentRelation, Map<String, String> idMapping)
+            throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException {
+        for (String childId : childToParentRelation.keySet()) {
+            Classification childClassification = classificationService.getClassification(idMapping.get(childId));
+            String[] parentValues = childToParentRelation.get(childId);
+            childClassification.setParentId(idMapping.get(parentValues[0]));
+            childClassification.setParentKey(parentValues[1]);
+            classificationService.updateClassification(childClassification);
+        }
     }
 }
