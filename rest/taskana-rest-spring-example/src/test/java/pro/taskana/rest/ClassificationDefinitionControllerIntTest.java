@@ -1,0 +1,394 @@
+package pro.taskana.rest;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.hal.Jackson2HalModule;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import pro.taskana.rest.resource.ClassificationResource;
+import pro.taskana.rest.resource.ClassificationSummaryResource;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
+    "devMode=true"})
+public class ClassificationDefinitionControllerIntTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
+    String server = "http://127.0.0.1:";
+    RestTemplate template;
+    HttpEntity<String> request;
+    HttpHeaders headers = new HttpHeaders();
+    ObjectMapper objMapper = new ObjectMapper();
+    @LocalServerPort
+    int port;
+
+    @Autowired
+    Environment env;
+
+    @Before
+    public void before() {
+    	LOGGER.debug("before");
+        template = getRestTemplate();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        request = new HttpEntity<String>(headers);
+    }
+
+	@Test
+    public void testExportClassifications() {
+        ResponseEntity<ClassificationResource[]> response = template.exchange(
+        		server + port + "/v1/classification-definitions?domain=DOMAIN_B",
+        		HttpMethod.GET, request, new ParameterizedTypeReference<ClassificationResource[]>() {
+				}
+                );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().length >= 5);
+        assertTrue(response.getBody().length <= 7);
+    }
+
+	@Test
+	public void testExportClassificationsFromWrongDomain() {
+        ResponseEntity<ClassificationResource[]> response = template.exchange(
+        		server + port + "/v1/classification-definitions?domain=ADdfe",
+        		HttpMethod.GET, request, new ParameterizedTypeReference<ClassificationResource[]>() {
+				}
+                );
+        assertEquals(0, response.getBody().length);
+	}
+
+    @Test
+    public void testImportFilledClassification() throws IOException {
+        ClassificationResource classification = new ClassificationResource();
+        classification.setClassificationId("classificationId_");
+        classification.setKey("key drelf");
+        classification.setParentId("CLI:100000000000000000000000000000000016");
+        classification.setParentKey("T2000");
+        classification.setCategory("MANUAL");
+        classification.setType("TASK");
+        classification.setDomain("DOMAIN_A");
+        classification.setIsValidInDomain(true);
+        classification.setCreated("2016-05-12T10:12:12.12Z");
+        classification.setModified("2018-05-12T10:12:12.12Z");
+        classification.setName("name");
+        classification.setDescription("description");
+        classification.setPriority(4);
+        classification.setServiceLevel("P2D");
+        classification.setApplicationEntryPoint("entry1");
+        classification.setCustom1("custom");
+        classification.setCustom2("custom");
+        classification.setCustom3("custom");
+        classification.setCustom4("custom");
+        classification.setCustom5("custom");
+        classification.setCustom6("custom");
+        classification.setCustom7("custom");
+        classification.setCustom8("custom");
+
+        List<String> clList = new ArrayList<>();
+        clList.add(objMapper.writeValueAsString(classification));
+
+        ResponseEntity<String> response = importRequest(clList);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testFailureWhenKeyIsMissing() throws IOException {
+        ClassificationResource classification = new ClassificationResource();
+        classification.setDomain("DOMAIN_A");
+        List<String> clList = new ArrayList<>();
+        clList.add(objMapper.writeValueAsString(classification));
+
+        try {
+            importRequest(clList);
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
+    }
+
+    @Test
+    public void testFailureWhenDomainIsMissing() throws IOException {
+        ClassificationResource classification = new ClassificationResource();
+        classification.setKey("one");
+        List<String> clList = new ArrayList<>();
+        clList.add(objMapper.writeValueAsString(classification));
+
+        try {
+            importRequest(clList);
+        } catch(HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
+    }
+
+    @Test
+    public void testFailureWhenUpdatingTypeOfExistingClassification() throws IOException {
+        ClassificationSummaryResource classification = this.getClassificationWithKeyAndDomain("T6310", "");
+        classification.setType("DOCUMENT");
+        List<String> clList = new ArrayList<>();
+        clList.add(objMapper.writeValueAsString(classification));
+
+        try {
+            importRequest(clList);
+        } catch(HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
+    }
+
+    @Test
+    public void testImportMultipleClassifications() throws IOException, InterruptedException {
+        ClassificationResource classification1 = this.createClassification("id1", "ImportKey1", "DOMAIN_A", null, null);
+        String c1 = objMapper.writeValueAsString(classification1);
+        
+        ClassificationResource classification2 = this.createClassification("id2", "ImportKey2", "DOMAIN_A", "CLI:100000000000000000000000000000000016", "T2000");
+        classification2.setCategory("MANUAL");
+        classification2.setType("TASK");
+        classification2.setIsValidInDomain(true);
+        classification2.setCreated("2016-05-12T10:12:12.12Z");
+        classification2.setModified("2018-05-12T10:12:12.12Z");
+        classification2.setName("name");
+        classification2.setDescription("description");
+        classification2.setPriority(4);
+        classification2.setServiceLevel("P2D");
+        classification2.setApplicationEntryPoint("entry1");
+        String c2 = objMapper.writeValueAsString(classification2);
+
+        List<String> clList = new ArrayList<>();
+        clList.add(c1);
+        clList.add(c2);
+
+        ResponseEntity<String> response = importRequest(clList);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testImportDuplicateClassification() throws IOException, InterruptedException {
+        ClassificationResource classification1 = new ClassificationResource();
+        classification1.setClassificationId("id1");
+        classification1.setKey("ImportKey3");
+        classification1.setDomain("DOMAIN_A");
+        String c1 = objMapper.writeValueAsString(classification1);
+
+        List<String> clList = new ArrayList<>();
+        clList.add(c1);
+        clList.add(c1);
+
+        try {
+            importRequest(clList);
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
+        }
+    }
+
+    @Test
+    public void testInsertExistingClassificationWithOlderTimestamp() throws IOException {
+        ClassificationSummaryResource existingClassification = getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
+        existingClassification.setName("first new Name");
+        List<String> clList = new ArrayList<>();
+        clList.add(objMapper.writeValueAsString(existingClassification));
+
+        ResponseEntity<String> response = importRequest(clList);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        
+        existingClassification.setName("second new Name");
+        clList = new ArrayList<>();
+        clList.add(objMapper.writeValueAsString(existingClassification));
+
+        response = importRequest(clList);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        
+        ClassificationSummaryResource testClassification = this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
+        assertEquals("second new Name", testClassification.getName());
+    }
+
+    @Test
+    public void testHookExistingChildToNewParent() throws IOException {
+        ClassificationResource newClassification = createClassification(
+            "new Classification", "newClass", "DOMAIN_A", null, "L11010");
+        ClassificationSummaryResource existingClassification = getClassificationWithKeyAndDomain("L110102", "DOMAIN_A");
+        existingClassification.setParentId("new Classification");
+        existingClassification.setParentKey("newClass");
+
+        String dfjjj = objMapper.writeValueAsString(existingClassification);
+        LOGGER.error("translation: {}", dfjjj);
+        LOGGER.error("other one: {}", objMapper.writeValueAsString(newClassification));
+        List<String> clList = new ArrayList<>();
+        clList.add(objMapper.writeValueAsString(existingClassification));
+        clList.add(objMapper.writeValueAsString(newClassification));
+
+        ResponseEntity<String> response = importRequest(clList);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        
+        ClassificationSummaryResource parentCl = getClassificationWithKeyAndDomain("L11010", "DOMAIN_A");
+        ClassificationSummaryResource testNewCl = getClassificationWithKeyAndDomain("newClass", "DOMAIN_A");
+        ClassificationSummaryResource testExistingCl = getClassificationWithKeyAndDomain("L110102", "DOMAIN_A");
+
+        assertNotNull(parentCl);
+        assertNotNull(testNewCl);
+        assertNotNull(testExistingCl);
+        assertEquals(testNewCl.getClassificationId(), testExistingCl.getParentId());
+        assertEquals(parentCl.getClassificationId(), testNewCl.getParentId());
+    }
+
+    @Test
+    public void testImportParentAndChildClassification() throws IOException, InterruptedException {
+        ClassificationResource classification1 = this.createClassification("parentId", "ImportKey6", "DOMAIN_A", null, null);
+        String c1 = objMapper.writeValueAsString(classification1);
+        
+        ClassificationResource classification2 = this.createClassification("childId1", "ImportKey7", "DOMAIN_A", null, "ImportKey6");
+        String c21 = objMapper.writeValueAsString(classification2);
+        classification2 = this.createClassification("childId2", "ImportKey8", "DOMAIN_A", "parentId", null);
+        String c22 = objMapper.writeValueAsString(classification2);
+
+        ClassificationResource classification3 = this.createClassification("grandchildId1", "ImportKey9", "DOMAIN_A", "childId1", "ImportKey7");
+        String c31 = objMapper.writeValueAsString(classification3);
+        classification3 = this.createClassification("grandchild2", "ImportKey10", "DOMAIN_A", null, "ImportKey7");
+        String c32 = objMapper.writeValueAsString(classification3);
+
+        List<String> clList = new ArrayList<>();
+        clList.add(c31);
+        clList.add(c32);
+        clList.add(c21);
+        clList.add(c22);
+        clList.add(c1);
+
+        ResponseEntity<String> response = importRequest(clList);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        
+
+        ClassificationSummaryResource parentCl = getClassificationWithKeyAndDomain("ImportKey6", "DOMAIN_A");
+        ClassificationSummaryResource childCl = getClassificationWithKeyAndDomain("ImportKey7", "DOMAIN_A");
+        ClassificationSummaryResource grandchildCl = getClassificationWithKeyAndDomain("ImportKey9", "DOMAIN_A");
+
+        assertNotNull(parentCl);
+        assertNotNull(childCl);
+        assertNotNull(grandchildCl);
+        assertEquals(childCl.getClassificationId(), grandchildCl.getParentId());
+        assertEquals(parentCl.getClassificationId(), childCl.getParentId());
+    }
+
+    @Test
+    public void testImportParentAndChildClassificationWithKey() throws IOException, InterruptedException {
+        ClassificationResource classification1 = createClassification("parent", "ImportKey11", "DOMAIN_A", null, null);
+        classification1.setCustom1("parent is correct");
+        String parent = objMapper.writeValueAsString(classification1);
+        ClassificationResource classification2 = createClassification("wrongParent", "ImportKey11", "DOMAIN_B", null, null);
+        String wrongParent = objMapper.writeValueAsString(classification2);
+        ClassificationResource classification3 = createClassification("child", "ImportKey13", "DOMAIN_A", null, "ImportKey11");
+        String child = objMapper.writeValueAsString(classification3);
+
+        List<String> clList = new ArrayList<>();
+        clList.add(wrongParent);
+        clList.add(parent);
+        clList.add(child);
+
+        ResponseEntity<String> response = importRequest(clList);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        ClassificationSummaryResource rightParentCl = getClassificationWithKeyAndDomain("ImportKey11", "DOMAIN_A");
+        ClassificationSummaryResource wrongParentCl = getClassificationWithKeyAndDomain("ImportKey11", "DOMAIN_B");
+        ClassificationSummaryResource childCl = getClassificationWithKeyAndDomain("ImportKey13", "DOMAIN_A");
+
+        assertNotNull(rightParentCl);
+        assertNotNull(wrongParentCl);
+        assertNotNull(childCl);
+        assertEquals(rightParentCl.getClassificationId(), childCl.getParentId());
+        assertNotEquals(wrongParentCl.getClassificationId(), childCl.getParentId());
+    }
+
+    private ClassificationResource createClassification(String id, String key, String domain, String parentId, String parentKey) {
+        ClassificationResource classificationResource = new ClassificationResource();
+        classificationResource.setClassificationId(id);
+        classificationResource.setKey(key);
+        classificationResource.setDomain(domain);
+        classificationResource.setParentId(parentId);
+        classificationResource.setParentKey(parentKey);
+        return classificationResource;
+    }
+
+    private ClassificationSummaryResource getClassificationWithKeyAndDomain(String key, String domain) {
+        RestTemplate template = getRestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
+            "http://127.0.0.1:" + port + "/v1/classifications?key=" + key + "&domain=" + domain,
+            HttpMethod.GET,
+            request,
+            new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
+
+            });
+        return response.getBody().getContent().toArray(new ClassificationSummaryResource[1])[0];
+    }
+
+    private ResponseEntity<String> importRequest (List<String> clList) throws IOException {
+        File tmpFile = File.createTempFile("test", ".tmp");
+        FileWriter writer = new FileWriter(tmpFile);
+        writer.write(clList.toString());
+        writer.close(); 
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        body.add("file", new FileSystemResource(tmpFile));
+        
+        LOGGER.error("body: {}");
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        
+        String serverUrl = server + port + "/v1/classification-definitions";
+        
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.postForEntity(serverUrl, requestEntity, String.class);
+    }
+
+    /**
+     * Return a REST template which is capable of dealing with responses in HAL format
+     *
+     * @return RestTemplate
+     */
+    private RestTemplate getRestTemplate() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.registerModule(new Jackson2HalModule());
+
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/haljson,*/*"));
+        converter.setObjectMapper(mapper);
+
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
+        return template;
+    }
+}
