@@ -35,6 +35,7 @@
     "material-design-icons": "3.0.1",
     "ng2-charts": "1.6.0",
     "ngx-bootstrap": "3.0.1",
+    "ngx-infinite-scroll": "6.0.1",
     "node-sass": "4.9.2",
     "popper.js": "1.14.3",
     "rxjs": "6.2.2",

@@ -12,10 +12,13 @@
 			<span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
 		</h4>
 	</div>
-	<div class="panel-body">
-		<taskana-dual-list id="dual-list-Left" header="Available distribution targets" [(distributionTargets)]="distributionTargetsLeft"
-		 [distributionTargetsSelected]="distributionTargetsSelected" (performDualListFilter)="performFilter($event)" [side]="side.LEFT"
-		 [requestInProgress]="requestInProgressLeft" class="dual-list list-left col-xs-12 col-md-5-6 container"></taskana-dual-list>
+	<div #panelBody class="panel-body">
+    <div class="dual-list list-left col-xs-12 col-md-5-6 container">
+      <taskana-dual-list #dualListLeft id="dual-list-Left" header="Available distribution targets" [(distributionTargets)]="distributionTargetsLeft"
+      [distributionTargetsSelected]="distributionTargetsSelected" (performDualListFilter)="performFilter($event)" (scrolling)="onScroll($event)" [side]="side.LEFT"
+      [requestInProgress]="requestInProgressLeft" [loadingItems]="loadingItems" [(allSelected)]="selectAllLeft"></taskana-dual-list>
+    </div>
+
 		<div class="hidden-xs hidden-sm col-md-1 list-arrows text-center button-margin-top">
 			<button (click)="moveDistributionTargets(side.LEFT)" [disabled]="requestInProgressLeft || requestInProgressRight"
 			 class="btn btn-default move-right" data-toggle="tooltip" title="Move to selected distribution targets">
@@ -35,9 +38,11 @@
 			 class="btn btn-default move-up" data-toggle="tooltip" title="Move to available distribution targets">
 			 <span class="material-icons md-20 blue">expand_less</span>
 			</button>
-		</div>
-		<taskana-dual-list id="dual-list-right" header="Selected distribution targets" [(distributionTargets)]="distributionTargetsRight"
-		 [distributionTargetsSelected]="distributionTargetsSelected" (performDualListFilter)="performFilter($event)"
-		 [requestInProgress]="requestInProgressRight" [side]="side.RIGHT" class="dual-list list-right col-xs-12 col-md-5-6 container"></taskana-dual-list>
+    </div>
+    <div class="dual-list list-right col-xs-12 col-md-5-6 container">
+      <taskana-dual-list #dualListRight id="dual-list-right" header="Selected distribution targets" [(distributionTargets)]="distributionTargetsRight"
+      [distributionTargetsSelected]="distributionTargetsSelected" (performDualListFilter)="performFilter($event)" [requestInProgress]="requestInProgressRight"
+      [side]="side.RIGHT" [(allSelected)]="selectAllRight"></taskana-dual-list>
+    </div>
 	</div>
 </div>

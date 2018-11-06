@@ -27,6 +27,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   pageSelected = 1;
   pageSize = 9;
   type = 'workbaskets';
+  cards: number = this.pageSize;
 
   sort: SortingModel = new SortingModel();
   filterBy: FilterModel = new FilterModel({name: '', owner: '', type: '', description: '', key: ''});
@@ -62,7 +63,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     });
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
       this.refreshWorkbasketList();
-    })
+    });
   }
 
   selectWorkbasket(id: string) {
@@ -86,16 +87,13 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   refreshWorkbasketList() {
-    const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
-    const cardHeight = 72;
-    const unusedHeight = 145;
-    const totalHeight = window.innerHeight;
-    const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
-    cards > 0 ? TaskanaQueryParameters.pageSize = cards : TaskanaQueryParameters.pageSize = 1;
+    this.cards = this.orientationService.calculateNumberItemsList(
+      window.innerHeight, 72, 170 + this.toolbarElement.nativeElement.offsetHeight, false);
     this.performRequest();
   }
 
   private performRequest(): void {
+    TaskanaQueryParameters.pageSize = this.cards;
     this.requestInProgress = true;
     this.workbaskets = [];
     this.workbasketServiceSubscription = this.workbasketService.getWorkBasketsSummary(

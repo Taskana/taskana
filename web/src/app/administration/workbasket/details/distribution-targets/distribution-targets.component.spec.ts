@@ -22,6 +22,7 @@ import { DualListComponent } from './dual-list/dual-list.component';
 import { DistributionTargetsComponent, Side } from './distribution-targets.component';
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 import { configureTests } from 'app/app.test.configuration';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 describe('DistributionTargetsComponent', () => {
 	let component: DistributionTargetsComponent;
@@ -33,7 +34,7 @@ describe('DistributionTargetsComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-				imports: [AngularSvgIconModule, HttpClientModule],
+				imports: [AngularSvgIconModule, HttpClientModule, InfiniteScrollModule],
 				declarations: [DistributionTargetsComponent, DualListComponent],
 				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
 				]
@@ -72,10 +73,10 @@ describe('DistributionTargetsComponent', () => {
 		expect(component).toBeTruthy();
 	});
 
-
 	it('should clone distribution target selected on init', () => {
 		expect(component.distributionTargetsClone).toBeDefined();
-	});
+  });
+
 	it('should clone distribution target left and distribution target right lists on init', () => {
 		expect(component.distributionTargetsLeft).toBeDefined();
 		expect(component.distributionTargetsRight).toBeDefined();
@@ -91,7 +92,8 @@ describe('DistributionTargetsComponent', () => {
 			})
 		})
 		expect(repeteadElemens).toBeFalsy();
-	});
+  });
+
 	it('should filter left list and keep selected elements as selected', () => {
 		component.performFilter({ filterBy: new FilterModel({
       name: 'someName', owner: 'someOwner', description: 'someDescription', key: 'someKey'}), side: Side.LEFT });
@@ -102,7 +104,8 @@ describe('DistributionTargetsComponent', () => {
 		expect(component.distributionTargetsLeft[0].workbasketId).toBe('id1');
 		expect(component.distributionTargetsRight.length).toBe(1);
 		expect(component.distributionTargetsRight[0].workbasketId).toBe('id2');
-	});
+  });
+
 	it('should reset distribution target and distribution target selected on reset', () => {
 		component.distributionTargetsLeft.push(
 			new WorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })));
