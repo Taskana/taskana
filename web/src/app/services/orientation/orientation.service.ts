@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Orientation } from 'app/models/orientation';
 import { BehaviorSubject ,  Observable } from 'rxjs';
+import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 
 @Injectable()
 export class OrientationService {
@@ -31,6 +32,13 @@ export class OrientationService {
     if (this.currentOrientation) {
       this.orientation.next(orientation);
     }
+  }
+
+  calculateNumberItemsList(heightContainer: number, cardHeight: number, unusedHeight: number, doubleList = false): number {
+    let cards = Math.round((heightContainer - unusedHeight) / cardHeight);
+    if (doubleList && window.innerWidth < 992) { cards = Math.floor(cards / 2); }
+    cards > 0 ? TaskanaQueryParameters.pageSize = cards : TaskanaQueryParameters.pageSize = 1;
+    return cards;
   }
 
   private detectOrientation(): Orientation {

@@ -1,27 +1,27 @@
 <div id="dual-list-Left" class="dual-list list-left col-xs-12 col-md-5-6 container">
-	<div class="row">
+	<div class="row header">
 		<div class="col-xs-2">
-			<button (click)="toggleDtl = !toggleDtl; selectAll(toggleDtl);" class="btn btn-default no-style" title="Toggle select all">
-				<span class="material-icons md-20 blue ">{{toggleDtl ? 'check_box': 'check_box_outline_blank'}}</span>
+			<button (click)="allSelected = !allSelected; selectAll(allSelected);" class="btn btn-default btn-sm no-style" title="Select all">
+				<span class="material-icons md-20 blue ">{{allSelected ? 'check_box': 'check_box_outline_blank'}}</span>
 			</button>
 		</div>
 		<div class="col-xs-7">
 			<h5>{{header}}</h5>
 		</div>
 		<div class="pull-right">
-			<button class="btn btn-default" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState"
+			<button class="btn btn-default btn-sm" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="changeToolbarState(!toolbarState)"
 			 data-toggle="tooltip" title="Filter">
 				<span class="material-icons md-20 blue ">{{!toolbarState? 'search' : 'expand_less'}}</span>
 			</button>
 		</div>
 	</div>
-	<div [@toggleDown]="toolbarState" class="row">
-		<taskana-filter class="col-xs-12" (performFilter)="performAvailableFilter($event)"></taskana-filter>
+	<div [@toggleDown]="toolbarState">
+		<taskana-filter (performFilter)="performAvailableFilter($event)"></taskana-filter>
 	</div>
 	<taskana-spinner [isRunning]="requestInProgress" positionClass="centered-spinner" class="floating"></taskana-spinner>
-	<div>
+  <div infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()" [scrollWindow]="false" class="infinite-scroll">
 		<ul class="list-group">
-			<li class="list-group-item" *ngFor="let distributionTarget of distributionTargets  | selectWorkbaskets: distributionTargetsSelected: side"
+			<li class="list-group-item" *ngFor="let distributionTarget of distributionTargets | selectWorkbaskets: distributionTargetsSelected: side"
 			 [class.selected]="distributionTarget.selected" type="text" (click)="distributionTarget.selected = !distributionTarget.selected">
 				<div class="row">
 					<dl class="col-xs-1">
@@ -35,7 +35,10 @@
 						<dd>{{distributionTarget.owner}} &nbsp;</dd>
 					</dl>
 				</div>
-			</li>
+      </li>
+      <li class="list-group-item" *ngIf="loadingItems">
+        <taskana-spinner [isRunning]="loadingItems" positionClass="centered-spinner" class="floating"></taskana-spinner>
+      </li>
 		</ul>
 	</div>
 </div>

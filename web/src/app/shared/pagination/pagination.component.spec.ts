@@ -97,19 +97,22 @@ describe('PaginationComponent', () => {
 	it('should getPagesTextToShow return 7 of 13 with size < totalElements', () => {
     component.page = new Page(7, 13, 3, 2);
     component.type = 'workbaskets';
-		expect(component.getPagesTextToShow()).toBe('7 of 13 workbaskets');
+    component.numberOfItems = 5;
+		expect(component.getPagesTextToShow()).toBe(component.numberOfItems.toString().concat(' of 13 workbaskets'));
 	});
 
 	it('should getPagesTextToShow return 6 of 6 with size > totalElements', () => {
     component.page = new Page(7, 6, 3, 2);
     component.type = 'tasks';
-		expect(component.getPagesTextToShow()).toBe('6 of 6 tasks');
+    component.numberOfItems = 6;
+		expect(component.getPagesTextToShow()).toBe(component.numberOfItems.toString().concat(' of 6 tasks'));
 	});
 
 	it('should getPagesTextToShow return  of  with totalElements = 0', () => {
     component.page = new Page(7, 0, 0, 0);
     component.type = 'workbaskets';
-		expect(component.getPagesTextToShow()).toBe('0 of 0 workbaskets');
+    component.numberOfItems = 0;
+		expect(component.getPagesTextToShow()).toBe(component.numberOfItems.toString().concat(' of 0 workbaskets'));
 	});
 
 });

@@ -2,7 +2,7 @@
   <div *ngIf="filterTypeIsWorkbasket(); else tasktype">
     <div class="row">
       <div class="dropdown col-xs-2">
-        <button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdownMenufilter" data-toggle="dropdown"
+        <button class="btn btn-default btn-sm" data-toggle="dropdown" type="button" id="dropdownMenufilter" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="true">
           <taskana-icon-type [type]="filter.filterParams?.type"></taskana-icon-type>
         </button>
@@ -16,30 +16,30 @@
         </ul>
       </div>
       <div class="col-xs-4">
-        <input type="text" [(ngModel)]="filter.filterParams.name" (keyup.enter)="search()" class="form-control" id="display-name-filter"
+        <input type="text" [(ngModel)]="filter.filterParams.name" (keyup.enter)="search()" class="form-control input-sm" id="display-name-filter"
           placeholder="Filter name">
       </div>
       <div class="col-xs-4">
-        <input type="text" [(ngModel)]="filter.filterParams.key" (keyup.enter)="search()" class="form-control" id="display-key-filter"
+        <input type="text" [(ngModel)]="filter.filterParams.key" (keyup.enter)="search()" class="form-control input-sm" id="display-key-filter"
           placeholder="Filter key">
       </div>
-      <button (click)="clear(); search()" type="button" class="btn btn-default pull-right margin-right"
+      <button (click)="clear(); search()" type="button" class="btn btn-default btn-sm pull-right margin-right"
         data-toggle="tooltip" title="Clear">
         <span class="material-icons md-20 blue">clear</span>
       </button>
     </div>
     <div class="row">
       <div class="col-xs-8 col-xs-offset-2">
-        <input type="text" [(ngModel)]="filter.filterParams.description" (keyup.enter)="search()" class="form-control"
+        <input type="text" [(ngModel)]="filter.filterParams.description" (keyup.enter)="search()" class="form-control input-sm"
           id="display-name-description" placeholder="Filter description">
       </div>
     </div>
     <div class="row">
       <div class="col-xs-8 col-xs-offset-2">
-        <input type="text" [(ngModel)]="filter.filterParams.owner" (keyup.enter)="search()" class="form-control" id="display-name-owner"
+        <input type="text" [(ngModel)]="filter.filterParams.owner" (keyup.enter)="search()" class="form-control input-sm" id="display-name-owner"
           placeholder="Filter owner">
       </div>
-      <button (click)="search()" type="button" class="btn btn-default pull-right margin-right" data-toggle="tooltip"
+      <button (click)="search()" type="button" class="btn btn-default btn-sm pull-right margin-right" data-toggle="tooltip"
         title="Search">
         <span class="material-icons md-20 blue ">search</span>
       </button>
