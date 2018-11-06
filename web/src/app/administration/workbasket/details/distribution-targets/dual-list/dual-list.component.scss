@@ -21,7 +21,7 @@ $selected-item: #e3f3f5;
     & >.list-group {
         margin-bottom: 0px;
         margin-top: 0px;
-        
+
     }
     & > .list-group > li {
         border-left: none;
@@ -30,12 +30,12 @@ $selected-item: #e3f3f5;
 
     overflow-x: hidden;
     overflow-y: auto;
-   
+
     @media screen and (max-width: 991px){
-        max-height: 33vh;   
+        max-height: 33vh;
     }
     max-height: 75vh;
-    
+    margin-bottom: 10px;
 }
 
 .list-group {

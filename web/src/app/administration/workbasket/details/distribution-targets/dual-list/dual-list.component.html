@@ -39,3 +39,4 @@
 		</ul>
 	</div>
 </div>
+<taskana-pagination *ngIf="this.page && this.page.totalElements > 0" [(page)]="page" [type]="type" (changePage)="changePage($event)"></taskana-pagination>

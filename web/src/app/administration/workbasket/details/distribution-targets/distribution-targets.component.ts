@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, OnDestroy, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/models/workbasket';
@@ -14,6 +14,8 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
+import { Page } from 'app/models/page';
 
 export enum Side {
 	LEFT,
@@ -50,7 +52,14 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 	requestInProgressRight = false;
 	modalErrorMessage: string;
 	side = Side;
-	private initialized = false;
+  private initialized = false;
+
+  pageRight: Page;
+  pageLeft: Page;
+  cards: number;
+
+  @ViewChild('panelBody')
+  private panelBody: ElementRef;
 
 	constructor(
 		private workbasketService: WorkbasketService,
@@ -80,16 +89,10 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 					this.distributionTargetsSelectedResource = distributionTargetsSelectedResource;
 					this.distributionTargetsSelected = distributionTargetsSelectedResource._embedded ?
 						distributionTargetsSelectedResource._embedded.distributionTargets : [];
-					this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
-					this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary(true,
-						undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-						undefined, undefined, undefined, true).subscribe(
-							(distributionTargetsAvailable: WorkbasketSummaryResource) => {
-								this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-								this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-								this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-								this.onRequest(undefined, true);
-							});
+          this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
+          TaskanaQueryParameters.page = 1;
+          this.calculateNumberItemsList();
+          this.getWorkbaskets();
 				});
 
 		this.savingDistributionTargetsSubscription = this.savingWorkbaskets.triggeredDistributionTargetsSaving()
@@ -100,19 +103,80 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 				}
 			});
 
-	}
+  }
+
+  calculateNumberItemsList() {
+    if (this.panelBody) {
+      const panelBody = this.panelBody.nativeElement.offsetHeight;
+      const cardHeight = 75;
+      const unusedHeight = 200;
+      this.cards = Math.round(((panelBody - unusedHeight) / cardHeight));
+      this.cards > 0 ? TaskanaQueryParameters.pageSize = this.cards : TaskanaQueryParameters.pageSize = 1;
+    }
+  }
+
+  /**
+   * Get the workbasket
+   * @param side false = left list, true = right list
+   */
+  getWorkbaskets(side?: Side) {
+    if (side === this.side.LEFT) {
+      this.distributionTargetsLeft = [];
+    } else if (side === this.side.RIGHT) {
+      this.distributionTargetsRight = [];
+    } else {
+      this.distributionTargetsLeft = [];
+      this.distributionTargetsRight = [];
+      this.distributionTargetsClone = [];
+    }
+    TaskanaQueryParameters.pageSize = this.cards + this.distributionTargetsSelected.length;
+    this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary(true,
+      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+      undefined, undefined, undefined, false).subscribe(
+        (distributionTargetsAvailable: WorkbasketSummaryResource) => {
+          if (side === this.side.LEFT) {
+            this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+          } else if (side === this.side.RIGHT) {
+            this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+          } else {
+            this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+            this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+            this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+          }
+          this.onRequest(undefined, true);
+          if (!this.pageLeft || !this.pageRight) {
+            this.calculatePages(distributionTargetsAvailable);
+          }
+        });
+  }
+
+  calculatePages(distributionTargetsAvailable) {
+    this.pageLeft = new Page(this.cards,
+      (distributionTargetsAvailable.page.totalElements - this.distributionTargetsSelected.length),
+      Math.ceil(
+        (distributionTargetsAvailable.page.totalElements - this.distributionTargetsSelected.length) / this.cards)
+      , distributionTargetsAvailable.page.number);
+    this.pageRight = new Page(this.cards,
+      this.distributionTargetsSelected.length,
+      Math.ceil(
+        this.distributionTargetsSelected.length / this.cards)
+      , TaskanaQueryParameters.page);
+  }
 
 	moveDistributionTargets(side: number) {
 		if (side === Side.LEFT) {
 			const itemsSelected = this.getSelectedItems(this.distributionTargetsLeft, this.distributionTargetsRight)
 			this.distributionTargetsSelected = this.distributionTargetsSelected.concat(itemsSelected);
-			this.distributionTargetsRight = this.distributionTargetsRight.concat(itemsSelected);
+      this.distributionTargetsRight = this.distributionTargetsRight.concat(itemsSelected);
 		} else {
 			const itemsSelected = this.getSelectedItems(this.distributionTargetsRight, this.distributionTargetsLeft);
 			this.distributionTargetsSelected = this.removeSeletedItems(this.distributionTargetsSelected, itemsSelected);
 			this.distributionTargetsRight = this.removeSeletedItems(this.distributionTargetsRight, itemsSelected);
-			this.distributionTargetsLeft = this.distributionTargetsLeft.concat(itemsSelected);
-		}
+      this.distributionTargetsLeft = this.distributionTargetsLeft.concat(itemsSelected);
+    }
+    this.pageLeft = undefined;
+    this.pageRight = undefined;
+    this.getWorkbaskets();
 	}
 
 	onSave() {
@@ -204,4 +268,3 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 	}
 
 }
-

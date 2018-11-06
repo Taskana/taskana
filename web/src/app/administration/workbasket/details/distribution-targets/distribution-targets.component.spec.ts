@@ -72,10 +72,10 @@ describe('DistributionTargetsComponent', () => {
 		expect(component).toBeTruthy();
 	});
 
-
 	it('should clone distribution target selected on init', () => {
 		expect(component.distributionTargetsClone).toBeDefined();
-	});
+  });
+
 	it('should clone distribution target left and distribution target right lists on init', () => {
 		expect(component.distributionTargetsLeft).toBeDefined();
 		expect(component.distributionTargetsRight).toBeDefined();
@@ -91,7 +91,8 @@ describe('DistributionTargetsComponent', () => {
 			})
 		})
 		expect(repeteadElemens).toBeFalsy();
-	});
+  });
+
 	it('should filter left list and keep selected elements as selected', () => {
 		component.performFilter({ filterBy: new FilterModel({
       name: 'someName', owner: 'someOwner', description: 'someDescription', key: 'someKey'}), side: Side.LEFT });
@@ -102,7 +103,8 @@ describe('DistributionTargetsComponent', () => {
 		expect(component.distributionTargetsLeft[0].workbasketId).toBe('id1');
 		expect(component.distributionTargetsRight.length).toBe(1);
 		expect(component.distributionTargetsRight[0].workbasketId).toBe('id2');
-	});
+  });
+
 	it('should reset distribution target and distribution target selected on reset', () => {
 		component.distributionTargetsLeft.push(
 			new WorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ 'href': 'someurl' })));

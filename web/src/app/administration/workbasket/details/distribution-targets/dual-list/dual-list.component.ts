@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChildren } from '@angular/core';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { FilterModel } from 'app/models/filter';
-import { Side } from '../distribution-targets.component';
+import { Side, DistributionTargetsComponent } from '../distribution-targets.component';
 import { expandDown } from 'app/shared/animations/expand.animation';
+import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
+import { Page } from 'app/models/page';
 
 @Component({
 	selector: 'taskana-dual-list',
@@ -18,16 +20,22 @@ export class DualListComponent implements OnInit {
 	@Output() performDualListFilter = new EventEmitter<{ filterBy: FilterModel, side: Side }>();
 	@Input() requestInProgress = false;
 	@Input() side: Side;
-	@Input() header: string;
+  @Input() header: string;
+  @Input() numberItems: number;
+  @Input() page: Page;
+
+  @ViewChildren(DistributionTargetsComponent) distributionTargetsComponent;
 
 	sideNumber = 0;
 	toggleDtl = false;
-	toolbarState = false;
+  toolbarState = false;
+
+  type = 'distribution targets';
 
 	constructor() { }
 
 	ngOnInit() {
-		this.sideNumber = this.side === Side.LEFT ? 0 : 1;
+    this.sideNumber = this.side === Side.LEFT ? 0 : 1;
 	}
 
 	selectAll(selected: boolean) {
@@ -37,6 +45,12 @@ export class DualListComponent implements OnInit {
 	}
 
 	performAvailableFilter(filterModel: FilterModel) {
-		this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
+    this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
   }
+
+  changePage(page) {
+    TaskanaQueryParameters.page = page;
+    this.distributionTargetsChange.emit();
+  }
+
 }
