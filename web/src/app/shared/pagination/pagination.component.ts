@@ -14,7 +14,7 @@ import { Page } from 'app/models/page';
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss']
 })
-export class PaginationComponent implements OnInit, OnChanges {
+export class PaginationComponent implements OnChanges {
   @Input()
   page: Page;
   @Input()
@@ -23,6 +23,8 @@ export class PaginationComponent implements OnInit, OnChanges {
   workbasketsResourceChange = new EventEmitter<Page>();
   @Output()
   changePage = new EventEmitter<number>();
+  @Input()
+  numberOfItems: number;
   previousPageSelected = 1;
   pageSelected = 1;
   maxPagesAvailable = 8;
@@ -30,12 +32,10 @@ export class PaginationComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.page.currentValue !== undefined) {
+    if (changes.page && changes.page.currentValue !== undefined) {
       this.pageSelected = changes.page.currentValue.number;
     }
   }
-
-  ngOnInit() {}
 
   changeToPage(page) {
     if (page < 1) {
@@ -47,6 +47,8 @@ export class PaginationComponent implements OnInit, OnChanges {
     if (this.previousPageSelected !== page) {
       this.changePage.emit(page);
       this.previousPageSelected = page;
+      this.page.number = page;
+      this.pageSelected = page;
     }
   }
 
@@ -54,14 +56,7 @@ export class PaginationComponent implements OnInit, OnChanges {
     if (!this.page) {
       return '';
     }
-    let text = this.page.totalElements + '';
-    if (
-      this.page &&
-      this.page.totalElements &&
-      this.page.totalElements >= this.page.size
-    ) {
-      text = this.page.size + '';
-    }
+    const text = this.numberOfItems + '';
     return `${text} of ${this.page.totalElements} ${this.type}`;
   }
 }
