@@ -373,7 +373,7 @@ public interface TaskService {
         throws InvalidArgumentException;
 
     /**
-     * Completes tasks with a matching {@link ObjectReference}.
+     * Updates tasks with a matching {@link ObjectReference}.
      *
      * @param selectionCriteria
      *            the {@link ObjectReference} that is used to select the tasks.
@@ -387,5 +387,22 @@ public interface TaskService {
      *             If the customFieldsToUpdate map contains an invalid key or if the selectionCriteria is invalid
      */
     List<String> updateTasks(ObjectReference selectionCriteria,
+        Map<String, String> customFieldsToUpdate) throws InvalidArgumentException;
+
+    /**
+     * Updates tasks with matching taskIds.
+     *
+     * @param taskIds
+     *            the taskIds that are used to select the tasks.
+     * @param customFieldsToUpdate
+     *            a {@link Map} that contains as key the identification of the custom field and as value the
+     *            corresponding new value of that custom field. The key for identification of the custom field must be a
+     *            String with value "1", "2" ... "16" as in the setCustomAttribute or getCustomAttribute method of
+     *            {@link Task}
+     * @return a list of the Ids of all modified tasks
+     * @throws InvalidArgumentException
+     *             If the customFieldsToUpdate map contains an invalid key or if the selectionCriteria is invalid
+     */
+    List<String> updateTasks(List<String> taskIds,
         Map<String, String> customFieldsToUpdate) throws InvalidArgumentException;
 }

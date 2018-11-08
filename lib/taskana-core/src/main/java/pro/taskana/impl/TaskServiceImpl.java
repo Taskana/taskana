@@ -1129,6 +1129,60 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
+    @Override
+    public List<String> updateTasks(List<String> taskIds,
+        Map<String, String> customFieldsToUpdate) throws InvalidArgumentException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to updateTasks(taskIds = {}, customFieldsToUpdate = {})", taskIds,
+                customFieldsToUpdate);
+        }
+
+        if (customFieldsToUpdate == null || customFieldsToUpdate.isEmpty()) {
+            throw new InvalidArgumentException("The customFieldsToUpdate argument to updateTasks must not be empty.");
+        }
+
+        Set<String> allowedKeys = new HashSet<>(
+            Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"));
+
+        try {
+            taskanaEngine.openConnection();
+
+            CustomPropertySelector fieldSelector = new CustomPropertySelector();
+            TaskImpl newTask = new TaskImpl();
+            newTask.setModified(Instant.now());
+            for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
+                String key = entry.getKey();
+                if (!allowedKeys.contains(key)) {
+                    throw new InvalidArgumentException(
+                        "The customFieldsToUpdate argument to updateTasks contains invalid key " + key);
+                } else {
+                    fieldSelector.setCustomProperty(key, true);
+                    newTask.setCustomAttribute(key, entry.getValue());
+                }
+            }
+
+            // use query in order to find only those tasks that are visible to the current user
+            List<TaskSummary> taskSummaries = createTaskQuery()
+                .idIn(taskIds.toArray(new String[taskIds.size()]))
+                .list();
+
+            List<String> changedTasks = new ArrayList<>();
+            if (!taskSummaries.isEmpty()) {
+                changedTasks = taskSummaries.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
+                taskMapper.updateTasks(changedTasks, newTask, fieldSelector);
+                LOGGER.debug("updateTasks() updated the following tasks: {} ",
+                    LoggerUtils.listToString(changedTasks));
+            } else {
+                LOGGER.debug("updateTasks() found no tasks for update ");
+            }
+            return changedTasks;
+        } finally {
+            LOGGER.debug("exit from deleteTasks().");
+            taskanaEngine.returnConnection();
+        }
+
+    }
+
     private void validateObjectReference(ObjectReference objRef, String objRefType, String objName)
         throws InvalidArgumentException {
         // check that all values in the ObjectReference are set correctly
