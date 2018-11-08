@@ -1424,6 +1424,31 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    public Set<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
+        // tasks directly affected
+        List<TaskSummary> tasks = createTaskQuery()
+            .classificationIdIn(classificationId)
+            .stateIn(TaskState.READY, TaskState.CLAIMED)
+            .list();
+
+        // tasks indirectly affected via attachments
+        List<String> taskIdsFromAttachments = attachmentMapper.findTaskIdsAffectedByClassificationChange(classificationId);
+
+        List<String> filteredTaskIdsFromAttachments = taskIdsFromAttachments.isEmpty() ? new ArrayList<>()
+         : taskMapper.filterTaskIdsForNotCompleted(taskIdsFromAttachments);
+
+        Set<String> affectedTaskIds = new HashSet<>(filteredTaskIdsFromAttachments);
+        for (TaskSummary task : tasks) {
+            affectedTaskIds.add(task.getTaskId());
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("the following tasks are affected by the update of classification {} : {}", classificationId,
+                LoggerUtils.setToString(affectedTaskIds));
+        }
+        return affectedTaskIds;
+    }
+
+
     public void refreshPriorityAndDueDate(String taskId)
         throws ClassificationNotFoundException {
         LOGGER.debug("entry to refreshPriorityAndDueDate(taskId = {})", taskId);
