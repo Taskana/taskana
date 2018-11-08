@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -285,6 +286,37 @@ public class UpdateTaskAccTest extends AbstractAccTest {
             assertEquals("This is modifiedValue 7", task.getCustomAttribute("7"));
             assertEquals("This is modifiedValue 16", task.getCustomAttribute("16"));
             assertNull(task.getCustomAttribute("14"));
+        }
+
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"}
+    )
+    @Test
+    public void testUpdateTasksById()
+        throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
+        List<String> taskIds = Arrays.asList(
+                "TKI:000000000000000000000000000000000008",
+                "TKI:000000000000000000000000000000000009",
+                "TKI:000000000000000000000000000000000010");
+        Map<String, String> customProperties = new HashMap<>();
+        customProperties.put("1", "This is modifiedValue 1");
+        customProperties.put("5", "This is modifiedValue 5");
+        customProperties.put("10", "This is modifiedValue 10");
+        customProperties.put("12", "This is modifiedValue 12");
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        List<String> changedTasks = taskService.updateTasks(taskIds, customProperties);
+        assertEquals(3, changedTasks.size());
+        for (String taskId : changedTasks) {
+            Task task = taskService.getTask(taskId);
+            assertEquals("This is modifiedValue 1", task.getCustomAttribute("1"));
+            assertEquals("This is modifiedValue 5", task.getCustomAttribute("5"));
+            assertEquals("This is modifiedValue 10", task.getCustomAttribute("10"));
+            assertEquals("This is modifiedValue 12", task.getCustomAttribute("12"));
+            assertNull(task.getCustomAttribute("2"));
         }
 
     }
