@@ -8,9 +8,9 @@ import static org.junit.Assert.assertTrue;
 
 import static pro.taskana.TaskQueryColumnName.OWNER;
 import static pro.taskana.TaskQueryColumnName.STATE;
-import static pro.taskana.TaskQueryColumnName.CHANNEL;
-import static pro.taskana.TaskQueryColumnName.REF_VALUE;
-import static pro.taskana.TaskQueryColumnName.ACLASSIFICATION_ID;
+import static pro.taskana.TaskQueryColumnName.A_CHANNEL;
+import static pro.taskana.TaskQueryColumnName.A_REF_VALUE;
+import static pro.taskana.TaskQueryColumnName.A_CLASSIFICATION_ID;
 import static pro.taskana.TaskQueryColumnName.CLASSIFICATION_KEY;
 
 import java.util.List;
@@ -86,19 +86,19 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> columnValueList = taskService.createTaskQuery()
             .attachmentReferenceValueIn("val4")
-            .listValues(CHANNEL, null);
+            .listValues(A_CHANNEL, null);
         assertNotNull(columnValueList);
         assertEquals(2, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
             .attachmentReferenceValueLike("%")
-            .listValues(REF_VALUE, null);
+            .listValues(A_REF_VALUE, null);
         assertNotNull(columnValueList);
         assertEquals(6, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
             .orderByAttachmentClassificationId(desc)
-            .listValues(ACLASSIFICATION_ID, null);
+            .listValues(A_CLASSIFICATION_ID, null);
         assertNotNull(columnValueList);
         assertEquals(12, columnValueList.size());
 
