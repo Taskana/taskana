@@ -1063,7 +1063,7 @@ public class TaskServiceImpl implements TaskService {
             }
             return bulkLog;
         } finally {
-            LOGGER.debug("exit from deleteTasks()");
+            LOGGER.debug("exit from updateTasks()");
             taskanaEngine.returnConnection();
         }
     }
@@ -1075,53 +1075,29 @@ public class TaskServiceImpl implements TaskService {
             LOGGER.debug("entry to updateTasks(selectionCriteria = {}, customFieldsToUpdate = {})", selectionCriteria,
                 customFieldsToUpdate);
         }
-
-        if (customFieldsToUpdate == null || customFieldsToUpdate.isEmpty()) {
-            throw new InvalidArgumentException("The customFieldsToUpdate argument to updateTasks must not be empty.");
-        }
         validateObjectReference(selectionCriteria, "ObjectReference", "updateTasks call");
-
-        Set<String> allowedKeys = new HashSet<>(
-            Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"));
+        validateCustomFields(customFieldsToUpdate);
+        CustomPropertySelector fieldSelector = new CustomPropertySelector();
+        TaskImpl updated = initUpdatedTask(customFieldsToUpdate, fieldSelector);
 
         try {
             taskanaEngine.openConnection();
 
-            CustomPropertySelector fieldSelector = new CustomPropertySelector();
-            TaskImpl newTask = new TaskImpl();
-            newTask.setModified(Instant.now());
-            for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
-                String key = entry.getKey();
-                if (!allowedKeys.contains(key)) {
-                    throw new InvalidArgumentException(
-                        "The customFieldsToUpdate argument to updateTasks contains invalid key " + key);
-                } else {
-                    fieldSelector.setCustomProperty(key, true);
-                    newTask.setCustomAttribute(key, entry.getValue());
-                }
-            }
-
             // use query in order to find only those tasks that are visible to the current user
-            List<TaskSummary> taskSummaries = createTaskQuery()
-                .primaryObjectReferenceCompanyIn(selectionCriteria.getCompany())
-                .primaryObjectReferenceSystemIn(selectionCriteria.getSystem())
-                .primaryObjectReferenceSystemInstanceIn(selectionCriteria.getSystemInstance())
-                .primaryObjectReferenceTypeIn(selectionCriteria.getType())
-                .primaryObjectReferenceValueIn(selectionCriteria.getValue())
-                .list();
+            List<TaskSummary> taskSummaries = getTasksToChange(selectionCriteria);
 
-            List<String> taskIds = new ArrayList<>();
+            List<String> changedTasks = new ArrayList<>();
             if (!taskSummaries.isEmpty()) {
-                taskIds = taskSummaries.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
-                taskMapper.updateTasks(taskIds, newTask, fieldSelector);
+                changedTasks = taskSummaries.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
+                taskMapper.updateTasks(changedTasks, updated, fieldSelector);
                 LOGGER.debug("updateTasks() updated the following tasks: {} ",
-                    LoggerUtils.listToString(taskIds));
+                    LoggerUtils.listToString(changedTasks));
             } else {
                 LOGGER.debug("updateTasks() found no tasks for update ");
             }
-            return taskIds;
+            return changedTasks;
         } finally {
-            LOGGER.debug("exit from deleteTasks().");
+            LOGGER.debug("exit from updateTasks().");
             taskanaEngine.returnConnection();
         }
 
@@ -1135,39 +1111,20 @@ public class TaskServiceImpl implements TaskService {
                 customFieldsToUpdate);
         }
 
-        if (customFieldsToUpdate == null || customFieldsToUpdate.isEmpty()) {
-            throw new InvalidArgumentException("The customFieldsToUpdate argument to updateTasks must not be empty.");
-        }
-
-        Set<String> allowedKeys = new HashSet<>(
-            Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"));
+        validateCustomFields(customFieldsToUpdate);
+        CustomPropertySelector fieldSelector = new CustomPropertySelector();
+        TaskImpl updatedTask = initUpdatedTask(customFieldsToUpdate, fieldSelector);
 
         try {
             taskanaEngine.openConnection();
 
-            CustomPropertySelector fieldSelector = new CustomPropertySelector();
-            TaskImpl newTask = new TaskImpl();
-            newTask.setModified(Instant.now());
-            for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
-                String key = entry.getKey();
-                if (!allowedKeys.contains(key)) {
-                    throw new InvalidArgumentException(
-                        "The customFieldsToUpdate argument to updateTasks contains invalid key " + key);
-                } else {
-                    fieldSelector.setCustomProperty(key, true);
-                    newTask.setCustomAttribute(key, entry.getValue());
-                }
-            }
-
             // use query in order to find only those tasks that are visible to the current user
-            List<TaskSummary> taskSummaries = createTaskQuery()
-                .idIn(taskIds.toArray(new String[taskIds.size()]))
-                .list();
+            List<TaskSummary> taskSummaries = getTasksToChange(taskIds);
 
             List<String> changedTasks = new ArrayList<>();
             if (!taskSummaries.isEmpty()) {
                 changedTasks = taskSummaries.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
-                taskMapper.updateTasks(changedTasks, newTask, fieldSelector);
+                taskMapper.updateTasks(changedTasks, updatedTask, fieldSelector);
                 LOGGER.debug("updateTasks() updated the following tasks: {} ",
                     LoggerUtils.listToString(changedTasks));
             } else {
@@ -1179,6 +1136,54 @@ public class TaskServiceImpl implements TaskService {
             taskanaEngine.returnConnection();
         }
 
+    }
+
+    private TaskImpl initUpdatedTask(Map<String, String> customFieldsToUpdate, CustomPropertySelector fieldSelector)
+            throws InvalidArgumentException {
+        TaskImpl newTask = new TaskImpl();
+        newTask.setModified(Instant.now());
+
+        for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
+            String key = entry.getKey();
+            fieldSelector.setCustomProperty(key, true);
+            newTask.setCustomAttribute(key, entry.getValue());
+        }
+        return newTask;
+    }
+
+    private void validateCustomFields(Map<String, String> customFieldsToUpdate) throws InvalidArgumentException {
+        if (customFieldsToUpdate == null || customFieldsToUpdate.isEmpty()) {
+            throw new InvalidArgumentException("The customFieldsToUpdate argument to updateTasks must not be empty.");
+        }
+
+        Set<String> allowedKeys = new HashSet<>(
+            Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"));
+
+        for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
+            String key = entry.getKey();
+            if (!allowedKeys.contains(key)) {
+                throw new InvalidArgumentException(
+                    "The customFieldsToUpdate argument to updateTasks contains invalid key " + key);
+            }
+        }
+    }
+
+    private List<TaskSummary> getTasksToChange(List<String> taskIds) {
+        List<TaskSummary> taskSummaries = createTaskQuery()
+            .idIn(taskIds.toArray(new String[taskIds.size()]))
+            .list();
+        return taskSummaries;
+    }
+
+    private List<TaskSummary> getTasksToChange(ObjectReference selectionCriteria) {
+        List<TaskSummary> taskSummaries = createTaskQuery()
+            .primaryObjectReferenceCompanyIn(selectionCriteria.getCompany())
+            .primaryObjectReferenceSystemIn(selectionCriteria.getSystem())
+            .primaryObjectReferenceSystemInstanceIn(selectionCriteria.getSystemInstance())
+            .primaryObjectReferenceTypeIn(selectionCriteria.getType())
+            .primaryObjectReferenceValueIn(selectionCriteria.getValue())
+            .list();
+        return taskSummaries;
     }
 
     private void validateObjectReference(ObjectReference objRef, String objRefType, String objName)
