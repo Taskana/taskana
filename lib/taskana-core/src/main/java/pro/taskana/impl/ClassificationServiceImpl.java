@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -261,14 +263,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         }
 
         if (classification.getServiceLevel() != null && !"".equals(classification.getServiceLevel())) {
-            try {
-                Duration.parse(classification.getServiceLevel());
-            } catch (Exception e) {
-                throw new InvalidArgumentException("Invalid service level. Please use the format defined by ISO 8601. "
-                    + "For example: \"P2D\" represents a period of \"two days.\" "
-                    + "Or \"P2DT6H\" represents a period of \"two days and six hours.\"",
-                    e.getCause());
-            }
+            validateServiceLevel(classification.getServiceLevel());
         }
 
         if (classification.getKey() == null) {
@@ -297,6 +292,50 @@ public class ClassificationServiceImpl implements ClassificationService {
 
         if (classification.getDomain().isEmpty()) {
             classification.setIsValidInDomain(false);
+        }
+    }
+
+    private void validateServiceLevel(String serviceLevel) throws InvalidArgumentException {
+        Duration duration;
+        try {
+            duration = Duration.parse(serviceLevel);
+
+        } catch (Exception e) {
+            throw new InvalidArgumentException("Invalid service level " + serviceLevel
+            + ". The formats accepted are based on the ISO-8601 duration format PnDTnHnMn.nS with days considered to be exactly 24 hours. "
+            + "For example: \"P2D\" represents a period of \"two days.\" ",
+                e.getCause());
+        }
+        // check that the duration contains only whole days and no remaining hours, minutes or seconds
+        LocalDateTime ref = LocalDateTime.now(); // reference timestamp
+        LocalDateTime end = ref.plus(duration);
+        // find the years part
+        LocalDateTime ldt = ref;
+        long years = ChronoUnit.YEARS.between(ldt, end);
+
+        // find the months part
+        ldt = ldt.plus(years, ChronoUnit.YEARS);
+        long months = ChronoUnit.MONTHS.between(ldt, end);
+
+        // find the days part
+        ldt = ldt.plus(months, ChronoUnit.MONTHS);
+        long days = ChronoUnit.DAYS.between(ldt, end);
+
+        // find the hours part
+        ldt = ldt.plus(days, ChronoUnit.DAYS);
+        long hours = ChronoUnit.HOURS.between(ldt, end);
+
+        // find the minutes part
+        ldt = ldt.plus(hours, ChronoUnit.HOURS);
+        long minutes = ChronoUnit.MINUTES.between(ldt, end);
+
+        // find the seconds part
+        ldt = ldt.plus(minutes, ChronoUnit.MINUTES);
+        long seconds = ChronoUnit.SECONDS.between(ldt, end);
+
+        if (hours != 0 || minutes != 0 || seconds != 0) {
+            throw new InvalidArgumentException("Invalid service level " + serviceLevel + ". Taskana only supports service levels that"
+                + " contain a number of whole days without additional hours, minutes or seconds.");
         }
     }
 

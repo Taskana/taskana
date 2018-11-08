@@ -328,7 +328,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classificationService.createClassification(classification);
         all++;
         Classification classification1 = this.createDummyClassificationWithUniqueKey("", "TASK");
-        classification1.setServiceLevel("P1DT1H");
+        classification1.setServiceLevel("P1DT24H");
         classification1.setName("name1");
         classification1.setDescription("desc");
         classificationService.createClassification(classification1);
@@ -349,7 +349,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
         Assert.assertEquals(1, list.size());
         list = classificationService.createClassificationQuery().serviceLevelIn("P1D").descriptionLike("desc").list();
         Assert.assertEquals(2, list.size());
-        list = classificationService.createClassificationQuery().serviceLevelIn("P1DT1H").nameIn("name").list();
+        list = classificationService.createClassificationQuery().serviceLevelIn("P1DT24H").nameIn("name").list();
         Assert.assertEquals(0, list.size());
         list = classificationService.createClassificationQuery().descriptionLike("desc%").list();
         Assert.assertEquals(all, list.size());
