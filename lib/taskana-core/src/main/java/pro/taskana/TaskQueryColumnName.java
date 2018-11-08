@@ -53,10 +53,10 @@ public enum TaskQueryColumnName implements QueryColumnName {
     CUSTOM_14("t.custom_14"),
     CUSTOM_15("t.custom_15"),
     CUSTOM_16("t.custom_16"),
-    ACLASSIFICATION_KEY("a.classification_key"),
-    ACLASSIFICATION_ID("a.classification_id"),
-    CHANNEL("a.channel"),
-    REF_VALUE("a.ref_value");
+    A_CLASSIFICATION_KEY("a.classification_key"),
+    A_CLASSIFICATION_ID("a.classification_id"),
+    A_CHANNEL("a.channel"),
+    A_REF_VALUE("a.ref_value");
 
     private String name;
     TaskQueryColumnName(String name) {
