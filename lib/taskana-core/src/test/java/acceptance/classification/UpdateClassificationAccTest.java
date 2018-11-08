@@ -74,7 +74,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setParentId("CLI:100000000000000000000000000000000004");
         classification.setParentKey("L11010");
         classification.setPriority(1000);
-        classification.setServiceLevel("P2DT3H4M");
+        classification.setServiceLevel("P2DT24H");
 
         classificationService.updateClassification(classification);
 
@@ -214,10 +214,12 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setServiceLevel("P15D");
 
         classificationService.updateClassification(classification);
-        Thread.sleep(100);
+        Thread.sleep(10);
         JobRunner runner = new JobRunner(taskanaEngine);
         // need to run jobs twice, since the first job creates a second one.
         runner.runJobs();
+        Thread.sleep(10);   // otherwise the next runJobs call intermittently doesn't find the Job created
+        // by the previous step (it searches with DueDate < CurrentTime)
         runner.runJobs();
         // Get and check the new value
         Classification updatedClassification = classificationService
@@ -225,58 +227,66 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         assertNotNull(updatedClassification);
 
         assertTrue(!modifiedBefore.isAfter(updatedClassification.getModified()));
-        List<String> affectedTasks = new ArrayList<>(
-            Arrays.asList("TKI:000000000000000000000000000000000003", "TKI:000000000000000000000000000000000004"));
         // TODO - resume old behaviour after attachment query is possible.
-        // List<String> affectedTasks = new ArrayList<>(
-        // Arrays.asList("TKI:000000000000000000000000000000000000", "TKI:000000000000000000000000000000000003",
-        // "TKI:000000000000000000000000000000000004", "TKI:000000000000000000000000000000000005",
-        // "TKI:000000000000000000000000000000000006", "TKI:000000000000000000000000000000000007",
-        // "TKI:000000000000000000000000000000000008", "TKI:000000000000000000000000000000000009",
-        // "TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
-        // "TKI:000000000000000000000000000000000012", "TKI:000000000000000000000000000000000013",
-        // "TKI:000000000000000000000000000000000014", "TKI:000000000000000000000000000000000015",
-        // "TKI:000000000000000000000000000000000016", "TKI:000000000000000000000000000000000017",
-        // "TKI:000000000000000000000000000000000018", "TKI:000000000000000000000000000000000019",
-        // "TKI:000000000000000000000000000000000020", "TKI:000000000000000000000000000000000021",
-        // "TKI:000000000000000000000000000000000022", "TKI:000000000000000000000000000000000023",
-        // "TKI:000000000000000000000000000000000024", "TKI:000000000000000000000000000000000025",
-        // "TKI:000000000000000000000000000000000026", "TKI:000000000000000000000000000000000027",
-        // "TKI:000000000000000000000000000000000028", "TKI:000000000000000000000000000000000029",
-        // "TKI:000000000000000000000000000000000030", "TKI:000000000000000000000000000000000031",
-        // "TKI:000000000000000000000000000000000032", "TKI:000000000000000000000000000000000033",
-        // "TKI:000000000000000000000000000000000034", "TKI:000000000000000000000000000000000035",
-        // "TKI:000000000000000000000000000000000053", "TKI:000000000000000000000000000000000054",
-        // "TKI:000000000000000000000000000000000055", "TKI:000000000000000000000000000000000100",
-        // "TKI:000000000000000000000000000000000101", "TKI:000000000000000000000000000000000102",
-        // "TKI:000000000000000000000000000000000103"));
-        // List<String> indirectlyAffectedTasks = new ArrayList<>(Arrays.asList(
-        // "TKI:000000000000000000000000000000000000", "TKI:000000000000000000000000000000000053",
-        // "TKI:000000000000000000000000000000000054", "TKI:000000000000000000000000000000000055"));
-
         TaskService taskService = taskanaEngine.getTaskService();
 
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
             .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
 
-        for (String taskId : affectedTasks) {
+        List<String> tasksWithP1D  = new ArrayList<>(Arrays.asList(
+            "TKI:000000000000000000000000000000000054",
+            "TKI:000000000000000000000000000000000055",
+            "TKI:000000000000000000000000000000000000",
+            "TKI:000000000000000000000000000000000011",
+            "TKI:000000000000000000000000000000000053"
+            ));
+        validateNewTaskProperties(before, tasksWithP1D, taskService, converter, 1);
+
+        List<String> tasksWithP8D  = new ArrayList<>(Arrays.asList(
+            "TKI:000000000000000000000000000000000008"
+            ));
+        validateNewTaskProperties(before, tasksWithP8D, taskService, converter, 8);
+
+        List<String> tasksWithP14D  = new ArrayList<>(Arrays.asList(
+            "TKI:000000000000000000000000000000000010"
+            ));
+        validateNewTaskProperties(before, tasksWithP14D, taskService, converter, 14);
+
+        List<String> tasksWithP15D = new ArrayList<>(
+            Arrays.asList("TKI:000000000000000000000000000000000003", "TKI:000000000000000000000000000000000004",
+                "TKI:000000000000000000000000000000000005", "TKI:000000000000000000000000000000000006",
+                "TKI:000000000000000000000000000000000007",
+                "TKI:000000000000000000000000000000000009", "TKI:000000000000000000000000000000000012",
+                "TKI:000000000000000000000000000000000013", "TKI:000000000000000000000000000000000014",
+                "TKI:000000000000000000000000000000000015", "TKI:000000000000000000000000000000000016",
+                "TKI:000000000000000000000000000000000017", "TKI:000000000000000000000000000000000018",
+                "TKI:000000000000000000000000000000000019", "TKI:000000000000000000000000000000000020",
+                "TKI:000000000000000000000000000000000021", "TKI:000000000000000000000000000000000022",
+                "TKI:000000000000000000000000000000000023", "TKI:000000000000000000000000000000000024",
+                "TKI:000000000000000000000000000000000025", "TKI:000000000000000000000000000000000026",
+                "TKI:000000000000000000000000000000000027", "TKI:000000000000000000000000000000000028",
+                "TKI:000000000000000000000000000000000029", "TKI:000000000000000000000000000000000030",
+                "TKI:000000000000000000000000000000000031", "TKI:000000000000000000000000000000000032",
+                "TKI:000000000000000000000000000000000033", "TKI:000000000000000000000000000000000034",
+                "TKI:000000000000000000000000000000000035", "TKI:000000000000000000000000000000000100",
+                "TKI:000000000000000000000000000000000101", "TKI:000000000000000000000000000000000102",
+                "TKI:000000000000000000000000000000000103"
+                ));
+        validateNewTaskProperties(before, tasksWithP15D, taskService, converter, 15);
+
+    }
+
+    private void validateNewTaskProperties(Instant before, List<String> tasksWithP15D, TaskService taskService,
+        DaysToWorkingDaysConverter converter, int serviceLevel) throws TaskNotFoundException, NotAuthorizedException {
+        for (String taskId : tasksWithP15D) {
             Task task = taskService.getTask(taskId);
             assertTrue("Task " + task.getId() + " has not been refreshed.", task.getModified().isAfter(before));
             assertTrue(task.getPriority() == 1000);
-            // the following excluded tasks are affected via attachments. The task or an attachment still has a service
-            // level below 15 days
-            // therefore, we cannot compare the due date of these tasks to an SL of 15 days.
-            if (taskId.equals("TKI:000000000000000000000000000000000008")) {
-                long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), 8);
-                assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
-                // } else if (indirectlyAffectedTasks.contains(taskId)) {
-                // long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
-                // assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
-            } else {
-                long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), 15);
-                assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
-            }
+            long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), serviceLevel);
 
+            assertTrue("Task: " + taskId + ": Due Date " + task.getDue() + " does not match planned " + task.getPlanned()
+            + " + calendar days " + calendarDays,
+            task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
         }
     }
 

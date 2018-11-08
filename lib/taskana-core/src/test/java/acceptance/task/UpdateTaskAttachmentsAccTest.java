@@ -152,8 +152,11 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
         assertTrue(task.getPriority() == 999);
-        assertTrue(task.getDue().equals(task.getPlanned()));
 
+        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
+            .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+        long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
     }
 
     @WithAccessId(
@@ -297,8 +300,12 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
         assertTrue(task.getPriority() == 999);
-        assertTrue(task.getDue().equals(task.getPlanned()));
 
+        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
+            .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+        long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
+
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
     }
 
     @WithAccessId(
@@ -321,7 +328,11 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.updateTask(task);
         task = taskService.getTask(task.getId());
         assertTrue(task.getPriority() == 101);
-        assertTrue(task.getDue().equals(task.getPlanned()));
+        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
+            .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+        long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
+
+        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
 
         assertThat(task.getAttachments().size(), equalTo(2));
         List<Attachment> attachments = task.getAttachments();
@@ -358,9 +369,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.getTask(task.getId());
         assertTrue(task.getPriority() == 99);
 
-        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
-            .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
-        long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 16);
+        calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 16);
 
         assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
 

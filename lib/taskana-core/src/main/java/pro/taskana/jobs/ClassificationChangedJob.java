@@ -1,7 +1,6 @@
 package pro.taskana.jobs;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,11 +8,10 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskState;
-import pro.taskana.TaskSummary;
+
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.TaskanaException;
-import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.transaction.TaskanaTransactionProvider;
 
 /**
@@ -48,37 +46,13 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
     public void run() throws TaskanaException {
         LOGGER.info("Running ClassificationChangedJob for classification ({})", classificationId);
         try {
-            Set<String> affectedTaskIds = findTasksIdsAffectedByClassificationChange();
+            TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
+            Set<String> affectedTaskIds = taskService.findTasksIdsAffectedByClassificationChange(classificationId);
             scheduleTaskRefreshJobs(affectedTaskIds);
             LOGGER.info("ClassificationChangedJob ended successfully.");
         } catch (Exception e) {
             throw new TaskanaException("Error while processing ClassificationChangedJob.", e);
         }
-    }
-
-    private Set<String> findTasksIdsAffectedByClassificationChange() {
-        List<TaskSummary> tasks = taskanaEngineImpl.getTaskService()
-            .createTaskQuery()
-            .classificationIdIn(classificationId)
-            .stateIn(TaskState.READY, TaskState.CLAIMED)
-            .list();
-        // TODO - implement once the attachment filter is available
-        // List<String> taskIdsFromAttachments = attachmentMapper
-        // .findTaskIdsAffectedByClassificationChange(classificationId);
-
-        // List<String> filteredTaskIdsFromAttachments = taskIdsFromAttachments.isEmpty() ? new ArrayList<>()
-        // : taskMapper.filterTaskIdsForNotCompleted(taskIdsFromAttachments);
-
-        // Set<String> affectedTaskIds = new HashSet<>(filteredTaskIdsFromAttachments);
-        Set<String> affectedTaskIds = new HashSet<>();
-        for (TaskSummary task : tasks) {
-            affectedTaskIds.add(task.getTaskId());
-        }
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("the following tasks are affected by the update of classification {} : {}", classificationId,
-                LoggerUtils.setToString(affectedTaskIds));
-        }
-        return affectedTaskIds;
     }
 
     private void scheduleTaskRefreshJobs(Set<String> affectedTaskIds) {

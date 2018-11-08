@@ -523,7 +523,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .orderByServiceLevel(desc)
                 .list();
-        assertEquals("PT7H", results.get(0).getServiceLevel());
+        assertEquals("PT24H", results.get(0).getServiceLevel());
     }
 
     @Test
