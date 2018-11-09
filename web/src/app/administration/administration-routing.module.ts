@@ -9,61 +9,78 @@ import { ClassificationDetailsComponent } from 'app/administration/classificatio
 import { DomainGuard } from 'app/guards/domain-guard';
 import { AccessItemsManagementComponent } from './access-items-management/access-items-management.component';
 
-
 const routes: Routes = [
-    {
-        path: 'workbaskets',
-        component: MasterAndDetailComponent,
-        canActivate: [DomainGuard],
-        children: [
-            {
-                path: '',
-                component: WorkbasketListComponent,
-                outlet: 'master'
-            },
-            {
-                path: 'new-classification/:id',
-                component: WorkbasketDetailsComponent,
-                outlet: 'detail'
-            },
-            {
-                path: ':id',
-                component: WorkbasketDetailsComponent,
-                outlet: 'detail'
-            }
-        ]
-    },
-    {
-        path: 'classifications',
-        component: MasterAndDetailComponent,
-        canActivate: [DomainGuard],
-        children: [
-            {
-                path: '',
-                component: ClassificationListComponent,
-                outlet: 'master'
-            },
-            {
-                path: ':id',
-                component: ClassificationDetailsComponent,
-                outlet: 'detail'
-            }
-        ]
-    },
-    {
-        path: 'access-items-management',
-        component: AccessItemsManagementComponent,
-        canActivate: [DomainGuard]
-    },
-    {
+  {
+    path: 'workbaskets',
+    component: MasterAndDetailComponent,
+    canActivate: [DomainGuard],
+    children: [
+      {
         path: '',
-        redirectTo: 'workbaskets',
-        pathMatch: 'full'
-    }
+        component: WorkbasketListComponent,
+        outlet: 'master'
+      },
+      {
+        path: 'new-classification/:id',
+        component: WorkbasketDetailsComponent,
+        outlet: 'detail'
+      },
+      {
+        path: ':id',
+        component: WorkbasketDetailsComponent,
+        outlet: 'detail'
+      },
+      {
+        path: '**',
+        redirectTo: ''
+      }
+    ]
+  },
+  {
+    path: 'classifications',
+    component: MasterAndDetailComponent,
+    canActivate: [DomainGuard],
+    children: [
+      {
+        path: '',
+        component: ClassificationListComponent,
+        outlet: 'master'
+      },
+      {
+        path: ':id',
+        component: ClassificationDetailsComponent,
+        outlet: 'detail'
+      },
+      {
+        path: '**',
+        redirectTo: ''
+      }
+    ]
+  },
+  {
+    path: 'access-items-management',
+    component: AccessItemsManagementComponent,
+    canActivate: [DomainGuard],
+    children: [
+      {
+        path: '**',
+        redirectTo: ''
+      }
+    ]
+  },
+  {
+    path: '',
+    redirectTo: 'workbaskets',
+    pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'workbaskets'
+  }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class AdministrationRoutingModule { }
+export class AdministrationRoutingModule {}

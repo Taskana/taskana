@@ -65,11 +65,13 @@ export class TaskService {
                           ownerLike: string,
                           priority: string,
                           state: string,
+                          objRefTypeLike: string,
+                          objRefValueLike: string,
                           allPages: boolean = false): Observable<TaskResource> {
     const url = `${this.url}${TaskanaQueryParameters.getQueryParameters(
       sortBy, sortDirection, undefined, nameLike, undefined, undefined, ownerLike, undefined, undefined, undefined, undefined,
       !allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined,
-      undefined, undefined, undefined, undefined, basketId, priority, state)}`;
+      undefined, undefined, undefined, undefined, basketId, priority, state, objRefTypeLike, objRefValueLike)}`;
     return this.httpClient.get<TaskResource>(url);
   }
 

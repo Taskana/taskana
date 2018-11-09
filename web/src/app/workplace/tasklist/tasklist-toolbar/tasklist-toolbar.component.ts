@@ -7,9 +7,14 @@ import { SortingModel } from 'app/models/sorting';
 import { FilterModel } from 'app/models/filter';
 import { TaskanaType } from 'app/models/taskana-type';
 import { expandDown } from 'app/shared/animations/expand.animation';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
+import { ObjectReference } from 'app/workplace/models/object-reference';
 
+export enum Search {
+	byWorkbasket = 'workbasket',
+	byTypeAndValue = 'type-and-value'
+}
 @Component({
   selector: 'taskana-tasklist-toolbar',
   animations: [expandDown],
@@ -20,6 +25,7 @@ export class TaskListToolbarComponent implements OnInit {
 
   @Output() performSorting = new EventEmitter<SortingModel>();
   @Output() performFilter = new EventEmitter<FilterModel>();
+  @Output() selectSearchType = new EventEmitter();
 
 
   sortingFields = new Map([['name', 'Name'], ['priority', 'Priority'], ['due', 'Due'], ['planned', 'Planned']]);
@@ -34,6 +40,13 @@ export class TaskListToolbarComponent implements OnInit {
   workbasketSelected = false;
   toolbarState = false;
   filterType = TaskanaType.TASKS;
+  searched = false;
+  searchParam = 'search';
+
+  search = Search;
+  searchSelected: Search = Search.byWorkbasket;
+  resultType = '';
+  resultValue = '';
 
   constructor(private taskService: TaskService,
     private workbasketService: WorkbasketService,
@@ -57,26 +70,42 @@ export class TaskListToolbarComponent implements OnInit {
         this.workplaceService.selectWorkbasket(this.currentBasket);
         this.workbasketSelected = true;
       }
-    })
+    });
+
+    if (this.route.snapshot.queryParams.search === this.search.byTypeAndValue) {
+      this.searchSelected = this.search.byTypeAndValue;
+    }
+    if (this.router.url.includes('taskdetail')) {
+      this.searched = true;
+    }
   }
 
   searchBasket() {
     this.toolbarState = false;
     this.workbasketSelected = true;
-    if (this.workbaskets) {
-      this.workbaskets.forEach(workbasket => {
-        if (workbasket.name === this.resultName) {
-          this.resultId = workbasket.workbasketId;
-          this.currentBasket = workbasket;
-          this.workplaceService.selectWorkbasket(this.currentBasket);
-        }
-      });
+    if (this.searchSelected === this.search.byTypeAndValue) {
+      this.workplaceService.selectObjectReference(
+        new ObjectReference(undefined, undefined, undefined, undefined, this.resultType, this.resultValue));
+        this.searched = true;
+    } else {
+      this.workplaceService.selectObjectReference(undefined);
+      if (this.workbaskets) {
+        this.workbaskets.forEach(workbasket => {
+          if (workbasket.name === this.resultName) {
+            this.resultId = workbasket.workbasketId;
+            this.currentBasket = workbasket;
+            this.searched = true;
+            this.workplaceService.selectWorkbasket(this.currentBasket);
+          }
+        });
 
-      if (!this.resultId) {
-        this.currentBasket = undefined;
-        this.workplaceService.selectWorkbasket(undefined);
+        if (!this.resultId) {
+          this.currentBasket = undefined;
+          this.workplaceService.selectWorkbasket(undefined);
+        }
       }
     }
+
     this.resultId = '';
     this.router.navigate(['']);
   }
@@ -92,5 +121,19 @@ export class TaskListToolbarComponent implements OnInit {
   createTask() {
     this.taskService.selectTask(undefined);
     this.router.navigate([{ outlets: { detail: 'taskdetail/new-task' } }], { relativeTo: this.route });
+  }
+
+  selectSearch(type: Search) {
+    this.searched = false;
+    this.resultId = undefined;
+    this.currentBasket = undefined;
+    this.selectSearchType.emit(type);
+    this.searchSelected = type;
+
+    const navigationExtras: NavigationExtras = {
+      queryParams: { search: type }
+    };
+
+    this.router.navigate([''], navigationExtras);
   }
 }

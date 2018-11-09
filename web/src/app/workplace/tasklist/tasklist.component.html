@@ -1,7 +1,7 @@
 <div class="footer-space-pagination-list">
   <div #wbToolbar>
     <taskana-tasklist-toolbar (performSorting)="performSorting($event)" (performFilter)="performFilter($event)"
-      (importSucessful)="refreshWorkbasketList()">
+    (selectSearchType)="selectSearchType($event)" (importSucessful)="refreshWorkbasketList()">
     </taskana-tasklist-toolbar>
   </div>
   <div *ngIf="!requestInProgress">
