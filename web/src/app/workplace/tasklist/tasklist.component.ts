@@ -14,6 +14,8 @@ import { OrientationService } from 'app/services/orientation/orientation.service
 import { Orientation } from 'app/models/orientation';
 import { Page } from 'app/models/page';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
+import { ObjectReference } from '../models/object-reference';
+import { Search } from './tasklist-toolbar/tasklist-toolbar.component';
 
 @Component({
   selector: 'taskana-task-list',
@@ -38,6 +40,8 @@ export class TasklistComponent implements OnInit, OnDestroy {
     workbasketKey: ''
   });
   requestInProgress = false;
+  objectReference: ObjectReference;
+  selectedSearchType: Search = Search.byWorkbasket;
 
   @ViewChild('wbToolbar')
   private toolbarElement: ElementRef;
@@ -46,6 +50,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
   private taskAddedSubscription: Subscription;
   private workbasketChangeSubscription: Subscription;
   private orientationSubscription: Subscription;
+  private objectReferenceSubscription: Subscription;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -69,11 +74,20 @@ export class TasklistComponent implements OnInit, OnDestroy {
     });
     this.workbasketChangeSubscription = this.workplaceService.workbasketSelectedStream.subscribe(workbasket => {
       this.currentBasket = workbasket;
-      this.getTasks();
+      if (this.selectedSearchType === Search.byWorkbasket) {
+        this.getTasks();
+      }
     });
     this.taskAddedSubscription = this.taskService.taskAddedStream.subscribe(task => {
       this.getTasks();
       this.selectedId = task.taskId;
+    });
+    this.objectReferenceSubscription = this.workplaceService.objectReferenceSelectedStream.subscribe(objectReference => {
+      this.objectReference = objectReference;
+      this.currentBasket = undefined;
+      if (objectReference) {
+        this.getTasks();
+      }
     });
   }
 
@@ -83,7 +97,6 @@ export class TasklistComponent implements OnInit, OnDestroy {
         if (!this.currentBasket) {
           this.selectedId = task.taskId;
           this.currentBasket = task.workbasketSummaryResource;
-          this.getTasks();
         }
         if (!task) {
           this.selectedId = undefined;
@@ -95,6 +108,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
   }
 
   selectTask(taskId: string) {
+    this.workplaceService.selectObjectReference(undefined);
     this.selectedId = taskId;
     this.router.navigate([{ outlets: { detail: `taskdetail/${this.selectedId}` } }], { relativeTo: this.route });
   }
@@ -109,6 +123,11 @@ export class TasklistComponent implements OnInit, OnDestroy {
     this.getTasks();
   }
 
+  selectSearchType(type: Search) {
+    this.selectedSearchType = type;
+    this.tasks = [];
+  }
+
   changePage(page) {
     TaskanaQueryParameters.page = page;
     this.getTasks();
@@ -120,7 +139,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
   }
 
   calculateHeightCard() {
-    if (this.toolbarElement && this.currentBasket) {
+    if (this.toolbarElement) {
       const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
       const cardHeight = 53;
       const unusedHeight = 145;
@@ -132,14 +151,15 @@ export class TasklistComponent implements OnInit, OnDestroy {
 
   getTasks(): void {
     this.requestInProgress = true;
-    if (this.currentBasket === undefined) {
+    if (this.currentBasket === undefined && !this.objectReference) {
       this.requestInProgress = false;
       this.tasks = [];
     } else {
       this.calculateHeightCard();
-      this.taskService.findTasksWithWorkbasket(this.currentBasket.workbasketId, this.sort.sortBy, this.sort.sortDirection,
-        this.filterBy.filterParams.name, this.filterBy.filterParams.owner, this.filterBy.filterParams.priority,
-        this.filterBy.filterParams.state)
+      this.taskService.findTasksWithWorkbasket(this.currentBasket ? this.currentBasket.workbasketId : undefined,
+        this.sort.sortBy, this.sort.sortDirection, this.filterBy.filterParams.name, this.filterBy.filterParams.owner,
+        this.filterBy.filterParams.priority, this.filterBy.filterParams.state, this.objectReference ? this.objectReference.type : undefined,
+        this.objectReference ? this.objectReference.value : undefined)
         .subscribe(tasks => {
           this.requestInProgress = false;
           if (tasks._embedded) {
@@ -163,5 +183,6 @@ export class TasklistComponent implements OnInit, OnDestroy {
     this.workbasketChangeSubscription.unsubscribe();
     this.taskAddedSubscription.unsubscribe();
     this.orientationSubscription.unsubscribe();
+    this.objectReferenceSubscription.unsubscribe();
   }
 }

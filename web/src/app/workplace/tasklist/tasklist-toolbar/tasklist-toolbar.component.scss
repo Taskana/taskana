@@ -1,13 +1,46 @@
+@import './src/assets/_colors';
+
 .list-group-item {
   padding: 5px 0px 2px 1px;
   border: none;
 }
 
-.tab-align{
+.tab-align {
   padding: 8px 12px 8px 0px;
   margin-bottom: 0px;
 
-  &>div{
+  & > div {
     margin: 6px 0px;
+  }
+}
+
+ul {
+  list-style-type: none;
+}
+
+.blue-font {
+  color: $blue;
+}
+
+.bold-blue {
+  font-weight: bold;
+  color: $blue;
+}
+
+svg-icon {
+  height: 18px;
+  width: 18px;
+  fill: $blue;
+}
+
+svg-icon.blue {
+  fill: $blue;
+}
+
+@media screen and (min-width: 991px) and (max-width: 1115px) {
+  .reduced-width {
+    width: 37px;
+    padding-left: 5px;
+    padding-right: 5px;
   }
 }
