@@ -306,7 +306,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .serviceLevelLike("PT%")
                 .list();
-        assertEquals(2, results.size());
+        assertEquals(0, results.size());
     }
 
     @Test
@@ -523,7 +523,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
                 .orderByServiceLevel(desc)
                 .list();
-        assertEquals("PT24H", results.get(0).getServiceLevel());
+        assertEquals("P8D", results.get(0).getServiceLevel());
     }
 
     @Test
