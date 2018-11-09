@@ -10,6 +10,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.atLeastOnce;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -246,7 +247,7 @@ public class TaskanaTransactionIntTest {
             WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, springTransactionProvider, null);
             job.run();
 
-            verify(mockAppender, times(7)).doAppend(captorLoggingEvent.capture());
+            verify(mockAppender, atLeastOnce()).doAppend(captorLoggingEvent.capture());
 
             List<LoggingEvent> allValues = captorLoggingEvent.getAllValues();
             Optional<LoggingEvent> result = allValues.stream().filter(event -> event.getLevel().equals(

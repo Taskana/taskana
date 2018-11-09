@@ -74,7 +74,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setParentId("CLI:100000000000000000000000000000000004");
         classification.setParentKey("L11010");
         classification.setPriority(1000);
-        classification.setServiceLevel("P2DT24H");
+        classification.setServiceLevel("P3D");
 
         classificationService.updateClassification(classification);
 
