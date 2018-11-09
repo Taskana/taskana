@@ -56,6 +56,7 @@ public class TaskController extends AbstractPagingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskController.class);
 
+    private static final String LIKE = "%";
     private static final String STATE = "state";
     private static final String STATE_VALUE_CLAIMED = "CLAIMED";
     private static final String STATE_VALUE_COMPLETED = "COMPLETED";
@@ -277,13 +278,11 @@ public class TaskController extends AbstractPagingController {
             params.remove(POR_SYSTEM_INSTANCE);
         }
         if (params.containsKey(POR_TYPE)) {
-            String[] types = extractCommaSeparatedFields(params.get(POR_TYPE));
-            taskQuery.primaryObjectReferenceTypeIn(types);
+            taskQuery.primaryObjectReferenceTypeLike(LIKE + params.get(POR_TYPE).get(0) + LIKE);
             params.remove(POR_TYPE);
         }
         if (params.containsKey(POR_VALUE)) {
-            String[] values = extractCommaSeparatedFields(params.get(POR_VALUE));
-            taskQuery.primaryObjectReferenceValueIn(values);
+            taskQuery.primaryObjectReferenceValueLike(LIKE + params.get(POR_VALUE).get(0) + LIKE);
             params.remove(POR_VALUE);
         }
         return taskQuery;

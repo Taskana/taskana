@@ -16,6 +16,8 @@ export class TaskanaQueryParameters {
   static PRIORITY = 'priority';
   static STATELIKE = 'state-like';
   static WORKBASKET_ID = 'workbasket-id';
+  static TASK_PRIMARY_OBJ_REF_TYPE_LIKE = 'por.type';
+  static TASK_PRIMARY_OBJ_REF_VALUE_LIKE = 'por.value';
 
   // Access
   static REQUIREDPERMISSION = 'required-permission';
@@ -53,6 +55,8 @@ export class TaskanaQueryParameters {
     basketId: string = undefined,
     priority: string = undefined,
     stateLike: string = undefined,
+    objRefTypeLike: string = undefined,
+    objRefValueLike: string = undefined,
   ): string {
     let query = '?';
     query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
@@ -79,6 +83,8 @@ export class TaskanaQueryParameters {
     query += workbasketKeyLike
       ? `${this.WORKBASKETKEYLIKE}=${workbasketKeyLike}&`
       : '';
+    query += objRefTypeLike ? `${this.TASK_PRIMARY_OBJ_REF_TYPE_LIKE}=${objRefTypeLike}&` : '';
+    query += objRefValueLike ? `${this.TASK_PRIMARY_OBJ_REF_VALUE_LIKE}=${objRefValueLike}&` : '';
 
     if (query.lastIndexOf('&') === query.length - 1) {
       query = query.slice(0, query.lastIndexOf('&'));
