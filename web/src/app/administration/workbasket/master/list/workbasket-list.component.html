@@ -22,8 +22,7 @@
             <dd data-toggle="tooltip" title="{{workbasket.owner}}">{{workbasket.owner}} &nbsp;</dd>
           </dl>
           <dl *ngIf="workbasket.markedForDeletion">
-            <span class="{{workbasket.workbasketId === selectedId ? 'white': 'red' }} glyphicon glyphicon-exclamation-sign"
-              aria-hidden="true" data-toggle="tooltip" title="Marked for deletion"></span>
+            <span title="Marked for deletion" data-toggle="tooltip" class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
           </dl>
         </div>
       </li>

@@ -2,21 +2,21 @@
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
     <div class="panel-heading">
         <div class="pull-right btn-group">
-            <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary" data-toggle="tooltip" title="Save">
-                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
+            <button type="button" (click)="onSubmit()" data-toggle="tooltip" title="Save" class="btn btn-default btn-primary">
+                <span class="material-icons md-20">save</span>
             </button>
-            <button type="button" (click)="onClear()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
-                <span class="glyphicon glyphicon-repeat blue" aria-hidden="true"></span>
+            <button type="button" (click)="onClear()" data-toggle="tooltip" title="Undo Changes" class="btn btn-default">
+                <span class="material-icons md-20 blue">undo</span>
             </button>
             <button type="button" (click)="removeDistributionTargets()" data-toggle="tooltip" title="Remove workbasket as distribuition target"
-                class="btn btn-default remove">
-                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                class="btn btn-default">
+                <span class="material-icons md-20 red">remove_circle_outline</span>
             </button>
             <button type="button" (click)="copyWorkbasket()" data-toggle="tooltip" title="Copy" class="btn btn-default">
-                <span class="glyphicon glyphicon-copy green-blue" aria-hidden="true"></span>
+                <span class="material-icons md-20 green-blue">file_copy</span>
             </button>
-            <button type="button" (click)="removeWorkbasket()" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            <button type="button" (click)="removeWorkbasket()" data-toggle="tooltip" title="Remove" class="btn btn-default">
+                <span class="material-icons md-20 red">delete</span>
             </button>
         </div>
         <h4 class="panel-header">{{workbasket.name}}&nbsp;
@@ -55,37 +55,35 @@
                         </taskana-field-error-display>
                     </ng-template>
                 </div>
+                <div class="form-group ">
+                    <label for="wb-domain" class="control-label">Domain</label>
+                    <input type="text" #domain="ngModel" class="form-control" disabled id="wb-domain" placeholder="Domain"
+                        [(ngModel)]="workbasket.domain" name="workbasket.domain">
+                </div>
                 <div class="row">
-                    <div class="form-group col-xs-6">
+                    <div class="form-group col-xs-4">
                         <label for="wb-type" class="control-label">Type</label>
-                        <div class="input-group">
-                            <div class="input-group-btn">
-                                <button class="btn btn-default" type="button" id="dropdownMenu24" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="true">
-                                    <taskana-icon-type class="vertical-align" [type]='workbasket.type'></taskana-icon-type>
-                                    {{allTypes.get(workbasket.type)}}
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-                                    <li>
-                                        <a *ngFor="let type of allTypes | mapValues | removeEmptyType" (click)="selectType(type.key)">
-                                            <taskana-icon-type class="vertical-align" [type]='type.key' [text]="type.value"></taskana-icon-type>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                        <div class="dropdown">
+                            <button class="btn btn-default" type="button" id="dropdownMenu24" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="true">
+                                <taskana-icon-type [type]='workbasket.type'></taskana-icon-type>
+                                {{allTypes.get(workbasket.type)}}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
+                                <li>
+                                    <a *ngFor="let type of allTypes | mapValues | removeEmptyType" (click)="selectType(type.key)">
+                                        <taskana-icon-type [type]='type.key' [text]="type.value"></taskana-icon-type>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="form-group col-xs-6">
-                        <label for="wb-domain" class="control-label">Domain</label>
-                        <input type="text" #domain="ngModel" class="form-control" disabled id="wb-domain" placeholder="Domain"
-                            [(ngModel)]="workbasket.domain" name="workbasket.domain">
+                    <div class="form-group col-xs-8">
+                        <label for="wb-description" class="control-label">Description</label>
+                        <textarea class="form-control" rows="7" id="wb-description" placeholder="Description"
+                            [(ngModel)]="workbasket.description" name="workbasket.description"></textarea>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="wb-description" class="control-label">Description</label>
-                    <textarea class="form-control" rows="7" id="wb-description" placeholder="Description" [(ngModel)]="workbasket.description"
-                        name="workbasket.description"></textarea>
                 </div>
             </div>
             <div class="col-md-6">

@@ -84,10 +84,6 @@ describe('AccessItemsComponent', () => {
 
 	});
 
-	it('should show Add new access item button', () => {
-		expect(debugElement.querySelector('#button-add-access-item')).toBeTruthy();
-	});
-
 	it('should remove an access item if remove button is clicked', () => {
 		expect(debugElement.querySelectorAll('#table-access-items > tbody > tr').length).toBe(2);
 		debugElement.querySelectorAll('#table-access-items > tbody > tr')[0].querySelector('td > button').click();

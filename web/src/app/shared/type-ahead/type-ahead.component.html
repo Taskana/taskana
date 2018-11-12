@@ -38,7 +38,7 @@
         [typeaheadWaitMs]="typeaheadWaitMs" (typeaheadLoading)="changeTypeaheadLoading($event)" placeholder="{{displayError? placeHolderMessage: ''}}"
         [@validation]="validationValue">
       <button *ngIf="!typeaheadLoading" type="button" title="search" class="btn rounded blue">
-        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        <span class="material-icons md-20 blue">search</span>
       </button>
       <div *ngIf="typeaheadLoading" class="loading">
         <taskana-spinner [isRunning]="typeaheadLoading" positionClass="type-ahead-spinner"></taskana-spinner>

@@ -1,7 +1,8 @@
 <div *ngIf="alert" [@toggleTop]="alert" class="alert alert-{{alert.type}} {{alert.autoClosing? '':'alert-dismissible'}} footer"
  role="alert">
- 	<span class="glyphicon {{alert.type === 'success'? 'glyphicon-thumbs-up': 'glyphicon-exclamation-sign'  }}" aria-hidden="true"></span>
-	{{alert.text}}
+	<span id="alert-icon" title="{{alert.type}}" data-toggle="tooltip" class="material-icons md-20">{{alert.type ===
+		'success'? 'done': (alert.type === 'danger'? 'error' :alert.type)}}</span>
+	<span id="alert-text">{{alert.text}}</span>
 	<button *ngIf="!alert.autoClosing" type="button" class="close" data-dismiss="alert" aria-label="Close">
 		<span aria-hidden="true">&times;</span>
 	</button>

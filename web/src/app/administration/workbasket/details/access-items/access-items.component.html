@@ -1,12 +1,11 @@
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right btn-group">
-			<button type="button" (click)="onSubmit()" [disabled]="action === 'COPY'" class="btn btn-default btn-primary"
-			 data-toggle="tooltip" title="Save">
-				<span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
+			<button type="button" (click)="onSubmit()" [disabled]="action === 'COPY'" data-toggle="tooltip" title="Save" class="btn btn-default btn-primary">
+				<span class="material-icons md-20">save</span>
 			</button>
-			<button type="button" (click)="clear()" class="btn btn-default" data-toggle="tooltip" title="Undo Changes">
-				<span class="glyphicon glyphicon-repeat blue" aria-hidden="true"></span>
+			<button type="button" (click)="clear()" data-toggle="tooltip" title="Undo Changes" class="btn btn-default">
+				<span class="material-icons md-20 blue">undo</span>
 			</button>
 		</div>
 		<h4 class="panel-header">{{workbasket.name}}
@@ -43,8 +42,8 @@
 				<tbody>
 					<tr *ngFor="let accessItem of accessItemsGroups.controls; let index = index;" [formGroupName]="index">
 						<td>
-							<button type="button" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default remove">
-								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+							<button type="button" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default">
+								<span class="material-icons md-20 red">clear</span>
 							</button>
 						</td>
 						<td *ngIf="accessIdField.lookupField else accessIdInput" class="input-group text-align text-width taskana-type-ahead"
@@ -140,10 +139,9 @@
 				</tbody>
 			</table>
 		</form>
-		<button id="button-add-access-item" type="button" (click)="addAccessItem()" class="btn btn-default" data-toggle="tooltip"
-		 title="Add new access">
-			<span class="glyphicon glyphicon-plus green-blue" aria-hidden="true"></span>
-			Add new access
+		<button type="button" (click)="addAccessItem()" data-toggle="tooltip" title="Add new access" class="btn btn-default">
+			<span class="material-icons md-20 green-blue">add</span>
+			<span>Add new access</span>
 		</button>
 		<taskana-spinner [isRunning]="requestInProgress" [positionClass]=""></taskana-spinner>
 	</div>
