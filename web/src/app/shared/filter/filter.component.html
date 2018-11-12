@@ -4,13 +4,13 @@
       <div class="dropdown col-xs-2">
         <button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdownMenufilter" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="true">
-          <taskana-icon-type [type]="filter.filterParams?.type" class="vertical-align"></taskana-icon-type>
+          <taskana-icon-type [type]="filter.filterParams?.type"></taskana-icon-type>
         </button>
         <ul class="dropdown-menu dropdown-menu-users" role="menu">
           <li>
             <a *ngFor="let type of allTypes | mapValues" type="button" (click)="selectType(type.key); search()"
               data-toggle="tooltip" [title]="type.value">
-              <taskana-icon-type class="vertical-align" [type]='type.key' [text]="type.value"></taskana-icon-type>
+              <taskana-icon-type [type]='type.key' [text]="type.value"></taskana-icon-type>
             </a>
           </li>
         </ul>
@@ -23,8 +23,9 @@
         <input type="text" [(ngModel)]="filter.filterParams.key" (keyup.enter)="search()" class="form-control" id="display-key-filter"
           placeholder="Filter key">
       </div>
-      <button (click)="clear(); search()" type="button" class="btn btn-default glyphicon glyphicon-ban-circle blue pull-right margin-right"
+      <button (click)="clear(); search()" type="button" class="btn btn-default pull-right margin-right"
         data-toggle="tooltip" title="Clear">
+        <span class="material-icons md-20 blue">clear</span>
       </button>
     </div>
     <div class="row">
@@ -38,15 +39,17 @@
         <input type="text" [(ngModel)]="filter.filterParams.owner" (keyup.enter)="search()" class="form-control" id="display-name-owner"
           placeholder="Filter owner">
       </div>
-      <button (click)="search()" type="button" class="btn btn-default glyphicon glyphicon-search blue pull-right margin-right"
-        data-toggle="tooltip" title="Search">
+      <button (click)="search()" type="button" class="btn btn-default pull-right margin-right" data-toggle="tooltip"
+        title="Search">
+        <span class="material-icons md-20 blue ">search</span>
       </button>
     </div>
   </div>
   <ng-template #tasktype>
     <div class="row">
       <div class="col-xs-2">
-        <input type="text" [(ngModel)]="filter.filterParams.priority" (keyup.enter)="search()"  data-toggle="tooltip" title="priority" class="form-control" id="display-priority-filter">
+        <input type="text" [(ngModel)]="filter.filterParams.priority" (keyup.enter)="search()" data-toggle="tooltip"
+          title="priority" class="form-control" id="display-priority-filter">
       </div>
       <div class="col-xs-4">
         <input type="text" [(ngModel)]="filter.filterParams.name" (keyup.enter)="search()" class="form-control" id="display-name-filter"
@@ -56,8 +59,9 @@
         <input type="text" [(ngModel)]="filter.filterParams.owner" (keyup.enter)="search()" class="form-control" id="display-owner-filter"
           placeholder="Filter owner">
       </div>
-      <button (click)="clear(); search()" type="button" class="btn btn-default glyphicon glyphicon-ban-circle blue pull-right margin-right"
-        data-toggle="tooltip" title="Clear">
+      <button (click)="clear(); search()" class="btn btn-default pull-right margin-right" type="button" data-toggle="tooltip"
+        title="Clear">
+        <span class="material-icons md-20 blue">clear</span>
       </button>
     </div>
     <div class="row">
@@ -65,10 +69,10 @@
         <input type="text" [(ngModel)]="filter.filterParams.state" (keyup.enter)="search()" class="form-control" id="display-owner-state"
           placeholder="Filter status">
       </div>
-      <button (click)="search()" type="button" class="btn btn-default glyphicon glyphicon-search blue pull-right margin-right"
-        data-toggle="tooltip" title="Search">
+      <button (click)="search()" type="button" class="btn btn-default pull-right margin-right" data-toggle="tooltip"
+        title="Search">
+        <span class="material-icons md-20 blue ">search</span>
       </button>
     </div>
   </ng-template>
-
 </div>

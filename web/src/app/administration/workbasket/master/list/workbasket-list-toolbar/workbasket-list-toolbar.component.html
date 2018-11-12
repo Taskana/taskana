@@ -1,19 +1,18 @@
 <li id="wb-action-toolbar" class="list-group-item tab-align">
   <div class="row">
-    <div class="col-xs-8">
+    <div class="col-xs-9 btn-group">
       <button type="button" (click)="addWorkbasket()" data-toggle="tooltip" title="Add" class="btn btn-default">
-        <span class="glyphicon glyphicon-plus green-blue" aria-hidden="true"></span>
+        <span class="material-icons md-20 green-blue">add_circle_outline</span>
       </button>
-      <taskana-import-export-component (importSucessful)="importEvent()" [currentSelection]="selectionToImport"></taskana-import-export-component>
+      <taskana-import-export-component class="btn-group" (importSucessful)="importEvent()" [currentSelection]="selectionToImport"></taskana-import-export-component>
     </div>
-    <div class="margin-right pull-right ">
+    <div class="margin-right pull-right btn-group">
+      <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group"></taskana-sort>
       <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState"
         data-toggle="tooltip" title="Filter">
-        <span class="glyphicon glyphicon-filter blue"></span>
+        <span class="material-icons md-20 blue">{{!toolbarState? 'search' : 'expand_less'}}</span>
       </button>
-      <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group"></taskana-sort>
     </div>
-
   </div>
   <div [@toggleDown]="toolbarState" class="row no-overflow">
     <taskana-filter (performFilter)="filtering($event)"></taskana-filter>

@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-xs-2">
 			<button (click)="toggleDtl = !toggleDtl; selectAll(toggleDtl);" class="btn btn-default no-style" title="Toggle select all">
-				<span aria-hidden="true" class="glyphicon blue {{toggleDtl?  'glyphicon-check':  'glyphicon-unchecked'}}"></span>
+				<span class="material-icons md-20 blue ">{{toggleDtl ? 'check_box': 'check_box_outline_blank'}}</span>
 			</button>
 		</div>
 		<div class="col-xs-7">
@@ -11,7 +11,7 @@
 		<div class="pull-right">
 			<button class="btn btn-default" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState"
 			 data-toggle="tooltip" title="Filter">
-				<span class="glyphicon glyphicon-filter blue"></span>
+				<span class="material-icons md-20 blue ">{{!toolbarState? 'search' : 'expand_less'}}</span>
 			</button>
 		</div>
 	</div>
@@ -25,7 +25,7 @@
 			 [class.selected]="distributionTarget.selected" type="text" (click)="distributionTarget.selected = !distributionTarget.selected">
 				<div class="row">
 					<dl class="col-xs-1">
-						<taskana-icon-type class="vertical-align" [type]="distributionTarget.type"></taskana-icon-type>
+						<taskana-icon-type [type]="distributionTarget.type"></taskana-icon-type>
 					</dl>
 					<dl class="col-xs-10">
 						<dt>{{distributionTarget.name}},

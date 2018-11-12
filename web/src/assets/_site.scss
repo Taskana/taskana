@@ -215,10 +215,6 @@ body{
     text-align: left;
 }
 
-.btn.remove {
-    color: crimson;
-}
-
 .dropdown-menu-users >li {
     margin-bottom: 5px;
 }
@@ -242,8 +238,21 @@ body{
     -o-transition: opacity 300ms ease, visibility 300ms ease;
     transition: opacity 300ms ease, visibility 300ms ease;
 }
+/* buttons and icons vertical align */
 .vertical-align{
     vertical-align: top;
+}
+
+.btn > svg-icon > svg{
+    vertical-align: middle;
+}
+a > svg-icon > svg{
+    vertical-align: text-top;
+}
+/*end buttons and icons vertical align */
+
+.btn > span.flip {
+    transform: rotateX(180deg);
 }
 
 .panel-heading{
@@ -337,7 +346,7 @@ li.list-group-item:hover {
     border-bottom: 1px solid #ccc;
 }
 
-.empty-icon {
+.center-block>span.empty-icon, .empty-icon  {
     display: block;
     width: 150px;
     height: 150px;

@@ -1,7 +1,7 @@
 <div class="dropdown clearfix btn-group">
-
   <button type="button" class="btn btn-default"> {{classificationTypeSelected}}</button>
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+    aria-expanded="false">
     <span class="caret"></span>
     <span class="sr-only">Toggle Dropdown</span>
   </button>
@@ -9,9 +9,9 @@
     <li *ngFor="let classificationType of classificationTypes">
       <a (click)="select(classificationType)">
         <label>
-          <span class="glyphicon {{classificationTypeSelected === classificationType? 'glyphicon-check': 'glyphicon-unchecked'}} blue"
-            aria-hidden="true"></span>
-          {{classificationType}}
+          <span data-toggle="tooltip" class="material-icons md-20 blue">{{classificationTypeSelected === classificationType?
+            'check_box': 'check_box_outline_blank'}}</span>
+          <span>{{classificationType}}</span>
         </label>
       </a>
     </li>
