@@ -14,17 +14,20 @@ cache:
 stages:
   - Build
   - Test
-  - "Release / Deploy"
+  - BeforeRelease
+  - Release
+  - Deploy
 
 env:
   global:
+    - FORCE_DEPLOY=true
     - NODE_VERSION=8
     - DEPLOY_REPO=Taskana/taskana
   matrix:
     - DB=H2 
-    - DB=DB2_10_5
-    - DB=DB2_11_1
-    - DB=POSTGRES_10_4
+    #- DB=DB2_10_5
+    #- DB=DB2_11_1
+    #- DB=POSTGRES_10_4
 
 stage: Test
 script:
@@ -46,23 +49,13 @@ jobs:
         - (cd web && npm run build:prod)
           && mvn clean install -q -f lib -DskipTests -Dmaven.javadoc.skip=true
           && mvn clean install -q -f rest -DskipTests -Dmaven.javadoc.skip=true
-    - stage: "Release / Deploy"
+    - stage: BeforeRelease
       script: 
         - ci/change_version.sh -i -m "lib/ rest/" -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
-          && ci/copy-rest-spring.sh $TRAVIS_TAG
+          && ci/copy-rest-spring.sh $TRAVIS_TAG5
           && ci/commitPoms.sh lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
-      deploy: 
-        provider: cloudfoundry 
-        username: tobias.schaefer@novatec-gmbh.de
-        password:
-          secure: dQh3e8Zhi2ucd5NcxHZ337Ku2SFrt0qA8lghtExQU5bcdFziqYKJsVFdD19hNQE6DOZT8FV9OHTB3odZSvV7aa38sq4KDwzJVVitIyU3eNZP0S5AqAv0eKitqQhjY7rnjBIkgMQ2rGTZlAL9g/CQWPlB4rnUPLXv/7+pZP29M3OPK0hyIPw9I0FfU02cM+R2z8SYPRr4MYYbdsTdJeJz+1sKWwQiD4bDE/Kmcs7BALTZ3/HFmu2Kjxk7soERSpXlMvKDkHHJCJMSjQI6zT5Ja6yg4SgOgccLZKuaPwF+8a7RKPOtW+H74zzO/IE9FGimlRKFGHhoFmQh0oI1sMkhRyIH0n/rkCVzI6B8XjDBEdaRjfHZbAkrjapuvhLwSxyklut3CknbSxfgAo8tZefsGVETD1rYkfLA207bkxt6Wk+X1d2pCRFkUoeTjcB+IkqvftTJvTX5vyt927w0pyx/xg9gxBLA3bqzhRL7rwgXgqgrxNUDFT3nxExecPpdEinyVf+jQxmrb1uw1WEFM+dLjA3tByxMEy7PfnfqTvUs8dvs4em1Vln+N5K1+OqU93ze3FmPMmqY3/4r63qdVACtCqHlfGC3HQPUi6fWmBzVNhZ9rF6FJvkECTkvLklnOB9MIoneGk2v46slveUsxKSz985A2aMkYNO+p1VozS8rAfg=
-        api: https://api.ng.bluemix.net 
-        organization: '"NovaTec Consulting GmbH"' 
-        space: Taskana
-        on:
-          all_branches: true
       if: repo = env(DEPLOY_REPO) AND tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
-    - stage: "Release / Deploy"
+    - stage: Release
       script:
         - ci/release.sh lib/taskana-core $TRAVIS_TAG
           && ci/release.sh lib/taskana-spring $TRAVIS_TAG
@@ -70,3 +63,15 @@ jobs:
           && ci/release.sh web/ $TRAVIS_TAG
           && ci/release.sh rest/taskana-rest-spring $TRAVIS_TAG
       if: repo = env(DEPLOY_REPO) AND (tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ OR branch = master) AND type != pull_request
+    - stage: Deploy
+      deploy:
+        provider: cloudfoundry
+        username: mmr@novatec-gmbh.de
+        password:
+          secure: "QEG1zY45lDieppjMghaDPA90e9lYvbiSvaGS3XEeOCkeRI/lsVpxfGG4oDHIuoig8wmPU0fgdPv1dQKCWnWi3kELZaNOXxbH+QsGYXhvOw5Ba7sQWcVfWjWKf1DtfR8z9J5ndPdR7KY04Z2DxHNle8/S231goSoZqxdQwaQRmFzhzx//U9JbbfXLJH3g+d4R4ZqzPpWSIZPmpZXK1d27ygn+y6NDla6mqyurcIeJ9EH80pfC7zFIilWOjsyvg/lOqoGAB2SvuZfB2t2d+/uZgHvrVd3NIisV5K6XN3bZ7aU/P8osA2Smahc15H2XKmuAPB1/qHQDeuJP97D67eM7SkkMvg5VKjxQBF+E6aijMzHOZEL6OgNezY/Xln1Pz8j0mGjFXXhyy5xVFComcLB3M0aIicyqO9MFoMtCUjLr8LLcK4Y4q7vD5/VTHEU079CAZESm+A9L0HdgKIRsKl5pmjFc7MfsaXg6e+1d5+TIHyD4JgNvkQvSluIBZFI30HXxKrucFk/HaLmyeX04PdFISZ/fqfHi3bQanY6eN7Oj+rLtl+FRyIPoYdL42AcAXzvWsISdImi3QbaBFPHaVk4mUzEzn/mQcoPMrL8VYFEyltcDjbtmo9sGaAkia39PIYwOuivdXLcEHuXMyxXmG105kLsBpIIM3pPIk97ERrgUKO0="
+        api: https://api.eu-gb.bluemix.net
+        organization: "mmr@novatec-gmbh.de"
+        space: dev
+        on:
+          all_branches: true
+      if: (repo = env(DEPLOY_REPO) AND tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$) OR (env(FORCE_DEPLOY) = true)
