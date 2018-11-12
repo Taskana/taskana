@@ -37,20 +37,21 @@ describe('AlertComponent', () => {
 	});
 
 	it('should show alert message', () => {
-		alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'some custom text', ));
+		alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'some custom text'));
 		fixture.detectChanges();
-		expect(debugElement.querySelector('.alert.alert-success')).toBeDefined();
-		expect(debugElement.querySelector('.alert.alert-success').innerText).toBe('some custom text');
+		expect(debugElement.querySelector('#alert-icon').innerText).toBe('done');
+		expect(debugElement.querySelector('#alert-text').innerText).toBe('some custom text');
 	});
 
 	it('should have differents alert types', () => {
-		alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'some custom text', ));
+		alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'some custom text'));
 		fixture.detectChanges();
-		expect(debugElement.querySelector('.alert.alert-danger')).toBeDefined();
+		expect(debugElement.querySelector('#alert-icon').innerText).toBe('error');
 
-		alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'some custom text', ));
+		alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'some custom text'));
 		fixture.detectChanges();
-		expect(debugElement.querySelector('.alert.alert-warning')).toBeDefined();
+		expect(debugElement.querySelector('#alert-icon').innerText).toBe('warning');
+		expect(debugElement.querySelector('#alert-text').innerText).toBe('some custom text');
 	});
 
 	it('should define a closing timeout if alert has autoclosing property', (done) => {
@@ -67,7 +68,7 @@ describe('AlertComponent', () => {
 	it('should have defined a closing button if alert has no autoclosing property', () => {
 		alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'some custom text', false));
 		fixture.detectChanges();
-		expect(debugElement.querySelector('.alert.alert-danger > button')).toBeDefined();
+		expect(debugElement.querySelector('.alert > button')).toBeDefined();
 	});
 
 });

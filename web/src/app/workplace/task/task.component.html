@@ -1,17 +1,18 @@
 <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <div class="pull-left btn-group align-header">
-      <button (click)="navigateBack()" class="btn btn-default no-style blue " title="Cancel and return to task detail">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Back
-      </button>
-    </div>
     <div class="pull-right">
-      <div class="dropdown" style="display: inline">
-        <button type="button" data-toggle="dropdown" aria-expanded="true" class="btn btn-default dropdown-toggle">
-          <span title="Transfer task to another workbasket" class="glyphicon glyphicon-transfer text-muted"></span>
+      <div class="dropdown btn-group">
+        <button type="button" (click)="navigateBack()" class="btn btn-default">
+          <span title="Cancel and return to task detail" class="material-icons md-20 blue">arrow_back_ios</span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-right">
+        <button type="button" (click)="completeTask()" class="btn btn-default">
+          <span title="Complete task and return to task list" class="material-icons md-20 blue">check</span>
+        </button>
+        <button type="button" data-toggle="dropdown" aria-expanded="true" class="btn btn-default dropdown-toggle">
+          <span title="Transfer task to another workbasket" class="material-icons md-20 blue">transfer_within_a_station</span>
+        </button>
+        <ul class="dropdown-menu">
           <li *ngFor="let workbasket of workbaskets">
             <a class="dropdown-item" (click)="transferTask(workbasket)">
               <label>{{workbasket.name}}</label>
@@ -19,15 +20,11 @@
           </li>
         </ul>
       </div>
-      <button type="button" (click)="completeTask()" class="btn btn-default"><span title="Complete task and return to task list"
-          class="glyphicon glyphicon-ok blue text-success"></span>
-      </button>
     </div>
     <div class="panel-header">
       <h4><b>{{task?.name}}</b></h4>
     </div>
   </div>
-
   <div class="panel-body" *ngIf="task">
     <div class="row">
       <form #TaskForm="ngForm">
@@ -55,6 +52,5 @@
     <div class="row">
       <iframe class="col-xs-12" [src]="link"></iframe>
     </div>
-
   </div>
 </div>

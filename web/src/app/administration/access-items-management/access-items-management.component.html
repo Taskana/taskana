@@ -47,7 +47,7 @@
               <th>
                 <button type="button" (click)="searchForAccessItemsWorkbaskets()" class="btn btn-default" data-toggle="tooltip"
                   title="Search">
-                  <span class="glyphicon glyphicon-search blue" aria-hidden="true"></span>
+                  <span class="material-icons md-20 blue">search</span>
                 </button>
               </th>
               <th></th>
@@ -179,7 +179,8 @@
                 <ul *ngIf="belongingGroups !== undefined && belongingGroups.length > 0 " class="list-group">
                   <li *ngFor="let group of belongingGroups" class="list-group-item">{{group.name}}</li>
                 </ul>
-                <p *ngIf="belongingGroups === undefined || belongingGroups.length === 0">The user is not associated to any groups</p>
+                <p *ngIf="belongingGroups === undefined || belongingGroups.length === 0">The user is not associated to
+                  any groups</p>
               </div>
 
               <div class="modal-footer">
@@ -192,7 +193,7 @@
         <div class="pull-right btn-group">
           <button *ngIf="AccessItemsForm" type="button" class="btn btn-default" data-toggle="tooltip" title="Revoke access"
             [disabled]=isGroup>
-            <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>
+            <span class="material-icons md-20 red">clear</span>
           </button>
         </div>
       </form>

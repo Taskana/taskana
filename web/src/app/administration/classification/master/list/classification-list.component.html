@@ -1,33 +1,36 @@
 <div class="classification-list-full-height">
 	<li id="wb-action-toolbar" class="list-group-item tab-align">
 		<div class="row">
-			<div class="col-xs-12">
+			<div class="col-xs-6 btn-group">
 				<button type="button" (click)="addClassification()" data-toggle="tooltip" title="Add" class="btn btn-default">
-					<span class="glyphicon glyphicon-plus green-blue" aria-hidden="true"></span>
+					<span class="material-icons md-20 green-blue">add_circle_outline</span>
 				</button>
-				<taskana-import-export-component [currentSelection]="selectionToImport" (importSucessful)="refreshClassificationList()">
+				<taskana-import-export-component class ="btn-group" [currentSelection]="selectionToImport" (importSucessful)="refreshClassificationList()">
 				</taskana-import-export-component>
-				<taskana-classification-types-selector class="pull-right" [classificationTypes]="classificationsTypes" [(classificationTypeSelected)]="classificationTypeSelected"
-				 (classificationTypeChanged)=selectClassificationType($event)></taskana-classification-types-selector>
+			</div>
+			<div class="col-xs-6">
+				<taskana-classification-types-selector class="pull-right" [classificationTypes]="classificationsTypes"
+				 [(classificationTypeSelected)]="classificationTypeSelected" (classificationTypeChanged)=selectClassificationType($event)></taskana-classification-types-selector>
 			</div>
 		</div>
 	</li>
 	<div class="col-xs-2 category-filter">
 		<button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdown-classification-filter" data-toggle="dropdown"
 		 aria-haspopup="true" aria-expanded="true">
-			<svg-icon *ngIf="selectedCategory else category_unselected" class="blue" [src]="getCategoryIcon(selectedCategory).name" data-toggle="tooltip"
-			 [title]="getCategoryIcon(category).text"></svg-icon>
+			<svg-icon *ngIf="selectedCategory else category_unselected" class="blue" [src]="getCategoryIcon(selectedCategory).name"
+			 data-toggle="tooltip" [title]="getCategoryIcon(category).text"></svg-icon>
 			<ng-template #category_unselected>
-				<svg-icon data-toggle="tooltip" title="All" class="blue vertical-align" src="./assets/icons/asterisk.svg"></svg-icon>
+				<svg-icon data-toggle="tooltip" title="All" class="blue " src="./assets/icons/asterisk.svg"></svg-icon>
 			</ng-template>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-classification" role="menu">
 			<li>
 				<a type="button" (click)="selectCategory('');" data-toggle="tooltip" title="All">
-					<svg-icon class="blue vertical-align" src="./assets/icons/asterisk.svg"></svg-icon>
+					<svg-icon class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
 					All
 				</a>
-				<a *ngFor="let category of categories" type="button" (click)="selectCategory(category);" data-toggle="tooltip" [title]="category">
+				<a *ngFor="let category of categories" type="button" (click)="selectCategory(category);" data-toggle="tooltip"
+				 [title]="category">
 					<svg-icon class="blue" [src]="getCategoryIcon(category).name" data-toggle="tooltip" [title]="getCategoryIcon(category).text"></svg-icon>
 					{{category}}
 				</a>
@@ -40,8 +43,9 @@
 	<div class="col-xs-12 horizontal-bottom-divider">
 	</div>
 	<taskana-spinner class="col-xs-12" [isRunning]="requestInProgress" positionClass="centered-spinner-whole-screen"></taskana-spinner>
-	<taskana-tree class="col-xs-12" *ngIf="(classifications && classifications.length) else empty_classifications" [treeNodes]="classifications"
-	 [selectNodeId]="selectedId" [filterText]="inputValue" [filterIcon]="selectedCategory" (selectNodeIdChanged)="selectClassification($event)"></taskana-tree>
+	<taskana-tree class="col-xs-12" *ngIf="(classifications && classifications.length) else empty_classifications"
+	 [treeNodes]="classifications" [selectNodeId]="selectedId" [filterText]="inputValue" [filterIcon]="selectedCategory"
+	 (selectNodeIdChanged)="selectClassification($event)"></taskana-tree>
 	<ng-template #empty_classifications>
 		<div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
 			<h3 class="grey">There are no classifications</h3>

@@ -25,9 +25,6 @@ export class ImportExportComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
-
-  updateDomains() {
     this.domainService.getDomains().subscribe(
       data => this.domains = data
     );

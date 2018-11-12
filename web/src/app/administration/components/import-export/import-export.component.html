@@ -1,19 +1,20 @@
 <input #selectedFile type="file" accept=".json" (change)="onSelectFile($event)" class="hide" />
-<svg-icon class="btn btn-default green-blue" src="./assets/icons/import.svg" title="Import" (click)="selectedFile.click()"></svg-icon>
-<div class="dropdown" style="display: inline">
-  <svg-icon class="btn btn-default red dropdown-toggle" title="Export" src="./assets/icons/export.svg" data-toggle="dropdown"
-    aria-expanded="true" (click)="updateDomains()"></svg-icon>
-  <ul class="dropdown-menu">
+<button type="button" (click)="selectedFile.click()" data-toggle="tooltip" title="Import" class="btn btn-default">
+  <span class="material-icons md-20 green-blue">cloud_upload</span>
+</button>
+<ul class="dropdown-menu">
     <li>
-      <a class="dropdown-item" (click)="export()">
+      <a href="javascript:void(0)" class="dropdown-item" (click)="export()">
         <label>All Domains</label>
       </a>
     </li>
     <div role="separator" class="divider"></div>
     <li *ngFor="let domain of domains">
-      <a class="dropdown-item" (click)="export(domain)">
+      <a href="javascript:void(0)" class="dropdown-item" (click)="export(domain)">
         <label>{{domain === '' ? 'Master' : domain}}</label>
       </a>
     </li>
   </ul>
-</div>
+<button type="button" data-toggle="dropdown" title="Export" class="btn btn-default">
+  <span class="material-icons md-20 red">cloud_download</span>
+</button>

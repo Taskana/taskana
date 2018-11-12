@@ -87,7 +87,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   refreshWorkbasketList() {
     const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
-    const cardHeight = 75;
+    const cardHeight = 72;
     const unusedHeight = 145;
     const totalHeight = window.innerHeight;
     const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);

@@ -6,8 +6,6 @@ import { ClassificationDefinitionService } from 'app/administration/services/cla
 import { WorkbasketDefinitionService } from '../../services/workbasket-definition/workbasket-definition.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { HttpClientModule } from '@angular/common/http';
-import { DomainService } from 'app/services/domain/domain.service';
-import { of } from 'rxjs';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTests } from 'app/app.test.configuration';
@@ -15,7 +13,6 @@ import { configureTests } from 'app/app.test.configuration';
 describe('ImportExportComponent', () => {
   let component: ImportExportComponent;
   let fixture: ComponentFixture<ImportExportComponent>;
-  let domainService;
   let debugElement;
 
   beforeEach(done => {
@@ -44,10 +41,4 @@ describe('ImportExportComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update domains', () => {
-    domainService = TestBed.get(DomainService);
-    spyOn(domainService, 'getDomains').and.returnValue(of(['A', 'B']));
-    component.updateDomains();
-    expect(domainService.getDomains).toHaveBeenCalled();
-  });
 });
