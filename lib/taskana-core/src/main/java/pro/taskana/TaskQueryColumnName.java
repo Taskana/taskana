@@ -22,6 +22,7 @@ public enum TaskQueryColumnName implements QueryColumnName {
     CLASSIFICATION_CATEGORY("t.classification_category"),
     CLASSIFICATION_KEY("t.classification_key"),
     CLASSIFICATION_ID("t.classification_id"),
+    CLASSIFICATION_NAME("c.name"),
     WORKBASKET_ID("t.workbasket_id"),
     WORKBASKET_KEY("t.workbasket_key"),
     DOMAIN("t.domain"),
@@ -55,6 +56,7 @@ public enum TaskQueryColumnName implements QueryColumnName {
     CUSTOM_16("t.custom_16"),
     A_CLASSIFICATION_KEY("a.classification_key"),
     A_CLASSIFICATION_ID("a.classification_id"),
+    A_CLASSIFICATION_NAME("ac.name"),
     A_CHANNEL("a.channel"),
     A_REF_VALUE("a.ref_value");
 

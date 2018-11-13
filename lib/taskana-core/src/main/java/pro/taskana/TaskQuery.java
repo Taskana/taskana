@@ -155,6 +155,26 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
     TaskQuery classificationCategoryLike(String... classificationCategories);
 
     /**
+     * Add your classificationName to your query.
+     *
+     * @param classificationNames
+     *            the classification name
+     * @return the query
+     */
+    TaskQuery classificationNameIn(String... classificationNames);
+
+    /**
+     * Add your classificationName for pattern matching to your query. It will be compared in SQL with the LIKE operator.
+     * You may use a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with
+     * the OR keyword.
+     *      *
+     * @param classificationNames
+     *            the classification name
+     * @return the query
+     */
+    TaskQuery classificationNameLike(String... classificationNames);
+
+    /**
      * Add your workbasket key to the query.
      *
      * @param workbasketIdentifiers
@@ -497,6 +517,26 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
     TaskQuery attachmentClassificationIdLike(String... attachmentClassificationId);
 
     /**
+     * Add the attachment classification names for exact matching to your query.
+     *
+     * @param attachmentClassificationName
+     *            the attachmentClassificationName values of the searched for tasks
+     * @return the query
+     */
+    TaskQuery attachmentClassificationNameIn(String... attachmentClassificationName);
+
+    /**
+     * Add the values of attachment classification names for pattern matching to your query. They will be compared in SQL
+     * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple arguments
+     * they are combined with the OR keyword.
+     *
+     * @param attachmentClassificationName
+     *            the attachmentClassificationName values of the searched-for tasks
+     * @return the query
+     */
+    TaskQuery attachmentClassificationNameLike(String... attachmentClassificationName);
+
+    /**
      * Add the values of attachment channel for exact matching to your query.
      *
      * @param attachmentChannel
@@ -583,6 +623,16 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
      * @return the query
      */
     TaskQuery orderByClassificationKey(SortDirection sortDirection);
+
+    /**
+     * This method sorts the query result according to the classification name.
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    TaskQuery orderByClassificationName(SortDirection sortDirection);
 
     /**
      * This method sorts the query result according to the completed timestamp.
@@ -820,6 +870,16 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
      */
     TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection);
 
+    /**
+     * This method sorts the query result according to the attachment classification name.
+     * (Should only be used if there is one attachment per task in other case the result would be wrong.)
+     *
+     * @param sortDirection
+     *            Determines whether the result is sorted in ascending or descending order. If sortDirection is null,
+     *            the result is sorted in ascending order
+     * @return the query
+     */
+    TaskQuery orderByAttachmentClassificationName(SortDirection sortDirection);
 
     /**
      * This method sorts the query result according to the attachment classification id.
