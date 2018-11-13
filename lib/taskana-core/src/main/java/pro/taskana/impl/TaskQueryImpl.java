@@ -62,6 +62,8 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] classificationKeyNotIn;
     private String[] classificationCategoryIn;
     private String[] classificationCategoryLike;
+    private String[] classificationNameIn;
+    private String[] classificationNameLike;
     private String[] ownerIn;
     private String[] ownerLike;
     private Boolean isRead;
@@ -116,6 +118,8 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] attachmentClassificationKeyLike;
     private String[] attachmentClassificationIdIn;
     private String[] attachmentClassificationIdLike;
+    private String[] attachmentClassificationNameIn;
+    private String[] attachmentClassificationNameLike;
     private String[] attachmentChannelIn;
     private String[] attachmentChannelLike;
     private String[] attachmentReferenceIn;
@@ -132,8 +136,13 @@ public class TaskQueryImpl implements TaskQuery {
     private List<String> orderBy;
     private List<String> orderColumns;
 
+    private boolean useDistinctKeyword = false;
     private boolean joinWithAttachments = false;
+    private boolean joinWithClassifications = false;
+    private boolean joinWithAttachmentClassifications = false;
     private boolean addAttachmentColumnsToSelectClauseForOrdering = false;
+    private boolean addClassificationNameToSelectClauseForOrdering = false;
+    private boolean addAttachmentClassificationNameToSelectClauseForOrdering = false;
 
     TaskQueryImpl(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
@@ -584,7 +593,7 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery attachmentClassificationKeyLike(String... attachmentClassificationKey) {
         joinWithAttachments = true;
-        this.attachmentClassificationKeyLike = attachmentClassificationKey;
+        this.attachmentClassificationKeyLike = toUpperCopy(attachmentClassificationKey);
         return this;
     }
 
@@ -598,7 +607,7 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery attachmentClassificationIdLike(String... attachmentClassificationId) {
         joinWithAttachments = true;
-        this.attachmentClassificationIdLike = attachmentClassificationId;
+        this.attachmentClassificationIdLike = toUpperCopy(attachmentClassificationId);
         return this;
     }
 
@@ -612,7 +621,7 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery attachmentChannelLike(String... attachmentChannel) {
         joinWithAttachments = true;
-        this.attachmentChannelLike = attachmentChannel;
+        this.attachmentChannelLike = toUpperCopy(attachmentChannel);
         return this;
     }
 
@@ -626,7 +635,7 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery attachmentReferenceValueLike(String... referenceValue) {
         joinWithAttachments = true;
-        this.attachmentReferenceLike = referenceValue;
+        this.attachmentReferenceLike = toUpperCopy(referenceValue);
         return this;
     }
 
@@ -640,6 +649,52 @@ public class TaskQueryImpl implements TaskQuery {
             }
         }
         return this;
+    }
+
+    @Override
+    public TaskQuery classificationNameIn(String... classificationNames) {
+        joinWithClassifications = true;
+        this.classificationNameIn = classificationNames;
+        return this;
+    }
+
+    @Override
+    public TaskQuery classificationNameLike(String... classificationNames) {
+        joinWithClassifications = true;
+        this.classificationNameLike = toUpperCopy(classificationNames);
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentClassificationNameIn(String... attachmentClassificationName) {
+        joinWithAttachmentClassifications = true;
+        this.attachmentClassificationNameIn = attachmentClassificationName;
+        return this;
+    }
+
+    @Override
+    public TaskQuery attachmentClassificationNameLike(String... attachmentClassificationName) {
+        joinWithAttachmentClassifications = true;
+        this.attachmentClassificationNameLike = toUpperCopy(attachmentClassificationName);
+        return this;
+    }
+
+    @Override
+    public TaskQuery orderByClassificationName(SortDirection sortDirection) {
+        joinWithClassifications = true;
+        addClassificationNameToSelectClauseForOrdering = true;
+        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+            ? addOrderCriteria("CNAME", sortDirection)
+                : addOrderCriteria("c.NAME", sortDirection);
+    }
+
+    @Override
+    public TaskQuery orderByAttachmentClassificationName(SortDirection sortDirection) {
+        joinWithAttachments = true;
+        addAttachmentClassificationNameToSelectClauseForOrdering = true;
+        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+            ? addOrderCriteria("ACNAME", sortDirection)
+                : addOrderCriteria("ac.NAME", sortDirection);
     }
 
     @Override
@@ -861,6 +916,7 @@ public class TaskQueryImpl implements TaskQuery {
             LOGGER.debug("entry to list(), this = {}", this);
             taskanaEngine.openConnection();
             checkOpenAndReadPermissionForSpecifiedWorkbaskets();
+            setupJoinAndOrderParameters();
             List<TaskSummaryImpl> tasks = new ArrayList<>();
             setupAccessIds();
             tasks = taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this);
@@ -877,6 +933,31 @@ public class TaskQueryImpl implements TaskQuery {
                 LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
                     LoggerUtils.listToString(result));
             }
+        }
+    }
+
+    private void setupJoinAndOrderParameters() {
+        // if classificationName or attachmentClassificationName are added to the result set, and multiple
+        // attachments exist, the addition of these attribute may increase the result set.
+        // in order to have the same result set independent of sorting yes or no,
+        // we add the add... flags whenever we join with classification or attachmentClassification
+        if (joinWithAttachmentClassifications) {
+            joinWithAttachments = true;
+            addAttachmentClassificationNameToSelectClauseForOrdering = true;
+        }
+        if (joinWithClassifications) {
+            addClassificationNameToSelectClauseForOrdering = true;
+        }
+
+        if (addClassificationNameToSelectClauseForOrdering) {
+            joinWithClassifications = true;
+        }
+        if (addAttachmentClassificationNameToSelectClauseForOrdering) {
+            joinWithAttachments = true;
+            joinWithAttachmentClassifications = true;
+        }
+        if (joinWithAttachments || joinWithClassifications || joinWithAttachmentClassifications) {
+            useDistinctKeyword = true;
         }
     }
 
@@ -919,6 +1000,17 @@ public class TaskQueryImpl implements TaskQuery {
             this.addOrderCriteria(columnName.toString(), sortDirection);
             checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
+            if (columnName.equals(TaskQueryColumnName.CLASSIFICATION_NAME)) {
+                joinWithClassifications = true;
+                addClassificationNameToSelectClauseForOrdering = true;
+            }
+            if (columnName.equals(TaskQueryColumnName.A_CLASSIFICATION_NAME)) {
+                joinWithAttachments = true;
+                joinWithAttachmentClassifications = true;
+                addAttachmentClassificationNameToSelectClauseForOrdering = true;
+            }
+
+            setupJoinAndOrderParameters();
             result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
             return result;
         } finally {
@@ -939,6 +1031,7 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngine.openConnection();
             checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
+            setupJoinAndOrderParameters();
             RowBounds rowBounds = new RowBounds(offset, limit);
             List<TaskSummaryImpl> tasks = taskanaEngine.getSqlSession()
                 .selectList(getLinkToMapperScript(), this, rowBounds);
@@ -970,6 +1063,7 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngine.openConnection();
             checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
+            setupJoinAndOrderParameters();
             TaskSummaryImpl taskSummaryImpl = taskanaEngine.getSqlSession().selectOne(getLinkToMapperScript(), this);
             if (taskSummaryImpl == null) {
                 return null;
@@ -994,6 +1088,7 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngine.openConnection();
             checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
+            setupJoinAndOrderParameters();
             rowCount = taskanaEngine.getSqlSession().selectOne(getLinkToCounterTaskScript(), this);
             return (rowCount == null) ? 0L : rowCount;
         } finally {
@@ -1002,12 +1097,36 @@ public class TaskQueryImpl implements TaskQuery {
         }
     }
 
+    public boolean isUseDistinctKeyword() {
+        return useDistinctKeyword;
+    }
+
+    public void setUseDistinctKeyword(boolean useDistinctKeyword) {
+        this.useDistinctKeyword = useDistinctKeyword;
+    }
+
     public boolean isJoinWithAttachments() {
         return joinWithAttachments;
     }
 
     public void setJoinWithAttachments(boolean joinWithAttachments) {
         this.joinWithAttachments = joinWithAttachments;
+    }
+
+    public boolean isJoinWithClassifications() {
+        return joinWithClassifications;
+    }
+
+    public void setJoinWithClassifications(boolean joinWithClassifications) {
+        this.joinWithClassifications = joinWithClassifications;
+    }
+
+    public boolean isJoinWithAttachmentsClassifications() {
+        return joinWithAttachmentClassifications;
+    }
+
+    public void setJoinWithAttachmentsClassifications(boolean joinWithAttachmentsClassifications) {
+        this.joinWithAttachmentClassifications = joinWithAttachmentsClassifications;
     }
 
     public boolean isAddAttachmentColumnsToSelectClauseForOrdering() {
@@ -1456,165 +1575,118 @@ public class TaskQueryImpl implements TaskQuery {
         return this;
     }
 
+    public String[] getClassificationNameIn() {
+        return classificationNameIn;
+    }
+
+    public void setClassificationNameIn(String[] classificationNameIn) {
+        this.classificationNameIn = classificationNameIn;
+    }
+
+    public String[] getClassificationNameLike() {
+        return classificationNameLike;
+    }
+
+    public void setClassificationNameLike(String[] classificationNameLike) {
+        this.classificationNameLike = classificationNameLike;
+    }
+
+    public String[] getAttachmentClassificationNameIn() {
+        return attachmentClassificationNameIn;
+    }
+
+    public void setAttachmentClassificationNameIn(String[] attachmentClassificationNameIn) {
+        this.attachmentClassificationNameIn = attachmentClassificationNameIn;
+    }
+
+    public String[] getAttachmentClassificationNameLike() {
+        return attachmentClassificationNameLike;
+    }
+
+    public void setAttachmentClassificationNameLike(String[] attachmentClassificationNameLike) {
+        this.attachmentClassificationNameLike = attachmentClassificationNameLike;
+    }
+
+    public boolean isAddClassificationNameToSelectClauseForOrdering() {
+        return addClassificationNameToSelectClauseForOrdering;
+    }
+
+    public void setAddClassificationNameToSelectClauseForOrdering(boolean addClassificationNameToSelectClauseForOrdering) {
+        this.addClassificationNameToSelectClauseForOrdering = addClassificationNameToSelectClauseForOrdering;
+    }
+
+    public boolean isAddAttachmentClassificationNameToSelectClauseForOrdering() {
+        return addAttachmentClassificationNameToSelectClauseForOrdering;
+    }
+
+    public void setAddAttachmentClassificationNameToSelectClauseForOrdering(
+        boolean addAttachmentClassificationNameToSelectClauseForOrdering) {
+        this.addAttachmentClassificationNameToSelectClauseForOrdering = addAttachmentClassificationNameToSelectClauseForOrdering;
+    }
+
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("TaskQueryImpl [columnName=");
-        builder.append(columnName);
-        builder.append(", nameIn=");
-        builder.append(Arrays.toString(nameIn));
-        builder.append(", nameLike=");
-        builder.append(Arrays.toString(nameLike));
-        builder.append(", creatorIn=");
-        builder.append(Arrays.toString(creatorIn));
-        builder.append(", creatorLike=");
-        builder.append(Arrays.toString(creatorLike));
-        builder.append(", taskIds=");
-        builder.append(Arrays.toString(taskIds));
-        builder.append(", description=");
-        builder.append(Arrays.toString(description));
-        builder.append(", note=");
-        builder.append(Arrays.toString(note));
-        builder.append(", priority=");
-        builder.append(Arrays.toString(priority));
-        builder.append(", workbasketKeyDomainIn=");
-        builder.append(Arrays.toString(workbasketKeyDomainIn));
-        builder.append(", workbasketIdIn=");
-        builder.append(Arrays.toString(workbasketIdIn));
-        builder.append(", stateIn=");
-        builder.append(Arrays.toString(stateIn));
-        builder.append(", classificationIdIn=");
-        builder.append(Arrays.toString(classificationIdIn));
-        builder.append(", classificationKeyIn=");
-        builder.append(Arrays.toString(classificationKeyIn));
-        builder.append(", classificationKeyNotIn=");
-        builder.append(Arrays.toString(classificationKeyNotIn));
-        builder.append(", classificationKeyLike=");
-        builder.append(Arrays.toString(classificationKeyLike));
-        builder.append(", classificationCategoryIn=");
-        builder.append(Arrays.toString(classificationCategoryIn));
-        builder.append(", classificationCategoryLike=");
-        builder.append(Arrays.toString(classificationCategoryLike));
-        builder.append(", ownerIn=");
-        builder.append(Arrays.toString(ownerIn));
-        builder.append(", ownerLike=");
-        builder.append(Arrays.toString(ownerLike));
-        builder.append(", isRead=");
-        builder.append(isRead);
-        builder.append(", isTransferred=");
-        builder.append(isTransferred);
-        builder.append(", porCompanyIn=");
-        builder.append(Arrays.toString(porCompanyIn));
-        builder.append(", porCompanyLike=");
-        builder.append(Arrays.toString(porCompanyLike));
-        builder.append(", porSystemIn=");
-        builder.append(Arrays.toString(porSystemIn));
-        builder.append(", porSystemLike=");
-        builder.append(Arrays.toString(porSystemLike));
-        builder.append(", porSystemInstanceIn=");
-        builder.append(Arrays.toString(porSystemInstanceIn));
-        builder.append(", porSystemInstanceLike=");
-        builder.append(Arrays.toString(porSystemInstanceLike));
-        builder.append(", porTypeIn=");
-        builder.append(Arrays.toString(porTypeIn));
-        builder.append(", porTypeLike=");
-        builder.append(Arrays.toString(porTypeLike));
-        builder.append(", porValueIn=");
-        builder.append(Arrays.toString(porValueIn));
-        builder.append(", porValueLike=");
-        builder.append(Arrays.toString(porValueLike));
-        builder.append(", parentBusinessProcessIdIn=");
-        builder.append(Arrays.toString(parentBusinessProcessIdIn));
-        builder.append(", parentBusinessProcessIdLike=");
-        builder.append(Arrays.toString(parentBusinessProcessIdLike));
-        builder.append(", businessProcessIdIn=");
-        builder.append(Arrays.toString(businessProcessIdIn));
-        builder.append(", businessProcessIdLike=");
-        builder.append(Arrays.toString(businessProcessIdLike));
-        builder.append(", custom1In=");
-        builder.append(Arrays.toString(custom1In));
-        builder.append(", custom1Like=");
-        builder.append(Arrays.toString(custom1Like));
-        builder.append(", custom2In=");
-        builder.append(Arrays.toString(custom2In));
-        builder.append(", custom2Like=");
-        builder.append(Arrays.toString(custom2Like));
-        builder.append(", custom3In=");
-        builder.append(Arrays.toString(custom3In));
-        builder.append(", custom3Like=");
-        builder.append(Arrays.toString(custom3Like));
-        builder.append(", custom4In=");
-        builder.append(Arrays.toString(custom4In));
-        builder.append(", custom4Like=");
-        builder.append(Arrays.toString(custom4Like));
-        builder.append(", custom5In=");
-        builder.append(Arrays.toString(custom5In));
-        builder.append(", custom5Like=");
-        builder.append(Arrays.toString(custom5Like));
-        builder.append(", custom6In=");
-        builder.append(Arrays.toString(custom6In));
-        builder.append(", custom6Like=");
-        builder.append(Arrays.toString(custom6Like));
-        builder.append(", custom7In=");
-        builder.append(Arrays.toString(custom7In));
-        builder.append(", custom7Like=");
-        builder.append(Arrays.toString(custom7Like));
-        builder.append(", custom8In=");
-        builder.append(Arrays.toString(custom8In));
-        builder.append(", custom8Like=");
-        builder.append(Arrays.toString(custom8Like));
-        builder.append(", custom9In=");
-        builder.append(Arrays.toString(custom9In));
-        builder.append(", custom9Like=");
-        builder.append(Arrays.toString(custom9Like));
-        builder.append(", custom10In=");
-        builder.append(Arrays.toString(custom10In));
-        builder.append(", custom10Like=");
-        builder.append(Arrays.toString(custom10Like));
-        builder.append(", custom11In=");
-        builder.append(Arrays.toString(custom11In));
-        builder.append(", custom11Like=");
-        builder.append(Arrays.toString(custom11Like));
-        builder.append(", custom12In=");
-        builder.append(Arrays.toString(custom12In));
-        builder.append(", custom12Like=");
-        builder.append(Arrays.toString(custom12Like));
-        builder.append(", custom13In=");
-        builder.append(Arrays.toString(custom13In));
-        builder.append(", custom13Like=");
-        builder.append(Arrays.toString(custom13Like));
-        builder.append(", custom14In=");
-        builder.append(Arrays.toString(custom14In));
-        builder.append(", custom14Like=");
-        builder.append(Arrays.toString(custom14Like));
-        builder.append(", custom15In=");
-        builder.append(Arrays.toString(custom15In));
-        builder.append(", custom15Like=");
-        builder.append(Arrays.toString(custom15Like));
-        builder.append(", custom16In=");
-        builder.append(Arrays.toString(custom16In));
-        builder.append(", custom16Like=");
-        builder.append(Arrays.toString(custom16Like));
-        builder.append(", accessIdIn=");
-        builder.append(Arrays.toString(accessIdIn));
-        builder.append(", filterByAccessIdIn=");
-        builder.append(filterByAccessIdIn);
-        builder.append(", createdIn=");
-        builder.append(Arrays.toString(createdIn));
-        builder.append(", claimedIn=");
-        builder.append(Arrays.toString(claimedIn));
-        builder.append(", completedIn=");
-        builder.append(Arrays.toString(completedIn));
-        builder.append(", modifiedIn=");
-        builder.append(Arrays.toString(modifiedIn));
-        builder.append(", plannedIn=");
-        builder.append(Arrays.toString(plannedIn));
-        builder.append(", dueIn=");
-        builder.append(Arrays.toString(dueIn));
-        builder.append(", orderBy=");
-        builder.append(orderBy);
-        builder.append("]");
-        return builder.toString();
+        return "TaskQueryImpl [columnName=" + columnName + ", nameIn=" + Arrays.toString(nameIn) + ", nameLike="
+            + Arrays.toString(nameLike) + ", creatorIn=" + Arrays.toString(creatorIn) + ", creatorLike="
+            + Arrays.toString(creatorLike) + ", taskIds=" + Arrays.toString(taskIds) + ", description="
+            + Arrays.toString(description) + ", note=" + Arrays.toString(note) + ", noteLike="
+            + Arrays.toString(noteLike) + ", priority=" + Arrays.toString(priority) + ", workbasketKeyDomainIn="
+            + Arrays.toString(workbasketKeyDomainIn) + ", workbasketIdIn=" + Arrays.toString(workbasketIdIn)
+            + ", stateIn=" + Arrays.toString(stateIn) + ", classificationIdIn=" + Arrays.toString(classificationIdIn)
+            + ", classificationKeyIn=" + Arrays.toString(classificationKeyIn) + ", classificationKeyLike="
+            + Arrays.toString(classificationKeyLike) + ", classificationKeyNotIn="
+            + Arrays.toString(classificationKeyNotIn) + ", classificationCategoryIn="
+            + Arrays.toString(classificationCategoryIn) + ", classificationCategoryLike="
+            + Arrays.toString(classificationCategoryLike) + ", classificationNameIn="
+            + Arrays.toString(classificationNameIn) + ", classificationNameLike="
+            + Arrays.toString(classificationNameLike) + ", ownerIn=" + Arrays.toString(ownerIn) + ", ownerLike="
+            + Arrays.toString(ownerLike) + ", isRead=" + isRead + ", isTransferred=" + isTransferred + ", porCompanyIn="
+            + Arrays.toString(porCompanyIn) + ", porCompanyLike=" + Arrays.toString(porCompanyLike) + ", porSystemIn="
+            + Arrays.toString(porSystemIn) + ", porSystemLike=" + Arrays.toString(porSystemLike)
+            + ", porSystemInstanceIn=" + Arrays.toString(porSystemInstanceIn) + ", porSystemInstanceLike="
+            + Arrays.toString(porSystemInstanceLike) + ", porTypeIn=" + Arrays.toString(porTypeIn) + ", porTypeLike="
+            + Arrays.toString(porTypeLike) + ", porValueIn=" + Arrays.toString(porValueIn) + ", porValueLike="
+            + Arrays.toString(porValueLike) + ", parentBusinessProcessIdIn="
+            + Arrays.toString(parentBusinessProcessIdIn) + ", parentBusinessProcessIdLike="
+            + Arrays.toString(parentBusinessProcessIdLike) + ", businessProcessIdIn="
+            + Arrays.toString(businessProcessIdIn) + ", businessProcessIdLike=" + Arrays.toString(businessProcessIdLike)
+            + ", custom1In=" + Arrays.toString(custom1In) + ", custom1Like=" + Arrays.toString(custom1Like)
+            + ", custom2In=" + Arrays.toString(custom2In) + ", custom2Like=" + Arrays.toString(custom2Like)
+            + ", custom3In=" + Arrays.toString(custom3In) + ", custom3Like=" + Arrays.toString(custom3Like)
+            + ", custom4In=" + Arrays.toString(custom4In) + ", custom4Like=" + Arrays.toString(custom4Like)
+            + ", custom5In=" + Arrays.toString(custom5In) + ", custom5Like=" + Arrays.toString(custom5Like)
+            + ", custom6In=" + Arrays.toString(custom6In) + ", custom6Like=" + Arrays.toString(custom6Like)
+            + ", custom7In=" + Arrays.toString(custom7In) + ", custom7Like=" + Arrays.toString(custom7Like)
+            + ", custom8In=" + Arrays.toString(custom8In) + ", custom8Like=" + Arrays.toString(custom8Like)
+            + ", custom9In=" + Arrays.toString(custom9In) + ", custom9Like=" + Arrays.toString(custom9Like)
+            + ", custom10In=" + Arrays.toString(custom10In) + ", custom10Like=" + Arrays.toString(custom10Like)
+            + ", custom11In=" + Arrays.toString(custom11In) + ", custom11Like=" + Arrays.toString(custom11Like)
+            + ", custom12In=" + Arrays.toString(custom12In) + ", custom12Like=" + Arrays.toString(custom12Like)
+            + ", custom13In=" + Arrays.toString(custom13In) + ", custom13Like=" + Arrays.toString(custom13Like)
+            + ", custom14In=" + Arrays.toString(custom14In) + ", custom14Like=" + Arrays.toString(custom14Like)
+            + ", custom15In=" + Arrays.toString(custom15In) + ", custom15Like=" + Arrays.toString(custom15Like)
+            + ", custom16In=" + Arrays.toString(custom16In) + ", custom16Like=" + Arrays.toString(custom16Like)
+            + ", attachmentClassificationKeyIn=" + Arrays.toString(attachmentClassificationKeyIn)
+            + ", attachmentClassificationKeyLike=" + Arrays.toString(attachmentClassificationKeyLike)
+            + ", attachmentClassificationIdIn=" + Arrays.toString(attachmentClassificationIdIn)
+            + ", attachmentClassificationIdLike=" + Arrays.toString(attachmentClassificationIdLike)
+            + ", attachmentClassificationNameIn=" + Arrays.toString(attachmentClassificationNameIn)
+            + ", attachmentClassificationNameLike=" + Arrays.toString(attachmentClassificationNameLike)
+            + ", attachmentChannelIn=" + Arrays.toString(attachmentChannelIn) + ", attachmentChannelLike="
+            + Arrays.toString(attachmentChannelLike) + ", attachmentReferenceIn="
+            + Arrays.toString(attachmentReferenceIn) + ", attachmentReferenceLike="
+            + Arrays.toString(attachmentReferenceLike) + ", attachmentReceivedIn="
+            + Arrays.toString(attachmentReceivedIn) + ", accessIdIn=" + Arrays.toString(accessIdIn)
+            + ", filterByAccessIdIn=" + filterByAccessIdIn + ", createdIn=" + Arrays.toString(createdIn)
+            + ", claimedIn=" + Arrays.toString(claimedIn) + ", completedIn=" + Arrays.toString(completedIn)
+            + ", modifiedIn=" + Arrays.toString(modifiedIn) + ", plannedIn=" + Arrays.toString(plannedIn) + ", dueIn="
+            + Arrays.toString(dueIn) + ", orderBy=" + orderBy + ", orderColumns=" + orderColumns
+            + ", joinWithAttachments=" + joinWithAttachments + ", joinWithClassifications=" + joinWithClassifications
+            + ", joinWithAttachmentsClassifications=" + joinWithAttachmentClassifications
+            + ", addAttachmentColumnsToSelectClauseForOrdering=" + addAttachmentColumnsToSelectClauseForOrdering
+            + ", addClassificationNameToSelectClauseForOrdering=" + addClassificationNameToSelectClauseForOrdering
+            + ", addAttachmentClassificationNameToSelectClauseForOrdering="
+            + addAttachmentClassificationNameToSelectClauseForOrdering + "]";
     }
 
 }
