@@ -11,7 +11,7 @@ import pro.taskana.impl.TaskanaEngineImpl;
 /**
  * Acceptance test for historyEventProducer class.
  */
-public class HistoryEventProducerTest extends AbstractAccTest {
+public class TaskEventProducerTest extends AbstractAccTest {
 
     @Test
     public void testHistoryEventProducerIsNotEnabled() {

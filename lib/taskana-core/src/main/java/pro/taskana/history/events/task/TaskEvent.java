@@ -1,11 +1,13 @@
-package pro.taskana.history.api;
+package pro.taskana.history.events.task;
 
 import pro.taskana.Task;
+import pro.taskana.TaskSummary;
+import pro.taskana.history.api.TaskanaHistoryEvent;
 
 /**
  * Super class for all task related events.
  */
-public class TaskHistoryEvent extends TaskanaHistoryEvent {
+public class TaskEvent extends TaskanaHistoryEvent {
 
     protected String taskId;
     protected String businessProcessId;
@@ -21,7 +23,7 @@ public class TaskHistoryEvent extends TaskanaHistoryEvent {
     protected String porType;
     protected String porValue;
 
-    public TaskHistoryEvent(Task task) {
+    public TaskEvent(Task task) {
         super();
         taskId = task.getId();
         businessProcessId = task.getBusinessProcessId();
@@ -29,9 +31,36 @@ public class TaskHistoryEvent extends TaskanaHistoryEvent {
         domain = task.getDomain();
         workbasketKey = task.getWorkbasketKey();
         taskClassificationCategory = task.getClassificationCategory();
-        taskClassificationKey = task.getClassificationSummary().getKey();
+        if (task.getClassificationSummary() != null) {
+            taskClassificationKey = task.getClassificationSummary().getKey();
+        }
         if (!task.getAttachments().isEmpty()) {
             attachmentClassificationKey = task.getAttachments().get(0).getClassificationSummary().getKey();
+        }
+        if (task.getPrimaryObjRef() != null) {
+            porCompany = task.getPrimaryObjRef().getCompany();
+            porSystem = task.getPrimaryObjRef().getSystem();
+            porInstance = task.getPrimaryObjRef().getSystemInstance();
+            porType = task.getPrimaryObjRef().getType();
+            porValue = task.getPrimaryObjRef().getValue();
+        }
+    }
+
+    public TaskEvent(TaskSummary task) {
+        super();
+        taskId = task.getTaskId();
+        businessProcessId = task.getBusinessProcessId();
+        parentBusinessProcessId = task.getParentBusinessProcessId();
+        domain = task.getDomain();
+        if (task.getWorkbasketSummary() != null) {
+            workbasketKey = task.getWorkbasketSummary().getKey();
+        }
+        if (task.getClassificationSummary() != null) {
+            taskClassificationKey = task.getClassificationSummary().getKey();
+            taskClassificationCategory = task.getClassificationSummary().getCategory();
+        }
+        if (!task.getAttachmentSummaries().isEmpty()) {
+            attachmentClassificationKey = task.getAttachmentSummaries().get(0).getClassificationSummary().getKey();
         }
         if (task.getPrimaryObjRef() != null) {
             porCompany = task.getPrimaryObjRef().getCompany();
