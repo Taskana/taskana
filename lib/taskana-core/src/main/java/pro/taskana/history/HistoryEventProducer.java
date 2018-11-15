@@ -33,6 +33,17 @@ public final class HistoryEventProducer {
         return getInstance(null).isEnabled();
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void createEvent(TaskanaHistoryEvent event) {
+        LOGGER.debug("Sending event to history service providers: {}", event);
+        serviceLoader.forEach(historyProvider -> {
+            historyProvider.create(event);
+        });
+    }
+
     private HistoryEventProducer(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         serviceLoader = ServiceLoader.load(TaskanaHistory.class);
@@ -46,16 +57,5 @@ public final class HistoryEventProducer {
         if (!enabled) {
             LOGGER.info("No history provider found. Running without history.");
         }
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void createEvent(TaskanaHistoryEvent event) {
-        LOGGER.debug("Sending event to history service providers: {}", event);
-        serviceLoader.forEach(historyProvider -> {
-            historyProvider.create(event);
-        });
     }
 }
