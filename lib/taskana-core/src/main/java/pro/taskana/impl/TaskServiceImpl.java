@@ -65,6 +65,8 @@ public class TaskServiceImpl implements TaskService {
     private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
     private static final String MUST_NOT_BE_EMPTY = " must not be empty";
     private static final Duration MAX_DURATION = Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
+    private static final Set<String> ALLOWED_KEYS = new HashSet<>(
+            Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"));
     private DaysToWorkingDaysConverter converter;
     private TaskanaEngineImpl taskanaEngine;
     private WorkbasketService workbasketService;
@@ -1156,12 +1158,9 @@ public class TaskServiceImpl implements TaskService {
             throw new InvalidArgumentException("The customFieldsToUpdate argument to updateTasks must not be empty.");
         }
 
-        Set<String> allowedKeys = new HashSet<>(
-            Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"));
-
         for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
             String key = entry.getKey();
-            if (!allowedKeys.contains(key)) {
+            if (!ALLOWED_KEYS.contains(key)) {
                 throw new InvalidArgumentException(
                     "The customFieldsToUpdate argument to updateTasks contains invalid key " + key);
             }
