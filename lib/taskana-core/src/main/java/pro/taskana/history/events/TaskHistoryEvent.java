@@ -1,6 +1,7 @@
-package pro.taskana.history.api;
+package pro.taskana.history.events;
 
 import pro.taskana.Task;
+import pro.taskana.history.api.TaskanaHistoryEvent;
 
 /**
  * Super class for all task related events.
@@ -29,7 +30,9 @@ public class TaskHistoryEvent extends TaskanaHistoryEvent {
         domain = task.getDomain();
         workbasketKey = task.getWorkbasketKey();
         taskClassificationCategory = task.getClassificationCategory();
-        taskClassificationKey = task.getClassificationSummary().getKey();
+        if (task.getClassificationSummary() != null) {
+            taskClassificationKey = task.getClassificationSummary().getKey();
+        }
         if (!task.getAttachments().isEmpty()) {
             attachmentClassificationKey = task.getAttachments().get(0).getClassificationSummary().getKey();
         }
