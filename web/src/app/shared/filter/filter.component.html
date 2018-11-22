@@ -65,13 +65,23 @@
       </button>
     </div>
     <div class="row">
-      <div class="col-xs-4 col-xs-offset-2">
-        <input type="text" [(ngModel)]="filter.filterParams.state" (keyup.enter)="search()" class="form-control" id="display-owner-state"
-          placeholder="Filter status">
+      <div class="dropdown col-xs-2 col-xs-offset-2">
+        <button class="btn btn-default" data-toggle="dropdown" type="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="true" title="State: {{filter.filterParams.state ? filter.filterParams?.state : 'All'}}">
+          <span>{{filter.filterParams.state ? filter.filterParams?.state : 'All'}}</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-users" role="menu">
+          <li>
+            <a *ngFor="let state of allStates | mapValues" type="button" (click)="selectState(state.key); search()"
+              data-toggle="tooltip" [title]="state.value">
+              <label class="blue">{{state.value}}</label>
+            </a>
+          </li>
+        </ul>
       </div>
       <button (click)="search()" type="button" class="btn btn-default pull-right margin-right" data-toggle="tooltip"
         title="Search">
-        <span class="material-icons md-20 blue ">search</span>
+        <span class="material-icons md-20 blue">search</span>
       </button>
     </div>
   </ng-template>

@@ -14,7 +14,7 @@ export class TaskanaQueryParameters {
   static WORKBASKET_KEY = 'workbasket-key';
   static KEYLIKE = 'key-like';
   static PRIORITY = 'priority';
-  static STATELIKE = 'state-like';
+  static STATE = 'state';
   static WORKBASKET_ID = 'workbasket-id';
   static TASK_PRIMARY_OBJ_REF_TYPE_LIKE = 'por.type';
   static TASK_PRIMARY_OBJ_REF_VALUE_LIKE = 'por.value';
@@ -54,9 +54,9 @@ export class TaskanaQueryParameters {
     workbasketKeyLike: string = undefined,
     basketId: string = undefined,
     priority: string = undefined,
-    stateLike: string = undefined,
+    state: string = undefined,
     objRefTypeLike: string = undefined,
-    objRefValueLike: string = undefined,
+    objRefValueLike: string = undefined
   ): string {
     let query = '?';
     query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
@@ -68,7 +68,7 @@ export class TaskanaQueryParameters {
     query += ownerLike ? `${this.OWNERLIKE}=${ownerLike}&` : '';
     query += basketId ? `${this.WORKBASKET_ID}=${basketId}&` : '';
     query += priority ? `${this.PRIORITY}=${priority}&` : '';
-    query += stateLike ? `${this.STATELIKE}=${stateLike}&` : '';
+    query += state ? `${this.STATE}=${state}&` : '';
     query += type ? `${this.TYPE}=${type}&` : '';
     query += key ? `${this.KEY}=${key}&` : '';
     query += keyLike ? `${this.KEYLIKE}=${keyLike}&` : '';

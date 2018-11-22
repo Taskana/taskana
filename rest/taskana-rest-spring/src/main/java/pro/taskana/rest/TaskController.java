@@ -63,7 +63,9 @@ public class TaskController extends AbstractPagingController {
     private static final String STATE_VALUE_READY = "READY";
     private static final String PRIORITY = "priority";
     private static final String NAME = "name";
+    private static final String NAME_LIKE = "name-like";
     private static final String OWNER = "owner";
+    private static final String OWNER_LIKE = "owner-like";
     private static final String DOMAIN = "domain";
     private static final String WORKBASKET_ID = "workbasket-id";
     private static final String WORKBASKET_KEY = "workbasket-key";
@@ -219,6 +221,10 @@ public class TaskController extends AbstractPagingController {
             taskQuery.nameIn(names);
             params.remove(NAME);
         }
+        if (params.containsKey(NAME_LIKE)) {
+            taskQuery.nameLike(LIKE + params.get(NAME_LIKE).get(0) + LIKE);
+            params.remove(NAME_LIKE);
+        }
         if (params.containsKey(PRIORITY)) {
             String[] prioritiesInString = extractCommaSeparatedFields(params.get(PRIORITY));
             int[] priorities = extractPriorities(prioritiesInString);
@@ -261,6 +267,10 @@ public class TaskController extends AbstractPagingController {
             String[] owners = extractCommaSeparatedFields(params.get(OWNER));
             taskQuery.ownerIn(owners);
             params.remove(OWNER);
+        }
+        if (params.containsKey(OWNER_LIKE)) {
+            taskQuery.ownerLike(LIKE + params.get(OWNER_LIKE).get(0) + LIKE);
+            params.remove(OWNER_LIKE);
         }
         if (params.containsKey(POR_COMPANY)) {
             String[] companies = extractCommaSeparatedFields(params.get(POR_COMPANY));
