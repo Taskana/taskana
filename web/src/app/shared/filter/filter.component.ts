@@ -13,6 +13,9 @@ export class FilterComponent implements OnInit {
   @Input() allTypes: Map<string, string> = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
   ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
 
+  @Input() allStates: Map<string, string> = new Map([['ALL', 'All'], ['READY', 'Ready'], ['CLAIMED', 'Claimed'],
+  ['COMPLETED', 'Completed']]);
+
   @Input() filterParams = { name: '', key: '', type: '', description: '', owner: '' };
 
   @Input() filterType = TaskanaType.WORKBASKETS;
@@ -24,9 +27,6 @@ export class FilterComponent implements OnInit {
   lastFilterKey: string;
   toggleDropDown = false;
 
-  constructor() {
-  }
-
   ngOnInit(): void {
     this.initializeFilterModel();
     if (this.filterParams) {
@@ -37,6 +37,10 @@ export class FilterComponent implements OnInit {
 
   selectType(type: ICONTYPES) {
     this.filter.filterParams.type = (type === ICONTYPES.ALL) ? '' : type;
+  }
+
+  selectState(state: ICONTYPES) {
+    this.filter.filterParams.state = (state === 'ALL') ? '' : state;
   }
 
   clear() {
