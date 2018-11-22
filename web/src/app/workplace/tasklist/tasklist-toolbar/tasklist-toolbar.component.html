@@ -9,10 +9,10 @@
       <input [(ngModel)]="resultName" *ngIf="searchSelected === search.byWorkbasket" [typeahead]="workbasketNames"
         class="form-control" (typeaheadOnSelect)="searchBasket()" (typeaheadNoResults)="workbasketSelected = false"
         placeholder="Search for Workbasket ..." />
-      <div class="input-group" style="margin-bottom: 1px;" *ngIf="searchSelected === search.byTypeAndValue">
+      <div class="input-group" *ngIf="searchSelected === search.byTypeAndValue">
         <input [(ngModel)]="resultType" class="form-control" (keyup.enter)="searchBasket()" placeholder="Search by type ..." />
         <span _ngcontent-c10="" class="input-group-btn">
-          <button _ngcontent-c10="" class="btn btn-primary" style="height: 34px;" type="button" (click)="searchBasket()">
+          <button _ngcontent-c10="" class="btn btn-primary" type="button" (click)="searchBasket()">
             <span class="material-icons md-20 white">search</span>
           </button>
         </span>
@@ -37,13 +37,13 @@
             <h5 class="bold-blue align-center">Search by</h5>
           </div>
           <div role="separator" class="divider"></div>
-          <ul style="padding: 15px;">
+          <ul>
             <li data-toggle="tooltip" title="Workbasket">
               <a class="dropdown-item" (click)="selectSearch(search.byWorkbasket)">
                 <label>
                   <span class="material-icons md-20 blue margin-right" aria-hidden="true">{{ searchSelected === search.byWorkbasket ? 'check_box': 'check_box_outline_blank' }}</span>
                   <svg-icon class="margin-right" src="./assets/icons/wb-empty.svg"></svg-icon>
-                  <small class="margin-right blue-font" style="margin-left: 4px;">Workbasket</small>
+                  <small class="margin-right blue-font">Workbasket</small>
                 </label>
               </a>
             </li>
