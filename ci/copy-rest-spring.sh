@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e # fail fast
 
-if [[ ! "$1" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then 
+if [[ ! "$1" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-SNAPSHOT)?$ ]]; then 
   echo "missing tag" >&2 
   exit 1
 fi
