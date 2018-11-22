@@ -191,7 +191,7 @@
           </div>
         </div>
         <div class="pull-right btn-group">
-          <button *ngIf="AccessItemsForm" type="button" class="btn btn-default" data-toggle="tooltip" title="Revoke access"
+          <button *ngIf="AccessItemsForm" type="button" (click)="revokeAccess()" class="btn btn-default" data-toggle="tooltip" title="Revoke access"
             [disabled]=isGroup>
             <span class="material-icons md-20 red">clear</span>
           </button>
