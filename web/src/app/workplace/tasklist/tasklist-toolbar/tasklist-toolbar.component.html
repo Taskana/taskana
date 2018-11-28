@@ -28,7 +28,7 @@
     </div>
       <div class="dropdown clearfix pull-right margin-right">
         <button type="button" class="btn btn-default dropdown-button" [ngClass]="{'reduced-width': searched}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="{{searchSelected == search.byTypeAndValue ? 'Type and value' : 'Workbasket'}}">
-          <svg-icon *ngIf="searchSelected == search.byWorkbasket" class="blue" src="./assets/icons/wb-empty.svg"></svg-icon>
+          <svg-icon *ngIf="searchSelected == search.byWorkbasket" class="blue small" src="./assets/icons/wb-empty.svg"></svg-icon>
           <span *ngIf="searchSelected == search.byTypeAndValue" class="material-icons md-20 blue">title</span>
           <span class="caret"></span>
         </button>
@@ -42,7 +42,7 @@
               <a class="dropdown-item" (click)="selectSearch(search.byWorkbasket)">
                 <label>
                   <span class="material-icons md-20 blue margin-right" aria-hidden="true">{{ searchSelected === search.byWorkbasket ? 'check_box': 'check_box_outline_blank' }}</span>
-                  <svg-icon class="margin-right" src="./assets/icons/wb-empty.svg"></svg-icon>
+                  <svg-icon class="margin-right small" src="./assets/icons/wb-empty.svg"></svg-icon>
                   <small class="margin-right blue-font">Workbasket</small>
                 </label>
               </a>
