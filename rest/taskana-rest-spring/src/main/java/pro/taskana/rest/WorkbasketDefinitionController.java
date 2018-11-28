@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketQuery;
@@ -30,17 +30,22 @@ import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
 import pro.taskana.rest.resource.assembler.WorkbasketDefinitionAssembler;
 import pro.taskana.rest.resource.assembler.WorkbasketResourceAssembler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Controller for all {@link WorkbasketDefinition} related endpoints.
  */
 @RestController
-@RequestMapping(path = "/v1/workbasketdefinitions", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/v1/workbasket-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class WorkbasketDefinitionController {
 
     @Autowired
@@ -83,14 +88,22 @@ public class WorkbasketDefinitionController {
      * we want to have an option to import all settings at once. When a logical equal (key and domain are equal)
      * workbasket already exists an update will be executed. Otherwise a new workbasket will be created.
      *
-     * @param definitions the list of workbasket definitions which will be imported to the current system.
+     * @param file the list of workbasket definitions which will be imported to the current system.
      * @return Return answer is determined by the status code: 200 - all good 400 - list state error (referring to non
      * existing id's) 401 - not authorized
      */
     @PostMapping(path = "/import")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<String> importWorkbaskets(@RequestBody List<WorkbasketDefinition> definitions) {
+    public ResponseEntity<String> importWorkbaskets(@RequestParam("file") MultipartFile file) {
         try {
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            List<WorkbasketDefinition> definitions = mapper.readValue(file.getInputStream(),
+                new TypeReference<List<WorkbasketDefinition>>() {
+
+                });
+
             // key: logical ID
             // value: system ID (in database)
             Map<String, String> systemIds = workbasketService.createWorkbasketQuery()
@@ -167,6 +180,9 @@ public class WorkbasketDefinitionController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (DomainNotFoundException e) {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (IOException e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

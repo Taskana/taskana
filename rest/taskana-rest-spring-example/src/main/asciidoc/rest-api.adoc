@@ -355,7 +355,7 @@ include::../../../{snippets}/DeleteClassificationDocTest/http-request.adoc[]
 
 include::../../../{snippets}/DeleteClassificationDocTest/http-response.adoc[]
 
-== Classificationdefinition-Resource
+== Classification-definition-Resource
 
 [[classification-definitions]]
 === Get all classification definitions
@@ -382,15 +382,15 @@ A `POST` request is used to import new classification-definitions.
 
 This minimal example shows only the required fields to import a single new classification-definition. The <<classification, classification structure>> shows all possible fields for importing (and therefore creating) new classification-definitions.
 
-include::../../../{snippets}/ImportClassificationdefinitions/http-request.adoc[]
+include::../../../{snippets}/ImportClassificationDefinitions/http-request.adoc[]
 
 ==== Request Structure
 
-include::../../../{snippets}/ImportClassificationdefinitions/request-fields.adoc[]
+include::../../../{snippets}/ImportClassificationDefinitions/request-fields.adoc[]
 
 ==== Example Response
 
-include::../../../{snippets}/ImportClassificationdefinitions/http-response.adoc[]
+include::../../../{snippets}/ImportClassificationDefinitions/http-response.adoc[]
 
 == Workbaskets-Resource
 
@@ -540,7 +540,7 @@ include::../../../{snippets}/CreateWorkbasketDocTest/http-response.adoc[]
 The response-body is essentially the same as for getting a single classification. +
 Therefore for the response fields you can refer to the structure of the <<classification, single classification>>.
 
-== Workbasketdefinition-Resource
+== Workbasket-definition-resource
 
 === Get all workbasket definitions
 
@@ -567,15 +567,15 @@ A `POST` request is used to import new workbasket-definitions.
 
 This minimal example shows only the required fields to import a single new workbasket-definition. The <<workbasket, workbasket structure>> shows all possible fields for importing (and therefore creating) new workbasket-definitions.
 
-include::../../../{snippets}/ImportWorkbasketdefinitions/http-request.adoc[]
+include::../../../{snippets}/ImportWorkbasketDefinitions/http-request.adoc[]
 
 ==== Request Structure
 
-include::../../../{snippets}/ImportWorkbasketdefinitions/request-fields.adoc[]
+include::../../../{snippets}/ImportWorkbasketDefinitions/request-fields.adoc[]
 
 ==== Response Structure
 
-include::../../../{snippets}/ImportWorkbasketdefinitions/http-response.adoc[]
+include::../../../{snippets}/ImportWorkbasketDefinitions/http-response.adoc[]
 
 == WorkbasketAccessItems-Resource
 

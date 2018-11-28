@@ -12,7 +12,7 @@ import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 
 @Injectable()
 export class WorkbasketDefinitionService {
-  url: string = environment.taskanaRestUrl + '/v1/workbasketdefinitions';
+  url: string = environment.taskanaRestUrl + '/v1/workbasket-definitions';
 
   constructor(private httpClient: HttpClient, private alertService: AlertService,
     private errorModalService: ErrorModalService) {
@@ -27,15 +27,5 @@ export class WorkbasketDefinitionService {
           'Workbaskets_' + TaskanaDate.getDate() + '.json');
       }
     );
-  }
-
-  // POST
-  importWorkbasketDefinitions(workbasketDefinitions: any) {
-    this.httpClient.post(environment.taskanaRestUrl + '/v1/workbasketdefinitions/import',
-      JSON.parse(workbasketDefinitions)).subscribe(
-        workbasketsUpdated => this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful')),
-        error => this.errorModalService.triggerError(new ErrorModel(
-          `There was an error importing workbaskets`, error.message))
-      );
   }
 }

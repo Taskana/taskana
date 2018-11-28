@@ -4,13 +4,13 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
@@ -69,10 +69,17 @@ public class WorkbasketDefinitionAssembler {
         resource.add(
             linkTo(methodOn(WorkbasketDefinitionController.class).exportWorkbaskets(workbasket.getDomain()))
                 .withRel("exportWorkbaskets"));
-        resource.add(
-            linkTo(
-                methodOn(WorkbasketDefinitionController.class).importWorkbaskets(Collections.singletonList(resource)))
-                .withRel("importWorkbaskets"));
+        try {
+            resource.add(
+                linkTo(
+                    methodOn(WorkbasketDefinitionController.class).importWorkbaskets(
+                        MultipartFile.class.newInstance()))
+                    .withRel("importWorkbaskets"));
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return resource;
     }
 }

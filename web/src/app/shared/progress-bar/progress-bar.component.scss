@@ -1,0 +1,9 @@
+.upload-file-container{
+    position: absolute;
+    bottom: 1px;
+    padding: 0px;
+    > .progress{
+        height: 6px;
+        margin: 0px 0px;
+    }
+}

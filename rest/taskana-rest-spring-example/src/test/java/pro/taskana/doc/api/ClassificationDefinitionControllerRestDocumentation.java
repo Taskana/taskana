@@ -8,7 +8,10 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,57 +38,58 @@ import pro.taskana.rest.RestConfiguration;
 public class ClassificationDefinitionControllerRestDocumentation {
     @LocalServerPort
     int port;
-    
+
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-    
+
     @Autowired
     private WebApplicationContext context;
-    
+
     private MockMvc mockMvc;
-    
-    private FieldDescriptor[] classificationdefinitionsFieldDescriptors;
-    
+
+    private FieldDescriptor[] classificationDefinitionsFieldDescriptors;
+
     @Before
     public void setUp() {
         document("{methodName}",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()));
-        
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()));
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-                .apply(springSecurity())
-                .apply(documentationConfiguration(this.restDocumentation)
-                        .operationPreprocessors()
-                        .withResponseDefaults(prettyPrint())
-                        .withRequestDefaults(prettyPrint()))
-                        .build();
-        
-        classificationdefinitionsFieldDescriptors = new FieldDescriptor[] {
-                subsectionWithPath("[]").description("An array of <<classification, classifications>>")
+            .apply(springSecurity())
+            .apply(documentationConfiguration(this.restDocumentation)
+                .operationPreprocessors()
+                .withResponseDefaults(prettyPrint())
+                .withRequestDefaults(prettyPrint()))
+            .build();
+
+        classificationDefinitionsFieldDescriptors = new FieldDescriptor[] {
+            subsectionWithPath("[]").description("An array of <<classification, classifications>>")
         };
     }
-    
+
     @Test
-    public void getAllClassificationdefinitions() throws Exception {
+    public void getAllClassificationDefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port + "/v1/classificationdefinitions")
-                .accept("application/json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllClassificationdefinitionsDocTest",
-                responseFields(classificationdefinitionsFieldDescriptors)));
+            .get("http://127.0.0.1:" + port + "/v1/classification-definitions")
+            .accept("application/json")
+            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcRestDocumentation.document("GetAllClassificationdefinitionsDocTest",
+                responseFields(classificationDefinitionsFieldDescriptors)));
     }
-    
+
     @Test
     public void importClassificationdefinition() throws Exception {
         String definitionString = "[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]";
-        this.mockMvc.perform(RestDocumentationRequestBuilders
-                .post("http://127.0.0.1:" + port + "/v1/classificationdefinitions/import")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
-                .contentType("application/json")
-                .content(definitionString))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("ImportClassificationdefinitions",
-                requestFields(subsectionWithPath("[]").description("An array of <<classification-definitions, classifications>>"))));
+
+        this.mockMvc.perform(multipart("http://127.0.0.1:" + port + "/v1/classification-definitions/import")
+            .file("file",
+                definitionString.getBytes())
+            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(document("ImportClassificationDefinitions", requestParts(
+                partWithName("file").description("The file to upload"))
+            ));
     }
 }

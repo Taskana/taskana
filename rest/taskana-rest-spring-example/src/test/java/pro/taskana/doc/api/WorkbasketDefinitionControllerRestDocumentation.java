@@ -8,7 +8,10 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -45,7 +48,7 @@ public class WorkbasketDefinitionControllerRestDocumentation {
     
     private MockMvc mockMvc;
     
-    private FieldDescriptor[] workbasketdefinitionsFieldDescriptors;
+    private FieldDescriptor[] workbasketDefinitionsFieldDescriptors;
     
     @Before
     public void setUp() {
@@ -62,7 +65,7 @@ public class WorkbasketDefinitionControllerRestDocumentation {
                         .build();
 
         
-        workbasketdefinitionsFieldDescriptors = new FieldDescriptor[] {
+        workbasketDefinitionsFieldDescriptors = new FieldDescriptor[] {
                 subsectionWithPath("[]").description("An array of <<workbasket, workbaskets>>")
         };
     }
@@ -70,31 +73,34 @@ public class WorkbasketDefinitionControllerRestDocumentation {
     @Test
     public void getAllWorkbasketDefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port + "/v1/workbasketdefinitions")
+                .get("http://127.0.0.1:" + port + "/v1/workbasket-definitions")
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllWorkbasktdefinitionsDocTest",
-                responseFields(workbasketdefinitionsFieldDescriptors)));
+        .andDo(MockMvcRestDocumentation.document("GetAllWorkbasketDefinitionsDocTest",
+                responseFields(workbasketDefinitionsFieldDescriptors)));
     }
     
     @Test
-    public void importWorkbasketdefinition() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders
-                .post("http://127.0.0.1:" + port + "/v1/workbasketdefinitions/import")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
-                .contentType("application/json")
-                .content("["
-                        + "{"
-                        + "\"distributionTargets\":[], "
-                        + "\"authorizations\":[], "
-                        + "\"workbasketResource\":"
-                        + "{\"name\":\"ich\", \"key\":\"neuerKeyXy\", \"domain\":\"DOMAIN_A\", \"type\":\"GROUP\","
-                        + "\"created\":\"2018-02-01T11:00:00Z\", \"modified\":\"2018-02-01T11:00:00Z\", \"workbasketId\":\"gibtsNed\"}"
-                        + "}"
-                        + "]"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("ImportWorkbasketdefinitions",
-                requestFields(subsectionWithPath("[]").description("An array of <<workbasket, workbaskets>>"))));
+    public void importWorkbasketDefinition() throws Exception {
+
+        String definitionString = "["
+            + "{"
+            + "\"distributionTargets\":[], "
+            + "\"authorizations\":[], "
+            + "\"workbasketResource\":"
+            + "{\"name\":\"ich\", \"key\":\"neuerKeyXy\", \"domain\":\"DOMAIN_A\", \"type\":\"GROUP\","
+            + "\"created\":\"2018-02-01T11:00:00Z\", \"modified\":\"2018-02-01T11:00:00Z\", \"workbasketId\":\"gibtsNed\"}"
+            + "}"
+            + "]";
+
+        this.mockMvc.perform(multipart("http://127.0.0.1:" + port + "/v1/workbasket-definitions/import")
+            .file("file",
+                definitionString.getBytes())
+            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(document("ImportWorkbasketDefinitions", requestParts(
+                partWithName("file").description("The file to upload"))
+            ));
     }
 }

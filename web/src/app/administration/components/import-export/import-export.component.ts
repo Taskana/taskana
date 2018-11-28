@@ -1,10 +1,14 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { TaskanaType } from 'app/models/taskana-type';
 import { ErrorModel } from 'app/models/modal-error';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { environment } from 'environments/environment';
+import { AlertService } from 'app/services/alert/alert.service';
+import { AlertModel, AlertType } from 'app/models/alert';
+import { UploadService } from 'app/shared/services/upload/upload.service';
 
 @Component({
   selector: 'taskana-import-export-component',
@@ -17,11 +21,19 @@ export class ImportExportComponent implements OnInit {
 
   @Output() importSucessful = new EventEmitter();
 
+  @ViewChild('selectedFile')
+  selectedFileInput;
 
   domains: string[] = [];
+  errorWhileUploadingText: string;
 
-  constructor(private domainService: DomainService, private workbasketDefinitionService: WorkbasketDefinitionService,
-    private classificationDefinitionService: ClassificationDefinitionService, private errorModalService: ErrorModalService) {
+  constructor(
+    private domainService: DomainService,
+    private workbasketDefinitionService: WorkbasketDefinitionService,
+    private classificationDefinitionService: ClassificationDefinitionService,
+    private errorModalService: ErrorModalService,
+    private alertService: AlertService,
+    public uploadservice: UploadService) {
   }
 
   ngOnInit() {
@@ -30,35 +42,82 @@ export class ImportExportComponent implements OnInit {
     );
   }
 
-  onSelectFile(event) {
-    const file = event.target.files[0];
-
-    const ending = file.name.match(/\.([^\.]+)$/)[1];
-    switch (ending) {
-        case 'json':
-            break;
-        default:
-            file.value = '';
-            this.errorModalService.triggerError(new ErrorModel(undefined,
-              `This file format is not allowed! Please use a .json file.`));
-    }
-
-    const reader = new FileReader();
-    if (this.currentSelection === TaskanaType.WORKBASKETS) {
-      reader.onload = <Event>(e) => this.workbasketDefinitionService.importWorkbasketDefinitions(e.target.result);
-      this.importSucessful.emit();
-    } else {
-      reader.onload = <Event>(e) => this.classificationDefinitionService.importClassifications(e.target.result);
-      this.importSucessful.emit();
-    }
-    reader.readAsText(file);
-  }
-
   export(domain = '') {
     if (this.currentSelection === TaskanaType.WORKBASKETS) {
       this.workbasketDefinitionService.exportWorkbaskets(domain);
     } else {
       this.classificationDefinitionService.exportClassifications(domain);
     }
+  }
+
+  uploadFile() {
+    const file = this.selectedFileInput.nativeElement.files[0],
+      formdata = new FormData(),
+      ajax = new XMLHttpRequest();
+    if (!this.checkFormatFile(file)) { return false }
+    formdata.append('file', file);
+    ajax.upload.addEventListener('progress', this.progressHandler.bind(this), false);
+    ajax.addEventListener('load', this.resetProgress.bind(this), false);
+    ajax.addEventListener('error', this.errorHandler.bind(this), false);
+    ajax.onreadystatechange = this.onReadyStateChangeHandler.bind(this, ajax);
+    if (this.currentSelection === TaskanaType.WORKBASKETS) {
+      ajax.open('POST', environment.taskanaRestUrl + '/v1/workbasket-definitions/import');
+    } else {
+      ajax.open('POST', environment.taskanaRestUrl + '/v1/classification-definitions/import');
+    }
+    ajax.send(formdata);
+    this.uploadservice.isInUse = true;
+    this.uploadservice.setCurrentProgressValue(1)
+  }
+
+  progressHandler(event) {
+    const percent = (event.loaded / event.total) * 100;
+    this.uploadservice.setCurrentProgressValue(Math.round(percent))
+  }
+
+  private checkFormatFile(file): boolean {
+    const ending = file.name.match(/\.([^\.]+)$/)[1];
+    let check = false;
+    switch (ending) {
+      case 'json':
+        check = true;
+        break;
+      default:
+        file.value = '';
+        this.errorModalService.triggerError(new ErrorModel(undefined,
+          `This file format is not allowed! Please use a .json file.`));
+    }
+    return check;
+  }
+
+  private resetProgress() {
+    this.uploadservice.setCurrentProgressValue(0)
+    this.uploadservice.isInUse = false;
+    this.selectedFileInput.nativeElement.value = '';
+  }
+
+  private onReadyStateChangeHandler(event) {
+    if (event.readyState === 4 && event.status !== 200) {
+      if (event.status === 400) {
+        this.errorHandler('Import was not successful, There was an error.');
+      } else if (event.status === 401) {
+        this.errorHandler('Import was not successful, you have no access to apply this operation.');
+      } else if (event.status === 404) {
+        this.errorHandler('Import was not successful, operation was not found.');
+      } else if (event.status === 409) {
+        this.errorHandler('Import was not successful, operation has some conflicts.');
+      }
+
+    } else if (event.readyState === 4 && event.status === 200) {
+      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful'))
+      this.importSucessful.emit();
+      this.resetProgress();
+    }
+  }
+
+  private errorHandler(message = 'Import was not successful') {
+    this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, message))
+    this.selectedFileInput.files = undefined;
+    this.resetProgress();
   }
 }
