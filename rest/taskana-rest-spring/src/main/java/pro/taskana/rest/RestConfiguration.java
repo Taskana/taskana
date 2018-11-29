@@ -1,6 +1,7 @@
 package pro.taskana.rest;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -11,9 +12,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
 
@@ -32,7 +35,7 @@ import pro.taskana.ldap.LdapClient;
 @Configuration
 @ComponentScan
 @EnableTransactionManagement
-public class RestConfiguration {
+public class RestConfiguration extends WebMvcConfigurationSupport {
 
     @Value("${taskana.schemaName:TASKANA}")
     private String schemaName;
@@ -74,18 +77,19 @@ public class RestConfiguration {
         return new LdapClient();
     }
 
-    // Needed to override JSON De-/Serializer in Jackson.
-    @Bean
-    public Jackson2ObjectMapperBuilder jacksonBuilder(HandlerInstantiator handlerInstantiator) {
-        Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
-        b.indentOutput(true);
-        b.handlerInstantiator(handlerInstantiator);
-        return b;
-    }
-
     // Needed for injection into jackson deserializer.
     @Bean
     public HandlerInstantiator handlerInstantiator(ApplicationContext context) {
         return new SpringHandlerInstantiator(context.getAutowireCapableBeanFactory());
+    }
+
+    @Override
+    protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        for (HttpMessageConverter<?> converter : converters)  {
+            if (converter instanceof MappingJackson2HttpMessageConverter) {
+                MappingJackson2HttpMessageConverter jacksonConverter = (MappingJackson2HttpMessageConverter) converter;
+                jacksonConverter.setPrettyPrint(true);
+            }
+        }
     }
 }

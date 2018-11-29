@@ -281,7 +281,8 @@ public class ClassificationControllerRestDocumentation {
                 responseFields(classificationFieldDescriptors)))
             .andReturn();
 
-        String newId = result.getResponse().getContentAsString().substring(21, 61);
+        String content = result.getResponse().getContentAsString();
+        String newId = content.substring(content.indexOf("CLI:"), content.indexOf("CLI:") + 40);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .delete("http://127.0.0.1:" + port + "/v1/classifications/" + newId)
