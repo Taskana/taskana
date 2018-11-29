@@ -31,6 +31,7 @@ import { AccessItemsComponent } from './access-items/access-items.component';
 import { DistributionTargetsComponent } from './distribution-targets/distribution-targets.component';
 import { DualListComponent } from './distribution-targets//dual-list/dual-list.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -56,14 +57,13 @@ describe('WorkbasketDetailsComponent', () => {
 	beforeEach(done => {
 		const configure = (testBed: TestBed) => {
 			testBed.configureTestingModule({
-        imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule,
-          InfiniteScrollModule],
+				imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule,
+					InfiniteScrollModule],
 				declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
 					AccessItemsComponent,
 					DistributionTargetsComponent, DualListComponent, DummyDetailComponent],
 				providers: [WorkbasketService, MasterAndDetailService, ErrorModalService, RequestInProgressService,
-					AlertService, SavingWorkbasketService,
-					CustomFieldsService]
+					AlertService, SavingWorkbasketService, CustomFieldsService, ImportExportService]
 			})
 		};
 		configureTests(configure).then(testBed => {

@@ -1,20 +1,23 @@
-<input #selectedFile type="file" accept=".json" (change)="onSelectFile($event)" class="hide" />
-<button type="button" (click)="selectedFile.click()" data-toggle="tooltip" title="Import" class="btn btn-default">
+
+<button type="button" [ngClass]="{disabled: uploadservice?.isInUse}" (click)="selectedFile.click()" data-toggle="tooltip" title="Import" class="btn btn-default">
   <span class="material-icons md-20 green-blue">cloud_upload</span>
 </button>
+<form class="hidden" id="upload_form" enctype="multipart/form-data" method="post">
+  <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hide" />
+</form>
 <ul class="dropdown-menu">
-    <li>
-      <a href="javascript:void(0)" class="dropdown-item" (click)="export()">
-        <label>All Domains</label>
-      </a>
-    </li>
-    <div role="separator" class="divider"></div>
-    <li *ngFor="let domain of domains">
-      <a href="javascript:void(0)" class="dropdown-item" (click)="export(domain)">
-        <label>{{domain === '' ? 'Master' : domain}}</label>
-      </a>
-    </li>
-  </ul>
-<button type="button" data-toggle="dropdown" title="Export" class="btn btn-default">
+  <li>
+    <a href="javascript:void(0)" class="dropdown-item" (click)="export()">
+      <label>All Domains</label>
+    </a>
+  </li>
+  <div role="separator" class="divider"></div>
+  <li *ngFor="let domain of domains">
+    <a href="javascript:void(0)" class="dropdown-item" (click)="export(domain)">
+      <label>{{domain === '' ? 'Master' : domain}}</label>
+    </a>
+  </li>
+</ul>
+<button [ngClass]="{disabled: uploadservice?.isInUse}" type="button" data-toggle="dropdown" title="Export" class="btn btn-default">
   <span class="material-icons md-20 red">cloud_download</span>
 </button>

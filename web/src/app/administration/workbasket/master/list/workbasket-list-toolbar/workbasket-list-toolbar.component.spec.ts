@@ -22,6 +22,7 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { configureTests } from 'app/app.test.configuration';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
 	selector: 'taskana-dummy-detail',
@@ -50,6 +51,7 @@ describe('WorkbasketListToolbarComponent', () => {
 					WorkbasketService,
 					ClassificationDefinitionService,
 					WorkbasketDefinitionService,
+					ImportExportService
 				]
 			})
 		};

@@ -13,13 +13,13 @@ public class WorkbasketDefinition {
 
     public Set<String> distributionTargets;
     public List<WorkbasketAccessItem> authorizations;
-    public Workbasket workbasket;
+    public WorkbasketResource workbasket;
 
     public WorkbasketDefinition() {
         // necessary for de-serializing
     }
 
-    public WorkbasketDefinition(Workbasket workbasket,
+    public WorkbasketDefinition(WorkbasketResource workbasket,
         Set<String> distributionTargets,
         List<WorkbasketAccessItem> authorizations) {
         super();

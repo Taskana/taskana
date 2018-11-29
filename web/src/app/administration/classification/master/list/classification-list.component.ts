@@ -12,6 +12,7 @@ import {
 } from 'app/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
 import { ClassificationDefinition } from '../../../../models/classification-definition';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
 	selector: 'taskana-classification-list',
@@ -37,12 +38,14 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 	classificationSavedSubscription: Subscription;
 	selectedClassificationSubscription: Subscription;
 	categoriesSubscription: Subscription;
+	importingExportingSubscription: Subscription;
 
 	constructor(
 		private classificationService: ClassificationsService,
 		private router: Router,
 		private route: ActivatedRoute,
-		private categoryService: ClassificationCategoriesService) {
+		private categoryService: ClassificationCategoriesService,
+		private importExportService: ImportExportService) {
 	}
 
 	ngOnInit() {
@@ -52,14 +55,17 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 				this.performRequest(true);
 			});
 		this.selectedClassificationSubscription = this.categoryService.getSelectedClassificationType().subscribe(value => {
-		  this.classificationTypeSelected = value;
+			this.classificationTypeSelected = value;
 			this.performRequest();
 		});
 
-    this.categoriesSubscription =
-        this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
-			this.categories = categories;
-		});
+		this.categoriesSubscription =
+			this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
+				this.categories = categories;
+			});
+		this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
+			this.performRequest(true);
+		})
 	}
 
 	selectClassificationType(classificationTypeSelected: string) {
@@ -70,8 +76,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 			.subscribe((classifications: Array<TreeNodeModel>) => {
 				this.classifications = classifications;
 				this.requestInProgress = false;
-      });
-      this.selectClassification(undefined);
+			});
+		this.selectClassification(undefined);
 	}
 
 	selectClassification(id: string) {
@@ -123,16 +129,11 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 		this.initialized = true;
 
 	}
-
-	refreshClassificationList() {
-		this.performRequest(true);
-	}
-
 	ngOnDestroy(): void {
 		if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe(); }
 		if (this.classificationTypeServiceSubscription) { this.classificationTypeServiceSubscription.unsubscribe(); }
 		if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe(); }
 		if (this.classificationSavedSubscription) { this.classificationSavedSubscription.unsubscribe(); }
-
+		if (this.importingExportingSubscription) { this.importingExportingSubscription.unsubscribe(); }
 	}
 }
