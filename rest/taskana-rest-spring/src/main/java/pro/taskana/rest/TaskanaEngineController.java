@@ -3,6 +3,7 @@ package pro.taskana.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,9 @@ public class TaskanaEngineController {
 
     @Autowired
     TaskanaEngineImpl taskanaEngineImpl;
+
+    @Value("${version:Local build}")
+    private String version;
 
     @GetMapping(path = "/v1/domains", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<String>> getDomains() {
@@ -66,10 +70,6 @@ public class TaskanaEngineController {
      */
     @GetMapping(path = "/v1/version", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<VersionResource> currentVersion() {
-        String version = TaskanaEngineController.class.getPackage().getImplementationVersion();
-        if (version == null) {
-            version = "1.0-DEFAULT";
-        }
         VersionResource resource = new VersionResource();
         resource.setVersion(version);
         return new ResponseEntity<>(resource,
