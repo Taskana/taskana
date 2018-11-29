@@ -26,6 +26,7 @@ import { CustomFieldsService } from '../../../services/custom-fields/custom-fiel
 import { Pair } from 'app/models/pair';
 import { NgForm } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -37,7 +38,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   classification: ClassificationDefinition;
   classificationClone: ClassificationDefinition;
-  selectedClassification: ClassificationDefinition = undefined;
   showDetail = false;
   classificationTypes: Array<string> = [];
   badgeMessage = '';
@@ -65,6 +65,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private selectedClassificationTypeSubscription: Subscription;
   private categoriesSubscription: Subscription;
   private domainSubscription: Subscription;
+  private importingExportingSubscription: Subscription;
 
   @ViewChild('ClassificationForm') classificationForm: NgForm;
   toogleValidationMap = new Map<string, boolean>();
@@ -81,7 +82,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private domainService: DomainService,
     private customFieldsService: CustomFieldsService,
     private removeConfirmationService: RemoveConfirmationService,
-    private formsValidatorService: FormsValidatorService) {
+    private formsValidatorService: FormsValidatorService,
+    private importExportService: ImportExportService) {
   }
 
   ngOnInit() {
@@ -107,7 +109,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         if (id === 'undefined') {
           id = undefined;
         }
-        this.fillClassificationInformation(this.selectedClassification ? this.selectedClassification : new ClassificationDefinition())
+        this.fillClassificationInformation(this.classification ? this.classification : new ClassificationDefinition())
       }
 
       if (!this.classification || this.classification.classificationId !== id && id && id !== '') {
@@ -125,6 +127,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.classification.category = categories[0];
       }
     });
+
+    this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
+      if (this.classification.classificationId) { this.selectClassification(this.classification.classificationId); }
+    })
   }
 
   backClicked(): void {
@@ -216,14 +222,14 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     }
     this.requestInProgress = true;
     this.selectedClassificationSubscription = this.classificationsService.getClassification(id).subscribe(classification => {
-      this.selectedClassification = classification;
+      this.fillClassificationInformation(classification)
       this.classificationsService.selectClassification(classification);
       this.requestInProgress = false;
     });
   }
 
   private classificationIsAlreadySelected(): boolean {
-    if (this.action === ACTION.CREATE && this.selectedClassification) { return true }
+    if (this.action === ACTION.CREATE && this.classification) { return true }
   }
 
   private fillClassificationInformation(classificationSelected: ClassificationDefinition) {
@@ -287,7 +293,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       })
   }
 
-  private cloneClassification (classification: ClassificationDefinition) {
+  private cloneClassification(classification: ClassificationDefinition) {
     this.classificationClone = { ...classification };
   }
 
@@ -311,5 +317,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     if (this.selectedClassificationTypeSubscription) { this.selectedClassificationTypeSubscription.unsubscribe(); }
     if (this.categoriesSubscription) { this.categoriesSubscription.unsubscribe(); }
     if (this.domainSubscription) { this.domainSubscription.unsubscribe(); }
+    if (this.importingExportingSubscription) { this.importingExportingSubscription.unsubscribe(); }
   }
 }

@@ -14,7 +14,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TreeModule } from 'angular-tree-component';
 import { SharedModule } from 'app/shared/shared.module';
 
-
 /**
  * Services
  */
@@ -34,6 +33,7 @@ import { WindowRefService } from 'app/services/window/window.service';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 import { RemoveConfirmationService } from './services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
+import { UploadService } from './shared/services/upload/upload.service';
 
 /**
  * Components
@@ -110,7 +110,8 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     CustomFieldsService,
     TaskanaEngineService,
     RemoveConfirmationService,
-    FormsValidatorService
+    FormsValidatorService,
+    UploadService
   ],
   bootstrap: [AppComponent]
 })

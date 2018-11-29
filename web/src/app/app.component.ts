@@ -9,6 +9,7 @@ import { RequestInProgressService } from './services/requestInProgress/request-i
 import { OrientationService } from './services/orientation/orientation.service';
 import { SelectedRouteService } from './services/selected-route/selected-route';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { UploadService } from './shared/services/upload/upload.service';
 
 @Component({
 	selector: 'taskana-root',
@@ -24,11 +25,13 @@ export class AppComponent implements OnInit, OnDestroy {
 	selectedRoute = '';
 
 	requestInProgress = false;
+	currentProgressValue = 0;
 
 	errorModalSubscription: Subscription;
 	requestInProgressSubscription: Subscription;
 	selectedRouteSubscription: Subscription;
 	routerSubscription: Subscription;
+	uploadingFileSubscription: Subscription;
 
 	@HostListener('window:resize', ['$event'])
 	onResize(event) {
@@ -41,7 +44,8 @@ export class AppComponent implements OnInit, OnDestroy {
 		private requestInProgressService: RequestInProgressService,
 		private orientationService: OrientationService,
 		private selectedRouteService: SelectedRouteService,
-		private formsValidatorService: FormsValidatorService) {
+		private formsValidatorService: FormsValidatorService,
+		public uploadService: UploadService) {
 	}
 
 	ngOnInit() {
@@ -73,6 +77,9 @@ export class AppComponent implements OnInit, OnDestroy {
 			}
 			this.selectedRoute = value;
 		})
+		this.uploadingFileSubscription = this.uploadService.getCurrentProgressValue().subscribe(value => {
+			this.currentProgressValue = value;
+		})
 	}
 
 	ngOnDestroy() {
@@ -80,5 +87,6 @@ export class AppComponent implements OnInit, OnDestroy {
 		if (this.errorModalSubscription) { this.errorModalSubscription.unsubscribe(); }
 		if (this.requestInProgressSubscription) { this.requestInProgressSubscription.unsubscribe(); }
 		if (this.selectedRouteSubscription) { this.selectedRouteSubscription.unsubscribe(); }
+		if (this.uploadingFileSubscription) { this.uploadingFileSubscription.unsubscribe(); }
 	}
 }

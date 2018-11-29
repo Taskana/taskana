@@ -11,13 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
@@ -31,25 +30,43 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.WorkbasketDefinition;
+import pro.taskana.rest.resource.WorkbasketDefinitionAssembler;
+
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Controller for all {@link WorkbasketDefinition} related endpoints.
  */
 @RestController
-@RequestMapping(path = "/v1/workbasketdefinitions", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/v1/workbasket-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class WorkbasketDefinitionController {
 
     @Autowired
     private WorkbasketService workbasketService;
 
+    @Autowired
+    private WorkbasketDefinitionAssembler workbasketDefinitionAssembler;
+
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<WorkbasketSummary>> exportWorkbaskets(@RequestParam(required = false) String domain) {
+    public ResponseEntity<List<WorkbasketDefinition>> exportWorkbaskets(@RequestParam(required = false) String domain)
+        throws NotAuthorizedException, WorkbasketNotFoundException {
+
         WorkbasketQuery workbasketQuery = workbasketService.createWorkbasketQuery();
         List<WorkbasketSummary> workbasketSummaryList = domain != null
             ? workbasketQuery.domainIn(domain).list()
             : workbasketQuery.list();
-        return new ResponseEntity<>(workbasketSummaryList, HttpStatus.OK);
+        List<WorkbasketDefinition> basketExports = new ArrayList<>();
+        for (WorkbasketSummary summary : workbasketSummaryList) {
+            Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
+            basketExports.add(workbasketDefinitionAssembler.toDefinition(workbasket));
+        }
+        return new ResponseEntity<>(basketExports, HttpStatus.OK);
+
     }
 
     /**
@@ -57,85 +74,76 @@ public class WorkbasketDefinitionController {
      * we want to have an option to import all settings at once. When a logical equal (key and domain are equal)
      * workbasket already exists an update will be executed. Otherwise a new workbasket will be created.
      *
-     * @param definitions the list of workbasket definitions which will be imported to the current system.
+     * @param file the list of workbasket definitions which will be imported to the current system.
      * @return Return answer is determined by the status code: 200 - all good 400 - list state error (referring to non
      * existing id's) 401 - not authorized
      */
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<String> importWorkbaskets(@RequestBody List<WorkbasketDefinition> definitions) {
-        try {
-            // key: logical ID
-            // value: system ID (in database)
-            Map<String, String> systemIds = workbasketService.createWorkbasketQuery()
-                .list()
-                .stream()
-                .collect(Collectors.toMap(this::logicalId, WorkbasketSummary::getId));
+    public ResponseEntity<String> importWorkbaskets(@RequestParam("file") MultipartFile file)
+        throws IOException, NotAuthorizedException, DomainNotFoundException, InvalidWorkbasketException,
+        WorkbasketAlreadyExistException, WorkbasketNotFoundException, InvalidArgumentException {
 
-            // key: old system ID
-            // value: system ID
-            Map<String, String> idConversion = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        List<WorkbasketDefinition> definitions = mapper.readValue(file.getInputStream(),
+            new TypeReference<List<WorkbasketDefinition>>() {
 
-            // STEP 1: update or create workbaskets from the import
-            for (WorkbasketDefinition definition : definitions) {
-                Workbasket importedWb = definition.workbasket;
-                Workbasket workbasket;
-                if (systemIds.containsKey(logicalId(importedWb))) {
-                    workbasket = workbasketService.updateWorkbasket(importedWb);
-                } else {
-                    workbasket = workbasketService.createWorkbasket(importedWb);
-                }
+            });
 
-                // Since we would have a n² runtime when doing a lookup and updating the access items we decided to
-                // simply delete all existing accessItems and create new ones.
-                for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(workbasket.getId())) {
-                    workbasketService.deleteWorkbasketAccessItem(accessItem.getId());
-                }
-                for (WorkbasketAccessItem authorization : definition.authorizations) {
-                    workbasketService.createWorkbasketAccessItem(authorization);
-                }
-                idConversion.put(definition.workbasket.getId(), workbasket.getId());
+        // key: logical ID
+        // value: system ID (in database)
+        Map<String, String> systemIds = workbasketService.createWorkbasketQuery()
+            .list()
+            .stream()
+            .collect(Collectors.toMap(this::logicalId, WorkbasketSummary::getId));
+
+        // key: old system ID
+        // value: system ID
+        Map<String, String> idConversion = new HashMap<>();
+
+        // STEP 1: update or create workbaskets from the import
+        for (WorkbasketDefinition definition : definitions) {
+            Workbasket importedWb = workbasketDefinitionAssembler.toModel(definition.workbasket);
+            Workbasket workbasket;
+            if (systemIds.containsKey(logicalId(importedWb))) {
+                workbasket = workbasketService.updateWorkbasket(importedWb);
+            } else {
+                workbasket = workbasketService.createWorkbasket(importedWb);
             }
 
-            // STEP 2: update distribution targets
-            // This can not be done in step 1 because the system IDs are only known after step 1
-            for (WorkbasketDefinition definition : definitions) {
-                List<String> distributionTargets = new ArrayList<>();
-                for (String oldId : definition.distributionTargets) {
-                    if (idConversion.containsKey(oldId)) {
-                        distributionTargets.add(idConversion.get(oldId));
-                    } else {
-                        throw new InvalidWorkbasketException(
-                            String.format(
-                                "invalid import state: Workbasket '%s' does not exist in the given import list",
-                                oldId));
-                    }
-                }
-
-                workbasketService.setDistributionTargets(
-                    // no verification necessary since the workbasket was already imported in step 1.
-                    idConversion.get(definition.workbasket.getId()), distributionTargets);
+            // Since we would have a n² runtime when doing a lookup and updating the access items we decided to
+            // simply delete all existing accessItems and create new ones.
+            for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(workbasket.getId())) {
+                workbasketService.deleteWorkbasketAccessItem(accessItem.getId());
             }
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (WorkbasketNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (InvalidWorkbasketException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (NotAuthorizedException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } catch (InvalidArgumentException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-        } catch (WorkbasketAlreadyExistException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } catch (DomainNotFoundException e) {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            for (WorkbasketAccessItem authorization : definition.authorizations) {
+                workbasketService.createWorkbasketAccessItem(authorization);
+            }
+            idConversion.put(importedWb.getId(), workbasket.getId());
         }
+
+        // STEP 2: update distribution targets
+        // This can not be done in step 1 because the system IDs are only known after step 1
+        for (WorkbasketDefinition definition : definitions) {
+            List<String> distributionTargets = new ArrayList<>();
+            for (String oldId : definition.distributionTargets) {
+                if (idConversion.containsKey(oldId)) {
+                    distributionTargets.add(idConversion.get(oldId));
+                } else {
+                    throw new InvalidWorkbasketException(
+                        String.format(
+                            "invalid import state: Workbasket '%s' does not exist in the given import list",
+                            oldId));
+                }
+            }
+
+            workbasketService.setDistributionTargets(
+                // no verification necessary since the workbasket was already imported in step 1.
+                idConversion.get(definition.workbasket.getWorkbasketId()), distributionTargets);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     private String logicalId(WorkbasketSummary workbasket) {

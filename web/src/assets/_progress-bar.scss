@@ -1,0 +1,42 @@
+@import '_colors';
+.item {
+	margin-bottom: 20px;
+	position: relative;
+	width: 113px;
+	height: 113px;
+	border-radius: 50%;
+	border: 1px solid #fff;
+	background-color: #FFF;
+    float: left;
+    margin-right: 20px;
+}
+
+.radial-inner-bg {
+	border-radius: 50%;
+	width: 100px;
+	height: 100px; 
+	top: 5px;
+	left: 5px;
+	background: #FFF;
+    position: absolute;
+    >h1 {
+        margin: 30px 0 0 5px;
+    }
+}
+
+$step: 1; // step of % for created classes
+$loops: 100;
+$increment: (360 / $loops);
+$half: round($loops / 2);
+@for $i from 0 through $loops {
+  .progress-#{$i*$step} {
+    @if $i < 50 {
+		$nextdeg: 90deg + ( $increment * $i );
+		background-image: linear-gradient(90deg, #fff 50%, transparent 50%, transparent), linear-gradient($nextdeg, $pallete-green 51%, #fff 50%, #fff);
+    }
+    @else {
+		$nextdeg: -90deg + ( $increment * ( $i - $half ) );
+		background-image: linear-gradient($nextdeg, $pallete-green 51%, transparent 50%, transparent), linear-gradient(270deg, $pallete-green 50%, #fff 50%, #fff);
+    }
+  }
+}

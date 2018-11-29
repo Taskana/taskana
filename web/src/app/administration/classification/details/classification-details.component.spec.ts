@@ -26,6 +26,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -52,8 +53,7 @@ describe('ClassificationDetailsComponent', () => {
         imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
         declarations: [ClassificationDetailsComponent, DummyDetailComponent],
         providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
-          TreeService, ClassificationCategoriesService,
-          CustomFieldsService]
+          TreeService, ClassificationCategoriesService, CustomFieldsService, ImportExportService]
       })
     };
     configureTests(configure).then(testBed => {

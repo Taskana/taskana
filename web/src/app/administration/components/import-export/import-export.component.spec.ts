@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTests } from 'app/app.test.configuration';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 describe('ImportExportComponent', () => {
   let component: ImportExportComponent;
@@ -21,7 +22,7 @@ describe('ImportExportComponent', () => {
         declarations: [ImportExportComponent],
         imports: [HttpClientModule, AngularSvgIconModule],
         providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, AlertService,
-          ErrorModalService]
+          ErrorModalService, ImportExportService]
       })
     };
     configureTests(configure).then(testBed => {

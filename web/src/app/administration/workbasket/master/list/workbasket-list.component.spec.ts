@@ -22,6 +22,7 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { configureTests } from 'app/app.test.configuration';
 import { Page } from 'app/models/page';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -80,7 +81,8 @@ describe('WorkbasketListComponent', () => {
           WorkbasketService,
           WorkbasketDefinitionService,
           ClassificationDefinitionService,
-          OrientationService
+          OrientationService,
+          ImportExportService
         ]
       });
     };

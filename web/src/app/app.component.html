@@ -6,5 +6,6 @@
         <taskana-spinner [isRunning]="requestInProgress" isModal=true></taskana-spinner>
         <taskana-alert></taskana-alert>
         <taskana-remove-confirmation></taskana-remove-confirmation>
+        <taskana-progress-bar [ngClass]="{hidden: currentProgressValue === 0}" currentValue={{currentProgressValue}}></taskana-progress-bar>
     </div>
 </div>

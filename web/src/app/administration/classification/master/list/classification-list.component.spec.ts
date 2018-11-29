@@ -26,6 +26,7 @@ import {
 } from 'app/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
 import { TreeService } from 'app/services/tree/tree.service';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -54,7 +55,7 @@ describe('ClassificationListComponent', () => {
         imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule],
         providers: [
           HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
-          ErrorModalService, RequestInProgressService, ClassificationCategoriesService, TreeService
+          ErrorModalService, RequestInProgressService, ClassificationCategoriesService, TreeService, ImportExportService
         ]
       })
     };

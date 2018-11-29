@@ -11,6 +11,7 @@ import {Orientation} from 'app/models/orientation';
 import {WorkbasketService} from 'app/services/workbasket/workbasket.service'
 import {OrientationService} from 'app/services/orientation/orientation.service';
 import {TaskanaQueryParameters} from 'app/shared/util/query-parameters';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
   selector: 'taskana-workbasket-list',
@@ -38,12 +39,14 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   private workbasketServiceSubscription: Subscription;
   private workbasketServiceSavedSubscription: Subscription;
   private orientationSubscription: Subscription;
+  private importingExportingSubscription: Subscription;
 
   constructor(
     private workbasketService: WorkbasketService,
     private router: Router,
     private route: ActivatedRoute,
-    private orientationService: OrientationService) {
+    private orientationService: OrientationService,
+    private importExportService: ImportExportService) {
   }
 
   ngOnInit() {
@@ -64,6 +67,10 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
       this.refreshWorkbasketList();
     });
+    this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
+			this.refreshWorkbasketList();
+		})
+
   }
 
   selectWorkbasket(id: string) {
@@ -121,5 +128,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       this.orientationSubscription.unsubscribe();
     }
 
+    if (this.importingExportingSubscription) {
+      this.importingExportingSubscription.unsubscribe();
+    }
   }
 }
