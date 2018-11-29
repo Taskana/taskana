@@ -31,6 +31,7 @@ import {WorkbasketDefinitionService} from './services/workbasket-definition/work
 import {ClassificationsService} from '../services/classifications/classifications.service';
 import {ClassificationCategoriesService} from 'app/services/classifications/classification-categories.service';
 import { AccessItemsManagementComponent } from 'app/administration/access-items-management/access-items-management.component';
+import { ImportExportService } from './services/import-export/import-export.service';
 
 const MODULES = [
   CommonModule,
@@ -69,6 +70,7 @@ const DECLARATIONS = [
     SavingWorkbasketService,
     ClassificationsService,
     ClassificationCategoriesService,
+    ImportExportService,
   ]
 })
 export class AdministrationModule {

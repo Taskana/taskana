@@ -1,10 +1,10 @@
 <li id="wb-action-toolbar" class="list-group-item tab-align">
   <div class="row">
-    <div class="col-xs-9 btn-group">
+    <div class="col-xs-7 btn-group">
       <button type="button" (click)="addWorkbasket()" data-toggle="tooltip" title="Add" class="btn btn-default">
         <span class="material-icons md-20 green-blue">add_circle_outline</span>
       </button>
-      <taskana-import-export-component class="btn-group" (importSucessful)="importEvent()" [currentSelection]="selectionToImport"></taskana-import-export-component>
+      <taskana-import-export-component class="btn-group" [currentSelection]="selectionToImport"></taskana-import-export-component>
     </div>
     <div class="margin-right pull-right btn-group">
       <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group"></taskana-sort>

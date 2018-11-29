@@ -5,7 +5,7 @@
 				<button type="button" (click)="addClassification()" data-toggle="tooltip" title="Add" class="btn btn-default">
 					<span class="material-icons md-20 green-blue">add_circle_outline</span>
 				</button>
-				<taskana-import-export-component class ="btn-group" [currentSelection]="selectionToImport" (importSucessful)="refreshClassificationList()">
+				<taskana-import-export-component class ="btn-group" [currentSelection]="selectionToImport">
 				</taskana-import-export-component>
 			</div>
 			<div class="col-xs-6">

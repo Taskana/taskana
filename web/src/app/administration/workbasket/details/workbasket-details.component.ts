@@ -10,14 +10,13 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
 import { DomainService } from 'app/services/domain/domain.service';
 import { ErrorModalService } from '../../../services/errorModal/error-modal.service';
-
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
 	selector: 'taskana-workbasket-details',
 	templateUrl: './workbasket-details.component.html'
 })
 export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
-
 
 	workbasket: Workbasket;
 	workbasketCopy: Workbasket;
@@ -33,13 +32,15 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 	private masterAndDetailSubscription: Subscription;
 	private permissionSubscription: Subscription;
 	private domainSubscription: Subscription;
+	private importingExportingSubscription: Subscription;
 
 	constructor(private service: WorkbasketService,
 		private route: ActivatedRoute,
 		private router: Router,
 		private masterAndDetailService: MasterAndDetailService,
 		private domainService: DomainService,
-    private errorModalService: ErrorModalService) { }
+		private errorModalService: ErrorModalService,
+		private importExportService: ImportExportService) { }
 
 
 
@@ -77,6 +78,10 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe(showDetail => {
 			this.showDetail = showDetail;
 		});
+
+		this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
+			if (this.workbasket) { this.getWorkbasketInformation(this.workbasket.workbasketId); }
+		})
 	}
 
 	backClicked(): void {
@@ -113,9 +118,9 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 				this.requestInProgress = false;
 				this.checkDomainAndRedirect();
 			}, err => {
-        this.errorModalService.triggerError(
-          new ErrorModel('An error occurred while fetching the workbasket', err));
-      });
+				this.errorModalService.triggerError(
+					new ErrorModel('An error occurred while fetching the workbasket', err));
+			});
 		}
 	}
 
@@ -134,5 +139,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		if (this.masterAndDetailSubscription) { this.masterAndDetailSubscription.unsubscribe(); }
 		if (this.permissionSubscription) { this.permissionSubscription.unsubscribe(); }
 		if (this.domainSubscription) { this.domainSubscription.unsubscribe(); }
+		if (this.importingExportingSubscription) { this.importingExportingSubscription.unsubscribe(); }
 	}
 }

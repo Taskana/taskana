@@ -5,3 +5,7 @@
 .btn-group ul + .btn, {
     margin-left: -1px;
 }
+
+.btn-group > div.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+    border-radius: 0;
+}
