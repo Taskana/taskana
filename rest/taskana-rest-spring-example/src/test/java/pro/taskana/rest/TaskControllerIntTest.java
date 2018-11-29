@@ -398,8 +398,9 @@ public class TaskControllerIntTest {
         }
         in.close();
         con.disconnect();
-        String createdTask = responsePayload.toString();
-        String taskIdOfCreatedTask = createdTask.substring(11, 51);
+        String createdTask = responsePayload.toString();       
+        String taskIdOfCreatedTask = createdTask.substring(createdTask.indexOf("TKI:"), createdTask.indexOf("TKI:") + 40);
+        
         assertNotNull(taskIdOfCreatedTask);
         assertTrue(taskIdOfCreatedTask.startsWith("TKI:"));
 
