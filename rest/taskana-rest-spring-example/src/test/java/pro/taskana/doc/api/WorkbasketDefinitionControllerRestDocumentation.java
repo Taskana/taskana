@@ -11,7 +11,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,29 +67,27 @@ public class WorkbasketDefinitionControllerRestDocumentation {
     }
     
     @Test
-    public void getAllWorkbasketDefinitions() throws Exception {
+    public void exportAllWorkbasketDefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .get("http://127.0.0.1:" + port + "/v1/workbasketdefinitions")
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllWorkbasktdefinitionsDocTest",
+        .andDo(MockMvcRestDocumentation.document("ExportWorkbasktdefinitionsDocTest",
                 responseFields(workbasketdefinitionsFieldDescriptors)));
     }
     
     @Test
     public void importWorkbasketdefinition() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .post("http://127.0.0.1:" + port + "/v1/workbasketdefinitions/import")
+                .post("http://127.0.0.1:" + port + "/v1/workbasketdefinitions")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
                 .contentType("application/json")
                 .content("["
                         + "{"
                         + "\"distributionTargets\":[], "
                         + "\"authorizations\":[], "
-                        + "\"workbasketResource\":"
-                        + "{\"name\":\"ich\", \"key\":\"neuerKeyXy\", \"domain\":\"DOMAIN_A\", \"type\":\"GROUP\","
-                        + "\"created\":\"2018-02-01T11:00:00Z\", \"modified\":\"2018-02-01T11:00:00Z\", \"workbasketId\":\"gibtsNed\"}"
+                        + "\"workbasket\": {\"name\":\"wbblabla\", \"key\":\"neuerKeyXy\", \"domain\": \"DOMAIN_A\", \"type\":\"GROUP\"}"
                         + "}"
                         + "]"))
         .andExpect(MockMvcResultMatchers.status().isOk())
