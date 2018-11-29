@@ -66,21 +66,21 @@ public class ClassificationDefinitionControllerRestDocumentation {
     }
     
     @Test
-    public void getAllClassificationdefinitions() throws Exception {
+    public void exportAllClassificationdefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .get("http://127.0.0.1:" + port + "/v1/classificationdefinitions")
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllClassificationdefinitionsDocTest",
+        .andDo(MockMvcRestDocumentation.document("ExportClassificationdefinitionsDocTest",
                 responseFields(classificationdefinitionsFieldDescriptors)));
     }
     
     @Test
-    public void importClassificationdefinition() throws Exception {
+    public void importClassificationdefinitions() throws Exception {
         String definitionString = "[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]";
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .post("http://127.0.0.1:" + port + "/v1/classificationdefinitions/import")
+                .post("http://127.0.0.1:" + port + "/v1/classificationdefinitions/")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
                 .contentType("application/json")
                 .content(definitionString))

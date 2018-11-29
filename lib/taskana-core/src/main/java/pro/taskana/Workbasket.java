@@ -2,9 +2,14 @@ package pro.taskana;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import pro.taskana.impl.WorkbasketImpl;
+
 /**
  * Workbasket entity interface.
  */
+@JsonDeserialize(as = WorkbasketImpl.class)
 public interface Workbasket {
 
     /**

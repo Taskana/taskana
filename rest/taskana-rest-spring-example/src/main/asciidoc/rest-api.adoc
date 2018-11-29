@@ -364,15 +364,15 @@ A `GET` request is used to get all classification definitions.
 
 ==== Example Request
 
-include::../../../{snippets}/GetAllClassificationdefinitionsDocTest/http-request.adoc[]
+include::../../../{snippets}/ExportClassificationdefinitionsDocTest/http-request.adoc[]
 
 ==== Example Response
 
-include::../../../{snippets}/GetAllClassificationdefinitionsDocTest/http-response.adoc[]
+include::../../../{snippets}/ExportClassificationdefinitionsDocTest/http-response.adoc[]
 
 ==== Response Structure
 
-include::../../../{snippets}/GetAllClassificationdefinitionsDocTest/response-fields.adoc[]
+include::../../../{snippets}/ExportClassificationdefinitionsDocTest/response-fields.adoc[]
 
 === Import new classification-definitions
 
@@ -548,16 +548,16 @@ A `GET` request is used to get all workbasket definitions.
 
 ==== Example Request
 
-include::../../../{snippets}/GetAllWorkbasktdefinitionsDocTest/http-request.adoc[]
+include::../../../{snippets}/ExportWorkbasktdefinitionsDocTest/http-request.adoc[]
 
 ==== Example Response
 
-include::../../../{snippets}/GetAllWorkbasktdefinitionsDocTest/http-response.adoc[]
+include::../../../{snippets}/ExportWorkbasktdefinitionsDocTest/http-response.adoc[]
 
 [[workbasket-definitions]]
 ==== Response Structure
 
-include::../../../{snippets}/GetAllWorkbasktdefinitionsDocTest/response-fields.adoc[]
+include::../../../{snippets}/ExportWorkbasktdefinitionsDocTest/response-fields.adoc[]
 
 === Import new workbasket-definitions
 
