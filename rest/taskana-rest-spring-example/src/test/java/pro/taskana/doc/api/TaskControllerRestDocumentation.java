@@ -352,7 +352,8 @@ public class TaskControllerRestDocumentation {
                 responseFields(taskFieldDescriptors)))
         .andReturn();     
         
-        String newId = result.getResponse().getContentAsString().substring(11, 51);
+        String content = result.getResponse().getContentAsString();
+        String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
         
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
@@ -375,13 +376,14 @@ public class TaskControllerRestDocumentation {
         .andDo(MockMvcRestDocumentation.document("temp"))
         .andReturn();
         
-        String newId = result.getResponse().getContentAsString().substring(11, 51);
+        String content = result.getResponse().getContentAsString();
+        String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
         
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .post("http://127.0.0.1:" + port + "/v1/tasks/" + newId + "/claim")
-                .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
-                .content("{}"))
+                .contentType("application/json")
+                .content("\"userName\":\"teamlead_1\""))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(MockMvcRestDocumentation.document("ClaimTaskDocTest",
                 responseFields(taskFieldDescriptors)));
@@ -406,7 +408,8 @@ public class TaskControllerRestDocumentation {
         .andDo(MockMvcRestDocumentation.document("temp"))
         .andReturn();
         
-        String newId = result.getResponse().getContentAsString().substring(11, 51);
+        String content = result.getResponse().getContentAsString();
+        String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
         
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .post("http://127.0.0.1:" + port + "/v1/tasks/" + newId + "/complete")
@@ -438,7 +441,8 @@ public class TaskControllerRestDocumentation {
                 responseFields(taskFieldDescriptors)))
         .andReturn();
        
-        String newId = result.getResponse().getContentAsString().substring(11, 51);
+        String content = result.getResponse().getContentAsString();
+        String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
         
         this.mockMvc.perform(RestDocumentationRequestBuilders
                 .post("http://127.0.0.1:" + port + "/v1/tasks/" + newId + "/transfer/WBI:100000000000000000000000000000000001")

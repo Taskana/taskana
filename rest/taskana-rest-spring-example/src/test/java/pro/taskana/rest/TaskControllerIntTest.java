@@ -312,7 +312,7 @@ public class TaskControllerIntTest {
         String response = content.toString();
         assertFalse(response.contains("\"attachments\":[]"));
         int start = response.indexOf("created", response.indexOf("created") + 1);
-        String createdString = response.substring(start + 10, start + 30);
+        String createdString = response.substring(start + 12, start + 32);
         assertTrue(
             createdString.matches("\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)"));
     }
@@ -399,7 +399,7 @@ public class TaskControllerIntTest {
         in.close();
         con.disconnect();
         String createdTask = responsePayload.toString();
-        String taskIdOfCreatedTask = createdTask.substring(11, 51);
+        String taskIdOfCreatedTask = createdTask.substring(15, 55);
         assertNotNull(taskIdOfCreatedTask);
         assertTrue(taskIdOfCreatedTask.startsWith("TKI:"));
 

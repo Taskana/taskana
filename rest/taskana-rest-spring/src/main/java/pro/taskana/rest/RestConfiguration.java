@@ -1,9 +1,11 @@
 package pro.taskana.rest;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -11,10 +13,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
 
 import pro.taskana.ClassificationService;
@@ -32,10 +39,13 @@ import pro.taskana.ldap.LdapClient;
 @Configuration
 @ComponentScan
 @EnableTransactionManagement
-public class RestConfiguration {
+public class RestConfiguration extends WebMvcConfigurationSupport {
 
     @Value("${taskana.schemaName:TASKANA}")
     private String schemaName;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Bean
     public ClassificationService getClassificationService(TaskanaEngine taskanaEngine) {
@@ -87,5 +97,11 @@ public class RestConfiguration {
     @Bean
     public HandlerInstantiator handlerInstantiator(ApplicationContext context) {
         return new SpringHandlerInstantiator(context.getAutowireCapableBeanFactory());
+    }
+
+    @Override
+    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
     }
 }
