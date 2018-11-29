@@ -30,7 +30,7 @@ export class ClassificationDefinitionService {
   // POST
   // TODO handle error
   importClassifications(classifications: any) {
-    this.httpClient.post(this.url + '/import',
+    this.httpClient.post(this.url,
       JSON.parse(classifications)).subscribe(
         classificationsUpdated => this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful')),
         error => this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'Import was not successful'))

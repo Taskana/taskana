@@ -31,7 +31,7 @@ export class WorkbasketDefinitionService {
 
   // POST
   importWorkbasketDefinitions(workbasketDefinitions: any) {
-    this.httpClient.post(environment.taskanaRestUrl + '/v1/workbasketdefinitions/import',
+    this.httpClient.post(environment.taskanaRestUrl + '/v1/workbasketdefinitions',
       JSON.parse(workbasketDefinitions)).subscribe(
         workbasketsUpdated => this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful')),
         error => this.errorModalService.triggerError(new ErrorModel(
