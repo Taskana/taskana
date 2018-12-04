@@ -20,7 +20,7 @@ import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
@@ -62,7 +62,7 @@ describe('WorkbasketDetailsComponent', () => {
 				declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
 					AccessItemsComponent,
 					DistributionTargetsComponent, DualListComponent, DummyDetailComponent],
-				providers: [WorkbasketService, MasterAndDetailService, ErrorModalService, RequestInProgressService,
+				providers: [WorkbasketService, MasterAndDetailService, GeneralModalService, RequestInProgressService,
 					AlertService, SavingWorkbasketService, CustomFieldsService, ImportExportService]
 			})
 		};

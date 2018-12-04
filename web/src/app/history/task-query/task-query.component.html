@@ -1,0 +1,83 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="pull-right btn-group">
+      <button type="button" class="btn btn-default" data-toggle="tooltip" title="Query">
+        <span class="material-icons md-20 blue" (click)="search()">search</span>
+      </button>
+      <button type="button" class="btn btn-default" data-toggle="tooltip" title="Query">
+        <span class="material-icons md-20 blue" (click)="clear()">clear</span>
+      </button>
+    </div>
+    <h4 class="panel-header">Taskana history query</h4>
+  </div>
+  <div class="panel-body">
+    <div class="divTable table-striped">
+      <form [formGroup]="taskQueryForm">
+        <div class="divTableHeading">
+          <div class="divTableRow">
+            <ng-container *ngFor="let taskHeader of taskQueryHeader | mapToIterable">
+              <div class="divTableHeader" *ngIf="filterFieldsToShow(taskHeader.key) && !filterExpandGroup(taskHeader.key)"
+                (click)="changeOrderBy(taskHeader.key); search();">
+                <span class="icon-space">
+                  {{getHeaderFieldDescription(taskHeader.key)}}
+                </span>
+                <span *ngIf="orderBy.sortBy === taskHeader.key" class="material-icons md-20 blue pull-right" [ngClass]="{'flip': orderBy.sortDirection === 'desc'}">sort</span>
+              </div>
+              <div class="divTableHeader divTableHeaderSeparator" [ngClass]="{'zoom-in': !toggleExpand, 'zoom-out': toggleExpand}"
+                *ngIf="taskHeader.key === 'custom1'" (click)="toggleExpand = !toggleExpand">
+                <span class="material-icons md-24 blue pull-right">{{toggleExpand? 'chevron_left' : 'chevron_right'}}</span>
+              </div>
+              <div class="divTableHeader" *ngIf="filterFieldsToShow(taskHeader.key) && filterExpandGroup(taskHeader.key) && toggleExpand"
+                (click)="changeOrderBy(taskHeader.key); search();">
+                <span class="icon-space">
+                  {{getHeaderFieldDescription(taskHeader.key)}}
+                </span>
+                <span *ngIf="orderBy.sortBy === taskHeader.key && filterFieldsToAllowQuerying(taskHeader.key)" class="material-icons md-20 blue pull-right"
+                  [ngClass]="{'flip': orderBy.sortDirection === 'desc'}">sort</span>
+              </div>
+            </ng-container>
+          </div>
+          <div class="divTableRow">
+            <ng-container *ngFor="let taskHeader of taskQueryHeader | mapToIterable">
+              <div class="divTableHeader" *ngIf="filterFieldsToShow(taskHeader.key) && !filterExpandGroup(taskHeader.key)">
+                <input type="text" (keyup.enter)="search()" class="form-control input-sm" placeholder="{{getHeaderFieldDescription(taskHeader.key)}}"
+                  formControlName="{{taskHeader.key}}">
+              </div>
+              <div class="divTableHeader divTableHeaderSeparator" [ngClass]="{'zoom-in': !toggleExpand, 'zoom-out': toggleExpand}"
+                *ngIf="taskHeader.key === 'custom1'" (click)="toggleExpand = !toggleExpand">
+              </div>
+              <div class="divTableHeader" *ngIf="filterFieldsToShow(taskHeader.key) && filterExpandGroup(taskHeader.key) && toggleExpand">
+                <input *ngIf="filterFieldsToAllowQuerying(taskHeader.key)" type="text" formControlName="{{taskHeader.key}}"
+                  (keyup.enter)="search()" class="form-control input-sm" placeholder="{{getHeaderFieldDescription(taskHeader.key)}}">
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="divTableBody">
+          <div *ngFor="let task of taskQuery" class="divTableRow">
+            <ng-container *ngFor="let taskHeader of taskQueryHeader | mapToIterable">
+              <div class="divTableCell" *ngIf="filterFieldsToShow(taskHeader.key) && !filterExpandGroup(taskHeader.key)">
+                {{task[taskHeader.key]}}
+              </div>
+              <div class="divTableCell divTableCellSeparator" *ngIf="taskHeader.key === 'custom1'" [ngClass]="{'zoom-in': !toggleExpand, 'zoom-out': toggleExpand}"
+                (click)="toggleExpand = !toggleExpand">
+              </div>
+              <div class="divTableCell" *ngIf="filterFieldsToShow(taskHeader.key) && filterExpandGroup(taskHeader.key) && filterFieldsToAllowQuerying(taskHeader.key) && toggleExpand">
+                {{task[taskHeader.key]}}
+              </div>
+              <div class="divTableCell" *ngIf="!filterFieldsToAllowQuerying(taskHeader.key) && toggleExpand">
+                <button *ngIf="task[taskHeader.key]" type="button" class="btn btn-default btn-xs" (click)="openDetails(taskHeader.key, task[taskHeader.key])">
+                  <span class="material-icons md-16 blue pull-right">open_in_new</span>
+                </button>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="divTablePagination" *ngIf="taskQueryResource">
+      <taskana-pagination [(page)]="taskQueryResource.page" [numberOfItems]="taskQuery.length" type="Entries"
+        (changePage)="changePage($event)"></taskana-pagination>
+    </div>
+  </div>
+</div>

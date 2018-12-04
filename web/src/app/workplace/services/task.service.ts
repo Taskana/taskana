@@ -1,13 +1,14 @@
-import {Task} from 'app/workplace/models/task';
-import {Observable, Subject} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {environment} from 'environments/environment';
-import {TaskResource} from 'app/workplace/models/task-resource';
-import {Direction} from 'app/models/sorting';
+import { Task } from 'app/workplace/models/task';
+import { Observable, Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { environment } from 'environments/environment';
+import { TaskResource } from 'app/workplace/models/task-resource';
+import { Direction } from 'app/models/sorting';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { map } from 'rxjs/operators';
+import { QueryParametersModel } from 'app/models/query-parameters';
 
 @Injectable()
 export class TaskService {
@@ -46,44 +47,37 @@ export class TaskService {
     return this.taskSelectedStream;
   }
 
-  /**
-   * @param {string} basketId
-   * @param {string} sortBy name of field, that the tasks should be sorted by, default is priority
-   * @returns {Observable<TaskResource>}
-   */
-  /**
-   * @param  {string} basketId the id of workbasket
-   * @param {string} sortBy name of field, that the tasks should be sorted by, default is priority
-   * @param {string} sortDirection ASC or DESC
-   * @param {string} nameLike the name of the task
-   * @param {string} ownerLike the owner of the task
-   * @param {string} priority the priority of the task
-   * @param {string} state the state of the task
-   */
   findTasksWithWorkbasket(basketId: string,
-                          sortBy = 'priority',
-                          sortDirection: string = Direction.ASC,
-                          nameLike: string,
-                          ownerLike: string,
-                          priority: string,
-                          state: string,
-                          objRefTypeLike: string,
-                          objRefValueLike: string,
-                          allPages: boolean = false): Observable<TaskResource> {
-    const url = `${this.url}${TaskanaQueryParameters.getQueryParameters(
-      sortBy, sortDirection, undefined, nameLike, undefined, undefined, ownerLike, undefined, undefined, undefined, undefined,
-      !allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined,
-      undefined, undefined, undefined, undefined, basketId, priority, state, objRefTypeLike, objRefValueLike)}`;
+    sortBy: string,
+    sortDirection: string,
+    nameLike: string,
+    ownerLike: string,
+    priority: string,
+    state: string,
+    objRefTypeLike: string,
+    objRefValueLike: string,
+    allPages: boolean = false): Observable<TaskResource> {
+    const url = `${this.url}${TaskanaQueryParameters.getQueryParameters(this.accessIdsParameters(
+      basketId,
+      sortBy,
+      sortDirection,
+      nameLike,
+      ownerLike,
+      priority,
+      state,
+      objRefTypeLike,
+      objRefValueLike,
+      allPages))}`;
     return this.httpClient.get<TaskResource>(url);
   }
 
   getTask(id: string): Observable<Task> {
     return this.httpClient.get<Task>(`${this.url}/${id}`)
-    .pipe(map(
-      (response: Task) => {
-        response = this.applyTaskDatesTimeZone(response);
-        return response;
-    }));
+      .pipe(map(
+        (response: Task) => {
+          response = this.applyTaskDatesTimeZone(response);
+          return response;
+        }));
   }
 
   completeTask(id: string): Observable<Task> {
@@ -129,5 +123,35 @@ export class TaskService {
     if (task.planned) { task.planned = new Date(task.planned).toISOString(); }
     if (task.due) { task.due = new Date(task.due).toISOString(); }
     return task;
+  }
+
+  private accessIdsParameters(
+    basketId: string,
+    sortBy = 'priority',
+    sortDirection: string = Direction.ASC,
+    nameLike: string,
+    ownerLike: string,
+    priority: string,
+    state: string,
+    objRefTypeLike: string,
+    objRefValueLike: string,
+    allPages: boolean = false): QueryParametersModel {
+
+    const parameters = new QueryParametersModel();
+    parameters.WORKBASKET_ID = basketId;
+    parameters.SORTBY = sortBy;
+    parameters.SORTDIRECTION = sortDirection;
+    parameters.NAMELIKE = nameLike
+    parameters.OWNERLIKE = ownerLike;
+    parameters.PRIORITY = priority;
+    parameters.STATE = state;
+    parameters.TASK_PRIMARY_OBJ_REF_TYPE_LIKE = objRefTypeLike;
+    parameters.TASK_PRIMARY_OBJ_REF_VALUE_LIKE = objRefValueLike;
+    if (allPages) {
+      TaskanaQueryParameters.page = undefined;
+      TaskanaQueryParameters.pageSize = undefined;
+    }
+
+    return parameters;
   }
 }

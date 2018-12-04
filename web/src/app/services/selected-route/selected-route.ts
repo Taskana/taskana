@@ -7,7 +7,7 @@ export class SelectedRouteService {
 
     public selectedRouteTriggered = new Subject<string>();
 
-    private detailRoutes: Array<string> = ['workbaskets', 'classifications', 'monitor', 'workplace', 'access-items-management'];
+    private detailRoutes: Array<string> = ['workbaskets', 'classifications', 'monitor', 'workplace', 'access-items-management', 'history'];
 
     constructor(private router: Router) { }
 

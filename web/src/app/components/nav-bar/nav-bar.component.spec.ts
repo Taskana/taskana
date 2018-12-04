@@ -9,10 +9,10 @@ import { NavBarComponent } from './nav-bar.component';
 import { UserInformationComponent } from 'app/components/user-information/user-information.component';
 
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
-import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
-import { MonitorGuard } from 'app/guards/monitor-guard';
+import { BusinessAdminGuard } from 'app/guards/business-admin.guard';
+import { MonitorGuard } from 'app/guards/monitor.guard';
 import { WindowRefService } from 'app/services/window/window.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 import { configureTests } from 'app/app.test.configuration';
@@ -41,7 +41,7 @@ describe('NavBarComponent', () => {
           BusinessAdminGuard,
           MonitorGuard,
           WindowRefService,
-          ErrorModalService,
+          GeneralModalService,
           RequestInProgressService]
       })
     };

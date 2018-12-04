@@ -15,7 +15,7 @@ import { ICONTYPES } from 'app/models/type';
 
 import { AccessItemsComponent } from './access-items.component';
 
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
@@ -35,7 +35,7 @@ describe('AccessItemsComponent', () => {
 			testBed.configureTestingModule({
 				declarations: [AccessItemsComponent],
 				imports: [FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule],
-				providers: [WorkbasketService, AlertService, ErrorModalService, SavingWorkbasketService, RequestInProgressService,
+				providers: [WorkbasketService, AlertService, GeneralModalService, SavingWorkbasketService, RequestInProgressService,
 					CustomFieldsService, AccessIdsService, FormsValidatorService]
 			})
 		};

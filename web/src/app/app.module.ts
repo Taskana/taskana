@@ -18,7 +18,7 @@ import { SharedModule } from 'app/shared/shared.module';
  * Services
  */
 
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
@@ -46,10 +46,10 @@ import { NoAccessComponent } from 'app/components/no-access/no-access.component'
 /**
  * Guards
  */
-import { DomainGuard } from './guards/domain-guard';
-import { BusinessAdminGuard } from './guards/business-admin-guard';
-import { MonitorGuard } from './guards/monitor-guard';
-import { UserGuard } from './guards/user-guard';
+import { DomainGuard } from './guards/domain.guard';
+import { BusinessAdminGuard } from './guards/business-admin.guard';
+import { MonitorGuard } from './guards/monitor.guard';
+import { UserGuard } from './guards/user.guard';
 import { APP_BASE_HREF } from '@angular/common';
 
 
@@ -88,7 +88,7 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     WindowRefService,
     { provide: APP_BASE_HREF, useValue: '/' },
     DomainService,
-    ErrorModalService,
+    GeneralModalService,
     RequestInProgressService,
     OrientationService,
     SelectedRouteService,

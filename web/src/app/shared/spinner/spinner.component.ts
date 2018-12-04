@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ViewChild } from '@angular/core';
 
-import { ErrorModel } from 'app/models/modal-error';
+import { MessageModal } from 'app/models/message-modal';
 
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 declare var $: any;
 
 @Component({
@@ -53,7 +53,7 @@ export class SpinnerComponent implements OnDestroy {
     @ViewChild('spinnerModal')
     private modal;
 
-    constructor(private errorModalService: ErrorModalService) {
+    constructor(private generalModalService: GeneralModalService) {
 
     }
 
@@ -63,8 +63,8 @@ export class SpinnerComponent implements OnDestroy {
             this.isDelayedRunning = value;
             this.cancelTimeout();
             this.requestTimeout = setTimeout(() => {
-                this.errorModalService.triggerError(
-                    new ErrorModel('There was an error with your request, please make sure you have internet connection',
+                this.generalModalService.triggerMessage(
+                    new MessageModal('There was an error with your request, please make sure you have internet connection',
                         'Request time execeed'));
                 this.cancelTimeout();
                 this.isRunning = false;

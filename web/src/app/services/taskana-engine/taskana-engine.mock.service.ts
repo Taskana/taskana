@@ -34,6 +34,10 @@ export class TaskanaEngineServiceMock {
     return of(version);
   }
 
+  isHistoryProviderEnabled(): Observable<boolean> {
+    return of(true);
+  }
+
   private findRole(roles2Find: Array<string>) {
     return this.currentUserInfo.roles.find(role => {
       return roles2Find.some(roleLookingFor => {

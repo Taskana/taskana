@@ -13,6 +13,7 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { WorkbasketResource } from '../../models/workbasket-resource';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
+import { QueryParametersModel } from 'app/models/query-parameters';
 
 @Injectable()
 export class WorkbasketService {
@@ -29,7 +30,7 @@ export class WorkbasketService {
 	// #region "REST calls"
 	// GET
 	getWorkBasketsSummary(forceRequest: boolean = false,
-		sortBy: string = TaskanaQueryParameters.KEY,
+		sortBy: string = TaskanaQueryParameters.parameters.KEY,
 		order: string = Direction.ASC,
 		name: string = undefined,
 		nameLike: string = undefined,
@@ -46,12 +47,11 @@ export class WorkbasketService {
 			return this.workbasketSummaryRef;
 		}
 
+
 		return this.domainService.getSelectedDomain().pipe(mergeMap(domain => {
 			return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
-				`${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters.getQueryParameters(
-					sortBy, order, name,
-					nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
-					!allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined, domain)}`)
+				`${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters.getQueryParameters(this.workbasketParameters(sortBy, order, name,
+					nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission, allPages, domain))}`)
 				.pipe(tap((workbaskets => {
 					return workbaskets;
 				})))
@@ -82,8 +82,8 @@ export class WorkbasketService {
 			.put<Workbasket>(url, workbasket).pipe(
 				catchError(this.handleError)
 			);
-  }
-  // delete
+	}
+	// delete
 	markWorkbasketForDeletion(url: string): Observable<any> {
 		return this.httpClient
 			.delete<any>(url);
@@ -150,6 +150,42 @@ export class WorkbasketService {
 		}
 		console.error(errMsg);
 		return observableThrowError(errMsg);
+	}
+
+
+	private workbasketParameters(
+		sortBy: string = TaskanaQueryParameters.parameters.KEY,
+		order: string = Direction.ASC,
+		name: string = undefined,
+		nameLike: string = undefined,
+		descLike: string = undefined,
+		owner: string = undefined,
+		ownerLike: string = undefined,
+		type: string = undefined,
+		key: string = undefined,
+		keyLike: string = undefined,
+		requiredPermission: string = undefined,
+		allPages: boolean = false,
+		domain: string = ''): QueryParametersModel {
+
+		const parameters = new QueryParametersModel();
+		parameters.SORTBY = sortBy;
+		parameters.SORTDIRECTION = order;
+		parameters.NAME = name;
+		parameters.NAMELIKE = nameLike;
+		parameters.DESCLIKE = descLike;
+		parameters.OWNER = owner;
+		parameters.OWNERLIKE = ownerLike;
+		parameters.TYPE = type;
+		parameters.KEY = key;
+		parameters.KEYLIKE = keyLike;
+		parameters.REQUIREDPERMISSION = requiredPermission;
+		parameters.DOMAIN = domain;
+		if (allPages) {
+			TaskanaQueryParameters.page = undefined;
+			TaskanaQueryParameters.pageSize = undefined;
+		}
+		return parameters;
 	}
 
 	// #endregion

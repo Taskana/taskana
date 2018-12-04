@@ -6,7 +6,7 @@ import { WorkbasketDetailsComponent } from 'app/administration/workbasket/detail
 import { MasterAndDetailComponent } from 'app/shared/master-and-detail/master-and-detail.component';
 import { ClassificationListComponent } from 'app/administration/classification/master/list/classification-list.component';
 import { ClassificationDetailsComponent } from 'app/administration/classification/details/classification-details.component';
-import { DomainGuard } from 'app/guards/domain-guard';
+import { DomainGuard } from 'app/guards/domain.guard';
 import { AccessItemsManagementComponent } from './access-items-management/access-items-management.component';
 
 const routes: Routes = [

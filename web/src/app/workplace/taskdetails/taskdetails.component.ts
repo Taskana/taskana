@@ -6,8 +6,8 @@ import { TaskService } from 'app/workplace/services/task.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
 import { Task } from 'app/workplace/models/task';
-import { ErrorModel } from 'app/models/modal-error';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { MessageModal } from 'app/models/message-modal';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { AlertModel, AlertType } from 'app/models/alert';
@@ -42,7 +42,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     private removeConfirmationService: RemoveConfirmationService,
     private requestInProgressService: RequestInProgressService,
     private alertService: AlertService,
-    private errorModalService: ErrorModalService,
+    private generalModalService: GeneralModalService,
     private masterAndDetailService: MasterAndDetailService) {
   }
 
@@ -84,8 +84,8 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
         this.cloneTask();
         this.taskService.selectTask(task);
       }, err => {
-        this.errorModalService.triggerError(
-          new ErrorModel('An error occurred while fetching the task', err));
+        this.generalModalService.triggerMessage(
+          new MessageModal('An error occurred while fetching the task', err));
       });
     }
   }

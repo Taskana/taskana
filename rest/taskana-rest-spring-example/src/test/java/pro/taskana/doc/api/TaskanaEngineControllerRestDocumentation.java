@@ -129,4 +129,14 @@ public class TaskanaEngineControllerRestDocumentation {
             .andDo(MockMvcRestDocumentation.document("GetCurrentUserInfoDocTest",
                 responseFields(currentUserInfoFieldDescriptors)));
     }
+
+    @Test
+    public void getHistoryProviderIsEnabled() throws Exception {
+        this.mockMvc.perform(RestDocumentationRequestBuilders
+            .get("http://127.0.0.1:" + port + "/v1/history-provider-enabled")
+            .accept("application/json")
+            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcRestDocumentation.document("GetHistoryProviderIsEnabled"));
+    }
 }

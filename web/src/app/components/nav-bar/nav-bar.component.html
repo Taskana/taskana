@@ -66,6 +66,9 @@
       <div *ngIf="workplaceAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('workplace') !== -1 || selectedRoute === ''}">
         <span (click)="toogleNavBar()" routerLink="{{workplaceUrl}}" aria-controls="Workplace" routerLinkActive="active">Workplace</span>
       </div>
+      <div *ngIf="historyAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('history') !== -1}">
+        <span (click)="toogleNavBar()" routerLink="{{historyUrl}}" aria-controls="history" routerLinkActive="active">History</span>
+      </div>
     </div>
     <div class="nav-version">
       <p id="taskana-version"> Taskana version: {{version}} </p>

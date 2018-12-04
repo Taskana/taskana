@@ -1,16 +1,17 @@
-<div class="container">
+<div>
     <ul class="nav nav-tabs" role="tablist">
         <li>
             <a style="display: none"></a>
         </li>
-        <li role="presentation" class="active">
+        <li (click)="selectTab('tasks')" role="presentation" class="active" [ngClass]="{'active':tabSelected === 'tasks'}">
             <a href="#tasks-tab" data-toggle="tab" aria-controls="Tasks" role="tab" aria-expanded="true">Tasks</a>
         </li>
-        <li role="presentation">
+        <li (click)="selectTab('workbaskets')" [ngClass]="{'active':tabSelected === 'workbaskets'}">
             <a href="#workbaskets-tab" data-toggle="tab" aria-controls="Workbaskets" role="tab" aria-expanded="true">Workbaskets</a>
         </li>
-        <li>
-            <a href="#classifications-tab" data-toggle="tab" aria-controls="Classifications" role="tab" data-toggle="tab" aria-expanded="true">Classifications</a>
+        <li (click)="selectTab('classifications')" [ngClass]="{'active':tabSelected === 'classifications'}">
+            <a href="#classifications-tab" data-toggle="tab" aria-controls="Classifications" role="tab" data-toggle="tab"
+                aria-expanded="true">Classifications</a>
         </li>
     </ul>
     <div class="tab-content">

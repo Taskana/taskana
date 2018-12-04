@@ -2,9 +2,9 @@ import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { ErrorModel } from './models/modal-error';
+import { MessageModal } from './models/message-modal';
 
-import { ErrorModalService } from './services/errorModal/error-modal.service';
+import { GeneralModalService } from './services/general-modal/general-modal.service';
 import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
 import { OrientationService } from './services/orientation/orientation.service';
 import { SelectedRouteService } from './services/selected-route/selected-route';
@@ -20,14 +20,15 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	workbasketsRoute = true;
 
-	modalErrorMessage = '';
+	modalMessage = '';
 	modalTitle = '';
+	modalType;
 	selectedRoute = '';
 
 	requestInProgress = false;
 	currentProgressValue = 0;
 
-	errorModalSubscription: Subscription;
+	modalSubscription: Subscription;
 	requestInProgressSubscription: Subscription;
 	selectedRouteSubscription: Subscription;
 	routerSubscription: Subscription;
@@ -40,7 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private router: Router,
-		private errorModalService: ErrorModalService,
+		private generalModalService: GeneralModalService,
 		private requestInProgressService: RequestInProgressService,
 		private orientationService: OrientationService,
 		private selectedRouteService: SelectedRouteService,
@@ -56,15 +57,18 @@ export class AppComponent implements OnInit, OnDestroy {
 			}
 		})
 
-		this.errorModalSubscription = this.errorModalService.getError().subscribe((error: ErrorModel) => {
-			if (typeof error.message === 'string') {
-				this.modalErrorMessage = error.message
-			} else if (error.message.error instanceof ProgressEvent) {
-				this.modalErrorMessage = error.message.message;
+		this.modalSubscription = this.generalModalService.getMessage().subscribe((messageModal: MessageModal) => {
+			if (typeof messageModal.message === 'string') {
+				this.modalMessage = messageModal.message
+			} else if (messageModal.message.error instanceof ProgressEvent) {
+				this.modalMessage = messageModal.message.message;
 			} else {
-				this.modalErrorMessage = error.message.error ? (error.message.error.error + ' ' + error.message.error.message) : error.message.message;
+				this.modalMessage = messageModal.message.error ?
+					(messageModal.message.error.error + ' ' + messageModal.message.error.message)
+					: messageModal.message.message;
 			}
-			this.modalTitle = error.title;
+			this.modalTitle = messageModal.title;
+			this.modalType = messageModal.type;
 		})
 
 		this.requestInProgressSubscription = this.requestInProgressService.getRequestInProgress().subscribe((value: boolean) => {
@@ -84,7 +88,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		if (this.routerSubscription) { this.routerSubscription.unsubscribe(); }
-		if (this.errorModalSubscription) { this.errorModalSubscription.unsubscribe(); }
+		if (this.modalSubscription) { this.modalSubscription.unsubscribe(); }
 		if (this.requestInProgressSubscription) { this.requestInProgressSubscription.unsubscribe(); }
 		if (this.selectedRouteSubscription) { this.selectedRouteSubscription.unsubscribe(); }
 		if (this.uploadingFileSubscription) { this.uploadingFileSubscription.unsubscribe(); }
