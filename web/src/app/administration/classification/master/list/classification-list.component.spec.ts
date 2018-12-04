@@ -18,7 +18,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
 import {
@@ -55,7 +55,7 @@ describe('ClassificationListComponent', () => {
         imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule],
         providers: [
           HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
-          ErrorModalService, RequestInProgressService, ClassificationCategoriesService, TreeService, ImportExportService
+          GeneralModalService, RequestInProgressService, ClassificationCategoriesService, TreeService, ImportExportService
         ]
       })
     };

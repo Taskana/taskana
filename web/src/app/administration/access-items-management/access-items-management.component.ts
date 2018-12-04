@@ -11,8 +11,8 @@ import { AccessItemWorkbasket } from 'app/models/access-item-workbasket';
 import { AccessIdsService } from '../../shared/services/access-ids/access-ids.service';
 import { SortingModel } from 'app/models/sorting';
 import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
-import { ErrorModel } from 'app/models/modal-error';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import { MessageModal } from 'app/models/message-modal';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { AlertService } from 'app/services/alert/alert.service';
@@ -78,7 +78,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     private requestInProgressService: RequestInProgressService,
     private removeConfirmationService: RemoveConfirmationService,
     private alertService: AlertService,
-    private errorModalService: ErrorModalService) { }
+    private generalModalService: GeneralModalService) { }
 
   ngOnInit() {
   }
@@ -101,8 +101,8 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
         },
           error => {
             this.requestInProgressService.setRequestInProgress(false);
-            this.errorModalService.triggerError(
-              new ErrorModel(
+            this.generalModalService.triggerMessage(
+              new MessageModal(
                 'There was error while retrieving your access ids with groups',
                 error
               )
@@ -136,8 +136,8 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
       },
         error => {
           this.requestInProgressService.setRequestInProgress(false);
-          this.errorModalService.triggerError(
-            new ErrorModel(
+          this.generalModalService.triggerMessage(
+            new MessageModal(
               'There was error while retrieving your access items',
               error
             )
@@ -172,8 +172,8 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     },
     error => {
       this.requestInProgressService.setRequestInProgress(false);
-      this.errorModalService.triggerError(
-        new ErrorModel(
+      this.generalModalService.triggerMessage(
+        new MessageModal(
           `You can't delete a group`,
           error
         )

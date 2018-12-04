@@ -5,12 +5,12 @@ import { FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
 import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
-import { ErrorModel } from 'app/models/modal-error';
+import { MessageModal } from 'app/models/message-modal';
 import { ACTION } from 'app/models/action';
 import { AlertModel, AlertType } from 'app/models/alert';
 
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
@@ -80,7 +80,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 	constructor(
 		private workbasketService: WorkbasketService,
 		private alertService: AlertService,
-		private errorModalService: ErrorModalService,
+		private generalModalService: GeneralModalService,
 		private savingWorkbaskets: SavingWorkbasketService,
 		private requestInProgressService: RequestInProgressService,
 		private customFieldsService: CustomFieldsService,
@@ -181,7 +181,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 					AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
 				this.requestInProgressService.setRequestInProgress(false);
 			}, error => {
-				this.errorModalService.triggerError(new ErrorModel(`There was error while saving your workbasket's access items`, error))
+				this.generalModalService.triggerMessage(new MessageModal(`There was error while saving your workbasket's access items`, error))
 				this.requestInProgressService.setRequestInProgress(false);
 			})
 	}

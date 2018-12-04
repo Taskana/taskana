@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
-import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
-import { MonitorGuard } from 'app/guards/monitor-guard';
-import { UserGuard } from 'app/guards/user-guard';
+import { BusinessAdminGuard } from 'app/guards/business-admin.guard';
+import { MonitorGuard } from 'app/guards/monitor.guard';
+import { UserGuard } from 'app/guards/user.guard';
 import { Router } from '@angular/router';
 
 @Component({

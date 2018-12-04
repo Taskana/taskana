@@ -21,7 +21,7 @@ import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import { TreeNodeModel } from 'app/models/tree-node';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
@@ -52,7 +52,7 @@ describe('ClassificationDetailsComponent', () => {
       testBed.configureTestingModule({
         imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
         declarations: [ClassificationDetailsComponent, DummyDetailComponent],
-        providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, ErrorModalService, AlertService,
+        providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, GeneralModalService, AlertService,
           TreeService, ClassificationCategoriesService, CustomFieldsService, ImportExportService]
       })
     };

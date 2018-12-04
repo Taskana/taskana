@@ -3,8 +3,8 @@ import { ClassificationDefinitionService } from 'app/administration/services/cla
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { TaskanaType } from 'app/models/taskana-type';
-import { ErrorModel } from 'app/models/modal-error';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { MessageModal } from 'app/models/message-modal';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { environment } from 'environments/environment';
 import { AlertService } from 'app/services/alert/alert.service';
 import { AlertModel, AlertType } from 'app/models/alert';
@@ -30,7 +30,7 @@ export class ImportExportComponent implements OnInit {
     private domainService: DomainService,
     private workbasketDefinitionService: WorkbasketDefinitionService,
     private classificationDefinitionService: ClassificationDefinitionService,
-    private errorModalService: ErrorModalService,
+    private generalModalService: GeneralModalService,
     private alertService: AlertService,
     public uploadservice: UploadService,
     private importExportService: ImportExportService) {
@@ -84,7 +84,7 @@ export class ImportExportComponent implements OnInit {
         break;
       default:
         file.value = '';
-        this.errorModalService.triggerError(new ErrorModel(undefined,
+        this.generalModalService.triggerMessage(new MessageModal(undefined,
           `This file format is not allowed! Please use a .json file.`));
     }
     return check;
@@ -117,8 +117,8 @@ export class ImportExportComponent implements OnInit {
   }
 
   private errorHandler(title = 'Import was not successful', message) {
-    this.errorModalService.triggerError(
-      new ErrorModel(
+    this.generalModalService.triggerMessage(
+      new MessageModal(
         title,
         message
       )

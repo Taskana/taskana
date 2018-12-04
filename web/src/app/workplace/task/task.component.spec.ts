@@ -12,7 +12,7 @@ import { Component } from '@angular/core';
 import { DomainService } from 'app/services/domain/domain.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -35,7 +35,7 @@ xdescribe('TaskComponent', () => {
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
       declarations: [TaskComponent, SpinnerComponent, DummyDetailComponent],
       providers: [TaskService, HttpClient, WorkbasketService, DomainService, RequestInProgressService,
-        SelectedRouteService, ErrorModalService]
+        SelectedRouteService, GeneralModalService]
     }).compileComponents();
   }));
 

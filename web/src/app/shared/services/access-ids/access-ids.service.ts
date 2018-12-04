@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { AccessItemsWorkbasketResource } from 'app/models/access-item-workbasket-resource';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { SortingModel } from 'app/models/sorting';
+import { QueryParametersModel } from 'app/models/query-parameters';
 
 @Injectable({
   providedIn: 'root'
@@ -40,17 +41,33 @@ export class AccessIdsService {
     }
 
     return this.accessItemsRef = this.httpClient.get<AccessItemsWorkbasketResource>(encodeURI(
-      `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(sortModel.sortBy,
-    sortModel.sortDirection,
-        undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-        accessIds.map((values: AccessIdDefinition) => {
-          return values.accessId
-        }).join('|'),
-        accessIdLike, workbasketKeyLike)}`))
+      `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(
+        this.accessIdsParameters(sortModel,
+          accessIds,
+          accessIdLike, workbasketKeyLike))}`))
   }
 
   removeAccessItemsPermissions(accessId: string) {
     return this.httpClient
-    .delete<AccessItemsWorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=` + accessId)
+      .delete<AccessItemsWorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=` + accessId)
+  }
+
+  private accessIdsParameters(
+    sortModel: SortingModel,
+    accessIds: Array<AccessIdDefinition>,
+    accessIdLike: string = undefined,
+    workbasketKeyLike: string = undefined): QueryParametersModel {
+
+    const parameters = new QueryParametersModel();
+    parameters.SORTBY = sortModel.sortBy;
+    parameters.SORTDIRECTION = sortModel.sortDirection;
+    parameters.ACCESSIDS = accessIds.map((values: AccessIdDefinition) => {
+      return values.accessId
+    }).join('|');
+    parameters.ACCESSIDLIKE = accessIdLike;
+    parameters.WORKBASKETKEYLIKE = workbasketKeyLike;
+    TaskanaQueryParameters.page = undefined;
+    TaskanaQueryParameters.pageSize = undefined;
+    return parameters;
   }
 }

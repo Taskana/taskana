@@ -71,6 +71,11 @@ public class TaskanaEngineController {
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/v1/history-provider-enabled", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Boolean> getIsHistoryProviderEnabled() {
+        return new ResponseEntity<>(taskanaEngineImpl.getHistoryEventProducer().isEnabled(), HttpStatus.OK);
+    }
+
     /**
      * Get the current application version.
      *

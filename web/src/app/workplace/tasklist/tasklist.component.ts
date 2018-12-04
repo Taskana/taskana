@@ -142,9 +142,10 @@ export class TasklistComponent implements OnInit, OnDestroy {
     if (this.toolbarElement) {
       const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
       const cardHeight = 53;
-      const unusedHeight = 145;
+      const unusedHeight = 150;
       const totalHeight = window.innerHeight;
       const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
+      TaskanaQueryParameters.page = TaskanaQueryParameters.page ? TaskanaQueryParameters.page : 1;
       cards > 0 ? TaskanaQueryParameters.pageSize = cards : TaskanaQueryParameters.pageSize = 1;
     }
   }

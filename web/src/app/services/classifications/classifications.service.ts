@@ -12,6 +12,7 @@ import { ClassificationCategoriesService } from './classification-categories.ser
 import { DomainService } from 'app/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Direction } from 'app/models/sorting';
+import { QueryParametersModel } from 'app/models/query-parameters';
 
 @Injectable()
 export class ClassificationsService {
@@ -27,35 +28,20 @@ export class ClassificationsService {
   }
 
   // GET
-  getClassifications(sortBy: string = TaskanaQueryParameters.KEY,
-    order: string = Direction.ASC,
-    name: string = undefined,
-    nameLike: string = undefined,
-    descLike: string = undefined,
-    owner: string = undefined,
-    ownerLike: string = undefined,
-    type: string = undefined,
-    key: string = undefined,
-    keyLike: string = undefined,
-    requiredPermission: string = undefined,
-    allPages: boolean = true): Observable<Array<Classification>> {
+  getClassifications(): Observable<Array<Classification>> {
     return this.domainService.getSelectedDomain().pipe(
       mergeMap(domain => {
         return this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
-          `${environment.taskanaRestUrl}/v1/classifications/${TaskanaQueryParameters.getQueryParameters(
-            sortBy, order, name,
-            nameLike, descLike, owner, ownerLike, type, key, keyLike, requiredPermission,
-            !allPages ? TaskanaQueryParameters.page : undefined, !allPages ? TaskanaQueryParameters.pageSize : undefined, domain)}`));
+          `${this.url}${TaskanaQueryParameters.getQueryParameters(this.classificationParameters(domain))}`));
 
       }),
       tap(() => { this.domainService.domainChangedComplete(); })
     )
   }
 
-
   // GET
   getClassification(id: string): Observable<ClassificationDefinition> {
-    return this.httpClient.get<ClassificationDefinition>(`${environment.taskanaRestUrl}/v1/classifications/${id}`)
+    return this.httpClient.get<ClassificationDefinition>(`${this.url}${id}`)
       .pipe(tap((classification: ClassificationDefinition) => {
         if (classification) {
           this.classificationCategoriesService.selectClassificationType(classification.type);
@@ -98,6 +84,18 @@ export class ClassificationsService {
   }
 
   // #endregion
+
+  private classificationParameters(domain: string): QueryParametersModel {
+
+    const parameters = new QueryParametersModel();
+    parameters.SORTBY = TaskanaQueryParameters.parameters.KEY;
+    parameters.SORTDIRECTION = Direction.ASC;
+    parameters.DOMAIN = domain;
+    TaskanaQueryParameters.page = undefined;
+    TaskanaQueryParameters.pageSize = undefined;
+
+    return parameters;
+  }
 
   private getClassificationObservable(classificationRef: Observable<any>): Observable<any> {
     const classificationTypes = this.classificationCategoriesService.getSelectedClassificationType();

@@ -1,0 +1,55 @@
+.divTable{
+	display: table;
+}
+
+.divTableRow {
+	display: table-row;
+}
+.divTable .divTableHeading > .divTableRow:last-child > .divTableHeader  {
+	background-color: #f9f9f9;
+	border-bottom:  1px solid $grey
+}
+
+.divTable.table-striped .divTableBody > .divTableRow:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.divTableCell, .divTableHeader {
+	display: table-cell;
+	padding: 3px 3px;
+	white-space: nowrap;
+	min-width: 50px;
+	vertical-align: middle;
+}
+.divTableCell{ 
+	padding: 0px 3px;
+}
+
+.divTableHeaderSeparator, .divTableCellSeparator{ 
+	border-left: 1px solid $grey;
+	border-right: 1px solid $grey;
+	background-color: $light-grey;
+	&.zoom-in {
+		cursor: zoom-in;
+	}
+	&.zoom-out {
+		cursor: zoom-out;
+	}
+	min-width: 0px;
+}
+
+.divTableHeading {
+	background-color: $light-grey;
+	display: table-header-group;
+	font-weight: bold;
+	cursor: pointer;
+}
+.divTableFoot {
+	background-color: $light-grey;
+	display: table-footer-group;
+	font-weight: bold;
+}
+
+.divTableBody {
+	display: table-row-group;
+}

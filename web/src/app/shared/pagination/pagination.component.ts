@@ -32,7 +32,7 @@ export class PaginationComponent implements OnChanges {
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.page && changes.page.currentValue !== undefined) {
+    if (changes.page && changes.page.currentValue) {
       this.pageSelected = changes.page.currentValue.number;
     }
   }

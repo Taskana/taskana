@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { ClassificationDefinition } from 'app/models/classification-definition';
 import { ACTION } from 'app/models/action';
-import { ErrorModel } from 'app/models/modal-error';
+import { MessageModal } from 'app/models/message-modal';
 import { AlertModel, AlertType } from 'app/models/alert';
 
 import { highlight } from 'app/shared/animations/validation.animation';
@@ -12,7 +12,7 @@ import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { ClassificationsService } from 'app/services/classifications/classifications.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
@@ -74,7 +74,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private masterAndDetailService: MasterAndDetailService,
-    private errorModalService: ErrorModalService,
+    private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
     private alertService: AlertService,
     private treeService: TreeService,
@@ -176,7 +176,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.afterRequest();
         },
           error => {
-            this.errorModalService.triggerError(new ErrorModel('There was an error creating a classification', error))
+            this.generalModalService.triggerMessage(new MessageModal('There was an error creating a classification', error))
             this.afterRequest();
           });
     } else {
@@ -188,7 +188,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
           this.cloneClassification(classification);
         }, error => {
-          this.errorModalService.triggerError(new ErrorModel('There was error while saving your classification', error))
+          this.generalModalService.triggerMessage(new MessageModal('There was error while saving your classification', error))
           this.afterRequest();
         })
     }
@@ -263,7 +263,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   private checkDomainAndRedirect() {
     this.domainSubscription = this.domainService.getSelectedDomain().subscribe(domain => {
-      if (this.classification && this.classification.domain !== domain) {
+      if (domain !== '' && this.classification && this.classification.domain !== domain) {
         this.backClicked();
       }
     });
@@ -271,8 +271,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   private removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
-      this.errorModalService.triggerError(
-        new ErrorModel('There is no classification selected', 'Please check if you are creating a classification'));
+      this.generalModalService.triggerMessage(
+        new MessageModal('There is no classification selected', 'Please check if you are creating a classification'));
       return false;
     }
     this.requestInProgressService.setRequestInProgress(true);
@@ -288,7 +288,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.router.navigate(['administration/classifications']);
         this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`))
       }, error => {
-        this.errorModalService.triggerError(new ErrorModel('There was error while removing your classification', error))
+        this.generalModalService.triggerMessage(new MessageModal('There was error while removing your classification', error))
         this.afterRequest();
       })
   }

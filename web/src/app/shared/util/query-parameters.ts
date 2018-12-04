@@ -1,94 +1,80 @@
+import { QueryParametersModel } from 'app/models/query-parameters';
+
 export class TaskanaQueryParameters {
-  // Sorting
-  static SORTBY = 'sort-by';
-  static ORDER = 'order';
+  static parameters = {
+    // Sorting
+    SORTBY: 'sort-by',
+    SORTDIRECTION: 'order',
+    // Filtering
+    NAME: 'name',
+    NAMELIKE: 'name-like',
+    DESCLIKE: 'description-like',
+    OWNER: 'owner',
+    OWNERLIKE: 'owner-like',
+    TYPE: 'type',
+    KEY: 'key',
+    WORKBASKET_KEY: 'workbasket-key',
+    KEYLIKE: 'key-like',
+    PRIORITY: 'priority',
+    STATE: 'state',
+    WORKBASKET_ID: 'workbasket-id',
+    TASK_PRIMARY_OBJ_REF_TYPE_LIKE: 'por.type',
+    TASK_PRIMARY_OBJ_REF_VALUE_LIKE: 'por.value',
+    // Access
+    REQUIREDPERMISSION: 'required-permission',
+    ACCESSIDS: 'access-ids',
+    ACCESSIDLIKE: 'access-id-like',
+    WORKBASKETKEYLIKE: 'workbasket-key-like',
+    // Pagination
+    PAGE: 'page',
+    PAGESIZE: 'page-size',
+    // Domain
+    DOMAIN: 'domain',
 
-  // Filtering
-  static NAME = 'name';
-  static NAMELIKE = 'name-like';
-  static DESCLIKE = 'description-like';
-  static OWNER = 'owner';
-  static OWNERLIKE = 'owner-like';
-  static TYPE = 'type';
-  static KEY = 'key';
-  static WORKBASKET_KEY = 'workbasket-key';
-  static KEYLIKE = 'key-like';
-  static PRIORITY = 'priority';
-  static STATE = 'state';
-  static WORKBASKET_ID = 'workbasket-id';
-  static TASK_PRIMARY_OBJ_REF_TYPE_LIKE = 'por.type';
-  static TASK_PRIMARY_OBJ_REF_VALUE_LIKE = 'por.value';
+    // Task history events
+    TASK_ID_LIKE: 'task-id-like',
+    PARENT_BUSINESS_PROCESS_ID_LIKE: 'parent-business-process-id-like',
+    BUSINESS_PROCESS_ID_LIKE: 'business-process-id-like',
+    EVENT_TYPE_LIKE: 'event-type-like',
+    CREATED_LIKE: 'created-like',
+    USER_ID_LIKE: 'user-id-like',
+    POR_COMPANY_LIKE: 'por-company-like',
+    POR_SYSTEM_LIKE: 'por-system-like',
+    POR_INSTANCE_LIKE: 'por-instance-like',
+    POR_TYPE_LIKE: 'por-type-like',
+    POR_VALUE_LIKE: 'por-value-like',
+    TASK_CLASSIFICATION_KEY_LIKE: 'task-classification-key-like',
+    TASK_CLASSIFICATION_CATEGORY_LIKE: 'task-classification-category-like',
+    ATTACHMENT_CLASSIFICATION_KEY_LIKE: 'attachment-classification-key-like',
+    CUSTOM_1_LIKE: 'custom-1-like',
+    CUSTOM_2_LIKE: 'custom-2-like',
+    CUSTOM_3_LIKE: 'custom-3-like',
+    CUSTOM_4_LIKE: 'custom-4-like',
+    COMMENT_LIKE: 'comment-like'
+  }
 
-  // Access
-  static REQUIREDPERMISSION = 'required-permission';
-  static ACCESSIDS = 'access-ids';
-  static ACCESSIDLIKE = 'access-id-like';
-  static WORKBASKETKEYLIKE = 'workbasket-key-like';
-
-  // Pagination
-  static PAGE = 'page';
-  static PAGESIZE = 'page-size';
   static page = 1;
   static pageSize = 9;
 
-  // Domain
-  static DOMAIN = 'domain';
-
-  public static getQueryParameters(
-    sortBy: string = undefined,
-    order: string = undefined,
-    name: string = undefined,
-    nameLike: string = undefined,
-    descLike: string = undefined,
-    owner: string = undefined,
-    ownerLike: string = undefined,
-    type: string = undefined,
-    key: string = undefined,
-    keyLike: string = undefined,
-    requiredPermission: string = undefined,
-    page: number = undefined,
-    pageSize: number = undefined,
-    domain: string = undefined,
-    accessIds: string = undefined,
-    accessIdLike: string = undefined,
-    workbasketKeyLike: string = undefined,
-    basketId: string = undefined,
-    priority: string = undefined,
-    state: string = undefined,
-    objRefTypeLike: string = undefined,
-    objRefValueLike: string = undefined
-  ): string {
+  public static getQueryParameters(queryParametersModel: QueryParametersModel): string {
     let query = '?';
-    query += sortBy ? `${this.SORTBY}=${sortBy}&` : '';
-    query += order ? `${this.ORDER}=${order}&` : '';
-    query += name ? `${this.NAME}=${name}&` : '';
-    query += nameLike ? `${this.NAMELIKE}=${nameLike}&` : '';
-    query += descLike ? `${this.DESCLIKE}=${descLike}&` : '';
-    query += owner ? `${this.OWNER}=${owner}&` : '';
-    query += ownerLike ? `${this.OWNERLIKE}=${ownerLike}&` : '';
-    query += basketId ? `${this.WORKBASKET_ID}=${basketId}&` : '';
-    query += priority ? `${this.PRIORITY}=${priority}&` : '';
-    query += state ? `${this.STATE}=${state}&` : '';
-    query += type ? `${this.TYPE}=${type}&` : '';
-    query += key ? `${this.KEY}=${key}&` : '';
-    query += keyLike ? `${this.KEYLIKE}=${keyLike}&` : '';
-    query += requiredPermission
-      ? `${this.REQUIREDPERMISSION}=${requiredPermission}&`
-      : '';
-    query += page ? `${this.PAGE}=${page}&` : '';
-    query += pageSize ? `${this.PAGESIZE}=${pageSize}&` : '';
-    query += domain ? `${this.DOMAIN}=${domain}&` : '';
-    query += accessIds ? `${this.ACCESSIDS}=${accessIds}&` : '';
-    query += accessIdLike ? `${this.ACCESSIDLIKE}=${accessIdLike}&` : '';
-    query += workbasketKeyLike
-      ? `${this.WORKBASKETKEYLIKE}=${workbasketKeyLike}&`
-      : '';
-    query += objRefTypeLike ? `${this.TASK_PRIMARY_OBJ_REF_TYPE_LIKE}=${objRefTypeLike}&` : '';
-    query += objRefValueLike ? `${this.TASK_PRIMARY_OBJ_REF_VALUE_LIKE}=${objRefValueLike}&` : '';
 
+    Object.keys(queryParametersModel).forEach(function (key) {
+      const value = queryParametersModel[key];
+      query += value ? `${TaskanaQueryParameters.parameters[key]}=${value}&` : '';
+    });
+
+    query += this.page ? `${TaskanaQueryParameters.parameters.PAGE}=${this.page}&` : '';
+    query += this.pageSize ? `${TaskanaQueryParameters.parameters.PAGESIZE}=${this.pageSize}&` : '';
+
+    query = TaskanaQueryParameters.removeLastChar(query);
+    return query;
+  }
+
+  private static removeLastChar(query: string): string {
     if (query.lastIndexOf('&') === query.length - 1) {
       query = query.slice(0, query.lastIndexOf('&'));
     }
-    return query === '?' ? '' : query;
+    return query
   }
 }
