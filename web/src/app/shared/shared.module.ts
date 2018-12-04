@@ -23,6 +23,7 @@ import { FilterComponent } from 'app/shared/filter/filter.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { FieldErrorDisplayComponent } from 'app/shared/field-error-display/field-error-display.component';
 import { PaginationComponent } from './pagination/pagination.component';
+import { NumberPickerComponent } from './number-picker/number-picker.component';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { DatePickerComponent } from './date-picker/date-picker.component';
 
@@ -76,6 +77,7 @@ const DECLARATIONS = [
   RemoveConfirmationComponent,
   FieldErrorDisplayComponent,
   PaginationComponent,
+  NumberPickerComponent,
   ProgressBarComponent,
   DatePickerComponent
 ];

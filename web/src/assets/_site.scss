@@ -256,7 +256,7 @@ a > svg-icon > svg{
 }
 /*end buttons and icons vertical align */
 
-.btn > span.flip {
+span.flip {
     transform: rotateX(180deg);
 }
 
@@ -306,7 +306,7 @@ taskana-monitor-workbaskets, taskana-monitor-classification-tasks {
     }
 }
 
-taskana-task-details, taskana-classification-details, taskana-access-items-management, taskana-task {
+taskana-task-details, taskana-classification-details, taskana-access-items-management, taskana-task, taskana-task-query {
     & .panel{
         border: none;
         box-shadow: none;
@@ -315,6 +315,15 @@ taskana-task-details, taskana-classification-details, taskana-access-items-manag
             height: calc(100vh - 100px);
             max-height: calc(100vh - 100px);
             overflow-y: auto;
+        }
+    }
+}
+
+taskana-task-query {
+    & .panel{ 
+        &> .panel-body { 
+            height: calc(100vh - 105px);
+            max-height: calc(100vh - 105px);
         }
     }
 }

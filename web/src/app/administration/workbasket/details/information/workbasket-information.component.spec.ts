@@ -14,7 +14,7 @@ import { ICONTYPES } from 'app/models/type';
 import { ACTION } from 'app/models/action';
 import { Links } from 'app/models/links';
 
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
@@ -47,7 +47,7 @@ describe('WorkbasketInformationComponent', () => {
 					AngularSvgIconModule,
 					HttpClientModule,
 					RouterTestingModule.withRoutes(routes)],
-				providers: [WorkbasketService, AlertService, SavingWorkbasketService, ErrorModalService, RequestInProgressService,
+				providers: [WorkbasketService, AlertService, SavingWorkbasketService, GeneralModalService, RequestInProgressService,
 					CustomFieldsService, FormsValidatorService]
 
 			})

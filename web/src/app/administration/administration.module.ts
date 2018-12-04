@@ -21,6 +21,7 @@ import {ClassificationListComponent} from './classification/master/list/classifi
 import {ClassificationDetailsComponent} from './classification/details/classification-details.component';
 import {ImportExportComponent} from './components/import-export/import-export.component';
 import {ClassificationTypesSelectorComponent} from 'app/shared/classification-types-selector/classification-types-selector.component';
+
 /**
  * Services
  */

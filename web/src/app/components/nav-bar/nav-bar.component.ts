@@ -3,10 +3,10 @@ import { environment } from 'environments/environment';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
 import { Subscription } from 'rxjs';
 import { DomainService } from 'app/services/domain/domain.service';
-import { BusinessAdminGuard } from 'app/guards/business-admin-guard';
-import { MonitorGuard } from 'app/guards/monitor-guard';
+import { BusinessAdminGuard } from 'app/guards/business-admin.guard';
+import { MonitorGuard } from 'app/guards/monitor.guard';
 import { WindowRefService } from 'app/services/window/window.service';
-import { UserGuard } from 'app/guards/user-guard';
+import { UserGuard } from 'app/guards/user.guard';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { expandRight } from 'app/shared/animations/expand.animation';
 @Component({
@@ -27,6 +27,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   titleAccessItems = 'Access items';
   titleMonitor = 'Monitor';
   titleWorkplace = 'Workplace';
+  titleHistory = 'History';
   showNavbar = false;
   domains: Array<string> = [];
   selectedDomain: string;
@@ -35,10 +36,12 @@ export class NavBarComponent implements OnInit, OnDestroy {
   adminUrl = './administration';
   monitorUrl = './monitor';
   workplaceUrl = './workplace';
+  historyUrl = './history';
 
   administrationAccess = false;
   monitorAccess = false;
   workplaceAccess = false;
+  historyAccess = false;
 
   selectedRouteSubscription: Subscription;
   getDomainsSubscription: Subscription;
@@ -69,6 +72,11 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.administrationAccess = this.taskanaEngineService.hasRole(BusinessAdminGuard.roles);
     this.monitorAccess = this.taskanaEngineService.hasRole(MonitorGuard.roles);
     this.workplaceAccess = this.taskanaEngineService.hasRole(UserGuard.roles);
+
+    this.taskanaEngineService.isHistoryProviderEnabled().subscribe(value => {
+      this.historyAccess = value;
+    })
+
   }
 
   switchDomain(domain) {
@@ -103,6 +111,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
       this.title = this.titleWorkplace;
     } else if (value.indexOf('access-items') === 0) {
       this.title = this.titleAccessItems;
+    } else if (value.indexOf('history') === 0) {
+      this.title = this.titleHistory;
     }
   }
 

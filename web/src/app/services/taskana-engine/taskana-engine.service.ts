@@ -44,6 +44,10 @@ export class TaskanaEngineService {
 
   }
 
+  isHistoryProviderEnabled(): Observable<boolean> {
+    return this.httpClient.get<boolean>(`${environment.taskanaRestUrl}/v1/history-provider-enabled`);
+  }
+
   private findRole(roles2Find: Array<string>) {
     return this.currentUserInfo.roles.find(role => {
       return roles2Find.some(roleLookingFor => {

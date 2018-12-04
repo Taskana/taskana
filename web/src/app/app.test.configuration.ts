@@ -16,7 +16,7 @@ import { DomainServiceMock } from './services/domain/domain.service.mock';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { AlertService } from './services/alert/alert.service';
-import { ErrorModalService } from './services/errorModal/error-modal.service';
+import { GeneralModalService } from './services/general-modal/general-modal.service';
 import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
 import { OrientationService } from './services/orientation/orientation.service';
 import { SelectedRouteService } from './services/selected-route/selected-route';
@@ -41,7 +41,7 @@ export const configureTests = (configure: (testBed: TestBed) => void) => {
         imports: [BrowserAnimationsModule, SharedModule, FormsModule, ReactiveFormsModule, HttpClientModule, AngularSvgIconModule],
         providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
         { provide: DomainService, useClass: DomainServiceMock }, CustomFieldsService, RemoveConfirmationService,
-            AlertService, ErrorModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
+            AlertService, GeneralModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
     });
 
     return testBed.compileComponents().then(() => testBed);

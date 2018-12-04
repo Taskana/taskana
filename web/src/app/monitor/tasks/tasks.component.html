@@ -2,8 +2,8 @@
   <div class="panel-heading">
       <h4>{{reportData.meta.name}} ({{reportData.meta.date | date : 'dd.MM.yyyy HH:mm:ss'}})</h4>
   </div>
-  <div class="panel-body col-xs-12 col-md-8 col-md-offset-2">
-    <div style="display: block">
+  <div class="panel-body">
+    <div style="display: block" class =" col-xs-12 col-md-7 col-md-offset-2">
       <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"></canvas>
     </div>
     <taskana-report [type]="reportType" [reportData]="reportData"></taskana-report>

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SpinnerComponent } from './spinner.component';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 
 describe('SpinnerComponent', () => {
   let component: SpinnerComponent;
@@ -10,7 +10,7 @@ describe('SpinnerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SpinnerComponent],
-      providers: [ErrorModalService]
+      providers: [GeneralModalService]
     })
       .compileComponents();
   }));

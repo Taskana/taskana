@@ -4,12 +4,12 @@ import { Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/models/workbasket';
 import { ACTION } from 'app/models/action';
-import { ErrorModel } from '../../../models/modal-error';
+import { MessageModal } from '../../../models/message-modal';
 
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
 import { DomainService } from 'app/services/domain/domain.service';
-import { ErrorModalService } from '../../../services/errorModal/error-modal.service';
+import { GeneralModalService } from '../../../services/general-modal/general-modal.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
@@ -39,7 +39,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 		private router: Router,
 		private masterAndDetailService: MasterAndDetailService,
 		private domainService: DomainService,
-		private errorModalService: ErrorModalService,
+		private generalModalService: GeneralModalService,
 		private importExportService: ImportExportService) { }
 
 
@@ -118,15 +118,15 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 				this.requestInProgress = false;
 				this.checkDomainAndRedirect();
 			}, err => {
-				this.errorModalService.triggerError(
-					new ErrorModel('An error occurred while fetching the workbasket', err));
+				this.generalModalService.triggerMessage(
+					new MessageModal('An error occurred while fetching the workbasket', err));
 			});
 		}
 	}
 
 	private checkDomainAndRedirect() {
 		this.domainSubscription = this.domainService.getSelectedDomain().subscribe(domain => {
-			if (this.workbasket && this.workbasket.domain !== domain) {
+			if (domain !== '' && this.workbasket && this.workbasket.domain !== domain) {
 				this.backClicked();
 			}
 		});

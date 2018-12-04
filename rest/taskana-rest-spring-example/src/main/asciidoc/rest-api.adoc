@@ -732,6 +732,20 @@ include::../../../{snippets}/GetCurrentUserInfoDocTest/http-response.adoc[]
 
 include::../../../{snippets}/GetCurrentUserInfoDocTest/response-fields.adoc[]
 
+=== History-Provider-Is-Enabled
+
+This resource returns if history provider is enabled.
+
+include::../../../{snippets}/GetHistoryProviderIsEnabled/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/GetHistoryProviderIsEnabled/http-response.adoc[]
+
+==== Response Structure
+
+include::../../../{snippets}/GetHistoryProviderIsEnabled/response-fields.adoc[]
+
 [[resource-subsets]]
 == Resource-Subsets
 

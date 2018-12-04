@@ -15,7 +15,7 @@ import { WorkplaceService } from '../services/workplace.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -40,7 +40,7 @@ xdescribe('TaskdetailsComponent', () => {
         TaskdetailsAttributeComponent, DummyDetailComponent],
       imports: [FormsModule, RouterTestingModule.withRoutes(routes), HttpClientModule],
       providers: [TaskService, HttpClient, WorkplaceService, RemoveConfirmationService,
-        RequestInProgressService, AlertService, ErrorModalService]
+        RequestInProgressService, AlertService, GeneralModalService]
     })
     .compileComponents();
   }));

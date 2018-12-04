@@ -32,125 +32,132 @@
       </div>
       <div class="panel-body">
         <form #ClassificationForm="ngForm">
-          <div class="col-md-6">
-            <div class="form-group required">
-              <label for="classification-key" class="control-label">Key</label>
-              <input type="text" required #key="ngModel" [disabled]="action!== 'CREATE'? true : false" class="form-control"
-                id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
-              <taskana-field-error-display *ngIf="action === 'CREATE'" [displayError]="!isFieldValid('classification.key')"
-                [validationTrigger]="this.toogleValidationMap.get('classification.key')" errorMessage="* Key is required">
-              </taskana-field-error-display>
-            </div>
-            <div class="form-group required">
-              <label for="classification-name" class="control-label">Name</label>
-              <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name"
-                [(ngModel)]="classification.name" name="classification.name">
-              <taskana-field-error-display [displayError]="!isFieldValid('classification.name')" [validationTrigger]="this.toogleValidationMap.get('classification.name')"
-                errorMessage="* Name is required">
-              </taskana-field-error-display>
-            </div>
-            <div class="form-group">
-              <label for="classification-domain" class="control-label">Domain</label>
-              <input type="text" disabled #domain="ngModel" class="form-control" id="classification-domain" placeholder="Domain"
-                [(ngModel)]="classification.domain" name="classification.domain">
+          <div class="row">
 
-              <a *ngIf="!masterDomainSelected()" (click)="validChanged()">
-                <label>
-                  <b>Valid in Domain:</b>
-                  <span class="material-icons md-20 blue ">{{classification.isValidInDomain ? 'check_box':
-                    'check_box_outline_blank'}}</span>
-                </label>
-              </a>
-            </div>
-            <div class="form-group required btn-group">
-              <label for="classification-category" class="control-label">Category</label>
-              <div class="dropdown clearfix ">
-                <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  <span class="text-top">
-                    <svg-icon class="blue fa-fw" src="{{getCategoryIcon(classification.category).name}}" data-toggle="tooltip"
-                      [title]="getCategoryIcon(classification.category).text"></svg-icon>
-                  </span>
-                  {{classification.category}}
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-                  <li>
-                    <a *ngFor="let category of categories" (click)="selectCategory(category)">
+            <div class="col-md-6">
+              <div class="form-group required">
+                <label for="classification-key" class="control-label">Key</label>
+                <input type="text" required #key="ngModel" [disabled]="action!== 'CREATE'? true : false" class="form-control"
+                  id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
+                <taskana-field-error-display *ngIf="action === 'CREATE'" [displayError]="!isFieldValid('classification.key')"
+                  [validationTrigger]="this.toogleValidationMap.get('classification.key')" errorMessage="* Key is required">
+                </taskana-field-error-display>
+              </div>
+              <div class="form-group required">
+                <label for="classification-name" class="control-label">Name</label>
+                <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name"
+                  [(ngModel)]="classification.name" name="classification.name">
+                <taskana-field-error-display [displayError]="!isFieldValid('classification.name')" [validationTrigger]="this.toogleValidationMap.get('classification.name')"
+                  errorMessage="* Name is required">
+                </taskana-field-error-display>
+              </div>
+              <div class="form-group">
+                <label for="classification-domain" class="control-label">Domain</label>
+                <input type="text" disabled #domain="ngModel" class="form-control" id="classification-domain"
+                  placeholder="Domain" [(ngModel)]="classification.domain" name="classification.domain">
+
+                <a *ngIf="!masterDomainSelected()" (click)="validChanged()">
+                  <label>
+                    <b>Valid in Domain:</b>
+                    <span class="material-icons md-20 blue ">{{classification.isValidInDomain ? 'check_box':
+                      'check_box_outline_blank'}}</span>
+                  </label>
+                </a>
+              </div>
+              <div class="row">
+                <div class="form-group col-xs-6">
+                  <label for="classification-priority" class="control-label">Priority</label>
+                  <taskana-number-picker [(ngModel)]="classification.priority" name="classification.priority"></taskana-number-picker>
+                </div>
+                <div class="form-group required btn-group col-xs-6">
+                  <label for="classification-category" class="control-label">Category</label>
+                  <div class="dropdown clearfix ">
+                    <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="true">
                       <span class="text-top">
-                        <svg-icon class="blue fa-fw" src="{{getCategoryIcon(category).name}}" data-toggle="tooltip"
-                          [title]="getCategoryIcon(category).text"></svg-icon>
-                        {{category}}
+                        <svg-icon class="blue fa-fw" src="{{getCategoryIcon(classification.category).name}}"
+                          data-toggle="tooltip" [title]="getCategoryIcon(classification.category).text"></svg-icon>
                       </span>
-                    </a>
-                  </li>
-                </ul>
+                      {{classification.category}}
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
+                      <li>
+                        <a *ngFor="let category of categories" (click)="selectCategory(category)">
+                          <span class="text-top">
+                            <svg-icon class="blue fa-fw" src="{{getCategoryIcon(category).name}}" data-toggle="tooltip"
+                              [title]="getCategoryIcon(category).text"></svg-icon>
+                            {{category}}
+                          </span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="classification-service-level" class="control-label">Service Level</label>
+                <input type="text" class="form-control" id="classification-service-level" placeholder="Service Level"
+                  [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel">
+              </div>
+              <div class="form-group">
+                <label for="classification-application-entry-point" class="control-label">Application entry point</label>
+                <input type="text" class="form-control" id="classification-application-entry-point" placeholder="Application entry point"
+                  [(ngModel)]="classification.applicationEntryPoint" name="classification.applicationEntryPoint">
+              </div>
+              <div class="form-group">
+                <label for="classification-description" class="control-label">Description</label>
+                <textarea class="form-control" rows="5" id="classification-description" placeholder="Description"
+                  [(ngModel)]="classification.description" name="classification.description"></textarea>
               </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="classification-priority" class="control-label">Priority</label>
-              <input type="text" class="form-control" id="classification-priority" placeholder="Priority" [(ngModel)]="classification.priority"
-                name="classification.priority">
+          <div class="row">
+            <div class="col-md-6">
+              <div *ngIf="custom1Field.visible" class="form-group">
+                <label for="classification-custom-1" class="control-label">{{custom1Field.field}}</label>
+                <input type="text" class="form-control" id="classification-custom-1" placeholder="{{custom1Field.field}}"
+                  [(ngModel)]="classification.custom1" name="classification.custom1">
+              </div>
+              <div *ngIf="custom2Field.visible" class="form-group">
+                <label for="classification-custom-2" class="control-label">{{custom2Field.field}}</label>
+                <input type="text" class="form-control" id="classification-custom-2" placeholder="{{custom2Field.field}}"
+                  [(ngModel)]="classification.custom2" name="classification.custom2">
+              </div>
+              <div *ngIf="custom3Field.visible" class="form-group">
+                <label for="classification-custom-3" class="control-label">{{custom3Field.field}}</label>
+                <input type="text" class="form-control" id="classification-custom-3" placeholder="{{custom3Field.field}}"
+                  [(ngModel)]="classification.custom3" name="classification.custom3">
+              </div>
+              <div *ngIf="custom4Field.visible" class="form-group">
+                <label for="classification-custom-4" class="control-label">{{custom4Field.field}}</label>
+                <input type="text" class="form-control" id="classification-custom-4" placeholder="{{custom4Field.field}}"
+                  [(ngModel)]="classification.custom4" name="classification.custom4">
+              </div>
             </div>
-            <div class="form-group">
-              <label for="classification-service-level" class="control-label">Service Level</label>
-              <input type="text" class="form-control" id="classification-service-level" placeholder="Service Level"
-                [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel">
-            </div>
-            <div class="form-group">
-              <label for="classification-application-entry-point" class="control-label">Application entry point</label>
-              <input type="text" class="form-control" id="classification-application-entry-point" placeholder="Application entry point"
-                [(ngModel)]="classification.applicationEntryPoint" name="classification.applicationEntryPoint">
-            </div>
-            <div class="form-group">
-              <label for="classification-description" class="control-label">Description</label>
-              <textarea class="form-control" rows="5" id="classification-description" placeholder="Description"
-                [(ngModel)]="classification.description" name="classification.description"></textarea>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div *ngIf="custom1Field.visible" class="form-group">
-              <label for="classification-custom-1" class="control-label">{{custom1Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-1" placeholder="{{custom1Field.field}}"
-                [(ngModel)]="classification.custom1" name="classification.custom1">
-            </div>
-            <div *ngIf="custom2Field.visible" class="form-group">
-              <label for="classification-custom-2" class="control-label">{{custom2Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-2" placeholder="{{custom2Field.field}}"
-                [(ngModel)]="classification.custom2" name="classification.custom2">
-            </div>
-            <div *ngIf="custom3Field.visible" class="form-group">
-              <label for="classification-custom-3" class="control-label">{{custom3Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-3" placeholder="{{custom3Field.field}}"
-                [(ngModel)]="classification.custom3" name="classification.custom3">
-            </div>
-            <div *ngIf="custom4Field.visible" class="form-group">
-              <label for="classification-custom-4" class="control-label">{{custom4Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-4" placeholder="{{custom4Field.field}}"
-                [(ngModel)]="classification.custom4" name="classification.custom4">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div *ngIf="custom5Field.visible" class="form-group">
-              <label for="classification-custom-5" class="control-label">{{custom5Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-5" placeholder="{{custom5Field.field}}"
-                [(ngModel)]="classification.custom5" name="classification.custom5">
-            </div>
-            <div *ngIf="custom6Field.visible" class="form-group">
-              <label for="classification-custom-6" class="control-label">{{custom6Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-6" placeholder="{{custom6Field.field}}"
-                [(ngModel)]="classification.custom6" name="classification.custom6">
-            </div>
-            <div *ngIf="custom7Field.visible" class="form-group">
-              <label for="classification-custom-7" class="control-label">{{custom7Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-7" placeholder="{{custom7Field.field}}"
-                [(ngModel)]="classification.custom7" name="classification.custom7">
-            </div>
-            <div *ngIf="custom8Field.visible" class="form-group">
-              <label for="classification-custom-8" class="control-label">{{custom8Field.field}}</label>
-              <input type="text" class="form-control" id="classification-custom-8" placeholder="{{custom8Field.field}}"
-                [(ngModel)]="classification.custom8" name="classification.custom8">
+            <div class="col-md-6">
+              <div *ngIf="custom5Field.visible" class="form-group">
+                <label for="classification-custom-5" class="control-label">{{custom5Field.field}}</label>
+                <input type="text" class="form-control" id="classification-custom-5" placeholder="{{custom5Field.field}}"
+                  [(ngModel)]="classification.custom5" name="classification.custom5">
+              </div>
+              <div *ngIf="custom6Field.visible" class="form-group">
+                <label for="classification-custom-6" class="control-label">{{custom6Field.field}}</label>
+                <input type="text" class="form-control" id="classification-custom-6" placeholder="{{custom6Field.field}}"
+                  [(ngModel)]="classification.custom6" name="classification.custom6">
+              </div>
+              <div *ngIf="custom7Field.visible" class="form-group">
+                <label for="classification-custom-7" class="control-label">{{custom7Field.field}}</label>
+                <input type="text" class="form-control" id="classification-custom-7" placeholder="{{custom7Field.field}}"
+                  [(ngModel)]="classification.custom7" name="classification.custom7">
+              </div>
+              <div *ngIf="custom8Field.visible" class="form-group">
+                <label for="classification-custom-8" class="control-label">{{custom8Field.field}}</label>
+                <input type="text" class="form-control" id="classification-custom-8" placeholder="{{custom8Field.field}}"
+                  [(ngModel)]="classification.custom8" name="classification.custom8">
+              </div>
             </div>
           </div>
         </form>

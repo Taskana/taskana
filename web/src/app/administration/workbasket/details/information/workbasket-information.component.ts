@@ -12,14 +12,14 @@ import { Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
 
 import { ICONTYPES } from 'app/models/type';
-import { ErrorModel } from 'app/models/modal-error';
+import { MessageModal } from 'app/models/message-modal';
 import { ACTION } from 'app/models/action';
 import { Workbasket } from 'app/models/workbasket';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { AlertService } from 'app/services/alert/alert.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import {
   SavingWorkbasketService,
   SavingInformation
@@ -81,7 +81,7 @@ export class WorkbasketInformationComponent
     private alertService: AlertService,
     private route: ActivatedRoute,
     private router: Router,
-    private errorModalService: ErrorModalService,
+    private generalModalService: GeneralModalService,
     private savingWorkbasket: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private customFieldsService: CustomFieldsService,
@@ -168,8 +168,8 @@ export class WorkbasketInformationComponent
           );
         },
         error => {
-          this.errorModalService.triggerError(
-            new ErrorModel(
+          this.generalModalService.triggerMessage(
+            new MessageModal(
               `There was an error removing distribution target for ${
               this.workbasket.workbasketId
               }.`,
@@ -204,8 +204,8 @@ export class WorkbasketInformationComponent
         },
         error => {
           this.afterRequest();
-          this.errorModalService.triggerError(
-            new ErrorModel(
+          this.generalModalService.triggerMessage(
+            new MessageModal(
               'There was error while saving your workbasket',
               error
             )
@@ -256,8 +256,8 @@ export class WorkbasketInformationComponent
         }
       },
       error => {
-        this.errorModalService.triggerError(
-          new ErrorModel('There was an error creating a workbasket', error)
+        this.generalModalService.triggerMessage(
+          new MessageModal('There was an error creating a workbasket', error)
         );
         this.requestInProgressService.setRequestInProgress(false);
       }
@@ -279,8 +279,8 @@ export class WorkbasketInformationComponent
           this.requestInProgressService.setRequestInProgress(false);
           this.workbasketService.triggerWorkBasketSaved();
           if (response) {
-            this.errorModalService.triggerError(
-              new ErrorModel('There was an error marking workbasket for deletion',
+            this.generalModalService.triggerMessage(
+              new MessageModal('There was an error marking workbasket for deletion',
                 'It not possible to mark the workbasket for deletion, It has been deleted.')
             );
           } else {

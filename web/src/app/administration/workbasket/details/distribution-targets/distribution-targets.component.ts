@@ -5,14 +5,14 @@ import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
-import { ErrorModel } from 'app/models/modal-error';
+import { MessageModal } from 'app/models/message-modal';
 import { ACTION } from 'app/models/action';
 import { AlertModel, AlertType } from 'app/models/alert';
 
 import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
-import { ErrorModalService } from 'app/services/errorModal/error-modal.service';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/models/page';
@@ -69,9 +69,9 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 		private workbasketService: WorkbasketService,
 		private alertService: AlertService,
 		private savingWorkbaskets: SavingWorkbasketService,
-		private errorModalService: ErrorModalService,
-    private requestInProgressService: RequestInProgressService,
-    private orientationService: OrientationService) { }
+		private generalModalService: GeneralModalService,
+		private requestInProgressService: RequestInProgressService,
+		private orientationService: OrientationService) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (!this.initialized && changes.active && changes.active.currentValue === 'distributionTargets') {
@@ -121,7 +121,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 				return true;
 			},
 				error => {
-					this.errorModalService.triggerError(new ErrorModel(`There was error while saving your workbasket's distribution targets`, error))
+					this.generalModalService.triggerMessage(new MessageModal(`There was error while saving your workbasket's distribution targets`, error))
 					this.requestInProgressService.setRequestInProgress(false);
 					return false;
 				}

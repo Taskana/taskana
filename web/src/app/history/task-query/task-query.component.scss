@@ -1,0 +1,28 @@
+.divTable{
+	max-height: calc(100vh - 152px);
+	padding-right: 15px;
+}
+
+.divTableFoot {
+	display: block;
+}
+
+.divTableCell {
+	height: 34px;
+	max-height: 34px;
+}
+
+.btn-xs{
+	padding: 0px;
+}
+.divTable .btn {
+	border: none;
+}
+
+.icon-space{
+	margin-right: 20px;
+}
+
+.divTablePagination {
+  	margin: 0 auto;
+}
