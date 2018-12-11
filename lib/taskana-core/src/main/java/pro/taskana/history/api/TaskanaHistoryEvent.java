@@ -68,12 +68,12 @@ public class TaskanaHistoryEvent {
         this.taskId = taskId;
     }
 
-    public String getType() {
+    public String getEventType() {
         return eventType;
     }
 
-    public void setType(String type) {
-        this.eventType = type;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
     public Instant getCreated() {

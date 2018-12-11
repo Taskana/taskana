@@ -8,7 +8,7 @@ public class ClaimedEvent extends TaskEvent {
 
     public ClaimedEvent(Task task) {
         super(task);
-        setType("TASK_CLAIMED");
+        setEventType("TASK_CLAIMED");
         created = task.getClaimed();
     }
 }
