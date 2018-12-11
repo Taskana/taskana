@@ -9,7 +9,7 @@ public class ClaimCancelledEvent extends TaskEvent {
 
     public ClaimCancelledEvent(Task task) {
         super(task);
-        type = "TASK_CLAIM_CANCELLED";
+        eventType = "TASK_CLAIM_CANCELLED";
         created = task.getModified();
     }
 }

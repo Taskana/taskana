@@ -8,7 +8,7 @@ public class CreatedEvent extends TaskEvent {
 
     public CreatedEvent(Task task) {
         super(task);
-        type = "TASK_CREATED";
+        eventType = "TASK_CREATED";
         created = task.getCreated();
     }
 }
