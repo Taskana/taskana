@@ -10,13 +10,13 @@ public class CompletedEvent extends TaskEvent {
 
     public CompletedEvent(Task completedTask) {
         super(completedTask);
-        type = "TASK_COMPLETED";
+        eventType = "TASK_COMPLETED";
         created = completedTask.getCompleted();
     }
 
     public CompletedEvent(TaskSummary completedTask) {
         super(completedTask);
-        type = "TASK_COMPLETED";
+        eventType = "TASK_COMPLETED";
         created = completedTask.getCompleted();
     }
 

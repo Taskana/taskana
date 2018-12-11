@@ -13,7 +13,7 @@ public class TaskanaHistoryEvent {
     protected String businessProcessId;
     protected String parentBusinessProcessId;
     protected String taskId;
-    protected String type;
+    protected String eventType;
     protected Instant created;
     protected String userId;
     protected String domain;
@@ -38,6 +38,10 @@ public class TaskanaHistoryEvent {
 
     public TaskanaHistoryEvent() {
         userId = CurrentUserContext.getUserid();
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getBusinessProcessId() {
@@ -65,11 +69,11 @@ public class TaskanaHistoryEvent {
     }
 
     public String getType() {
-        return type;
+        return eventType;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.eventType = type;
     }
 
     public Instant getCreated() {
