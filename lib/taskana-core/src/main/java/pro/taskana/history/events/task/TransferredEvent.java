@@ -15,7 +15,7 @@ public class TransferredEvent extends TaskEvent {
 
     public TransferredEvent(Task task, WorkbasketSummary oldWorkbasket, WorkbasketSummary newWorkbasket) {
         super(task);
-        type = "TASK_TRANSFERRED";
+        eventType = "TASK_TRANSFERRED";
         created = task.getModified();
         this.oldValue = oldWorkbasket.getId();
         this.newValue = newWorkbasket.getId();
