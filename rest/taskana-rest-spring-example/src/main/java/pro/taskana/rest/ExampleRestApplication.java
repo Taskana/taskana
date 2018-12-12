@@ -73,9 +73,9 @@ public class ExampleRestApplication {
     }
 
     @Bean
-    @DependsOn("taskanaEngineConfiguration") // generate sample data after schema was inserted
+    @DependsOn("getTaskanaEngine") // generate sample data after schema was inserted
     public SampleDataGenerator generateSampleData(DataSource dataSource) throws SQLException {
-        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource);        
+        sampleDataGenerator = new SampleDataGenerator(dataSource);
         return sampleDataGenerator;
     }
 

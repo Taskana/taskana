@@ -43,8 +43,8 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskSummaryResource;
-import pro.taskana.rest.resource.assembler.TaskResourceAssembler;
-import pro.taskana.rest.resource.assembler.TaskSummaryResourcesAssembler;
+import pro.taskana.rest.resource.TaskResourceAssembler;
+import pro.taskana.rest.resource.TaskSummaryResourcesAssembler;
 
 /**
  * Controller for all {@link Task} related endpoints.

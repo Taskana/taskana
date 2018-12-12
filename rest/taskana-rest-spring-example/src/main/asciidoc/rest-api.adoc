@@ -784,3 +784,24 @@ include::../../../{snippets}/CommonSummaryResourceFields/http-request.adoc[]
 
 include::../../../{snippets}/CommonSummaryResourceFields/response-body.adoc[]
 
+== History event
+
+=== Get all task history event
+
+==== Example request
+
+include::../../../{snippets}/GetAllTaskHistoryEventDocTest/http-request.adoc[]
+
+==== Example response
+
+include::../../../{snippets}/GetAllTaskHistoryEventDocTest/response-body.adoc[]
+
+=== Get a specific task history event
+
+==== Example request
+
+include::../../../{snippets}/GetSpecificTaskHistoryEventDocTest/http-request.adoc[]
+
+==== Example response
+
+include::../../../{snippets}/GetSpecificTaskHistoryEventDocTest/response-body.adoc[]

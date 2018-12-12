@@ -1,8 +1,5 @@
 package pro.taskana.rest;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.StringReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,20 +7,13 @@ import java.util.Collections;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runner.Runner;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.context.SpringBootTest;
-
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.hateoas.hal.Jackson2HalModule;
-
 import org.springframework.http.MediaType;
-
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;

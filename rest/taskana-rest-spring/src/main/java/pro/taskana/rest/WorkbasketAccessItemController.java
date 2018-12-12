@@ -24,7 +24,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.ldap.LdapClient;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
-import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
+import pro.taskana.rest.resource.WorkbasketAccessItemAssembler;
 
 /**
  * Controller for Workbasket access.

@@ -23,7 +23,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
-import pro.taskana.rest.resource.assembler.ClassificationResourceAssembler;
+import pro.taskana.rest.resource.ClassificationResourceAssembler;
 
 import java.util.ArrayList;
 import java.util.List;

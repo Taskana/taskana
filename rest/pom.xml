@@ -16,5 +16,6 @@
 		<module>taskana-rest-spring</module>
 		<module>../web</module>
 		<module>taskana-rest-spring-example</module>
+		<module>taskana-history-rest-spring</module>
 	</modules>
 </project>
