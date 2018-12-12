@@ -47,8 +47,8 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.TaskResource;
-import pro.taskana.rest.resource.assembler.ClassificationResourceAssembler;
-import pro.taskana.rest.resource.assembler.TaskResourceAssembler;
+import pro.taskana.rest.resource.ClassificationResourceAssembler;
+import pro.taskana.rest.resource.TaskResourceAssembler;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,

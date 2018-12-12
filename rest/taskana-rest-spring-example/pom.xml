@@ -48,7 +48,7 @@
 				<dependency>
 					<groupId>pro.taskana.simplehistory</groupId>
 					<artifactId>taskana-simplehistory-provider</artifactId>
-					<version>0.0.4</version>
+					<version>0.0.6</version>
 				</dependency>
 			</dependencies>
 			<build>
@@ -161,6 +161,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pro.taskana</groupId>
+			<artifactId>taskana-history-rest-spring</artifactId>
+			<version>1.0.5-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -295,6 +300,28 @@
 									<directory>
 										../../lib/taskana-spring/target/apidocs
 									</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-history-rest-spring-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.outputDirectory}/static/docs/rest
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										${project.build.directory}/generated-docs
+									</directory>
+								</resource>
+								<resource>
+									<directory>../taskana-history-rest-spring/target/apidocs</directory>
 								</resource>
 							</resources>
 						</configuration>

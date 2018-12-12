@@ -30,6 +30,7 @@ public class SampleDataGenerator {
     private static final String CLASSIFICATION = SQL + TEST_DATA + "/classification.sql";
     private static final String OBJECT_REFERENCE = SQL + TEST_DATA + "/object-reference.sql";
     private static final String ATTACHMENT = SQL + TEST_DATA + "/attachment.sql";
+    private static final String HISTORY_EVENT = SQL + TEST_DATA + "/history-event.sql";
     private ScriptRunner runner;
 
     DataSource dataSource;
@@ -76,6 +77,8 @@ public class SampleDataGenerator {
             this.getClass().getResourceAsStream(WORKBASKET_ACCESS_LIST), StandardCharsets.UTF_8)));
         runner.runScript(new BufferedReader(
             new InputStreamReader(this.getClass().getResourceAsStream(OBJECT_REFERENCE), StandardCharsets.UTF_8)));
+        runner.runScript(new BufferedReader(
+            new InputStreamReader(this.getClass().getResourceAsStream(HISTORY_EVENT), StandardCharsets.UTF_8)));
 
         runner.closeConnection();
 

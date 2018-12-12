@@ -44,11 +44,11 @@ import pro.taskana.rest.resource.DistributionTargetResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
-import pro.taskana.rest.resource.assembler.DistributionTargetListAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketAccessItemListAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketResourceAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketSummaryResourcesAssembler;
+import pro.taskana.rest.resource.DistributionTargetListAssembler;
+import pro.taskana.rest.resource.WorkbasketAccessItemAssembler;
+import pro.taskana.rest.resource.WorkbasketAccessItemListAssembler;
+import pro.taskana.rest.resource.WorkbasketResourceAssembler;
+import pro.taskana.rest.resource.WorkbasketSummaryResourcesAssembler;
 
 /**
  * Controller for all {@link Workbasket} related endpoints.
