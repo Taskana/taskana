@@ -22,7 +22,7 @@ import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.monitor.ClassificationTimeIntervalColumnHeader;
 import pro.taskana.monitor.WorkbasketTimeIntervalColumnHeader;
 import pro.taskana.rest.resource.ReportResource;
-import pro.taskana.rest.resource.assembler.ReportAssembler;
+import pro.taskana.rest.resource.ReportAssembler;
 
 /**
  * Controller for all monitoring endpoints.

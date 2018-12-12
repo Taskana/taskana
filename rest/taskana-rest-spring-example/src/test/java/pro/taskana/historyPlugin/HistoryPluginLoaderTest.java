@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import pro.taskana.TaskanaEngine;
@@ -17,6 +18,7 @@ import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.rest.RestConfiguration;
 
 @RunWith(SpringRunner.class)
+@ActiveProfiles(profiles = "history.plugin")
 @SpringBootTest(classes = RestConfiguration.class)
 public class HistoryPluginLoaderTest {
 

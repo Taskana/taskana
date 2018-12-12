@@ -26,9 +26,9 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 import pro.taskana.rest.resource.WorkbasketDefinition;
 import pro.taskana.rest.resource.WorkbasketResource;
-import pro.taskana.rest.resource.assembler.WorkbasketAccessItemAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketDefinitionAssembler;
-import pro.taskana.rest.resource.assembler.WorkbasketResourceAssembler;
+import pro.taskana.rest.resource.WorkbasketAccessItemAssembler;
+import pro.taskana.rest.resource.WorkbasketDefinitionAssembler;
+import pro.taskana.rest.resource.WorkbasketResourceAssembler;
 
 import java.util.ArrayList;
 import java.util.HashMap;

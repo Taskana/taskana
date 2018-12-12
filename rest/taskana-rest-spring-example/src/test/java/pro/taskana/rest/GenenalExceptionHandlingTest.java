@@ -27,7 +27,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -41,8 +40,8 @@ import ch.qos.logback.core.Appender;
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.rest.resource.AccessIdResource;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
-import pro.taskana.rest.resource.assembler.ClassificationResourceAssembler;
-import pro.taskana.rest.resource.assembler.TaskResourceAssembler;
+import pro.taskana.rest.resource.ClassificationResourceAssembler;
+import pro.taskana.rest.resource.TaskResourceAssembler;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
