@@ -2,6 +2,8 @@ package pro.taskana.impl;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -41,6 +43,7 @@ import pro.taskana.ObjectReference;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
+import pro.taskana.TaskSummary;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
@@ -1333,9 +1336,44 @@ public class TaskServiceImplTest {
         assertThat(actualTask.getAttachments().size(), equalTo(0));
     }
 
+    @Test
+    public void testTaskSummaryEqualsHashCode() throws InterruptedException  {
+        Classification classification = createDummyClassification();
+        Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
+        Attachment attachment = JunitHelper.createDefaultAttachment();
+        ObjectReference objectReference = JunitHelper.createDefaultObjRef();
+        TaskImpl taskBefore = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        taskBefore.setPrimaryObjRef(objectReference);
+        Thread.sleep(10);
+        TaskImpl taskAfter = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+        taskAfter.setPrimaryObjRef(objectReference);
+        TaskSummary summaryBefore = taskBefore.asSummary();
+        TaskSummary summaryAfter = taskAfter.asSummary();
+
+        assertNotEquals(summaryBefore, summaryAfter);
+        assertNotEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
+
+        taskAfter.setCreated(taskBefore.getCreated());
+        taskAfter.setModified(taskBefore.getModified());
+        summaryAfter = taskAfter.asSummary();
+        assertEquals(summaryBefore, summaryAfter);
+        assertEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
+
+        taskBefore.setModified(null);
+        summaryBefore = taskBefore.asSummary();
+        assertNotEquals(summaryBefore, summaryAfter);
+        assertNotEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
+
+        taskAfter.setModified(null);
+        summaryAfter = taskAfter.asSummary();
+        assertEquals(summaryBefore, summaryAfter);
+        assertEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
+      }
+
     private TaskImpl createUnitTestTask(String id, String name, String workbasketKey, Classification classification) {
         TaskImpl task = new TaskImpl();
         task.setId(id);
+        task.setExternalId(id);
         task.setName(name);
         task.setWorkbasketKey(workbasketKey);
         task.setDomain("");

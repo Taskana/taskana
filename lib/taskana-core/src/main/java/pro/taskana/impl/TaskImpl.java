@@ -17,6 +17,7 @@ import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.SystemException;
 
 /**
  * Task entity.
@@ -24,6 +25,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 public class TaskImpl implements Task {
 
     private String id;
+    private String externalId;
     private Instant created;
     private Instant claimed;
     private Instant completed;
@@ -65,6 +67,10 @@ public class TaskImpl implements Task {
     private String custom15;
     private String custom16;
 
+    private static final String ARGUMENT_STR = "Argument '";
+    private static final String NOT_A_VALID_NUMBER_GET = "' of getCustomAttribute() cannot be converted to a number between 1 and 16";
+    private static final String NOT_A_VALID_NUMBER_SET = "' of setCustomAttribute() cannot be converted to a number between 1 and 16";
+
     TaskImpl() {
     }
 
@@ -75,6 +81,16 @@ public class TaskImpl implements Task {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String getExternalId() {
+        return externalId;
+    }
+
+    @Override
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 
     @Override
@@ -339,7 +355,7 @@ public class TaskImpl implements Task {
             num = Integer.parseInt(number);
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException(
-                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                ARGUMENT_STR + number + NOT_A_VALID_NUMBER_GET,
                 e.getCause());
         }
 
@@ -378,7 +394,7 @@ public class TaskImpl implements Task {
                 return custom16;
             default:
                 throw new InvalidArgumentException(
-                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+                    ARGUMENT_STR + number + NOT_A_VALID_NUMBER_GET);
         }
 
     }
@@ -390,7 +406,7 @@ public class TaskImpl implements Task {
             num = Integer.parseInt(number);
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException(
-                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                ARGUMENT_STR + number + NOT_A_VALID_NUMBER_SET,
                 e.getCause());
         }
 
@@ -445,7 +461,7 @@ public class TaskImpl implements Task {
                 break;
             default:
                 throw new InvalidArgumentException(
-                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+                    ARGUMENT_STR + number + NOT_A_VALID_NUMBER_SET);
         }
 
     }
@@ -453,7 +469,7 @@ public class TaskImpl implements Task {
     @Override
     public void addAttachment(Attachment attachmentToAdd) {
         if (attachments == null) {
-            attachments = new ArrayList<Attachment>();
+            attachments = new ArrayList<>();
         }
         if (attachmentToAdd != null) {
             if (attachmentToAdd.getId() != null) {
@@ -490,6 +506,7 @@ public class TaskImpl implements Task {
         if (classificationSummary != null) {
             taskSummary.setClassificationSummary(classificationSummary);
         }
+        taskSummary.setExternalId(externalId);
         taskSummary.setCompleted(completed);
         taskSummary.setCreated(created);
         taskSummary.setCustom1(custom1);
@@ -556,7 +573,7 @@ public class TaskImpl implements Task {
     }
 
     public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
-        this.classificationSummary = classificationSummary;
+        setClassificationSummary(classificationSummary);
     }
 
     public String getCustom1() {
@@ -693,11 +710,10 @@ public class TaskImpl implements Task {
         Iterator<Attachment> i = attachments.iterator();
         while (i.hasNext()) {
             Attachment attachment = i.next();
-            if (attachment.getId().equals(attachmentId)) {
-                if (attachments.remove(attachment)) {
+            if (attachment.getId().equals(attachmentId)
+                && attachments.remove(attachment)) {
                     result = attachment;
                     break;
-                }
             }
         }
         return result;
@@ -708,6 +724,8 @@ public class TaskImpl implements Task {
         StringBuilder builder = new StringBuilder();
         builder.append("TaskImpl [id=");
         builder.append(id);
+        builder.append(", externalId=");
+        builder.append(externalId);
         builder.append(", created=");
         builder.append(created);
         builder.append(", claimed=");
@@ -794,46 +812,18 @@ public class TaskImpl implements Task {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((attachments == null) ? 0 : attachments.hashCode());
-        result = prime * result + ((businessProcessId == null) ? 0 : businessProcessId.hashCode());
-        result = prime * result + ((claimed == null) ? 0 : claimed.hashCode());
-        result = prime * result + ((classificationSummary == null) ? 0 : classificationSummary.hashCode());
-        result = prime * result + ((completed == null) ? 0 : completed.hashCode());
-        result = prime * result + ((created == null) ? 0 : created.hashCode());
-        result = prime * result + ((creator == null) ? 0 : creator.hashCode());
-        result = prime * result + ((custom1 == null) ? 0 : custom1.hashCode());
-        result = prime * result + ((custom10 == null) ? 0 : custom10.hashCode());
-        result = prime * result + ((custom11 == null) ? 0 : custom11.hashCode());
-        result = prime * result + ((custom12 == null) ? 0 : custom12.hashCode());
-        result = prime * result + ((custom13 == null) ? 0 : custom13.hashCode());
-        result = prime * result + ((custom14 == null) ? 0 : custom14.hashCode());
-        result = prime * result + ((custom15 == null) ? 0 : custom15.hashCode());
-        result = prime * result + ((custom16 == null) ? 0 : custom16.hashCode());
-        result = prime * result + ((custom2 == null) ? 0 : custom2.hashCode());
-        result = prime * result + ((custom3 == null) ? 0 : custom3.hashCode());
-        result = prime * result + ((custom4 == null) ? 0 : custom4.hashCode());
-        result = prime * result + ((custom5 == null) ? 0 : custom5.hashCode());
-        result = prime * result + ((custom6 == null) ? 0 : custom6.hashCode());
-        result = prime * result + ((custom7 == null) ? 0 : custom7.hashCode());
-        result = prime * result + ((custom8 == null) ? 0 : custom8.hashCode());
-        result = prime * result + ((custom9 == null) ? 0 : custom9.hashCode());
-        result = prime * result + ((customAttributes == null) ? 0 : customAttributes.hashCode());
-        result = prime * result + ((callbackInfo == null) ? 0 : callbackInfo.hashCode());
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((due == null) ? 0 : due.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        Object[] myFields = {externalId, attachments, businessProcessId, claimed, classificationSummary, completed, created,
+            creator, custom1, custom10, custom11, custom12, custom13, custom14, custom15, custom16, custom2,
+            custom3, custom4, custom5, custom6, custom7, custom8, custom9, customAttributes, callbackInfo,
+            description, due, id, modified, name, note, owner, parentBusinessProcessId, planned, primaryObjRef, state,
+            workbasketSummary};
+
+        for (Object property : myFields) {
+            result = prime * result + (property == null ? 0 : property.hashCode());
+        }
         result = prime * result + (isRead ? 1231 : 1237);
         result = prime * result + (isTransferred ? 1231 : 1237);
-        result = prime * result + ((modified == null) ? 0 : modified.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((note == null) ? 0 : note.hashCode());
-        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-        result = prime * result + ((parentBusinessProcessId == null) ? 0 : parentBusinessProcessId.hashCode());
-        result = prime * result + ((planned == null) ? 0 : planned.hashCode());
-        result = prime * result + ((primaryObjRef == null) ? 0 : primaryObjRef.hashCode());
         result = prime * result + priority;
-        result = prime * result + ((state == null) ? 0 : state.hashCode());
-        result = prime * result + ((workbasketSummary == null) ? 0 : workbasketSummary.hashCode());
         return result;
     }
 
@@ -849,201 +839,27 @@ public class TaskImpl implements Task {
             return false;
         }
         TaskImpl other = (TaskImpl) obj;
-        if (attachments == null) {
-            if (other.attachments != null) {
-                return false;
-            }
-        } else if (!attachments.equals(other.attachments)) {
-            return false;
+
+        Object[] myFields = {externalId, attachments, businessProcessId, claimed, classificationSummary, completed, created,
+            creator, custom1, custom10, custom11, custom12, custom13, custom14, custom15, custom16, custom2,
+            custom3, custom4, custom5, custom6, custom7, custom8, custom9, customAttributes, callbackInfo,
+            description, due, id, modified, name, note, owner, parentBusinessProcessId, planned, primaryObjRef, state,
+            workbasketSummary};
+
+            Object[] otherFields = {other.externalId, other.attachments, other.businessProcessId, other.claimed, other.classificationSummary, other.completed,
+            other.created, other.creator, other.custom1, other.custom10, other.custom11, other.custom12, other.custom13, other.custom14,
+            other.custom15, other.custom16, other.custom2, other.custom3, other.custom4, other.custom5, other.custom6, other.custom7,
+            other.custom8, other.custom9, other.customAttributes, other.callbackInfo, other.description, other.due, other.id, other.modified,
+            other.name, other.note, other.owner, other.parentBusinessProcessId, other.planned, other.primaryObjRef, other.state, other.workbasketSummary};
+
+        if (myFields.length != otherFields.length) {
+            throw new SystemException("TaskSummaryImpl: length mismatch between internal arrays");
         }
-        if (businessProcessId == null) {
-            if (other.businessProcessId != null) {
+        for (int i = 0; i < myFields.length; i++) {
+            if ((myFields[i] == null && otherFields[i] != null)
+                || (myFields[i] != null && !myFields[i].equals(otherFields[i]))) {
                 return false;
             }
-        } else if (!businessProcessId.equals(other.businessProcessId)) {
-            return false;
-        }
-        if (claimed == null) {
-            if (other.claimed != null) {
-                return false;
-            }
-        } else if (!claimed.equals(other.claimed)) {
-            return false;
-        }
-        if (classificationSummary == null) {
-            if (other.classificationSummary != null) {
-                return false;
-            }
-        } else if (!classificationSummary.equals(other.classificationSummary)) {
-            return false;
-        }
-        if (completed == null) {
-            if (other.completed != null) {
-                return false;
-            }
-        } else if (!completed.equals(other.completed)) {
-            return false;
-        }
-        if (created == null) {
-            if (other.created != null) {
-                return false;
-            }
-        } else if (!created.equals(other.created)) {
-            return false;
-        }
-        if (creator == null) {
-            if (other.creator != null) {
-                return false;
-            }
-        } else if (!creator.equals(other.creator)) {
-            return false;
-        }
-        if (custom1 == null) {
-            if (other.custom1 != null) {
-                return false;
-            }
-        } else if (!custom1.equals(other.custom1)) {
-            return false;
-        }
-        if (custom10 == null) {
-            if (other.custom10 != null) {
-                return false;
-            }
-        } else if (!custom10.equals(other.custom10)) {
-            return false;
-        }
-        if (custom11 == null) {
-            if (other.custom11 != null) {
-                return false;
-            }
-        } else if (!custom11.equals(other.custom11)) {
-            return false;
-        }
-        if (custom12 == null) {
-            if (other.custom12 != null) {
-                return false;
-            }
-        } else if (!custom12.equals(other.custom12)) {
-            return false;
-        }
-        if (custom13 == null) {
-            if (other.custom13 != null) {
-                return false;
-            }
-        } else if (!custom13.equals(other.custom13)) {
-            return false;
-        }
-        if (custom14 == null) {
-            if (other.custom14 != null) {
-                return false;
-            }
-        } else if (!custom14.equals(other.custom14)) {
-            return false;
-        }
-        if (custom15 == null) {
-            if (other.custom15 != null) {
-                return false;
-            }
-        } else if (!custom15.equals(other.custom15)) {
-            return false;
-        }
-        if (custom16 == null) {
-            if (other.custom16 != null) {
-                return false;
-            }
-        } else if (!custom16.equals(other.custom16)) {
-            return false;
-        }
-        if (custom2 == null) {
-            if (other.custom2 != null) {
-                return false;
-            }
-        } else if (!custom2.equals(other.custom2)) {
-            return false;
-        }
-        if (custom3 == null) {
-            if (other.custom3 != null) {
-                return false;
-            }
-        } else if (!custom3.equals(other.custom3)) {
-            return false;
-        }
-        if (custom4 == null) {
-            if (other.custom4 != null) {
-                return false;
-            }
-        } else if (!custom4.equals(other.custom4)) {
-            return false;
-        }
-        if (custom5 == null) {
-            if (other.custom5 != null) {
-                return false;
-            }
-        } else if (!custom5.equals(other.custom5)) {
-            return false;
-        }
-        if (custom6 == null) {
-            if (other.custom6 != null) {
-                return false;
-            }
-        } else if (!custom6.equals(other.custom6)) {
-            return false;
-        }
-        if (custom7 == null) {
-            if (other.custom7 != null) {
-                return false;
-            }
-        } else if (!custom7.equals(other.custom7)) {
-            return false;
-        }
-        if (custom8 == null) {
-            if (other.custom8 != null) {
-                return false;
-            }
-        } else if (!custom8.equals(other.custom8)) {
-            return false;
-        }
-        if (custom9 == null) {
-            if (other.custom9 != null) {
-                return false;
-            }
-        } else if (!custom9.equals(other.custom9)) {
-            return false;
-        }
-        if (customAttributes == null) {
-            if (other.customAttributes != null) {
-                return false;
-            }
-        } else if (!customAttributes.equals(other.customAttributes)) {
-            return false;
-        }
-        if (callbackInfo == null) {
-            if (other.callbackInfo != null) {
-                return false;
-            }
-        } else if (!callbackInfo.equals(other.callbackInfo)) {
-            return false;
-        }
-        if (description == null) {
-            if (other.description != null) {
-                return false;
-            }
-        } else if (!description.equals(other.description)) {
-            return false;
-        }
-        if (due == null) {
-            if (other.due != null) {
-                return false;
-            }
-        } else if (!due.equals(other.due)) {
-            return false;
-        }
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-            return false;
         }
         if (isRead != other.isRead) {
             return false;
@@ -1051,69 +867,9 @@ public class TaskImpl implements Task {
         if (isTransferred != other.isTransferred) {
             return false;
         }
-        if (modified == null) {
-            if (other.modified != null) {
-                return false;
-            }
-        } else if (!modified.equals(other.modified)) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (note == null) {
-            if (other.note != null) {
-                return false;
-            }
-        } else if (!note.equals(other.note)) {
-            return false;
-        }
-        if (owner == null) {
-            if (other.owner != null) {
-                return false;
-            }
-        } else if (!owner.equals(other.owner)) {
-            return false;
-        }
-        if (parentBusinessProcessId == null) {
-            if (other.parentBusinessProcessId != null) {
-                return false;
-            }
-        } else if (!parentBusinessProcessId.equals(other.parentBusinessProcessId)) {
-            return false;
-        }
-        if (planned == null) {
-            if (other.planned != null) {
-                return false;
-            }
-        } else if (!planned.equals(other.planned)) {
-            return false;
-        }
-        if (primaryObjRef == null) {
-            if (other.primaryObjRef != null) {
-                return false;
-            }
-        } else if (!primaryObjRef.equals(other.primaryObjRef)) {
-            return false;
-        }
-        if (priority != other.priority) {
-            return false;
-        }
-        if (state != other.state) {
-            return false;
-        }
-        if (workbasketSummary == null) {
-            if (other.workbasketSummary != null) {
-                return false;
-            }
-        } else if (!workbasketSummary.equals(other.workbasketSummary)) {
-            return false;
-        }
-        return true;
+
+        return (priority == other.priority);
+
     }
 
 }

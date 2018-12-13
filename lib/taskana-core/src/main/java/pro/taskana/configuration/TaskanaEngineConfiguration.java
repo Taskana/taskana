@@ -56,7 +56,7 @@ public class TaskanaEngineConfiguration {
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
     private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";
-    protected static final String TASKANA_SCHEMA_VERSION = "1.0.4"; // must match the VERSION value in table
+    protected static final String TASKANA_SCHEMA_VERSION = "1.0.6"; // must match the VERSION value in table
     // TASKANA_SCHEMA_VERSION
     private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
