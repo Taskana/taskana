@@ -142,6 +142,9 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .parentBusinessProcessIdLike("%PBPI%", "doc%3%")
             .list();
         assertThat(results.size(), equalTo(24));
+        for (TaskSummary taskSummary : results) {
+            assertNotNull(taskSummary.getExternalId());
+        }
 
         String[] parentIds = results.stream()
             .map(TaskSummary::getParentBusinessProcessId)
@@ -1428,4 +1431,56 @@ public class QueryTasksAccTest extends AbstractAccTest {
         assertEquals("L1050", results.get(0).getClassificationSummary().getKey());
         assertEquals("T2000", results.get(results.size() - 1).getClassificationSummary().getKey());
     }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "group_2"})
+    @Test
+    public void testQueryForExternalIdIn() {
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        List<TaskSummary> results = taskService.createTaskQuery()
+            .externalIdIn("EID:000000000000000000000000000000000010", "EID:000000000000000000000000000000000011",
+                "EID:000000000000000000000000000000000012", "EID:000000000000000000000000000000000013",
+                "EID:000000000000000000000000000000000014", "EID:000000000000000000000000000000000015",
+                "EID:000000000000000000000000000000000016", "EID:000000000000000000000000000000000017",
+                "EID:000000000000000000000000000000000018", "EID:000000000000000000000000000000000019")
+            .list();
+        assertThat(results.size(), equalTo(10));
+
+        String[] ids = results.stream()
+            .map(TaskSummary::getTaskId)
+            .collect(Collectors.toList())
+            .toArray(new String[0]);
+
+        List<TaskSummary> result2 = taskService.createTaskQuery()
+            .idIn(ids)
+            .list();
+        assertThat(result2.size(), equalTo(10));
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "group_2"})
+    @Test
+    public void testQueryForExternalIdLike() {
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        List<TaskSummary> results = taskService.createTaskQuery()
+            .externalIdLike("EID:00000000000000000000000000000000001%")
+            .list();
+        assertThat(results.size(), equalTo(10));
+
+        String[] ids = results.stream()
+            .map(TaskSummary::getTaskId)
+            .collect(Collectors.toList())
+            .toArray(new String[0]);
+
+        List<TaskSummary> result2 = taskService.createTaskQuery()
+            .idIn(ids)
+            .list();
+        assertThat(result2.size(), equalTo(10));
+    }
+
+
 }

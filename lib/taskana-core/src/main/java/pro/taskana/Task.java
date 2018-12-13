@@ -19,6 +19,24 @@ public interface Task {
     String getId();
 
     /**
+     * Returns the external id of the task. This Id can be used to correlate the task to a task in an external
+     * system and to enforce idempotency of task creation. If not set by the client, it will be set by taskana.
+     *
+     * @return external Id
+     */
+    String getExternalId();
+    /**
+     * Sets the external Id. It can be used to correlate the task to a task in an external system.
+     * The external Id is enforced to be unique. An attempt to create a task with
+     * an existing external Id will be rejected. So, this Id can be used to enforce idempotency of task creation.
+     * The externalId can only be set before the task is persisted. Taskana rejects attempts to modify externalId.
+     *
+     * @param externalId    the external Id
+     *
+     */
+    void setExternalId(String externalId);
+
+   /**
      * Gets the UserId of the task-creator.
      *
      * @return creator

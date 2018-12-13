@@ -28,6 +28,27 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
     TaskQuery nameLike(String... names);
 
     /**
+     * Add your external ids to your query.
+     *
+     * @param externalIds
+     *            the external ids as Strings
+     * @return the query
+     */
+    TaskQuery externalIdIn(String... externalIds);
+
+    /**
+     * Add your external id for pattern matching to your query. It will be compared in SQL with the LIKE operator. You may use
+     * a wildcard like % to specify the pattern. If you specify multiple arguments they are combined with the OR
+     * keyword.
+     *
+     * @param externalIds
+     *            your external ids
+     * @return the query
+     */
+    TaskQuery externalIdLike(String... externalIds);
+
+
+    /**
      * Add the UserIds of the creator to your query.
      *
      * @param creators

@@ -46,6 +46,8 @@ public class TaskQueryImpl implements TaskQuery {
     private TaskQueryColumnName columnName;
     private String[] nameIn;
     private String[] nameLike;
+    private String[] externalIdIn;
+    private String[] externalIdLike;
     private String[] creatorIn;
     private String[] creatorLike;
     private String[] taskIds;
@@ -163,6 +165,19 @@ public class TaskQueryImpl implements TaskQuery {
         this.nameIn = names;
         return this;
     }
+
+    @Override
+    public TaskQuery externalIdIn(String... externalIds) {
+        this.externalIdIn = externalIds;
+        return this;
+    }
+
+    @Override
+    public TaskQuery externalIdLike(String... externalIds) {
+        this.externalIdLike = toUpperCopy(externalIds);
+        return this;
+    }
+
 
     @Override
     public TaskQuery nameLike(String... names) {
@@ -1192,6 +1207,14 @@ public class TaskQueryImpl implements TaskQuery {
         return nameIn;
     }
 
+    public String[] getExternalIdIn() {
+        return externalIdIn;
+    }
+
+    public String[] getExternalIdLike() {
+        return externalIdLike;
+    }
+
     public String[] getCreatorIn() {
         return creatorIn;
     }
@@ -1627,7 +1650,9 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public String toString() {
         return "TaskQueryImpl [columnName=" + columnName + ", nameIn=" + Arrays.toString(nameIn) + ", nameLike="
-            + Arrays.toString(nameLike) + ", creatorIn=" + Arrays.toString(creatorIn) + ", creatorLike="
+            + Arrays.toString(nameLike) + ", externalIdIn=" + Arrays.toString(externalIdIn)
+            + ", externalIdLike=" + Arrays.toString(externalIdLike)
+            + ", creatorIn=" + Arrays.toString(creatorIn) + ", creatorLike="
             + Arrays.toString(creatorLike) + ", taskIds=" + Arrays.toString(taskIds) + ", description="
             + Arrays.toString(description) + ", note=" + Arrays.toString(note) + ", noteLike="
             + Arrays.toString(noteLike) + ", priority=" + Arrays.toString(priority) + ", workbasketKeyDomainIn="
@@ -1688,5 +1713,4 @@ public class TaskQueryImpl implements TaskQuery {
             + ", addAttachmentClassificationNameToSelectClauseForOrdering="
             + addAttachmentClassificationNameToSelectClauseForOrdering + "]";
     }
-
 }

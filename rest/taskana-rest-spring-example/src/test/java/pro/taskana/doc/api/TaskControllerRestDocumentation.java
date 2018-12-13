@@ -70,6 +70,7 @@ public class TaskControllerRestDocumentation {
                         .build();
         
         taskFieldDescriptionsMap.put("taskId", "Unique ID");
+        taskFieldDescriptionsMap.put("externalId", "External ID. Can be used to enforce idempotency at task creation. Can identify an external task.");
         taskFieldDescriptionsMap.put("created", "The creation timestamp of the task in the system.");
         taskFieldDescriptionsMap.put("claimed", "The timestamp of the last claim-operation on the task");
         taskFieldDescriptionsMap.put("completed", "The timestamp of the completion of the task");
@@ -127,6 +128,7 @@ public class TaskControllerRestDocumentation {
         taskFieldDescriptors = new FieldDescriptor[] {
                 
                 fieldWithPath("taskId").description(taskFieldDescriptionsMap.get("taskId")),
+                fieldWithPath("externalId").description(taskFieldDescriptionsMap.get("externalId")),
                 fieldWithPath("created").description(taskFieldDescriptionsMap.get("created")),
                 fieldWithPath("claimed").description(taskFieldDescriptionsMap.get("claimed")).type("String"),
                 fieldWithPath("completed").description(taskFieldDescriptionsMap.get("completed")).type("String"),
@@ -177,6 +179,7 @@ public class TaskControllerRestDocumentation {
         taskSubsetFieldDescriptors = new FieldDescriptor[] {
 
                 fieldWithPath("taskId").description(taskFieldDescriptionsMap.get("taskId")),
+                fieldWithPath("externalId").description(taskFieldDescriptionsMap.get("externalId")),
                 fieldWithPath("created").description(taskFieldDescriptionsMap.get("created")),
                 fieldWithPath("claimed").description(taskFieldDescriptionsMap.get("claimed")),
                 fieldWithPath("completed").description(taskFieldDescriptionsMap.get("completed")).type("String"),
@@ -228,6 +231,7 @@ public class TaskControllerRestDocumentation {
                 
                 subsectionWithPath("classificationSummaryResource").description("The new classificationSummaryResource for the task"),
                 subsectionWithPath("workbasketSummaryResource").description("The new workbasketSummaryResource for the task"),
+                fieldWithPath("externalId").description(taskFieldDescriptionsMap.get("externalId")).type("String").optional(),
                 fieldWithPath("primaryObjRef.company").description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
                 fieldWithPath("primaryObjRef.system").description(taskFieldDescriptionsMap.get("primaryObjRef.system")),
                 fieldWithPath("primaryObjRef.systemInstance").description(taskFieldDescriptionsMap.get("primaryObjRef.systemInstance")),

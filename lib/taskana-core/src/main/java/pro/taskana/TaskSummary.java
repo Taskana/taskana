@@ -11,11 +11,18 @@ import pro.taskana.exceptions.InvalidArgumentException;
 public interface TaskSummary {
 
     /**
-     * Gets the id of the task..
+     * Gets the id of the task.
      *
      * @return taskId
      */
     String getTaskId();
+
+    /**
+     * Gets the external id of the task.
+     *
+     * @return the external Id
+     */
+    String getExternalId();
 
     /**
      * Gets the name of the task-creator.

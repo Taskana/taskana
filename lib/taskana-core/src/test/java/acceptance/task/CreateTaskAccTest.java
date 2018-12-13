@@ -86,6 +86,51 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
+    public void testIdempotencyOfTaskCreation()
+        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
+        WorkbasketNotFoundException, TaskAlreadyExistException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setExternalId("MyExternalId");
+        newTask.setClassificationKey("T2100");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask);
+        assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
+        assertEquals("T-Vertragstermin VERA", createdTask.getName());
+        assertEquals("1234567", createdTask.getPrimaryObjRef().getValue());
+        assertNotNull(createdTask.getExternalId());
+        assertNotNull(createdTask.getCreated());
+        assertNotNull(createdTask.getModified());
+        assertNotNull(createdTask.getBusinessProcessId());
+        assertEquals(null, createdTask.getClaimed());
+        assertEquals(null, createdTask.getCompleted());
+        assertEquals(createdTask.getCreated(), createdTask.getModified());
+        assertEquals(createdTask.getCreated(), createdTask.getPlanned());
+        assertEquals(TaskState.READY, createdTask.getState());
+        assertEquals(null, createdTask.getParentBusinessProcessId());
+        assertEquals(2, createdTask.getPriority());
+        assertEquals(false, createdTask.isRead());
+        assertEquals(false, createdTask.isTransferred());
+
+        try {
+            newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+            newTask.setExternalId("MyExternalId");
+            newTask.setClassificationKey("T2100");
+            newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+            taskService.createTask(newTask);
+            assertTrue("This line of code must not be reached", false);
+        } catch (TaskAlreadyExistException ex) {
+            assertTrue("correctly enforced Idempotency", true);
+        }
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
     public void testCreateSimpleTaskWithCustomAttributes()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {

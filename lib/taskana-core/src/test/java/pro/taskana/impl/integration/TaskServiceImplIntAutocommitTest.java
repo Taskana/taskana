@@ -51,6 +51,7 @@ import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -359,6 +360,7 @@ public class TaskServiceImplIntAutocommitTest {
         task.setId("");
         task.getWorkbasketSummaryImpl().setId(wbNoTransfer.getId());
         task.setWorkbasketKey(null);
+        task.setExternalId(IdGenerator.generateWithPrefix("TST"));
         task = (TaskImpl) taskServiceImpl.createTask(task);
         try {
             task = (TaskImpl) taskServiceImpl.transfer(task.getId(), wb.getId());

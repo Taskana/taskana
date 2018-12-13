@@ -128,7 +128,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     }
 
     private WorkbasketAccessItemQuery getAccessIds(WorkbasketAccessItemQuery query,
-        MultiValueMap<String, String> params) throws InvalidArgumentException {
+        MultiValueMap<String, String> params) {
         if (params.containsKey(ACCESS_IDS)) {
             String[] accessIds = extractVerticalBarSeparatedFields(params.get(ACCESS_IDS));
             query.accessIdIn(accessIds);
@@ -138,7 +138,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     }
 
     private WorkbasketAccessItemQuery applyFilterParams(WorkbasketAccessItemQuery query,
-        MultiValueMap<String, String> params) throws InvalidArgumentException {
+        MultiValueMap<String, String> params) {
         if (params.containsKey(WORKBASKET_KEY)) {
             String[] keys = extractCommaSeparatedFields(params.get(WORKBASKET_KEY));
             query.workbasketKeyIn(keys);
