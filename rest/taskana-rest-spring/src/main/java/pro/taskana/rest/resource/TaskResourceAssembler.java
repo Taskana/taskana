@@ -44,6 +44,7 @@ public class TaskResourceAssembler
         TaskResource resource = createResourceWithId(task.getId(), task);
         BeanUtils.copyProperties(task, resource);
         resource.setTaskId(task.getId());
+        resource.setExternalId(task.getExternalId());
         if (task.getCreated() != null) {
             resource.setCreated(task.getCreated().toString());
         }
@@ -129,6 +130,7 @@ public class TaskResourceAssembler
         validateTaskResource(resource);
         TaskImpl task = (TaskImpl) taskService.newTask(resource.getWorkbasketSummaryResource().getWorkbasketId());
         task.setId(resource.getTaskId());
+        task.setExternalId(resource.getExternalId());
         BeanUtils.copyProperties(resource, task);
         if (resource.getCreated() != null) {
             task.setCreated(Instant.parse(resource.getCreated()));

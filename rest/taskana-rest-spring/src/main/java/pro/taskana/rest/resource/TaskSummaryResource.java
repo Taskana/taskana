@@ -18,6 +18,7 @@ import pro.taskana.TaskState;
 public class TaskSummaryResource extends ResourceSupport {
 
     private String taskId;
+    private String externalId;
     private String created;    // ISO-8601
     private String claimed;    // ISO-8601
     private String completed;  // ISO-8601
@@ -64,6 +65,14 @@ public class TaskSummaryResource extends ResourceSupport {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 
     public String getCreated() {

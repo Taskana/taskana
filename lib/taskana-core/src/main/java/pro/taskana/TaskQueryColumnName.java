@@ -7,6 +7,7 @@ package pro.taskana;
  */
 public enum TaskQueryColumnName implements QueryColumnName {
     ID("t.id"),
+    EXTERNAL_ID("t.externalId"),
     CREATED("t.created"),
     CLAIMED("t.claimed"),
     COMPLETED("t.completed"),
