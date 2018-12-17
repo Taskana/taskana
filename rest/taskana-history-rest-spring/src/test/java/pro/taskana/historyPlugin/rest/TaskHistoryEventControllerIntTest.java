@@ -33,7 +33,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import pro.taskana.historyPlugin.config.TaskHistoryRestConfiguration;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.TaskHistoryEventResource;
@@ -66,18 +65,18 @@ public class TaskHistoryEventControllerIntTest {
             new ParameterizedTypeReference<PagedResources<TaskHistoryEventResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
-        assertEquals(50, response.getBody().getContent().size());
+        assertEquals(3, response.getBody().getContent().size());
     }
 
     @Test
     public void testGetAllHistoryEventDescendingOrder() {
-        String parameters = "/v1/task-history-event?sort-by=business-process-id&order=desc&page-size=6&page=1";
+        String parameters = "/v1/task-history-event?sort-by=business-process-id&order=desc&page-size=3&page=1";
         ResponseEntity<PagedResources<TaskHistoryEventResource>> response = template.exchange(
             server + port + parameters, HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskHistoryEventResource>>() {
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
-        assertEquals(6, response.getBody().getContent().size());
+        assertEquals(3, response.getBody().getContent().size());
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
@@ -87,9 +86,11 @@ public class TaskHistoryEventControllerIntTest {
     @Test
     public void testGetSpecificTaskHistoryEvent() {
         ResponseEntity<PagedResources<TaskHistoryEventResource>> response = template.exchange(
-            server + port + "/v1/task-history-event?business-process-id=BPI:01&sort-by=business-process-id&order=asc&page-size=6&page=1",
+            server + port
+                + "/v1/task-history-event?business-process-id=BPI:01&sort-by=business-process-id&order=asc&page-size=6&page=1",
             HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskHistoryEventResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertNotNull(response.getBody().getLinks());
@@ -117,9 +118,11 @@ public class TaskHistoryEventControllerIntTest {
         ResponseEntity<PagedResources<TaskHistoryEventResource>> response = template.exchange(
             server + port + parameters, HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskHistoryEventResource>>() {
+
             });
-        assertEquals(2, response.getBody().getContent().size());
-        assertEquals("WBI:100000000000000000000000000000000002", response.getBody().getContent().iterator().next().getWorkbasketKey());
+        assertEquals(1, response.getBody().getContent().size());
+        assertEquals("WBI:100000000000000000000000000000000001",
+            response.getBody().getContent().iterator().next().getWorkbasketKey());
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)

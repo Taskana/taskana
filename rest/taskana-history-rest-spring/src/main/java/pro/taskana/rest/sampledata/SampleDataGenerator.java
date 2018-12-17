@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 public class SampleDataGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SampleDataGenerator.class);
-    private static final String SQL = "/sql";
     private static final String TEST_DATA = "/sql.sample-data";
     private static final String CLEAR =  TEST_DATA + "/clear-db.sql";
     private static final String HISTORY_EVENT =  TEST_DATA + "/history-event.sql";

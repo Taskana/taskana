@@ -6,7 +6,7 @@
 
 	<groupId>pro.taskana</groupId>
 	<artifactId>taskana-history-rest-spring</artifactId>
-	<version>1.0.5-SNAPSHOT</version>
+	<version>1.0.6-SNAPSHOT</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -15,14 +15,35 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/*Documentation.java</include>
+					</includes>
+					<!-- Travis build workaround to prevent error that VM is closed due to an error. -->
+					<argLine>-Xms1024m -Xmx2048m</argLine>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>1.5.3</version>
 				<executions>
 					<execution>
-						<id>attach-javadocs</id>
+						<id>generate-docs</id>
+						<phase>prepare-package</phase>
 						<goals>
-							<goal>jar</goal>
+							<goal>process-asciidoc</goal>
 						</goals>
+						<configuration>
+							<backend>html</backend>
+							<doctype>book</doctype>
+							<attributes>
+								<snippets>target/generated-snippets</snippets>
+								<docinfo>shared</docinfo>
+							</attributes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -89,13 +110,13 @@
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-spring</artifactId>
-			<version>1.0.5-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-rest-spring</artifactId>
-			<version>1.0.5-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
