@@ -64,8 +64,8 @@ public class TaskHistoryEventController extends AbstractPagingController {
     private static final String TASK_CLASSIFICATION_KEY_LIKE = "task-classification-key-like";
     private static final String TASK_CLASSIFICATION_CATEGORY = "task-classification-category";
     private static final String TASK_CLASSIFICATION_CATEGORY_LIKE = "task-classification-category-like";
-    private static final String ATTACHMENT_CLASSIFICATION_KEY = "attachment-classification";
-    private static final String ATTACHMENT_CLASSIFICATION_KEY_LIKE = "attachment-classification-like";
+    private static final String ATTACHMENT_CLASSIFICATION_KEY = "attachment-classification-key";
+    private static final String ATTACHMENT_CLASSIFICATION_KEY_LIKE = "attachment-classification-key-like";
     private static final String CUSTOM_1 = "custom-1";
     private static final String CUSTOM_1_LIKE = "custom-1-like";
     private static final String CUSTOM_2 = "custom-2";

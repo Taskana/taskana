@@ -1,3 +1,3 @@
 -- the order is important!
-DELETE FROM HISTORY_EVENT;
+DELETE FROM HISTORY_EVENTS;
 COMMIT;
