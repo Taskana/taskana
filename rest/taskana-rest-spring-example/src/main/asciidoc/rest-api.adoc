@@ -790,18 +790,18 @@ include::../../../{snippets}/CommonSummaryResourceFields/response-body.adoc[]
 
 ==== Example request
 
-include::../../../{snippets}/GetAllTaskHistoryEventDocTest/http-request.adoc[]
+include::../../../../taskana-history-rest-spring/{snippets}/GetAllTaskHistoryEventDocTest/http-request.adoc[]
 
 ==== Example response
 
-include::../../../{snippets}/GetAllTaskHistoryEventDocTest/response-body.adoc[]
+include::../../../../taskana-history-rest-spring/{snippets}/GetAllTaskHistoryEventDocTest/response-body.adoc[]
 
 === Get a specific task history event
 
 ==== Example request
 
-include::../../../{snippets}/GetSpecificTaskHistoryEventDocTest/http-request.adoc[]
+include::../../../../taskana-history-rest-spring/{snippets}/GetSpecificTaskHistoryEventDocTest/http-request.adoc[]
 
 ==== Example response
 
-include::../../../{snippets}/GetSpecificTaskHistoryEventDocTest/response-body.adoc[]
+include::../../../../taskana-history-rest-spring/{snippets}/GetSpecificTaskHistoryEventDocTest/response-body.adoc[]
