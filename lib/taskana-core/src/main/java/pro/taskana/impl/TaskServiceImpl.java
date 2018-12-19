@@ -1172,7 +1172,7 @@ public class TaskServiceImpl implements TaskService {
                 actualPrioDuration = handleNonNullAttachment(actualPrioDuration, attachment);
             }
         }
-        if (actualPrioDuration.getDuration() != null && MAX_DURATION.equals(actualPrioDuration.getDuration())) {
+        if (MAX_DURATION.equals(actualPrioDuration.getDuration())) {
             actualPrioDuration.setDuration(null);
         }
 
