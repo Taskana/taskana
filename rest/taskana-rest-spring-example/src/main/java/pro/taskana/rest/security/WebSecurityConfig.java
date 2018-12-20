@@ -36,7 +36,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
+        http.authorizeRequests()
+            .antMatchers(
+                "/css/**",
+                "/img/**")
+            .permitAll()
+            .and()
+            .csrf().disable()
             .httpBasic()
             .and()
             .authenticationProvider(jaasAuthProvider())
@@ -99,8 +105,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin().loginPage("/login").failureUrl("/login?error")
             .permitAll()
             .and()
-            .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-            .logoutSuccessUrl("/login").deleteCookies("JSESSIONID")
-            .invalidateHttpSession(true);
+            .logout()
+            .invalidateHttpSession(true)
+            .clearAuthentication(true)
+            .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+            .logoutSuccessUrl("/login?logout")
+            .deleteCookies("JSESSIONID")
+            .permitAll();
     }
 }
