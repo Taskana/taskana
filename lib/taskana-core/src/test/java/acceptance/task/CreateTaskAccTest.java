@@ -85,7 +85,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test
+    @Test(expected = TaskAlreadyExistException.class)
     public void testIdempotencyOfTaskCreation()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
@@ -115,16 +115,11 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals(false, createdTask.isRead());
         assertEquals(false, createdTask.isTransferred());
 
-        try {
-            newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-            newTask.setExternalId("MyExternalId");
-            newTask.setClassificationKey("T2100");
-            newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-            taskService.createTask(newTask);
-            assertTrue("This line of code must not be reached", false);
-        } catch (TaskAlreadyExistException ex) {
-            assertTrue("correctly enforced Idempotency", true);
-        }
+        newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setExternalId("MyExternalId");
+        newTask.setClassificationKey("T2100");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        taskService.createTask(newTask);           
     }
 
     @WithAccessId(
