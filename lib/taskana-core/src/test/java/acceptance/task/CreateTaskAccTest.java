@@ -119,7 +119,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         newTask.setExternalId("MyExternalId");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        taskService.createTask(newTask);           
+        taskService.createTask(newTask);
     }
 
     @WithAccessId(

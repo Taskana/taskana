@@ -12,8 +12,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javax.sql.DataSource;
@@ -126,6 +127,10 @@ public class TestDataGenerator {
      */
     private static final class SQLReplacer {
 
+        private static final String RELATIVE_DATE_REGEX = "RELATIVE_DATE\\((-?\\d+)\\)";
+        private static final Pattern RELATIVE_DATE_PATTERN = Pattern.compile(RELATIVE_DATE_REGEX);
+        private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         private String classificationSql;
         private String workbasketSql;
         private String taskSql;
@@ -144,49 +149,61 @@ public class TestDataGenerator {
             distributionTargetSql = parseAndReplace(getClass().getResourceAsStream(DISTRIBUTION_TARGETS), isDb2);
             objectReferenceSql = parseAndReplace(getClass().getResourceAsStream(OBJECT_REFERENCE), isDb2);
             attachmentSql = parseAndReplace(getClass().getResourceAsStream(ATTACHMENT), isDb2);
-            monitoringTestDataSql = generateMonitoringSqlData(isDb2);
-        }
-
-        private String parseAndReplace(InputStream stream, boolean replace) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-            StringBuilder sql = new StringBuilder();
-            String line;
-            if (replace) {
-                while ((line = bufferedReader.readLine()) != null) {
-                    sql.append(line.replaceAll("true|TRUE", "1").replaceAll("false|FALSE", "0")).append("\n");
-                }
-            } else {
-                while ((line = bufferedReader.readLine()) != null) {
-                    sql.append(line).append("\n");
-                }
-            }
-            return sql.toString();
-        }
-
-        private String generateMonitoringSqlData(boolean replace) throws IOException {
-            String rawSql = parseAndReplace(getClass().getResourceAsStream(MONITOR_SAMPLE_DATA), replace);
-
-            BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(new ByteArrayInputStream(rawSql.getBytes(StandardCharsets.UTF_8))));
             LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            StringBuilder sql = new StringBuilder();
-            String line;
+            monitoringTestDataSql = parseAndReplace(getClass().getResourceAsStream(MONITOR_SAMPLE_DATA),
+                x -> convertToRelativeTime(now, x), isDb2);
+        }
 
-            List<Integer> ages = Arrays.asList(-70000, -14000, -2800, -1400, -1400, -700, -700, -35, -28, -28, -14, -14,
-                -14, -14, -14, -14, -14, -14, -14, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, 0, 0, 0, 0, 7, 7, 7, 7,
-                7, 7,
-                7, 14, 14, 14, 14, 21, 210, 210, 28000, 700000);
-            int i = 0;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.contains("dueDate")) {
-                    line = line.replace("dueDate", "\'" + now.plusDays(ages.get(i)).format(formatter) + "\' ");
-                    i++;
-                }
-                sql.append(line).append("\n");
+        /**
+         * This method resolves the custom sql function defined through this regex: {@value RELATIVE_DATE_REGEX}.
+         * Its parameter is a digit representing the relative offset of a given starting point date.
+         * <p/>
+         * Yes, this can be done as an actual sql function, but that'd lead to a little more complexity
+         * (and thus we'd have to maintain the code for db compatibility ...)
+         * Since we're already replacing the boolean attributes of sql files this addition is not a huge computational cost.
+         *
+         * @param now anchor for relative date conversion.
+         * @param sql sql statement which may contain the above declared custom function.
+         * @return sql statement with the given function resolved, if the 'sql' parameter contained any.
+         */
+        private static String convertToRelativeTime(LocalDateTime now, String sql) {
+            Matcher m = RELATIVE_DATE_PATTERN.matcher(sql);
+            StringBuffer sb = new StringBuffer(sql.length());
+            while (m.find()) {
+                m.appendReplacement(sb,
+                    "'" + now.plusDays(Long.parseLong(m.group(1))).format(DATE_TIME_FORMATTER) + "'");
             }
-            bufferedReader.close();
-            return sql.toString();
+            m.appendTail(sb);
+            return sb.toString();
+        }
+
+        private static String parseAndReplace(InputStream stream, boolean replace) throws IOException {
+            return parseAndReplace(stream, Function.identity(), replace);
+        }
+
+        private static String parseAndReplace(InputStream stream, Function<String, String> furtherProcessing,
+            boolean replace)
+            throws IOException {
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream))) {
+                StringBuilder sql = new StringBuilder();
+                String line;
+                if (replace) {
+                    while ((line = bufferedReader.readLine()) != null) {
+                        sql.append(
+                            furtherProcessing.apply(
+                                line.replaceAll("true|TRUE", "1")
+                                    .replaceAll("false|FALSE", "0")
+                            )
+                        ).append("\n");
+                    }
+                } else {
+                    while ((line = bufferedReader.readLine()) != null) {
+                        sql.append(furtherProcessing.apply(line)).append("\n");
+                    }
+                }
+                return sql.toString();
+            }
+
         }
 
     }
