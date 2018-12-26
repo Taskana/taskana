@@ -9,6 +9,7 @@ import {Direction, SortingModel} from 'app/models/sorting';
 export class SortComponent implements OnInit {
   @Input() sortingFields: Map<string, string>;
   @Input() menuPosition = 'right';
+  @Input() defaultSortBy = 'key';
 
   @Output() performSorting = new EventEmitter<SortingModel>();
 
@@ -18,6 +19,7 @@ export class SortComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.sort.sortBy = this.defaultSortBy;
   }
 
   changeOrder(sortDirection: string) {

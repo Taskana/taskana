@@ -38,7 +38,6 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   isGroup: boolean;
   groupsKey = 'ou=groups';
 
-
   accessIdField = this.customFieldsService.getCustomField('Owner', 'workbaskets.access-items.accessId');
   custom1Field = this.customFieldsService.getCustomField('Custom 1', 'workbaskets.access-items.custom1');
   custom2Field = this.customFieldsService.getCustomField('Custom 2', 'workbaskets.access-items.custom2');
@@ -80,7 +79,6 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     private removeConfirmationService: RemoveConfirmationService,
     private alertService: AlertService,
     private errorModalService: ErrorModalService) { }
-
 
   ngOnInit() {
   }
