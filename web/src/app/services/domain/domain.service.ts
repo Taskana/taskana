@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable ,  BehaviorSubject ,  ReplaySubject } from 'rxjs';
+import { Observable,  ReplaySubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { RequestInProgressService } from '../requestInProgress/request-in-progress.service';
@@ -13,7 +13,7 @@ export class DomainService {
 
   private domainRestValue: Array<string> = new Array<string>();
   private domainValue: Array<string> = new Array<string>();
-  private domainSelectedValue;
+  private domainSelectedValue: string;
   private domainSelected = new ReplaySubject<string>(1);
   private dataObs$ = new ReplaySubject<Array<string>>(1);
   private hasMasterDomain = false;
@@ -64,18 +64,16 @@ export class DomainService {
     return this.domainSelected.asObservable();
   }
 
-  selectDomain(value: string) {
-    // this.requestInProgressService.setRequestInProgress(true);
-    this.domainSelectedValue = value;
-    this.domainSelected.next(value);
-  }
-
   switchDomain(value: string) {
+    this.requestInProgressService.setRequestInProgress(true);
     this.selectDomain(value);
     this.router.navigate([this.getNavigationUrl()]);
   }
 
-  domainChangedComplete() {
+  /*
+    This function should be called after getSelectedDomain inner subscriptions have been finished
+   */
+   domainChangedComplete() {
     this.requestInProgressService.setRequestInProgress(false);
   }
 
@@ -96,12 +94,16 @@ export class DomainService {
     }
   }
 
+  private selectDomain(value: string) {
+    this.domainSelectedValue = value;
+    this.domainSelected.next(value);
+  }
+
   private addEmptyDomain(domains: Array<string>): Array<string> {
     this.domainValue = Object.assign([], domains);
     this.domainValue.push('');
     return this.domainValue;
   }
-
 
   private getNavigationUrl(): string {
     if (this.router.url.indexOf('workbaskets') !== -1) {
