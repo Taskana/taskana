@@ -17,7 +17,7 @@
           <thead>
             <tr>
               <th>
-                <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" menuPosition="left"></taskana-sort>
+                <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" menuPosition="left" [defaultSortBy]="'workbasket-key'"></taskana-sort>
               </th>
               <th class="text-align min-width">Workbasket Key</th>
               <th colspan="2" class="text-align">Access Id</th>
