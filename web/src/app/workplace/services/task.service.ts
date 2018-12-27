@@ -6,6 +6,8 @@ import {environment} from 'environments/environment';
 import {TaskResource} from 'app/workplace/models/task-resource';
 import {Direction} from 'app/models/sorting';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
+import { TaskanaDate } from 'app/shared/util/taskana.date';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class TaskService {
@@ -76,7 +78,12 @@ export class TaskService {
   }
 
   getTask(id: string): Observable<Task> {
-    return this.httpClient.get<Task>(`${this.url}/${id}`);
+    return this.httpClient.get<Task>(`${this.url}/${id}`)
+    .pipe(map(
+      (response: Task) => {
+        response = this.applyTaskDatesTimeZone(response);
+        return response;
+    }));
   }
 
   completeTask(id: string): Observable<Task> {
@@ -92,6 +99,7 @@ export class TaskService {
   }
 
   updateTask(task: Task): Observable<Task> {
+    task = this.convertTasksDatesToGMT(task);
     return this.httpClient.put<Task>(`${this.url}/${task.taskId}`, task);
   }
 
@@ -101,5 +109,25 @@ export class TaskService {
 
   createTask(task: Task): Observable<Task> {
     return this.httpClient.post<Task>(this.url, task);
+  }
+
+  private applyTaskDatesTimeZone(task: Task): Task {
+    if (task.due) { task.due = TaskanaDate.applyTimeZone(task.due); }
+    if (task.modified) { task.modified = TaskanaDate.applyTimeZone(task.modified); }
+    if (task.completed) { task.completed = TaskanaDate.applyTimeZone(task.completed); }
+    if (task.planned) { task.planned = TaskanaDate.applyTimeZone(task.planned); }
+    if (task.claimed) { task.claimed = TaskanaDate.applyTimeZone(task.claimed); }
+    if (task.created) { task.created = TaskanaDate.applyTimeZone(task.created); }
+    return task;
+  }
+
+  private convertTasksDatesToGMT(task: Task): Task {
+    if (task.created) { task.created = new Date(task.created).toISOString(); }
+    if (task.claimed) { task.claimed = new Date(task.claimed).toISOString(); }
+    if (task.completed) { task.completed = new Date(task.completed).toISOString(); }
+    if (task.modified) { task.modified = new Date(task.modified).toISOString(); }
+    if (task.planned) { task.planned = new Date(task.planned).toISOString(); }
+    if (task.due) { task.due = new Date(task.due).toISOString(); }
+    return task;
   }
 }

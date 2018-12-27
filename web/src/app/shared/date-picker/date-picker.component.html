@@ -1,0 +1,12 @@
+<div class="input-icon-wrap">
+  <input type="text"
+          placeholder="{{placeholder}}"
+          class="form-control input-with-icon"
+          bsDatepicker
+          [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD',  selectFromOtherMonth: true }"
+          (bsValueChange)="dateChange($event)"
+          [bsValue]="valueDate"
+          name="{{name}}"
+          id="{{id}}">
+  <span class="input-icon"><span class="material-icons md-24 black">date_range</span></span>
+</div>

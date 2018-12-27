@@ -17,14 +17,14 @@ export class TaskanaDate {
   }
 
   public static getDateToDisplay(date: string): string {
+    return this.applyTimeZone(date);
+  }
+
+  public static applyTimeZone(date: string): string | null {
     const dateFormat = 'yyyy-MM-dd HH:mm:ss';
     const dateLocale = 'en-US';
     const datePipe = new DatePipe(dateLocale);
 
-    return datePipe.transform(date, dateFormat);
-  }
-
-  public static convertToBrowserTimeZone(date: Date): string {
-    return date.toLocaleString('en-US', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+    return datePipe.transform(date, dateFormat, Intl.DateTimeFormat().resolvedOptions().timeZone);
   }
 }
