@@ -5,7 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterModule } from '@angular/router';
 import { TreeModule } from 'angular-tree-component';
-import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
+import { AlertModule, TypeaheadModule, BsDatepickerModule } from 'ngx-bootstrap';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 /**
@@ -24,6 +24,7 @@ import { IconTypeComponent } from 'app/administration/components/type-icon/icon-
 import { FieldErrorDisplayComponent } from 'app/shared/field-error-display/field-error-display.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
+import { DatePickerComponent } from './date-picker/date-picker.component';
 
 /**
  * Pipes
@@ -48,6 +49,7 @@ const MODULES = [
   AlertModule.forRoot(),
   TypeaheadModule.forRoot(),
   AccordionModule.forRoot(),
+  BsDatepickerModule.forRoot(),
   AngularSvgIconModule,
   HttpClientModule,
   RouterModule,
@@ -75,6 +77,7 @@ const DECLARATIONS = [
   FieldErrorDisplayComponent,
   PaginationComponent,
   ProgressBarComponent,
+  DatePickerComponent
 ];
 
 @NgModule({

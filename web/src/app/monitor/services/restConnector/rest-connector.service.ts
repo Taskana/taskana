@@ -4,6 +4,8 @@ import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { ReportData } from '../../models/report-data';
 import { ChartData } from 'app/monitor/models/chart-data';
+import { TaskanaDate } from 'app/shared/util/taskana.date';
+import { map } from 'rxjs/internal/operators/map';
 
 @Injectable()
 export class RestConnectorService {
@@ -13,6 +15,13 @@ export class RestConnectorService {
 
   getTaskStatusReport(): Observable<ReportData> {
     return this.httpClient.get<ReportData>(environment.taskanaRestUrl + '/v1/monitor/tasks-status-report?states=READY,CLAIMED,COMPLETED')
+    .pipe(map(
+      (response: ReportData) => {
+        if (response.meta.date) {
+          response.meta.date = TaskanaDate.applyTimeZone(response.meta.date);
+         }
+        return response;
+      }));
   }
 
   getWorkbasketStatistics(): Observable<ReportData> {

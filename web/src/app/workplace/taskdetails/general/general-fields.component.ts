@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges, HostListener } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
 import { Classification } from '../../../models/classification';
 import { ClassificationsService } from '../../../services/classifications/classifications.service';
@@ -74,6 +74,12 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
 
   isFieldValid(field: string): boolean {
     return this.formsValidatorService.isFieldValid(this.taskForm, field);
+  }
+
+  updateDate($event) {
+    if (new Date(this.task.due).toISOString() !== $event) {
+      this.task.due = $event;
+    }
   }
 
 }
