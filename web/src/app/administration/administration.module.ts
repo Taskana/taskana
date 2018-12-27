@@ -6,7 +6,7 @@ import {AngularSvgIconModule} from 'angular-svg-icon';
 import {AlertModule, TypeaheadModule} from 'ngx-bootstrap';
 import {SharedModule} from 'app/shared/shared.module';
 import {AdministrationRoutingModule} from './administration-routing.module';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 /**
  * Components
  */
@@ -30,8 +30,8 @@ import {ClassificationDefinitionService} from './services/classification-definit
 import {WorkbasketDefinitionService} from './services/workbasket-definition/workbasket-definition.service';
 import {ClassificationsService} from '../services/classifications/classifications.service';
 import {ClassificationCategoriesService} from 'app/services/classifications/classification-categories.service';
-import { AccessItemsManagementComponent } from 'app/administration/access-items-management/access-items-management.component';
 import { ImportExportService } from './services/import-export/import-export.service';
+import {AccessItemsManagementComponent} from 'app/administration/access-items-management/access-items-management.component';
 
 const MODULES = [
   CommonModule,

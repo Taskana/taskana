@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, Routes, ActivatedRoute, NavigationStart, RouterEvent } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, NavigationStart, RouterEvent } from '@angular/router';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
 
 @Component({
@@ -13,7 +13,6 @@ export class MasterAndDetailComponent implements OnInit {
     private workbaskets = 'workbaskets';
     private tasks = 'tasks';
     private detailRoutes: Array<string> = ['/workbaskets/(detail', 'classifications/(detail', 'tasks/(detail'];
-    private sub: any;
 
     showDetail = false;
     currentRoute = '';
