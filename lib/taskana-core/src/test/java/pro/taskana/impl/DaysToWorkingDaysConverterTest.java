@@ -47,9 +47,9 @@ public class DaysToWorkingDaysConverterTest {
     public void testConvertWorkingDaysToDaysForTasks() {
         List<TimeIntervalColumnHeader> reportItems = Collections.singletonList(new TimeIntervalColumnHeader(0));
         try {
-            DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(reportItems, Instant.now());
-
             Instant thursday0201 = Instant.parse("2018-02-01T07:00:00.000Z");
+            DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(reportItems, thursday0201);
+
             long days = converter.convertWorkingDaysToDays(thursday0201, 0); // = thursday
             assertEquals(0, days);
             days = converter.convertWorkingDaysToDays(thursday0201, 1); // fri
