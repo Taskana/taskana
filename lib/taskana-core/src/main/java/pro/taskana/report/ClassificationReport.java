@@ -4,13 +4,14 @@ import java.util.List;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.DetailedMonitorQueryItem;
-import pro.taskana.impl.report.DetailedReportRow;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.impl.report.row.DetailedClassificationRow;
+import pro.taskana.report.structure.Report;
 
 /**
- * The ClassificationReport extends the Report. The {@link ReportRow}s of the ClassificationReport are grouped by
+ * The ClassificationReport extends the Report. The {@link pro.taskana.report.structure.Row}s of the ClassificationReport are grouped by
  * classifications.
  */
 public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
@@ -22,7 +23,7 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
     /**
      * Builder for {@link ClassificationReport}.
      */
-    public interface Builder extends TimeIntervalReportBuilder<Builder, TimeIntervalColumnHeader> {
+    public interface Builder extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
         @Override
         ClassificationReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
@@ -30,8 +31,8 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
         /**
          * Returns a {@link DetailedClassificationReport} containing all tasks after applying the filters. If the column
          * headers are set the report is subdivided into clusters. Its
-         * {@link pro.taskana.impl.report.DetailedReportRow}s contain an additional list of
-         * {@link ReportRow}s for the classifications of the attachments of the tasks.
+         * {@link pro.taskana.impl.report.row.FoldableRow}s contain an additional list of
+         * {@link pro.taskana.report.structure.Row}s for the classifications of the attachments of the tasks.
          *
          * @throws InvalidArgumentException
          *             if the column headers are not initialized
@@ -44,23 +45,24 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
 
     /**
      * The DetailedClassificationReport is a functional extension of the {@link ClassificationReport}.
-     * Its {@link DetailedReportRow}s contain an additional list of {@link ReportRow}s
+     * Its {@link pro.taskana.impl.report.row.FoldableRow}s contain an additional list of {@link pro.taskana.report.structure.Row}s
      * for the classifications of the attachments of the tasks.
      */
-    public static class DetailedClassificationReport extends Report<DetailedMonitorQueryItem, TimeIntervalColumnHeader> {
+    public static class DetailedClassificationReport
+        extends Report<DetailedMonitorQueryItem, TimeIntervalColumnHeader> {
 
         public DetailedClassificationReport(List<TimeIntervalColumnHeader> workbasketLevelReportColumnHeaders) {
             super(workbasketLevelReportColumnHeaders, "TASK CLASSIFICATION KEYS");
         }
 
         @Override
-        protected DetailedReportRow createReportRow(int columnSize) {
-            return new DetailedReportRow(columnSize);
+        protected DetailedClassificationRow createRow(int columnSize) {
+            return new DetailedClassificationRow(columnSize);
         }
 
         @Override
-        public DetailedReportRow getRow(String key) {
-            return (DetailedReportRow) super.getRow(key);
+        public DetailedClassificationRow getRow(String key) {
+            return (DetailedClassificationRow) super.getRow(key);
         }
 
     }

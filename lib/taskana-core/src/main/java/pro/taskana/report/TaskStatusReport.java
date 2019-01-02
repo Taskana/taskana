@@ -7,8 +7,9 @@ import java.util.stream.Stream;
 import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.TaskQueryItem;
-import pro.taskana.impl.report.TaskStatusColumnHeader;
+import pro.taskana.impl.report.item.TaskQueryItem;
+import pro.taskana.impl.report.header.TaskStatusColumnHeader;
+import pro.taskana.report.structure.Report;
 
 /**
  *  A TaskStatusReport contains the total number of tasks, clustered in their task status.

@@ -34,7 +34,7 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.AttachmentImpl;
 import pro.taskana.impl.DaysToWorkingDaysConverter;
 import pro.taskana.impl.TaskImpl;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;

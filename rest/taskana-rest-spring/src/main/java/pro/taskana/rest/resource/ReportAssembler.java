@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component;
 import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.report.QueryItem;
-import pro.taskana.report.Report;
-import pro.taskana.report.ReportColumnHeader;
-import pro.taskana.report.ReportRow;
-import pro.taskana.report.TaskStatusReport;
 import pro.taskana.report.ClassificationReport;
+import pro.taskana.report.structure.ColumnHeader;
+import pro.taskana.report.DailyEntryExitReport;
+import pro.taskana.report.structure.QueryItem;
+import pro.taskana.report.structure.Report;
+import pro.taskana.report.structure.Row;
+import pro.taskana.report.TaskStatusReport;
 import pro.taskana.report.WorkbasketReport;
-
 import pro.taskana.rest.MonitorController;
 
 /**
@@ -57,11 +57,11 @@ public class ReportAssembler {
         return resource;
     }
 
-    private <I extends QueryItem, H extends ReportColumnHeader<? super I>> ReportResource toReportResource(
+    private <I extends QueryItem, H extends ColumnHeader<? super I>> ReportResource toReportResource(
         Report<I, H> report) {
         String[] header = report.getColumnHeaders()
             .stream()
-            .map(ReportColumnHeader::getDisplayName)
+            .map(ColumnHeader::getDisplayName)
             .toArray(String[]::new);
         ReportResource.MetaInformation meta = new ReportResource.MetaInformation(
             report.getClass().getSimpleName(),
@@ -69,8 +69,8 @@ public class ReportAssembler {
             header,
             report.getRowDesc());
 
-        // iterate over each ReportRow and transform it to a RowResource while keeping the domain key.
-        Map<String, ReportResource.RowResource> rows = report.getReportRows()
+        // iterate over each Row and transform it to a RowResource while keeping the domain key.
+        Map<String, ReportResource.RowResource> rows = report.getRows()
             .entrySet()
             .stream()
             .collect(Collectors.toMap(Map.Entry::getKey, i -> transformRow(i.getValue(), header)));
@@ -80,7 +80,8 @@ public class ReportAssembler {
         return new ReportResource(meta, rows, sumRow);
     }
 
-    private <I extends QueryItem> ReportResource.RowResource transformRow(ReportRow<I> row, String[] header) {
+    private <I extends QueryItem> ReportResource.RowResource transformRow(Row<I> row,
+        String[] header) {
         Map<String, Integer> result = new HashMap<>();
         int[] cells = row.getCells();
         for (int i = 0; i < cells.length; i++) {

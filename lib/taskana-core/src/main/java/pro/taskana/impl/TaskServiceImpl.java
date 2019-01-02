@@ -50,7 +50,7 @@ import pro.taskana.history.events.task.ClaimedEvent;
 import pro.taskana.history.events.task.CompletedEvent;
 import pro.taskana.history.events.task.CreatedEvent;
 import pro.taskana.history.events.task.TransferredEvent;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.AttachmentMapper;

@@ -5,8 +5,9 @@ import java.util.List;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.report.structure.Report;
 
 /**
  * A CustomFieldValueReport contains the total numbers of tasks of the respective custom field as well as
@@ -24,7 +25,7 @@ public class CustomFieldValueReport extends Report<MonitorQueryItem, TimeInterva
     /**
      * Builder for {@link CustomFieldValueReport}.
      */
-    public interface Builder extends TimeIntervalReportBuilder<Builder, TimeIntervalColumnHeader> {
+    public interface Builder extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
         @Override
         CustomFieldValueReport buildReport() throws NotAuthorizedException, InvalidArgumentException;

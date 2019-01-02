@@ -9,7 +9,7 @@ import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.TaskQueryItem;
+import pro.taskana.impl.report.item.TaskQueryItem;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.TaskStatusReport;
 

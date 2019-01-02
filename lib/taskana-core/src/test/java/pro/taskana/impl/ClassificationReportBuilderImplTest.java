@@ -31,10 +31,10 @@ import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.DetailedMonitorQueryItem;
-import pro.taskana.impl.report.DetailedReportRow;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.impl.report.row.FoldableRow;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.ClassificationReport;
 import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
@@ -206,10 +206,10 @@ public class ClassificationReportBuilderImplTest {
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
-        DetailedReportRow line = actualResult.getRow("CLI:000000000000000000000000000000000001");
+        FoldableRow<DetailedMonitorQueryItem> line = actualResult.getRow("CLI:000000000000000000000000000000000001");
         assertNotNull(actualResult);
         assertEquals(line.getTotalValue(), 1);
-        assertEquals(line.getDetailRows().get("CLI:000000000000000000000000000000000006").getTotalValue(), 1);
+        assertEquals(line.getFoldableRow("CLI:000000000000000000000000000000000006").getTotalValue(), 1);
         assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 
@@ -259,12 +259,12 @@ public class ClassificationReportBuilderImplTest {
         verify(taskanaEngineImplMock, times(1)).returnConnection();
         verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
 
-        DetailedReportRow line = actualResult.getRow("CLI:000000000000000000000000000000000001");
+        FoldableRow<DetailedMonitorQueryItem> line = actualResult.getRow("CLI:000000000000000000000000000000000001");
         assertNotNull(actualResult);
         assertEquals(line.getTotalValue(), 1);
-        assertEquals(line.getDetailRows().get("CLI:000000000000000000000000000000000006").getTotalValue(), 1);
+        assertEquals(line.getFoldableRow("CLI:000000000000000000000000000000000006").getTotalValue(), 1);
         assertEquals(line.getCells()[0], 1);
-        assertEquals(line.getDetailRows().get("CLI:000000000000000000000000000000000006").getCells()[0], 1);
+        assertEquals(line.getFoldableRow("CLI:000000000000000000000000000000000006").getCells()[0], 1);
         assertEquals(actualResult.getSumRow().getTotalValue(), 1);
         assertEquals(actualResult.getSumRow().getCells()[0], 1);
     }

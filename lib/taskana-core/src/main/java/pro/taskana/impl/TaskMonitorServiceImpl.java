@@ -2,11 +2,11 @@ package pro.taskana.impl;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.CategoryReport;
 import pro.taskana.report.ClassificationReport;
 import pro.taskana.report.CustomFieldValueReport;
+import pro.taskana.report.DailyEntryExitReport;
 import pro.taskana.report.TaskStatusReport;
 import pro.taskana.report.WorkbasketReport;
 
@@ -18,9 +18,9 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     private TaskanaEngineImpl taskanaEngineImpl;
     private TaskMonitorMapper taskMonitorMapper;
 
-    TaskMonitorServiceImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    TaskMonitorServiceImpl(TaskanaEngineImpl taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super();
-        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngineImpl = taskanaEngine;
         this.taskMonitorMapper = taskMonitorMapper;
     }
 
@@ -47,6 +47,11 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     @Override
     public TaskStatusReport.Builder createTaskStatusReportBuilder() {
         return new TaskStatusReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
+    }
+
+    @Override
+    public DailyEntryExitReport.Builder createDailyEntryExitReportBuilder() {
+        return new DailyEntryExitReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
     }
 
 }
