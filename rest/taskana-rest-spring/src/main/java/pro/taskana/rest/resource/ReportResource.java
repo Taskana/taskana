@@ -1,15 +1,15 @@
 package pro.taskana.rest.resource;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.hateoas.ResourceSupport;
 
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.report.structure.Report;
-import pro.taskana.report.structure.Row;
 
 /**
- * Resource class for {@link Report}.
+ * Resource class for {@link pro.taskana.report.structure.Report}.
  */
 public class ReportResource extends ResourceSupport {
 
@@ -35,6 +35,68 @@ public class ReportResource extends ResourceSupport {
 
     public RowResource getSumRow() {
         return sumRow;
+    }
+
+    /**
+     * Resource Interface for {@link pro.taskana.report.structure.Row}.
+     */
+    public interface RowResource {
+
+        Map<String, Integer> getCells();
+
+        int getTotal();
+    }
+
+    /**
+     * Resource class for {@link pro.taskana.impl.report.row.SingleRow}.
+     */
+    public static class SingleRowResource implements RowResource {
+
+        private Map<String, Integer> cells;
+        private int total;
+
+        public SingleRowResource(Map<String, Integer> cells, int total) {
+            this.cells = cells;
+            this.total = total;
+        }
+
+        @Override
+        public Map<String, Integer> getCells() {
+            return cells;
+        }
+
+        @Override
+        public int getTotal() {
+            return total;
+        }
+
+        @Override
+        public String toString() {
+            return "SingleRowResource ["
+                + "rowDesc= " + LoggerUtils.mapToString(this.cells)
+                + "taskId= " + this.total
+                + "]";
+        }
+    }
+
+    /**
+     * Resource class for {@link pro.taskana.impl.report.row.FoldableRow}.
+     */
+    public static class FoldableRowResource extends SingleRowResource {
+
+        private Map<String, RowResource> foldableRows = new HashMap<>();
+
+        public FoldableRowResource(SingleRowResource row) {
+            super(row.getCells(), row.getTotal());
+        }
+
+        public void addRow(String desc, RowResource row) {
+            foldableRows.put(desc, row);
+        }
+
+        public Map<String, RowResource> getFoldableRows() {
+            return foldableRows;
+        }
     }
 
     /**
@@ -81,38 +143,8 @@ public class ReportResource extends ResourceSupport {
             return "MetaInformation ["
                 + "name= " + this.name
                 + "date= " + this.date
-                + "header= " + this.header
+                + "header= " + Arrays.toString(this.header)
                 + "rowDesc= " + this.rowDesc
-                + "]";
-        }
-    }
-
-    /**
-     * Resource class for {@link Row}.
-     */
-    public static class RowResource {
-
-        private Map<String, Integer> cells;
-        private int total;
-
-        public RowResource(Map<String, Integer> cells, int total) {
-            this.cells = cells;
-            this.total = total;
-        }
-
-        public Map<String, Integer> getCells() {
-            return cells;
-        }
-
-        public int getTotal() {
-            return total;
-        }
-
-        @Override
-        public String toString() {
-            return "RowResource ["
-                + "rowDesc= " + LoggerUtils.mapToString(this.cells)
-                + "taskId= " + this.total
                 + "]";
         }
     }
