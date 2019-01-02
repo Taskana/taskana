@@ -124,7 +124,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     public static boolean isPostgreSQL(String databaseProductName) {
-        return databaseProductName.equals("PostgreSQL");
+        return "PostgreSQL".equals(databaseProductName);
     }
 
     @Override

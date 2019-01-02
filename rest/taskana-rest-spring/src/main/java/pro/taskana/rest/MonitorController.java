@@ -3,6 +3,7 @@ package pro.taskana.rest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -21,7 +22,6 @@ import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.rest.resource.ReportResource;
 import pro.taskana.rest.resource.ReportAssembler;
 import pro.taskana.rest.resource.ReportResource;
 
@@ -89,6 +89,20 @@ public class MonitorController {
         }
 
         return response;
+    }
+
+    @GetMapping(path = "/daily-entry-exit-report")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    public ResponseEntity<ReportResource> getDailyEntryExitReport()
+        throws NotAuthorizedException, InvalidArgumentException {
+        List<TimeIntervalColumnHeader.Date> columnHeaders = IntStream.range(-14, 0)
+            .mapToObj(TimeIntervalColumnHeader.Date::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(reportAssembler.toResource(
+                taskMonitorService.createDailyEntryExitReportBuilder()
+                    .withColumnHeaders(columnHeaders)
+                    .buildReport()));
     }
 
     private List<TimeIntervalColumnHeader> getTaskClassificationTimeInterval() {
