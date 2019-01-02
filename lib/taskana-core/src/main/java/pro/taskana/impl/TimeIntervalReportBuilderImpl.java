@@ -1,6 +1,8 @@
 package pro.taskana.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +15,8 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.DateQueryItem;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.ClassificationReport;
@@ -22,10 +25,11 @@ import pro.taskana.report.TimeIntervalReportBuilder;
 /**
  * Implementation of {@link TimeIntervalReportBuilder}.
  * @param <B> the true Builder behind this Interface
+ * @param <I> the true DateQueryItem inside the Report
  * @param <H> the column header
  */
-abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder, H extends TimeIntervalColumnHeader>
-    implements TimeIntervalReportBuilder<B, H> {
+abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder<B, I, H>, I extends DateQueryItem, H extends TimeIntervalColumnHeader>
+    implements TimeIntervalReportBuilder<B, I, H> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeIntervalReportBuilder.class);
 
@@ -64,25 +68,25 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
 
     @Override
     public B workbasketIdIn(List<String> workbasketIds) {
-        this.workbasketIds = workbasketIds;
+        this.workbasketIds = new ArrayList<>(workbasketIds);
         return _this();
     }
 
     @Override
     public B stateIn(List<TaskState> states) {
-        this.states = states;
+        this.states = new ArrayList<>(states);
         return _this();
     }
 
     @Override
     public B categoryIn(List<String> categories) {
-        this.categories = categories;
+        this.categories = new ArrayList<>(categories);
         return _this();
     }
 
     @Override
     public B classificationIdIn(List<String> classificationIds) {
-        this.classificationIds = classificationIds;
+        this.classificationIds = new ArrayList<>(classificationIds);
         return _this();
     }
 
@@ -94,13 +98,13 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
 
     @Override
     public B domainIn(List<String> domains) {
-        this.domains = domains;
+        this.domains = new ArrayList<>(domains);
         return _this();
     }
 
     @Override
     public B customAttributeFilterIn(Map<CustomField, String> customAttributeFilter) {
-        this.customAttributeFilter = customAttributeFilter;
+        this.customAttributeFilter = new HashMap<>(customAttributeFilter);
         return _this();
     }
 
@@ -135,27 +139,26 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
             if (this.columnHeaders == null) {
                 throw new InvalidArgumentException("ColumnHeader must not be null.");
             }
-            if (selectedItems == null || selectedItems.size() == 0) {
+            if (selectedItems == null || selectedItems.isEmpty()) {
                 throw new InvalidArgumentException("SelectedItems must not be null or empty.");
             }
             boolean joinWithAttachments = subKeyIsSet(selectedItems);
             if (!(this instanceof ClassificationReport.Builder) && joinWithAttachments) {
                 throw new InvalidArgumentException("SubKeys are supported for ClassificationReport only.");
             }
-            String dimension = determineDimension();
             if (this.inWorkingDays) {
                 selectedItems = convertWorkingDaysToDays(selectedItems, this.columnHeaders);
             }
             return this.taskMonitorMapper.getTaskIdsForSelectedItems(this.workbasketIds,
                 this.states, this.categories, this.domains, this.classificationIds, this.excludedClassificationIds,
-                this.customAttributeFilter, dimension, selectedItems, joinWithAttachments);
+                this.customAttributeFilter, determineGroupedBy(), selectedItems, joinWithAttachments);
         } finally {
             this.taskanaEngine.returnConnection();
             LOGGER.debug("exit from listTaskIdsForSelectedItems().");
         }
     }
 
-    protected abstract String determineDimension();
+    protected abstract String determineGroupedBy();
 
     private void configureDaysToWorkingDaysConverter() {
         DaysToWorkingDaysConverter.setCustomHolidays(this.taskanaEngine.getConfiguration().getCustomHolidays());

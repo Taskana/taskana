@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.util.LoggerUtils;
 
 /**

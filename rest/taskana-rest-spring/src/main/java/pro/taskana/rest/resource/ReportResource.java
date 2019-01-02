@@ -5,9 +5,11 @@ import java.util.Map;
 import org.springframework.hateoas.ResourceSupport;
 
 import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.report.structure.Report;
+import pro.taskana.report.structure.Row;
 
 /**
- * Resource class for {@link pro.taskana.report.Report}.
+ * Resource class for {@link Report}.
  */
 public class ReportResource extends ResourceSupport {
 
@@ -86,7 +88,7 @@ public class ReportResource extends ResourceSupport {
     }
 
     /**
-     * Resource class for {@link pro.taskana.report.ReportRow}.
+     * Resource class for {@link Row}.
      */
     public static class RowResource {
 

@@ -31,8 +31,8 @@ import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.CategoryReport;
 

@@ -25,7 +25,7 @@ import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.TaskQueryItem;
+import pro.taskana.impl.report.item.TaskQueryItem;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.TaskStatusReport;
 

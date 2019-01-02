@@ -4,8 +4,9 @@ import java.util.List;
 
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.report.structure.Report;
 
 /**
  * A CategoryReport contains the total numbers of tasks of the respective category as well as the total number of
@@ -24,7 +25,7 @@ public class CategoryReport extends Report<MonitorQueryItem, TimeIntervalColumnH
     /**
      * Builder for {@link CategoryReport}.
      */
-    public interface Builder extends TimeIntervalReportBuilder<Builder, TimeIntervalColumnHeader> {
+    public interface Builder extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
         @Override
         CategoryReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
