@@ -5,8 +5,9 @@ import java.util.List;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.CombinedClassificationFilter;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.report.structure.Report;
 
 /**
  * A WorkbasketReport contains the total numbers of tasks of the respective workbasket as well as the
@@ -27,7 +28,7 @@ public class WorkbasketReport extends Report<MonitorQueryItem, TimeIntervalColum
     /**
      * Builder for {@link WorkbasketReport}.
      */
-    public interface Builder extends TimeIntervalReportBuilder<Builder, TimeIntervalColumnHeader> {
+    public interface Builder extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
         @Override
         WorkbasketReport buildReport() throws NotAuthorizedException, InvalidArgumentException;

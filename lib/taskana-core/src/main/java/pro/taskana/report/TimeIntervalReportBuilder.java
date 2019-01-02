@@ -8,16 +8,18 @@ import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.DateQueryItem;
+import pro.taskana.report.structure.Report;
 
 /**
  * "Super" Interface for all TimeIntervalReportBuilders.
  * @param <B> the true Builder behind this Interface.
+ * @param <I> the DateQueryItem which will be inserted into the Report.
  * @param <H> the column Header
  */
-public interface TimeIntervalReportBuilder<B extends TimeIntervalReportBuilder, H extends TimeIntervalColumnHeader>
-    extends Report.Builder<MonitorQueryItem, H> {
+public interface TimeIntervalReportBuilder<B extends TimeIntervalReportBuilder<B, I, H>, I extends DateQueryItem, H extends TimeIntervalColumnHeader>
+    extends Report.Builder<I, H> {
 
     /**
      * Adds a list {@link TimeIntervalColumnHeader}s to the builder to subdivide the report into clusters.

@@ -10,9 +10,9 @@ import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.CombinedClassificationFilter;
-import pro.taskana.impl.report.DaysToWorkingDaysPreProcessor;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.impl.report.preprocessor.DaysToWorkingDaysPreProcessor;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.WorkbasketReport;
 
@@ -20,7 +20,7 @@ import pro.taskana.report.WorkbasketReport;
  * The implementation of WorkbasketReportBuilder.
  */
 public class WorkbasketReportBuilderImpl
-    extends TimeIntervalReportBuilderImpl<WorkbasketReport.Builder, TimeIntervalColumnHeader>
+    extends TimeIntervalReportBuilderImpl<WorkbasketReport.Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements WorkbasketReport.Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketReportBuilderImpl.class);
@@ -36,7 +36,7 @@ public class WorkbasketReportBuilderImpl
     }
 
     @Override
-    protected String determineDimension() {
+    protected String determineGroupedBy() {
         return "WORKBASKET_KEY";
     }
 

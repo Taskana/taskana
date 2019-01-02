@@ -10,9 +10,9 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.DaysToWorkingDaysPreProcessor;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.impl.report.preprocessor.DaysToWorkingDaysPreProcessor;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.CustomFieldValueReport;
 
@@ -20,7 +20,7 @@ import pro.taskana.report.CustomFieldValueReport;
  * The implementation of CustomFieldValueReportBuilder.
  */
 public class CustomFieldValueReportBuilderImpl
-    extends TimeIntervalReportBuilderImpl<CustomFieldValueReport.Builder, TimeIntervalColumnHeader>
+    extends TimeIntervalReportBuilderImpl<CustomFieldValueReport.Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements CustomFieldValueReport.Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomFieldValueReportBuilderImpl.class);
@@ -39,7 +39,7 @@ public class CustomFieldValueReportBuilderImpl
     }
 
     @Override
-    protected String determineDimension() {
+    protected String determineGroupedBy() {
         return customField.name();
     }
 

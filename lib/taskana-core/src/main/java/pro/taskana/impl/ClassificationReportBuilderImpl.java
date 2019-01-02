@@ -9,10 +9,10 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.DaysToWorkingDaysPreProcessor;
-import pro.taskana.impl.report.DetailedMonitorQueryItem;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.impl.report.preprocessor.DaysToWorkingDaysPreProcessor;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.ClassificationReport;
 import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
@@ -21,7 +21,7 @@ import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
  * The implementation of ClassificationReportBuilder.
  */
 public class ClassificationReportBuilderImpl
-    extends TimeIntervalReportBuilderImpl<ClassificationReport.Builder, TimeIntervalColumnHeader>
+    extends TimeIntervalReportBuilderImpl<ClassificationReport.Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements ClassificationReport.Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationReport.Builder.class);
@@ -36,7 +36,7 @@ public class ClassificationReportBuilderImpl
     }
 
     @Override
-    protected String determineDimension() {
+    protected String determineGroupedBy() {
         return "CLASSIFICATION_KEY";
     }
 

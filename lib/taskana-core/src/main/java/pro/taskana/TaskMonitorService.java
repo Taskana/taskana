@@ -3,6 +3,7 @@ package pro.taskana;
 import pro.taskana.report.CategoryReport;
 import pro.taskana.report.ClassificationReport;
 import pro.taskana.report.CustomFieldValueReport;
+import pro.taskana.report.DailyEntryExitReport;
 import pro.taskana.report.TaskStatusReport;
 import pro.taskana.report.WorkbasketReport;
 
@@ -52,4 +53,12 @@ public interface TaskMonitorService {
      * @return a {@link TaskStatusReport.Builder}
      */
     TaskStatusReport.Builder createTaskStatusReportBuilder();
+
+    /**
+     * Provides a {@link DailyEntryExitReport.Builder} for creating a {@link DailyEntryExitReport}.
+     *
+     * @return a {@link DailyEntryExitReport.Builder}
+     */
+    DailyEntryExitReport.Builder createDailyEntryExitReportBuilder();
+
 }

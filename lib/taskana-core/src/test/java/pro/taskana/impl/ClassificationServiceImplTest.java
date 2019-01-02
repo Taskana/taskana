@@ -6,7 +6,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -36,24 +36,22 @@ import pro.taskana.mappings.JobMapper;
 @RunWith(MockitoJUnitRunner.class)
 public class ClassificationServiceImplTest {
 
-    private final String todaysDate = LocalDate.now().toString().substring(0, 10);
+    // This is important. Since ClassificationService.createClassification() uses an Instant for the time
+    // and thus the UTC time zone. e.g. LocalDate uses the system timezone. This may lead to issues when the day differs
+    // between those timezones.
+    private final String todaysDate = Instant.now().toString().substring(0, 10);
 
     @Spy
     @InjectMocks
     private ClassificationServiceImpl cutSpy;
-
     @Mock
     private ClassificationMapper classificationMapperMock;
-
     @Mock
     private TaskanaEngineImpl taskanaEngineImplMock;
-
     @Mock
     private ClassificationQueryImpl classificationQueryImplMock;
-
     @Mock
     private SqlSession sqlSessionMock;
-
     @Mock
     private JobService jobServiceMock;
 

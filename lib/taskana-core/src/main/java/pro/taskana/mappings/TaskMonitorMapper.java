@@ -10,11 +10,13 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
+import pro.taskana.TaskStatus;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.CombinedClassificationFilter;
-import pro.taskana.impl.report.DetailedMonitorQueryItem;
-import pro.taskana.impl.report.MonitorQueryItem;
-import pro.taskana.impl.report.TaskQueryItem;
+import pro.taskana.impl.report.item.DailyEntryExitQueryItem;
+import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
+import pro.taskana.impl.report.item.MonitorQueryItem;
+import pro.taskana.impl.report.item.TaskQueryItem;
 
 /**
  * This class is the mybatis mapping of task monitoring.
@@ -378,5 +380,56 @@ public interface TaskMonitorMapper {
         @Param("excludedClassificationIds") List<String> excludedClassificationIds,
         @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter,
         @Param("customField") CustomField customField);
+
+    @Select("<script>"
+        + "SELECT A.AGE_IN_DAYS, A.ORG_LEVEL_1, A.ORG_LEVEL_2, A.ORG_LEVEL_3, A.ORG_LEVEL_4, "
+        + "'${status}' AS STATUS, COUNT(A.AGE_IN_DAYS) AS COUNT FROM ("
+        // This subquery prevents the repetition of the AGE_IN_DAYS column calculation
+        // (like everywhere else in the Mappers...)in the group by clause.
+        // DB2 is not able to reuse computed columns in the group by statement. Even if this adds a little
+        // overhead / complexity. It's worth the trade-off of not computing the AGE_IN_DAYS column twice.
+        + "SELECT W.ORG_LEVEL_1, W.ORG_LEVEL_2, W.ORG_LEVEL_3, W.ORG_LEVEL_4, "
+        + "<if test=\"_databaseId == 'db2'\">(DAYS(T.${status}) - DAYS(CURRENT_TIMESTAMP))</if>"
+        + "<if test=\"_databaseId == 'h2'\">DATEDIFF('DAY', CURRENT_TIMESTAMP, T.${status})</if>"
+        + "<if test=\"_databaseId == 'postgres'\">DATE_PART('DAY', T.${status} - CURRENT_TIMESTAMP)</if>"
+        + " as AGE_IN_DAYS "
+        + "FROM TASK AS T INNER JOIN WORKBASKET AS W ON T.WORKBASKET_KEY=W.KEY "
+        + "<where>"
+        + "<if test=\"status.name() == 'COMPLETED'\">"
+        + "T.COMPLETED IS NOT NULL"
+        + "</if>"
+        + "<if test='categories != null'>"
+        + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+        + "</if>"
+        + "<if test='classificationIds != null'>"
+        + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+        + "</if>"
+        + "<if test='excludedClassificationIds != null'>"
+        + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+        + "</if>"
+        + "<if test='domains != null'>"
+        + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
+        + "</if>"
+        + "<if test='customAttributeFilter != null'>"
+        + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
+        + "</if>"
+        + "</where>"
+        + ") AS A "
+        + "GROUP BY A.AGE_IN_DAYS, A.ORG_LEVEL_1, A.ORG_LEVEL_2, A.ORG_LEVEL_3, A.ORG_LEVEL_4 "
+        + "</script>")
+    @Results({
+        @Result(column = "STATUS", property = "status"),
+        @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
+        @Result(column = "COUNT", property = "count"),
+        @Result(column = "ORG_LEVEL_1", property = "orgLevel1"),
+        @Result(column = "ORG_LEVEL_2", property = "orgLevel2"),
+        @Result(column = "ORG_LEVEL_3", property = "orgLevel3"),
+        @Result(column = "ORG_LEVEL_4", property = "orgLevel4")
+    })
+    List<DailyEntryExitQueryItem> getTasksCountForStatusGroupedByOrgLevel(@Param("status") TaskStatus status,
+        @Param("categories") List<String> categories, @Param("classificationIds") List<String> classificationIds,
+        @Param("excludedClassificationIds") List<String> excludedClassificationIds,
+        @Param("domains") List<String> domains,
+        @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
 
 }
