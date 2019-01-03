@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -143,16 +142,16 @@ public class TestDataGenerator {
 
         private SQLReplacer(String dbProductName) throws IOException {
             boolean isDb2 = TaskanaEngineImpl.isDb2(dbProductName);
-            classificationSql = parseAndReplace(getClass().getResourceAsStream(CLASSIFICATION), isDb2);
-            workbasketSql = parseAndReplace(getClass().getResourceAsStream(WORKBASKET), isDb2);
-            taskSql = parseAndReplace(getClass().getResourceAsStream(TASK), isDb2);
-            workbasketAccessListSql = parseAndReplace(getClass().getResourceAsStream(WORKBASKET_ACCESS_LIST), isDb2);
-            distributionTargetSql = parseAndReplace(getClass().getResourceAsStream(DISTRIBUTION_TARGETS), isDb2);
-            objectReferenceSql = parseAndReplace(getClass().getResourceAsStream(OBJECT_REFERENCE), isDb2);
-            attachmentSql = parseAndReplace(getClass().getResourceAsStream(ATTACHMENT), isDb2);
             LocalDateTime now = LocalDateTime.now();
-            monitoringTestDataSql = parseAndReplace(getClass().getResourceAsStream(MONITOR_SAMPLE_DATA),
-                x -> replaceRelativeTimeFunction(now, x), isDb2);
+            classificationSql = parseAndReplace(getClass().getResourceAsStream(CLASSIFICATION), now, isDb2);
+            workbasketSql = parseAndReplace(getClass().getResourceAsStream(WORKBASKET), now, isDb2);
+            taskSql = parseAndReplace(getClass().getResourceAsStream(TASK), now, isDb2);
+            workbasketAccessListSql = parseAndReplace(getClass().getResourceAsStream(WORKBASKET_ACCESS_LIST), now,
+                isDb2);
+            distributionTargetSql = parseAndReplace(getClass().getResourceAsStream(DISTRIBUTION_TARGETS), now, isDb2);
+            objectReferenceSql = parseAndReplace(getClass().getResourceAsStream(OBJECT_REFERENCE), now, isDb2);
+            attachmentSql = parseAndReplace(getClass().getResourceAsStream(ATTACHMENT), now, isDb2);
+            monitoringTestDataSql = parseAndReplace(getClass().getResourceAsStream(MONITOR_SAMPLE_DATA), now, isDb2);
         }
 
         /**
@@ -178,30 +177,18 @@ public class TestDataGenerator {
             return sb.toString();
         }
 
-        private static String parseAndReplace(InputStream stream, boolean replace) throws IOException {
-            return parseAndReplace(stream, Function.identity(), replace);
+        private static String replaceBooleanWithInteger(String sql) {
+            return sql.replaceAll("(?i)true", "1").replaceAll("(?i)false", "0");
         }
 
-        private static String parseAndReplace(InputStream stream, Function<String, String> furtherProcessing,
-            boolean replace) throws IOException {
+        private static String parseAndReplace(InputStream stream, LocalDateTime now, boolean isDb2) throws IOException {
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream))) {
-                String sql;
-                if (replace) {
-                    StringBuilder builder = new StringBuilder();
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        builder.append(
-                            line.replaceAll("true|TRUE", "1")
-                                .replaceAll("false|FALSE", "0")
-                        ).append(System.lineSeparator());
-                    }
-                    sql = builder.toString();
-                } else {
-                    sql = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
+                String sql = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
+                if (isDb2) {
+                    sql = replaceBooleanWithInteger(sql);
                 }
-                return furtherProcessing.apply(sql);
+                return replaceRelativeTimeFunction(now, sql);
             }
-
         }
 
     }
