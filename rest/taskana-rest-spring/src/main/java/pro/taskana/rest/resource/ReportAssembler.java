@@ -66,15 +66,19 @@ public class ReportAssembler {
         return resource;
     }
 
-    private <I extends QueryItem, H extends ColumnHeader<? super I>> ReportResource toReportResource(
-        Report<I, H> report) {
+    <I extends QueryItem, H extends ColumnHeader<? super I>> ReportResource toReportResource(Report<I, H> report) {
+        return toReportResource(report, Instant.now());
+    }
+
+    <I extends QueryItem, H extends ColumnHeader<? super I>> ReportResource toReportResource(
+        Report<I, H> report, Instant time) {
         String[] header = report.getColumnHeaders()
             .stream()
             .map(ColumnHeader::getDisplayName)
             .toArray(String[]::new);
         ReportResource.MetaInformation meta = new ReportResource.MetaInformation(
             report.getClass().getSimpleName(),
-            Instant.now().toString(),
+            time.toString(),
             header,
             report.getRowDesc());
 

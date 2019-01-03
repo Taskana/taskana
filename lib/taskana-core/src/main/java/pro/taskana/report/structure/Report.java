@@ -21,15 +21,15 @@ import pro.taskana.impl.report.row.SingleRow;
  */
 public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super I>> {
 
-    protected List<H> columnHeaders = new ArrayList<>();
+    protected List<H> columnHeaders;
     private Map<String, Row<I>> reportRows = new LinkedHashMap<>();
     private Row<I> sumRow;
     private String rowDesc;
 
     protected Report(List<H> columnHeaders, String rowDesc) {
         this.rowDesc = rowDesc;
-        sumRow = new SingleRow<>(columnHeaders.size());
-        this.columnHeaders.addAll(columnHeaders);
+        sumRow = createRow(columnHeaders.size());
+        this.columnHeaders = new ArrayList<>(columnHeaders);
     }
 
     public final Map<String, Row<I>> getRows() {
