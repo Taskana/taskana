@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.sql.DataSource;
@@ -151,7 +152,7 @@ public class TestDataGenerator {
             attachmentSql = parseAndReplace(getClass().getResourceAsStream(ATTACHMENT), isDb2);
             LocalDateTime now = LocalDateTime.now();
             monitoringTestDataSql = parseAndReplace(getClass().getResourceAsStream(MONITOR_SAMPLE_DATA),
-                x -> convertToRelativeTime(now, x), isDb2);
+                x -> replaceRelativeTimeFunction(now, x), isDb2);
         }
 
         /**
@@ -166,7 +167,7 @@ public class TestDataGenerator {
          * @param sql sql statement which may contain the above declared custom function.
          * @return sql statement with the given function resolved, if the 'sql' parameter contained any.
          */
-        private static String convertToRelativeTime(LocalDateTime now, String sql) {
+        private static String replaceRelativeTimeFunction(LocalDateTime now, String sql) {
             Matcher m = RELATIVE_DATE_PATTERN.matcher(sql);
             StringBuffer sb = new StringBuffer(sql.length());
             while (m.find()) {
@@ -182,26 +183,23 @@ public class TestDataGenerator {
         }
 
         private static String parseAndReplace(InputStream stream, Function<String, String> furtherProcessing,
-            boolean replace)
-            throws IOException {
+            boolean replace) throws IOException {
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream))) {
-                StringBuilder sql = new StringBuilder();
-                String line;
+                String sql;
                 if (replace) {
+                    StringBuilder builder = new StringBuilder();
+                    String line;
                     while ((line = bufferedReader.readLine()) != null) {
-                        sql.append(
-                            furtherProcessing.apply(
-                                line.replaceAll("true|TRUE", "1")
-                                    .replaceAll("false|FALSE", "0")
-                            )
-                        ).append("\n");
+                        builder.append(
+                            line.replaceAll("true|TRUE", "1")
+                                .replaceAll("false|FALSE", "0")
+                        ).append(System.lineSeparator());
                     }
+                    sql = builder.toString();
                 } else {
-                    while ((line = bufferedReader.readLine()) != null) {
-                        sql.append(furtherProcessing.apply(line)).append("\n");
-                    }
+                    sql = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
                 }
-                return sql.toString();
+                return furtherProcessing.apply(sql);
             }
 
         }
