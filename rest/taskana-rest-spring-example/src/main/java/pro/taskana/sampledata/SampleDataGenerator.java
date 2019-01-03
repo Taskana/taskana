@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.sql.DataSource;
@@ -69,7 +70,7 @@ public class SampleDataGenerator {
      * @param sql sql statement which may contain the above declared custom function.
      * @return sql statement with the given function resolved, if the 'sql' parameter contained any.
      */
-    private static String convertToRelativeTime(LocalDateTime now, String sql) {
+    private static String replaceRelativeTimeFunction(LocalDateTime now, String sql) {
         Matcher m = RELATIVE_DATE_PATTERN.matcher(sql);
         StringBuffer sb = new StringBuffer(sql.length());
         while (m.find()) {
@@ -82,12 +83,8 @@ public class SampleDataGenerator {
 
     private static String parseAndReplace(LocalDateTime now, InputStream stream) {
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream))) {
-            StringBuilder sql = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                sql.append(convertToRelativeTime(now, line)).append("\n");
-            }
-            return sql.toString();
+            return replaceRelativeTimeFunction(now,
+                bufferedReader.lines().collect(Collectors.joining(System.lineSeparator())));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
