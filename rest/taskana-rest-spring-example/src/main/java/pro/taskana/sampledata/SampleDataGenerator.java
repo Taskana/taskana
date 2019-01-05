@@ -59,15 +59,17 @@ public class SampleDataGenerator {
     }
 
     /**
-     * This method resolves the custom sql function defined through this regex: {@value RELATIVE_DATE_REGEX}.
-     * Its parameter is a digit representing the relative offset of a given starting point date.
+     * This method resolves the custom sql function defined through this regex: {@value RELATIVE_DATE_REGEX}. Its
+     * parameter is a digit representing the relative offset of a given starting point date.
      * <p/>
-     * Yes, this can be done as an actual sql function, but that'd lead to a little more complexity
-     * (and thus we'd have to maintain the code for db compatibility ...)
-     * Since we're already replacing the boolean attributes of sql files this addition is not a huge computational cost.
+     * Yes, this can be done as an actual sql function, but that'd lead to a little more complexity (and thus we'd have
+     * to maintain the code for db compatibility ...) Since we're already replacing the boolean attributes of sql files
+     * this addition is not a huge computational cost.
      *
-     * @param now anchor for relative date conversion.
-     * @param sql sql statement which may contain the above declared custom function.
+     * @param now
+     *            anchor for relative date conversion.
+     * @param sql
+     *            sql statement which may contain the above declared custom function.
      * @return sql statement with the given function resolved, if the 'sql' parameter contained any.
      */
     private static String replaceRelativeTimeFunction(LocalDateTime now, String sql) {
@@ -82,7 +84,8 @@ public class SampleDataGenerator {
     }
 
     private static String parseAndReplace(LocalDateTime now, InputStream stream) {
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream))) {
+        try (
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
             return replaceRelativeTimeFunction(now,
                 bufferedReader.lines().collect(Collectors.joining(System.lineSeparator())));
         } catch (IOException e) {
