@@ -43,6 +43,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.exceptions.SystemException;
@@ -299,6 +300,7 @@ public class TaskControllerIntTest {
         con.setRequestMethod("GET");
         con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
         assertEquals(200, con.getResponseCode());
+        ObjectMapper objectMapper = new ObjectMapper();
 
         BufferedReader in = new BufferedReader(
             new InputStreamReader(con.getInputStream()));
@@ -310,11 +312,11 @@ public class TaskControllerIntTest {
         in.close();
         con.disconnect();
         String response = content.toString();
+        JsonNode jsonNode = objectMapper.readTree(response);
+        String created = jsonNode.get("created").asText();
         assertFalse(response.contains("\"attachments\":[]"));
-        int start = response.indexOf("created", response.indexOf("created") + 1);
-        String createdString = response.substring(start + 10, start + 30);
         assertTrue(
-            createdString.matches("\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)"));
+            created.matches("\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)"));
     }
 
     @Test
