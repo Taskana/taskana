@@ -1,7 +1,6 @@
 package pro.taskana.rest;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -12,11 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
 
@@ -35,7 +31,7 @@ import pro.taskana.ldap.LdapClient;
 @Configuration
 @ComponentScan
 @EnableTransactionManagement
-public class RestConfiguration extends WebMvcConfigurationSupport {
+public class RestConfiguration{
 
     @Value("${taskana.schemaName:TASKANA}")
     private String schemaName;
@@ -83,13 +79,4 @@ public class RestConfiguration extends WebMvcConfigurationSupport {
         return new SpringHandlerInstantiator(context.getAutowireCapableBeanFactory());
     }
 
-    @Override
-    protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        for (HttpMessageConverter<?> converter : converters)  {
-            if (converter instanceof MappingJackson2HttpMessageConverter) {
-                MappingJackson2HttpMessageConverter jacksonConverter = (MappingJackson2HttpMessageConverter) converter;
-                jacksonConverter.setPrettyPrint(true);
-            }
-        }
-    }
 }
