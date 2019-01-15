@@ -16,4 +16,11 @@ public class DetailedMonitorQueryItem extends MonitorQueryItem {
         this.attachmentKey = attachmentKey;
     }
 
+    @Override
+    public String toString() {
+        return "DetailedMonitorQueryItem [" +
+            "attachmentKey= " + this.attachmentKey +
+            "]";
+    }
+
 }

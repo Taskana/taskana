@@ -166,4 +166,16 @@ public class WorkbasketSummaryResource extends ResourceSupport {
     public void setMarkedForDeletion(boolean markedForDeletion) {
         this.markedForDeletion = markedForDeletion;
     }
+
+    @Override
+    public String toString() {
+        return "WorkbasketSummaryResource ["
+            + "workbasketId= " + this.workbasketId
+            + "key= " + this.key
+            + "name= " + this.name
+            + "domain= " + this.domain
+            + "type= " + this.type
+            + "owner= " + this.owner
+            + "]";
+    }
 }

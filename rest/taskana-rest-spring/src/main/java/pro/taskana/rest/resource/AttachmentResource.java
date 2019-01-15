@@ -93,4 +93,18 @@ public class AttachmentResource extends ResourceSupport {
     public void setCustomAttributes(Map<String, String> customAttributes) {
         this.customAttributes = customAttributes;
     }
+
+    @Override
+    public String toString() {
+        return "AttachmentResource ["
+            + "attachmentId= " + this.attachmentId
+            + "taskId= " + this.taskId
+            + "created= " + this.created
+            + "modified= " + this.modified
+            + "classificationSummaryResource= " + this.classificationSummaryResource
+            + "objectReference= " + this.objectReference
+            + "channel= " + this.channel
+            + "received= " + this.received
+            + "]";
+    }
 }

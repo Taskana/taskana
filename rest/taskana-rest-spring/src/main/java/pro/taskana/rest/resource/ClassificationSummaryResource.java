@@ -161,4 +161,18 @@ public class ClassificationSummaryResource extends ResourceSupport {
         this.custom8 = custom8;
     }
 
+    @Override
+    public String toString() {
+        return "ClassificationSummaryResource ["
+            + "classificationId= " + this.classificationId
+            + "key= " + this.key
+            + "parentId= " + this.parentId
+            + "parentKey= " + this.parentKey
+            + "type= " + this.type
+            + "domain= " + this.domain
+            + "name= " + this.name
+            + "priority= " + this.priority
+            + "]";
+    }
+
 }

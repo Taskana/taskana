@@ -33,13 +33,10 @@ public class KeyDomain {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("KeyDomain [key=");
-        builder.append(key);
-        builder.append(", domain=");
-        builder.append(domain);
-        builder.append("]");
-        return builder.toString();
+        return "KeyDomain [" +
+            "key=" + this.key +
+            ", domain=" + this.domain +
+            "]";
     }
 
     @Override

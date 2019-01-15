@@ -56,7 +56,7 @@ public class LdapClient {
 
     @PostConstruct
     private void init() {
-
+        LOGGER.debug("Entry to init()");
         String strMinSearchForLength = getMinSearchForLengthAsString();
         if (strMinSearchForLength == null || strMinSearchForLength.isEmpty()) {
             minSearchForLength = 3;
@@ -126,6 +126,7 @@ public class LdapClient {
             }
             active = true;
         }
+        LOGGER.debug("Exit from init()");
     }
 
     public List<AccessIdResource> searchUsersAndGroups(final String name) throws InvalidArgumentException {

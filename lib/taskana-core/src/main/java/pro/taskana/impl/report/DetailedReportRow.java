@@ -3,6 +3,7 @@ package pro.taskana.impl.report;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.report.ReportRow;
 
 /**
@@ -50,4 +51,11 @@ public class DetailedReportRow extends ReportRow<DetailedMonitorQueryItem> {
         }
     }
 
+    @Override
+    public String toString() {
+        return "DetailedReportRow [" +
+            "detailRows= " + LoggerUtils.mapToString(this.detailRows) +
+            ", columnCount= " + this.columnCount +
+            "]";
+    }
 }

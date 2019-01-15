@@ -244,4 +244,23 @@ public class TaskHistoryEventResource extends ResourceSupport {
     public void setNewData(String newData) {
         this.newData = newData;
     }
+
+    @Override
+    public String toString() {
+        return "TaskHistoryEventResource [" +
+            "taskHistoryEventId= " + this.taskHistoryEventId +
+            "businessProcessId= " + this.businessProcessId +
+            "parentBusinessProcessId= " + this.parentBusinessProcessId +
+            "taskId= " + this.taskId +
+            "eventType= " + this.eventType +
+            "created= " + this.created +
+            "userId= " + this.userId +
+            "domain= " + this.domain +
+            "workbasketKey= " + this.workbasketKey +
+            "oldValue= " + this.oldValue +
+            "newValue= " + this.newValue +
+            "oldData= " + this.oldData +
+            "newData= " + this.newData +
+            "]";
+    }
 }

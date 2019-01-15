@@ -5,6 +5,7 @@ import java.util.Set;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
+import pro.taskana.impl.util.LoggerUtils;
 
 /**
  * this class represents a workbasket including its distro targets and authorisations.
@@ -26,5 +27,14 @@ public class WorkbasketDefinition {
         this.workbasket = workbasket;
         this.distributionTargets = distributionTargets;
         this.authorizations = authorizations;
+    }
+
+    @Override
+    public String toString() {
+        return "WorkbasketDefinition ["
+            + "distributionTargets= " + LoggerUtils.setToString(this.distributionTargets)
+            + "authorizations= " + LoggerUtils.listToString(this.authorizations)
+            + "workbasket= " + this.workbasket
+            + "]";
     }
 }

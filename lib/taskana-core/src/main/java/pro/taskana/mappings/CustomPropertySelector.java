@@ -219,4 +219,25 @@ public class CustomPropertySelector {
         this.custom16 = custom16;
     }
 
+    @Override
+    public String toString() {
+        return "CustomPropertySelector [" +
+            "custom1= " + this.custom1 +
+            ", custom2= " + this.custom2 +
+            ", custom3= " + this.custom3 +
+            ", custom4= " + this.custom4 +
+            ", custom5= " + this.custom5 +
+            ", custom6= " + this.custom6 +
+            ", custom7= " + this.custom7 +
+            ", custom8= " + this.custom8 +
+            ", custom9= " + this.custom9 +
+            ", custom10= " + this.custom10 +
+            ", custom11= " + this.custom11 +
+            ", custom12= " + this.custom12 +
+            ", custom13= " + this.custom13 +
+            ", custom14= " + this.custom14 +
+            ", custom15= " + this.custom15 +
+            ", custom16= " + this.custom16 +
+            "]";
+    }
 }

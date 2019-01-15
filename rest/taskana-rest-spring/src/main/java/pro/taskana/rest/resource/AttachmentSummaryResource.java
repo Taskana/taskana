@@ -80,4 +80,18 @@ public class AttachmentSummaryResource extends ResourceSupport {
     public void setReceived(String received) {
         this.received = received;
     }
+
+    @Override
+    public String toString() {
+        return "AttachmentSummaryResource ["
+            + "attachmentId= " + this.attachmentId
+            + "taskId= " + this.taskId
+            + "created= " + this.created
+            + "modified= " + this.modified
+            + "classificationSummaryResource= " + this.classificationSummaryResource
+            + "objectReference= " + this.objectReference
+            + "channel= " + this.channel
+            + "received= " + this.received
+            + "]";
+    }
 }

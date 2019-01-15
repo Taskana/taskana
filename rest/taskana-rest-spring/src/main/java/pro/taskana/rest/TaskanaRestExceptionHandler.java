@@ -128,9 +128,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     }
 
     private void logError(Exception ex, TaskanaErrorData errorData) {
-        LOGGER.error(
-            "Error occured during processing of rest request:\n" + errorData.toString(),
-            ex);
+        LOGGER.error("Error occurred during processing of rest request:\n {}" + errorData.toString(), ex);
     }
 
 }

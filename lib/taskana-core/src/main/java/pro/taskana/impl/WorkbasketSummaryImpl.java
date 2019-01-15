@@ -340,31 +340,19 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("WorkbasketSummaryImpl [id=");
-        builder.append(id);
-        builder.append(", key=");
-        builder.append(key);
-        builder.append(", name=");
-        builder.append(name);
-        builder.append(", description=");
-        builder.append(description);
-        builder.append(", owner=");
-        builder.append(owner);
-        builder.append(", domain=");
-        builder.append(domain);
-        builder.append(", type=");
-        builder.append(type);
-        builder.append(", orgLevel1=");
-        builder.append(orgLevel1);
-        builder.append(", orgLevel2=");
-        builder.append(orgLevel2);
-        builder.append(", orgLevel3=");
-        builder.append(orgLevel3);
-        builder.append(", orgLevel4=");
-        builder.append(orgLevel4);
-        builder.append("]");
-        return builder.toString();
+        return "WorkbasketSummaryImpl [" +
+            "id=" + this.id +
+            ", key=" + this.key +
+            ", name=" + this.name +
+            ", description=" + this.description +
+            ", owner=" + this.owner +
+            ", domain=" + this.domain +
+            ", type=" + this.type +
+            ", orgLevel1=" + this.orgLevel1 +
+            ", orgLevel2=" + this.orgLevel2 +
+            ", orgLevel3=" + this.orgLevel3 +
+            ", orgLevel4=" + this.orgLevel4 +
+            "]";
     }
 
 }

@@ -62,21 +62,14 @@ public class ObjectReference {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ObjectReference [id=");
-        builder.append(id);
-        builder.append(", company=");
-        builder.append(company);
-        builder.append(", system=");
-        builder.append(system);
-        builder.append(", systemInstance=");
-        builder.append(systemInstance);
-        builder.append(", type=");
-        builder.append(type);
-        builder.append(", value=");
-        builder.append(value);
-        builder.append("]");
-        return builder.toString();
+        return "ObjectReference [" +
+            "id=" + this.id +
+            ", company=" + this.company +
+            ", system=" + this.system +
+            ", systemInstance=" + this.systemInstance +
+            ", type=" + this.type +
+            ", value=" + this.value +
+            "]";
     }
 
     @Override

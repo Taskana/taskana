@@ -25,7 +25,6 @@ public class SampleDataGenerator {
     private static final String HISTORY_EVENT =  TEST_DATA + "/history-event.sql";
     private ScriptRunner runner;
 
-
     DataSource dataSource;
 
     public SampleDataGenerator(DataSource dataSource) throws SQLException {

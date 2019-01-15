@@ -37,13 +37,10 @@ public class AccessIdResource {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("AccessIdResource [name=");
-        builder.append(name);
-        builder.append(", accessId=");
-        builder.append(accessId);
-        builder.append("]");
-        return builder.toString();
+        return "AccessIdResource [" +
+            "name=" + this.name +
+            ", accessId=" + this.accessId +
+            "]";
     }
 
 }

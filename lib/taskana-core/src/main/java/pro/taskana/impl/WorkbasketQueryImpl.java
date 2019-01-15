@@ -409,8 +409,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }
@@ -437,8 +436,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = workbaskets == null ? 0 : workbaskets.size();
-                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", workbaskets.size(),
                     LoggerUtils.listToString(workbaskets));
             }
         }
@@ -632,85 +630,46 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("WorkbasketQueryImpl [columnName=");
-        builder.append(columnName);
-        builder.append(", accessId=");
-        builder.append(Arrays.toString(accessId));
-        builder.append(", idIn=");
-        builder.append(Arrays.toString(idIn));
-        builder.append(", permission=");
-        builder.append(permission);
-        builder.append(", nameIn=");
-        builder.append(Arrays.toString(nameIn));
-        builder.append(", nameLike=");
-        builder.append(Arrays.toString(nameLike));
-        builder.append(", keyIn=");
-        builder.append(Arrays.toString(keyIn));
-        builder.append(", keyLike=");
-        builder.append(Arrays.toString(keyLike));
-        builder.append(", keyOrNameLike=");
-        builder.append(Arrays.toString(keyOrNameLike));
-        builder.append(", domainIn=");
-        builder.append(Arrays.toString(domainIn));
-        builder.append(", domainLike=");
-        builder.append(Arrays.toString(domainLike));
-        builder.append(", type=");
-        builder.append(Arrays.toString(type));
-        builder.append(", createdIn=");
-        builder.append(Arrays.toString(createdIn));
-        builder.append(", modifiedIn=");
-        builder.append(Arrays.toString(modifiedIn));
-        builder.append(", descriptionLike=");
-        builder.append(Arrays.toString(descriptionLike));
-        builder.append(", ownerIn=");
-        builder.append(Arrays.toString(ownerIn));
-        builder.append(", ownerLike=");
-        builder.append(Arrays.toString(ownerLike));
-        builder.append(", custom1In=");
-        builder.append(Arrays.toString(custom1In));
-        builder.append(", custom1Like=");
-        builder.append(Arrays.toString(custom1Like));
-        builder.append(", custom2In=");
-        builder.append(Arrays.toString(custom2In));
-        builder.append(", custom2Like=");
-        builder.append(Arrays.toString(custom2Like));
-        builder.append(", custom3In=");
-        builder.append(Arrays.toString(custom3In));
-        builder.append(", custom3Like=");
-        builder.append(Arrays.toString(custom3Like));
-        builder.append(", custom4In=");
-        builder.append(Arrays.toString(custom4In));
-        builder.append(", custom4Like=");
-        builder.append(Arrays.toString(custom4Like));
-        builder.append(", orgLevel1In=");
-        builder.append(Arrays.toString(orgLevel1In));
-        builder.append(", orgLevel1Like=");
-        builder.append(Arrays.toString(orgLevel1Like));
-        builder.append(", orgLevel2In=");
-        builder.append(Arrays.toString(orgLevel2In));
-        builder.append(", orgLevel2Like=");
-        builder.append(Arrays.toString(orgLevel2Like));
-        builder.append(", orgLevel3In=");
-        builder.append(Arrays.toString(orgLevel3In));
-        builder.append(", orgLevel3Like=");
-        builder.append(Arrays.toString(orgLevel3Like));
-        builder.append(", orgLevel4In=");
-        builder.append(Arrays.toString(orgLevel4In));
-        builder.append(", orgLevel4Like=");
-        builder.append(Arrays.toString(orgLevel4Like));
-        builder.append(", markedForDeletion=");
-        builder.append(markedForDeletion);
-        builder.append(", orderBy=");
-        builder.append(orderBy);
-        builder.append(", joinWithAccessList=");
-        builder.append(joinWithAccessList);
-        builder.append(", checkReadPermission=");
-        builder.append(checkReadPermission);
-        builder.append(", usedToAugmentTasks=");
-        builder.append(usedToAugmentTasks);
-        builder.append("]");
-        return builder.toString();
+        return "WorkbasketQueryImpl [" +
+            "columnName=" + this.columnName +
+            ", accessId=" + Arrays.toString(this.accessId) +
+            ", idIn=" + Arrays.toString(this.idIn) +
+            ", permission=" + this.permission +
+            ", nameIn=" + Arrays.toString(this.nameIn) +
+            ", nameLike=" + Arrays.toString(this.nameLike) +
+            ", keyIn=" + Arrays.toString(this.keyIn) +
+            ", keyLike=" + Arrays.toString(this.keyLike) +
+            ", keyOrNameLike=" + Arrays.toString(this.keyOrNameLike) +
+            ", domainIn=" + Arrays.toString(this.domainIn) +
+            ", domainLike=" + Arrays.toString(this.domainLike) +
+            ", type=" + Arrays.toString(this.type) +
+            ", createdIn=" + Arrays.toString(this.createdIn) +
+            ", modifiedIn=" + Arrays.toString(this.modifiedIn) +
+            ", descriptionLike=" + Arrays.toString(this.descriptionLike) +
+            ", ownerIn=" + Arrays.toString(this.ownerIn) +
+            ", ownerLike=" + Arrays.toString(this.ownerLike) +
+            ", custom1In=" + Arrays.toString(this.custom1In) +
+            ", custom1Like=" + Arrays.toString(this.custom1Like) +
+            ", custom2In=" + Arrays.toString(this.custom2In) +
+            ", custom2Like=" + Arrays.toString(this.custom2Like) +
+            ", custom3In=" + Arrays.toString(this.custom3In) +
+            ", custom3Like=" + Arrays.toString(this.custom3Like) +
+            ", custom4In=" + Arrays.toString(this.custom4In) +
+            ", custom4Like=" + Arrays.toString(this.custom4Like) +
+            ", orgLevel1In=" + Arrays.toString(this.orgLevel1In) +
+            ", orgLevel1Like=" + Arrays.toString(this.orgLevel1Like) +
+            ", orgLevel2In=" + Arrays.toString(this.orgLevel2In) +
+            ", orgLevel2Like=" + Arrays.toString(this.orgLevel2Like) +
+            ", orgLevel3In=" + Arrays.toString(this.orgLevel3In) +
+            ", orgLevel3Like=" + Arrays.toString(this.orgLevel3Like) +
+            ", orgLevel4In=" + Arrays.toString(this.orgLevel4In) +
+            ", orgLevel4Like=" + Arrays.toString(this.orgLevel4Like) +
+            ", markedForDeletion=" + this.markedForDeletion +
+            ", orderBy=" + this.orderBy +
+            ", joinWithAccessList=" + this.joinWithAccessList +
+            ", checkReadPermission=" + this.checkReadPermission +
+            ", usedToAugmentTasks=" + this.usedToAugmentTasks +
+            "]";
     }
 
     private void handleCallerRolesAndAccessIds() {

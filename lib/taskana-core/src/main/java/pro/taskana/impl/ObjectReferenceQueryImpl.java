@@ -82,8 +82,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }
@@ -103,8 +102,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }
@@ -132,8 +130,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }
@@ -219,20 +216,13 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ObjectReferenceQueryImpl [taskanaEngineImpl=");
-        builder.append(taskanaEngine);
-        builder.append(", company=");
-        builder.append(Arrays.toString(company));
-        builder.append(", system=");
-        builder.append(Arrays.toString(system));
-        builder.append(", systemInstance=");
-        builder.append(Arrays.toString(systemInstance));
-        builder.append(", type=");
-        builder.append(Arrays.toString(type));
-        builder.append(", value=");
-        builder.append(Arrays.toString(value));
-        builder.append("]");
-        return builder.toString();
+        return "ObjectReferenceQueryImpl [" +
+                "taskanaEngineImpl= " + this.taskanaEngine +
+                ", company= " + Arrays.toString(this.company) +
+                ", system= " + Arrays.toString(this.system) +
+                ", systemInstance= " + Arrays.toString(this.systemInstance) +
+                ", type= " + Arrays.toString(this.type) +
+                ", value= " + Arrays.toString(this.value) +
+                "]";
     }
 }

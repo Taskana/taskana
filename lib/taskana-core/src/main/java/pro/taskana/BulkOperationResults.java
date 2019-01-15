@@ -8,6 +8,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.impl.util.LoggerUtils;
+
 /**
  * Returning type for a bulk db interaction with errors. This wrapper is storing them with a matching object ID.
  *
@@ -127,6 +129,10 @@ public class BulkOperationResults<K, V> {
         }
 
         return bulkLogMapped;
+    }
 
+    @Override
+    public String toString() {
+        return "BulkOperationResults [BulkOperationResults= " + LoggerUtils.mapToString(this.errorMap) + "]";
     }
 }

@@ -121,8 +121,7 @@ public class AsyncUpdateJobIntTest {
 
         long delay = 16000;
 
-        LOGGER.info("About to sleep for " + delay / 1000
-            + " seconds to give JobScheduler a chance to process the classification change");
+        LOGGER.info("About to sleep for {} seconds to give JobScheduler a chance to process the classification change", delay / 1000);
         Thread.sleep(delay);
         LOGGER.info("Sleeping ended. Continuing .... ");
 

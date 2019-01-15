@@ -226,25 +226,16 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("AttachmentSummaryImpl [id=");
-        builder.append(id);
-        builder.append(", taskId=");
-        builder.append(taskId);
-        builder.append(", created=");
-        builder.append(created);
-        builder.append(", modified=");
-        builder.append(modified);
-        builder.append(", classificationSummary=");
-        builder.append(classificationSummary);
-        builder.append(", objectReference=");
-        builder.append(objectReference);
-        builder.append(", channel=");
-        builder.append(channel);
-        builder.append(", received=");
-        builder.append(received);
-        builder.append("]");
-        return builder.toString();
+        return "AttachmentSummaryImpl [" +
+            "id=" + this.id +
+            ", taskId=" + this.taskId +
+            ", created=" + this.created +
+            ", modified=" + this.modified +
+            ", classificationSummary=" + this.classificationSummary +
+            ", objectReference=" + this.objectReference +
+            ", channel=" + this.channel +
+            ", received=" + this.received +
+            "]";
     }
 
 }

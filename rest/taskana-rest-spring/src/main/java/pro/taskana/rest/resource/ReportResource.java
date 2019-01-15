@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.springframework.hateoas.ResourceSupport;
 
+import pro.taskana.impl.util.LoggerUtils;
+
 /**
  * Resource class for {@link pro.taskana.report.Report}.
  */
@@ -71,6 +73,16 @@ public class ReportResource extends ResourceSupport {
         public String getRowDesc() {
             return rowDesc;
         }
+
+        @Override
+        public String toString() {
+            return "MetaInformation ["
+                + "name= " + this.name
+                + "date= " + this.date
+                + "header= " + this.header
+                + "rowDesc= " + this.rowDesc
+                + "]";
+        }
     }
 
     /**
@@ -92,6 +104,14 @@ public class ReportResource extends ResourceSupport {
 
         public int getTotal() {
             return total;
+        }
+
+        @Override
+        public String toString() {
+            return "RowResource ["
+                + "rowDesc= " + LoggerUtils.mapToString(this.cells)
+                + "taskId= " + this.total
+                + "]";
         }
     }
 }

@@ -18,6 +18,7 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TimeInterval;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.TaskanaException;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.transaction.TaskanaTransactionProvider;
 
 /**
@@ -71,6 +72,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     }
 
     private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
+        LOGGER.debug("entry to getTasksCompletedBefore(untilDate = {})", untilDate);
         List<TaskSummary> taskList = taskanaEngineImpl.getTaskService()
             .createTaskQuery()
             .completedWithin(new TimeInterval(null, untilDate))
@@ -96,6 +98,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
             });
 
             if (idsList.isEmpty()) {
+                LOGGER.debug("exit from getTasksCompletedBefore(), returning {}", new ArrayList<>());
                 return new ArrayList<>();
             }
 
@@ -107,10 +110,18 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
                 .list();
         }
 
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("exit from getTasksCompletedBefore(), returning {}", LoggerUtils.listToString(taskList));
+        }
+
         return taskList;
     }
 
     private int deleteTasksTransactionally(List<TaskSummary> tasksToBeDeleted) {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to deleteTasksTransactionally(tasksToBeDeleted = {})", LoggerUtils.listToString(tasksToBeDeleted));
+        }
+
         int deletedTaskCount = 0;
         if (txProvider != null) {
             Integer count = (Integer) txProvider.executeInTransaction(() -> {
@@ -121,6 +132,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
                     return new Integer(0);
                 }
             });
+            LOGGER.debug("exit from deleteTasksTransactionally(), returning {}", count.intValue());
             return count.intValue();
         } else {
             try {
@@ -129,10 +141,15 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
                 LOGGER.warn("Could not delete tasks.", e);
             }
         }
+        LOGGER.debug("exit from deleteTasksTransactionally(), returning {}", deletedTaskCount);
         return deletedTaskCount;
     }
 
     private int deleteTasks(List<TaskSummary> tasksToBeDeleted) throws InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to deleteTasks(tasksToBeDeleted = {})", tasksToBeDeleted);
+        }
+
         List<String> tasksIdsToBeDeleted = tasksToBeDeleted.stream()
             .map(task -> task.getTaskId())
             .collect(Collectors.toList());
@@ -142,6 +159,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
         for (String failedId : results.getFailedIds()) {
             LOGGER.warn("Task with id {} could not be deleted. Reason: {}", failedId, results.getErrorForId(failedId));
         }
+        LOGGER.debug("exit from deleteTasks(), returning {}", tasksIdsToBeDeleted.size() - results.getFailedIds().size());
         return tasksIdsToBeDeleted.size() - results.getFailedIds().size();
     }
 

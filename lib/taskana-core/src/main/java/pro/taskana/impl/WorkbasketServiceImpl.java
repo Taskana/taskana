@@ -400,9 +400,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
                 LOGGER.debug("exit from getWorkbasketAccessItems(workbasketId). Returning {} resulting Objects: {} ",
-                    numberOfResultObjects, LoggerUtils.listToString(result));
+                    result.size(), LoggerUtils.listToString(result));
             }
         }
     }
@@ -790,7 +789,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     public BulkOperationResults<String, TaskanaException> deleteWorkbaskets(List<String> workbasketsIds)
         throws NotAuthorizedException, InvalidArgumentException {
-        LOGGER.debug("entry to deleteWorkbaskets(workbasketId = {})", LoggerUtils.listToString(workbasketsIds));
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("entry to deleteWorkbaskets(workbasketId = {})", LoggerUtils.listToString(workbasketsIds));
+        }
 
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
