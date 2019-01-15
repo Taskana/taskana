@@ -2,6 +2,8 @@ package pro.taskana.rest;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import pro.taskana.security.CurrentUserContext;
  */
 @RestController
 public class TaskanaEngineController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineController.class);
 
     @Autowired
     TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -52,6 +55,7 @@ public class TaskanaEngineController {
 
     @GetMapping(path = "/v1/current-user-info", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<TaskanaUserInfoResource> getCurrentUserInfo() {
+        LOGGER.debug("Entry to getCurrentUserInfo()");
         TaskanaUserInfoResource resource = new TaskanaUserInfoResource();
         resource.setUserId(CurrentUserContext.getUserid());
         resource.setGroupIds(CurrentUserContext.getGroupIds());
@@ -60,6 +64,10 @@ public class TaskanaEngineController {
                 resource.getRoles().add(role);
             }
         }
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getCurrentUserInfo(), returning {}", new ResponseEntity<>(resource, HttpStatus.OK));
+        }
+
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
@@ -70,9 +78,10 @@ public class TaskanaEngineController {
      */
     @GetMapping(path = "/v1/version", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<VersionResource> currentVersion() {
+        LOGGER.debug("Entry to currentVersion()");
         VersionResource resource = new VersionResource();
         resource.setVersion(version);
-        return new ResponseEntity<>(resource,
-            HttpStatus.OK);
+        LOGGER.debug("Exit from currentVersion(), returning {}", new ResponseEntity<>(resource, HttpStatus.OK));
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.hateoas.ResourceSupport;
 
 import pro.taskana.TaskanaRole;
+import pro.taskana.impl.util.LoggerUtils;
 
 /**
  * Resource class for user information.
@@ -40,4 +41,12 @@ public class TaskanaUserInfoResource extends ResourceSupport {
         this.roles = roles;
     }
 
+    @Override
+    public String toString() {
+        return "TaskanaUserInfoResource ["
+            + "userId= " + this.userId
+            + "groupIds= " + LoggerUtils.listToString(this.groupIds)
+            + "roles= " + LoggerUtils.listToString(this.roles)
+            + "]";
+    }
 }

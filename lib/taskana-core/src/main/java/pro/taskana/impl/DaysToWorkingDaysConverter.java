@@ -326,4 +326,14 @@ public final class DaysToWorkingDaysConverter {
         return germanHolidaysEnabled;
     }
 
+    @Override
+    public String toString() {
+        return "DaysToWorkingDaysConverter [instance= " + instance +
+            ", positiveDaysToWorkingDays= " + positiveDaysToWorkingDays +
+            ", negativeDaysToWorkingDays= " + negativeDaysToWorkingDays +
+            ", dateCreated= " + dateCreated +
+            ", easterSunday= " + easterSunday +
+            ", germanHolidaysEnabled= " + germanHolidaysEnabled +
+            ", customHolidays= " + LoggerUtils.listToString(customHolidays) + "]";
+    }
 }

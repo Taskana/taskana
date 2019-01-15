@@ -217,4 +217,15 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
     public void setPermCustom12(boolean permCustom12) {
         this.permCustom12 = permCustom12;
     }
+
+    @Override
+    public String toString() {
+        return "WorkbasketAccessItemResource ["
+            + "accessItemId= " + this.accessItemId
+            + "workbasketId= " + this.workbasketId
+            + "workbasketKey= " + this.workbasketKey
+            + "accessId= " + this.accessId
+            + "accessName= " + this.accessName
+            + "]";
+    }
 }

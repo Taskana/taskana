@@ -721,91 +721,49 @@ public class TaskImpl implements Task {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("TaskImpl [id=");
-        builder.append(id);
-        builder.append(", externalId=");
-        builder.append(externalId);
-        builder.append(", created=");
-        builder.append(created);
-        builder.append(", claimed=");
-        builder.append(claimed);
-        builder.append(", completed=");
-        builder.append(completed);
-        builder.append(", modified=");
-        builder.append(modified);
-        builder.append(", planned=");
-        builder.append(planned);
-        builder.append(", due=");
-        builder.append(due);
-        builder.append(", name=");
-        builder.append(name);
-        builder.append(", creator=");
-        builder.append(creator);
-        builder.append(", description=");
-        builder.append(description);
-        builder.append(", note=");
-        builder.append(note);
-        builder.append(", priority=");
-        builder.append(priority);
-        builder.append(", state=");
-        builder.append(state);
-        builder.append(", classificationSummary=");
-        builder.append(classificationSummary);
-        builder.append(", workbasketSummary=");
-        builder.append(workbasketSummary);
-        builder.append(", businessProcessId=");
-        builder.append(businessProcessId);
-        builder.append(", parentBusinessProcessId=");
-        builder.append(parentBusinessProcessId);
-        builder.append(", owner=");
-        builder.append(owner);
-        builder.append(", primaryObjRef=");
-        builder.append(primaryObjRef);
-        builder.append(", isRead=");
-        builder.append(isRead);
-        builder.append(", isTransferred=");
-        builder.append(isTransferred);
-        builder.append(", customAttributes=");
-        builder.append(customAttributes);
-        builder.append(", callbackInfo=");
-        builder.append(callbackInfo);
-        builder.append(", attachments=");
-        builder.append(attachments);
-        builder.append(", custom1=");
-        builder.append(custom1);
-        builder.append(", custom2=");
-        builder.append(custom2);
-        builder.append(", custom3=");
-        builder.append(custom3);
-        builder.append(", custom4=");
-        builder.append(custom4);
-        builder.append(", custom5=");
-        builder.append(custom5);
-        builder.append(", custom6=");
-        builder.append(custom6);
-        builder.append(", custom7=");
-        builder.append(custom7);
-        builder.append(", custom8=");
-        builder.append(custom8);
-        builder.append(", custom9=");
-        builder.append(custom9);
-        builder.append(", custom10=");
-        builder.append(custom10);
-        builder.append(", custom11=");
-        builder.append(custom11);
-        builder.append(", custom12=");
-        builder.append(custom12);
-        builder.append(", custom13=");
-        builder.append(custom13);
-        builder.append(", custom14=");
-        builder.append(custom14);
-        builder.append(", custom15=");
-        builder.append(custom15);
-        builder.append(", custom16=");
-        builder.append(custom16);
-        builder.append("]");
-        return builder.toString();
+       return "TaskImpl [" +
+           "id= " + this.id +
+           ", externalId= " + this.externalId +
+            ", created= " + this.created +
+            ", claimed= " + this.claimed +
+            ", completed= " + this.completed +
+            ", modified= " + this.modified +
+            ", planned= " + this.planned +
+            ", due= " + this.due +
+            ", name= " + this.name +
+            ", creator= " + this.creator +
+            ", description= " + this.description +
+            ", note= " + this.note +
+            ", priority= " + this.priority +
+            ", state= " + this.state +
+            ", classificationSummary= " + this.classificationSummary +
+            ", workbasketSummary= " + this.workbasketSummary +
+            ", businessProcessId= " + this.businessProcessId +
+            ", parentBusinessProcessId= " + this.parentBusinessProcessId +
+            ", owner= " + this.owner +
+            ", primaryObjRef= " + this.primaryObjRef +
+            ", isRead= " + this.isRead +
+            ", isTransferred= " + this.isTransferred +
+            ", customAttributes= " + this.customAttributes +
+            ", callbackInfo= " + this.callbackInfo +
+            ", attachments= " + this.attachments +
+            ", custom1= " + this.custom1 +
+            ", custom2= " + this.custom2 +
+            ", custom3= " + this.custom3 +
+            ", custom4= " + this.custom4 +
+            ", custom5= " + this.custom5 +
+            ", custom6= " + this.custom6 +
+            ", custom7= " + this.custom7 +
+            ", custom8= " + this.custom8 +
+            ", custom9= " + this.custom9 +
+            ", custom10= " + this.custom10 +
+            ", custom11= " + this.custom11 +
+            ", custom12= " + this.custom12 +
+            ", custom13= " + this.custom13 +
+            ", custom14= " + this.custom14 +
+            ", custom15= " + this.custom15 +
+            ", custom16= " + this.custom16 +
+            "]";
     }
 
     @Override

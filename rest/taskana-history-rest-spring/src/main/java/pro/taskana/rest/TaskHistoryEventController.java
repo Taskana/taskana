@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
@@ -21,6 +23,7 @@ import pro.taskana.BaseQuery;
 import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.rest.resource.TaskHistoryEventResource;
 import pro.taskana.rest.resource.TaskHistoryEventListAssembler;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
@@ -34,6 +37,7 @@ import pro.taskana.simplehistory.query.HistoryQuery;
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 @RequestMapping(path = "/v1/task-history-event", produces = "application/hal+json")
 public class TaskHistoryEventController extends AbstractPagingController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskHistoryEventController.class);
 
     private static final String LIKE = "%";
     private static final String BUSINESS_PROCESS_ID = "business-process-id";
@@ -96,6 +100,9 @@ public class TaskHistoryEventController extends AbstractPagingController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<TaskHistoryEventResource>> getTaskHistoryEvent(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to getTaskHistoryEvent(params= {})", LoggerUtils.mapToString(params));
+        }
 
         HistoryQuery query = simpleHistoryService.createHistoryQuery();
         query = applySortingParams(query, params);
@@ -122,11 +129,19 @@ public class TaskHistoryEventController extends AbstractPagingController {
         TaskHistoryEventListAssembler assembler = new TaskHistoryEventListAssembler();
         PagedResources<TaskHistoryEventResource> pagedResources = assembler.toResources(historyEvents, pageMetadata);
 
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getTaskHistoryEvent(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
+        }
+
         return new ResponseEntity<>(pagedResources, HttpStatus.OK);
     }
 
     private HistoryQuery applySortingParams(HistoryQuery query, MultiValueMap<String, String> params)
         throws IllegalArgumentException, InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to applySortingParams(params= {})", LoggerUtils.mapToString(params));
+        }
+
         String sortBy = params.getFirst(SORT_BY);
         if (sortBy != null) {
             BaseQuery.SortDirection sortDirection;
@@ -202,11 +217,19 @@ public class TaskHistoryEventController extends AbstractPagingController {
         }
         params.remove(SORT_BY);
         params.remove(SORT_DIRECTION);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from applySortingParams(), returning {}", query);
+        }
+
         return query;
     }
 
     private HistoryQuery applyFilterParams(HistoryQuery query,
         MultiValueMap<String, String> params) {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
+        }
+
         if (params.containsKey(BUSINESS_PROCESS_ID)) {
             String[] businessProcessId = extractCommaSeparatedFields(params.get(BUSINESS_PROCESS_ID));
             query.businessProcessIdIn(businessProcessId);
@@ -381,6 +404,10 @@ public class TaskHistoryEventController extends AbstractPagingController {
             query.custom4Like(LIKE + params.get(CUSTOM_4_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_4_LIKE);
         }
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
+        }
+
         return query;
     }
 }

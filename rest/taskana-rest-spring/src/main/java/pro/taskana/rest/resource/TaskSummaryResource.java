@@ -378,4 +378,23 @@ public class TaskSummaryResource extends ResourceSupport {
     public void setCustom16(String custom16) {
         this.custom16 = custom16;
     }
+
+    @Override
+    public String toString() {
+        return "TaskSummaryResource ["
+            + "taskId= " + this.taskId
+            + "externalId= " + this.externalId
+            + "created= " + this.created
+            + "modified= " + this.modified
+            + "claimed= " + this.claimed
+            + "completed= " + this.completed
+            + "planned= " + this.planned
+            + "due= " + this.due
+            + "name= " + this.name
+            + "creator= " + this.creator
+            + "description= " + this.description
+            + "priority= " + this.priority
+            + "owner= " + this.owner
+            + "]";
+    }
 }

@@ -378,8 +378,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }
@@ -407,8 +406,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }
@@ -428,8 +426,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("Exit from listValues. Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }
@@ -620,81 +617,44 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ClassificationQueryImpl [columnName=");
-        builder.append(columnName);
-        builder.append(", key=");
-        builder.append(Arrays.toString(key));
-        builder.append(", idIn=");
-        builder.append(Arrays.toString(idIn));
-        builder.append(", parentId=");
-        builder.append(Arrays.toString(parentId));
-        builder.append(", parentKey=");
-        builder.append(Arrays.toString(parentKey));
-        builder.append(", category=");
-        builder.append(Arrays.toString(category));
-        builder.append(", type=");
-        builder.append(Arrays.toString(type));
-        builder.append(", domain=");
-        builder.append(Arrays.toString(domain));
-        builder.append(", validInDomain=");
-        builder.append(validInDomain);
-        builder.append(", createdIn=");
-        builder.append(Arrays.toString(createdIn));
-        builder.append(", modifiedIn=");
-        builder.append(Arrays.toString(modifiedIn));
-        builder.append(", nameIn=");
-        builder.append(Arrays.toString(nameIn));
-        builder.append(", nameLike=");
-        builder.append(Arrays.toString(nameLike));
-        builder.append(", descriptionLike=");
-        builder.append(descriptionLike);
-        builder.append(", priority=");
-        builder.append(Arrays.toString(priority));
-        builder.append(", serviceLevelIn=");
-        builder.append(Arrays.toString(serviceLevelIn));
-        builder.append(", serviceLevelLike=");
-        builder.append(Arrays.toString(serviceLevelLike));
-        builder.append(", applicationEntryPointIn=");
-        builder.append(Arrays.toString(applicationEntryPointIn));
-        builder.append(", applicationEntryPointLike=");
-        builder.append(Arrays.toString(applicationEntryPointLike));
-        builder.append(", custom1In=");
-        builder.append(Arrays.toString(custom1In));
-        builder.append(", custom1Like=");
-        builder.append(Arrays.toString(custom1Like));
-        builder.append(", custom2In=");
-        builder.append(Arrays.toString(custom2In));
-        builder.append(", custom2Like=");
-        builder.append(Arrays.toString(custom2Like));
-        builder.append(", custom3In=");
-        builder.append(Arrays.toString(custom3In));
-        builder.append(", custom3Like=");
-        builder.append(Arrays.toString(custom3Like));
-        builder.append(", custom4In=");
-        builder.append(Arrays.toString(custom4In));
-        builder.append(", custom4Like=");
-        builder.append(Arrays.toString(custom4Like));
-        builder.append(", custom5In=");
-        builder.append(Arrays.toString(custom5In));
-        builder.append(", custom5Like=");
-        builder.append(Arrays.toString(custom5Like));
-        builder.append(", custom6In=");
-        builder.append(Arrays.toString(custom6In));
-        builder.append(", custom6Like=");
-        builder.append(Arrays.toString(custom6Like));
-        builder.append(", custom7In=");
-        builder.append(Arrays.toString(custom7In));
-        builder.append(", custom7Like=");
-        builder.append(Arrays.toString(custom7Like));
-        builder.append(", custom8In=");
-        builder.append(Arrays.toString(custom8In));
-        builder.append(", custom8Like=");
-        builder.append(Arrays.toString(custom8Like));
-        builder.append(", orderBy=");
-        builder.append(orderBy);
-        builder.append("]");
-        return builder.toString();
+        return "ClassificationQueryImpl [" +
+            "columnName= " + this.columnName +
+            ", key= " + Arrays.toString(this.key) +
+            ", idIn= " + Arrays.toString(this.idIn) +
+            ", parentId= " + Arrays.toString(this.parentId) +
+            ", parentKey= " + Arrays.toString(this.parentKey) +
+            ", category= " + Arrays.toString(this.category) +
+            ", type= " + Arrays.toString(this.type) +
+            ", domain= " + Arrays.toString(this.domain) +
+            ", validInDomain= " + this.validInDomain +
+            ", createdIn= " + Arrays.toString(this.createdIn) +
+            ", modifiedIn= " + Arrays.toString(this.modifiedIn) +
+            ", nameIn= " + Arrays.toString(this.nameIn) +
+            ", nameLike= " + Arrays.toString(this.nameLike) +
+            ", descriptionLike= " + this.descriptionLike +
+            ", priority= " + Arrays.toString(this.priority) +
+            ", serviceLevelIn= " + Arrays.toString(this.serviceLevelIn) +
+            ", serviceLevelLike= " + Arrays.toString(this.serviceLevelLike) +
+            ", applicationEntryPointIn= " + Arrays.toString(this.applicationEntryPointIn) +
+            ", applicationEntryPointLike= " + Arrays.toString(this.applicationEntryPointLike) +
+            ", custom1In= " + Arrays.toString(this.custom1In) +
+            ", custom1Like= " + Arrays.toString(this.custom1Like) +
+            ", custom2In= " + Arrays.toString(this.custom2In) +
+            ", custom2Like= " + Arrays.toString(this.custom2Like) +
+            ", custom3In= " + Arrays.toString(this.custom3In) +
+            ", custom3Like= " + Arrays.toString(this.custom3Like) +
+            ", custom4In= " + Arrays.toString(this.custom4In) +
+            ", custom4Like= " + Arrays.toString(this.custom4Like) +
+            ", custom5In= " + Arrays.toString(this.custom5In) +
+            ", custom5Like= " + Arrays.toString(this.custom5Like) +
+            ", custom6In= " + Arrays.toString(this.custom6In) +
+            ", custom6Like= " + Arrays.toString(this.custom6Like) +
+            ", custom7In= " + Arrays.toString(this.custom7In) +
+            ", custom7Like= " + Arrays.toString(this.custom7Like) +
+            ", custom8In= " + Arrays.toString(this.custom8In) +
+            ", custom8Like= " + Arrays.toString(this.custom8Like) +
+            ", orderBy= " + this.orderBy +
+            "]";
     }
 
 }

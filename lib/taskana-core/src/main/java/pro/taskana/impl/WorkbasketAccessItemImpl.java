@@ -413,51 +413,28 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("WorkbasketAccessItem [id=");
-        builder.append(id);
-        builder.append(", workbasketId=");
-        builder.append(workbasketId);
-        builder.append(", workbasketKey=");
-        builder.append(workbasketKey);
-        builder.append(", accessId=");
-        builder.append(accessId);
-        builder.append(", permRead=");
-        builder.append(permRead);
-        builder.append(", permOpen=");
-        builder.append(permOpen);
-        builder.append(", permAppend=");
-        builder.append(permAppend);
-        builder.append(", permTransfer=");
-        builder.append(permTransfer);
-        builder.append(", permDistribute=");
-        builder.append(permDistribute);
-        builder.append(", permCustom1=");
-        builder.append(permCustom1);
-        builder.append(", permCustom2=");
-        builder.append(permCustom2);
-        builder.append(", permCustom3=");
-        builder.append(permCustom3);
-        builder.append(", permCustom4=");
-        builder.append(permCustom4);
-        builder.append(", permCustom5=");
-        builder.append(permCustom5);
-        builder.append(", permCustom6=");
-        builder.append(permCustom6);
-        builder.append(", permCustom7=");
-        builder.append(permCustom7);
-        builder.append(", permCustom8=");
-        builder.append(permCustom8);
-        builder.append(", permCustom9=");
-        builder.append(permCustom9);
-        builder.append(", permCustom10=");
-        builder.append(permCustom10);
-        builder.append(", permCustom11=");
-        builder.append(permCustom11);
-        builder.append(", permCustom12=");
-        builder.append(permCustom12);
-        builder.append("]");
-        return builder.toString();
+        return "WorkbasketAccessItem [id=" + this.id
+            + ", workbasketId=" + this.workbasketId
+            + ", workbasketKey=" + this.workbasketKey
+            + ", accessId=" + this.accessId
+            + ", permRead=" + this.permRead
+            + ", permOpen=" + this.permOpen
+            + ", permAppend=" + this.permAppend
+            + ", permTransfer=" + this.permTransfer
+            + ", permDistribute=" + this.permDistribute
+            + ", permCustom1=" + this.permCustom1
+            + ", permCustom2=" + this.permCustom2
+            + ", permCustom3=" + this.permCustom3
+            + ", permCustom4=" + this.permCustom4
+            + ", permCustom5=" + this.permCustom5
+            + ", permCustom6=" + this.permCustom6
+            + ", permCustom7=" + this.permCustom7
+            + ", permCustom8=" + this.permCustom8
+            + ", permCustom9=" + this.permCustom9
+            + ", permCustom10=" + this.permCustom10
+            + ", permCustom11=" + this.permCustom11
+            + ", permCustom12=" + this.permCustom12 +
+            "]";
     }
 
     @Override

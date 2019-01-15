@@ -109,29 +109,18 @@ public class ScheduledJob {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ScheduledJob [jobId=");
-        builder.append(jobId);
-        builder.append(", priority=");
-        builder.append(priority);
-        builder.append(", created=");
-        builder.append(created);
-        builder.append(", due=");
-        builder.append(due);
-        builder.append(", state=");
-        builder.append(state);
-        builder.append(", lockedBy=");
-        builder.append(lockedBy);
-        builder.append(", lockExpires=");
-        builder.append(lockExpires);
-        builder.append(", type=");
-        builder.append(type);
-        builder.append(", retryCount=");
-        builder.append(retryCount);
-        builder.append(", arguments=");
-        builder.append(arguments);
-        builder.append("]");
-        return builder.toString();
+        return "ScheduledJob [" +
+            "jobId=" + this.jobId +
+            ", priority=" + this.priority +
+            ", created=" + this.created +
+            ", due=" + this.due +
+            ", state=" + this.state +
+            ", lockedBy=" + this.lockedBy +
+            ", lockExpires=" + this.lockExpires +
+            ", type=" + this.type +
+            ", retryCount=" + this.retryCount +
+            ", arguments=" + this.arguments +
+            "]";
     }
 
     /**

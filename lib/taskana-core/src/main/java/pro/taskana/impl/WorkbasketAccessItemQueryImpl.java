@@ -113,8 +113,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }
@@ -163,8 +162,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                int numberOfResultObjects = result == null ? 0 : result.size();
-                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", numberOfResultObjects,
+                LOGGER.debug("exit from list(offset,limit). Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }
@@ -243,17 +241,12 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("WorkbasketAccessItemQueryImpl [idIn=");
-        builder.append(Arrays.toString(idIn));
-        builder.append(", accessIdIn=");
-        builder.append(Arrays.toString(accessIdIn));
-        builder.append(", workbasketIdIn=");
-        builder.append(Arrays.toString(workbasketIdIn));
-        builder.append(", orderBy=");
-        builder.append(orderBy);
-        builder.append("]");
-        return builder.toString();
+        return "WorkbasketAccessItemQueryImpl [" +
+            "idIn=" + Arrays.toString(this.idIn) +
+            ", accessIdIn=" + Arrays.toString(this.accessIdIn) +
+            ", workbasketIdIn=" + Arrays.toString(this.workbasketIdIn) +
+            ", orderBy=" + this.orderBy +
+            "]";
     }
 
 }

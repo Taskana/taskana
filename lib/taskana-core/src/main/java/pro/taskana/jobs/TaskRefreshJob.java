@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.impl.TaskServiceImpl;
+import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.transaction.TaskanaTransactionProvider;
 
 /**
@@ -49,6 +50,11 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
         } catch (Exception e) {
             throw new TaskanaException("Error while processing TaskRefreshJob.", e);
         }
+    }
+
+    @Override
+    public String toString(){
+        return "TaskRefreshJob [affectedTaskIds= " + LoggerUtils.listToString(affectedTaskIds) + "]";
     }
 
 }

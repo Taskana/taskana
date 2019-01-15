@@ -28,13 +28,10 @@ public class AccessId {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("AccessId [accessId=");
-        builder.append(accessId);
-        builder.append(", name=");
-        builder.append(name);
-        builder.append("]");
-        return builder.toString();
+        return "AccessId [" +
+            "accessId=" + this.accessId +
+            ", name=" + this.name +
+            "]";
     }
 
 }

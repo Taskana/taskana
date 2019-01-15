@@ -87,6 +87,7 @@ public class JobServiceImpl implements JobService {
     }
 
     private ScheduledJob initializeJobDefault(ScheduledJob job) {
+        LOGGER.debug("entry to initializeJobDefault(job = {})", job);
         job.setCreated(Instant.now());
         job.setState(ScheduledJob.State.READY);
         job.setPriority(JOB_DEFAULT_PRIORITY);
