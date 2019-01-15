@@ -35,4 +35,13 @@ public class MonitorQueryItem implements QueryItem {
         this.numberOfTasks = numberOfTasks;
     }
 
+    @Override
+    public String toString() {
+        return "MonitorQueryItem [" +
+            "key= " + this.key +
+            ", ageInDays= " + this.ageInDays +
+            ", numberOfTasks= " + this.numberOfTasks +
+            "]";
+    }
+
 }

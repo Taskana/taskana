@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import pro.taskana.rest.resource.ReportAssembler;
 @RestController
 @RequestMapping(path = "/v1/monitor", produces = "application/hal+json")
 public class MonitorController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MonitorController.class);
 
     @Autowired
     private TaskMonitorService taskMonitorService;
@@ -42,6 +45,13 @@ public class MonitorController {
     public ResponseEntity<ReportResource> getTasksStatusReport(@RequestParam(required = false) List<String> domains,
         @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException,
         InvalidArgumentException {
+        LOGGER.debug("Entry to getTasksStatusReport()");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getTasksStatusReport(), returning {}", reportAssembler.toResource(
+                taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
+                domains, states));
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
             .body(reportAssembler.toResource(
                 taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
@@ -54,6 +64,14 @@ public class MonitorController {
         @RequestParam(value = "daysInPast") int daysInPast,
         @RequestParam(value = "states") List<TaskState> states)
         throws NotAuthorizedException, InvalidArgumentException {
+        LOGGER.debug("Entry to getTasksWorkbasketReport()");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", reportAssembler.toResource(
+                taskMonitorService.createWorkbasketReportBuilder()
+                    .stateIn(states)
+                    .withColumnHeaders(getTasksWorkbasketsTimeInterval(daysInPast)).buildReport(), daysInPast, states));
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
             .body(reportAssembler.toResource(
                 taskMonitorService.createWorkbasketReportBuilder()
@@ -66,6 +84,13 @@ public class MonitorController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ReportResource> getTasksClassificationReport()
         throws NotAuthorizedException, InvalidArgumentException {
+        LOGGER.debug("Entry to getTasksClassificationReport()");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getTasksClassificationReport(), returning {}",reportAssembler.toResource(
+                taskMonitorService.createClassificationReportBuilder()
+                    .withColumnHeaders(getTaskClassificationTimeInterval())
+                    .buildReport()));
+        }
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(reportAssembler.toResource(

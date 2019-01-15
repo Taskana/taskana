@@ -381,42 +381,24 @@ public class WorkbasketImpl implements Workbasket {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Workbasket [id=");
-        builder.append(id);
-        builder.append(", key=");
-        builder.append(key);
-        builder.append(", created=");
-        builder.append(created);
-        builder.append(", modified=");
-        builder.append(modified);
-        builder.append(", name=");
-        builder.append(name);
-        builder.append(", description=");
-        builder.append(description);
-        builder.append(", owner=");
-        builder.append(owner);
-        builder.append(", domain=");
-        builder.append(domain);
-        builder.append(", type=");
-        builder.append(type);
-        builder.append(", custom1=");
-        builder.append(custom1);
-        builder.append(", custom2=");
-        builder.append(custom2);
-        builder.append(", custom3=");
-        builder.append(custom3);
-        builder.append(", custom4=");
-        builder.append(custom4);
-        builder.append(", orgLevel1=");
-        builder.append(orgLevel1);
-        builder.append(", orgLevel2=");
-        builder.append(orgLevel2);
-        builder.append(", orgLevel3=");
-        builder.append(orgLevel3);
-        builder.append(", orgLevel4=");
-        builder.append(orgLevel4);
-        builder.append("]");
-        return builder.toString();
+        return "Workbasket [" +
+            "id=" + this.id +
+            ", key=" + this.key +
+            ", created=" + this.created +
+            ", modified=" + this.modified +
+            ", name=" + this.name +
+            ", description=" + this.description +
+            ", owner=" + this.owner +
+            ", domain=" + this.domain +
+            ", type=" + this.type +
+            ", custom1=" + this.custom1 +
+            ", custom2=" + this.custom2 +
+            ", custom3=" + this.custom3 +
+            ", custom4=" + this.custom4 +
+            ", orgLevel1=" + this.orgLevel1 +
+            ", orgLevel2=" + this.orgLevel2 +
+            ", orgLevel3=" + this.orgLevel3 +
+            ", orgLevel4=" + this.orgLevel4 +
+            "]";
     }
 }

@@ -50,12 +50,9 @@ public class DistributionTargetDeserializer extends StdDeserializer<List<Workbas
             try {
                 distributionTargets.add(workbasketService.getWorkbasket(id));
             } catch (WorkbasketNotFoundException e) {
-                LOGGER.error("The workbasket with the id '" + id + "' is not found in database.");
+                LOGGER.error("The workbasket with the id ' {} ' is not found in database.", id);
             } catch (NotAuthorizedException e) {
-                LOGGER.error(
-                    "The user misses some required permissions for the workbasket with ID '" + id
-                        + "'. Exception = {}.",
-                    e);
+                LOGGER.error("The user misses some required permissions for the workbasket with ID ' {} '. Exception = {}.", id, e);
             }
         }
         return distributionTargets;

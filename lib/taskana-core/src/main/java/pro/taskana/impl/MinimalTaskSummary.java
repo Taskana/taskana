@@ -41,15 +41,11 @@ public class MinimalTaskSummary {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("MinimalTaskSummary [taskId=");
-        builder.append(taskId);
-        builder.append(", workbasketId=");
-        builder.append(workbasketId);
-        builder.append(", taskState=");
-        builder.append(taskState);
-        builder.append("]");
-        return builder.toString();
+        return "MinimalTaskSummary [" +
+            "taskId= " + this.taskId +
+            ", workbasketId= " + this.workbasketId +
+            ", taskState= " + this.taskState +
+            "]";
     }
 
 }

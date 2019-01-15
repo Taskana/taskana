@@ -351,45 +351,26 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ClassificationSummaryImpl [id=");
-        builder.append(id);
-        builder.append(", key=");
-        builder.append(key);
-        builder.append(", category=");
-        builder.append(category);
-        builder.append(", type=");
-        builder.append(type);
-        builder.append(", domain=");
-        builder.append(domain);
-        builder.append(", name=");
-        builder.append(name);
-        builder.append(", parentId=");
-        builder.append(parentId);
-        builder.append(", parentKey=");
-        builder.append(parentKey);
-        builder.append(", priority=");
-        builder.append(priority);
-        builder.append(", serviceLevel=");
-        builder.append(serviceLevel);
-        builder.append(", custom1=");
-        builder.append(custom1);
-        builder.append(", custom2=");
-        builder.append(custom2);
-        builder.append(", custom3=");
-        builder.append(custom3);
-        builder.append(", custom4=");
-        builder.append(custom4);
-        builder.append(", custom5=");
-        builder.append(custom5);
-        builder.append(", custom6=");
-        builder.append(custom6);
-        builder.append(", custom7=");
-        builder.append(custom7);
-        builder.append(", custom8=");
-        builder.append(custom8);
-        builder.append("]");
-        return builder.toString();
+       return "ClassificationSummaryImpl [" +
+           "id= " + this.id +
+            ", key= " + this.key +
+            ", category= " + this.category +
+            ", type= " + this.type +
+            ", domain= " + this.domain +
+            ", name= " + this.name +
+            ", parentId= " + this.parentId +
+            ", parentKey= " + parentKey +
+            ", priority= " + this.priority +
+            ", serviceLevel= " + this.serviceLevel +
+            ", custom1= " + this.custom1 +
+            ", custom2= " + this.custom2 +
+            ", custom3= " + this.custom3 +
+            ", custom4= " + this.custom4 +
+            ", custom5= " + this.custom5 +
+            ", custom6= " + this.custom6 +
+            ", custom7= " + this.custom7 +
+            ", custom8= " + this.custom8 +
+           "]";
     }
 
 }

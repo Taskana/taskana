@@ -53,13 +53,10 @@ public class TimeInterval {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("TimeInterval [begin=");
-        builder.append(begin);
-        builder.append(", end=");
-        builder.append(end);
-        builder.append("]");
-        return builder.toString();
+        return "TimeInterval [" +
+            "begin=" + this.begin +
+            ", end=" + this.end +
+            "]";
     }
 
     @Override

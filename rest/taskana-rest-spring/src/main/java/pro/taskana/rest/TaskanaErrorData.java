@@ -57,21 +57,13 @@ public class TaskanaErrorData {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("TaskanaErrorData [timestamp=");
-        builder.append(timestamp);
-        builder.append(", status=");
-        builder.append(status);
-        builder.append(", error=");
-        builder.append(error);
-        builder.append(", exception=");
-        builder.append(exception);
-        builder.append(", message=");
-        builder.append(message);
-        builder.append(", path=");
-        builder.append(path);
-        builder.append("]");
-        return builder.toString();
+        return "TaskanaErrorData [" +
+            "timestamp=" + this.timestamp +
+            ", status=" + this.status +
+            ", error=" + this.error +
+            ", exception=" + this.exception +
+            ", message=" + this.message +
+            ", path=" + this.path + "]";
     }
 
 }

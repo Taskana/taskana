@@ -16,12 +16,12 @@ public class TaskStatusColumnHeader implements ReportColumnHeader<TaskQueryItem>
 
     @Override
     public String getDisplayName() {
-        return state.name();
+        return this.state.name();
     }
 
     @Override
     public boolean fits(TaskQueryItem item) {
-        return item.getState() == state;
+        return item.getState() == this.state;
     }
 
     @Override

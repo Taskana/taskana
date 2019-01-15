@@ -3,7 +3,7 @@ package pro.taskana.impl.util;
 import java.util.UUID;
 
 /**
- * This class contains util emthods for generating ids.
+ * This class contains util methods for generating ids.
  */
 public final class IdGenerator {
 

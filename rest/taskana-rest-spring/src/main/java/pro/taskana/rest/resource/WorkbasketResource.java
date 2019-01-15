@@ -173,4 +173,16 @@ public class WorkbasketResource extends ResourceSupport {
     public void setOrgLevel4(String orgLevel4) {
         this.orgLevel4 = orgLevel4;
     }
+
+    @Override
+    public String toString() {
+        return "WorkbasketResource ["
+            + "workbasketId= " + this.workbasketId
+            + "key= " + this.key
+            + "name= " + this.name
+            + "domain= " + this.domain
+            + "type= " + this.type
+            + "owner= " + this.owner
+            + "]";
+    }
 }

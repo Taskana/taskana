@@ -42,8 +42,8 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.TaskResource;
-import pro.taskana.rest.resource.TaskSummaryResource;
 import pro.taskana.rest.resource.TaskResourceAssembler;
+import pro.taskana.rest.resource.TaskSummaryResource;
 import pro.taskana.rest.resource.TaskSummaryResourcesAssembler;
 
 /**
@@ -94,6 +94,9 @@ public class TaskController extends AbstractPagingController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<TaskSummaryResource>> getTasks(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to getTasks(params= {})", params);
+        }
 
         TaskQuery query = taskService.createTaskQuery();
         query = applyFilterParams(query, params);
@@ -123,6 +126,9 @@ public class TaskController extends AbstractPagingController {
         TaskSummaryResourcesAssembler taskSummaryResourcesAssembler = new TaskSummaryResourcesAssembler();
         PagedResources<TaskSummaryResource> pagedResources = taskSummaryResourcesAssembler.toResources(taskSummaries,
             pageMetadata);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getTasks(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
+        }
 
         return new ResponseEntity<>(pagedResources, HttpStatus.OK);
     }
@@ -131,9 +137,14 @@ public class TaskController extends AbstractPagingController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> getTask(@PathVariable String taskId)
         throws TaskNotFoundException, NotAuthorizedException {
+        LOGGER.debug("Entry to getTask(taskId= {})", taskId);
         Task task = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(task),
             HttpStatus.OK);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getTask(), returning {}", result);
+        }
+
         return result;
     }
 
@@ -141,11 +152,16 @@ public class TaskController extends AbstractPagingController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> claimTask(@PathVariable String taskId, @RequestBody String userName)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
+        LOGGER.debug("Entry to claimTask(taskId= {}, userName= {})", taskId, userName);
         // TODO verify user
         taskService.claim(taskId);
         Task updatedTask = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from claimTask(), returning {}", result);
+        }
+
         return result;
     }
 
@@ -153,10 +169,15 @@ public class TaskController extends AbstractPagingController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> completeTask(@PathVariable String taskId)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
+        LOGGER.debug("Entry to completeTask(taskId= {})", taskId);
         taskService.forceCompleteTask(taskId);
         Task updatedTask = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from completeTask(), returning {}", result);
+        }
+
         return result;
     }
 
@@ -164,8 +185,10 @@ public class TaskController extends AbstractPagingController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> deleteTask(@PathVariable String taskId)
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+        LOGGER.debug("Entry to deleteTask(taskId= {})", taskId);
         taskService.forceDeleteTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        LOGGER.debug("Exit from deleteTask(), returning {}", result);
         return result;
     }
 
@@ -174,9 +197,17 @@ public class TaskController extends AbstractPagingController {
     public ResponseEntity<TaskResource> createTask(@RequestBody TaskResource taskResource)
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to createTask(params= {})", taskResource);
+        }
+
         Task createdTask = taskService.createTask(taskResourceAssembler.toModel(taskResource));
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(createdTask),
             HttpStatus.CREATED);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from createTask(), returning {}", result);
+        }
+
         return result;
     }
 
@@ -184,9 +215,14 @@ public class TaskController extends AbstractPagingController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> transferTask(@PathVariable String taskId, @PathVariable String workbasketId)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
+        LOGGER.debug("Entry to transferTask(taskId= {}, workbasketId= {})", taskId, workbasketId);
         Task updatedTask = taskService.transfer(taskId, workbasketId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from transferTask(), returning {}", result);
+        }
+
         return result;
     }
 
@@ -197,6 +233,7 @@ public class TaskController extends AbstractPagingController {
         @RequestBody TaskResource taskResource)
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
+        LOGGER.debug("Entry to updateTask(taskId= {}, taskResource= {})", taskId, taskResource);
         ResponseEntity<TaskResource> result;
         if (taskId.equals(taskResource.getTaskId())) {
             Task task = taskResourceAssembler.toModel(taskResource);
@@ -209,11 +246,18 @@ public class TaskController extends AbstractPagingController {
                     + taskResource.getTaskId() + "')");
         }
 
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from updateTask(), returning {}", result);
+        }
+
         return result;
     }
 
     private TaskQuery applyFilterParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
         throws InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to applyFilterParams(taskQuery= {}, params= {})", taskQuery, params);
+        }
 
         // apply filters
         if (params.containsKey(NAME)) {
@@ -295,11 +339,19 @@ public class TaskController extends AbstractPagingController {
             taskQuery.primaryObjectReferenceValueLike(LIKE + params.get(POR_VALUE).get(0) + LIKE);
             params.remove(POR_VALUE);
         }
+
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from applyFilterParams(), returning {}", taskQuery);
+        }
+
         return taskQuery;
     }
 
     private TaskQuery applySortingParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
         throws InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to applySortingParams(taskQuery= {}, params= {})", taskQuery, params);
+        }
 
         // sorting
         String sortBy = params.getFirst(SORT_BY);
@@ -341,18 +393,34 @@ public class TaskController extends AbstractPagingController {
         }
         params.remove(SORT_BY);
         params.remove(SORT_DIRECTION);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from applySortingParams(), returning {}", taskQuery);
+        }
+
         return taskQuery;
     }
 
     private int[] extractPriorities(String[] prioritiesInString) {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to extractPriorities(prioritiesInString= {})", prioritiesInString);
+        }
+
         int[] priorities = new int[prioritiesInString.length];
         for (int i = 0; i < prioritiesInString.length; i++) {
             priorities[i] = Integer.valueOf(prioritiesInString[i]);
         }
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from extractPriorities(), returning {}", priorities);
+        }
+
         return priorities;
     }
 
     private TaskState[] extractStates(MultiValueMap<String, String> params) throws InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to extractStates(params= {})", params);
+        }
+
         List<TaskState> states = new ArrayList<>();
         for (String item : params.get(STATE)) {
             for (String state : item.split(",")) {
@@ -371,6 +439,8 @@ public class TaskController extends AbstractPagingController {
                 }
             }
         }
+
+        LOGGER.debug("Exit from extractStates()");
         return states.toArray(new TaskState[0]);
     }
 }

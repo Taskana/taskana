@@ -17,4 +17,9 @@ public class UserPrincipal implements Principal {
     public String getName() {
         return this.name;
     }
+
+    @Override
+    public String toString() {
+        return "UserPrincipal [name= " + this.getName() + "]";
+    }
 }

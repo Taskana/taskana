@@ -16,4 +16,9 @@ public class VersionResource  extends ResourceSupport {
    public void setVersion(String version) {
        this.version = version;
    }
+
+    @Override
+    public String toString() {
+        return "VersionResource [" + "version= " + this.version + "]";
+    }
 }

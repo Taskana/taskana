@@ -217,54 +217,30 @@ public class ClassificationResource extends ResourceSupport {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ClassificationResource [classificationId=");
-        builder.append(classificationId);
-        builder.append(", key=");
-        builder.append(key);
-        builder.append(", parentId=");
-        builder.append(parentId);
-        builder.append(", parentKey=");
-        builder.append(parentKey);
-        builder.append(", category=");
-        builder.append(category);
-        builder.append(", type=");
-        builder.append(type);
-        builder.append(", domain=");
-        builder.append(domain);
-        builder.append(", isValidInDomain=");
-        builder.append(isValidInDomain);
-        builder.append(", created=");
-        builder.append(created);
-        builder.append(", modified=");
-        builder.append(modified);
-        builder.append(", name=");
-        builder.append(name);
-        builder.append(", description=");
-        builder.append(description);
-        builder.append(", priority=");
-        builder.append(priority);
-        builder.append(", serviceLevel=");
-        builder.append(serviceLevel);
-        builder.append(", applicationEntryPoint=");
-        builder.append(applicationEntryPoint);
-        builder.append(", custom1=");
-        builder.append(custom1);
-        builder.append(", custom2=");
-        builder.append(custom2);
-        builder.append(", custom3=");
-        builder.append(custom3);
-        builder.append(", custom4=");
-        builder.append(custom4);
-        builder.append(", custom5=");
-        builder.append(custom5);
-        builder.append(", custom6=");
-        builder.append(custom6);
-        builder.append(", custom7=");
-        builder.append(custom7);
-        builder.append(", custom8=");
-        builder.append(custom8);
-        builder.append("]");
-        return builder.toString();
+        return "ClassificationResource [" +
+            "classificationId=" + this.classificationId +
+            ", key=" + this.key +
+            ", parentId=" + this.parentId +
+            ", parentKey=" + this.parentKey +
+            ", category=" + this.category +
+            ", type=" + this.type +
+            ", domain=" + this.domain +
+            ", isValidInDomain=" + this.isValidInDomain +
+            ", created=" + this.created +
+            ", modified=" + this.modified +
+            ", name=" + this.name +
+            ", description=" + this.description +
+            ", priority=" + this.priority +
+            ", serviceLevel=" + this.serviceLevel +
+            ", applicationEntryPoint=" + this.applicationEntryPoint +
+            ", custom1=" + this.custom1 +
+            ", custom2=" + this.custom2 +
+            ", custom3=" + this.custom3 +
+            ", custom4=" + this.custom4 +
+            ", custom5=" + this.custom5 +
+            ", custom6=" + this.custom6 +
+            ", custom7=" + this.custom7 +
+            ", custom8=" + this.custom8 +
+            "]";
     }
 }

@@ -385,6 +385,25 @@ public class TaskResource extends ResourceSupport {
         this.custom16 = custom16;
     }
 
+    @Override
+    public String toString() {
+        return "TaskResource ["
+            + "taskId= " + this.taskId
+            + "externalId= " + this.externalId
+            + "created= " + this.created
+            + "modified= " + this.modified
+            + "claimed= " + this.claimed
+            + "completed= " + this.completed
+            + "planned= " + this.planned
+            + "due= " + this.due
+            + "name= " + this.name
+            + "creator= " + this.creator
+            + "description= " + this.description
+            + "priority= " + this.priority
+            + "owner= " + this.owner
+            + "]";
+    }
+
     /**
      * A CustomAttribute is a user customized attribute which is saved as a Map and can be retreived from
      * either {@link pro.taskana.Task#getCustomAttributes()} or {@link pro.taskana.Task#getCallbackInfo()}.
@@ -411,6 +430,14 @@ public class TaskResource extends ResourceSupport {
 
         public String getValue() {
             return value;
+        }
+
+        @Override
+        public String toString() {
+            return "CustomAttribute ["
+                + "key= " + this.key
+                + "value= " + this.value
+                + "]";
         }
     }
 }

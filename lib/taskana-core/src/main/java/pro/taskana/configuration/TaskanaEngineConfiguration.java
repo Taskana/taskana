@@ -311,8 +311,11 @@ public class TaskanaEngineConfiguration {
         }
         ensureRoleMapIsFullyInitialized();
 
-        roleMap.forEach(
-            (k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, LoggerUtils.setToString(v)));
+        if(LOGGER.isDebugEnabled()) {
+            roleMap.forEach(
+                (k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, LoggerUtils.setToString(v)));
+        }
+
     }
 
     private Properties readPropertiesFromFile(String propertiesFile) {

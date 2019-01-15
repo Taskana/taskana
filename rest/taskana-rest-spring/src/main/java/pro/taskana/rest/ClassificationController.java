@@ -2,6 +2,8 @@ package pro.taskana.rest;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
@@ -34,8 +36,8 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
-import pro.taskana.rest.resource.ClassificationSummaryResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
+import pro.taskana.rest.resource.ClassificationSummaryResource;
 import pro.taskana.rest.resource.ClassificationSummaryResourcesAssembler;
 
 /**
@@ -45,6 +47,8 @@ import pro.taskana.rest.resource.ClassificationSummaryResourcesAssembler;
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 @RequestMapping(path = "/v1/classifications", produces = "application/hal+json")
 public class ClassificationController extends AbstractPagingController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
     private static final String LIKE = "%";
     private static final String NAME = "name";
@@ -78,6 +82,9 @@ public class ClassificationController extends AbstractPagingController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<ClassificationSummaryResource>> getClassifications(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to getClassifications(params= {})", params);
+        }
 
         ClassificationQuery query = classificationService.createClassificationQuery();
         query = applySortingParams(query, params);
@@ -107,6 +114,10 @@ public class ClassificationController extends AbstractPagingController {
         PagedResources<ClassificationSummaryResource> pagedResources = assembler.toResources(classificationSummaries,
             pageMetadata);
 
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getClassifications(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
+        }
+
         return new ResponseEntity<>(pagedResources, HttpStatus.OK);
     }
 
@@ -115,7 +126,12 @@ public class ClassificationController extends AbstractPagingController {
     public ResponseEntity<ClassificationResource> getClassification(@PathVariable String classificationId)
         throws ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException,
         ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
+        LOGGER.debug("Entry to getClassification(classificationId= {})", classificationId);
         Classification classification = classificationService.getClassification(classificationId);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getClassification(), returning {}", ResponseEntity.status(HttpStatus.OK).body(classificationResourceAssembler.toResource(classification)));
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(classificationResourceAssembler.toResource(classification));
     }
 
@@ -125,8 +141,17 @@ public class ClassificationController extends AbstractPagingController {
         @RequestBody ClassificationResource resource)
         throws NotAuthorizedException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to createClassification(resource= {})", resource);
+        }
+
         Classification classification = classificationResourceAssembler.toModel(resource);
         classification = classificationService.createClassification(classification);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from createClassification(), returning {}", ResponseEntity.status(HttpStatus.CREATED)
+                .body(classificationResourceAssembler.toResource(classification)));
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(classificationResourceAssembler.toResource(classification));
     }
@@ -137,6 +162,9 @@ public class ClassificationController extends AbstractPagingController {
         @PathVariable(value = "classificationId") String classificationId, @RequestBody ClassificationResource resource)
         throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
         ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to updateClassification(classificationId= {}, resource= {})", classificationId, resource);
+        }
 
         ResponseEntity<ClassificationResource> result;
         if (classificationId.equals(resource.classificationId)) {
@@ -149,6 +177,10 @@ public class ClassificationController extends AbstractPagingController {
                     + "') of the URI is not identical with the classificationId ('"
                     + resource.getClassificationId() + "') of the object in the payload.");
         }
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from updateClassification(), returning {}", result);
+        }
+
         return result;
     }
 
@@ -156,12 +188,18 @@ public class ClassificationController extends AbstractPagingController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<?> deleteClassification(@PathVariable String classificationId)
         throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
+        LOGGER.debug("Entry to deleteClassification(classificationId= {})", classificationId);
         classificationService.deleteClassification(classificationId);
+        LOGGER.debug("Exit from deleteClassification(), returning {}", ResponseEntity.status(HttpStatus.NO_CONTENT).build());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private ClassificationQuery applySortingParams(ClassificationQuery query, MultiValueMap<String, String> params)
         throws IllegalArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", query, params);
+        }
+
         // sorting
         String sortBy = params.getFirst(SORT_BY);
         if (sortBy != null) {
@@ -190,11 +228,19 @@ public class ClassificationController extends AbstractPagingController {
         }
         params.remove(SORT_BY);
         params.remove(SORT_DIRECTION);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from applySortingParams(), returning {}", query);
+        }
+
         return query;
     }
 
     private ClassificationQuery applyFilterParams(ClassificationQuery query,
         MultiValueMap<String, String> params) throws InvalidArgumentException {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
+        }
+
         if (params.containsKey(NAME)) {
             String[] names = extractCommaSeparatedFields(params.get(NAME));
             query.nameIn(names);
@@ -256,6 +302,11 @@ public class ClassificationController extends AbstractPagingController {
             query.customAttributeLike("8", LIKE + params.get(CUSTOM_8_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_8_LIKE);
         }
+
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
+        }
+
         return query;
     }
 

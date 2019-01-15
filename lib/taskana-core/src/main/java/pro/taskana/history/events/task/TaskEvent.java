@@ -175,4 +175,13 @@ public class TaskEvent extends TaskanaHistoryEvent {
         this.porValue = porValue;
     }
 
+    @Override
+    public String toString() {
+        return "TaskEvent [taskId= " + this.taskId +
+            ", businessProcessId= " + this.businessProcessId +
+            ", parentBusinessProcessId= " + this.parentBusinessProcessId +
+            ", domain= " + this.domain +
+            ", workbasketKey= " + this.workbasketKey + "]";
+    }
+
 }
