@@ -41,11 +41,8 @@ public class MinimalTaskSummary {
 
     @Override
     public String toString() {
-        return "MinimalTaskSummary [" +
-            "taskId= " + this.taskId +
-            ", workbasketId= " + this.workbasketId +
-            ", taskState= " + this.taskState +
-            "]";
+        return "MinimalTaskSummary [taskId=" + taskId + ", workbasketId=" + workbasketId + ", taskState=" + taskState
+            + "]";
     }
 
 }

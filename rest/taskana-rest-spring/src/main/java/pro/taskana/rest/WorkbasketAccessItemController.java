@@ -69,7 +69,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     public ResponseEntity<PagedResources<WorkbasketAccessItemResource>> getWorkbasketAccessItems(
         @RequestParam MultiValueMap<String, String> params)
         throws NotAuthorizedException, InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to getWorkbasketAccessItems(params= {})", params);
         }
 
@@ -103,7 +103,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
             workbasketAccessItems,
             pageMetadata);
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
         }
 
@@ -142,7 +142,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
 
     private WorkbasketAccessItemQuery getAccessIds(WorkbasketAccessItemQuery query,
         MultiValueMap<String, String> params) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to getAccessIds(query= {}, params= {})", params);
         }
 
@@ -152,7 +152,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
             params.remove(ACCESS_IDS);
         }
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getAccessIds(), returning {}", query);
         }
 
@@ -161,7 +161,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
 
     private WorkbasketAccessItemQuery applyFilterParams(WorkbasketAccessItemQuery query,
         MultiValueMap<String, String> params) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", params);
         }
 
@@ -183,7 +183,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
             query.accessIdLike(LIKE + params.get(ACCESS_ID_LIKE).get(0) + LIKE);
             params.remove(ACCESS_ID_LIKE);
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
         }
 
@@ -193,7 +193,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     private WorkbasketAccessItemQuery applySortingParams(WorkbasketAccessItemQuery query,
         MultiValueMap<String, String> params)
         throws IllegalArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", params);
         }
 
@@ -219,7 +219,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         }
         params.remove(SORT_BY);
         params.remove(SORT_DIRECTION);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from applySortingParams(), returning {}", query);
         }
 

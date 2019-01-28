@@ -328,12 +328,11 @@ public final class DaysToWorkingDaysConverter {
 
     @Override
     public String toString() {
-        return "DaysToWorkingDaysConverter [instance= " + instance +
-            ", positiveDaysToWorkingDays= " + positiveDaysToWorkingDays +
-            ", negativeDaysToWorkingDays= " + negativeDaysToWorkingDays +
-            ", dateCreated= " + dateCreated +
-            ", easterSunday= " + easterSunday +
-            ", germanHolidaysEnabled= " + germanHolidaysEnabled +
-            ", customHolidays= " + LoggerUtils.listToString(customHolidays) + "]";
+        return "DaysToWorkingDaysConverter [instance= " + instance
+            + ", positiveDaysToWorkingDays= " + positiveDaysToWorkingDays
+            + ", negativeDaysToWorkingDays= " + negativeDaysToWorkingDays
+            + ", dateCreated= " + dateCreated + ", easterSunday= " + easterSunday
+            + ", germanHolidaysEnabled= " + germanHolidaysEnabled
+            + ", customHolidays= " + LoggerUtils.listToString(customHolidays) + "]";
     }
 }

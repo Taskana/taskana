@@ -381,24 +381,11 @@ public class WorkbasketImpl implements Workbasket {
 
     @Override
     public String toString() {
-        return "Workbasket [" +
-            "id=" + this.id +
-            ", key=" + this.key +
-            ", created=" + this.created +
-            ", modified=" + this.modified +
-            ", name=" + this.name +
-            ", description=" + this.description +
-            ", owner=" + this.owner +
-            ", domain=" + this.domain +
-            ", type=" + this.type +
-            ", custom1=" + this.custom1 +
-            ", custom2=" + this.custom2 +
-            ", custom3=" + this.custom3 +
-            ", custom4=" + this.custom4 +
-            ", orgLevel1=" + this.orgLevel1 +
-            ", orgLevel2=" + this.orgLevel2 +
-            ", orgLevel3=" + this.orgLevel3 +
-            ", orgLevel4=" + this.orgLevel4 +
-            "]";
+        return "WorkbasketImpl [id=" + id + ", key=" + key + ", created=" + created + ", modified=" + modified
+            + ", name=" + name + ", description=" + description + ", owner=" + owner + ", domain=" + domain + ", type="
+            + type + ", custom1=" + custom1 + ", custom2=" + custom2 + ", custom3=" + custom3 + ", custom4=" + custom4
+            + ", orgLevel1=" + orgLevel1 + ", orgLevel2=" + orgLevel2 + ", orgLevel3=" + orgLevel3 + ", orgLevel4="
+            + orgLevel4 + ", markedForDeletion=" + markedForDeletion + "]";
     }
+
 }

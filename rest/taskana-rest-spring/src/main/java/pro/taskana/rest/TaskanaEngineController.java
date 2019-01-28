@@ -64,7 +64,7 @@ public class TaskanaEngineController {
                 resource.getRoles().add(role);
             }
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getCurrentUserInfo(), returning {}", new ResponseEntity<>(resource, HttpStatus.OK));
         }
 

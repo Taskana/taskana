@@ -177,11 +177,9 @@ public class TaskEvent extends TaskanaHistoryEvent {
 
     @Override
     public String toString() {
-        return "TaskEvent [taskId= " + this.taskId +
-            ", businessProcessId= " + this.businessProcessId +
-            ", parentBusinessProcessId= " + this.parentBusinessProcessId +
-            ", domain= " + this.domain +
-            ", workbasketKey= " + this.workbasketKey + "]";
+        return "TaskEvent [taskId= " + this.taskId + ", businessProcessId= " + this.businessProcessId
+            + ", parentBusinessProcessId= " + this.parentBusinessProcessId + ", domain= " + this.domain
+            + ", workbasketKey= " + this.workbasketKey + "]";
     }
 
 }

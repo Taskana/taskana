@@ -3,7 +3,6 @@ package pro.taskana.rest.resource;
 import java.util.List;
 import java.util.Set;
 
-import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.impl.util.LoggerUtils;
 

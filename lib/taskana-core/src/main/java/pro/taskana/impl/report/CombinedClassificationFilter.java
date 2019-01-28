@@ -37,10 +37,8 @@ public class CombinedClassificationFilter {
 
     @Override
     public String toString() {
-        return "CombinedClassificationFilter [" +
-            "taskClassificationId= " + this.taskClassificationId +
-            ", attachmentClassificationId= " + this.attachmentClassificationId +
-            "]";
+        return "CombinedClassificationFilter [taskClassificationId=" + taskClassificationId
+            + ", attachmentClassificationId=" + attachmentClassificationId + "]";
     }
 
 }

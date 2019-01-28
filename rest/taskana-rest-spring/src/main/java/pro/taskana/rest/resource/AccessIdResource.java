@@ -37,10 +37,7 @@ public class AccessIdResource {
 
     @Override
     public String toString() {
-        return "AccessIdResource [" +
-            "name=" + this.name +
-            ", accessId=" + this.accessId +
-            "]";
+        return "AccessIdResource [" + "name=" + this.name + ", accessId=" + this.accessId + "]";
     }
 
 }

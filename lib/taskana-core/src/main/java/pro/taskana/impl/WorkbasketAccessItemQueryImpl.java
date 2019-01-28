@@ -241,12 +241,9 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
     @Override
     public String toString() {
-        return "WorkbasketAccessItemQueryImpl [" +
-            "idIn=" + Arrays.toString(this.idIn) +
-            ", accessIdIn=" + Arrays.toString(this.accessIdIn) +
-            ", workbasketIdIn=" + Arrays.toString(this.workbasketIdIn) +
-            ", orderBy=" + this.orderBy +
-            "]";
+        return "WorkbasketAccessItemQueryImpl [" + "idIn=" + Arrays.toString(this.idIn) + ", accessIdIn="
+            + Arrays.toString(this.accessIdIn) + ", workbasketIdIn=" + Arrays.toString(this.workbasketIdIn)
+            + ", orderBy=" + this.orderBy + "]";
     }
 
 }

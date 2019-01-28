@@ -40,10 +40,7 @@ public class TaskQueryItem implements QueryItem {
 
     @Override
     public String toString() {
-        return "TaskQueryItem [" +
-            "domain= " + this.domain +
-            ", state= " + this.state.name() +
-            ", count= " + this.count +
-            "]";
+        return "TaskQueryItem [" + "domain= " + this.domain + ", state= " + this.state.name()
+            + ", count= " + this.count + "]";
     }
 }

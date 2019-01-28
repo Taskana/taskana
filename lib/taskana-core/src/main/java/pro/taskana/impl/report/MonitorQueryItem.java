@@ -37,11 +37,8 @@ public class MonitorQueryItem implements QueryItem {
 
     @Override
     public String toString() {
-        return "MonitorQueryItem [" +
-            "key= " + this.key +
-            ", ageInDays= " + this.ageInDays +
-            ", numberOfTasks= " + this.numberOfTasks +
-            "]";
+        return "MonitorQueryItem [" + "key= " + this.key + ", ageInDays= " + this.ageInDays
+            + ", numberOfTasks= " + this.numberOfTasks + "]";
     }
 
 }

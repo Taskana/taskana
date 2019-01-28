@@ -28,10 +28,7 @@ public class AccessId {
 
     @Override
     public String toString() {
-        return "AccessId [" +
-            "accessId=" + this.accessId +
-            ", name=" + this.name +
-            "]";
+        return "AccessId [" + "accessId=" + this.accessId + ", name=" + this.name + "]";
     }
 
 }

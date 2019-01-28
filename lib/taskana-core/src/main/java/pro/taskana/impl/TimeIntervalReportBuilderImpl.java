@@ -124,7 +124,7 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
     @Override
     public List<String> listTaskIdsForSelectedItems(List<SelectedItem> selectedItems)
         throws NotAuthorizedException, InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to listTaskIdsForSelectedItems(selectedItems = {}), this = {}",
                 LoggerUtils.listToString(selectedItems), this);
         }

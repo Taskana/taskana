@@ -53,10 +53,7 @@ public class TimeInterval {
 
     @Override
     public String toString() {
-        return "TimeInterval [" +
-            "begin=" + this.begin +
-            ", end=" + this.end +
-            "]";
+        return "TimeInterval [" + "begin=" + this.begin + ", end=" + this.end + "]";
     }
 
     @Override

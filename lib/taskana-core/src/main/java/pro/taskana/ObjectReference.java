@@ -62,14 +62,11 @@ public class ObjectReference {
 
     @Override
     public String toString() {
-        return "ObjectReference [" +
-            "id=" + this.id +
-            ", company=" + this.company +
-            ", system=" + this.system +
-            ", systemInstance=" + this.systemInstance +
-            ", type=" + this.type +
-            ", value=" + this.value +
-            "]";
+        return "ObjectReference ["
+                + "id=" + this.id + ", company="
+                + this.company + ", system=" + this.system
+                + ", systemInstance=" + this.systemInstance
+                + ", type=" + this.type + ", value=" + this.value + "]";
     }
 
     @Override

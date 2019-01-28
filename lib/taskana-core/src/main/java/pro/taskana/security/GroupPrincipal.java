@@ -49,9 +49,7 @@ public class GroupPrincipal implements Group {
 
     @Override
     public String toString() {
-        return "GroupPrincipal [" +
-            "name= " + this.name +
-            ", members= " + LoggerUtils.setToString(this.members) +
-            "]";
+        return "GroupPrincipal [name=" + name + ", members=" + LoggerUtils.setToString(this.members) + "]";
     }
+
 }

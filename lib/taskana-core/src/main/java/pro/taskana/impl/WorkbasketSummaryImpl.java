@@ -340,19 +340,11 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
 
     @Override
     public String toString() {
-        return "WorkbasketSummaryImpl [" +
-            "id=" + this.id +
-            ", key=" + this.key +
-            ", name=" + this.name +
-            ", description=" + this.description +
-            ", owner=" + this.owner +
-            ", domain=" + this.domain +
-            ", type=" + this.type +
-            ", orgLevel1=" + this.orgLevel1 +
-            ", orgLevel2=" + this.orgLevel2 +
-            ", orgLevel3=" + this.orgLevel3 +
-            ", orgLevel4=" + this.orgLevel4 +
-            "]";
+        return "WorkbasketSummaryImpl [id=" + id + ", key=" + key + ", name=" + name + ", description=" + description
+            + ", owner=" + owner + ", domain=" + domain + ", type=" + type + ", custom1=" + custom1 + ", custom2="
+            + custom2 + ", custom3=" + custom3 + ", custom4=" + custom4 + ", orgLevel1=" + orgLevel1 + ", orgLevel2="
+            + orgLevel2 + ", orgLevel3=" + orgLevel3 + ", orgLevel4=" + orgLevel4 + ", markedForDeletion="
+            + markedForDeletion + "]";
     }
 
 }

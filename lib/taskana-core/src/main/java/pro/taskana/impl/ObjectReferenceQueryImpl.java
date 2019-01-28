@@ -216,13 +216,10 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
     @Override
     public String toString() {
-        return "ObjectReferenceQueryImpl [" +
-                "taskanaEngineImpl= " + this.taskanaEngine +
-                ", company= " + Arrays.toString(this.company) +
-                ", system= " + Arrays.toString(this.system) +
-                ", systemInstance= " + Arrays.toString(this.systemInstance) +
-                ", type= " + Arrays.toString(this.type) +
-                ", value= " + Arrays.toString(this.value) +
-                "]";
+        return "ObjectReferenceQueryImpl [taskanaEngine=" + taskanaEngine + ", columnName=" + columnName + ", company="
+            + Arrays.toString(company) + ", system=" + Arrays.toString(system) + ", systemInstance="
+            + Arrays.toString(systemInstance) + ", type=" + Arrays.toString(type) + ", value=" + Arrays.toString(value)
+            + ", orderBy=" + orderBy + "]";
     }
+
 }
