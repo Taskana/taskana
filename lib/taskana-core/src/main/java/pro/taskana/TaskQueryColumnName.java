@@ -1,5 +1,8 @@
 package pro.taskana;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Enum containing the column names for @see pro.taskana.mappings.QueryMapper#queryTaskColumnValues(pro.taskana.impl.TaskQueryImpl).
  *
@@ -7,7 +10,7 @@ package pro.taskana;
  */
 public enum TaskQueryColumnName implements QueryColumnName {
     ID("t.id"),
-    EXTERNAL_ID("t.externalId"),
+    EXTERNAL_ID("t.external_id"),
     CREATED("t.created"),
     CLAIMED("t.claimed"),
     COMPLETED("t.completed"),
@@ -37,8 +40,6 @@ public enum TaskQueryColumnName implements QueryColumnName {
     POR_VALUE("t.por_value"),
     IS_READ("t.is_read"),
     IS_TRANSFERRED("t.is_transferred"),
-    CALLBACK_INFO("t.callback_info"),
-    CUSTOM_ATTRIBUTES("t.custom_attributes"),
     CUSTOM_1("t.custom_1"),
     CUSTOM_2("t.custom_2"),
     CUSTOM_3("t.custom_3"),
@@ -64,6 +65,10 @@ public enum TaskQueryColumnName implements QueryColumnName {
     private String name;
     TaskQueryColumnName(String name) {
         this.name = name;
+    }
+
+    public static List<TaskQueryColumnName> getAttachmentList() {
+        return Arrays.asList(A_CLASSIFICATION_ID, A_CLASSIFICATION_KEY, A_CHANNEL, A_REF_VALUE);
     }
 
     @Override

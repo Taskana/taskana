@@ -1014,14 +1014,16 @@ public class TaskQueryImpl implements TaskQuery {
             this.addOrderCriteria(columnName.toString(), sortDirection);
             checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupAccessIds();
+
             if (columnName.equals(TaskQueryColumnName.CLASSIFICATION_NAME)) {
                 joinWithClassifications = true;
-                addClassificationNameToSelectClauseForOrdering = true;
             }
             if (columnName.equals(TaskQueryColumnName.A_CLASSIFICATION_NAME)) {
-                joinWithAttachments = true;
                 joinWithAttachmentClassifications = true;
-                addAttachmentClassificationNameToSelectClauseForOrdering = true;
+            }
+            List<TaskQueryColumnName> attachmentColumns = TaskQueryColumnName.getAttachmentList();
+            if (attachmentColumns.contains(columnName)) {
+                joinWithAttachments = true;
             }
 
             setupJoinAndOrderParameters();
