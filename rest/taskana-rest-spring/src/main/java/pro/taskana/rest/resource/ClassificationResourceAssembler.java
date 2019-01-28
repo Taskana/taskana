@@ -65,10 +65,10 @@ public class ClassificationResourceAssembler {
         BeanUtils.copyProperties(classification, resource);
         // need to be set by hand, because they are named different, or have different types
         resource.setClassificationId(classification.getId());
-        if(classification.getCreated() != null){
+        if (classification.getCreated() != null) {
             resource.setCreated(classification.getCreated().toString());
         }
-        if(classification.getModified() != null){
+        if (classification.getModified() != null) {
             resource.setModified(classification.getModified().toString());
         }
         return addLinks(resource, classification);

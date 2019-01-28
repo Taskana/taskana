@@ -48,13 +48,13 @@ public class AccessIdController {
         }
         if (ldapClient.useLdap()) {
             List<AccessIdResource> accessIdUsers = ldapClient.searchUsersAndGroups(searchFor);
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exit from validateAccessIds(), returning {}", new ResponseEntity<>(accessIdUsers, HttpStatus.OK));
             }
 
             return new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
         } else if (ldapCache != null) {
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exit from validateAccessIds(), returning {}", new ResponseEntity<>(
                     ldapCache.findMatchingAccessId(searchFor, ldapClient.getMaxNumberOfReturnedAccessIds()),
                     HttpStatus.OK));
@@ -82,14 +82,14 @@ public class AccessIdController {
         if (ldapClient.useLdap()) {
             accessIdUsers = ldapClient.searchUsersAndGroups(accessId);
             accessIdUsers.addAll(ldapClient.searchGroupsofUsersIsMember(accessId));
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", new ResponseEntity<>(accessIdUsers, HttpStatus.OK));
             }
 
             return new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
         } else if (ldapCache != null) {
             accessIdUsers = ldapCache.findGroupsOfUser(accessId, ldapClient.getMaxNumberOfReturnedAccessIds());
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", new ResponseEntity<>(accessIdUsers, HttpStatus.OK));
             }
 

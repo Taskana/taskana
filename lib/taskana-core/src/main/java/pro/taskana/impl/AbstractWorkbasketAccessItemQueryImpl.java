@@ -212,12 +212,9 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<Q extends AbstractWorkbaske
 
     @Override
     public String toString() {
-        return "AbstractWorkbasketAccessItemQueryImpl [" +
-            "idIn=" + Arrays.toString(this.idIn) +
-            ", accessIdIn=" + Arrays.toString(this.accessIdIn) +
-            ", workbasketIdIn=" + Arrays.toString(this.workbasketIdIn) +
-            ", orderBy=" + this.orderBy +
-            "]";
+        return "AbstractWorkbasketAccessItemQueryImpl [" + "idIn=" + Arrays.toString(this.idIn) + ", accessIdIn="
+            + Arrays.toString(this.accessIdIn) + ", workbasketIdIn=" + Arrays.toString(this.workbasketIdIn)
+            + ", orderBy=" + this.orderBy + "]";
     }
 
 }

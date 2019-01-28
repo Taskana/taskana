@@ -433,8 +433,8 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
             + ", permCustom9=" + this.permCustom9
             + ", permCustom10=" + this.permCustom10
             + ", permCustom11=" + this.permCustom11
-            + ", permCustom12=" + this.permCustom12 +
-            "]";
+            + ", permCustom12=" + this.permCustom12
+            + "]";
     }
 
     @Override

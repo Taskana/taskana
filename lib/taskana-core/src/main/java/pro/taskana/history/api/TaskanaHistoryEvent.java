@@ -246,22 +246,11 @@ public class TaskanaHistoryEvent {
 
     @Override
     public String toString() {
-       return "TaskanaHistoryEvent [" +
-           "id=" + this.id +
-           ", businessProcessId=" + this.businessProcessId +
-           ", parentBusinessProcessId=" + this.parentBusinessProcessId +
-           ", taskId=" + this.taskId +
-           ", eventType=" + this.eventType +
-           ", created=" + this.created +
-           ", userId=" + this.userId +
-           ", domain=" + this.domain +
-           ", workbasketKey=" + this.workbasketKey +
-           ", taskClassificationKey=" + this.taskClassificationKey +
-           ", attachmentClassificationKey=" + this.attachmentClassificationKey +
-           ", oldValue=" + this.oldValue +
-           ", newValue=" + this.newValue +
-           ", oldData=" + this.oldData +
-           ", newData=" + this.newData +
-           "]";
+        return "TaskanaHistoryEvent [" + "id=" + this.id + ", businessProcessId=" + this.businessProcessId
+            + ", parentBusinessProcessId=" + this.parentBusinessProcessId + ", taskId=" + this.taskId + ", eventType="
+            + this.eventType + ", created=" + this.created + ", userId=" + this.userId + ", domain=" + this.domain
+            + ", workbasketKey=" + this.workbasketKey + ", taskClassificationKey=" + this.taskClassificationKey
+            + ", attachmentClassificationKey=" + this.attachmentClassificationKey + ", oldValue=" + this.oldValue
+            + ", newValue=" + this.newValue + ", oldData=" + this.oldData + ", newData=" + this.newData + "]";
     }
 }

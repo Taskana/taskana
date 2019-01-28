@@ -62,7 +62,7 @@ public class WorkbasketDefinitionController {
         List<WorkbasketSummary> workbasketSummaryList = domain != null
             ? workbasketQuery.domainIn(domain).list()
             : workbasketQuery.list();
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from exportWorkbaskets(), returning {}", new ResponseEntity<>(workbasketSummaryList, HttpStatus.OK));
         }
 
@@ -83,7 +83,7 @@ public class WorkbasketDefinitionController {
     public ResponseEntity<String> importWorkbaskets(@RequestParam("file") MultipartFile file)
         throws IOException, NotAuthorizedException, DomainNotFoundException, InvalidWorkbasketException,
         WorkbasketAlreadyExistException, WorkbasketNotFoundException, InvalidArgumentException {
-		LOGGER.debug("Entry to importWorkbaskets()");
+        LOGGER.debug("Entry to importWorkbaskets()");
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         List<WorkbasketDefinition> definitions = mapper.readValue(file.getInputStream(),
@@ -141,8 +141,8 @@ public class WorkbasketDefinitionController {
             workbasketService.setDistributionTargets(
                 // no verification necessary since the workbasket was already imported in step 1.
                 idConversion.get(definition.workbasket.getWorkbasketId()), distributionTargets);
-		}
-		LOGGER.debug("Exit from importWorkbaskets(), returning {}", new ResponseEntity<>(HttpStatus.OK));
+        }
+        LOGGER.debug("Exit from importWorkbaskets(), returning {}", new ResponseEntity<>(HttpStatus.OK));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

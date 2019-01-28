@@ -110,7 +110,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
                 .list();
         }
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("exit from getTasksCompletedBefore(), returning {}", LoggerUtils.listToString(taskList));
         }
 
@@ -118,7 +118,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     }
 
     private int deleteTasksTransactionally(List<TaskSummary> tasksToBeDeleted) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to deleteTasksTransactionally(tasksToBeDeleted = {})", LoggerUtils.listToString(tasksToBeDeleted));
         }
 
@@ -146,7 +146,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     }
 
     private int deleteTasks(List<TaskSummary> tasksToBeDeleted) throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to deleteTasks(tasksToBeDeleted = {})", tasksToBeDeleted);
         }
 

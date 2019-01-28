@@ -226,16 +226,9 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
 
     @Override
     public String toString() {
-        return "AttachmentSummaryImpl [" +
-            "id=" + this.id +
-            ", taskId=" + this.taskId +
-            ", created=" + this.created +
-            ", modified=" + this.modified +
-            ", classificationSummary=" + this.classificationSummary +
-            ", objectReference=" + this.objectReference +
-            ", channel=" + this.channel +
-            ", received=" + this.received +
-            "]";
+        return "AttachmentSummaryImpl [id=" + id + ", taskId=" + taskId + ", created=" + created + ", modified="
+            + modified + ", classificationSummary=" + classificationSummary + ", objectReference=" + objectReference
+            + ", channel=" + channel + ", received=" + received + "]";
     }
 
 }

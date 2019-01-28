@@ -217,30 +217,13 @@ public class ClassificationResource extends ResourceSupport {
 
     @Override
     public String toString() {
-        return "ClassificationResource [" +
-            "classificationId=" + this.classificationId +
-            ", key=" + this.key +
-            ", parentId=" + this.parentId +
-            ", parentKey=" + this.parentKey +
-            ", category=" + this.category +
-            ", type=" + this.type +
-            ", domain=" + this.domain +
-            ", isValidInDomain=" + this.isValidInDomain +
-            ", created=" + this.created +
-            ", modified=" + this.modified +
-            ", name=" + this.name +
-            ", description=" + this.description +
-            ", priority=" + this.priority +
-            ", serviceLevel=" + this.serviceLevel +
-            ", applicationEntryPoint=" + this.applicationEntryPoint +
-            ", custom1=" + this.custom1 +
-            ", custom2=" + this.custom2 +
-            ", custom3=" + this.custom3 +
-            ", custom4=" + this.custom4 +
-            ", custom5=" + this.custom5 +
-            ", custom6=" + this.custom6 +
-            ", custom7=" + this.custom7 +
-            ", custom8=" + this.custom8 +
-            "]";
+        return "ClassificationResource [classificationId=" + classificationId + ", key=" + key + ", parentId="
+            + parentId + ", parentKey=" + parentKey + ", category=" + category + ", type=" + type + ", domain=" + domain
+            + ", isValidInDomain=" + isValidInDomain + ", created=" + created + ", modified=" + modified + ", name="
+            + name + ", description=" + description + ", priority=" + priority + ", serviceLevel=" + serviceLevel
+            + ", applicationEntryPoint=" + applicationEntryPoint + ", custom1=" + custom1 + ", custom2=" + custom2
+            + ", custom3=" + custom3 + ", custom4=" + custom4 + ", custom5=" + custom5 + ", custom6=" + custom6
+            + ", custom7=" + custom7 + ", custom8=" + custom8 + "]";
     }
+
 }
