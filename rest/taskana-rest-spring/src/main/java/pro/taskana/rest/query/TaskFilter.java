@@ -60,7 +60,7 @@ public class TaskFilter {
 
     public List<TaskSummary> inspectParams(MultiValueMap<String, String> params)
         throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to inspectParams(params= {})", params);
         }
 
@@ -125,7 +125,7 @@ public class TaskFilter {
             taskQuery.transferredEquals(Boolean.getBoolean(params.get(IS_TRANSFERRED).get(0)));
         }
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from inspectParams(), returning {}", LoggerUtils.listToString(taskQuery.list()));
         }
 
@@ -147,7 +147,7 @@ public class TaskFilter {
     }
 
     private TaskState[] extractStates(MultiValueMap<String, String> params) throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to extractStates(params= {})", params);
         }
 

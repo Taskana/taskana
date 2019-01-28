@@ -33,10 +33,10 @@ public class KeyDomain {
 
     @Override
     public String toString() {
-        return "KeyDomain [" +
-            "key=" + this.key +
-            ", domain=" + this.domain +
-            "]";
+        return "KeyDomain ["
+             + "key=" + this.key
+             + ", domain=" + this.domain
+             + "]";
     }
 
     @Override

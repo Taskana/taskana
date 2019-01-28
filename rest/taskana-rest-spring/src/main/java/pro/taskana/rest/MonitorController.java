@@ -46,7 +46,7 @@ public class MonitorController {
         @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException,
         InvalidArgumentException {
         LOGGER.debug("Entry to getTasksStatusReport()");
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasksStatusReport(), returning {}", reportAssembler.toResource(
                 taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
                 domains, states));
@@ -65,7 +65,7 @@ public class MonitorController {
         @RequestParam(value = "states") List<TaskState> states)
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksWorkbasketReport()");
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", reportAssembler.toResource(
                 taskMonitorService.createWorkbasketReportBuilder()
                     .stateIn(states)
@@ -85,8 +85,8 @@ public class MonitorController {
     public ResponseEntity<ReportResource> getTasksClassificationReport()
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksClassificationReport()");
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getTasksClassificationReport(), returning {}",reportAssembler.toResource(
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getTasksClassificationReport(), returning {}", reportAssembler.toResource(
                 taskMonitorService.createClassificationReportBuilder()
                     .withColumnHeaders(getTaskClassificationTimeInterval())
                     .buildReport()));

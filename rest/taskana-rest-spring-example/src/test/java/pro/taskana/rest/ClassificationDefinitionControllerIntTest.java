@@ -170,7 +170,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportMultipleClassifications() throws IOException, InterruptedException {
+    public void testImportMultipleClassifications() throws IOException {
         ClassificationResource classification1 = this.createClassification("id1", "ImportKey1", "DOMAIN_A", null, null);
         String c1 = objMapper.writeValueAsString(classification1);
         
@@ -196,7 +196,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportDuplicateClassification() throws IOException, InterruptedException {
+    public void testImportDuplicateClassification() throws IOException {
         ClassificationResource classification1 = new ClassificationResource();
         classification1.setClassificationId("id1");
         classification1.setKey("ImportKey3");
@@ -262,7 +262,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportParentAndChildClassification() throws IOException, InterruptedException {
+    public void testImportParentAndChildClassification() throws IOException {
         ClassificationResource classification1 = this.createClassification("parentId", "ImportKey6", "DOMAIN_A", null, null);
         String c1 = objMapper.writeValueAsString(classification1);
         
@@ -299,7 +299,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportParentAndChildClassificationWithKey() throws IOException, InterruptedException {
+    public void testImportParentAndChildClassificationWithKey() throws IOException {
         ClassificationResource classification1 = createClassification("parent", "ImportKey11", "DOMAIN_A", null, null);
         classification1.setCustom1("parent is correct");
         String parent = objMapper.writeValueAsString(classification1);

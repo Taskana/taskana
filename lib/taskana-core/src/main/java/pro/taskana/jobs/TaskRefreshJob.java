@@ -53,7 +53,7 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "TaskRefreshJob [affectedTaskIds= " + LoggerUtils.listToString(affectedTaskIds) + "]";
     }
 

@@ -311,7 +311,7 @@ public class TaskanaEngineConfiguration {
         }
         ensureRoleMapIsFullyInitialized();
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             roleMap.forEach(
                 (k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, LoggerUtils.setToString(v)));
         }

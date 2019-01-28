@@ -57,13 +57,8 @@ public class TaskanaErrorData {
 
     @Override
     public String toString() {
-        return "TaskanaErrorData [" +
-            "timestamp=" + this.timestamp +
-            ", status=" + this.status +
-            ", error=" + this.error +
-            ", exception=" + this.exception +
-            ", message=" + this.message +
-            ", path=" + this.path + "]";
+        return "TaskanaErrorData [timestamp=" + timestamp + ", status=" + status + ", error=" + error + ", exception="
+            + exception + ", message=" + message + ", path=" + path + "]";
     }
 
 }

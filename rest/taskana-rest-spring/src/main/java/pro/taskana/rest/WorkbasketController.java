@@ -103,7 +103,7 @@ public class WorkbasketController extends AbstractPagingController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<WorkbasketSummaryResource>> getWorkbaskets(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to getWorkbaskets(params= {})", params);
         }
 
@@ -135,7 +135,7 @@ public class WorkbasketController extends AbstractPagingController {
         PagedResources<WorkbasketSummaryResource> pagedResources = assembler.toResources(workbasketSummaries,
             pageMetadata);
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getWorkbaskets(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
         }
 
@@ -150,7 +150,7 @@ public class WorkbasketController extends AbstractPagingController {
         ResponseEntity<WorkbasketResource> result;
         Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
         result = new ResponseEntity<>(workbasketResourceAssembler.toResource(workbasket), HttpStatus.OK);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getWorkbasket(), returning {}", result);
         }
 
@@ -172,13 +172,13 @@ public class WorkbasketController extends AbstractPagingController {
     public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource)
         throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
         WorkbasketNotFoundException, DomainNotFoundException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to createWorkbasket(workbasketResource= {})", workbasketResource);
         }
 
         Workbasket workbasket = workbasketResourceAssembler.toModel(workbasketResource);
         workbasket = workbasketService.createWorkbasket(workbasket);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from createWorkbasket(), returning {}", new ResponseEntity<>(workbasketResourceAssembler.toResource(workbasket), HttpStatus.CREATED));
         }
 
@@ -204,7 +204,7 @@ public class WorkbasketController extends AbstractPagingController {
                     + workbasketResource.getId() + "')");
         }
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from updateWorkbasket(), returning {}", result);
         }
 
@@ -223,7 +223,7 @@ public class WorkbasketController extends AbstractPagingController {
         Resources<WorkbasketAccessItemResource> accessItemListResource = accessItemListAssembler
             .toResource(workbasketId, accessItems);
         result = new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", result);
         }
 
@@ -249,7 +249,7 @@ public class WorkbasketController extends AbstractPagingController {
         Resources<WorkbasketAccessItemResource> accessItemListResource = accessItemListAssembler
             .toResource(workbasketId, updatedWbAccessItems);
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from setWorkbasketAccessItems(), returning {}", new ResponseEntity<>(accessItemListResource, HttpStatus.OK));
         }
 
@@ -267,7 +267,7 @@ public class WorkbasketController extends AbstractPagingController {
         Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListAssembler
             .toResource(workbasketId, distributionTargets);
         result = new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getDistributionTargets(), returning {}", result);
         }
 
@@ -279,7 +279,7 @@ public class WorkbasketController extends AbstractPagingController {
     public ResponseEntity<Resources<DistributionTargetResource>> setDistributionTargetsForWorkbasketId(
         @PathVariable(value = "workbasketId") String sourceWorkbasketId,
         @RequestBody List<String> targetWorkbasketIds) throws WorkbasketNotFoundException, NotAuthorizedException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to getTasksStatusReport(workbasketId= {}, targetWorkbasketIds´= {})", sourceWorkbasketId,
                 LoggerUtils.listToString(targetWorkbasketIds));
         }
@@ -290,7 +290,7 @@ public class WorkbasketController extends AbstractPagingController {
         Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListAssembler
             .toResource(sourceWorkbasketId, distributionTargets);
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasksStatusReport(), returning {}", new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK));
         }
 
@@ -314,7 +314,7 @@ public class WorkbasketController extends AbstractPagingController {
 
     private WorkbasketQuery applySortingParams(WorkbasketQuery query, MultiValueMap<String, String> params)
         throws IllegalArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to applySortingParams(query= {}, params={})", query, params);
         }
 
@@ -349,7 +349,7 @@ public class WorkbasketController extends AbstractPagingController {
         }
         params.remove(SORT_BY);
         params.remove(SORT_DIRECTION);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from applySortingParams(), returning {}", query);
         }
 
@@ -358,7 +358,7 @@ public class WorkbasketController extends AbstractPagingController {
 
     private WorkbasketQuery applyFilterParams(WorkbasketQuery query,
         MultiValueMap<String, String> params) throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
         }
 
@@ -476,7 +476,7 @@ public class WorkbasketController extends AbstractPagingController {
             }
             params.remove(REQUIRED_PERMISSION);
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
         }
 

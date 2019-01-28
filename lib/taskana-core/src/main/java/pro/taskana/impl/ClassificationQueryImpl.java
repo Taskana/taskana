@@ -617,44 +617,26 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     @Override
     public String toString() {
-        return "ClassificationQueryImpl [" +
-            "columnName= " + this.columnName +
-            ", key= " + Arrays.toString(this.key) +
-            ", idIn= " + Arrays.toString(this.idIn) +
-            ", parentId= " + Arrays.toString(this.parentId) +
-            ", parentKey= " + Arrays.toString(this.parentKey) +
-            ", category= " + Arrays.toString(this.category) +
-            ", type= " + Arrays.toString(this.type) +
-            ", domain= " + Arrays.toString(this.domain) +
-            ", validInDomain= " + this.validInDomain +
-            ", createdIn= " + Arrays.toString(this.createdIn) +
-            ", modifiedIn= " + Arrays.toString(this.modifiedIn) +
-            ", nameIn= " + Arrays.toString(this.nameIn) +
-            ", nameLike= " + Arrays.toString(this.nameLike) +
-            ", descriptionLike= " + this.descriptionLike +
-            ", priority= " + Arrays.toString(this.priority) +
-            ", serviceLevelIn= " + Arrays.toString(this.serviceLevelIn) +
-            ", serviceLevelLike= " + Arrays.toString(this.serviceLevelLike) +
-            ", applicationEntryPointIn= " + Arrays.toString(this.applicationEntryPointIn) +
-            ", applicationEntryPointLike= " + Arrays.toString(this.applicationEntryPointLike) +
-            ", custom1In= " + Arrays.toString(this.custom1In) +
-            ", custom1Like= " + Arrays.toString(this.custom1Like) +
-            ", custom2In= " + Arrays.toString(this.custom2In) +
-            ", custom2Like= " + Arrays.toString(this.custom2Like) +
-            ", custom3In= " + Arrays.toString(this.custom3In) +
-            ", custom3Like= " + Arrays.toString(this.custom3Like) +
-            ", custom4In= " + Arrays.toString(this.custom4In) +
-            ", custom4Like= " + Arrays.toString(this.custom4Like) +
-            ", custom5In= " + Arrays.toString(this.custom5In) +
-            ", custom5Like= " + Arrays.toString(this.custom5Like) +
-            ", custom6In= " + Arrays.toString(this.custom6In) +
-            ", custom6Like= " + Arrays.toString(this.custom6Like) +
-            ", custom7In= " + Arrays.toString(this.custom7In) +
-            ", custom7Like= " + Arrays.toString(this.custom7Like) +
-            ", custom8In= " + Arrays.toString(this.custom8In) +
-            ", custom8Like= " + Arrays.toString(this.custom8Like) +
-            ", orderBy= " + this.orderBy +
-            "]";
+        return "ClassificationQueryImpl [" + "columnName= " + this.columnName + ", key= " + Arrays.toString(this.key)
+            + ", idIn= " + Arrays.toString(this.idIn) + ", parentId= " + Arrays.toString(this.parentId)
+            + ", parentKey= " + Arrays.toString(this.parentKey) + ", category= " + Arrays.toString(this.category)
+            + ", type= " + Arrays.toString(this.type) + ", domain= " + Arrays.toString(this.domain)
+            + ", validInDomain= " + this.validInDomain + ", createdIn= " + Arrays.toString(this.createdIn)
+            + ", modifiedIn= " + Arrays.toString(this.modifiedIn) + ", nameIn= " + Arrays.toString(this.nameIn)
+            + ", nameLike= " + Arrays.toString(this.nameLike) + ", descriptionLike= " + this.descriptionLike
+            + ", priority= " + Arrays.toString(this.priority) + ", serviceLevelIn= "
+            + Arrays.toString(this.serviceLevelIn) + ", serviceLevelLike= " + Arrays.toString(this.serviceLevelLike)
+            + ", applicationEntryPointIn= " + Arrays.toString(this.applicationEntryPointIn)
+            + ", applicationEntryPointLike= " + Arrays.toString(this.applicationEntryPointLike) + ", custom1In= "
+            + Arrays.toString(this.custom1In) + ", custom1Like= " + Arrays.toString(this.custom1Like) + ", custom2In= "
+            + Arrays.toString(this.custom2In) + ", custom2Like= " + Arrays.toString(this.custom2Like) + ", custom3In= "
+            + Arrays.toString(this.custom3In) + ", custom3Like= " + Arrays.toString(this.custom3Like) + ", custom4In= "
+            + Arrays.toString(this.custom4In) + ", custom4Like= " + Arrays.toString(this.custom4Like) + ", custom5In= "
+            + Arrays.toString(this.custom5In) + ", custom5Like= " + Arrays.toString(this.custom5Like) + ", custom6In= "
+            + Arrays.toString(this.custom6In) + ", custom6Like= " + Arrays.toString(this.custom6Like) + ", custom7In= "
+            + Arrays.toString(this.custom7In) + ", custom7Like= " + Arrays.toString(this.custom7Like) + ", custom8In= "
+            + Arrays.toString(this.custom8In) + ", custom8Like= " + Arrays.toString(this.custom8Like) + ", orderBy= "
+            + this.orderBy + "]";
     }
 
 }

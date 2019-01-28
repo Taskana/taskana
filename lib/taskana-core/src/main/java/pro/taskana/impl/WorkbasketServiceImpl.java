@@ -789,7 +789,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
     public BulkOperationResults<String, TaskanaException> deleteWorkbaskets(List<String> workbasketsIds)
         throws NotAuthorizedException, InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to deleteWorkbaskets(workbasketId = {})", LoggerUtils.listToString(workbasketsIds));
         }
 

@@ -68,7 +68,7 @@ public class ClassificationDefinitionController {
 
         List<ClassificationSummary> summaries = domain != null ? query.domainIn(domain).list() : query.list();
         List<ClassificationResource> export = new ArrayList<>();
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from exportClassifications(), returning {}", new ResponseEntity<>(summaries, HttpStatus.OK));
         }
 
@@ -81,14 +81,14 @@ public class ClassificationDefinitionController {
         @RequestParam("file") MultipartFile file)
         throws InvalidArgumentException, NotAuthorizedException, ConcurrencyException, ClassificationNotFoundException,
         ClassificationAlreadyExistException, DomainNotFoundException, IOException {
-		LOGGER.debug("Entry to importClassifications()");
+        LOGGER.debug("Entry to importClassifications()");
         Map<String, String> systemIds = getSystemIds();
         List<ClassificationResource> classificationsResources = extractClassificationResourcesFromFile(file);
 
         Map<Classification, String> childsInFile = mapChildsToParentKeys(classificationsResources, systemIds);
         insertOrUpdateClassificationsWithoutParent(classificationsResources, systemIds);
         updateParentChildRelations(childsInFile);
-		LOGGER.debug("Exit from importClassifications(), returning {}", new ResponseEntity<>(HttpStatus.OK));
+        LOGGER.debug("Exit from importClassifications(), returning {}", new ResponseEntity<>(HttpStatus.OK));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -112,7 +112,7 @@ public class ClassificationDefinitionController {
     }
 
     private Map<Classification, String> mapChildsToParentKeys(List<ClassificationResource> classificationResources, Map<String, String> systemIds) {
-		LOGGER.debug("Entry to mapChildsToParentKeys()");
+        LOGGER.debug("Entry to mapChildsToParentKeys()");
         Map<Classification, String> childsInFile = new HashMap<>();
         Set<String> newKeysWithDomain = new HashSet<>();
         classificationResources.forEach(cl -> newKeysWithDomain.add(cl.getKey() + "|" + cl.getDomain()));
@@ -135,8 +135,8 @@ public class ClassificationDefinitionController {
                     childsInFile.put(classificationResourceAssembler.toModel(cl), cl.getParentKey());
                 }
             }
-		}
-        if(LOGGER.isDebugEnabled()) {
+        }
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from mapChildsToParentKeys(), returning {}", LoggerUtils.mapToString(childsInFile));
         }
 
@@ -147,7 +147,8 @@ public class ClassificationDefinitionController {
         Map<String, String> systemIds)
         throws ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException,
         ClassificationAlreadyExistException, DomainNotFoundException, ConcurrencyException {
-		LOGGER.debug("Entry to insertOrUpdateClassificationsWithoutParent()");
+        LOGGER.debug("Entry to insertOrUpdateClassificationsWithoutParent()");
+
         for (ClassificationResource classificationResource : classificationResources) {
             classificationResource.setParentKey(null);
             classificationResource.setParentId(null);
@@ -160,8 +161,8 @@ public class ClassificationDefinitionController {
                 classificationService.createClassification(
                         classificationResourceAssembler.toModel(classificationResource));
             }
-		}
-		LOGGER.debug("Exit from insertOrUpdateClassificationsWithoutParent()");
+        }
+        LOGGER.debug("Exit from insertOrUpdateClassificationsWithoutParent()");
     }
 
     private void updateParentChildRelations(Map<Classification, String> childsInFile)

@@ -94,7 +94,7 @@ public class TaskController extends AbstractPagingController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<TaskSummaryResource>> getTasks(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to getTasks(params= {})", params);
         }
 
@@ -126,7 +126,7 @@ public class TaskController extends AbstractPagingController {
         TaskSummaryResourcesAssembler taskSummaryResourcesAssembler = new TaskSummaryResourcesAssembler();
         PagedResources<TaskSummaryResource> pagedResources = taskSummaryResourcesAssembler.toResources(taskSummaries,
             pageMetadata);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasks(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
         }
 
@@ -141,7 +141,7 @@ public class TaskController extends AbstractPagingController {
         Task task = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(task),
             HttpStatus.OK);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTask(), returning {}", result);
         }
 
@@ -158,7 +158,7 @@ public class TaskController extends AbstractPagingController {
         Task updatedTask = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from claimTask(), returning {}", result);
         }
 
@@ -174,7 +174,7 @@ public class TaskController extends AbstractPagingController {
         Task updatedTask = taskService.getTask(taskId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from completeTask(), returning {}", result);
         }
 
@@ -197,14 +197,14 @@ public class TaskController extends AbstractPagingController {
     public ResponseEntity<TaskResource> createTask(@RequestBody TaskResource taskResource)
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to createTask(params= {})", taskResource);
         }
 
         Task createdTask = taskService.createTask(taskResourceAssembler.toModel(taskResource));
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(createdTask),
             HttpStatus.CREATED);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from createTask(), returning {}", result);
         }
 
@@ -219,7 +219,7 @@ public class TaskController extends AbstractPagingController {
         Task updatedTask = taskService.transfer(taskId, workbasketId);
         ResponseEntity<TaskResource> result = new ResponseEntity<>(taskResourceAssembler.toResource(updatedTask),
             HttpStatus.OK);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from transferTask(), returning {}", result);
         }
 
@@ -246,7 +246,7 @@ public class TaskController extends AbstractPagingController {
                     + taskResource.getTaskId() + "')");
         }
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from updateTask(), returning {}", result);
         }
 
@@ -255,7 +255,7 @@ public class TaskController extends AbstractPagingController {
 
     private TaskQuery applyFilterParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
         throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to applyFilterParams(taskQuery= {}, params= {})", taskQuery, params);
         }
 
@@ -340,7 +340,7 @@ public class TaskController extends AbstractPagingController {
             params.remove(POR_VALUE);
         }
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from applyFilterParams(), returning {}", taskQuery);
         }
 
@@ -349,7 +349,7 @@ public class TaskController extends AbstractPagingController {
 
     private TaskQuery applySortingParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
         throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to applySortingParams(taskQuery= {}, params= {})", taskQuery, params);
         }
 
@@ -393,7 +393,7 @@ public class TaskController extends AbstractPagingController {
         }
         params.remove(SORT_BY);
         params.remove(SORT_DIRECTION);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from applySortingParams(), returning {}", taskQuery);
         }
 
@@ -401,7 +401,7 @@ public class TaskController extends AbstractPagingController {
     }
 
     private int[] extractPriorities(String[] prioritiesInString) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to extractPriorities(prioritiesInString= {})", prioritiesInString);
         }
 
@@ -409,7 +409,7 @@ public class TaskController extends AbstractPagingController {
         for (int i = 0; i < prioritiesInString.length; i++) {
             priorities[i] = Integer.valueOf(prioritiesInString[i]);
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from extractPriorities(), returning {}", priorities);
         }
 
@@ -417,7 +417,7 @@ public class TaskController extends AbstractPagingController {
     }
 
     private TaskState[] extractStates(MultiValueMap<String, String> params) throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to extractStates(params= {})", params);
         }
 

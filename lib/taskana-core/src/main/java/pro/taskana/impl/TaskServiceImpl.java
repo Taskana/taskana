@@ -412,7 +412,7 @@ public class TaskServiceImpl implements TaskService {
         List<String> taskIds) throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         try {
             taskanaEngine.openConnection();
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("entry to transferTasks(targetWbId = {}, taskIds = {})", destinationWorkbasketId, LoggerUtils.listToString(taskIds));
             }
 
@@ -425,7 +425,7 @@ public class TaskServiceImpl implements TaskService {
 
             return transferTasks(taskIds, destinationWorkbasket);
         } finally {
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("exit from transferTasks(targetWbKey = {}, taskIds = {})", destinationWorkbasketId, LoggerUtils.listToString(taskIds));
             }
 
@@ -439,7 +439,7 @@ public class TaskServiceImpl implements TaskService {
         throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         try {
             taskanaEngine.openConnection();
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("entry to transferTasks(targetWbKey = {}, domain = {}, taskIds = {})", destinationWorkbasketKey,
                     destinationWorkbasketDomain, LoggerUtils.listToString(taskIds));
             }
@@ -454,7 +454,7 @@ public class TaskServiceImpl implements TaskService {
 
             return transferTasks(taskIds, destinationWorkbasket);
         } finally {
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("exit from transferTasks(targetWbKey = {}, targetWbDomain = {}, destination taskIds = {})", destinationWorkbasketKey,
                     destinationWorkbasketDomain, LoggerUtils.listToString(taskIds));
             }
@@ -608,7 +608,7 @@ public class TaskServiceImpl implements TaskService {
             if (!taskSummaries.isEmpty()) {
                 changedTasks = taskSummaries.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
                 taskMapper.updateTasks(changedTasks, updated, fieldSelector);
-                if(LOGGER.isDebugEnabled()) {
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("updateTasks() updated the following tasks: {} ", LoggerUtils.listToString(changedTasks));
                 }
 
@@ -644,7 +644,7 @@ public class TaskServiceImpl implements TaskService {
             if (!taskSummaries.isEmpty()) {
                 changedTasks = taskSummaries.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
                 taskMapper.updateTasks(changedTasks, updatedTask, fieldSelector);
-                if(LOGGER.isDebugEnabled()) {
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("updateTasks() updated the following tasks: {} ", LoggerUtils.listToString(changedTasks));
                 }
 
@@ -760,7 +760,7 @@ public class TaskServiceImpl implements TaskService {
     private BulkOperationResults<String, TaskanaException> transferTasks(List<String> taskIdsToBeTransferred,
         Workbasket destinationWorkbasket)
         throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to transferTasks(taskIdsToBeTransferred = {}, destinationWorkbasket = {})", LoggerUtils.listToString(taskIdsToBeTransferred), destinationWorkbasket);
         }
 
@@ -785,7 +785,7 @@ public class TaskServiceImpl implements TaskService {
         }
         checkIfTransferConditionsAreFulfilled(taskIds, taskSummaries, bulkLog);
         updateTasksToBeTransferred(taskIds, taskSummaries, destinationWorkbasket);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("exit from transferTasks(), returning {}", bulkLog);
         }
 
@@ -794,7 +794,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void removeNonExistingTasksFromTaskIdList(List<String> taskIds,
         BulkOperationResults<String, TaskanaException> bulkLog) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to removeNonExistingTasksFromTaskIdList(targetWbId = {}, taskIds = {})", taskIds, bulkLog);
         }
 
@@ -812,7 +812,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void checkIfTransferConditionsAreFulfilled(List<String> taskIds, List<MinimalTaskSummary> taskSummaries,
         BulkOperationResults<String, TaskanaException> bulkLog) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to checkIfTransferConditionsAreFulfilled(taskIds = {}, taskSummaries = {}, bulkLog = {})",
                 LoggerUtils.listToString(taskIds), LoggerUtils.listToString(taskSummaries), bulkLog);
         }
@@ -836,7 +836,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void checkIfTasksMatchTransferCriteria(List<String> taskIds, List<MinimalTaskSummary> taskSummaries,
         List<WorkbasketSummary> sourceWorkbaskets, BulkOperationResults<String, TaskanaException> bulkLog) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to checkIfTasksMatchTransferCriteria(taskIds = {}, taskSummaries = {}, sourceWorkbaskets = {}, bulkLog = {})",
                 LoggerUtils.listToString(taskIds), LoggerUtils.listToString(taskSummaries), LoggerUtils.listToString(sourceWorkbaskets), bulkLog);
         }
@@ -869,7 +869,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void checkIfTasksMatchCompleteCriteria(List<String> taskIds, List<TaskSummary> taskSummaries,
         BulkOperationResults<String, TaskanaException> bulkLog) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to checkIfTasksMatchCompleteCriteria(taskIds = {}, taskSummaries = {}, bulkLog = {})",
                 LoggerUtils.listToString(taskIds), LoggerUtils.listToString(taskSummaries), bulkLog);
         }
@@ -905,7 +905,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void updateTasksToBeTransferred(List<String> taskIds,
         List<MinimalTaskSummary> taskSummaries, Workbasket destinationWorkbasket) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to updateTasksToBeTransferred(taskIds = {}, taskSummaries = {})",
                 LoggerUtils.listToString(taskIds), LoggerUtils.listToString(taskSummaries), destinationWorkbasket);
         }
@@ -934,7 +934,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void updateTasksToBeCompleted(List<String> taskIds,
         List<TaskSummary> taskSummaries) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to updateTasksToBeCompleted(taskIds = {}, taskSummaries = {})", LoggerUtils.listToString(taskIds), LoggerUtils.listToString(taskSummaries));
         }
 
@@ -984,7 +984,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void addClassificationSummariesToTaskSummaries(List<TaskSummaryImpl> tasks,
         List<ClassificationSummary> classifications) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to addClassificationSummariesToTaskSummaries(tasks = {}, classifications = {})", LoggerUtils.listToString(tasks), LoggerUtils.listToString(classifications));
         }
 
@@ -1095,7 +1095,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void addAttachmentSummariesToTaskSummaries(List<TaskSummaryImpl> taskSummaries,
         List<AttachmentSummaryImpl> attachmentSummaries, List<ClassificationSummary> classifications) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to addAttachmentSummariesToTaskSummaries(taskSummaries = {}, attachmentSummaries = {}, classifications = {})",
                 LoggerUtils.listToString(taskSummaries), LoggerUtils.listToString(attachmentSummaries), LoggerUtils.listToString(classifications));
         }
@@ -1147,7 +1147,7 @@ public class TaskServiceImpl implements TaskService {
 
     private List<Attachment> addClassificationSummariesToAttachments(List<AttachmentImpl> attachmentImpls,
         List<ClassificationSummary> classifications) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to addClassificationSummariesToAttachments(targetWbId = {}, taskIds = {})",
                 LoggerUtils.listToString(attachmentImpls), LoggerUtils.listToString(classifications));
         }
@@ -1171,7 +1171,7 @@ public class TaskServiceImpl implements TaskService {
             att.setClassificationSummary(aClassification);
             result.add(att);
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("exit from addClassificationSummariesToAttachments(), returning {}", result);
         }
 
@@ -1180,7 +1180,7 @@ public class TaskServiceImpl implements TaskService {
 
     private TaskImpl initUpdatedTask(Map<String, String> customFieldsToUpdate, CustomPropertySelector fieldSelector)
         throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to initUpdatedTask(customFieldsToUpdate = {}, fieldSelector = {})", LoggerUtils.mapToString(customFieldsToUpdate), fieldSelector);
         }
 
@@ -1192,7 +1192,7 @@ public class TaskServiceImpl implements TaskService {
             fieldSelector.setCustomProperty(key, true);
             newTask.setCustomAttribute(key, entry.getValue());
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("exit from initUpdatedTask(), returning {}", newTask);
         }
 
@@ -1200,7 +1200,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void validateCustomFields(Map<String, String> customFieldsToUpdate) throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to validateCustomFields(customFieldsToUpdate = {}, taskIds = {})", LoggerUtils.mapToString(customFieldsToUpdate));
         }
 
@@ -1258,7 +1258,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private PrioDurationHolder handleAttachments(TaskImpl task) throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to handleAttachments(task = {})", task);
         }
 
@@ -1404,7 +1404,7 @@ public class TaskServiceImpl implements TaskService {
 
     private PrioDurationHolder handleAttachmentsOnTaskUpdate(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
         throws AttachmentPersistenceException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to handleAttachmentsOnTaskUpdate(oldTaskImpl = {}, newTaskImpl = {})", oldTaskImpl, newTaskImpl);
         }
 
@@ -1432,7 +1432,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void deleteAttachmentOnTaskUpdate(TaskImpl oldTaskImpl, TaskImpl newTaskImpl) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to deleteAttachmentOnTaskUpdate(oldTaskImpl = {}, newTaskImpl = {})", oldTaskImpl, newTaskImpl);
         }
 
@@ -1531,7 +1531,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private PrioDurationHolder handleAttachmentsOnClassificationUpdate(Task task) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to handleAttachmentsOnClassificationUpdate(task = {})", task);
         }
 
@@ -1876,7 +1876,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to augmentTaskSummariesByContainedSummaries(taskSummaries= {})", LoggerUtils.listToString(taskSummaries));
         }
 
@@ -1937,11 +1937,7 @@ public class TaskServiceImpl implements TaskService {
 
         @Override
         public String toString() {
-            return "PrioDurationHolder [" +
-                "duration=" + this.duration +
-                ", prio=" + this.prio +
-                "]";
+            return "PrioDurationHolder [duration=" + duration + ", prio=" + prio + "]";
         }
     }
-
 }

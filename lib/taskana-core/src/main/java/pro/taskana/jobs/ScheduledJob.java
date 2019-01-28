@@ -109,18 +109,9 @@ public class ScheduledJob {
 
     @Override
     public String toString() {
-        return "ScheduledJob [" +
-            "jobId=" + this.jobId +
-            ", priority=" + this.priority +
-            ", created=" + this.created +
-            ", due=" + this.due +
-            ", state=" + this.state +
-            ", lockedBy=" + this.lockedBy +
-            ", lockExpires=" + this.lockExpires +
-            ", type=" + this.type +
-            ", retryCount=" + this.retryCount +
-            ", arguments=" + this.arguments +
-            "]";
+        return "ScheduledJob [jobId=" + jobId + ", priority=" + priority + ", created=" + created + ", due=" + due
+            + ", state=" + state + ", lockedBy=" + lockedBy + ", lockExpires=" + lockExpires + ", type=" + type
+            + ", retryCount=" + retryCount + ", arguments=" + arguments + "]";
     }
 
     /**

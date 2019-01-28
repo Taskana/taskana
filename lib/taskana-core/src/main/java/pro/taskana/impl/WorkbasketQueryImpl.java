@@ -630,46 +630,27 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     @Override
     public String toString() {
-        return "WorkbasketQueryImpl [" +
-            "columnName=" + this.columnName +
-            ", accessId=" + Arrays.toString(this.accessId) +
-            ", idIn=" + Arrays.toString(this.idIn) +
-            ", permission=" + this.permission +
-            ", nameIn=" + Arrays.toString(this.nameIn) +
-            ", nameLike=" + Arrays.toString(this.nameLike) +
-            ", keyIn=" + Arrays.toString(this.keyIn) +
-            ", keyLike=" + Arrays.toString(this.keyLike) +
-            ", keyOrNameLike=" + Arrays.toString(this.keyOrNameLike) +
-            ", domainIn=" + Arrays.toString(this.domainIn) +
-            ", domainLike=" + Arrays.toString(this.domainLike) +
-            ", type=" + Arrays.toString(this.type) +
-            ", createdIn=" + Arrays.toString(this.createdIn) +
-            ", modifiedIn=" + Arrays.toString(this.modifiedIn) +
-            ", descriptionLike=" + Arrays.toString(this.descriptionLike) +
-            ", ownerIn=" + Arrays.toString(this.ownerIn) +
-            ", ownerLike=" + Arrays.toString(this.ownerLike) +
-            ", custom1In=" + Arrays.toString(this.custom1In) +
-            ", custom1Like=" + Arrays.toString(this.custom1Like) +
-            ", custom2In=" + Arrays.toString(this.custom2In) +
-            ", custom2Like=" + Arrays.toString(this.custom2Like) +
-            ", custom3In=" + Arrays.toString(this.custom3In) +
-            ", custom3Like=" + Arrays.toString(this.custom3Like) +
-            ", custom4In=" + Arrays.toString(this.custom4In) +
-            ", custom4Like=" + Arrays.toString(this.custom4Like) +
-            ", orgLevel1In=" + Arrays.toString(this.orgLevel1In) +
-            ", orgLevel1Like=" + Arrays.toString(this.orgLevel1Like) +
-            ", orgLevel2In=" + Arrays.toString(this.orgLevel2In) +
-            ", orgLevel2Like=" + Arrays.toString(this.orgLevel2Like) +
-            ", orgLevel3In=" + Arrays.toString(this.orgLevel3In) +
-            ", orgLevel3Like=" + Arrays.toString(this.orgLevel3Like) +
-            ", orgLevel4In=" + Arrays.toString(this.orgLevel4In) +
-            ", orgLevel4Like=" + Arrays.toString(this.orgLevel4Like) +
-            ", markedForDeletion=" + this.markedForDeletion +
-            ", orderBy=" + this.orderBy +
-            ", joinWithAccessList=" + this.joinWithAccessList +
-            ", checkReadPermission=" + this.checkReadPermission +
-            ", usedToAugmentTasks=" + this.usedToAugmentTasks +
-            "]";
+        return "WorkbasketQueryImpl [" + "columnName=" + this.columnName + ", accessId="
+            + Arrays.toString(this.accessId) + ", idIn=" + Arrays.toString(this.idIn) + ", permission="
+            + this.permission + ", nameIn=" + Arrays.toString(this.nameIn) + ", nameLike="
+            + Arrays.toString(this.nameLike) + ", keyIn=" + Arrays.toString(this.keyIn) + ", keyLike="
+            + Arrays.toString(this.keyLike) + ", keyOrNameLike=" + Arrays.toString(this.keyOrNameLike) + ", domainIn="
+            + Arrays.toString(this.domainIn) + ", domainLike=" + Arrays.toString(this.domainLike) + ", type="
+            + Arrays.toString(this.type) + ", createdIn=" + Arrays.toString(this.createdIn) + ", modifiedIn="
+            + Arrays.toString(this.modifiedIn) + ", descriptionLike=" + Arrays.toString(this.descriptionLike)
+            + ", ownerIn=" + Arrays.toString(this.ownerIn) + ", ownerLike=" + Arrays.toString(this.ownerLike)
+            + ", custom1In=" + Arrays.toString(this.custom1In) + ", custom1Like=" + Arrays.toString(this.custom1Like)
+            + ", custom2In=" + Arrays.toString(this.custom2In) + ", custom2Like=" + Arrays.toString(this.custom2Like)
+            + ", custom3In=" + Arrays.toString(this.custom3In) + ", custom3Like=" + Arrays.toString(this.custom3Like)
+            + ", custom4In=" + Arrays.toString(this.custom4In) + ", custom4Like=" + Arrays.toString(this.custom4Like)
+            + ", orgLevel1In=" + Arrays.toString(this.orgLevel1In) + ", orgLevel1Like="
+            + Arrays.toString(this.orgLevel1Like) + ", orgLevel2In=" + Arrays.toString(this.orgLevel2In)
+            + ", orgLevel2Like=" + Arrays.toString(this.orgLevel2Like) + ", orgLevel3In="
+            + Arrays.toString(this.orgLevel3In) + ", orgLevel3Like=" + Arrays.toString(this.orgLevel3Like)
+            + ", orgLevel4In=" + Arrays.toString(this.orgLevel4In) + ", orgLevel4Like="
+            + Arrays.toString(this.orgLevel4Like) + ", markedForDeletion=" + this.markedForDeletion + ", orderBy="
+            + this.orderBy + ", joinWithAccessList=" + this.joinWithAccessList + ", checkReadPermission="
+            + this.checkReadPermission + ", usedToAugmentTasks=" + this.usedToAugmentTasks + "]";
     }
 
     private void handleCallerRolesAndAccessIds() {

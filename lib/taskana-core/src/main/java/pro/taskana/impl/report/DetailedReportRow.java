@@ -53,9 +53,7 @@ public class DetailedReportRow extends ReportRow<DetailedMonitorQueryItem> {
 
     @Override
     public String toString() {
-        return "DetailedReportRow [" +
-            "detailRows= " + LoggerUtils.mapToString(this.detailRows) +
-            ", columnCount= " + this.columnCount +
-            "]";
+        return "DetailedReportRow [" + "detailRows= " + LoggerUtils.mapToString(this.detailRows)
+        + ", columnCount= " + this.columnCount + "]";
     }
 }

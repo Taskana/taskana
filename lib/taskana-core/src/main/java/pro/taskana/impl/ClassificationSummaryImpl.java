@@ -351,26 +351,11 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
 
     @Override
     public String toString() {
-       return "ClassificationSummaryImpl [" +
-           "id= " + this.id +
-            ", key= " + this.key +
-            ", category= " + this.category +
-            ", type= " + this.type +
-            ", domain= " + this.domain +
-            ", name= " + this.name +
-            ", parentId= " + this.parentId +
-            ", parentKey= " + parentKey +
-            ", priority= " + this.priority +
-            ", serviceLevel= " + this.serviceLevel +
-            ", custom1= " + this.custom1 +
-            ", custom2= " + this.custom2 +
-            ", custom3= " + this.custom3 +
-            ", custom4= " + this.custom4 +
-            ", custom5= " + this.custom5 +
-            ", custom6= " + this.custom6 +
-            ", custom7= " + this.custom7 +
-            ", custom8= " + this.custom8 +
-           "]";
+        return "ClassificationSummaryImpl [id=" + id + ", key=" + key + ", category=" + category + ", type=" + type
+            + ", domain=" + domain + ", name=" + name + ", parentId=" + parentId + ", parentKey=" + parentKey
+            + ", priority=" + priority + ", serviceLevel=" + serviceLevel + ", custom1=" + custom1 + ", custom2="
+            + custom2 + ", custom3=" + custom3 + ", custom4=" + custom4 + ", custom5=" + custom5 + ", custom6="
+            + custom6 + ", custom7=" + custom7 + ", custom8=" + custom8 + "]";
     }
 
 }
