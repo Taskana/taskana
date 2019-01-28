@@ -1,5 +1,8 @@
 package pro.taskana;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Enum containing the column names for @see pro.taskana.mappings.QueryMapper#queryTaskColumnValues(pro.taskana.impl.TaskQueryImpl).
  *
@@ -62,6 +65,10 @@ public enum TaskQueryColumnName implements QueryColumnName {
     private String name;
     TaskQueryColumnName(String name) {
         this.name = name;
+    }
+
+    public static List<TaskQueryColumnName> getAttachmentList() {
+        return Arrays.asList(A_CLASSIFICATION_ID, A_CLASSIFICATION_KEY, A_CHANNEL, A_REF_VALUE);
     }
 
     @Override
