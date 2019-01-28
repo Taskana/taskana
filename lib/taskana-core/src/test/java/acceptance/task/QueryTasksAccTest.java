@@ -13,10 +13,12 @@ import static pro.taskana.TaskQueryColumnName.A_REF_VALUE;
 import static pro.taskana.TaskQueryColumnName.A_CLASSIFICATION_ID;
 import static pro.taskana.TaskQueryColumnName.CLASSIFICATION_KEY;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
@@ -28,6 +30,7 @@ import pro.taskana.Attachment;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
+import pro.taskana.TaskQueryColumnName;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.TimeInterval;
@@ -57,6 +60,23 @@ public class QueryTasksAccTest extends AbstractAccTest {
 
     public QueryTasksAccTest() {
         super();
+    }
+
+    @WithAccessId(
+            userName = "teamlead_1",
+            groupNames = {"admin"})
+    @Test
+    public void testQueryTaskValuesForEveryColumn() {
+        TaskService taskService = taskanaEngine.getTaskService();
+        List<String> notWorkingColumns = new ArrayList<>();
+        for (TaskQueryColumnName columnName : TaskQueryColumnName.values()) {
+            try {
+                taskService.createTaskQuery().listValues(columnName, asc);
+            } catch (PersistenceException p) {
+                notWorkingColumns.add(columnName.toString());
+            }
+        }
+        assertEquals(new ArrayList<>(), notWorkingColumns);
     }
 
     @WithAccessId(
@@ -238,6 +258,30 @@ public class QueryTasksAccTest extends AbstractAccTest {
         assertThat(results.get(0).getAttachmentSummaries().size(), equalTo(3));
         assertNotNull(results.get(0).getAttachmentSummaries().get(0));
     }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"admin"})
+    @Test
+    public void testQueryForExternalId() {
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        List<TaskSummary> results = taskService.createTaskQuery()
+            .externalIdIn("EID:000000000000000000000000000000000000", "EID:000000000000000000000000000000000001")
+            .list();
+        assertThat(results.size(), equalTo(2));
+
+        List<String> resultValues = taskService.createTaskQuery()
+            .externalIdLike("EID:000000000000000000000000000000%")
+            .listValues(TaskQueryColumnName.EXTERNAL_ID, desc);
+        assertThat(resultValues.size(), equalTo(70));
+
+        long countAllExternalIds = taskService.createTaskQuery()
+            .externalIdLike("EID:%")
+            .count();
+        long countAllIds = taskService.createTaskQuery().count();
+        assertEquals(countAllIds, countAllExternalIds);
+        }
 
     @WithAccessId(
         userName = "teamlead_1",
