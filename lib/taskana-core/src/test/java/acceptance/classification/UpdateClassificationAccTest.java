@@ -2,6 +2,7 @@ package acceptance.classification;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -274,6 +275,20 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
                 ));
         validateNewTaskProperties(before, tasksWithP15D, taskService, converter, 15);
 
+    }
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
+    @Test(expected=InvalidArgumentException.class)
+    public void testUpdateClassificationWithSameKeyAndParentKey()
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException {
+
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
+
+        classification.setParentKey(classification.getKey());
+        classificationService.updateClassification(classification);
     }
 
     private void validateNewTaskProperties(Instant before, List<String> tasksWithP15D, TaskService taskService,

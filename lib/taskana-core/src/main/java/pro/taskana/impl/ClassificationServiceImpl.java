@@ -166,70 +166,26 @@ public class ClassificationServiceImpl implements ClassificationService {
         ClassificationImpl classificationImpl = null;
         try {
             taskanaEngine.openConnection();
-            classificationImpl = (ClassificationImpl) classification;
-
-            // Check if current object is based on the newest (by modified)
-            Classification oldClassification = this.getClassification(classificationImpl.getKey(),
-                classificationImpl.getDomain());
-            if (!oldClassification.getModified().equals(classificationImpl.getModified())) {
-                throw new ConcurrencyException(
-                    "The current Classification has been modified while editing. The values can not be updated. Classification "
-                        + classificationImpl.toString());
+            if (classification.getKey().equals(classification.getParentKey())) {
+                throw new InvalidArgumentException(
+                    "The classification " + classification.getName() + " has the same key and parentKey");
             }
+
+            classificationImpl = (ClassificationImpl) classification;
+            Classification oldClassification = this.getExistingClassificationAndVerifyTimestampHasNotChanged(
+                classificationImpl);
             classificationImpl.setModified(Instant.now());
             this.initDefaultClassificationValues(classificationImpl);
 
-            // Update classification fields used by tasks
             if (oldClassification.getCategory() != classificationImpl.getCategory()) {
-                List<TaskSummary> taskSummaries = taskanaEngine.getTaskService()
-                    .createTaskQuery()
-                    .classificationIdIn(oldClassification.getId())
-                    .list();
-
-                boolean categoryChanged = !(oldClassification.getCategory() == null
-                    ? classification.getCategory() == null
-                    : oldClassification.getCategory().equals(classification.getCategory()));
-                if (!taskSummaries.isEmpty() && categoryChanged) {
-                    List<String> taskIds = new ArrayList<>();
-                    taskSummaries.stream().forEach(ts -> taskIds.add(ts.getTaskId()));
-                    taskMapper.updateClassificationCategoryOnChange(taskIds, classificationImpl.getCategory());
-                }
+                this.updateCategoryOnAssociatedTasks(classificationImpl, oldClassification);
             }
 
-            // Check if parentId changed and object does exist
-            if (!oldClassification.getParentId().equals(classificationImpl.getParentId())) {
-                if (classificationImpl.getParentId() != null && !classificationImpl.getParentId().isEmpty()) {
-                    this.getClassification(classificationImpl.getParentId());
-                }
-            }
-
-            // Check if parentKey changed and object does exist
-            if (!oldClassification.getParentKey().equals(classificationImpl.getParentKey())) {
-                if (classificationImpl.getParentKey() != null && !classificationImpl.getParentKey().isEmpty()) {
-                    this.getClassification(classificationImpl.getParentKey(), classificationImpl.getDomain());
-                }
-            }
-
+            this.checkExistenceOfParentClassification(oldClassification, classificationImpl);
             classificationMapper.update(classificationImpl);
-            boolean priorityChanged = oldClassification.getPriority() != classification.getPriority();
+            this.createJobIfPriorityOrServiceLevelHasChanged(oldClassification, classificationImpl);
 
-            boolean serviceLevelChanged = !Objects.equals(oldClassification.getServiceLevel(),
-                classification.getServiceLevel());
-
-            if (priorityChanged || serviceLevelChanged) {
-                Map<String, String> args = new HashMap<>();
-                args.put(ClassificationChangedJob.CLASSIFICATION_ID, classificationImpl.getId());
-                args.put(ClassificationChangedJob.PRIORITY_CHANGED, String.valueOf(priorityChanged));
-                args.put(ClassificationChangedJob.SERVICE_LEVEL_CHANGED,
-                    String.valueOf(serviceLevelChanged));
-                ScheduledJob job = new ScheduledJob();
-                job.setArguments(args);
-                job.setType(ScheduledJob.Type.CLASSIFICATIONCHANGEDJOB);
-                taskanaEngine.getJobService().createJob(job);
-            }
-
-            LOGGER.debug("Method updateClassification() updated the classification {}.",
-                classificationImpl);
+            LOGGER.debug("Method updateClassification() updated the classification {}.", classificationImpl);
             return classification;
         } finally {
             taskanaEngine.returnConnection();
@@ -283,9 +239,13 @@ public class ClassificationServiceImpl implements ClassificationService {
         }
 
         if (classification.getCategory() != null
-                && !taskanaEngine.getConfiguration().getClassificationCategoriesByType(classification.getType()).contains(classification.getCategory())) {
-            throw new InvalidArgumentException("Given classification category " + classification.getCategory() + " with type " + classification.getType()
-                + " is not valid according to the configuration.");
+            && !taskanaEngine.getConfiguration()
+            .getClassificationCategoriesByType(classification.getType())
+            .contains(classification.getCategory())) {
+            throw new InvalidArgumentException(
+                "Given classification category " + classification.getCategory() + " with type "
+                    + classification.getType()
+                    + " is not valid according to the configuration.");
         }
 
         if (classification.getDomain().isEmpty()) {
@@ -308,8 +268,9 @@ public class ClassificationServiceImpl implements ClassificationService {
         if (!('p' == serviceLevelLower.charAt(0))
             || !('d' == serviceLevelLower.charAt(serviceLevel.length() - 1))) {
 
-            throw new InvalidArgumentException("Invalid service level " + serviceLevel + ". Taskana only supports service levels that"
-                + " contain a number of whole days specified according to the format 'PnD' where n is the number of days");
+            throw new InvalidArgumentException(
+                "Invalid service level " + serviceLevel + ". Taskana only supports service levels that"
+                    + " contain a number of whole days specified according to the format 'PnD' where n is the number of days");
         }
     }
 
@@ -341,7 +302,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             throw new ClassificationNotFoundException(key, domain,
                 "Classification for null key and domain " + domain + " was not found.");
         }
-        LOGGER.debug("entry to getClassification(key = {}, domain = {})", key, domain);
+
         Classification result = null;
         try {
             taskanaEngine.openConnection();
@@ -465,6 +426,90 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     private boolean isH2OrPostgresIntegrityConstraintViolation(PersistenceException e) {
         return e.getCause() instanceof SQLException && ((SQLException) e.getCause()).getSQLState().equals("23503");
+    }
+
+    /**
+     * Check if current object is based on the newest (by modified).
+     *
+     * @param classificationImpl the classification
+     * @return the old classification
+     */
+    private Classification getExistingClassificationAndVerifyTimestampHasNotChanged(
+        ClassificationImpl classificationImpl)
+        throws ConcurrencyException, ClassificationNotFoundException {
+        Classification oldClassification = this.getClassification(classificationImpl.getKey(),
+            classificationImpl.getDomain());
+        if (!oldClassification.getModified().equals(classificationImpl.getModified())) {
+            throw new ConcurrencyException(
+                "The current Classification has been modified while editing. The values can not be updated. Classification "
+                    + classificationImpl.toString());
+        }
+        return oldClassification;
+    }
+
+    /**
+     * Update classification fields used by tasks.
+     *
+     * @param classificationImpl the new classification
+     * @param oldClassification  the old classification
+     */
+    private void updateCategoryOnAssociatedTasks(ClassificationImpl classificationImpl,
+        Classification oldClassification) {
+        List<TaskSummary> taskSummaries = taskanaEngine.getTaskService()
+            .createTaskQuery()
+            .classificationIdIn(oldClassification.getId())
+            .list();
+
+        if (!taskSummaries.isEmpty()) {
+            List<String> taskIds = new ArrayList<>();
+            taskSummaries.forEach(ts -> taskIds.add(ts.getTaskId()));
+            taskMapper.updateClassificationCategoryOnChange(taskIds, classificationImpl.getCategory());
+        }
+    }
+
+    /**
+     * Check if parentId or parentKey were changed and if the classification exist.
+     *
+     * @param classificationImpl the new classification
+     * @param oldClassification  the old classification
+     */
+    private void checkExistenceOfParentClassification(Classification oldClassification,
+        ClassificationImpl classificationImpl)
+        throws ClassificationNotFoundException {
+        if (!oldClassification.getParentId().equals(classificationImpl.getParentId())
+            && classificationImpl.getParentId() != null && !classificationImpl.getParentId().isEmpty()) {
+            this.getClassification(classificationImpl.getParentId());
+        }
+
+        if (!oldClassification.getParentKey().equals(classificationImpl.getParentKey())
+            && classificationImpl.getParentKey() != null && !classificationImpl.getParentKey().isEmpty()) {
+            this.getClassification(classificationImpl.getParentKey(), classificationImpl.getDomain());
+        }
+    }
+
+    /**
+     * Check if priority or service level were changed and create the new job.
+     *
+     * @param classificationImpl the new classification
+     * @param oldClassification  the old classification
+     */
+    private void createJobIfPriorityOrServiceLevelHasChanged(Classification oldClassification,
+        ClassificationImpl classificationImpl) {
+        boolean priorityChanged = oldClassification.getPriority() != classificationImpl.getPriority();
+        boolean serviceLevelChanged = !Objects.equals(oldClassification.getServiceLevel(),
+            classificationImpl.getServiceLevel());
+
+        if (priorityChanged || serviceLevelChanged) {
+            Map<String, String> args = new HashMap<>();
+            args.put(ClassificationChangedJob.CLASSIFICATION_ID, classificationImpl.getId());
+            args.put(ClassificationChangedJob.PRIORITY_CHANGED, String.valueOf(priorityChanged));
+            args.put(ClassificationChangedJob.SERVICE_LEVEL_CHANGED,
+                String.valueOf(serviceLevelChanged));
+            ScheduledJob job = new ScheduledJob();
+            job.setArguments(args);
+            job.setType(ScheduledJob.Type.CLASSIFICATIONCHANGEDJOB);
+            taskanaEngine.getJobService().createJob(job);
+        }
     }
 
 }
