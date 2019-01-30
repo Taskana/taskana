@@ -61,41 +61,6 @@ public class SampleDataGenerator {
         runner = new ScriptRunner(dataSource.getConnection());
     }
 
-    /**
-     * This method resolves the custom sql function defined through this regex: {@value RELATIVE_DATE_REGEX}. Its
-     * parameter is a digit representing the relative offset of a given starting point date.
-     * <p/>
-     * Yes, this can be done as an actual sql function, but that'd lead to a little more complexity (and thus we'd have
-     * to maintain the code for db compatibility ...) Since we're already replacing the boolean attributes of sql files
-     * this addition is not a huge computational cost.
-     *
-     * @param now
-     *            anchor for relative date conversion.
-     * @param sql
-     *            sql statement which may contain the above declared custom function.
-     * @return sql statement with the given function resolved, if the 'sql' parameter contained any.
-     */
-    private static String replaceRelativeTimeFunction(LocalDateTime now, String sql) {
-        Matcher m = RELATIVE_DATE_PATTERN.matcher(sql);
-        StringBuffer sb = new StringBuffer(sql.length());
-        while (m.find()) {
-            m.appendReplacement(sb,
-                "'" + now.plusDays(Long.parseLong(m.group(1))).format(DATE_TIME_FORMATTER) + "'");
-        }
-        m.appendTail(sb);
-        return sb.toString();
-    }
-
-    private static String parseAndReplace(LocalDateTime now, InputStream stream) {
-        try (
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-            return replaceRelativeTimeFunction(now,
-                bufferedReader.lines().collect(Collectors.joining(System.lineSeparator())));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void generateSampleData(String schemaName) {
         StringWriter outWriter = new StringWriter();
         PrintWriter logWriter = new PrintWriter(outWriter);
@@ -131,6 +96,41 @@ public class SampleDataGenerator {
         LOGGER.trace(outWriter.toString());
         if (!errorWriter.toString().trim().isEmpty()) {
             LOGGER.error(errorWriter.toString());
+        }
+    }
+
+    /**
+     * This method resolves the custom sql function defined through this regex: {@value RELATIVE_DATE_REGEX}. Its
+     * parameter is a digit representing the relative offset of a given starting point date.
+     * <p/>
+     * Yes, this can be done as an actual sql function, but that'd lead to a little more complexity (and thus we'd have
+     * to maintain the code for db compatibility ...) Since we're already replacing the boolean attributes of sql files
+     * this addition is not a huge computational cost.
+     *
+     * @param now
+     *            anchor for relative date conversion.
+     * @param sql
+     *            sql statement which may contain the above declared custom function.
+     * @return sql statement with the given function resolved, if the 'sql' parameter contained any.
+     */
+    private static String replaceRelativeTimeFunction(LocalDateTime now, String sql) {
+        Matcher m = RELATIVE_DATE_PATTERN.matcher(sql);
+        StringBuffer sb = new StringBuffer(sql.length());
+        while (m.find()) {
+            m.appendReplacement(sb,
+                "'" + now.plusDays(Long.parseLong(m.group(1))).format(DATE_TIME_FORMATTER) + "'");
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    private static String parseAndReplace(LocalDateTime now, InputStream stream) {
+        try (
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+            return replaceRelativeTimeFunction(now,
+                bufferedReader.lines().collect(Collectors.joining(System.lineSeparator())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
