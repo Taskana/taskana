@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from 'app/../environments/environment';
 import { Injectable, Injector } from '@angular/core';
-import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 import { map } from 'rxjs/operators';
@@ -11,11 +10,8 @@ import { WindowRefService } from 'app/services/window/window.service';
 
 @Injectable()
 export class StartupService {
-
-
     constructor(
         private httpClient: HttpClient,
-        private titlesService: TitlesService,
         private customFieldsService: CustomFieldsService,
         private taskanaEngineService: TaskanaEngineService,
         private injector: Injector,
@@ -36,10 +32,10 @@ export class StartupService {
     }
 
     getEnvironmentFilePromise() {
-        return this.httpClient.get<any>('environments/data-sources/environment-information.json').pipe(map(jsonFile => {
-            if (jsonFile) {
+        return this.httpClient.get<any>('/environments/data-sources/environment-information.json').pipe(map(jsonFile => {
+            if (jsonFile && environment.taskanaRestUrl === '') {
                 environment.taskanaRestUrl = jsonFile.taskanaRestUrl === '' ?
-                    environment.taskanaRestUrl : jsonFile.taskanaRestUrl;
+                    window.location.protocol + '//' + window.location.host : jsonFile.taskanaRestUrl;
                 this.customFieldsService.initCustomFields('EN', jsonFile);
             }
         })).toPromise()
