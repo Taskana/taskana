@@ -24,13 +24,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
- * TODO.
+ * Default basic configuration for taskana web example.
  */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${devMode}")
+    @Value("${devMode:false}")
     private boolean devMode;
 
     @Override
