@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -41,6 +43,7 @@ public class SampleDataGenerator {
     private static final String OBJECT_REFERENCE = SQL + TEST_DATA + "/object-reference.sql";
     private static final String ATTACHMENT = SQL + TEST_DATA + "/attachment.sql";
     private static final String HISTORY_EVENT = SQL + TEST_DATA + "/history-event.sql";
+    private static final String CHECK_HISTORY_EVENT_EXIST = SQL + TEST_DATA + "/check-history-event-exist.sql";
 
     private static final String RELATIVE_DATE_REGEX = "RELATIVE_DATE\\((-?\\d+)\\)";
     private static final Pattern RELATIVE_DATE_PATTERN = Pattern.compile(RELATIVE_DATE_REGEX);
@@ -113,9 +116,10 @@ public class SampleDataGenerator {
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
 
+        String[] script = this.getScriptList();
+
         LocalDateTime now = LocalDateTime.now();
-        Stream.of(WORKBASKET, DISTRIBUTION_TARGETS, CLASSIFICATION, TASK, ATTACHMENT, WORKBASKET_ACCESS_LIST,
-            OBJECT_REFERENCE, HISTORY_EVENT)
+        Stream.of(script)
             .map(this.getClass()::getResourceAsStream)
             .map(s -> SampleDataGenerator.parseAndReplace(now, s))
             .map(StringReader::new)
@@ -136,4 +140,23 @@ public class SampleDataGenerator {
             : "SET SCHEMA " + schemaName + ";");
     }
 
+    /**
+     * Create a array with the necessary script.
+     * @return a array with the corresponding scripts files
+     */
+    private String[] getScriptList() {
+        String[] script = {WORKBASKET, DISTRIBUTION_TARGETS, CLASSIFICATION, TASK, ATTACHMENT, WORKBASKET_ACCESS_LIST,
+            OBJECT_REFERENCE};
+        ArrayList<String> scriptsList = new ArrayList<>(Arrays.asList(script));
+
+        try {
+            runner.runScript(new BufferedReader(
+                new InputStreamReader(this.getClass().getResourceAsStream(CHECK_HISTORY_EVENT_EXIST),
+                    StandardCharsets.UTF_8)));
+            scriptsList.add(HISTORY_EVENT);
+        } catch (Exception e) {
+            LOGGER.info("The HISTORY_EVENTS table is not created");
+        }
+        return scriptsList.toArray(new String[0]);
+    }
 }
