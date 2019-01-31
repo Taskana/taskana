@@ -75,4 +75,8 @@ public enum TaskQueryColumnName implements QueryColumnName {
     public String toString() {
         return name;
     }
+
+    public boolean isAttachmentColumn() {
+        return this.name().startsWith("A_");
+    }
 }
