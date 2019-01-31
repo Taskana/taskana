@@ -5,7 +5,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
@@ -33,6 +32,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import pro.taskana.rest.RestConfiguration;
 
+/**
+ * Generate Rest Documentation for Workbasket Definitions.
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class WorkbasketDefinitionControllerRestDocumentation {
@@ -96,7 +99,6 @@ public class WorkbasketDefinitionControllerRestDocumentation {
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(document("ImportWorkbasketDefinitions", requestParts(
-                partWithName("file").description("The file to upload"))
-            ));
+                partWithName("file").description("The file to upload"))));
     }
 }

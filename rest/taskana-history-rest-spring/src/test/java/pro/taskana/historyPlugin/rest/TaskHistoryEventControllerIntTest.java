@@ -37,6 +37,10 @@ import pro.taskana.historyPlugin.config.TaskHistoryRestConfiguration;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.TaskHistoryEventResource;
 
+/**
+ * Controller for integration test.
+ */
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {RestConfiguration.class, TaskHistoryRestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
@@ -138,7 +142,7 @@ public class TaskHistoryEventControllerIntTest {
     }
 
     /**
-     * Return a REST template which is capable of dealing with responses in HAL format
+     * Return a REST template which is capable of dealing with responses in HAL format.
      *
      * @return RestTemplate
      */

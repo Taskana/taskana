@@ -31,6 +31,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import pro.taskana.rest.RestConfiguration;
 
+/**
+ * Generate common REST Documentation.
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class CommonRestDocumentation {

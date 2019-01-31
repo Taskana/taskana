@@ -17,6 +17,10 @@ import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.AccessIdResource;
 
+/**
+ * Test Ldap attachment.
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
 @ContextConfiguration(classes = {RestConfiguration.class})

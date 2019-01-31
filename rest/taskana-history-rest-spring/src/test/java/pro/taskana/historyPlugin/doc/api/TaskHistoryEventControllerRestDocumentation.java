@@ -31,6 +31,9 @@ import org.springframework.web.context.WebApplicationContext;
 import pro.taskana.historyPlugin.config.TaskHistoryRestConfiguration;
 import pro.taskana.rest.RestConfiguration;
 
+/**
+ *  Controller for Rest documentation.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {RestConfiguration.class, TaskHistoryRestConfiguration.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TaskHistoryEventControllerRestDocumentation {
@@ -64,36 +67,36 @@ public class TaskHistoryEventControllerRestDocumentation {
                 .withRequestDefaults(prettyPrint()))
             .build();
 
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.taskHistoryId","Unique ID");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.businessProcessId","The id of the business process");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.parentBusinessProcessId","The id of the parent business process");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.taskId","The id of the task");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.eventType","The type of the event");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.created","The time was created");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.userId","The id of the user");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.domain","Domain");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.workbasketKey","The key of workbasket");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.porCompany","");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.porSystem","");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.porInstance","");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.porValue","");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.porType","");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.taskClassificationKey","The key of classification task");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.taskClassificationCategory","The category of classification");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.attachmentClassificationKey","");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.comment","");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.oldValue","The old value");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.newValue","The new value");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.custom1","A custom property with name \"1\"");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.custom2","A custom property with name \"2\"");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.custom3","A custom property with name \"3\"");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.custom4","A custom property with name \"4\"");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.oldData","The old data");
-        taskHistoryEventFieldDescriptionsMap.put("_embedded.newData","The new data");
-        taskHistoryEventFieldDescriptionsMap.put("_links.self.href","The links of this task history event");
-        taskHistoryEventFieldDescriptionsMap.put("_links.allTaskHistoryEvent.href","Link to all task history event");
-        taskHistoryEventFieldDescriptionsMap.put("_links.first.href","Link to the first result");
-        taskHistoryEventFieldDescriptionsMap.put("_links.last.href","Link to the last result");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.taskHistoryId", "Unique ID");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.businessProcessId", "The id of the business process");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.parentBusinessProcessId", "The id of the parent business process");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.taskId", "The id of the task");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.eventType", "The type of the event");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.created", "The time was created");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.userId", "The id of the user");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.domain", "Domain");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.workbasketKey", "The key of workbasket");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.porCompany", "");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.porSystem", "");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.porInstance", "");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.porValue", "");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.porType", "");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.taskClassificationKey", "The key of classification task");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.taskClassificationCategory", "The category of classification");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.attachmentClassificationKey", "");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.comment", "");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.oldValue", "The old value");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.newValue", "The new value");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.custom1", "A custom property with name \"1\"");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.custom2", "A custom property with name \"2\"");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.custom3", "A custom property with name \"3\"");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.custom4", "A custom property with name \"4\"");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.oldData", "The old data");
+        taskHistoryEventFieldDescriptionsMap.put("_embedded.newData", "The new data");
+        taskHistoryEventFieldDescriptionsMap.put("_links.self.href", "The links of this task history event");
+        taskHistoryEventFieldDescriptionsMap.put("_links.allTaskHistoryEvent.href", "Link to all task history event");
+        taskHistoryEventFieldDescriptionsMap.put("_links.first.href", "Link to the first result");
+        taskHistoryEventFieldDescriptionsMap.put("_links.last.href", "Link to the last result");
 
         allTaskHistoryEventFieldDescriptors = new FieldDescriptor[] {
             subsectionWithPath("_embedded.taskHistoryEventResourceList").description("An array of Task history event"),

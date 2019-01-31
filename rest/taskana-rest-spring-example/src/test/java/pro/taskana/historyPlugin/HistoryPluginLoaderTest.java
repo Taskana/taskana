@@ -17,6 +17,10 @@ import pro.taskana.history.HistoryEventProducer;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.rest.RestConfiguration;
 
+/**
+ * test loading of history plugin.
+ *
+ */
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = "history.plugin")
 @SpringBootTest(classes = RestConfiguration.class)
