@@ -243,7 +243,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         Attachment attachment = createAttachment("DOCTYPE_DEFAULT", // prio 99, SL P2000D
-            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId",
+            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchivETI",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3));
 
@@ -267,17 +267,17 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .externalIdIn("EID:000000000000000000000000000000000000", "EID:000000000000000000000000000000000001")
+            .externalIdIn("ETI:000000000000000000000000000000000000", "ETI:000000000000000000000000000000000001")
             .list();
         assertThat(results.size(), equalTo(2));
 
         List<String> resultValues = taskService.createTaskQuery()
-            .externalIdLike("EID:000000000000000000000000000000%")
+            .externalIdLike("ETI:000000000000000000000000000000%")
             .listValues(TaskQueryColumnName.EXTERNAL_ID, desc);
         assertThat(resultValues.size(), equalTo(70));
 
         long countAllExternalIds = taskService.createTaskQuery()
-            .externalIdLike("EID:%")
+            .externalIdLike("ETI:%")
             .count();
         long countAllIds = taskService.createTaskQuery().count();
         assertEquals(countAllIds, countAllExternalIds);
@@ -1485,11 +1485,11 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .externalIdIn("EID:000000000000000000000000000000000010", "EID:000000000000000000000000000000000011",
-                "EID:000000000000000000000000000000000012", "EID:000000000000000000000000000000000013",
-                "EID:000000000000000000000000000000000014", "EID:000000000000000000000000000000000015",
-                "EID:000000000000000000000000000000000016", "EID:000000000000000000000000000000000017",
-                "EID:000000000000000000000000000000000018", "EID:000000000000000000000000000000000019")
+            .externalIdIn("ETI:000000000000000000000000000000000010", "ETI:000000000000000000000000000000000011",
+                "ETI:000000000000000000000000000000000012", "ETI:000000000000000000000000000000000013",
+                "ETI:000000000000000000000000000000000014", "ETI:000000000000000000000000000000000015",
+                "ETI:000000000000000000000000000000000016", "ETI:000000000000000000000000000000000017",
+                "ETI:000000000000000000000000000000000018", "ETI:000000000000000000000000000000000019")
             .list();
         assertThat(results.size(), equalTo(10));
 
@@ -1512,7 +1512,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
-            .externalIdLike("EID:00000000000000000000000000000000001%")
+            .externalIdLike("ETI:00000000000000000000000000000000001%")
             .list();
         assertThat(results.size(), equalTo(10));
 
