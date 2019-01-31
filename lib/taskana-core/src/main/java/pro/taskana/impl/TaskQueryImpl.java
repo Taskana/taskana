@@ -1017,8 +1017,13 @@ public class TaskQueryImpl implements TaskQuery {
 
             if (columnName.equals(TaskQueryColumnName.CLASSIFICATION_NAME)) {
                 joinWithClassifications = true;
-            if (attachmentColumns.contains(columnName)) {
+
+            if (columnName.equals(TaskQueryColumnName.A_CLASSIFICATION_NAME)) {
                 joinWithAttachmentClassifications = true;
+            }
+
+            if (columnName.isAttachmentColumn()) {
+                joinWithAttachments = true;
             }
 
             setupJoinAndOrderParameters();
