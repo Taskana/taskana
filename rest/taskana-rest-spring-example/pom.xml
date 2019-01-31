@@ -175,7 +175,7 @@
 		</dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-rest-configuration</artifactId>
+			<artifactId>taskana-rest-spring-setup</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

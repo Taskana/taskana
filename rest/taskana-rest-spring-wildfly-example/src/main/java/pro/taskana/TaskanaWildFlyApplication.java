@@ -33,6 +33,7 @@ import pro.taskana.ldap.LdapClient;
 import pro.taskana.ldap.LdapConfiguration;
 import pro.taskana.rest.AccessIdController;
 import pro.taskana.rest.RestConfiguration;
+import pro.taskana.rest.WebMvcConfig;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
@@ -41,8 +42,9 @@ import pro.taskana.sampledata.SampleDataGenerator;
 @SpringBootApplication
 @EnableScheduling
 @ComponentScan(basePackages = "pro.taskana")
-@Import({TransactionalJobsConfiguration.class, LdapConfiguration.class, RestConfiguration.class})
+@Import({TransactionalJobsConfiguration.class, LdapConfiguration.class, RestConfiguration.class, WebMvcConfig.class})
 public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaWildFlyApplication.class);
     @Value("${taskana.schemaName:TASKANA}")
     public String schemaName;
@@ -70,7 +72,6 @@ public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
         props.setUrl("jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS " + schemaName);
         return props;
     }
-
 
     @Bean
     public DataSource dataSource(DataSourceProperties dsProperties) {
@@ -114,4 +115,3 @@ public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
         }
     }
 }
-

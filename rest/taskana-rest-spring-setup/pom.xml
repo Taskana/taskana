@@ -5,11 +5,11 @@
 	<parent>
 		<artifactId>taskana-rest-parent</artifactId>
 		<groupId>pro.taskana</groupId>
-		<version>1.0.6-SNAPSHOT</version>
+		<version>1.0.8-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>taskana-rest-configuration</artifactId>
+	<artifactId>taskana-rest-spring-setup</artifactId>
 	<build>
 		<plugins>
 			<plugin>
