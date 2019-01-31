@@ -38,6 +38,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import pro.taskana.rest.RestConfiguration;
 
+/**
+ * Generate REST Documentatioon for the WorkbasketController.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class WorkbasketControllerRestDocumentation {
@@ -53,7 +56,7 @@ public class WorkbasketControllerRestDocumentation {
 
     private MockMvc mockMvc;
 
-    // HashMaps to store the field descriptions centrally for multiple uses 
+    // HashMaps to store the field descriptions centrally for multiple uses
     private HashMap<String, String> workbasketFieldDescriptionsMap = new HashMap<String, String>();
     private HashMap<String, String> accessItemFieldDescriptionsMap = new HashMap<String, String>();
 
@@ -269,28 +272,39 @@ public class WorkbasketControllerRestDocumentation {
             fieldWithPath("domain").description(workbasketFieldDescriptionsMap.get("domain")),
             fieldWithPath("type").description(workbasketFieldDescriptionsMap.get("type")),
             fieldWithPath("description").description(workbasketFieldDescriptionsMap.get("description"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("owner").description(workbasketFieldDescriptionsMap.get("owner")).type("String").optional(),
             fieldWithPath("orgLevel1").description(workbasketFieldDescriptionsMap.get("orgLevel1"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("orgLevel2").description(workbasketFieldDescriptionsMap.get("orgLevel2"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("orgLevel3").description(workbasketFieldDescriptionsMap.get("orgLevel3"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("orgLevel4").description(workbasketFieldDescriptionsMap.get("orgLevel4"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("created").description(workbasketFieldDescriptionsMap.get("created"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("modified").description(workbasketFieldDescriptionsMap.get("modified"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("custom1").description(workbasketFieldDescriptionsMap.get("custom1"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("custom2").description(workbasketFieldDescriptionsMap.get("custom2"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("custom3").description(workbasketFieldDescriptionsMap.get("custom3"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("custom4").description(workbasketFieldDescriptionsMap.get("custom4"))
-                .type("String").optional(),
+                .type("String")
+                .optional(),
             fieldWithPath("_links.distributionTargets.href").description(
                 workbasketFieldDescriptionsMap.get("_links.distributionTargets.href")).type("String").optional(),
             fieldWithPath("_links.removeDistributionTargets.href").description(

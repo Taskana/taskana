@@ -29,31 +29,34 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 
 import java.util.HashMap;
 
+/**
+ *  Generate Rest Docu for AbstractPagingController.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AbstractPagingControllerRestDocumentation {
-    
+
     @LocalServerPort
     int port;
-    
+
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-    
+
     @Autowired
     private WebApplicationContext context;
-    
+
     private MockMvc mockMvc;
 
     private HashMap<String, String> pagingFieldDescriptionsMap = new HashMap<String, String>();
-    
+
     private FieldDescriptor[] pagingFieldDescriptors;
-    
+
     @Before
     public void setUp() {
         document("{methodName}",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()));
-        
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
                 .apply(springSecurity())
                 .apply(documentationConfiguration(this.restDocumentation)
@@ -61,7 +64,7 @@ public class AbstractPagingControllerRestDocumentation {
                         .withResponseDefaults(prettyPrint())
                         .withRequestDefaults(prettyPrint()))
                         .build();
-        
+
         pagingFieldDescriptionsMap.put("page", "Contains metainfo if there are multiple pages, else it is null");
         pagingFieldDescriptionsMap.put("page.size", "Number of items per page");
         pagingFieldDescriptionsMap.put("page.totalElements", "Total number of items");
@@ -71,10 +74,10 @@ public class AbstractPagingControllerRestDocumentation {
         pagingFieldDescriptionsMap.put("_links.first.href", "Link to first page");
         pagingFieldDescriptionsMap.put("_links.last.href", "Link to last page");
         pagingFieldDescriptionsMap.put("_links.prev.href", "Link to previous page");
-        pagingFieldDescriptionsMap.put("_links.next.href", "Link to next page");    
-        
+        pagingFieldDescriptionsMap.put("_links.next.href", "Link to next page");
+
         pagingFieldDescriptors = new FieldDescriptor[] {
-                
+
                 subsectionWithPath("_embedded.classificationSummaryResourceList").ignored(),
                 fieldWithPath("_links").ignored(),
                 fieldWithPath("_links.self").ignored(),
@@ -91,7 +94,7 @@ public class AbstractPagingControllerRestDocumentation {
                 fieldWithPath("_links.next.href").description(pagingFieldDescriptionsMap.get("_links.next.href"))
         };
     }
-    
+
     @Test
     public void commonSummaryResourceFieldsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders

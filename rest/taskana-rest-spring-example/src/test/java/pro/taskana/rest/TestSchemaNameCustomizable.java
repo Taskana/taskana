@@ -26,6 +26,10 @@ import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.sampledata.SampleDataGenerator;
 
+/**
+ * Test that the schema name can be customized.
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TestSchemaNameCustomizable {
@@ -78,7 +82,7 @@ public class TestSchemaNameCustomizable {
     }
 
     /**
-     * Return a REST template which is capable of dealing with responses in HAL format
+     * Return a REST template which is capable of dealing with responses in HAL format.
      *
      * @return RestTemplate
      */

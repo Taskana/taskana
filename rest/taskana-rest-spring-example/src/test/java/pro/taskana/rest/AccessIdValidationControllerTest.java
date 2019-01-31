@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
@@ -35,6 +34,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.rest.resource.AccessIdResource;
 
+/**
+ * Test AccessIdValidation.
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
     "devMode=true"})
@@ -85,7 +88,7 @@ public class AccessIdValidationControllerTest {
     }
 
     /**
-     * Return a REST template which is capable of dealing with responses in HAL format
+     * Return a REST template which is capable of dealing with responses in HAL format.
      *
      * @return RestTemplate
      */

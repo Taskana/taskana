@@ -46,10 +46,13 @@ import pro.taskana.Task;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.ClassificationResource;
-import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
+import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskResourceAssembler;
 
+/**
+ * Test async updates.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
     properties = {"devMode=true"})
@@ -121,7 +124,8 @@ public class AsyncUpdateJobIntTest {
 
         long delay = 16000;
 
-        LOGGER.info("About to sleep for {} seconds to give JobScheduler a chance to process the classification change", delay / 1000);
+        LOGGER.info("About to sleep for {} seconds to give JobScheduler a chance to process the classification change",
+            delay / 1000);
         Thread.sleep(delay);
         LOGGER.info("Sleeping ended. Continuing .... ");
 
@@ -188,7 +192,7 @@ public class AsyncUpdateJobIntTest {
     }
 
     /**
-     * Return a REST template which is capable of dealing with responses in HAL format
+     * Return a REST template which is capable of dealing with responses in HAL format.
      *
      * @return RestTemplate
      */
@@ -201,7 +205,7 @@ public class AsyncUpdateJobIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
         return template;
     }
 

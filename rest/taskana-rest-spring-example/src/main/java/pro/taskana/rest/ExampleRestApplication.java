@@ -43,7 +43,7 @@ public class ExampleRestApplication {
 
     @Autowired
     private SampleDataGenerator sampleDataGenerator;
-    
+
     @Autowired
     private LdapClient ldapClient;
 
@@ -85,7 +85,7 @@ public class ExampleRestApplication {
             AccessIdController.setLdapCache(ldapCacheTest);
         }
         if (generateSampleData) {
-        	sampleDataGenerator.generateSampleData(schemaName);
+                sampleDataGenerator.generateSampleData(schemaName);
         }
     }
 }

@@ -38,7 +38,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import pro.taskana.rest.RestConfiguration;
-
+/**
+ * Generate REST Dokumentation for ClassificationController.
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ClassificationControllerRestDocumentation {

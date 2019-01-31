@@ -13,11 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-
-import ch.qos.logback.classic.Logger;
-
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
@@ -35,24 +31,21 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.rest.resource.AccessIdResource;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
-import pro.taskana.rest.resource.ClassificationResourceAssembler;
-import pro.taskana.rest.resource.TaskResourceAssembler;
 
+/**
+ * Test general Exception Handling.
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
     "devMode=true"})
 public class GenenalExceptionHandlingTest {
-
-    @Autowired
-    private ClassificationResourceAssembler classificationResourceAssembler;
-
-    @Autowired
-    private TaskResourceAssembler taskResourceAssembler;
 
     String server = "http://127.0.0.1:";
     RestTemplate template;
@@ -118,7 +111,7 @@ public class GenenalExceptionHandlingTest {
     }
 
     /**
-     * Return a REST template which is capable of dealing with responses in HAL format
+     * Return a REST template which is capable of dealing with responses in HAL format.
      *
      * @return RestTemplate
      */
