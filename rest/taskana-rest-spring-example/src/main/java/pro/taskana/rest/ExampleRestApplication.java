@@ -32,7 +32,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
 @SpringBootApplication
 @EnableScheduling
 @ComponentScan(basePackages = "pro.taskana")
-@Import({TransactionalJobsConfiguration.class, LdapConfiguration.class, RestConfiguration.class})
+@Import({TransactionalJobsConfiguration.class, LdapConfiguration.class, RestConfiguration.class, WebMvcConfig.class})
 public class ExampleRestApplication {
 
     @Value("${taskana.schemaName:TASKANA}")
@@ -85,7 +85,7 @@ public class ExampleRestApplication {
             AccessIdController.setLdapCache(ldapCacheTest);
         }
         if (generateSampleData) {
-                sampleDataGenerator.generateSampleData(schemaName);
+            sampleDataGenerator.generateSampleData(schemaName);
         }
     }
 }
