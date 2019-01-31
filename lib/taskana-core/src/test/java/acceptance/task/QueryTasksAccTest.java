@@ -281,7 +281,6 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .count();
         long countAllIds = taskService.createTaskQuery().count();
         assertEquals(countAllIds, countAllExternalIds);
-        assertEquals(72, countAllExternalIds);
         }
 
     @WithAccessId(
