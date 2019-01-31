@@ -67,9 +67,9 @@ public class SampleDataGenerator {
     }
 
     private StringReader selectSchemaScript(String dbProductName, String schemaName) {
-        return new StringReader("PostgreSQL".equals(dbProductName) ?
-            "SET search_path TO " + schemaName + ";" :
-            "SET SCHEMA " + schemaName + ";");
+        return new StringReader("PostgreSQL".equals(dbProductName)
+                                ? "SET search_path TO " + schemaName + ";"
+                                : "SET SCHEMA " + schemaName + ";");
     }
 
 }

@@ -36,6 +36,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 
+/**
+ * Test WorkbasketAccessItemController.
+ *
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -142,7 +146,7 @@ public class WorkbasketAccessItemControllerIntTest {
     }
 
     /**
-     * Return a REST template which is capable of dealing with responses in HAL format
+     * Return a REST template which is capable of dealing with responses in HAL format.
      *
      * @return RestTemplate
      */

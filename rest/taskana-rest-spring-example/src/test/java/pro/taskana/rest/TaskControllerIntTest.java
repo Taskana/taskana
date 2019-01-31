@@ -50,6 +50,9 @@ import pro.taskana.exceptions.SystemException;
 import pro.taskana.rest.resource.TaskSummaryResource;
 import pro.taskana.sampledata.SampleDataGenerator;
 
+/**
+ * Test Task Controller.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
     properties = {"devMode=true"})
@@ -374,9 +377,9 @@ public class TaskControllerIntTest {
 
     @Test
     public void testCreateAndDeleteTask() throws IOException {
-        String taskToCreateJson = "{\"classificationSummaryResource\":{\"key\":\"L11010\"}," +
-            "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"}," +
-            "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+        String taskToCreateJson = "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
+            + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
+            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
         URL url = new URL("http://127.0.0.1:" + port + "/v1/tasks");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -400,9 +403,9 @@ public class TaskControllerIntTest {
         }
         in.close();
         con.disconnect();
-        String createdTask = responsePayload.toString();       
+        String createdTask = responsePayload.toString();
         String taskIdOfCreatedTask = createdTask.substring(createdTask.indexOf("TKI:"), createdTask.indexOf("TKI:") + 40);
-        
+
         assertNotNull(taskIdOfCreatedTask);
         assertTrue(taskIdOfCreatedTask.startsWith("TKI:"));
 
@@ -417,9 +420,9 @@ public class TaskControllerIntTest {
 
     @Test
     public void testCreateTaskWithInvalidParameter() throws IOException {
-        String taskToCreateJson = "{\"classificationKey\":\"L11010\"," +
-            "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"}," +
-            "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+        String taskToCreateJson = "{\"classificationKey\":\"L11010\","
+            + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
+            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
         URL url = new URL("http://127.0.0.1:" + port + "/v1/tasks");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -434,11 +437,9 @@ public class TaskControllerIntTest {
         assertEquals(400, con.getResponseCode());
         con.disconnect();
 
-        taskToCreateJson =
-            "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
-                +
-                "\"workbasketSummaryResource\":{\"workbasketId\":\"\"}," +
-                "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+        taskToCreateJson = "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
+            + "\"workbasketSummaryResource\":{\"workbasketId\":\"\"},"
+            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
         url = new URL("http://127.0.0.1:" + port + "/v1/tasks");
         con = (HttpURLConnection) url.openConnection();
@@ -456,7 +457,7 @@ public class TaskControllerIntTest {
     }
 
     /**
-     * Return a REST template which is capable of dealing with responses in HAL format
+     * Return a REST template which is capable of dealing with responses in HAL format.
      *
      * @return RestTemplate
      */
@@ -470,7 +471,7 @@ public class TaskControllerIntTest {
         // converter.setSupportedMediaTypes(ImmutableList.of(MediaTypes.HAL_JSON));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
         return template;
     }
 

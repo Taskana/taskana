@@ -29,99 +29,104 @@ import org.springframework.web.context.WebApplicationContext;
 
 import pro.taskana.rest.RestConfiguration;
 
+/**
+ * Generate REST Docu for the TaskanaEngineController.
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class TaskanaEngineControllerRestDocumentation {
+
     @LocalServerPort
     int port;
-    
+
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-    
+
     @Autowired
     private WebApplicationContext context;
-    
+
     private MockMvc mockMvc;
-    
+
     private FieldDescriptor[] allDomainsFieldDescriptors;
     private FieldDescriptor[] allClassificationCategoriesFieldDescriptors;
     private FieldDescriptor[] allClassificationTypesFieldDescriptors;
     private FieldDescriptor[] currentUserInfoFieldDescriptors;
-    
+
     @Before
     public void setUp() {
         document("{methodName}",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()));
-        
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()));
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-                .apply(springSecurity())
-                .apply(documentationConfiguration(this.restDocumentation)
-                        .operationPreprocessors()
-                        .withResponseDefaults(prettyPrint())
-                        .withRequestDefaults(prettyPrint()))
-                        .build(); 
-        
+            .apply(springSecurity())
+            .apply(documentationConfiguration(this.restDocumentation)
+                .operationPreprocessors()
+                .withResponseDefaults(prettyPrint())
+                .withRequestDefaults(prettyPrint()))
+            .build();
+
         allDomainsFieldDescriptors = new FieldDescriptor[] {
-                fieldWithPath("[]").description("An array with the domain-names as strings")
+            fieldWithPath("[]").description("An array with the domain-names as strings")
         };
-        
+
         allClassificationCategoriesFieldDescriptors = new FieldDescriptor[] {
-                fieldWithPath("[]").description("An array with the classification-categories as strings")
+            fieldWithPath("[]").description("An array with the classification-categories as strings")
         };
-        
+
         allClassificationTypesFieldDescriptors = new FieldDescriptor[] {
-                fieldWithPath("[]").description("An array with the classification-types as strings")
+            fieldWithPath("[]").description("An array with the classification-types as strings")
         };
-        
+
         currentUserInfoFieldDescriptors = new FieldDescriptor[] {
-                fieldWithPath("userId").description("Id of the current user"),
-                fieldWithPath("groupIds").description("An array with the groups the current user is part of as strings"),
-                fieldWithPath("roles").description("An array with the roles the current user is granted")
+            fieldWithPath("userId").description("Id of the current user"),
+            fieldWithPath("groupIds").description("An array with the groups the current user is part of as strings"),
+            fieldWithPath("roles").description("An array with the roles the current user is granted")
         };
     }
-    
+
     @Test
     public void getAllDomainsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port + "/v1/domains")
-                .accept("application/json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllDomainsDocTest",
+            .get("http://127.0.0.1:" + port + "/v1/domains")
+            .accept("application/json")
+            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcRestDocumentation.document("GetAllDomainsDocTest",
                 responseFields(allDomainsFieldDescriptors)));
     }
-    
+
     @Test
     public void getAllClassificationCategoriesDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port + "/v1/classification-categories")
-                .accept("application/json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllClassificationCategoriesDocTest",
+            .get("http://127.0.0.1:" + port + "/v1/classification-categories")
+            .accept("application/json")
+            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcRestDocumentation.document("GetAllClassificationCategoriesDocTest",
                 responseFields(allClassificationCategoriesFieldDescriptors)));
     }
-    
+
     @Test
     public void getAllClassificationTypesDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port + "/v1/classification-types")
-                .accept("application/json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetAllClassificationTypesDocTest",
+            .get("http://127.0.0.1:" + port + "/v1/classification-types")
+            .accept("application/json")
+            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcRestDocumentation.document("GetAllClassificationTypesDocTest",
                 responseFields(allClassificationTypesFieldDescriptors)));
     }
-    
+
     @Test
     public void getCurrentUserInfo() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port + "/v1/current-user-info")
-                .accept("application/json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("GetCurrentUserInfoDocTest",
+            .get("http://127.0.0.1:" + port + "/v1/current-user-info")
+            .accept("application/json")
+            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcRestDocumentation.document("GetCurrentUserInfoDocTest",
                 responseFields(currentUserInfoFieldDescriptors)));
     }
 }

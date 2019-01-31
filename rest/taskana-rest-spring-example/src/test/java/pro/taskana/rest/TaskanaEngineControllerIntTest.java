@@ -30,6 +30,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.taskana.TaskanaRole;
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
 
+/**
+ * Test TaskanaEngineController.
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
 public class TaskanaEngineControllerIntTest {
@@ -99,7 +103,7 @@ public class TaskanaEngineControllerIntTest {
     }
 
     /**
-     * Return a REST template which is capable of dealing with responses in HAL format
+     * Return a REST template which is capable of dealing with responses in HAL format.
      *
      * @return RestTemplate
      */

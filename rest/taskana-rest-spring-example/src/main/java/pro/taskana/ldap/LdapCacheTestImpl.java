@@ -362,6 +362,8 @@ public class LdapCacheTestImpl implements LdapCache {
                 case 3:
                     group3.add(group);
                     break;
+                default:
+                    break;
             }
             groupNumber = (groupNumber + 1) % 4;
         }
@@ -381,6 +383,8 @@ public class LdapCacheTestImpl implements LdapCache {
                         break;
                     case 3:
                         users.put(item, group3);
+                        break;
+                    default:
                         break;
                 }
             }

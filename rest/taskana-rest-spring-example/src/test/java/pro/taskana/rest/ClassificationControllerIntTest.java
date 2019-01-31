@@ -15,8 +15,6 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -45,24 +43,24 @@ import pro.taskana.Task;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
 import pro.taskana.rest.resource.TaskResource;
-import pro.taskana.rest.resource.ClassificationResourceAssembler;
 import pro.taskana.rest.resource.TaskResourceAssembler;
 
+/**
+ * Test ClassificationController.
+ * @author bbr
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
     properties = {"devMode=true"})
 public class ClassificationControllerIntTest {
 
-    @Autowired
-    private ClassificationResourceAssembler classificationResourceAssembler;
-
-    @Autowired
+     @Autowired
     private TaskResourceAssembler taskResourceAssembler;
 
     @Autowired
     Environment env;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationControllerIntTest.class);
     String server = "http://127.0.0.1:";
     RestTemplate template;
     HttpEntity<String> request;
@@ -342,7 +340,7 @@ public class ClassificationControllerIntTest {
     }
 
     /**
-     * Return a REST template which is capable of dealing with responses in HAL format
+     * Return a REST template which is capable of dealing with responses in HAL format.
      *
      * @return RestTemplate
      */

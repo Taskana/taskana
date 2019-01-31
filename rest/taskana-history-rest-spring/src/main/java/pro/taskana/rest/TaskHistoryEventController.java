@@ -100,7 +100,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<PagedResources<TaskHistoryEventResource>> getTaskHistoryEvent(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to getTaskHistoryEvent(params= {})", LoggerUtils.mapToString(params));
         }
 
@@ -129,7 +129,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
         TaskHistoryEventListAssembler assembler = new TaskHistoryEventListAssembler();
         PagedResources<TaskHistoryEventResource> pagedResources = assembler.toResources(historyEvents, pageMetadata);
 
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTaskHistoryEvent(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
         }
 
@@ -138,7 +138,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
     private HistoryQuery applySortingParams(HistoryQuery query, MultiValueMap<String, String> params)
         throws IllegalArgumentException, InvalidArgumentException {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to applySortingParams(params= {})", LoggerUtils.mapToString(params));
         }
 
@@ -217,7 +217,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
         }
         params.remove(SORT_BY);
         params.remove(SORT_DIRECTION);
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from applySortingParams(), returning {}", query);
         }
 
@@ -226,7 +226,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
     private HistoryQuery applyFilterParams(HistoryQuery query,
         MultiValueMap<String, String> params) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
         }
 
@@ -404,7 +404,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
             query.custom4Like(LIKE + params.get(CUSTOM_4_LIKE).get(0) + LIKE);
             params.remove(CUSTOM_4_LIKE);
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
         }
 
