@@ -3,7 +3,7 @@
         <modelVersion>4.0.0</modelVersion>
         <groupId>pro.taskana</groupId>
         <artifactId>taskana-parent</artifactId>
-        <version>1.0.6-SNAPSHOT</version>
+        <version>1.0.7-SNAPSHOT</version>
         <packaging>pom</packaging>
 
         <description>This pom is parent to all taskana core modules and serves the common build.</description>
