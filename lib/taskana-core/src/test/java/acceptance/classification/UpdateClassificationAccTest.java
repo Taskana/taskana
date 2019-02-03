@@ -2,7 +2,6 @@ package acceptance.classification;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -280,7 +279,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "dummy",
         groupNames = {"businessadmin"})
-    @Test(expected=InvalidArgumentException.class)
+    @Test(expected = InvalidArgumentException.class)
     public void testUpdateClassificationWithSameKeyAndParentKey()
         throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException {
 
