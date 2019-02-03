@@ -31,7 +31,7 @@ import pro.taskana.ldap.LdapClient;
 @Configuration
 @ComponentScan
 @EnableTransactionManagement
-public class RestConfiguration{
+public class RestConfiguration {
 
     @Value("${taskana.schemaName:TASKANA}")
     private String schemaName;
