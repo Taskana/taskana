@@ -6,7 +6,7 @@
 
 	<groupId>pro.taskana</groupId>
 	<artifactId>taskana-rest-spring-example</artifactId>
-	<version>1.0.7-SNAPSHOT</version>
+	<version>1.0.8-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>rest</name>
