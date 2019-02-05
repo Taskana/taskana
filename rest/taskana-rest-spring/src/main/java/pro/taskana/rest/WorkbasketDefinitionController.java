@@ -39,6 +39,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Controller for all {@link WorkbasketDefinition} related endpoints.
@@ -56,17 +57,23 @@ public class WorkbasketDefinitionController {
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<WorkbasketSummary>> exportWorkbaskets(@RequestParam(required = false) String domain) {
+    public ResponseEntity<List<WorkbasketDefinition>> exportWorkbaskets(@RequestParam(required = false) String domain)
+        throws NotAuthorizedException, WorkbasketNotFoundException {
         LOGGER.debug("Entry to exportWorkbaskets(domain= {})", domain);
         WorkbasketQuery workbasketQuery = workbasketService.createWorkbasketQuery();
         List<WorkbasketSummary> workbasketSummaryList = domain != null
             ? workbasketQuery.domainIn(domain).list()
             : workbasketQuery.list();
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from exportWorkbaskets(), returning {}", new ResponseEntity<>(workbasketSummaryList, HttpStatus.OK));
+        List<WorkbasketDefinition> basketExports = new ArrayList<>();
+        for (WorkbasketSummary summary : workbasketSummaryList) {
+            Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
+            basketExports.add(workbasketDefinitionAssembler.toDefinition(workbasket));
         }
-
-        return new ResponseEntity<>(workbasketSummaryList, HttpStatus.OK);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from exportWorkbaskets(), returning {}",
+                new ResponseEntity<>(workbasketSummaryList, HttpStatus.OK));
+        }
+        return new ResponseEntity<>(basketExports, HttpStatus.OK);
     }
 
     /**
@@ -85,7 +92,8 @@ public class WorkbasketDefinitionController {
         WorkbasketAlreadyExistException, WorkbasketNotFoundException, InvalidArgumentException {
         LOGGER.debug("Entry to importWorkbaskets()");
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         List<WorkbasketDefinition> definitions = mapper.readValue(file.getInputStream(),
             new TypeReference<List<WorkbasketDefinition>>() {
 

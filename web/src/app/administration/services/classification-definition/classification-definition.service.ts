@@ -2,25 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'app/../environments/environment';
 import { ClassificationDefinition } from 'app/models/classification-definition';
-import { saveAs } from 'file-saver/FileSaver';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
+import { BlobGenerator } from 'app/shared/util/blob-generator';
 
 @Injectable()
 export class ClassificationDefinitionService {
 
   url = environment.taskanaRestUrl + '/v1/classification-definitions';
-  constructor(
-    private httpClient: HttpClient
-  ) {
-  }
+  constructor(private httpClient: HttpClient) { }
 
   // GET
-  exportClassifications(domain: string) {
+  async exportClassifications(domain: string) {
     domain = (domain === '' ? '' : '?domain=' + domain);
-    this.httpClient.get<ClassificationDefinition[]>(this.url + domain)
-      .subscribe(
-        response => saveAs(new Blob([JSON.stringify(response)], { type: 'text/plain;charset=utf-8' }),
-          'Classifications_' + TaskanaDate.getDate() + '.json')
-      );
+    const classificationDefinitions = await this.httpClient.get<ClassificationDefinition[]>(this.url + domain).toPromise();
+    BlobGenerator.saveFile(classificationDefinitions, 'Classifications_' + TaskanaDate.getDate() + '.json')
   }
 }
