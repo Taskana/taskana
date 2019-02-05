@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketQuery;
@@ -34,19 +40,13 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.WorkbasketDefinition;
 import pro.taskana.rest.resource.WorkbasketDefinitionAssembler;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 /**
  * Controller for all {@link WorkbasketDefinition} related endpoints.
  */
 @RestController
 @RequestMapping(path = "/v1/workbasket-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class WorkbasketDefinitionController {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketDefinitionController.class);
 
     @Autowired
@@ -69,11 +69,13 @@ public class WorkbasketDefinitionController {
             Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
             basketExports.add(workbasketDefinitionAssembler.toDefinition(workbasket));
         }
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from exportWorkbaskets(), returning {}",
-                new ResponseEntity<>(workbasketSummaryList, HttpStatus.OK));
+                new ResponseEntity<>(basketExports, HttpStatus.OK));
         }
-        return new ResponseEntity<>(basketExports, HttpStatus.OK);
+
+        return new ResponseEntity<List<WorkbasketDefinition>>(basketExports, HttpStatus.OK);
     }
 
     /**
