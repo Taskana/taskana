@@ -117,7 +117,7 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     )
 
     ECHO jdbcDriver=org.postgresql.Driver > %PROP_FILE%
-    ECHO jdbcUrl=jdbc:postgresql://localhost:50001/postgres >> %PROP_FILE%
+    ECHO jdbcUrl=jdbc:postgresql://localhost:50102/postgres >> %PROP_FILE%
     ECHO dbUserName=postgres >> %PROP_FILE%
     ECHO dbPassword=postgres >> %PROP_FILE%
     ECHO schemaName=taskana >> %PROP_FILE%

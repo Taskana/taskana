@@ -13,6 +13,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>taskana-rest-spring-wildfly-example</artifactId>
 	<packaging>war</packaging>
+	<properties>
+		<!-- Default H2 DB configuration -->
+		<connection-url>jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0</connection-url>
+		<driver-class>org.h2.Driver</driver-class>
+		<driver-name>h2</driver-name>
+		<user-name>sa</user-name>
+		<password>sa</password>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -45,8 +53,59 @@
 			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.5</version>
+		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>postgres</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>properties-maven-plugin</artifactId>
+						<version>1.0-alpha-2</version>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<goals>
+									<goal>read-project-properties</goal>
+								</goals>
+								<configuration>
+									<properties>
+										<driver-class>${jdbcDriver}</driver-class>
+										<connection-url>${jdbcUrl}</connection-url>
+										<driver-name>postgresqldriver</driver-name>
+										<user-name>${dbUserName}</user-name>
+										<password>${dbPassword}</password>
+										<activatedProperties>postgres</activatedProperties>
+									</properties>
+									<files>
+										<file>${user.home}/taskanaUnitTest.properties</file>
+									</files>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -67,19 +126,19 @@
 							<goal>start</goal>
 						</goals>
 					</execution>
-					<!-- Deploy the JDBC library -->
-					<!--<execution>
+					<!-- Deploy the JDBC library in JBoss -->
+					<execution>
 						<id>deploy-driver</id>
 						<phase>install</phase>
 						<configuration>
-							<groupId>postgresql</groupId>
+							<groupId>org.postgresql</groupId>
 							<artifactId>postgresql</artifactId>
-							<name>postgresql.jar</name>
+							<name>postgresqldriver</name>
 						</configuration>
 						<goals>
 							<goal>deploy-artifact</goal>
 						</goals>
-					</execution>-->
+					</execution>
 					<!-- Add a data source -->
 					<execution>
 						<id>add-datasource</id>
@@ -91,11 +150,11 @@
 									<properties>
 										<jndi-name>java:/TaskanaDS</jndi-name>
 										<enabled>true</enabled>
-										<connection-url>jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0</connection-url>
-										<driver-class>org.h2.Driver</driver-class>
-										<driver-name>h2</driver-name>
-										<user-name>sa</user-name>
-										<password>sa</password>
+										<connection-url>${connection-url}</connection-url>
+										<driver-class>${driver-class}</driver-class>
+										<driver-name>${driver-name}</driver-name>
+										<user-name>${user-name}</user-name>
+										<password>${password}</password>
 									</properties>
 								</resource>
 							</resources>
@@ -110,6 +169,14 @@
 						<phase>install</phase>
 						<goals>
 							<goal>deploy</goal>
+						</goals>
+					</execution>
+					<!-- undeploy the application on install -->
+					<execution>
+						<id>wildfly-undeploy</id>
+						<phase>install</phase>
+						<goals>
+							<goal>undeploy</goal>
 						</goals>
 					</execution>
 					<!-- shutdown the application on install -->
