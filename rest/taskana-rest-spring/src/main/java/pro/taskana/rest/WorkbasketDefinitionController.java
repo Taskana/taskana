@@ -75,7 +75,7 @@ public class WorkbasketDefinitionController {
                 new ResponseEntity<>(basketExports, HttpStatus.OK));
         }
 
-        return new ResponseEntity<List<WorkbasketDefinition>>(basketExports, HttpStatus.OK);
+        return new ResponseEntity<>(basketExports, HttpStatus.OK);
     }
 
     /**
