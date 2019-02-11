@@ -1,8 +1,10 @@
 package pro.taskana.rest;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -33,10 +35,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -83,6 +85,7 @@ public class ClassificationDefinitionControllerIntTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().length >= 5);
         assertTrue(response.getBody().length <= 7);
+        assertThat(response.getBody()[0], instanceOf(ClassificationResource.class));
     }
 
     @Test

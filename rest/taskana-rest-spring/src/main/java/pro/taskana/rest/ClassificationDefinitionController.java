@@ -61,18 +61,28 @@ public class ClassificationDefinitionController {
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<ClassificationSummary>> exportClassifications(
-        @RequestParam(required = false) String domain) {
+    public ResponseEntity<List<ClassificationResource>> exportClassifications(
+        @RequestParam(required = false) String domain)
+        throws ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException,
+        NotAuthorizedException, ConcurrencyException, ClassificationAlreadyExistException {
         LOGGER.debug("Entry to exportClassifications(domain= {})", domain);
         ClassificationQuery query = classificationService.createClassificationQuery();
 
         List<ClassificationSummary> summaries = domain != null ? query.domainIn(domain).list() : query.list();
         List<ClassificationResource> export = new ArrayList<>();
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from exportClassifications(), returning {}", new ResponseEntity<>(summaries, HttpStatus.OK));
+
+        for (ClassificationSummary summary : summaries) {
+            Classification classification = classificationService.getClassification(summary.getKey(),
+                summary.getDomain());
+
+            export.add(classificationResourceAssembler.toDefinition(classification));
         }
 
-        return new ResponseEntity<>(summaries, HttpStatus.OK);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from exportClassifications(), returning {}", new ResponseEntity<>(export, HttpStatus.OK));
+        }
+
+        return new ResponseEntity<>(export, HttpStatus.OK);
     }
 
     @PostMapping
