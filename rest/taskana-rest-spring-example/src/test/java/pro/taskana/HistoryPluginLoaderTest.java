@@ -1,4 +1,4 @@
-package pro.taskana.historyPlugin;
+package pro.taskana;
 
 import static org.junit.Assert.assertEquals;
 
