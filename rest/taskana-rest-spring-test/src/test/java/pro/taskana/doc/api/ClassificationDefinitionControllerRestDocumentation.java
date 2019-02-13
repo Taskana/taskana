@@ -34,7 +34,6 @@ import pro.taskana.rest.RestConfiguration;
 
 /**
  * Test ClassificationDefinitionControlller.
- *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)

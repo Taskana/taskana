@@ -384,10 +384,6 @@ This minimal example shows only the required fields to import a single new class
 
 include::../../../{snippets}/ImportClassificationDefinitions/http-request.adoc[]
 
-==== Request Structure
-
-include::../../../{snippets}/ImportClassificationDefinitions/request-fields.adoc[]
-
 ==== Example Response
 
 include::../../../{snippets}/ImportClassificationDefinitions/http-response.adoc[]
@@ -568,10 +564,6 @@ A `POST` request is used to import new workbasket-definitions.
 This minimal example shows only the required fields to import a single new workbasket-definition. The <<workbasket, workbasket structure>> shows all possible fields for importing (and therefore creating) new workbasket-definitions.
 
 include::../../../{snippets}/ImportWorkbasketDefinitions/http-request.adoc[]
-
-==== Request Structure
-
-include::../../../{snippets}/ImportWorkbasketDefinitions/request-fields.adoc[]
 
 ==== Response Structure
 
@@ -797,25 +789,3 @@ include::../../../{snippets}/CommonSummaryResourceFields/http-request.adoc[]
 === Example response
 
 include::../../../{snippets}/CommonSummaryResourceFields/response-body.adoc[]
-
-== History event
-
-=== Get all task history event
-
-==== Example request
-
-include::../../../../taskana-history-rest-spring/{snippets}/GetAllTaskHistoryEventDocTest/http-request.adoc[]
-
-==== Example response
-
-include::../../../../taskana-history-rest-spring/{snippets}/GetAllTaskHistoryEventDocTest/response-body.adoc[]
-
-=== Get a specific task history event
-
-==== Example request
-
-include::../../../../taskana-history-rest-spring/{snippets}/GetSpecificTaskHistoryEventDocTest/http-request.adoc[]
-
-==== Example response
-
-include::../../../../taskana-history-rest-spring/{snippets}/GetSpecificTaskHistoryEventDocTest/response-body.adoc[]
