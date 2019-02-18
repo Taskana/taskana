@@ -15,6 +15,11 @@ set -e # fail fast
 #H   - DB2_10_5
 #H   - DB2_11_1
 #H   - POSTGRES_10_4
+#H project:
+#H   - REST
+#H   - WILDFLY
+#H   - CORE
+#H   - LIB
 # Arguments:
 #   $1: exit code
 function helpAndExit {
@@ -26,13 +31,17 @@ function main {
   [[ $# -eq 0 || "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
   REL=`dirname "$0"`
   eval "$REL/prepare_db.sh '$1'"
-  if [[ "$1" == "H2" ]]; then
-    (cd $REL/../web && npm run test)
-    mvn clean verify -q -f $REL/../lib/ -B
-    mvn clean install -q -f $REL/../rest/ -B -P history.plugin
-  elif [[ "$1" == "POSTGRES_10_4" ]]; then
+  if [[ "$1" == "H2" && "$2" == "LIB" ]]; then
+    mvn clean install -q -f $REL/../lib/ -B
+  elif [[ "$1" == "H2" && "$2" == "REST" ]]; then
+   (cd $REL/../web && npm run test)
+    mvn clean install -q -f $REL/../rest/ -B
+    mvn clean verify -q -f $REL/../rest/ -B -pl taskana-rest-spring-example -P history.plugin
+  elif [[ "$1" == "POSTGRES_10_4" && "$2" == "CORE" ]]; then
+    mvn clean verify -q -f $REL/../lib/taskana-core -B
+  elif [[ "$1" == "POSTGRES_10_4" && "$2" == "WILDFLY" ]]; then
     mvn clean install -q -f $REL/../lib/ -B -DskipTests=true -Dmaven.javadoc.skip=true
-	mvn clean install -q -f $REL/../rest/ -B -DskipTests=true -pl !taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip=true
+    mvn clean install -q -f $REL/../rest/ -B -DskipTests=true -pl !taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip=true
     mvn clean install -q -f $REL/../rest/ -B -pl taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip=true -P postgres
   else
     mvn clean verify -q -f $REL/../lib/taskana-core -B
