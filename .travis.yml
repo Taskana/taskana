@@ -23,10 +23,12 @@ env:
     - DEPLOY_REPO=Taskana/taskana
     - VERSION=v`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.6.0:exec -f ./lib`
   matrix:
-    - DB=H2
-    - DB=DB2_10_5
-    - DB=DB2_11_1
-    - DB=POSTGRES_10_4
+    - DB=H2 PROJECT=REST
+    - DB=H2 PROJECT=LIB
+    - DB=DB2_10_5 PROJECT=CORE
+    - DB=DB2_11_1 PROJECT=CORE
+    - DB=POSTGRES_10_4 PROJECT=CORE
+    - DB=POSTGRES_10_4 PROJECT=WILDFLY
 
 stage: Test
 script:
@@ -35,7 +37,7 @@ script:
   - sleep 3 # give xvfb some time to start
   - nvm install $NODE_VERSION
     && ci/change_version.sh -m "lib/ rest/" -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
-    && ./ci/test.sh $DB
+    && ci/test.sh $DB $PROJECT
 
 jobs:
   include:
