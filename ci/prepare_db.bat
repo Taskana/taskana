@@ -50,11 +50,11 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
         docker run -d -p 50100:50000 --name taskana-db2_10_5 taskana/db2:10.5 -d
     )
 
-    ECHO jdbcDriver=com.ibm.db2.jcc.DB2Driver > %PROP_FILE%
-    ECHO jdbcUrl=jdbc:db2://localhost:50100/tskdb >> %PROP_FILE%
-    ECHO dbUserName=db2inst1 >> %PROP_FILE%
-    ECHO dbPassword=db2inst1-pwd >> %PROP_FILE%
-    ECHO schemaName=taskana >> %PROP_FILE%
+    ECHO jdbcDriver=com.ibm.db2.jcc.DB2Driver> %PROP_FILE%
+    ECHO jdbcUrl=jdbc:db2://localhost:50100/tskdb>> %PROP_FILE%
+    ECHO dbUserName=db2inst1>> %PROP_FILE%
+    ECHO dbPassword=db2inst1-pwd>> %PROP_FILE%
+    ECHO schemaName=taskana>> %PROP_FILE%
     ECHO ---
     GOTO MENU
 
@@ -83,11 +83,11 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
         docker run -d -p 50101:50000 --name taskana-db2_11_1 taskana/db2:11.1 -d
     )
 
-    ECHO jdbcDriver=com.ibm.db2.jcc.DB2Driver > %PROP_FILE%
-    ECHO jdbcUrl=jdbc:db2://localhost:50101/tskdb >> %PROP_FILE%
-    ECHO dbUserName=db2inst1 >> %PROP_FILE%
-    ECHO dbPassword=db2inst1-pwd >> %PROP_FILE%
-    ECHO schemaName=taskana >> %PROP_FILE%
+    ECHO jdbcDriver=com.ibm.db2.jcc.DB2Driver> %PROP_FILE%
+    ECHO jdbcUrl=jdbc:db2://localhost:50101/tskdb>> %PROP_FILE%
+    ECHO dbUserName=db2inst1>> %PROP_FILE%
+    ECHO dbPassword=db2inst1-pwd>> %PROP_FILE%
+    ECHO schemaName=taskana>> %PROP_FILE%
     ECHO ---
     GOTO MENU
 
@@ -116,11 +116,11 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
         docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
     )
 
-    ECHO jdbcDriver=org.postgresql.Driver > %PROP_FILE%
-    ECHO jdbcUrl=jdbc:postgresql://localhost:50102/postgres >> %PROP_FILE%
-    ECHO dbUserName=postgres >> %PROP_FILE%
-    ECHO dbPassword=postgres >> %PROP_FILE%
-    ECHO schemaName=taskana >> %PROP_FILE%
+    ECHO jdbcDriver=org.postgresql.Driver> %PROP_FILE%
+    ECHO jdbcUrl=jdbc:postgresql://localhost:50102/postgres>> %PROP_FILE%
+    ECHO dbUserName=postgres>> %PROP_FILE%
+    ECHO dbPassword=postgres>> %PROP_FILE%
+    ECHO schemaName=taskana>> %PROP_FILE%
     ECHO ---
     GOTO MENU
 
