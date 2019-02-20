@@ -29,8 +29,7 @@ function main {
   if [[ "$1" == "H2" ]]; then
     (cd $REL/../web && npm run test)
     mvn clean verify -q -f $REL/../lib/ -B
-    mvn clean install -q -f $REL/../rest/ -B
-    mvn clean verify -q -f $REL/../rest/ -B -pl taskana-rest-spring-example -P history.plugin 
+    mvn clean install -q -f $REL/../rest/ -B -P history.plugin
   elif [[ "$1" == "POSTGRES_10_4" ]]; then
     mvn clean verify -q -f $REL/../lib/taskana-core -B
     mvn clean install -q -f $REL/../rest/ -B -P postgres

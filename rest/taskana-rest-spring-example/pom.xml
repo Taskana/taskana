@@ -28,6 +28,22 @@
 		</repositories>
 	-->
 
+	<profiles>
+		<profile>
+			<id>history.plugin</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>pro.taskana</groupId>
+					<artifactId>taskana-history-rest-spring</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -40,16 +56,6 @@
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-rest-spring</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-history-rest-spring</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>pro.taskana.simplehistory</groupId>
-			<artifactId>taskana-simplehistory-provider</artifactId>
-			<version>0.0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
