@@ -37,11 +37,11 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.rest.resource.WorkbasketDefinition;
-import pro.taskana.rest.resource.WorkbasketDefinitionAssembler;
+import pro.taskana.rest.resource.WorkbasketDefinitionResource;
+import pro.taskana.rest.resource.WorkbasketDefinitionResourceAssembler;
 
 /**
- * Controller for all {@link WorkbasketDefinition} related endpoints.
+ * Controller for all {@link WorkbasketDefinitionResource} related endpoints.
  */
 @RestController
 @RequestMapping(path = "/v1/workbasket-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -53,21 +53,21 @@ public class WorkbasketDefinitionController {
     private WorkbasketService workbasketService;
 
     @Autowired
-    private WorkbasketDefinitionAssembler workbasketDefinitionAssembler;
+    private WorkbasketDefinitionResourceAssembler workbasketDefinitionAssembler;
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<WorkbasketDefinition>> exportWorkbaskets(@RequestParam(required = false) String domain)
+    public ResponseEntity<List<WorkbasketDefinitionResource>> exportWorkbaskets(@RequestParam(required = false) String domain)
         throws NotAuthorizedException, WorkbasketNotFoundException {
         LOGGER.debug("Entry to exportWorkbaskets(domain= {})", domain);
         WorkbasketQuery workbasketQuery = workbasketService.createWorkbasketQuery();
         List<WorkbasketSummary> workbasketSummaryList = domain != null
             ? workbasketQuery.domainIn(domain).list()
             : workbasketQuery.list();
-        List<WorkbasketDefinition> basketExports = new ArrayList<>();
+        List<WorkbasketDefinitionResource> basketExports = new ArrayList<>();
         for (WorkbasketSummary summary : workbasketSummaryList) {
             Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
-            basketExports.add(workbasketDefinitionAssembler.toDefinition(workbasket));
+            basketExports.add(workbasketDefinitionAssembler.toResource(workbasket));
         }
 
         if (LOGGER.isDebugEnabled()) {
@@ -79,7 +79,7 @@ public class WorkbasketDefinitionController {
     }
 
     /**
-     * This method imports a <b>list of {@link WorkbasketDefinition}</b>. This does not exactly match the REST norm, but
+     * This method imports a <b>list of {@link WorkbasketDefinitionResource}</b>. This does not exactly match the REST norm, but
      * we want to have an option to import all settings at once. When a logical equal (key and domain are equal)
      * workbasket already exists an update will be executed. Otherwise a new workbasket will be created.
      *
@@ -96,8 +96,8 @@ public class WorkbasketDefinitionController {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        List<WorkbasketDefinition> definitions = mapper.readValue(file.getInputStream(),
-            new TypeReference<List<WorkbasketDefinition>>() {
+        List<WorkbasketDefinitionResource> definitions = mapper.readValue(file.getInputStream(),
+            new TypeReference<List<WorkbasketDefinitionResource>>() {
 
             });
 
@@ -113,8 +113,8 @@ public class WorkbasketDefinitionController {
         Map<String, String> idConversion = new HashMap<>();
 
         // STEP 1: update or create workbaskets from the import
-        for (WorkbasketDefinition definition : definitions) {
-            Workbasket importedWb = workbasketDefinitionAssembler.toModel(definition.workbasket);
+        for (WorkbasketDefinitionResource definition : definitions) {
+            Workbasket importedWb = workbasketDefinitionAssembler.toModel(definition.getWorkbasket());
             Workbasket workbasket;
             if (systemIds.containsKey(logicalId(importedWb))) {
                 workbasket = workbasketService.updateWorkbasket(importedWb);
@@ -127,7 +127,7 @@ public class WorkbasketDefinitionController {
             for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(workbasket.getId())) {
                 workbasketService.deleteWorkbasketAccessItem(accessItem.getId());
             }
-            for (WorkbasketAccessItem authorization : definition.authorizations) {
+            for (WorkbasketAccessItem authorization : definition.getAuthorizations()) {
                 workbasketService.createWorkbasketAccessItem(authorization);
             }
             idConversion.put(importedWb.getId(), workbasket.getId());
@@ -135,9 +135,9 @@ public class WorkbasketDefinitionController {
 
         // STEP 2: update distribution targets
         // This can not be done in step 1 because the system IDs are only known after step 1
-        for (WorkbasketDefinition definition : definitions) {
+        for (WorkbasketDefinitionResource definition : definitions) {
             List<String> distributionTargets = new ArrayList<>();
-            for (String oldId : definition.distributionTargets) {
+            for (String oldId : definition.getDistributionTargets()) {
                 if (idConversion.containsKey(oldId)) {
                     distributionTargets.add(idConversion.get(oldId));
                 } else {
@@ -150,7 +150,7 @@ public class WorkbasketDefinitionController {
 
             workbasketService.setDistributionTargets(
                 // no verification necessary since the workbasket was already imported in step 1.
-                idConversion.get(definition.workbasket.getWorkbasketId()), distributionTargets);
+                idConversion.get(definition.getWorkbasket().getWorkbasketId()), distributionTargets);
         }
         LOGGER.debug("Exit from importWorkbaskets(), returning {}", new ResponseEntity<>(HttpStatus.OK));
         return new ResponseEntity<>(HttpStatus.OK);
