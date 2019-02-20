@@ -11,7 +11,7 @@
     <h4 class="panel-header">Taskana history query</h4>
   </div>
   <div class="panel-body">
-    <div class="divTable table-striped">
+    <div class="divTable table-striped" *ngIf="taskQuery">
       <form [formGroup]="taskQueryForm">
         <div class="divTableHeading">
           <div class="divTableRow">

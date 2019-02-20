@@ -9,7 +9,7 @@ export class RequestInProgressService {
 	constructor() { }
 
 	setRequestInProgress(value: boolean) {
-		this.requestInProgressTriggered.next(value);
+		setTimeout(() => this.requestInProgressTriggered.next(value), 0);
 	}
 
 	getRequestInProgress(): Observable<boolean> {
