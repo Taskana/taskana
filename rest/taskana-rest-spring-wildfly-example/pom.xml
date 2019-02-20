@@ -40,7 +40,7 @@
 		</dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-rest-spring-setup</artifactId>
+			<artifactId>taskana-rest-spring-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

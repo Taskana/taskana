@@ -36,9 +36,9 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>pro.taskana</groupId>
-					<artifactId>taskana-history-rest-spring</artifactId>
-					<version>${project.version}</version>
+					<groupId>pro.taskana.simplehistory</groupId>
+					<artifactId>taskana-simplehistory-rest-spring</artifactId>
+					<version>0.0.9</version>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -150,7 +150,7 @@
 		</dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-rest-spring-setup</artifactId>
+			<artifactId>taskana-rest-spring-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
