@@ -56,6 +56,7 @@ jobs:
           && ci/release.sh lib/taskana-cdi $TRAVIS_TAG
           && ci/release.sh web/ $TRAVIS_TAG
           && ci/release.sh rest/taskana-rest-spring $TRAVIS_TAG
+          && ci/release.sh rest/taskana-rest-spring-base $TRAVIS_TAG
       if: repo = env(DEPLOY_REPO) AND (tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ OR branch = master) AND type != pull_request
     - stage: "Release / Deploy"
       name: "Update Pom's stage"

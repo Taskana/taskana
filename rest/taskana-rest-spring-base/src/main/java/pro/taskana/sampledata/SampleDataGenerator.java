@@ -74,8 +74,6 @@ public class SampleDataGenerator {
             runner.setStopOnError(false);
             runner.runScript(new BufferedReader(
                 new InputStreamReader(this.getClass().getResourceAsStream(CLEAR), StandardCharsets.UTF_8)));
-            runner.runScript(new BufferedReader(
-                new InputStreamReader(this.getClass().getResourceAsStream(CLEAR_HISTORY_EVENTS), StandardCharsets.UTF_8)));
         } catch (Exception e) {
             LOGGER.error("caught Exception {}", e);
         }
@@ -156,9 +154,11 @@ public class SampleDataGenerator {
             runner.runScript(new BufferedReader(
                 new InputStreamReader(this.getClass().getResourceAsStream(CHECK_HISTORY_EVENT_EXIST),
                     StandardCharsets.UTF_8)));
+            runner.runScript(new BufferedReader(
+                new InputStreamReader(this.getClass().getResourceAsStream(CLEAR_HISTORY_EVENTS), StandardCharsets.UTF_8)));
             scriptsList.add(HISTORY_EVENT);
         } catch (Exception e) {
-            LOGGER.info("The HISTORY_EVENTS table is not created");
+            LOGGER.error("The HISTORY_EVENTS table is not created");
         }
         return scriptsList.toArray(new String[0]);
     }
