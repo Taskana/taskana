@@ -170,7 +170,7 @@ export class TaskQueryComponent implements OnInit {
   }
 
   private performRequest() {
-    setTimeout(() => this.requestInProgressService.setRequestInProgress(true), 1)
+    this.requestInProgressService.setRequestInProgress(true);
     this.calculateQueryPages();
     this.taskQuerySubscription = this.taskQueryService.queryTask(
       this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, (g) => `-${g[0].toLowerCase()}`),
@@ -195,7 +195,7 @@ export class TaskQueryComponent implements OnInit {
       this.taskQueryForm.get('custom3') ? this.taskQueryForm.get('custom3').value : undefined,
       this.taskQueryForm.get('custom4') ? this.taskQueryForm.get('custom4').value : undefined,
       false).subscribe(taskQueryResource => {
-        this.requestInProgressService.setRequestInProgress(false)
+        this.requestInProgressService.setRequestInProgress(false);
         if (!taskQueryResource._embedded) {
           this.taskQuery = null;
           this.taskQueryResource = null;
