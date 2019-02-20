@@ -16,14 +16,15 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.impl.WorkbasketImpl;
 
 /**
- * Transforms {@link Workbasket} into a {@link WorkbasketDefinition}
+ * Transforms {@link Workbasket} into a {@link WorkbasketDefinitionResource}
  * containing all additional information about that workbasket.
  */
 @Component
-public class WorkbasketDefinitionAssembler {
+public class WorkbasketDefinitionResourceAssembler {
 
     @Autowired
     private WorkbasketService workbasketService;
@@ -33,31 +34,31 @@ public class WorkbasketDefinitionAssembler {
      *
      * @param workbasket
      *            {@link Workbasket} which will be converted
-     * @return a {@link WorkbasketDefinition}, containing the {@code basket}, its distribution targets and its
+     * @return a {@link WorkbasketDefinitionResource}, containing the {@code basket}, its distribution targets and its
      *         authorizations
      * @throws NotAuthorizedException
      *             if the user is not authorized
      * @throws WorkbasketNotFoundException
      *             if {@code basket} is an unknown workbasket
      */
-    public WorkbasketDefinition toDefinition(Workbasket workbasket)
+    public WorkbasketDefinitionResource toResource(Workbasket workbasket)
         throws NotAuthorizedException, WorkbasketNotFoundException {
 
-        WorkbasketResource basket = new WorkbasketResource();
+        WorkbasketResourceWithoutLinks basket = new WorkbasketResourceWithoutLinks();
         BeanUtils.copyProperties(workbasket, basket);
         basket.setWorkbasketId(workbasket.getId());
         basket.setModified(workbasket.getModified().toString());
         basket.setCreated(workbasket.getCreated().toString());
 
-        List<WorkbasketAccessItem> authorizations = new ArrayList<>();
-        for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(basket.getKey())) {
-            authorizations.add(accessItem);
+        List<WorkbasketAccessItemImpl> authorizations = new ArrayList<>();
+        for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(basket.getWorkbasketId())) {
+            authorizations.add((WorkbasketAccessItemImpl) accessItem);
         }
         Set<String> distroTargets = workbasketService.getDistributionTargets(workbasket.getId())
             .stream()
             .map(WorkbasketSummary::getId)
             .collect(Collectors.toSet());
-        return new WorkbasketDefinition(basket, distroTargets, authorizations);
+        return new WorkbasketDefinitionResource(basket, distroTargets, authorizations);
     }
 
     public Workbasket toModel(WorkbasketResource wbResource) {

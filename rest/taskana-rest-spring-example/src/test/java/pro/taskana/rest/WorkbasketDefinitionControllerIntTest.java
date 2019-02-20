@@ -2,8 +2,14 @@ package pro.taskana.rest;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,8 +19,10 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,28 +33,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import pro.taskana.rest.resource.WorkbasketDefinition;
+import pro.taskana.rest.resource.WorkbasketDefinitionResource;
 
-/**
- * Test workbasket definitions.
- */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class WorkbasketDefinitionControllerIntTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
     private String server = "http://127.0.0.1:";
-    RestTemplate template;
+    private RestTemplate template;
     private HttpEntity<String> request;
     private HttpHeaders headers = new HttpHeaders();
-
+    private ObjectMapper objMapper = new ObjectMapper();
     @LocalServerPort
-    int port;
+    private int port;
 
     @Before
     public void before() {
@@ -57,25 +64,71 @@ public class WorkbasketDefinitionControllerIntTest {
     }
 
     @Test
-    public void exportWorkbasketFromDomain() {
-        ResponseEntity<List<WorkbasketDefinition>> response = template.exchange(
-            this.server + this.port + "/v1/workbasket-definitions?domain=DOMAIN_A",
-            HttpMethod.GET, request, new ParameterizedTypeReference<List<WorkbasketDefinition>>() {
+    public void testExportWorkbasketFromDomain() {
+        ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
+            server + port + "/v1/workbasket-definitions?domain=DOMAIN_A", HttpMethod.GET, request,
+            new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {
 
             });
+        assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertThat(response.getBody().get(0), instanceOf(WorkbasketDefinition.class));
-        assertEquals(11, response.getBody().size());
+        assertThat(response.getBody().get(0), instanceOf(WorkbasketDefinitionResource.class));
+
+        boolean allAuthorizationsAreEmpty = true, allDistributionTargetsAreEmpty = true;
+        for (WorkbasketDefinitionResource workbasketDefinition : response.getBody()) {
+            if (allAuthorizationsAreEmpty && !workbasketDefinition.getAuthorizations().isEmpty()) {
+                allAuthorizationsAreEmpty = false;
+            }
+            if (allDistributionTargetsAreEmpty && !workbasketDefinition.getDistributionTargets().isEmpty()) {
+                allDistributionTargetsAreEmpty = false;
+            }
+            if (!allAuthorizationsAreEmpty && !allDistributionTargetsAreEmpty) {
+                break;
+            }
+        }
+        assertFalse(allDistributionTargetsAreEmpty);
+        assertFalse(allAuthorizationsAreEmpty);
     }
 
     @Test
-    public void exportWorkbasketFromWrongDomain() {
-        ResponseEntity<List<WorkbasketDefinition>> response = template.exchange(
-            this.server + this.port + "/v1/workbasket-definitions?domain=wrongDomain",
-            HttpMethod.GET, request, new ParameterizedTypeReference<List<WorkbasketDefinition>>() {
+    public void testExportWorkbasketsFromWrongDomain() {
+        ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
+            server + port + "/v1/workbasket-definitions?domain=wrongDomain",
+            HttpMethod.GET, request, new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {
 
             });
         assertEquals(0, response.getBody().size());
+    }
+
+    @Test
+    public void testImportWorkbasket() throws IOException {
+        ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
+            server + port + "/v1/workbasket-definitions?domain=DOMAIN_A",
+            HttpMethod.GET, request, new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {
+
+            });
+
+        List<String> list = new ArrayList<>();
+        list.add(objMapper.writeValueAsString(response.getBody().get(0)));
+        ResponseEntity<String> responseImport = importRequest(list);
+        assertEquals(HttpStatus.OK, responseImport.getStatusCode());
+    }
+
+    private ResponseEntity<String> importRequest(List<String> clList) throws IOException {
+        File tmpFile = File.createTempFile("test", ".tmp");
+        FileWriter writer = new FileWriter(tmpFile);
+        writer.write(clList.toString());
+        writer.close();
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        body.add("file", new FileSystemResource(tmpFile));
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        String serverUrl = server + port + "/v1/workbasket-definitions";
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.postForEntity(serverUrl, requestEntity, String.class);
     }
 
     /**
@@ -94,5 +147,4 @@ public class WorkbasketDefinitionControllerIntTest {
 
         return new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
     }
-
 }
