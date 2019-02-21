@@ -17,6 +17,8 @@ import org.apache.ibatis.jdbc.SqlRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.impl.TaskanaEngineImpl;
+
 /**
  * This class create the schema for taskana.
  */
@@ -104,7 +106,7 @@ public class DbSchemaCreator {
         SqlRunner runner = null;
         try {
             Connection connection = dataSource.getConnection();
-            connection.setSchema(this.schemaName);
+            TaskanaEngineImpl.setSchemaToConnection(connection, this.schemaName);
             runner = new SqlRunner(connection);
             LOGGER.debug(connection.getMetaData().toString());
 

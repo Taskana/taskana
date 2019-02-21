@@ -124,7 +124,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     public static boolean isPostgreSQL(String databaseProductName) {
-        return databaseProductName.equals("PostgreSQL");
+        return "PostgreSQL".equals(databaseProductName);
     }
 
     @Override
@@ -210,7 +210,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             this.connection = connection;
             // disabling auto commit for passed connection in order to gain full control over the connection management
             connection.setAutoCommit(false);
-            connection.setSchema(taskanaEngineConfiguration.getSchemaName());
+            setSchemaToConnection(connection, taskanaEngineConfiguration.getSchemaName());
             mode = ConnectionManagementMode.EXPLICIT;
             sessionManager.startManagedSession(connection);
         } else if (this.connection != null) {
@@ -239,7 +239,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     void openConnection() {
         initSqlSession();
         try {
-            this.sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
+            connection = this.sessionManager.getConnection();
+            setSchemaToConnection(connection, taskanaEngineConfiguration.getSchemaName());
         } catch (SQLException e) {
             throw new SystemException(
                 "Method openConnection() could not open a connection to the database. No schema has been created.",
@@ -248,6 +249,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         if (mode != ConnectionManagementMode.EXPLICIT) {
             pushSessionToStack(this.sessionManager);
         }
+    }
+
+    public static void setSchemaToConnection(Connection connection, String schemaName) throws SQLException {
+        boolean isPostgres = isPostgreSQL(connection.getMetaData().getDatabaseProductName());
+        connection.setSchema(isPostgres ? schemaName.toLowerCase() : schemaName);
     }
 
     /**
