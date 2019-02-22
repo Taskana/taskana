@@ -49,7 +49,7 @@ public class DBCleaner {
                 reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(DB_CLEAR_SCRIPT)));
             }
             boolean isPostgres = "PostgreSQL".equals(connection.getMetaData().getDatabaseProductName());
-            runner.runScript(addSchemaAndPotentialToLowerCase(reader, isPostgres));
+            runner.runScript(addSchemaAndPotentiallyTransformToLowerCase(reader, isPostgres));
         } catch (Exception e) {
             LOGGER.error("caught Exception " + e);
         }
@@ -61,7 +61,7 @@ public class DBCleaner {
         }
     }
 
-    private StringReader addSchemaAndPotentialToLowerCase(BufferedReader reader, boolean isPostgres) {
+    private StringReader addSchemaAndPotentiallyTransformToLowerCase(BufferedReader reader, boolean isPostgres) {
         StringBuffer content = new StringBuffer();
         if (isPostgres) {
             content.append("SET search_path TO " + TaskanaEngineConfigurationTest.getSchemaName().toLowerCase() + ";"
