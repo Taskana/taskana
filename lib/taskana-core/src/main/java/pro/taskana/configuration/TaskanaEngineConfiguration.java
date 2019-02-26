@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
@@ -280,6 +281,17 @@ public class TaskanaEngineConfiguration {
             this.setSchemaName(schemaName);
         } else {
             this.setSchemaName(DEFAULT_SCHEMA_NAME);
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            String databaseProductName = connection.getMetaData().getDatabaseProductName();
+            if (TaskanaEngineImpl.isPostgreSQL(databaseProductName)) {
+                this.schemaName = this.schemaName.toLowerCase();
+            } else {
+                this.schemaName = this.schemaName.toUpperCase();
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("Caught {} when attempting to initialize the schema name", ex);
         }
 
         LOGGER.debug("Using schema name {}", this.getSchemaName());
