@@ -36,12 +36,11 @@ import pro.taskana.rest.resource.AccessIdResource;
 
 /**
  * Test AccessIdValidation.
- *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
     "devMode=true"})
-public class AccessIdValidationControllerTest {
+public class AccessIdValidationControllerIntTest {
 
     @LocalServerPort
     int port;

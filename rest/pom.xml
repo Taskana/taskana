@@ -16,8 +16,8 @@
 		<module>taskana-rest-spring</module>
 		<module>../web</module>
 		<module>taskana-rest-spring-base</module>
+		<module>taskana-rest-spring-test</module>
 		<module>taskana-rest-spring-example</module>
 		<module>taskana-rest-spring-wildfly-example</module>
-		<module>taskana-rest-spring-test</module>
 	</modules>
 </project>
