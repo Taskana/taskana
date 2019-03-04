@@ -66,36 +66,18 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
+			<!-- Reading properties from file and use then as data source properties
+				 is a pending improvement of Jboss development team check out -> https://issues.jboss.org/browse/WFMP-70
+				 That's why we are including postgres connection properties directly in this pom file.
+			-->
 			<properties>
-				<driver-class>${jdbcDriver}</driver-class>
-				<connection-url>${jdbcUrl}</connection-url>
+				<driver-class>org.postgresql.Driver</driver-class>
+				<connection-url>jdbc:postgresql://localhost:50102/postgres</connection-url>
 				<driver-name>postgresqldriver</driver-name>
-				<user-name>${dbUserName}</user-name>
-				<password>${dbPassword}</password>
+				<user-name>postgres</user-name>
+				<password>postgres</password>
 				<activatedProperties>postgres</activatedProperties>
 			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>properties-maven-plugin</artifactId>
-						<version>1.0.0</version>
-						<executions>
-							<execution>
-								<phase>initialize</phase>
-								<goals>
-									<goal>read-project-properties</goal>
-								</goals>
-								<configuration>
-									<files>
-										<file>${user.home}/taskanaUnitTest.properties</file>
-									</files>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 	</profiles>
 
