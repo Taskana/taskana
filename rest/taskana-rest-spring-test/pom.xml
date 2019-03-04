@@ -13,7 +13,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
 	<artifactId>taskana-rest-spring-test</artifactId>
-	<version>1.0.8-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>pro.taskana.simplehistory</groupId>
 			<artifactId>taskana-simplehistory-provider</artifactId>
-			<version>0.0.6</version>
+			<version>0.0.9</version>
 		</dependency>
 
 		<!-- Tests -->
@@ -134,14 +134,9 @@
 						</goals>
 						<configuration>
 							<outputDirectory>
-								${project.build.outputDirectory}/static/docs/rest
+								${project.build.directory}/generated-docs
 							</outputDirectory>
 							<resources>
-								<resource>
-									<directory>
-										${project.build.directory}/generated-docs
-									</directory>
-								</resource>
 								<resource>
 									<directory>${project.basedir}/src/js</directory>
 								</resource>
