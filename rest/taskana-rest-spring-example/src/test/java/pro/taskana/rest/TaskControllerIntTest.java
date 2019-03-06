@@ -245,7 +245,7 @@ public class TaskControllerIntTest {
             });
         assertEquals(5, response.getBody().getContent().size());
         assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=5"));
-        assertEquals("TKI:000000000000000000000000000000000021",
+        assertEquals("TKI:000000000000000000000000000000000020",
             response.getBody().getContent().iterator().next().getTaskId());
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
