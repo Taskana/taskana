@@ -1,11 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Task} from 'app/workplace/models/task';
-import {Workbasket} from 'app/models/workbasket';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {TaskService} from 'app/workplace/services/task.service';
-import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Task } from 'app/workplace/models/task';
+import { Workbasket } from 'app/models/workbasket';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { TaskService } from 'app/workplace/services/task.service';
+import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { Subscription } from 'rxjs';
+import { ClassificationsService } from 'app/services/classifications/classifications.service';
 
 
 @Component({
@@ -18,18 +19,20 @@ export class TaskComponent implements OnInit, OnDestroy {
   routeSubscription: Subscription;
   requestInProgress = false;
 
-  address = 'https://bing.com';
-  link: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.address);
+  regex = /\${(.*?)}/g
+  address = 'https://bing.com/';
+  link: SafeResourceUrl;
 
   task: Task = null;
   workbaskets: Workbasket[];
 
 
   constructor(private taskService: TaskService,
-              private workbasketService: WorkbasketService,
-              private route: ActivatedRoute,
-              private router: Router,
-              private sanitizer: DomSanitizer) {
+    private workbasketService: WorkbasketService,
+    private classificationService: ClassificationsService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private sanitizer: DomSanitizer) {
   }
 
   ngOnInit() {
@@ -39,15 +42,16 @@ export class TaskComponent implements OnInit, OnDestroy {
     });
   }
 
-  getTask(id: string) {
+  async getTask(id: string) {
     this.requestInProgress = true;
-    this.taskService.getTask(id).subscribe(
-      task => {
-        this.requestInProgress = false;
-        this.task = task;
-        this.link = this.sanitizer.bypassSecurityTrustResourceUrl(`${this.address}/?q=${this.task.name}`);
-        this.getWorkbaskets();
-      });
+    this.task = await this.taskService.getTask(id).toPromise()
+    const classification = await this.classificationService.getClassification
+      (this.task.classificationSummaryResource.classificationId).toPromise();
+    this.address = this.extractUrl(classification.applicationEntryPoint) || `${this.address}/?q=${this.task.name}`;
+    this.link = this.sanitizer.bypassSecurityTrustResourceUrl(this.address);
+    this.getWorkbaskets();
+    this.requestInProgress = false;
+
   }
 
   getWorkbaskets() {
@@ -90,7 +94,26 @@ export class TaskComponent implements OnInit, OnDestroy {
   }
 
   navigateBack() {
-    this.router.navigate([{outlets: {detail: `taskdetail/${this.task.taskId}`}}], {relativeTo: this.route.parent});
+    this.router.navigate([{ outlets: { detail: `taskdetail/${this.task.taskId}` } }], { relativeTo: this.route.parent });
+  }
+
+  private extractUrl(url: string): string {
+    const me = this;
+    const extractedExpressions = url.match(this.regex);
+    if (!extractedExpressions) { return url; }
+    extractedExpressions.forEach(expression => {
+      const parameter = expression.substring(2, expression.length - 1);
+      let objectValue: any = me;
+      parameter.split('.').forEach(property => {
+        objectValue = this.getReflectiveProperty(objectValue, property);
+      })
+      url = url.replace(expression, objectValue);
+    })
+    return url;
+  }
+
+  private getReflectiveProperty(scope: any, property: string) {
+    return Reflect.get(scope, property)
   }
 
   ngOnDestroy(): void {

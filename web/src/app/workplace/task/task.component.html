@@ -10,7 +10,8 @@
           <span title="Complete task and return to task list" class="material-icons md-20 blue">check</span>
         </button>
         <button type="button" data-toggle="dropdown" aria-expanded="true" class="btn btn-default dropdown-toggle">
-          <span title="Transfer task to another workbasket" class="material-icons md-20 blue">transfer_within_a_station</span>
+          <span title="Transfer task to another workbasket"
+            class="material-icons md-20 blue">transfer_within_a_station</span>
         </button>
         <ul class="dropdown-menu">
           <li *ngFor="let workbasket of workbaskets">
@@ -38,19 +39,19 @@
         <div class="col-md-6">
           <div class="form-group">
             <label for="task-note" class="control-label">Note</label>
-            <input type="text" disabled class="form-control" id="task-note" placeholder="Task has no Note" [(ngModel)]="task.note"
-              name="task.note">
+            <input type="text" disabled class="form-control" id="task-note" placeholder="Task has no Note"
+              [(ngModel)]="task.note" name="task.note">
           </div>
           <div class="form-group">
             <label for="task-due" class="control-label">Due Date</label>
-            <input type="text" disabled class="form-control" id="task-due" placeholder="No deadline set" [(ngModel)]="task.due"
-              name="task.due">
+            <input type="text" disabled class="form-control" id="task-due" placeholder="No deadline set"
+              [(ngModel)]="task.due" name="task.due">
           </div>
         </div>
       </form>
     </div>
     <div class="row">
-      <iframe class="col-xs-12" [src]="link"></iframe>
+      <iframe class="col-xs-12" *ngIf="link" [src]="link"></iframe>
     </div>
   </div>
 </div>
