@@ -199,7 +199,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
             num = Integer.parseInt(number);
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException(
-                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 8",
                 e.getCause());
         }
         if (customIn.length == 0) {

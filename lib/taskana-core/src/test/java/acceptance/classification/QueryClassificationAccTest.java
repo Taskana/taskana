@@ -400,6 +400,15 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
+    public void testQueryForCustom2Like() throws InvalidArgumentException {
+        ClassificationService classificationService = taskanaEngine.getClassificationService();
+        List<ClassificationSummary> results = classificationService.createClassificationQuery()
+                .customAttributeLike("2", "cus%")
+                .list();
+        assertEquals(4, results.size());
+    }
+
+    @Test
     public void testQueryForCustom3Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()

@@ -18,13 +18,15 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
  */
 public class GetClassificationAccTest extends AbstractAccTest {
 
+    private ClassificationService classificationService;
+
     public GetClassificationAccTest() {
         super();
+        classificationService = taskanaEngine.getClassificationService();
     }
 
     @Test
     public void testFindAllClassifications() {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
             .list();
         assertNotNull(classificationSummaryList);
@@ -32,7 +34,6 @@ public class GetClassificationAccTest extends AbstractAccTest {
 
     @Test
     public void testGetOneClassificationByKeyAndDomain() throws ClassificationNotFoundException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T6310", "DOMAIN_A");
         assertNotNull(classification);
         assertEquals("CLI:100000000000000000000000000000000011", classification.getId());
@@ -56,7 +57,6 @@ public class GetClassificationAccTest extends AbstractAccTest {
 
     @Test
     public void testGetOneClassificationById() throws ClassificationNotFoundException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService
             .getClassification("CLI:100000000000000000000000000000000011");
         assertNotNull(classification);
@@ -82,7 +82,6 @@ public class GetClassificationAccTest extends AbstractAccTest {
 
     @Test
     public void testGetClassificationAsSummary() throws ClassificationNotFoundException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         ClassificationSummary classification = classificationService
             .getClassification("CLI:100000000000000000000000000000000011").asSummary();
         assertNotNull(classification);
@@ -99,16 +98,25 @@ public class GetClassificationAccTest extends AbstractAccTest {
 
     @Test(expected = ClassificationNotFoundException.class)
     public void testGetOneClassificationByIdFails() throws ClassificationNotFoundException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-        Classification classification = classificationService
-            .getClassification("CLI:100000000470000000000000000000000011");
+        classificationService.getClassification("CLI:100000000470000000000000000000000011");
+        fail("ClassificationNotFoundException was expected");
+    }
+
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testGetClassificationByNullKeyFails() throws ClassificationNotFoundException {
+        classificationService.getClassification(null, "");
+        fail("ClassificationNotFoundException was expected");
+    }
+
+    @Test(expected = ClassificationNotFoundException.class)
+    public void testGetClassificationByInvalidKeyAndDomain() throws ClassificationNotFoundException {
+        classificationService.getClassification("Key0815", "NOT_EXISTING");
         fail("ClassificationNotFoundException was expected");
     }
 
     @Test
     public void testGetOneClassificationForDomainAndGetClassificationFromMasterDomain()
         throws ClassificationNotFoundException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("L10000", "DOMAIN_B");
         assertNotNull(classification);
         assertEquals("", classification.getDomain());
@@ -117,7 +125,6 @@ public class GetClassificationAccTest extends AbstractAccTest {
 
     @Test
     public void testGetOneClassificationForMasterDomain() throws ClassificationNotFoundException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("L10000", "");
         assertNotNull(classification);
         assertEquals("", classification.getDomain());
