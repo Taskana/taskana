@@ -34,6 +34,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private workbasketSubscription: Subscription;
   private masterAndDetailSubscription: Subscription;
+  private deleteTaskSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
     private taskService: TaskService,
@@ -109,10 +110,14 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteTaskConfirmation(): void {
-    this.taskService.deleteTask(this.task).subscribe();
-    this.taskService.publishDeletedTask(this.task);
-    this.task = null;
-    this.router.navigate([`/workplace/tasks`]);
+    this.deleteTaskSubscription = this.taskService.deleteTask(this.task).subscribe(() => {
+      this.taskService.publishUpdatedTask();
+      this.task = null;
+      this.router.navigate([`/workplace/tasks`]);
+    }, err => {
+      this.generalModalService.triggerMessage(
+        new MessageModal('An error occurred while deleting the task ', err));
+    });
   }
 
   selectTab(tab: string): void {
@@ -152,7 +157,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Task ${this.currentId} was created successfully.`));
       this.task = task;
       this.taskService.selectTask(this.task);
-      this.taskService.publishAddedTask(task);
+      this.taskService.publishUpdatedTask(task);
       this.router.navigate(['../' + task.taskId], { relativeTo: this.route });
     }, err => {
       this.requestInProgressService.setRequestInProgress(false);
@@ -174,14 +179,9 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-      if (this.workbasketSubscription) {
-        this.workbasketSubscription.unsubscribe();
-      }
-      if (this.masterAndDetailSubscription) {
-        this.masterAndDetailSubscription.unsubscribe();
-      }
-    }
+    if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
+    if (this.workbasketSubscription) { this.workbasketSubscription.unsubscribe(); }
+    if (this.masterAndDetailSubscription) { this.masterAndDetailSubscription.unsubscribe(); }
+    if (this.deleteTaskSubscription) { this.deleteTaskSubscription.unsubscribe(); }
   }
 }

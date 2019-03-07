@@ -61,16 +61,6 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
     this.task.classificationSummaryResource = classification;
   }
 
-  validate() {
-    this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService
-      .validateFormInformation(this.taskForm, this.toogleValidationMap)
-      .then(value => {
-        if (value) {
-          this.formValid.emit(true);
-        }
-      });
-  }
 
   isFieldValid(field: string): boolean {
     return this.formsValidatorService.isFieldValid(this.taskForm, field);
@@ -82,4 +72,14 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
     }
   }
 
+  private validate() {
+    this.formsValidatorService.formSubmitAttempt = true;
+    this.formsValidatorService
+      .validateFormInformation(this.taskForm, this.toogleValidationMap)
+      .then(value => {
+        if (value) {
+          this.formValid.emit(true);
+        }
+      });
+  }
 }
