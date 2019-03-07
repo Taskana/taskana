@@ -22,8 +22,10 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
+import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
+import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
@@ -40,8 +42,11 @@ import pro.taskana.security.WithAccessId;
 @RunWith(JAASRunner.class)
 public class UpdateClassificationAccTest extends AbstractAccTest {
 
+    private ClassificationService classificationService;
+
     public UpdateClassificationAccTest() {
         super();
+        classificationService = taskanaEngine.getClassificationService();
     }
 
     @WithAccessId(
@@ -53,7 +58,6 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         InvalidArgumentException {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         Instant createdBefore = classification.getCreated();
         Instant modifiedBefore = classification.getModified();
@@ -93,7 +97,6 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         InvalidArgumentException {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
 
         classification.setApplicationEntryPoint(newEntryPoint);
@@ -126,7 +129,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         TaskImpl beforeTask = (TaskImpl) taskanaEngine.getTaskService()
             .getTask("TKI:000000000000000000000000000000000000");
 
-        Classification classification = taskanaEngine.getClassificationService()
+        Classification classification = classificationService
             .getClassification(beforeTask.getClassificationSummary().getKey(), beforeTask.getDomain());
         classification.setCategory("PROCESS");
         Instant createdBefore = classification.getCreated();
@@ -153,7 +156,6 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     public void testUpdateClassificationNotLatestAnymore()
         throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InterruptedException,
         InvalidArgumentException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification base = classificationService.getClassification("T2100", "DOMAIN_A");
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
 
@@ -177,7 +179,6 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     public void testUpdateClassificationParentIdToInvalid()
         throws NotAuthorizedException, ClassificationNotFoundException,
         ConcurrencyException, InvalidArgumentException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         classification.setParentId("ID WHICH CANT BE FOUND");
         classification = classificationService.updateClassification(classification);
@@ -190,7 +191,6 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     public void testUpdateClassificationParentKeyToInvalid()
         throws NotAuthorizedException, ClassificationNotFoundException,
         ConcurrencyException, InvalidArgumentException {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         classification.setParentKey("KEY WHICH CANT BE FOUND");
         classification = classificationService.updateClassification(classification);
@@ -205,7 +205,6 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         InterruptedException, TaskNotFoundException, InvalidArgumentException {
         String newEntryPoint = "updated EntryPoint";
         Instant before = Instant.now();
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService
             .getClassification("CLI:100000000000000000000000000000000003");
         Instant createdBefore = classification.getCreated();
@@ -283,11 +282,25 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     public void testUpdateClassificationWithSameKeyAndParentKey()
         throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException {
 
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
 
         classification.setParentKey(classification.getKey());
         classificationService.updateClassification(classification);
+    }
+
+
+    @WithAccessId(
+        userName = "dummy",
+        groupNames = {"businessadmin"})
+    @Test
+    public void testUpdateClassificationWithEmptyServiceLevel()
+        throws DomainNotFoundException, ClassificationAlreadyExistException, NotAuthorizedException,
+        InvalidArgumentException, ClassificationNotFoundException, ConcurrencyException {
+
+        Classification classification = classificationService.newClassification("Key=0818", "DOMAIN_A", "TASK");
+        Classification created = classificationService.createClassification(classification);
+        created.setServiceLevel("");
+        classificationService.updateClassification(created);
     }
 
     private void validateNewTaskProperties(Instant before, List<String> tasksWithP15D, TaskService taskService,

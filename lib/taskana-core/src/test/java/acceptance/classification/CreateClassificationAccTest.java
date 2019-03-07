@@ -1,8 +1,10 @@
 package acceptance.classification;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +17,8 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.TaskanaException;
+import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -23,6 +27,8 @@ import pro.taskana.security.WithAccessId;
  */
 @RunWith(JAASRunner.class)
 public class CreateClassificationAccTest extends AbstractAccTest {
+
+    private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
     private ClassificationService classificationService;
 
@@ -53,6 +59,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         assertNotNull(classification.getModified());
         assertNotNull(classification.getId());
         assertThat(classification.getIsValidInDomain(), equalTo(false));
+        assertTrue(classification.getId().startsWith(ID_PREFIX_CLASSIFICATION));
     }
 
     @WithAccessId(
@@ -74,6 +81,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         assertNotNull(createdClassification.getModified());
         assertThat(createdClassification.getIsValidInDomain(), equalTo(true));
         assertThat(createdClassification.getDomain(), equalTo("DOMAIN_A"));
+        assertEquals(createdClassification.getKey(), "Key1");
 
         // Check 2 new created
         long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
@@ -86,6 +94,7 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         assertNotNull(classification.getModified());
         assertNotNull(classification.getId());
         assertThat(classification.getIsValidInDomain(), equalTo(true));
+        assertTrue(classification.getId().startsWith(ID_PREFIX_CLASSIFICATION));
 
         // Check master-copy
         classification = classificationService.getClassification(classification.getKey(), "");
@@ -94,6 +103,51 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         assertNotNull(classification.getModified());
         assertNotNull(classification.getId());
         assertThat(classification.getIsValidInDomain(), equalTo(false));
+        assertTrue(classification.getId().startsWith(ID_PREFIX_CLASSIFICATION));
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
+    @Test
+    public void testCreateClassificationWithExistingMaster()
+        throws DomainNotFoundException, ClassificationAlreadyExistException,
+        NotAuthorizedException, InvalidArgumentException {
+
+        classificationService.createClassification(
+                classificationService.newClassification("Key0815", "", "TASK"));
+
+        long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
+        Classification expected = classificationService.newClassification("Key0815", "DOMAIN_B", "TASK");
+        Classification actual = classificationService.createClassification(expected);
+        long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
+
+        assertEquals(amountOfClassificationsBefore + 1, amountOfClassificationsAfter);
+        assertNotNull(actual);
+        assertEquals(actual, expected);
+        assertTrue(actual.getIsValidInDomain());
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
+    @Test
+    public void testCreateChildInDomainAndCopyInMaster()
+        throws DomainNotFoundException, ClassificationAlreadyExistException,
+        TaskanaException, InvalidArgumentException {
+        Classification parent = classificationService.newClassification("Key0816", "DOMAIN_A", "TASK");
+        Classification actualParent = classificationService.createClassification(parent);
+        assertNotNull(actualParent);
+
+        long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
+        Classification child = classificationService.newClassification("Key0817", "DOMAIN_A", "TASK");
+        child.setParentId(actualParent.getId());
+        child.setParentKey(actualParent.getKey());
+        Classification actualChild = classificationService.createClassification(child);
+        long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
+
+        assertEquals(amountOfClassificationsBefore + 2, amountOfClassificationsAfter);
+        assertNotNull(actualChild);
     }
 
     @WithAccessId(
@@ -190,6 +244,19 @@ public class CreateClassificationAccTest extends AbstractAccTest {
         Classification classification = classificationService.newClassification("Key5", "", "TASK");
         classification.setParentKey("KEY WHICH CANT BE FOUND");
         classification = classificationService.createClassification(classification);
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1", "businessadmin"})
+    @Test(expected = InvalidArgumentException.class)
+    public void testCreateClassificationWithExplicitId()
+            throws DomainNotFoundException, ClassificationAlreadyExistException,
+            NotAuthorizedException, InvalidArgumentException {
+        ClassificationImpl classification = (ClassificationImpl) classificationService
+                .newClassification("Key0818", "", "TASK");
+        classification.setId("EXPLICIT ID");
+        classificationService.createClassification(classification);
     }
 
 }
