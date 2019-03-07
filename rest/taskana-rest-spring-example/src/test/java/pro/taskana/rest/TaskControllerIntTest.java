@@ -47,6 +47,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.exceptions.SystemException;
+import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskSummaryResource;
 import pro.taskana.sampledata.SampleDataGenerator;
 
@@ -86,6 +87,7 @@ public class TaskControllerIntTest {
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
             "http://127.0.0.1:" + port + "/v1/tasks", HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertEquals(25, response.getBody().getContent().size());
@@ -101,6 +103,7 @@ public class TaskControllerIntTest {
             "http://127.0.0.1:" + port + "/v1/tasks?workbasket-id=WBI:100000000000000000000000000000000001",
             HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertEquals(22, response.getBody().getContent().size());
@@ -116,6 +119,7 @@ public class TaskControllerIntTest {
             "http://127.0.0.1:" + port + "/v1/tasks?workbasket-key=USER_1_2&domain=DOMAIN_A",
             HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertEquals(20, response.getBody().getContent().size());
@@ -132,6 +136,7 @@ public class TaskControllerIntTest {
                 "http://127.0.0.1:" + port + "/v1/tasks?workbasket-key=USER_1_2",
                 HttpMethod.GET, request,
                 new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
                 });
             fail();
         } catch (HttpClientErrorException e) {
@@ -148,6 +153,7 @@ public class TaskControllerIntTest {
         ResponseEntity<PagedResources<TaskSummaryResource>> response = template.exchange(
             "http://127.0.0.1:" + port + "/v1/tasks", HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertEquals(73, response.getBody().getContent().size());
@@ -163,6 +169,7 @@ public class TaskControllerIntTest {
             "http://127.0.0.1:" + port + "/v1/tasks?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc",
             HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
             });
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
@@ -182,6 +189,7 @@ public class TaskControllerIntTest {
                 "http://127.0.0.1:" + port + "/v1/tasks?invalid=VNR",
                 HttpMethod.GET, request,
                 new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
                 });
             fail();
         } catch (HttpClientErrorException e) {
@@ -202,6 +210,7 @@ public class TaskControllerIntTest {
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
             });
         assertEquals(1, response.getBody().getContent().size());
         assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=14"));
@@ -235,6 +244,7 @@ public class TaskControllerIntTest {
             "http://127.0.0.1:" + port + "/v1/tasks?sort-by=due&order=desc", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
             });
         assertEquals(25, response.getBody().getContent().size());
 
@@ -242,10 +252,11 @@ public class TaskControllerIntTest {
             "http://127.0.0.1:" + port + "/v1/tasks?sort-by=due&order=desc&page=5&page-size=5", HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
             });
         assertEquals(5, response.getBody().getContent().size());
         assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=5"));
-        assertEquals("TKI:000000000000000000000000000000000020",
+        assertEquals("TKI:000000000000000000000000000000000023",
             response.getBody().getContent().iterator().next().getTaskId());
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
@@ -276,6 +287,7 @@ public class TaskControllerIntTest {
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<PagedResources<TaskSummaryResource>>() {
+
             });
         assertEquals(1, response.getBody().getContent().size());
         assertEquals("TKI:000000000000000000000000000000000013",
@@ -368,10 +380,14 @@ public class TaskControllerIntTest {
         in.close();
         con.disconnect();
         String updatedTask = content.toString();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        TaskResource originalTaskObject = mapper.readValue(originalTask, TaskResource.class);
+        TaskResource updatedTaskObject = mapper.readValue(updatedTask, TaskResource.class);
 
         assertNotEquals(
-            originalTask.substring(originalTask.indexOf("modified"), originalTask.indexOf("modified") + 30),
-            updatedTask.substring(updatedTask.indexOf("modified"), updatedTask.indexOf("modified") + 30));
+            originalTaskObject.getModified(),
+            updatedTaskObject.getModified());
 
     }
 
@@ -404,7 +420,8 @@ public class TaskControllerIntTest {
         in.close();
         con.disconnect();
         String createdTask = responsePayload.toString();
-        String taskIdOfCreatedTask = createdTask.substring(createdTask.indexOf("TKI:"), createdTask.indexOf("TKI:") + 40);
+        String taskIdOfCreatedTask = createdTask.substring(createdTask.indexOf("TKI:"),
+            createdTask.indexOf("TKI:") + 40);
 
         assertNotNull(taskIdOfCreatedTask);
         assertTrue(taskIdOfCreatedTask.startsWith("TKI:"));
@@ -437,9 +454,10 @@ public class TaskControllerIntTest {
         assertEquals(400, con.getResponseCode());
         con.disconnect();
 
-        taskToCreateJson = "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
-            + "\"workbasketSummaryResource\":{\"workbasketId\":\"\"},"
-            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+        taskToCreateJson =
+            "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
+                + "\"workbasketSummaryResource\":{\"workbasketId\":\"\"},"
+                + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
         url = new URL("http://127.0.0.1:" + port + "/v1/tasks");
         con = (HttpURLConnection) url.openConnection();
@@ -471,7 +489,7 @@ public class TaskControllerIntTest {
         // converter.setSupportedMediaTypes(ImmutableList.of(MediaTypes.HAL_JSON));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 
