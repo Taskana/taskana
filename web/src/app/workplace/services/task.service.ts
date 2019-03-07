@@ -17,26 +17,14 @@ export class TaskService {
 
   taskChangedSource = new Subject<Task>();
   taskChangedStream = this.taskChangedSource.asObservable();
-  taskDeletedSource = new Subject<Task>();
-  taskDeletedStream = this.taskDeletedSource.asObservable();
-  taskAddedSource = new Subject<Task>();
-  taskAddedStream = this.taskAddedSource.asObservable();
   taskSelectedSource = new Subject<Task>();
   taskSelectedStream = this.taskSelectedSource.asObservable();
 
   constructor(private httpClient: HttpClient) {
   }
 
-  publishUpdatedTask(task: Task) {
+  publishUpdatedTask(task: Task = undefined) {
     this.taskChangedSource.next(task);
-  }
-
-  publishDeletedTask(task: Task) {
-    this.taskDeletedSource.next(task);
-  }
-
-  publishAddedTask(task: Task) {
-    this.taskAddedSource.next(task);
   }
 
   selectTask(task: Task) {

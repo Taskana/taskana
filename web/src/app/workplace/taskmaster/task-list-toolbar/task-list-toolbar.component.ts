@@ -16,10 +16,10 @@ export enum Search {
 	byTypeAndValue = 'type-and-value'
 }
 @Component({
-  selector: 'taskana-tasklist-toolbar',
+  selector: 'taskana-task-list-toolbar',
   animations: [expandDown],
-  templateUrl: './tasklist-toolbar.component.html',
-  styleUrls: ['./tasklist-toolbar.component.scss']
+  templateUrl: './task-list-toolbar.component.html',
+  styleUrls: ['./task-list-toolbar.component.scss']
 })
 export class TaskListToolbarComponent implements OnInit {
 

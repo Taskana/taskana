@@ -1,0 +1,17 @@
+.clickable {
+    cursor: pointer;
+  }
+  
+  .list-group > li {
+    border-left: none;
+    border-right: none;
+  }
+  
+  li > div.row > dl {
+    margin-bottom: 0px;
+  }
+  
+  .list-group-item>div>dl>span.badge{
+    margin-left: 8px; 
+  }
+  

@@ -6,8 +6,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { WorkplaceRoutingModule } from './workplace-routing.module';
 import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
 
-import { TaskListToolbarComponent } from './tasklist/tasklist-toolbar/tasklist-toolbar.component';
-import { TasklistComponent } from './tasklist/tasklist.component';
+import { TaskListToolbarComponent } from './taskmaster/task-list-toolbar/task-list-toolbar.component';
+import { TaskMasterComponent } from './taskmaster/task-master.component';
 import { TaskdetailsComponent } from './taskdetails/taskdetails.component';
 import { TaskdetailsGeneralFieldsComponent } from './taskdetails/general/general-fields.component';
 import { TaskdetailsCustomFieldsComponent } from './taskdetails/custom/custom-fields.component';
@@ -17,6 +17,7 @@ import { CodeComponent } from './components/code/code.component';
 import { GeneralFieldsExtensionComponent } from './taskdetails/general-fields-extension/general-fields-extension.component';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TaskListComponent } from './taskmaster/task-list/task-list.component';
 
 import { OrderTasksByPipe } from './util/orderTasksBy.pipe';
 
@@ -27,7 +28,6 @@ import { SharedModule } from 'app/shared/shared.module';
 import { CustomHttpClientInterceptor } from './services/custom-http-interceptor/custom-http-interceptor.service';
 import { ClassificationCategoriesService } from 'app/services/classifications/classification-categories.service';
 import { WorkplaceService } from './services/workplace.service';
-
 
 const MODULES = [
   TypeaheadModule.forRoot(),
@@ -44,7 +44,7 @@ const MODULES = [
 
 const DECLARATIONS = [
   TaskListToolbarComponent,
-  TasklistComponent,
+  TaskMasterComponent,
   TaskdetailsComponent,
   TaskdetailsGeneralFieldsComponent,
   TaskdetailsCustomFieldsComponent,
@@ -52,6 +52,7 @@ const DECLARATIONS = [
   TaskComponent,
   CodeComponent,
   GeneralFieldsExtensionComponent,
+  TaskListComponent,
   OrderTasksByPipe
 ];
 
