@@ -1,4 +1,4 @@
-import { TaskListToolbarComponent } from './tasklist-toolbar.component';
+import { TaskListToolbarComponent } from './task-list-toolbar.component';
 import { ComponentFixture, async, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { TypeaheadModule, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';

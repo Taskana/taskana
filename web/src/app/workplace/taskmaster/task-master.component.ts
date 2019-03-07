@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
-import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from 'app/workplace/services/task.service';
 import { Subscription } from 'rxjs';
 import { SortingModel } from 'app/models/sorting';
@@ -13,16 +12,15 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Orientation } from 'app/models/orientation';
 import { Page } from 'app/models/page';
-import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { ObjectReference } from '../models/object-reference';
-import { Search } from './tasklist-toolbar/tasklist-toolbar.component';
+import { Search } from './task-list-toolbar/task-list-toolbar.component';
 
 @Component({
-  selector: 'taskana-task-list',
-  templateUrl: './tasklist.component.html',
-  styleUrls: ['./tasklist.component.scss']
+  selector: 'taskana-task-master',
+  templateUrl: './task-master.component.html',
+  styleUrls: ['./task-master.component.scss']
 })
-export class TasklistComponent implements OnInit, OnDestroy {
+export class TaskMasterComponent implements OnInit, OnDestroy {
 
   tasks: Task[];
   tasksPageInformation: Page;
@@ -51,37 +49,23 @@ export class TasklistComponent implements OnInit, OnDestroy {
   private workbasketChangeSubscription: Subscription;
   private orientationSubscription: Subscription;
   private objectReferenceSubscription: Subscription;
-
-  constructor(private router: Router,
-    private route: ActivatedRoute,
+  constructor(
     private taskService: TaskService,
     private workplaceService: WorkplaceService,
     private alertService: AlertService,
     private orientationService: OrientationService) {
     this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe(task => {
-      for (let i = 0; i < this.tasks.length; i++) {
-        if (this.tasks[i].taskId === task.taskId) {
-          this.tasks[i] = task;
-        }
-      }
+      this.getTasks();
+      this.selectedId = task ? task.taskId : undefined;
     });
-    this.taskDeletedSubscription = this.taskService.taskDeletedStream.subscribe(task => {
-      for (let i = 0; i < this.tasks.length; i++) {
-        if (this.tasks[i].taskId === task.taskId) {
-          this.tasks.splice(i, 1);
-        }
-      }
-    });
+
     this.workbasketChangeSubscription = this.workplaceService.workbasketSelectedStream.subscribe(workbasket => {
       this.currentBasket = workbasket;
       if (this.selectedSearchType === Search.byWorkbasket) {
         this.getTasks();
       }
     });
-    this.taskAddedSubscription = this.taskService.taskAddedStream.subscribe(task => {
-      this.getTasks();
-      this.selectedId = task.taskId;
-    });
+
     this.objectReferenceSubscription = this.workplaceService.objectReferenceSelectedStream.subscribe(objectReference => {
       this.objectReference = objectReference;
       this.currentBasket = undefined;
@@ -107,11 +91,6 @@ export class TasklistComponent implements OnInit, OnDestroy {
     })
   }
 
-  selectTask(taskId: string) {
-    this.workplaceService.selectObjectReference(undefined);
-    this.selectedId = taskId;
-    this.router.navigate([{ outlets: { detail: `taskdetail/${this.selectedId}` } }], { relativeTo: this.route });
-  }
 
   performSorting(sort: SortingModel) {
     this.sort = sort;
@@ -133,12 +112,12 @@ export class TasklistComponent implements OnInit, OnDestroy {
     this.getTasks();
   }
 
-  refreshWorkbasketList() {
+  private refreshWorkbasketList() {
     this.calculateHeightCard();
     this.getTasks();
   }
 
-  calculateHeightCard() {
+  private calculateHeightCard() {
     if (this.toolbarElement) {
       const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
       const cardHeight = 53;
@@ -150,7 +129,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
     }
   }
 
-  getTasks(): void {
+  private getTasks(): void {
     this.requestInProgress = true;
     if (this.currentBasket === undefined && !this.objectReference) {
       this.requestInProgress = false;
@@ -172,10 +151,6 @@ export class TasklistComponent implements OnInit, OnDestroy {
           this.tasksPageInformation = tasks.page;
         });
     }
-  }
-
-  displayDate(date: string): string {
-    return TaskanaDate.getDateToDisplay(date);
   }
 
   ngOnDestroy(): void {
