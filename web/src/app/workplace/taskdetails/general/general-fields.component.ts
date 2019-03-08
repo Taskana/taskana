@@ -52,7 +52,6 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
     this.classificationService.getClassifications().subscribe(classificationList => {
       this.requestInProgress = false;
       this.classifications = classificationList;
-      if (classificationList.length > 0) { this.task.classificationSummaryResource = classificationList[0]; }
       this.classificationsReceived.emit(this.classifications);
     });
   }
