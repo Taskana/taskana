@@ -65,9 +65,13 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" *dropdownMenu>
-              <li>
-                <a *ngFor="let classification of classifications" (click)="selectClassification(classification)">
-                  {{classification.name}}
+              <li *ngFor="let classification of classifications" (click)="selectClassification(classification)">
+                <a>
+                    <label>
+                        <span class="material-icons md-20 blue ">{{classification.name === task.classificationSummaryResource?.name ?
+                            'check_box': 'check_box_outline_blank'}} </span>
+                        <span> {{classification.name}} </span>
+                    </label>
                 </a>
               </li>
             </ul>
