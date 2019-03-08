@@ -4,7 +4,7 @@ import { QueryParametersModel } from 'app/models/query-parameters';
 
 describe('TaskanaQueryParameters', () => {
 
-    beforeAll(()=>{
+    beforeAll(() => {
         TaskanaQueryParameters.page = 1;
         TaskanaQueryParameters.pageSize = 9;
     })

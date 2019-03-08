@@ -14,7 +14,7 @@ describe('DatePickerComponent', () => {
       providers: [BsDatepickerConfig, ComponentLoaderFactory, PositioningService,
         BsLocaleService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
