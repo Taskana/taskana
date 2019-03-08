@@ -154,11 +154,11 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.taskChangeSubscription.unsubscribe();
-    this.taskDeletedSubscription.unsubscribe();
-    this.workbasketChangeSubscription.unsubscribe();
-    this.taskAddedSubscription.unsubscribe();
-    this.orientationSubscription.unsubscribe();
-    this.objectReferenceSubscription.unsubscribe();
+    if (this.taskChangeSubscription) { this.taskChangeSubscription.unsubscribe(); }
+    if (this.taskDeletedSubscription) { this.taskDeletedSubscription.unsubscribe(); }
+    if (this.workbasketChangeSubscription) { this.workbasketChangeSubscription.unsubscribe(); }
+    if (this.taskAddedSubscription) { this.taskAddedSubscription.unsubscribe(); }
+    if (this.orientationSubscription) { this.orientationSubscription.unsubscribe(); }
+    if (this.objectReferenceSubscription) { this.objectReferenceSubscription.unsubscribe(); }
   }
 }
