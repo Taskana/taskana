@@ -4,6 +4,11 @@ import { QueryParametersModel } from 'app/models/query-parameters';
 
 describe('TaskanaQueryParameters', () => {
 
+    beforeAll(()=>{
+        TaskanaQueryParameters.page = 1;
+        TaskanaQueryParameters.pageSize = 9;
+    })
+
     it('should create a empty query', () => {
         TaskanaQueryParameters.page = undefined;
         TaskanaQueryParameters.pageSize = undefined;
