@@ -126,11 +126,12 @@ public class TaskController extends AbstractPagingController {
         TaskSummaryResourcesAssembler taskSummaryResourcesAssembler = new TaskSummaryResourcesAssembler();
         PagedResources<TaskSummaryResource> pagedResources = taskSummaryResourcesAssembler.toResources(taskSummaries,
             pageMetadata);
+        ResponseEntity<PagedResources<TaskSummaryResource>> response = new ResponseEntity<>(pagedResources, HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getTasks(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
+            LOGGER.debug("Exit from getTasks(), returning {}", response);
         }
 
-        return new ResponseEntity<>(pagedResources, HttpStatus.OK);
+        return response;
     }
 
     @GetMapping(path = "/{taskId}")

@@ -114,11 +114,13 @@ public class ClassificationController extends AbstractPagingController {
         PagedResources<ClassificationSummaryResource> pagedResources = assembler.toResources(classificationSummaries,
             pageMetadata);
 
+        ResponseEntity<PagedResources<ClassificationSummaryResource>> response = new ResponseEntity<>(pagedResources,
+            HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getClassifications(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
+            LOGGER.debug("Exit from getClassifications(), returning {}", response);
         }
 
-        return new ResponseEntity<>(pagedResources, HttpStatus.OK);
+        return response;
     }
 
     @GetMapping(path = "/{classificationId}")
@@ -128,11 +130,13 @@ public class ClassificationController extends AbstractPagingController {
         ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         LOGGER.debug("Entry to getClassification(classificationId= {})", classificationId);
         Classification classification = classificationService.getClassification(classificationId);
+        ResponseEntity<ClassificationResource> response = new ResponseEntity<>(
+            classificationResourceAssembler.toResource(classification), HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getClassification(), returning {}", ResponseEntity.status(HttpStatus.OK).body(classificationResourceAssembler.toResource(classification)));
+            LOGGER.debug("Exit from getClassification(), returning {}", response);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(classificationResourceAssembler.toResource(classification));
+        return response;
     }
 
     @PostMapping
@@ -147,13 +151,14 @@ public class ClassificationController extends AbstractPagingController {
 
         Classification classification = classificationResourceAssembler.toModel(resource);
         classification = classificationService.createClassification(classification);
+
+        ResponseEntity<ClassificationResource> response = new ResponseEntity<>(
+            classificationResourceAssembler.toResource(classification), HttpStatus.CREATED);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from createClassification(), returning {}", ResponseEntity.status(HttpStatus.CREATED)
-                .body(classificationResourceAssembler.toResource(classification)));
+            LOGGER.debug("Exit from createClassification(), returning {}", response);
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(classificationResourceAssembler.toResource(classification));
+        return response;
     }
 
     @PutMapping(path = "/{classificationId}")
@@ -163,14 +168,15 @@ public class ClassificationController extends AbstractPagingController {
         throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
         ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Entry to updateClassification(classificationId= {}, resource= {})", classificationId, resource);
+            LOGGER.debug("Entry to updateClassification(classificationId= {}, resource= {})", classificationId,
+                resource);
         }
 
         ResponseEntity<ClassificationResource> result;
         if (classificationId.equals(resource.classificationId)) {
             Classification classification = classificationResourceAssembler.toModel(resource);
             classification = classificationService.updateClassification(classification);
-            result = ResponseEntity.ok(classificationResourceAssembler.toResource(classification));
+            result = new ResponseEntity<>(classificationResourceAssembler.toResource(classification), HttpStatus.OK);
         } else {
             throw new InvalidArgumentException(
                 "ClassificationId ('" + classificationId
@@ -190,8 +196,9 @@ public class ClassificationController extends AbstractPagingController {
         throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
         LOGGER.debug("Entry to deleteClassification(classificationId= {})", classificationId);
         classificationService.deleteClassification(classificationId);
-        LOGGER.debug("Exit from deleteClassification(), returning {}", ResponseEntity.status(HttpStatus.NO_CONTENT).build());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        ResponseEntity response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        LOGGER.debug("Exit from deleteClassification(), returning {}", response);
+        return response;
     }
 
     private ClassificationQuery applySortingParams(ClassificationQuery query, MultiValueMap<String, String> params)

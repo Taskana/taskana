@@ -46,26 +46,28 @@ public class AccessIdController {
                 "searchFor string '" + searchFor + "' is too short. Minimum searchFor length = "
                     + ldapClient.getMinSearchForLength());
         }
+        ResponseEntity<List<AccessIdResource>> response;
         if (ldapClient.useLdap()) {
             List<AccessIdResource> accessIdUsers = ldapClient.searchUsersAndGroups(searchFor);
+            response = new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exit from validateAccessIds(), returning {}", new ResponseEntity<>(accessIdUsers, HttpStatus.OK));
+                LOGGER.debug("Exit from validateAccessIds(), returning {}", response);
             }
 
-            return new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
+            return response;
         } else if (ldapCache != null) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exit from validateAccessIds(), returning {}", new ResponseEntity<>(
-                    ldapCache.findMatchingAccessId(searchFor, ldapClient.getMaxNumberOfReturnedAccessIds()),
-                    HttpStatus.OK));
-            }
-
-            return new ResponseEntity<>(
+            response = new ResponseEntity<>(
                 ldapCache.findMatchingAccessId(searchFor, ldapClient.getMaxNumberOfReturnedAccessIds()),
                 HttpStatus.OK);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Exit from validateAccessIds(), returning {}", response);
+            }
+
+            return response;
         } else {
-            LOGGER.debug("Exit from validateAccessIds(), returning {}", new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND));
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            LOGGER.debug("Exit from validateAccessIds(), returning {}", response);
+            return response;
         }
     }
 
@@ -79,24 +81,28 @@ public class AccessIdController {
             }
         }
         List<AccessIdResource> accessIdUsers;
+        ResponseEntity<List<AccessIdResource>> response;
         if (ldapClient.useLdap()) {
             accessIdUsers = ldapClient.searchUsersAndGroups(accessId);
             accessIdUsers.addAll(ldapClient.searchGroupsofUsersIsMember(accessId));
+            response = new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", new ResponseEntity<>(accessIdUsers, HttpStatus.OK));
+                LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
             }
 
-            return new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
+            return response;
         } else if (ldapCache != null) {
             accessIdUsers = ldapCache.findGroupsOfUser(accessId, ldapClient.getMaxNumberOfReturnedAccessIds());
+            response = new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", new ResponseEntity<>(accessIdUsers, HttpStatus.OK));
+                LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
             }
 
-            return new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
+            return response;
         } else {
-            LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND));
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
+            return response;
         }
     }
 
