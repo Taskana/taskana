@@ -23,8 +23,8 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.TimeIntervalColumnHeader;
 import pro.taskana.monitor.ClassificationTimeIntervalColumnHeader;
 import pro.taskana.monitor.WorkbasketTimeIntervalColumnHeader;
-import pro.taskana.rest.resource.ReportResource;
 import pro.taskana.rest.resource.ReportAssembler;
+import pro.taskana.rest.resource.ReportResource;
 
 /**
  * Controller for all monitoring endpoints.
@@ -32,6 +32,7 @@ import pro.taskana.rest.resource.ReportAssembler;
 @RestController
 @RequestMapping(path = "/v1/monitor", produces = "application/hal+json")
 public class MonitorController {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorController.class);
 
     @Autowired
@@ -46,16 +47,14 @@ public class MonitorController {
         @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException,
         InvalidArgumentException {
         LOGGER.debug("Entry to getTasksStatusReport()");
+        ResponseEntity<ReportResource> response = new ResponseEntity<>(reportAssembler.toResource(
+            taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
+            domains, states), HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getTasksStatusReport(), returning {}", reportAssembler.toResource(
-                taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
-                domains, states));
+            LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(reportAssembler.toResource(
-                taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
-                domains, states));
+        return response;
     }
 
     @GetMapping(path = "/tasks-workbasket-report")
@@ -65,19 +64,16 @@ public class MonitorController {
         @RequestParam(value = "states") List<TaskState> states)
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksWorkbasketReport()");
+        ResponseEntity<?> response = new ResponseEntity<>(reportAssembler.toResource(
+            taskMonitorService.createWorkbasketReportBuilder()
+                .stateIn(states)
+                .withColumnHeaders(getTasksWorkbasketsTimeInterval(daysInPast)).buildReport(), daysInPast, states),
+            HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", reportAssembler.toResource(
-                taskMonitorService.createWorkbasketReportBuilder()
-                    .stateIn(states)
-                    .withColumnHeaders(getTasksWorkbasketsTimeInterval(daysInPast)).buildReport(), daysInPast, states));
+            LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", response);
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(reportAssembler.toResource(
-                taskMonitorService.createWorkbasketReportBuilder()
-                    .stateIn(states)
-                    .withColumnHeaders(getTasksWorkbasketsTimeInterval(daysInPast)).buildReport(), daysInPast, states));
-
+        return response;
     }
 
     @GetMapping(path = "/tasks-classification-report")
@@ -85,18 +81,15 @@ public class MonitorController {
     public ResponseEntity<ReportResource> getTasksClassificationReport()
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksClassificationReport()");
+        ResponseEntity<ReportResource> response = new ResponseEntity<>(reportAssembler.toResource(
+            taskMonitorService.createClassificationReportBuilder()
+                .withColumnHeaders(getTaskClassificationTimeInterval())
+                .buildReport()), HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getTasksClassificationReport(), returning {}", reportAssembler.toResource(
-                taskMonitorService.createClassificationReportBuilder()
-                    .withColumnHeaders(getTaskClassificationTimeInterval())
-                    .buildReport()));
+            LOGGER.debug("Exit from getTasksClassificationReport(), returning {}", response);
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(reportAssembler.toResource(
-                taskMonitorService.createClassificationReportBuilder()
-                    .withColumnHeaders(getTaskClassificationTimeInterval())
-                    .buildReport()));
+        return response;
     }
 
     private List<TimeIntervalColumnHeader> getTaskClassificationTimeInterval() {

@@ -70,12 +70,12 @@ public class WorkbasketDefinitionController {
             basketExports.add(workbasketDefinitionAssembler.toResource(workbasket));
         }
 
+        ResponseEntity<List<WorkbasketDefinitionResource>> response = new ResponseEntity<>(basketExports, HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from exportWorkbaskets(), returning {}",
-                new ResponseEntity<>(basketExports, HttpStatus.OK));
+            LOGGER.debug("Exit from exportWorkbaskets(), returning {}", response);
         }
 
-        return new ResponseEntity<>(basketExports, HttpStatus.OK);
+        return response;
     }
 
     /**
@@ -152,8 +152,9 @@ public class WorkbasketDefinitionController {
                 // no verification necessary since the workbasket was already imported in step 1.
                 idConversion.get(definition.getWorkbasket().getWorkbasketId()), distributionTargets);
         }
-        LOGGER.debug("Exit from importWorkbaskets(), returning {}", new ResponseEntity<>(HttpStatus.OK));
-        return new ResponseEntity<>(HttpStatus.OK);
+        ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.OK);
+        LOGGER.debug("Exit from importWorkbaskets(), returning {}", response);
+        return response;
     }
 
     private String logicalId(WorkbasketSummary workbasket) {

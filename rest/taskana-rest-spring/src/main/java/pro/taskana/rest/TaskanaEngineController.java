@@ -36,21 +36,41 @@ public class TaskanaEngineController {
 
     @GetMapping(path = "/v1/domains", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<String>> getDomains() {
-        return new ResponseEntity<>(taskanaEngineConfiguration.getDomains(), HttpStatus.OK);
+        ResponseEntity<List<String>> response = new ResponseEntity<>(taskanaEngineConfiguration.getDomains(),
+            HttpStatus.OK);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getDomains(), returning {}", response);
+        }
+        return response;
     }
 
     @GetMapping(path = "/v1/classification-categories", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<String>> getClassificationCategories(String type) {
+        LOGGER.debug("Entry to getClassificationCategories(type = {})", type);
+        ResponseEntity<List<String>> response;
         if (type != null) {
-            return new ResponseEntity<>(taskanaEngineConfiguration.getClassificationCategoriesByType(type),
+            response = new ResponseEntity<>(taskanaEngineConfiguration.getClassificationCategoriesByType(type),
                 HttpStatus.OK);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Exit from getClassificationCategories(), returning {}", response);
+            }
+            return response;
         }
-        return new ResponseEntity<>(taskanaEngineConfiguration.getAllClassificationCategories(), HttpStatus.OK);
+        response = new ResponseEntity<>(taskanaEngineConfiguration.getAllClassificationCategories(), HttpStatus.OK);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getClassificationCategories(), returning {}", response);
+        }
+        return response;
     }
 
     @GetMapping(path = "/v1/classification-types", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<String>> getClassificationTypes() {
-        return new ResponseEntity<>(taskanaEngineConfiguration.getClassificationTypes(), HttpStatus.OK);
+        ResponseEntity<List<String>> response = new ResponseEntity<>(
+            taskanaEngineConfiguration.getClassificationTypes(), HttpStatus.OK);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getClassificationTypes(), returning {}", response);
+        }
+        return response;
     }
 
     @GetMapping(path = "/v1/current-user-info", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -64,17 +84,21 @@ public class TaskanaEngineController {
                 resource.getRoles().add(role);
             }
         }
+        ResponseEntity<TaskanaUserInfoResource> response = new ResponseEntity<>(resource, HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getCurrentUserInfo(), returning {}", new ResponseEntity<>(resource, HttpStatus.OK));
+            LOGGER.debug("Exit from getCurrentUserInfo(), returning {}", response);
         }
 
-        return new ResponseEntity<>(resource, HttpStatus.OK);
+        return response;
     }
 
     @GetMapping(path = "/v1/history-provider-enabled", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Boolean> getIsHistoryProviderEnabled() {
-        return new ResponseEntity<>(((TaskanaEngineImpl) taskanaEngine).getHistoryEventProducer().isEnabled(),
+        ResponseEntity<Boolean> response = new ResponseEntity<>(
+            ((TaskanaEngineImpl) taskanaEngine).getHistoryEventProducer().isEnabled(),
             HttpStatus.OK);
+        LOGGER.debug("Exit from getIsHistoryProviderEnabled(), returning {}", response);
+        return response;
     }
 
     /**
@@ -87,7 +111,8 @@ public class TaskanaEngineController {
         LOGGER.debug("Entry to currentVersion()");
         VersionResource resource = new VersionResource();
         resource.setVersion(TaskanaEngineConfiguration.class.getPackage().getImplementationVersion());
-        LOGGER.debug("Exit from currentVersion(), returning {}", new ResponseEntity<>(resource, HttpStatus.OK));
-        return new ResponseEntity<>(resource, HttpStatus.OK);
+        ResponseEntity<VersionResource> response = new ResponseEntity<>(resource, HttpStatus.OK);
+        LOGGER.debug("Exit from currentVersion(), returning {}", response);
+        return response;
     }
 }
