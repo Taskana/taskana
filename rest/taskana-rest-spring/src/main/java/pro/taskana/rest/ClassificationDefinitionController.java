@@ -37,10 +37,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Set;
 
@@ -78,11 +76,12 @@ public class ClassificationDefinitionController {
             export.add(classificationResourceAssembler.toDefinition(classification));
         }
 
+        ResponseEntity<List<ClassificationResource>> response = new ResponseEntity<>(export, HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from exportClassifications(), returning {}", new ResponseEntity<>(export, HttpStatus.OK));
+            LOGGER.debug("Exit from exportClassifications(), returning {}", response);
         }
 
-        return new ResponseEntity<>(export, HttpStatus.OK);
+        return response;
     }
 
     @PostMapping
@@ -95,11 +94,12 @@ public class ClassificationDefinitionController {
         Map<String, String> systemIds = getSystemIds();
         List<ClassificationResource> classificationsResources = extractClassificationResourcesFromFile(file);
 
-        Map<Classification, String> childsInFile = mapChildsToParentKeys(classificationsResources, systemIds);
+        Map<Classification, String> childrenInFile = mapChildrenToParentKeys(classificationsResources, systemIds);
         insertOrUpdateClassificationsWithoutParent(classificationsResources, systemIds);
-        updateParentChildRelations(childsInFile);
-        LOGGER.debug("Exit from importClassifications(), returning {}", new ResponseEntity<>(HttpStatus.OK));
-        return new ResponseEntity<>(HttpStatus.OK);
+        updateParentChildrenRelations(childrenInFile);
+        ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.OK);
+        LOGGER.debug("Exit from importClassifications(), returning {}", response);
+        return response;
     }
 
     private Map<String, String> getSystemIds() {
@@ -111,7 +111,7 @@ public class ClassificationDefinitionController {
     }
 
     private List<ClassificationResource> extractClassificationResourcesFromFile(MultipartFile file)
-            throws IOException, JsonParseException, JsonMappingException {
+            throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         List<ClassificationResource> classificationsDefinitions = mapper.readValue(file.getInputStream(),
@@ -121,9 +121,9 @@ public class ClassificationDefinitionController {
         return classificationsDefinitions;
     }
 
-    private Map<Classification, String> mapChildsToParentKeys(List<ClassificationResource> classificationResources, Map<String, String> systemIds) {
-        LOGGER.debug("Entry to mapChildsToParentKeys()");
-        Map<Classification, String> childsInFile = new HashMap<>();
+    private Map<Classification, String> mapChildrenToParentKeys(List<ClassificationResource> classificationResources, Map<String, String> systemIds) {
+        LOGGER.debug("Entry to mapChildrenToParentKeys()");
+        Map<Classification, String> childrenInFile = new HashMap<>();
         Set<String> newKeysWithDomain = new HashSet<>();
         classificationResources.forEach(cl -> newKeysWithDomain.add(cl.getKey() + "|" + cl.getDomain()));
 
@@ -142,15 +142,15 @@ public class ClassificationDefinitionController {
             String parentKeyAndDomain = cl.parentKey + "|" + cl.domain;
             if (!cl.getParentKey().isEmpty() && !cl.getParentKey().equals("")) {
                 if (newKeysWithDomain.contains(parentKeyAndDomain) || systemIds.containsKey(parentKeyAndDomain)) {
-                    childsInFile.put(classificationResourceAssembler.toModel(cl), cl.getParentKey());
+                    childrenInFile.put(classificationResourceAssembler.toModel(cl), cl.getParentKey());
                 }
             }
         }
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from mapChildsToParentKeys(), returning {}", LoggerUtils.mapToString(childsInFile));
+            LOGGER.debug("Exit from mapChildrenToParentKeys(), returning {}", LoggerUtils.mapToString(childrenInFile));
         }
 
-        return childsInFile;
+        return childrenInFile;
     }
 
     private void insertOrUpdateClassificationsWithoutParent(List<ClassificationResource> classificationResources,
@@ -175,20 +175,20 @@ public class ClassificationDefinitionController {
         LOGGER.debug("Exit from insertOrUpdateClassificationsWithoutParent()");
     }
 
-    private void updateParentChildRelations(Map<Classification, String> childsInFile)
+    private void updateParentChildrenRelations(Map<Classification, String> childrenInFile)
             throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
             InvalidArgumentException {
-        LOGGER.debug("Entry to updateParentChildRelations()");
-        for (Classification childRes : childsInFile.keySet()) {
+        LOGGER.debug("Entry to updateParentChildrenRelations()");
+        for (Classification childRes : childrenInFile.keySet()) {
             Classification child = classificationService
                     .getClassification(childRes.getKey(), childRes.getDomain());
-            String parentKey = childsInFile.get(childRes);
+            String parentKey = childrenInFile.get(childRes);
             String parentId = classificationService.getClassification(parentKey, childRes.getDomain()).getId();
             child.setParentKey(parentKey);
             child.setParentId(parentId);
             classificationService.updateClassification(child);
         }
-        LOGGER.debug("Exit from updateParentChildRelations()");
+        LOGGER.debug("Exit from updateParentChildrenRelations()");
     }
 
     private void updateExistingClassification(ClassificationResource cl,

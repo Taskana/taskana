@@ -103,11 +103,12 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
             workbasketAccessItems,
             pageMetadata);
 
+        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = new ResponseEntity<>(pagedResources, HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", new ResponseEntity<>(pagedResources, HttpStatus.OK));
+            LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", response);
         }
 
-        return new ResponseEntity<>(pagedResources, HttpStatus.OK);
+        return response;
     }
 
     /**
@@ -136,8 +137,9 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
                 accessId + " corresponding to a group, not a user. You just can remove access items for a user");
         }
 
-        LOGGER.debug("Exit from removeWorkbasketAccessItems(), returning {}", ResponseEntity.status(HttpStatus.NO_CONTENT).build());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        LOGGER.debug("Exit from removeWorkbasketAccessItems(), returning {}", response);
+        return response;
     }
 
     private WorkbasketAccessItemQuery getAccessIds(WorkbasketAccessItemQuery query,
