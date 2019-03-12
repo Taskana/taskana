@@ -41,7 +41,6 @@ export class TaskListToolbarComponent implements OnInit {
   toolbarState = false;
   filterType = TaskanaType.TASKS;
   searched = false;
-  searchParam = 'search';
 
   search = Search;
   searchSelected: Search = Search.byWorkbasket;
