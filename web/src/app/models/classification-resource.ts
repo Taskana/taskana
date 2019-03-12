@@ -1,7 +1,6 @@
 import { Classification } from './classification';
 import { Links } from './links';
 
-
 export class ClassificationResource {
   constructor(
     public _embedded: {

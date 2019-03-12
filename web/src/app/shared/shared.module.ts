@@ -26,6 +26,7 @@ import {PaginationComponent} from './pagination/pagination.component';
 import {NumberPickerComponent} from './number-picker/number-picker.component';
 import {ProgressBarComponent} from './progress-bar/progress-bar.component';
 import {DatePickerComponent} from './date-picker/date-picker.component';
+import {DropdownComponent} from './dropdown/dropdown.component';
 
 /**
  * Pipes
@@ -82,7 +83,8 @@ const DECLARATIONS = [
   PaginationComponent,
   NumberPickerComponent,
   ProgressBarComponent,
-  DatePickerComponent
+  DatePickerComponent,
+  DropdownComponent
 ];
 
 @NgModule({

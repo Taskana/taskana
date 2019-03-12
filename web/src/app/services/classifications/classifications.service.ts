@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { Observable, Subject, combineLatest } from 'rxjs';
+import { combineLatest, Observable, Subject} from 'rxjs';
 import { mergeMap, tap } from 'rxjs/operators';
 
 import { Classification } from 'app/models/classification';
@@ -20,6 +20,8 @@ export class ClassificationsService {
   private url = `${environment.taskanaRestUrl}/v1/classifications/`;
   private classificationSelected = new Subject<ClassificationDefinition>();
   private classificationSaved = new Subject<number>();
+  private classificationResourcePromise: Promise<ClassificationResource>;
+  private lastDomain: string;
 
   constructor(
     private httpClient: HttpClient,
@@ -40,6 +42,16 @@ export class ClassificationsService {
   }
 
   // GET
+  getClassificationsByDomain(domain: string, forceRefresh = false): Promise<ClassificationResource> {
+    if (this.lastDomain !== domain || !this.classificationResourcePromise || forceRefresh) {
+      this.lastDomain = domain;
+      this.classificationResourcePromise = this.httpClient.get<ClassificationResource>(
+        `${this.url}${TaskanaQueryParameters.getQueryParameters(this.classificationParameters(domain))}`).toPromise();
+    }
+    return this.classificationResourcePromise;
+  }
+
+  // GET
   getClassification(id: string): Observable<ClassificationDefinition> {
     return this.httpClient.get<ClassificationDefinition>(`${this.url}${id}`)
       .pipe(tap((classification: ClassificationDefinition) => {
@@ -48,7 +60,6 @@ export class ClassificationsService {
         }
       }));
   }
-
 
   // POST
   postClassification(classification: Classification): Observable<Classification> {
@@ -72,7 +83,6 @@ export class ClassificationsService {
 
   getSelectedClassification(): Observable<ClassificationDefinition> {
     return this.classificationSelected.asObservable();
-
   }
 
   triggerClassificationSaved() {
@@ -97,7 +107,7 @@ export class ClassificationsService {
     return parameters;
   }
 
-  private getClassificationObservable(classificationRef: Observable<any>): Observable<any> {
+  private getClassificationObservable(classificationRef: Observable<any>): Observable<Array<Classification>> {
     const classificationTypes = this.classificationCategoriesService.getSelectedClassificationType();
     return combineLatest(
       classificationRef,
@@ -111,7 +121,7 @@ export class ClassificationsService {
     )
   }
 
-  private buildHierarchy(classifications: Array<Classification>, type: string) {
+  private buildHierarchy(classifications: Array<Classification>, type: string): Array<Classification> {
     const roots = [];
     const children = [];
 
@@ -139,4 +149,3 @@ export class ClassificationsService {
     }
   }
 }
-
