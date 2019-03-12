@@ -13,7 +13,7 @@
 	<parent>
 		<artifactId>taskana-rest-parent</artifactId>
 		<groupId>pro.taskana</groupId>
-		<version>1.0.8-SNAPSHOT</version>
+		<version>1.1.1-SNAPSHOT</version>
 	</parent>
 
 	<licenses>
