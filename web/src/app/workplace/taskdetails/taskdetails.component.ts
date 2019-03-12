@@ -95,7 +95,6 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.onSave();
   }
 
-
   openTask() {
     this.router.navigate([{outlets: {detail: `task/${this.currentId}`}}], {relativeTo: this.route.parent});
   }
@@ -123,7 +122,6 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   selectTab(tab: string): void {
     this.tabSelected = tab;
   }
-
 
   backClicked(): void {
     this.task = undefined;

@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges, HostListener } from '@angular/core';
-import { Task } from 'app/workplace/models/task';
-import { Classification } from '../../../models/classification';
-import { ClassificationsService } from '../../../services/classifications/classifications.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
-import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
-import { NgForm } from '@angular/forms';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {Task} from 'app/workplace/models/task';
+import {Classification} from '../../../models/classification';
+import {ClassificationsService} from '../../../services/classifications/classifications.service';
+import {CustomFieldsService} from 'app/services/custom-fields/custom-fields.service';
+import {FormsValidatorService} from 'app/shared/services/forms/forms-validator.service';
+import {NgForm} from '@angular/forms';
+import {DomainService} from '../../../services/domain/domain.service';
 
 @Component({
   selector: 'taskana-task-details-general-fields',
@@ -21,8 +22,6 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
   saveToggleTriggered: boolean;
   @Output() formValid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  @Output() classificationsReceived: EventEmitter<Classification[]> = new EventEmitter<Classification[]>();
-
   @ViewChild('TaskForm')
   taskForm: NgForm;
 
@@ -38,7 +37,12 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
   constructor(
     private classificationService: ClassificationsService,
     private customFieldsService: CustomFieldsService,
-    private formsValidatorService: FormsValidatorService) {
+    private formsValidatorService: FormsValidatorService,
+    private domainService: DomainService) {
+  }
+
+  ngOnInit() {
+    this.getClassificationByDomain();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -47,19 +51,9 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnInit() {
-    this.requestInProgress = true;
-    this.classificationService.getClassifications().subscribe(classificationList => {
-      this.requestInProgress = false;
-      this.classifications = classificationList;
-      this.classificationsReceived.emit(this.classifications);
-    });
-  }
-
   selectClassification(classification: Classification) {
     this.task.classificationSummaryResource = classification;
   }
-
 
   isFieldValid(field: string): boolean {
     return this.formsValidatorService.isFieldValid(this.taskForm, field);
@@ -80,5 +74,16 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
           this.formValid.emit(true);
         }
       });
+  }
+
+  private changedClassification(itemSelected: any) {
+    this.task.classificationSummaryResource = itemSelected;
+  }
+
+  private async getClassificationByDomain() {
+    this.requestInProgress = true;
+    this.classifications = (await this.classificationService.getClassificationsByDomain(this.domainService.getSelectedDomainValue()))
+      ._embedded.classificationSummaryResourceList;
+    this.requestInProgress = false;
   }
 }
