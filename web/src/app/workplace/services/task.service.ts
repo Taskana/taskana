@@ -60,12 +60,7 @@ export class TaskService {
   }
 
   getTask(id: string): Observable<Task> {
-    return this.httpClient.get<Task>(`${this.url}/${id}`)
-      .pipe(map(
-        (response: Task) => {
-          response = this.applyTaskDatesTimeZone(response);
-          return response;
-        }));
+    return this.httpClient.get<Task>(`${this.url}/${id}`);
   }
 
   completeTask(id: string): Observable<Task> {
@@ -91,16 +86,6 @@ export class TaskService {
 
   createTask(task: Task): Observable<Task> {
     return this.httpClient.post<Task>(this.url, task);
-  }
-
-  private applyTaskDatesTimeZone(task: Task): Task {
-    if (task.due) { task.due = TaskanaDate.applyTimeZone(task.due); }
-    if (task.modified) { task.modified = TaskanaDate.applyTimeZone(task.modified); }
-    if (task.completed) { task.completed = TaskanaDate.applyTimeZone(task.completed); }
-    if (task.planned) { task.planned = TaskanaDate.applyTimeZone(task.planned); }
-    if (task.claimed) { task.claimed = TaskanaDate.applyTimeZone(task.claimed); }
-    if (task.created) { task.created = TaskanaDate.applyTimeZone(task.created); }
-    return task;
   }
 
   private convertTasksDatesToGMT(task: Task): Task {

@@ -44,7 +44,7 @@
           <span class="float-right pull-right material-icons md-20 blue">{{accordion2State?
             'expand_more':'expand_less'}}</span>
         </button>
-        <taskana-general-fields-extension [task]="task"></taskana-general-fields-extension>
+        <taskana-general-fields-extension [task]="taskClone"></taskana-general-fields-extension>
       </accordion-group>
       <accordion-group panelClass="customClass" (isOpenChange)="accordion3State = $event">
         <button class="btn  btn-block clearfix" accordion-heading>
