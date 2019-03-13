@@ -23,7 +23,7 @@ export class RestConnectorService {
 
   getWorkbasketStatistics(): Observable<ReportData> {
     return this.httpClient.get<ReportData>(environment.taskanaRestUrl
-      + monitorUrl + 'tasks-workbasket-report?daysInPast=5&states=READY,CLAIMED,COMPLETED');
+      + monitorUrl + 'tasks-workbasket-planned-date-report?daysInPast=5&states=READY,CLAIMED,COMPLETED');
   }
 
   getClassificationTasksReport(): Observable<ReportData> {

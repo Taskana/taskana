@@ -46,14 +46,18 @@ public class MonitorController {
         @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException,
         InvalidArgumentException {
         LOGGER.debug("Entry to getTasksStatusReport()");
-        ResponseEntity<ReportResource> response = new ResponseEntity<>(reportAssembler.toResource(
-            taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
-            domains, states), HttpStatus.OK);
+        ReportResource report = reportAssembler.toResource(
+            taskMonitorService.createTaskStatusReportBuilder()
+                .stateIn(states)
+                .domainIn(domains)
+                .buildReport(),
+            domains, states);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
+            LOGGER.debug("Exit from getTasksStatusReport(), returning {}", report);
         }
 
-        return response;
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(report);
     }
 
     @GetMapping(path = "/tasks-workbasket-report")
@@ -63,16 +67,40 @@ public class MonitorController {
         @RequestParam(value = "states") List<TaskState> states)
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksWorkbasketReport()");
-        ResponseEntity<?> response = new ResponseEntity<>(reportAssembler.toResource(
+
+        ReportResource report = reportAssembler.toResource(
             taskMonitorService.createWorkbasketReportBuilder()
                 .stateIn(states)
-                .withColumnHeaders(getTasksWorkbasketsTimeInterval(daysInPast)).buildReport(), daysInPast, states),
-            HttpStatus.OK);
+                .withColumnHeaders(getTasksWorkbasketsTimeInterval(daysInPast)).buildReport(), daysInPast, states);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", response);
+            LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", report);
         }
 
-        return response;
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(report);
+
+    }
+
+    @GetMapping(path = "/tasks-workbasket-planned-date-report")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    public ResponseEntity<?> getTasksWorkbasketPlannedDateReport(
+        @RequestParam(value = "daysInPast") int daysInPast,
+        @RequestParam(value = "states") List<TaskState> states)
+        throws NotAuthorizedException, InvalidArgumentException {
+        LOGGER.debug("Entry to getTasksWorkbasketPlannedDateReport()");
+
+        ReportResource report = reportAssembler.toResource(
+            taskMonitorService.createWorkbasketReportBuilder()
+                .stateIn(states)
+                .withColumnHeaders(getTasksWorkbasketsTimeInterval(daysInPast)).buildPlannedDateBasedReport(),
+            daysInPast, states);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exit from getTasksWorkbasketPlannedDateReport(), returning {}", report);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(report);
+
     }
 
     @GetMapping(path = "/tasks-classification-report")
@@ -80,15 +108,18 @@ public class MonitorController {
     public ResponseEntity<ReportResource> getTasksClassificationReport()
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksClassificationReport()");
-        ResponseEntity<ReportResource> response = new ResponseEntity<>(reportAssembler.toResource(
+
+        ReportResource report = reportAssembler.toResource(
             taskMonitorService.createClassificationReportBuilder()
                 .withColumnHeaders(getTaskClassificationTimeInterval())
-                .buildReport()), HttpStatus.OK);
+                .buildReport());
+
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getTasksClassificationReport(), returning {}", response);
+            LOGGER.debug("Exit from getTasksClassificationReport(), returning {}", report);
         }
 
-        return response;
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(report);
     }
 
     @GetMapping(path = "/timestamp-report")

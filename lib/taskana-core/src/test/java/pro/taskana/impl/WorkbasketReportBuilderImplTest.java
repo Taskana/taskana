@@ -66,7 +66,7 @@ public class WorkbasketReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
+    public void testGetTotalNumbersOfWorkbasketReportBasedOnDueDate() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -223,7 +223,7 @@ public class WorkbasketReportBuilderImplTest {
     }
 
     @Test(expected = InvalidArgumentException.class)
-    public void testlistTaskIdsForSelectedItemsIsEmptyResult()
+    public void testListTaskIdsForSelectedItemsIsEmptyResult()
         throws NotAuthorizedException, InvalidArgumentException {
         List<SelectedItem> selectedItems = new ArrayList<>();
         List<String> result = cut.createWorkbasketReportBuilder()
@@ -289,5 +289,56 @@ public class WorkbasketReportBuilderImplTest {
             .workbasketIdIn(Arrays.asList("GibtsSicherNed"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_14);
         assertNotNull(result);
+    }
+
+    @Test
+    public void testGetTotalNumbersOfWorkbasketReportBasedOnCreatedDate() throws InvalidArgumentException, NotAuthorizedException {
+        List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
+        List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+        List<String> categories = Collections.singletonList("EXTERN");
+        List<String> domains = Collections.singletonList("DOMAIN_A");
+        List<String> classificationIds = Collections.singletonList("L10000");
+        List<String> excludedClassificationIds = Collections.singletonList("L20000");
+        Map<CustomField, String> customAttributeFilter = new HashMap<>();
+        customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+        List<CombinedClassificationFilter> combinedClassificationFilter = Arrays
+                .asList(new CombinedClassificationFilter("CLI:000000000000000000000000000000000003",
+                        "CLI:000000000000000000000000000000000008"));
+
+        List<MonitorQueryItem> expectedResult = new ArrayList<>();
+        MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
+        monitorQueryItem.setKey("WBI:000000000000000000000000000000000001");
+        monitorQueryItem.setNumberOfTasks(1);
+        expectedResult.add(monitorQueryItem);
+        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbasketsBasedOnPlannedDate(workbasketIds, states,
+                categories, domains, classificationIds, excludedClassificationIds, customAttributeFilter,
+                combinedClassificationFilter);
+
+        WorkbasketReport actualResult = cut.createWorkbasketReportBuilder()
+                .workbasketIdIn(workbasketIds)
+                .stateIn(states)
+                .categoryIn(categories)
+                .domainIn(domains)
+                .classificationIdIn(classificationIds)
+                .excludedClassificationIdIn(excludedClassificationIds)
+                .customAttributeFilterIn(customAttributeFilter)
+                .combinedClassificationFilterIn(combinedClassificationFilter)
+                .buildPlannedDateBasedReport();
+
+        verify(taskanaEngineImplMock, times(1))
+                .openConnection();
+        verify(taskanaEngineImplMock, times(1)).checkRoleMembership(any());
+        verify(taskanaEngineImplMock, times(2)).getConfiguration();
+        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
+        verify(taskMonitorMapperMock, times(1)).getTaskCountOfWorkbasketsBasedOnPlannedDate(any(), any(), any(), any(),
+                any(), any(), any(), any());
+        verify(taskanaEngineImplMock, times(1)).returnConnection();
+        verifyNoMoreInteractions(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineConfiguration);
+
+        assertNotNull(actualResult);
+        assertEquals(
+                actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue(), 1);
+        assertEquals(actualResult.getSumRow().getTotalValue(), 1);
     }
 }

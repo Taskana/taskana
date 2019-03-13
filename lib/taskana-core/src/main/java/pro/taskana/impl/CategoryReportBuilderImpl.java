@@ -12,6 +12,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.impl.report.preprocessor.DaysToWorkingDaysPreProcessor;
+import pro.taskana.impl.report.structure.Report;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.CategoryReport;
 
@@ -58,4 +59,9 @@ public class CategoryReportBuilderImpl
         }
     }
 
+    @Override
+    public Report<MonitorQueryItem, TimeIntervalColumnHeader> buildPlannedDateBasedReport()
+        throws NotAuthorizedException, InvalidArgumentException {
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    }
 }

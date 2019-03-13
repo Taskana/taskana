@@ -105,5 +105,6 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
     public interface Builder<I extends QueryItem, H extends ColumnHeader<? super I>> {
 
         Report<I, H> buildReport() throws NotAuthorizedException, InvalidArgumentException;
+        Report<I, H> buildPlannedDateBasedReport() throws NotAuthorizedException, InvalidArgumentException;
     }
 }
