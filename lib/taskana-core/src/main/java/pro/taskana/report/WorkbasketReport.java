@@ -34,6 +34,12 @@ public class WorkbasketReport extends Report<MonitorQueryItem, TimeIntervalColum
         WorkbasketReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
 
         /**
+         * buildPlannedDateBasedReport is querying grouping by plannedDate instead of due date.
+         */
+        @Override
+        WorkbasketReport buildPlannedDateBasedReport() throws NotAuthorizedException, InvalidArgumentException;
+
+        /**
          * Adds a list of {@link CombinedClassificationFilter} to the builder. The created report contains only tasks with a
          * pair of a classificationId for a task and a classificationId for the corresponding attachment in this list.
          *

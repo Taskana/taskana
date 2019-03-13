@@ -47,7 +47,7 @@ public class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTotalNumbersOfTasksOfWorkbasketReport()
+    public void testGetTotalNumbersOfTasksOfWorkbasketReportBasedOnDueDate()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -365,6 +365,34 @@ public class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
         int[] row3 = report.getRow("USER_1_3").getCells();
         assertArrayEquals(new int[] {1, 0, 0, 0, 3}, row3);
+    }
+
+    @WithAccessId(
+        userName = "monitor")
+    @Test
+    public void testGetTotalNumbersOfTasksOfWorkbasketReportBasedOnPlannedDateWithReportLineItemDefinitions()
+        throws InvalidArgumentException, NotAuthorizedException {
+        TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+        WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .buildPlannedDateBasedReport();
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(reportToString(report));
+        }
+
+        assertNotNull(report);
+        assertEquals(3, report.rowSize());
+
+        assertEquals(20, report.getRow("USER_1_1").getTotalValue());
+        assertEquals(20, report.getRow("USER_1_2").getTotalValue());
+        assertEquals(10, report.getRow("USER_1_3").getTotalValue());
+        assertEquals(2, report.getRow("USER_1_1").getCells()[2]);
+        assertEquals(1, report.getRow("USER_1_2").getCells()[1]);
+
+        assertEquals(50, report.getSumRow().getTotalValue());
     }
 
     private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {
