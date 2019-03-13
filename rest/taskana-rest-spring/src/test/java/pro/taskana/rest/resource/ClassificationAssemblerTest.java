@@ -12,12 +12,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.ConcurrencyException;
-import pro.taskana.exceptions.DomainNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.rest.TestConfiguration;
 
@@ -36,8 +30,7 @@ public class ClassificationAssemblerTest {
     private ClassificationService classificationService;
 
     @Test
-    public void classificationToResource() throws ClassificationNotFoundException, NotAuthorizedException,
-        ClassificationAlreadyExistException, ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
+    public void classificationToResource() {
         // given
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("DOMAIN_A",
             "1", "A");
@@ -68,34 +61,37 @@ public class ClassificationAssemblerTest {
 
     @Test
     public void resourceToClassification() {
+        ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("12",
+            "DOMAIN_B", "AB");
+
         // given
-        ClassificationResource classificationResource = new ClassificationResource();
-        classificationResource.setClassificationId("1");
-        classificationResource.setKey("12");
-        classificationResource.setName("TestB");
-        classificationResource.setType("AB");
-        classificationResource.setDomain("DOMAIN_B");
-        classificationResource.setApplicationEntryPoint("Test");
-        classificationResource.setCategory("ABC");
-        classificationResource.setCreated("2010-01-01T12:00:00Z");
-        classificationResource.setModified("2011-11-11T11:00:00Z");
-        classificationResource.setCustom1("Custom");
-        classificationResource.setCustom2("Custom2");
-        classificationResource.setCustom1("Custom1");
-        classificationResource.setCustom3("Custom3");
-        classificationResource.setCustom4("Custom4");
-        classificationResource.setCustom5("Custom5");
-        classificationResource.setCustom6("Custom6");
-        classificationResource.setCustom7("Custom7");
-        classificationResource.setCustom8("Custom8");
-        classificationResource.setParentId("2");
-        classificationResource.setPriority(2);
-        classificationResource.setApplicationEntryPoint("12");
-        classificationResource.setServiceLevel("P1D");
-        classificationResource.setDescription("Test");
-        classificationResource.setIsValidInDomain(true);
+        classification.setId("1");
+        classification.setType("AB");
+        classification.setDomain("DOMAIN_B");
+        classification.setApplicationEntryPoint("Test");
+        classification.setCategory("ABC");
+        classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
+        classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
+        classification.setCustom1("Custom");
+        classification.setCustom2("Custom2");
+        classification.setCustom1("Custom1");
+        classification.setCustom3("Custom3");
+        classification.setCustom4("Custom4");
+        classification.setCustom5("Custom5");
+        classification.setCustom6("Custom6");
+        classification.setCustom7("Custom7");
+        classification.setCustom8("Custom8");
+        classification.setParentId("2");
+        classification.setPriority(2);
+        classification.setApplicationEntryPoint("12");
+        classification.setServiceLevel("P1D");
+        classification.setDescription("Test");
+        classification.setIsValidInDomain(true);
+
+        ClassificationResource classificationResource = new ClassificationResource(classification);
+
         // when
-        ClassificationImpl classification = (ClassificationImpl) classificationResourceAssembler
+        classification = (ClassificationImpl) classificationResourceAssembler
             .toModel(classificationResource);
         // then
         testEquality(classification, classificationResource);

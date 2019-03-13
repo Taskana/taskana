@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.hateoas.ResourceSupport;
 
+import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketType;
 
 /**
@@ -12,19 +13,14 @@ import pro.taskana.WorkbasketType;
 public class WorkbasketResource extends ResourceSupport {
 
     public String workbasketId;
-
     @NotNull
     public String key;
-
     @NotNull
     public String name;
-
     @NotNull
     public String domain;
-
     @NotNull
     public WorkbasketType type;
-
     public String created;      // ISO-8601
     public String modified;     // ISO-8601
     public String description;
@@ -37,6 +33,29 @@ public class WorkbasketResource extends ResourceSupport {
     public String orgLevel2;
     public String orgLevel3;
     public String orgLevel4;
+
+    public WorkbasketResource() {
+    }
+
+    public WorkbasketResource(Workbasket workbasket) {
+        this.workbasketId = workbasket.getId();
+        this.key = workbasket.getKey();
+        this.name = workbasket.getName();
+        this.domain = workbasket.getDomain();
+        this.type = workbasket.getType();
+        this.created = workbasket.getCreated() != null ? workbasket.getCreated().toString() : null;
+        this.modified = workbasket.getModified() != null ? workbasket.getModified().toString() : null;
+        this.description = workbasket.getDescription();
+        this.owner = workbasket.getOwner();
+        this.custom1 = workbasket.getCustom1();
+        this.custom2 = workbasket.getCustom2();
+        this.custom3 = workbasket.getCustom3();
+        this.custom4 = workbasket.getCustom4();
+        this.orgLevel1 = workbasket.getOrgLevel1();
+        this.orgLevel2 = workbasket.getOrgLevel2();
+        this.orgLevel3 = workbasket.getOrgLevel3();
+        this.orgLevel4 = workbasket.getOrgLevel4();
+    }
 
     public String getWorkbasketId() {
         return workbasketId;

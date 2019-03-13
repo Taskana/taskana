@@ -1,7 +1,10 @@
 package pro.taskana.rest.resource;
 
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +12,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.rest.WorkbasketController;
+import pro.taskana.rest.resource.links.PageLinks;
 
 /**
  * @author HH
@@ -26,11 +30,13 @@ public class WorkbasketSummaryResourceAssembler
 
     @Override
     public WorkbasketSummaryResource toResource(WorkbasketSummary workbasketSummary) {
-        WorkbasketSummaryResource resource = createResourceWithId(workbasketSummary.getId(), workbasketSummary);
-        BeanUtils.copyProperties(workbasketSummary, resource);
-        // named different so needs to be set by hand
-        resource.setWorkbasketId(workbasketSummary.getId());
-        return resource;
+        return new WorkbasketSummaryResource(workbasketSummary);
+    }
+
+    @PageLinks(WorkbasketController.class)
+    public PagedResources<WorkbasketSummaryResource> toResources(List<WorkbasketSummary> entities,
+        PagedResources.PageMetadata pageMetadata) {
+        return new PagedResources<>(toResources(entities), pageMetadata);
     }
 
     public WorkbasketSummary toModel(WorkbasketSummaryResource resource) {

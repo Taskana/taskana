@@ -70,7 +70,6 @@ public class AbstractPagingControllerRestDocumentation {
         pagingFieldDescriptionsMap.put("page.totalElements", "Total number of items");
         pagingFieldDescriptionsMap.put("page.totalPages", "Number of pages");
         pagingFieldDescriptionsMap.put("page.number", "Current page number");
-        pagingFieldDescriptionsMap.put("_links.allClassifications.href", "Link to the main Summary-Resourc");
         pagingFieldDescriptionsMap.put("_links.first.href", "Link to first page");
         pagingFieldDescriptionsMap.put("_links.last.href", "Link to last page");
         pagingFieldDescriptionsMap.put("_links.prev.href", "Link to previous page");
@@ -87,7 +86,6 @@ public class AbstractPagingControllerRestDocumentation {
                 fieldWithPath("page.totalElements").description(pagingFieldDescriptionsMap.get("page.totalElements")),
                 fieldWithPath("page.totalPages").description(pagingFieldDescriptionsMap.get("page.totalPages")),
                 fieldWithPath("page.number").description(pagingFieldDescriptionsMap.get("page.number")),
-                fieldWithPath("_links.allClassifications.href").description(pagingFieldDescriptionsMap.get("_links.allClassifications.href")),
                 fieldWithPath("_links.first.href").description(pagingFieldDescriptionsMap.get("_links.first.href")),
                 fieldWithPath("_links.last.href").description(pagingFieldDescriptionsMap.get("_links.last.href")),
                 fieldWithPath("_links.prev.href").description(pagingFieldDescriptionsMap.get("_links.prev.href")),

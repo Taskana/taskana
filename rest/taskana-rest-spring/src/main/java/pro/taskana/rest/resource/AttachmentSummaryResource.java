@@ -2,6 +2,7 @@ package pro.taskana.rest.resource;
 
 import org.springframework.hateoas.ResourceSupport;
 
+import pro.taskana.AttachmentSummary;
 import pro.taskana.ObjectReference;
 
 /**
@@ -12,11 +13,26 @@ public class AttachmentSummaryResource extends ResourceSupport {
     private String attachmentId;
     private String taskId;
     private String created;
-    private String  modified;
+    private String modified;
     private ClassificationSummaryResource classificationSummaryResource;
     private ObjectReference objectReference;
     private String channel;
     private String received;
+
+    AttachmentSummaryResource() {
+    }
+
+    public AttachmentSummaryResource(AttachmentSummary attachmentSummary) {
+        this.attachmentId = attachmentSummary.getId();
+        this.taskId = attachmentSummary.getTaskId();
+        this.created = attachmentSummary.getCreated() != null ? attachmentSummary.getCreated().toString() : null;
+        this.modified = attachmentSummary.getModified() != null ? attachmentSummary.getModified().toString() : null;
+        this.classificationSummaryResource = new ClassificationSummaryResource(
+            attachmentSummary.getClassificationSummary());
+        this.objectReference = attachmentSummary.getObjectReference();
+        this.channel = attachmentSummary.getChannel();
+        this.received = attachmentSummary.getReceived() != null ? attachmentSummary.getReceived().toString() : null;
+    }
 
     public String getAttachmentId() {
         return attachmentId;
@@ -41,6 +57,7 @@ public class AttachmentSummaryResource extends ResourceSupport {
     public void setCreated(String created) {
         this.created = created;
     }
+
     public String getModified() {
         return modified;
     }

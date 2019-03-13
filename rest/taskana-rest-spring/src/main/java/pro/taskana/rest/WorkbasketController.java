@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.Resources;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.BaseQuery.SortDirection;
-import pro.taskana.TaskService;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketPermission;
@@ -43,15 +41,14 @@ import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.rest.resource.DistributionTargetListAssembler;
 import pro.taskana.rest.resource.DistributionTargetResource;
-import pro.taskana.rest.resource.WorkbasketAccessItemAssembler;
-import pro.taskana.rest.resource.WorkbasketAccessItemListAssembler;
+import pro.taskana.rest.resource.DistributionTargetResourceAssembler;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
+import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
 import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.WorkbasketResourceAssembler;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
-import pro.taskana.rest.resource.WorkbasketSummaryResourcesAssembler;
+import pro.taskana.rest.resource.WorkbasketSummaryResourceAssembler;
 
 /**
  * Controller for all {@link Workbasket} related endpoints.
@@ -79,26 +76,27 @@ public class WorkbasketController extends AbstractPagingController {
     private static final String SORT_BY = "sort-by";
     private static final String SORT_DIRECTION = "order";
 
-    private static final String PAGING_PAGE = "page";
-    private static final String PAGING_PAGE_SIZE = "page-size";
-
-    @Autowired
     private WorkbasketService workbasketService;
 
-    @Autowired
-    private TaskService taskService;
-
-    @Autowired
     private WorkbasketResourceAssembler workbasketResourceAssembler;
 
-    @Autowired
-    private DistributionTargetListAssembler distributionTargetListAssembler;
+    private WorkbasketSummaryResourceAssembler workbasketSummaryResourceAssembler;
 
-    @Autowired
-    private WorkbasketAccessItemListAssembler accessItemListAssembler;
+    private DistributionTargetResourceAssembler distributionTargetResourceAssembler;
 
-    @Autowired
-    private WorkbasketAccessItemAssembler workbasketAccessItemAssembler;
+    private WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler;
+
+    WorkbasketController(WorkbasketService workbasketService,
+        WorkbasketResourceAssembler workbasketResourceAssembler,
+        WorkbasketSummaryResourceAssembler workbasketSummaryResourceAssembler,
+        DistributionTargetResourceAssembler distributionTargetResourceAssembler,
+        WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler) {
+        this.workbasketService = workbasketService;
+        this.workbasketResourceAssembler = workbasketResourceAssembler;
+        this.workbasketSummaryResourceAssembler = workbasketSummaryResourceAssembler;
+        this.distributionTargetResourceAssembler = distributionTargetResourceAssembler;
+        this.workbasketAccessItemResourceAssembler = workbasketAccessItemResourceAssembler;
+    }
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -112,28 +110,9 @@ public class WorkbasketController extends AbstractPagingController {
         query = applySortingParams(query, params);
         query = applyFilterParams(query, params);
 
-        PageMetadata pageMetadata = null;
-        List<WorkbasketSummary> workbasketSummaries = null;
-        String page = params.getFirst(PAGING_PAGE);
-        String pageSize = params.getFirst(PAGING_PAGE_SIZE);
-        params.remove(PAGING_PAGE);
-        params.remove(PAGING_PAGE_SIZE);
-        validateNoInvalidParameterIsLeft(params);
-        if (page != null && pageSize != null) {
-            // paging
-            long totalElements = query.count();
-            pageMetadata = initPageMetadata(pageSize, page, totalElements);
-            workbasketSummaries = query.listPage((int) pageMetadata.getNumber(),
-                (int) pageMetadata.getSize());
-        } else if (page == null && pageSize == null) {
-            // not paging
-            workbasketSummaries = query.list();
-        } else {
-            throw new InvalidArgumentException("Paging information is incomplete.");
-        }
-
-        WorkbasketSummaryResourcesAssembler assembler = new WorkbasketSummaryResourcesAssembler();
-        PagedResources<WorkbasketSummaryResource> pagedResources = assembler.toResources(workbasketSummaries,
+        PageMetadata pageMetadata = getPageMetadata(params, query);
+        List<WorkbasketSummary> workbasketSummaries = (List<WorkbasketSummary>) getQueryList(query, pageMetadata);
+        PagedResources pagedResources = workbasketSummaryResourceAssembler.toResources(workbasketSummaries,
             pageMetadata);
 
         ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = new ResponseEntity<>(pagedResources,
@@ -166,7 +145,8 @@ public class WorkbasketController extends AbstractPagingController {
         throws NotAuthorizedException, InvalidArgumentException,
         WorkbasketNotFoundException, WorkbasketInUseException {
         LOGGER.debug("Entry to markWorkbasketForDeletion(workbasketId= {})", workbasketId);
-        ResponseEntity<?> response = new ResponseEntity<>(workbasketService.deleteWorkbasket(workbasketId), HttpStatus.ACCEPTED);
+        ResponseEntity<?> response = new ResponseEntity<>(workbasketService.deleteWorkbasket(workbasketId),
+            HttpStatus.ACCEPTED);
         LOGGER.debug("Exit from markWorkbasketForDeletion(), returning {}",
             response);
         return response;
@@ -183,7 +163,8 @@ public class WorkbasketController extends AbstractPagingController {
 
         Workbasket workbasket = workbasketResourceAssembler.toModel(workbasketResource);
         workbasket = workbasketService.createWorkbasket(workbasket);
-        ResponseEntity<WorkbasketResource> response = new ResponseEntity<>(workbasketResourceAssembler.toResource(workbasket), HttpStatus.CREATED);
+        ResponseEntity<WorkbasketResource> response = new ResponseEntity<>(
+            workbasketResourceAssembler.toResource(workbasket), HttpStatus.CREATED);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from createWorkbasket(), returning {}", response);
         }
@@ -226,9 +207,8 @@ public class WorkbasketController extends AbstractPagingController {
         ResponseEntity<Resources<WorkbasketAccessItemResource>> result;
 
         List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(workbasketId);
-        Resources<WorkbasketAccessItemResource> accessItemListResource = accessItemListAssembler
-            .toResource(workbasketId, accessItems);
-        result = new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
+        result = new ResponseEntity<>(workbasketAccessItemResourceAssembler
+            .toResources(workbasketId, accessItems), HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", result);
         }
@@ -248,14 +228,14 @@ public class WorkbasketController extends AbstractPagingController {
         }
 
         List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
-        workbasketAccessResourceItems.forEach(item -> wbAccessItems.add(workbasketAccessItemAssembler.toModel(item)));
+        workbasketAccessResourceItems.forEach(
+            item -> wbAccessItems.add(workbasketAccessItemResourceAssembler.toModel(item)));
         workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
-
         List<WorkbasketAccessItem> updatedWbAccessItems = workbasketService.getWorkbasketAccessItems(workbasketId);
-        Resources<WorkbasketAccessItemResource> accessItemListResource = accessItemListAssembler
-            .toResource(workbasketId, updatedWbAccessItems);
 
-        ResponseEntity<Resources<WorkbasketAccessItemResource>> response = new ResponseEntity<>(accessItemListResource, HttpStatus.OK);
+        ResponseEntity<Resources<WorkbasketAccessItemResource>> response = new ResponseEntity<>(
+            workbasketAccessItemResourceAssembler
+                .toResources(workbasketId, updatedWbAccessItems), HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from setWorkbasketAccessItems(), returning {}", response);
         }
@@ -268,11 +248,12 @@ public class WorkbasketController extends AbstractPagingController {
     public ResponseEntity<Resources<DistributionTargetResource>> getDistributionTargets(
         @PathVariable(value = "workbasketId") String workbasketId)
         throws WorkbasketNotFoundException, NotAuthorizedException {
+
         LOGGER.debug("Entry to getDistributionTargets(workbasketId= {})", workbasketId);
         ResponseEntity<Resources<DistributionTargetResource>> result;
         List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(workbasketId);
-        Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListAssembler
-            .toResource(workbasketId, distributionTargets);
+        Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetResourceAssembler
+            .toResources(workbasketId, distributionTargets);
         result = new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getDistributionTargets(), returning {}", result);
@@ -295,10 +276,9 @@ public class WorkbasketController extends AbstractPagingController {
         workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);
 
         List<WorkbasketSummary> distributionTargets = workbasketService.getDistributionTargets(sourceWorkbasketId);
-        Resources<DistributionTargetResource> distributionTargetListResource = distributionTargetListAssembler
-            .toResource(sourceWorkbasketId, distributionTargets);
-
-        ResponseEntity<Resources<DistributionTargetResource>> response = new ResponseEntity<>(distributionTargetListResource, HttpStatus.OK);
+        ResponseEntity<Resources<DistributionTargetResource>> response = new ResponseEntity<>(
+            distributionTargetResourceAssembler
+                .toResources(sourceWorkbasketId, distributionTargets), HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
         }

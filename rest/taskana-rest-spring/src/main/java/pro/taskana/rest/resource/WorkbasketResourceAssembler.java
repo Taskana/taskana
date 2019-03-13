@@ -26,13 +26,7 @@ public class WorkbasketResourceAssembler {
     private WorkbasketService workbasketService;
 
     public WorkbasketResource toResource(Workbasket wb) throws NotAuthorizedException, WorkbasketNotFoundException {
-        WorkbasketResource resource = new WorkbasketResource();
-        BeanUtils.copyProperties(wb, resource);
-        // need to be set by hand, since name or type is different
-        resource.setWorkbasketId(wb.getId());
-        resource.setModified(wb.getModified().toString());
-        resource.setCreated(wb.getCreated().toString());
-
+        WorkbasketResource resource = new WorkbasketResource(wb);
         return addLinks(resource, wb);
     }
 

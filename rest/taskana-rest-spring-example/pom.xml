@@ -18,15 +18,21 @@
 		<version>2.0.2.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<!-- Repository for postgresql V. 9.4.1212 driver.
-		<repositories>
-			<repository>
-				<id>postgresql</id>
-				<name>postgresql repository</name>
-				<url>https://mvnrepository.com/artifact/postgresql/postgresql</url>
-			</repository>
-		</repositories>
-	-->
+	<repositories>
+		<!-- Repository for postgresql V. 9.4.1212 driver.
+		<repository>
+			<id>postgresql</id>
+			<name>postgresql repository</name>
+			<url>https://mvnrepository.com/artifact/postgresql/postgresql</url>
+		</repository>-->
+		<!--  this repository is needed to fetch com.ibm.db2.jcc -->
+		<repository>
+			<id>novatec public</id>
+			<name>novatec-repository</name>
+			<url>https://repository.novatec-gmbh.de/content/repositories/novatec/</url>
+		</repository>
+	</repositories>
+
 
 	<profiles>
 		<profile>
@@ -84,14 +90,12 @@
 			<version>11.1.1.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/postgresql/postgresql -->
-		<!--  Postgresql driver dependency
+		<!--  Postgresql driver dependency -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.4.1212</version>
 		</dependency>
-		-->
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -159,15 +163,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<!--
-	  this repository is needed to fetch com.ibm.db2.jcc
-	-->
-	<repositories>
-		<repository>
-			<id>novatec public</id>
-			<name>novatec-repository</name>
-			<url>https://repository.novatec-gmbh.de/content/repositories/novatec/</url>
-		</repository>
-	</repositories>
 </project>

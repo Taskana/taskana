@@ -25,8 +25,8 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.ldap.LdapClient;
+import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
-import pro.taskana.rest.resource.WorkbasketAccessItemAssembler;
 
 /**
  * Controller for Workbasket access.
@@ -48,14 +48,14 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     private static final String SORT_BY = "sort-by";
     private static final String SORT_DIRECTION = "order";
 
-    private static final String PAGING_PAGE = "page";
-    private static final String PAGING_PAGE_SIZE = "page-size";
-
     @Autowired
     LdapClient ldapClient;
 
     @Autowired
     private WorkbasketService workbasketService;
+
+    @Autowired
+    private WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler;
 
     /**
      * This GET method return all workbasketAccessItems that correspond the given data.
@@ -78,30 +78,14 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         query = applyFilterParams(query, params);
         query = applySortingParams(query, params);
 
-        PagedResources.PageMetadata pageMetadata = null;
-        List<WorkbasketAccessItem> workbasketAccessItems;
-        String page = params.getFirst(PAGING_PAGE);
-        String pageSize = params.getFirst(PAGING_PAGE_SIZE);
-        params.remove(PAGING_PAGE);
-        params.remove(PAGING_PAGE_SIZE);
-        validateNoInvalidParameterIsLeft(params);
-        if (page != null && pageSize != null) {
-            // paging
-            long totalElements = query.count();
-            pageMetadata = initPageMetadata(pageSize, page, totalElements);
-            workbasketAccessItems = query.listPage((int) pageMetadata.getNumber(),
-                (int) pageMetadata.getSize());
-        } else if (page == null && pageSize == null) {
-            // not paging
-            workbasketAccessItems = query.list();
-        } else {
-            throw new InvalidArgumentException("Paging information is incomplete.");
-        }
-
-        WorkbasketAccessItemAssembler assembler = new WorkbasketAccessItemAssembler();
-        PagedResources<WorkbasketAccessItemResource> pagedResources = assembler.toResources(
-            workbasketAccessItems,
+        PagedResources.PageMetadata pageMetadata = getPageMetadata(params, query);
+        List<WorkbasketAccessItem> workbasketAccessItems = (List<WorkbasketAccessItem>) getQueryList(query,
             pageMetadata);
+
+        PagedResources pagedResources = workbasketAccessItemResourceAssembler.toResources(
+            workbasketAccessItems,
+            pageMetadata
+        );
 
         ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = new ResponseEntity<>(pagedResources, HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {

@@ -221,11 +221,6 @@ public class TaskControllerIntTest {
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith("/v1/tasks?state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5"));
-        assertNotNull(response.getBody().getLink("allTasks"));
-        assertTrue(response.getBody()
-            .getLink("allTasks")
-            .getHref()
-            .endsWith("/v1/tasks"));
         assertNotNull(response.getBody().getLink(Link.REL_FIRST));
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
@@ -263,11 +258,6 @@ public class TaskControllerIntTest {
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith("/v1/tasks?sort-by=due&order=desc&page=5&page-size=5"));
-        assertNotNull(response.getBody().getLink("allTasks"));
-        assertTrue(response.getBody()
-            .getLink("allTasks")
-            .getHref()
-            .endsWith("/v1/tasks"));
         assertNotNull(response.getBody().getLink(Link.REL_FIRST));
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
@@ -298,11 +288,6 @@ public class TaskControllerIntTest {
             .getHref()
             .endsWith(
                 "/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&page=2&page-size=5"));
-        assertNotNull(response.getBody().getLink("allTasks"));
-        assertTrue(response.getBody()
-            .getLink("allTasks")
-            .getHref()
-            .endsWith("/v1/tasks"));
         assertNotNull(response.getBody().getLink(Link.REL_FIRST));
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));

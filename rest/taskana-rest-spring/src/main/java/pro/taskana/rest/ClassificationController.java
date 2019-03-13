@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -38,7 +37,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
-import pro.taskana.rest.resource.ClassificationSummaryResourcesAssembler;
+import pro.taskana.rest.resource.ClassificationSummaryResourceAssembler;
 
 /**
  * Controller for all {@link Classification} related endpoints.
@@ -65,18 +64,24 @@ public class ClassificationController extends AbstractPagingController {
     private static final String CUSTOM_6_LIKE = "custom-6-like";
     private static final String CUSTOM_7_LIKE = "custom-7-like";
     private static final String CUSTOM_8_LIKE = "custom-8-like";
-
     private static final String SORT_BY = "sort-by";
     private static final String SORT_DIRECTION = "order";
 
-    private static final String PAGING_PAGE = "page";
-    private static final String PAGING_PAGE_SIZE = "page-size";
-
-    @Autowired
     private ClassificationService classificationService;
 
-    @Autowired
     private ClassificationResourceAssembler classificationResourceAssembler;
+
+    private ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler;
+
+    ClassificationController(
+        ClassificationService classificationService,
+        ClassificationResourceAssembler classificationResourceAssembler,
+        ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler
+    ) {
+        this.classificationService = classificationService;
+        this.classificationResourceAssembler = classificationResourceAssembler;
+        this.classificationSummaryResourceAssembler = classificationSummaryResourceAssembler;
+    }
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -90,34 +95,17 @@ public class ClassificationController extends AbstractPagingController {
         query = applySortingParams(query, params);
         query = applyFilterParams(query, params);
 
-        PageMetadata pageMetadata = null;
-        List<ClassificationSummary> classificationSummaries = null;
-        String page = params.getFirst(PAGING_PAGE);
-        String pageSize = params.getFirst(PAGING_PAGE_SIZE);
-        params.remove(PAGING_PAGE);
-        params.remove(PAGING_PAGE_SIZE);
-        validateNoInvalidParameterIsLeft(params);
-        if (page != null && pageSize != null) {
-            // paging
-            long totalElements = query.count();
-            pageMetadata = initPageMetadata(pageSize, page, totalElements);
-            classificationSummaries = query.listPage((int) pageMetadata.getNumber(),
-                (int) pageMetadata.getSize());
-        } else if (page == null && pageSize == null) {
-            // not paging
-            classificationSummaries = query.list();
-        } else {
-            throw new InvalidArgumentException("Paging information is incomplete.");
-        }
-
-        ClassificationSummaryResourcesAssembler assembler = new ClassificationSummaryResourcesAssembler();
-        PagedResources<ClassificationSummaryResource> pagedResources = assembler.toResources(classificationSummaries,
+        PageMetadata pageMetadata = getPageMetadata(params, query);
+        List<ClassificationSummary> classificationSummaries = (List<ClassificationSummary>) getQueryList(query,
             pageMetadata);
 
-        ResponseEntity<PagedResources<ClassificationSummaryResource>> response = new ResponseEntity<>(pagedResources,
-            HttpStatus.OK);
+        ResponseEntity<PagedResources<ClassificationSummaryResource>> response = new ResponseEntity<>(
+            classificationSummaryResourceAssembler.toResources(
+                classificationSummaries,
+                pageMetadata), HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getClassifications(), returning {}", response);
+            LOGGER.debug("Exit from getClassifications(), returning {}",
+                new ResponseEntity<>(response, HttpStatus.OK));
         }
 
         return response;
@@ -126,14 +114,17 @@ public class ClassificationController extends AbstractPagingController {
     @GetMapping(path = "/{classificationId}")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> getClassification(@PathVariable String classificationId)
-        throws ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException,
-        ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
-        LOGGER.debug("Entry to getClassification(classificationId= {})", classificationId);
+        throws ClassificationNotFoundException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Entry to getClassification(classificationId= {})", classificationId);
+        }
+
         Classification classification = classificationService.getClassification(classificationId);
         ResponseEntity<ClassificationResource> response = new ResponseEntity<>(
             classificationResourceAssembler.toResource(classification), HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getClassification(), returning {}", response);
+            LOGGER.debug("Exit from getClassification(), returning {}",
+                ResponseEntity.status(HttpStatus.OK).body(classificationResourceAssembler.toResource(classification)));
         }
 
         return response;
@@ -148,7 +139,6 @@ public class ClassificationController extends AbstractPagingController {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to createClassification(resource= {})", resource);
         }
-
         Classification classification = classificationResourceAssembler.toModel(resource);
         classification = classificationService.createClassification(classification);
 

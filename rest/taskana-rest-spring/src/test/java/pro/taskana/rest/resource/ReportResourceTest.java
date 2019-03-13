@@ -29,7 +29,7 @@ import pro.taskana.report.WorkbasketReport;
 import pro.taskana.rest.TestConfiguration;
 
 /**
- * Test for {@link ReportAssembler}.
+ * Test for {@link ReportResourceAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
@@ -37,7 +37,7 @@ import pro.taskana.rest.TestConfiguration;
 public class ReportResourceTest {
 
     @Autowired
-    private ReportAssembler reportAssembler;
+    private ReportResourceAssembler reportResourceAssembler;
 
     private int daysDiff;
     private LocalDateTime now;
@@ -58,7 +58,7 @@ public class ReportResourceTest {
         // given
         WorkbasketReport report = new WorkbasketReport(headers);
         // when
-        ReportResource resource = reportAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
+        ReportResource resource = reportResourceAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
         // then
 
         // meta
@@ -92,7 +92,7 @@ public class ReportResourceTest {
         item.setKey("key");
         report.addItem(item);
         // when
-        ReportResource resource = reportAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
+        ReportResource resource = reportResourceAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
         // then
 
         // meta
@@ -137,7 +137,7 @@ public class ReportResourceTest {
         item.setKey("key2");
         report.addItem(item);
         // when
-        ReportResource resource = reportAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
+        ReportResource resource = reportResourceAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
         // then
 
         // meta
@@ -190,7 +190,7 @@ public class ReportResourceTest {
         item.setAttachmentKey(null);
         report.addItem(item);
         // when
-        ReportResource resource = reportAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
+        ReportResource resource = reportResourceAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
         // then
 
         // meta
@@ -268,7 +268,7 @@ public class ReportResourceTest {
         item.setKey("key2");
         report.addItem(item);
         // when
-        ReportResource resource = reportAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
+        ReportResource resource = reportResourceAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
         // then
 
         // meta

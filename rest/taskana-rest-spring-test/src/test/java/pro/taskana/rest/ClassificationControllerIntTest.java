@@ -130,11 +130,6 @@ public class ClassificationControllerIntTest {
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith("/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5"));
-        assertNotNull(response.getBody().getLink("allClassifications"));
-        assertTrue(response.getBody()
-            .getLink("allClassifications")
-            .getHref()
-            .endsWith("/v1/classifications"));
         assertNotNull(response.getBody().getLink(Link.REL_FIRST));
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertNotNull(response.getBody().getLink(Link.REL_NEXT));

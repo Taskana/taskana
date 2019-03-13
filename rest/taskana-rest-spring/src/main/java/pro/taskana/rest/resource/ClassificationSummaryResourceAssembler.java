@@ -1,7 +1,10 @@
 package pro.taskana.rest.resource;
 
+import java.util.Collection;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +12,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.rest.ClassificationController;
+import pro.taskana.rest.resource.links.PageLinks;
 
 /**
  * Resource assembler for {@link ClassificationSummaryResource}.
@@ -26,12 +30,7 @@ public class ClassificationSummaryResourceAssembler
 
     @Override
     public ClassificationSummaryResource toResource(ClassificationSummary classificationSummary) {
-        ClassificationSummaryResource resource = createResourceWithId(classificationSummary.getId(),
-            classificationSummary);
-        BeanUtils.copyProperties(classificationSummary, resource);
-        // named different so needs to be set by hand
-        resource.setClassificationId(classificationSummary.getId());
-        return resource;
+        return new ClassificationSummaryResource(classificationSummary);
     }
 
     public ClassificationSummary toModel(ClassificationSummaryResource resource) {
@@ -44,4 +43,9 @@ public class ClassificationSummaryResourceAssembler
         return classification.asSummary();
     }
 
+    @PageLinks(ClassificationController.class)
+    public PagedResources<ClassificationSummaryResource> toResources(Collection<ClassificationSummary> entities,
+        PagedResources.PageMetadata pageMetadata) {
+        return new PagedResources<>(toResources(entities), pageMetadata);
+    }
 }
