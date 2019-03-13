@@ -41,7 +41,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.rest.resource.WorkbasketDefinitionResource;
-
+/**
+ * Integration tests for WorkbasketDefinitionController.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class WorkbasketDefinitionControllerIntTest {

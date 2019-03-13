@@ -7,30 +7,16 @@ import java.util.List;
 import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.util.MultiValueMap;
 
+import pro.taskana.BaseQuery;
 import pro.taskana.exceptions.InvalidArgumentException;
 
 /**
- * Abstract superclass for taskana REST controller with pagable resources.
+ * Abstract superclass for taskana REST controller with pageable resources.
  */
 public abstract class AbstractPagingController {
 
-    protected PageMetadata initPageMetadata(String pagesizeParam, String pageParam, long totalElements)
-        throws InvalidArgumentException {
-        long pagesize;
-        long page;
-        try {
-            pagesize = Long.valueOf(pagesizeParam);
-            page = Long.valueOf(pageParam);
-        } catch (NumberFormatException e) {
-            throw new InvalidArgumentException("page and pagesize must be a integer value.", e.getCause());
-        }
-        PageMetadata pageMetadata = new PageMetadata(pagesize, page, totalElements);
-        if (pageMetadata.getNumber() > pageMetadata.getTotalPages()) {
-            // unfortunately no setter for number
-            pageMetadata = new PageMetadata(pagesize, pageMetadata.getTotalPages(), totalElements);
-        }
-        return pageMetadata;
-    }
+    private static final String PAGING_PAGE = "page";
+    private static final String PAGING_PAGE_SIZE = "page-size";
 
     protected String[] extractCommaSeparatedFields(List<String> list) {
         List<String> values = new ArrayList<>();
@@ -44,6 +30,91 @@ public abstract class AbstractPagingController {
         throws InvalidArgumentException {
         if (!params.isEmpty()) {
             throw new InvalidArgumentException("Invalid parameter specified: " + params.keySet());
+        }
+    }
+
+    protected PageMetadata getPageMetadata(MultiValueMap<String, String> params, BaseQuery<?, ?> query)
+        throws InvalidArgumentException {
+        PageMetadata pageMetadata = null;
+        if (hasPagingInformationInParams(params)) {
+            // paging
+            long totalElements = query.count();
+            pageMetadata = initPageMetadata(params, totalElements);
+            validateNoInvalidParameterIsLeft(params);
+        } else {
+            // not paging
+            validateNoInvalidParameterIsLeft(params);
+        }
+        return pageMetadata;
+    }
+
+    protected List<?> getQueryList(BaseQuery<?, ?> query, PageMetadata pageMetadata) {
+        List<?> resultList;
+        if (pageMetadata != null) {
+            resultList = query.listPage((int) pageMetadata.getNumber(), (int) pageMetadata.getSize());
+        } else {
+            resultList = query.list();
+        }
+        return resultList;
+    }
+
+    private boolean hasPagingInformationInParams(MultiValueMap<String, String> params) {
+        return params.getFirst(PAGING_PAGE) != null;
+    }
+
+    protected PageMetadata initPageMetadata(MultiValueMap<String, String> param, long totalElements)
+        throws InvalidArgumentException {
+        long pageSize = getPageSize(param);
+        long page = getPage(param);
+
+        PageMetadata pageMetadata = new PageMetadata(pageSize, page,
+            totalElements != 0 ? totalElements : Integer.MAX_VALUE);
+        if (pageMetadata.getNumber() > pageMetadata.getTotalPages()) {
+            // unfortunately no setter for number
+            pageMetadata = new PageMetadata(pageSize, pageMetadata.getTotalPages(), totalElements);
+        }
+        return pageMetadata;
+    }
+
+    /**
+     * This method is deprecated please remove it after updating taskana-simple-history reference to it.
+     */
+    @Deprecated
+    protected PageMetadata initPageMetadata(String pagesizeParam, String pageParam, long totalElements)
+        throws InvalidArgumentException {
+        long pageSize;
+        long page;
+        try {
+            pageSize = Long.valueOf(pagesizeParam);
+            page = Long.valueOf(pageParam);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException("page and pageSize must be a integer value.", e.getCause());
+        }
+        PageMetadata pageMetadata = new PageMetadata(pageSize, page, totalElements);
+        if (pageMetadata.getNumber() > pageMetadata.getTotalPages()) {
+            // unfortunately no setter for number
+            pageMetadata = new PageMetadata(pageSize, pageMetadata.getTotalPages(), totalElements);
+        }
+        return pageMetadata;
+    }
+
+    private long getPage(MultiValueMap<String, String> params) throws InvalidArgumentException {
+        String param = params.getFirst(PAGING_PAGE);
+        params.remove(PAGING_PAGE);
+        try {
+            return Long.valueOf(param != null ? param : "1");
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException("page must be a integer value.", e.getCause());
+        }
+    }
+
+    private long getPageSize(MultiValueMap<String, String> params) throws InvalidArgumentException {
+        String param = params.getFirst(PAGING_PAGE_SIZE);
+        params.remove(PAGING_PAGE_SIZE);
+        try {
+            return param != null ? Long.valueOf(param) : Integer.MAX_VALUE;
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException("page-size must be a integer value.", e.getCause());
         }
     }
 

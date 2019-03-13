@@ -1,13 +1,16 @@
 package pro.taskana.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationQuery;
@@ -33,15 +40,6 @@ import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Set;
-
 /**
  * Controller for Importing / Exporting classifications.
  */
@@ -51,11 +49,17 @@ public class ClassificationDefinitionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationDefinitionController.class);
 
-    @Autowired
     private ClassificationService classificationService;
 
-    @Autowired
     private ClassificationResourceAssembler classificationResourceAssembler;
+
+    ClassificationDefinitionController(
+        ClassificationService classificationService,
+        ClassificationResourceAssembler classificationResourceAssembler
+    ) {
+        this.classificationService = classificationService;
+        this.classificationResourceAssembler = classificationResourceAssembler;
+    }
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -169,7 +173,7 @@ public class ClassificationDefinitionController {
                 updateExistingClassification(classificationResource, systemId);
             } else {
                 classificationService.createClassification(
-                        classificationResourceAssembler.toModel(classificationResource));
+                    classificationResourceAssembler.toModel(classificationResource));
             }
         }
         LOGGER.debug("Exit from insertOrUpdateClassificationsWithoutParent()");
@@ -192,8 +196,8 @@ public class ClassificationDefinitionController {
     }
 
     private void updateExistingClassification(ClassificationResource cl,
-            String systemId) throws ClassificationNotFoundException, NotAuthorizedException,
-            ConcurrencyException, InvalidArgumentException {
+        String systemId) throws ClassificationNotFoundException, NotAuthorizedException,
+        ConcurrencyException, InvalidArgumentException {
         LOGGER.debug("Entry to updateExistingClassification()");
         Classification currentClassification = classificationService.getClassification(systemId);
         if (cl.getType() != null && !cl.getType().equals(currentClassification.getType())) {

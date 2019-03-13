@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,11 +48,17 @@ public class WorkbasketDefinitionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketDefinitionController.class);
 
-    @Autowired
     private WorkbasketService workbasketService;
 
-    @Autowired
     private WorkbasketDefinitionResourceAssembler workbasketDefinitionAssembler;
+
+    WorkbasketDefinitionController(
+        WorkbasketService workbasketService,
+        WorkbasketDefinitionResourceAssembler workbasketDefinitionAssembler
+    ) {
+        this.workbasketService = workbasketService;
+        this.workbasketDefinitionAssembler = workbasketDefinitionAssembler;
+    }
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -86,6 +91,13 @@ public class WorkbasketDefinitionController {
      * @param file the list of workbasket definitions which will be imported to the current system.
      * @return Return answer is determined by the status code: 200 - all good 400 - list state error (referring to non
      * existing id's) 401 - not authorized
+     * @throws IOException if multipart file cannot be parsed.
+     * @throws NotAuthorizedException if the user is not authorized.
+     * @throws DomainNotFoundException if domain information is incorrect.
+     * @throws InvalidWorkbasketException if workbasket has invalid information.
+     * @throws WorkbasketAlreadyExistException if workbasket already exists when trying to create a new one.
+     * @throws WorkbasketNotFoundException if do not exists a workbasket in the system with the used id.
+     * @throws InvalidArgumentException if authorization information in workbaskets definitions is incorrect.
      */
     @PostMapping
     @Transactional(rollbackFor = Exception.class)

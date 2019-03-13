@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
+import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
 
 /**
@@ -13,31 +14,53 @@ import pro.taskana.WorkbasketType;
 @Relation(collectionRelation = "workbaskets")
 public class WorkbasketSummaryResource extends ResourceSupport {
 
-    public String workbasketId;
+    private String workbasketId;
 
     @NotNull
-    public String key;
+    private String key;
 
     @NotNull
-    public String name;
+    private String name;
 
     @NotNull
-    public String domain;
+    private String domain;
 
     @NotNull
-    public WorkbasketType type;
+    private WorkbasketType type;
 
-    public String description;
-    public String owner;
-    public String custom1;
-    public String custom2;
-    public String custom3;
-    public String custom4;
-    public String orgLevel1;
-    public String orgLevel2;
-    public String orgLevel3;
-    public String orgLevel4;
+    private String description;
+    private String owner;
+    private String custom1;
+    private String custom2;
+    private String custom3;
+    private String custom4;
+    private String orgLevel1;
+    private String orgLevel2;
+    private String orgLevel3;
+    private String orgLevel4;
     private boolean markedForDeletion;
+
+    public WorkbasketSummaryResource() {
+    }
+
+    public WorkbasketSummaryResource(WorkbasketSummary workbasketSummary) {
+        this.workbasketId = workbasketSummary.getId();
+        this.key = workbasketSummary.getKey();
+        this.name = workbasketSummary.getName();
+        this.domain = workbasketSummary.getDomain();
+        this.type = workbasketSummary.getType();
+        this.description = workbasketSummary.getDescription();
+        this.owner = workbasketSummary.getOwner();
+        this.markedForDeletion = workbasketSummary.isMarkedForDeletion();
+        this.custom1 = workbasketSummary.getCustom1();
+        this.custom2 = workbasketSummary.getCustom2();
+        this.custom3 = workbasketSummary.getCustom3();
+        this.custom4 = workbasketSummary.getCustom4();
+        this.orgLevel1 = workbasketSummary.getOrgLevel1();
+        this.orgLevel2 = workbasketSummary.getOrgLevel2();
+        this.orgLevel3 = workbasketSummary.getOrgLevel3();
+        this.orgLevel4 = workbasketSummary.getOrgLevel4();
+    }
 
     public String getWorkbasketId() {
         return workbasketId;

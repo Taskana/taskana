@@ -26,7 +26,7 @@ public interface LdapCache {
      * Find the groups belong to a user.
      * @param searchFor the search string. The search is performed over names and ids of group .
      * @param maxNumberOfReturnedAccessIds the maximum number of results to return.
-     * @return
+     * @return a List of access ids for groups of users.
      */
     List<AccessIdResource> findGroupsOfUser(String searchFor, int maxNumberOfReturnedAccessIds);
 

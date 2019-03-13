@@ -30,8 +30,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
 
-// This test class is configured to run with postgres DB if you want to run it with h2 it is needed
-// to change data source configuration at project-defaults.yml
+/**
+ * This test class is configured to run with postgres DB if you want to run it with h2 it is needed.
+ * to change data source configuration at project-defaults.yml.
+ */
 @RunWith(Arquillian.class)
 public class TaskanaWildflyTest {
 
@@ -61,6 +63,7 @@ public class TaskanaWildflyTest {
         ResponseEntity<TaskanaUserInfoResource> response = getRestTemplate().exchange(
             "http://127.0.0.1:" + "8090" + "/v1/current-user-info", HttpMethod.GET, request,
             new ParameterizedTypeReference<TaskanaUserInfoResource>() {
+
             });
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

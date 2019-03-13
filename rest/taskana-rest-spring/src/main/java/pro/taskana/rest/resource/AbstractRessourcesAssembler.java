@@ -1,59 +1,69 @@
 package pro.taskana.rest.resource;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Iterator;
+import java.util.Map;
+
+
 /**
- * Base assembler for paged list resources.
+ * Abstract resources assembler for taskana REST controller with pageable resources.
+ * This method is deprecated, it can be removed after fixing taskana-simple-history references
  */
+@Deprecated
 public abstract class AbstractRessourcesAssembler {
 
-    UriComponentsBuilder original;
+    UriComponentsBuilder original = getBuilderForOriginalUri();
 
     public AbstractRessourcesAssembler() {
-        original = getBuilderForOriginalUri();
     }
 
     protected static UriComponentsBuilder getBuilderForOriginalUri() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-            .getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         UriComponentsBuilder baseUri = ServletUriComponentsBuilder.fromServletMapping(request)
             .path(request.getRequestURI());
-        for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-            for (String value : entry.getValue()) {
-                baseUri.queryParam(entry.getKey(), value);
+        Iterator var2 = request.getParameterMap().entrySet().iterator();
+
+        while (var2.hasNext()) {
+            Map.Entry<String, String[]> entry = (Map.Entry) var2.next();
+            String[] var4 = (String[]) entry.getValue();
+            int var5 = var4.length;
+
+            for (int var6 = 0; var6 < var5; ++var6) {
+                String value = var4[var6];
+                baseUri.queryParam((String) entry.getKey(), new Object[] {value});
             }
         }
-        UriComponentsBuilder original = baseUri;
-        return original;
+
+        return baseUri;
     }
 
-    protected PagedResources<?> addPageLinks(PagedResources<?> pagedResources, PageMetadata pageMetadata) {
+    protected PagedResources<?> addPageLinks(PagedResources<?> pagedResources,
+        PagedResources.PageMetadata pageMetadata) {
         UriComponentsBuilder original = getBuilderForOriginalUri();
-        pagedResources.add(new Link(original.replaceQueryParam("page", 1).toUriString()).withRel(Link.REL_FIRST));
-        pagedResources.add(new Link(original.replaceQueryParam("page", pageMetadata.getTotalPages()).toUriString())
-            .withRel(Link.REL_LAST));
-        if (pageMetadata.getNumber() > 1) {
-            pagedResources
-                .add(new Link(original.replaceQueryParam("page", pageMetadata.getNumber() - 1).toUriString())
-                    .withRel(Link.REL_PREVIOUS));
+        pagedResources.add(
+            (new Link(original.replaceQueryParam("page", new Object[] {1}).toUriString())).withRel("first"));
+        pagedResources.add((new Link(
+            original.replaceQueryParam("page", new Object[] {pageMetadata.getTotalPages()}).toUriString())).withRel(
+            "last"));
+        if (pageMetadata.getNumber() > 1L) {
+            pagedResources.add((new Link(
+                original.replaceQueryParam("page", new Object[] {pageMetadata.getNumber() - 1L})
+                    .toUriString())).withRel("prev"));
         }
+
         if (pageMetadata.getNumber() < pageMetadata.getTotalPages()) {
-            pagedResources
-                .add(new Link(original.replaceQueryParam("page", pageMetadata.getNumber() + 1).toUriString())
-                    .withRel(Link.REL_NEXT));
+            pagedResources.add((new Link(
+                original.replaceQueryParam("page", new Object[] {pageMetadata.getNumber() + 1L})
+                    .toUriString())).withRel("next"));
         }
 
         return pagedResources;
     }
-
 }

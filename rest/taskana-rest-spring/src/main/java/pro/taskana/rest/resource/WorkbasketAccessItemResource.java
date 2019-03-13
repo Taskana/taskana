@@ -5,6 +5,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
+import pro.taskana.WorkbasketAccessItem;
+
 /**
  * Resource class for {@link pro.taskana.WorkbasketAccessItem}.
  */
@@ -41,6 +43,34 @@ public class WorkbasketAccessItemResource extends ResourceSupport {
     public boolean permCustom10;
     public boolean permCustom11;
     public boolean permCustom12;
+
+    public WorkbasketAccessItemResource() {
+    }
+
+    public WorkbasketAccessItemResource(WorkbasketAccessItem workbasketAccessItem) {
+        this.accessItemId = workbasketAccessItem.getId();
+        this.workbasketId = workbasketAccessItem.getWorkbasketId();
+        this.workbasketKey = workbasketAccessItem.getWorkbasketKey();
+        this.accessId = workbasketAccessItem.getAccessId();
+        this.accessName = workbasketAccessItem.getAccessName();
+        this.permRead = workbasketAccessItem.isPermRead();
+        this.permOpen = workbasketAccessItem.isPermOpen();
+        this.permAppend = workbasketAccessItem.isPermAppend();
+        this.permTransfer = workbasketAccessItem.isPermTransfer();
+        this.permDistribute = workbasketAccessItem.isPermDistribute();
+        this.permCustom1 = workbasketAccessItem.isPermCustom1();
+        this.permCustom2 = workbasketAccessItem.isPermCustom2();
+        this.permCustom3 = workbasketAccessItem.isPermCustom3();
+        this.permCustom4 = workbasketAccessItem.isPermCustom4();
+        this.permCustom5 = workbasketAccessItem.isPermCustom5();
+        this.permCustom6 = workbasketAccessItem.isPermCustom6();
+        this.permCustom7 = workbasketAccessItem.isPermCustom7();
+        this.permCustom8 = workbasketAccessItem.isPermCustom8();
+        this.permCustom9 = workbasketAccessItem.isPermCustom9();
+        this.permCustom10 = workbasketAccessItem.isPermCustom10();
+        this.permCustom11 = workbasketAccessItem.isPermCustom11();
+        this.permCustom12 = workbasketAccessItem.isPermCustom12();
+    }
 
     public String getAccessItemId() {
         return accessItemId;

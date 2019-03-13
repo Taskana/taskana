@@ -1,13 +1,19 @@
 package pro.taskana.rest.resource;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.hateoas.ResourceSupport;
+
+import pro.taskana.Classification;
 
 /**
  * Resource class for {@link pro.taskana.Classification}.
  */
 public class ClassificationResource extends ResourceSupport {
 
+    @NotNull
     public String classificationId;
+    @NotNull
     public String key;
     public String parentId;
     public String parentKey;
@@ -31,12 +37,33 @@ public class ClassificationResource extends ResourceSupport {
     public String custom7;
     public String custom8;
 
-    public Boolean getIsValidInDomain() {
-        return isValidInDomain;
+    public ClassificationResource() {
     }
 
-    public void setIsValidInDomain(Boolean isValidInDomain) {
-        this.isValidInDomain = isValidInDomain;
+    public ClassificationResource(Classification classification) {
+        this.classificationId = classification.getId();
+        this.key = classification.getKey();
+        this.parentId = classification.getParentId();
+        this.parentKey = classification.getParentKey();
+        this.category = classification.getCategory();
+        this.type = classification.getType();
+        this.domain = classification.getDomain();
+        this.isValidInDomain = classification.getIsValidInDomain();
+        this.created = classification.getCreated() != null ? classification.getCreated().toString() : null;
+        this.modified = classification.getModified() != null ? classification.getModified().toString() : null;
+        this.name = classification.getName();
+        this.description = classification.getDescription();
+        this.priority = classification.getPriority();
+        this.serviceLevel = classification.getServiceLevel();
+        this.applicationEntryPoint = classification.getApplicationEntryPoint();
+        this.custom1 = classification.getCustom1();
+        this.custom2 = classification.getCustom2();
+        this.custom3 = classification.getCustom3();
+        this.custom4 = classification.getCustom4();
+        this.custom5 = classification.getCustom5();
+        this.custom6 = classification.getCustom6();
+        this.custom7 = classification.getCustom7();
+        this.custom8 = classification.getCustom8();
     }
 
     public String getClassificationId() {
@@ -93,6 +120,14 @@ public class ClassificationResource extends ResourceSupport {
 
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    public Boolean getIsValidInDomain() {
+        return isValidInDomain;
+    }
+
+    public void setIsValidInDomain(Boolean validInDomain) {
+        isValidInDomain = validInDomain;
     }
 
     public String getCreated() {

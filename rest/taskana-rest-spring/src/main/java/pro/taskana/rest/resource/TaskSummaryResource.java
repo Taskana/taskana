@@ -1,15 +1,16 @@
 package pro.taskana.rest.resource;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
 import pro.taskana.ObjectReference;
 import pro.taskana.TaskState;
+import pro.taskana.TaskSummary;
+import pro.taskana.exceptions.InvalidArgumentException;
 
 /**
  * Resource class for {@link pro.taskana.WorkbasketSummary}.
@@ -27,7 +28,6 @@ public class TaskSummaryResource extends ResourceSupport {
     private String due;        // ISO-8601
     private String name;
     private String creator;
-    private String description;
     private String note;
     private int priority;
     private TaskState state;
@@ -39,8 +39,6 @@ public class TaskSummaryResource extends ResourceSupport {
     private ObjectReference primaryObjRef;
     private boolean isRead;
     private boolean isTransferred;
-    // All objects have to be serializable
-    private Map<String, String> customAttributes = Collections.emptyMap();
     private List<AttachmentSummaryResource> attachmentSummaryResources = new ArrayList<>();
     private String custom1;
     private String custom2;
@@ -58,6 +56,53 @@ public class TaskSummaryResource extends ResourceSupport {
     private String custom14;
     private String custom15;
     private String custom16;
+
+    TaskSummaryResource() {
+    }
+
+    public TaskSummaryResource(TaskSummary taskSummary) throws InvalidArgumentException {
+        this.taskId = taskSummary.getTaskId();
+        this.externalId = taskSummary.getExternalId();
+        created = taskSummary.getCreated() != null ? taskSummary.getCreated().toString() : null;
+        claimed = taskSummary.getClaimed() != null ? taskSummary.getClaimed().toString() : null;
+        completed = taskSummary.getCompleted() != null ? taskSummary.getCompleted().toString() : null;
+        modified = taskSummary.getModified() != null ? taskSummary.getModified().toString() : null;
+        planned = taskSummary.getPlanned() != null ? taskSummary.getPlanned().toString() : null;
+        due = taskSummary.getDue() != null ? taskSummary.getDue().toString() : null;
+        this.name = taskSummary.getName();
+        this.creator = taskSummary.getCreator();
+        this.note = taskSummary.getNote();
+        this.priority = taskSummary.getPriority();
+        this.state = taskSummary.getState();
+        this.classificationSummaryResource = new ClassificationSummaryResource(taskSummary.getClassificationSummary());
+        this.workbasketSummaryResource = new WorkbasketSummaryResource(taskSummary.getWorkbasketSummary());
+        this.businessProcessId = taskSummary.getBusinessProcessId();
+        this.parentBusinessProcessId = taskSummary.getParentBusinessProcessId();
+        this.owner = taskSummary.getOwner();
+        this.primaryObjRef = taskSummary.getPrimaryObjRef();
+        this.isRead = taskSummary.isRead();
+        this.isTransferred = taskSummary.isTransferred();
+        this.attachmentSummaryResources = taskSummary.getAttachmentSummaries()
+            .stream()
+            .map(attachment -> new AttachmentSummaryResource(attachment))
+            .collect(Collectors.toList());
+        this.custom1 = taskSummary.getCustomAttribute("1");
+        this.custom2 = taskSummary.getCustomAttribute("2");
+        this.custom3 = taskSummary.getCustomAttribute("3");
+        this.custom4 = taskSummary.getCustomAttribute("4");
+        this.custom5 = taskSummary.getCustomAttribute("5");
+        this.custom6 = taskSummary.getCustomAttribute("6");
+        this.custom7 = taskSummary.getCustomAttribute("7");
+        this.custom8 = taskSummary.getCustomAttribute("8");
+        this.custom9 = taskSummary.getCustomAttribute("9");
+        this.custom10 = taskSummary.getCustomAttribute("10");
+        this.custom11 = taskSummary.getCustomAttribute("11");
+        this.custom12 = taskSummary.getCustomAttribute("12");
+        this.custom13 = taskSummary.getCustomAttribute("13");
+        this.custom14 = taskSummary.getCustomAttribute("14");
+        this.custom15 = taskSummary.getCustomAttribute("15");
+        this.custom16 = taskSummary.getCustomAttribute("16");
+    }
 
     public String getTaskId() {
         return taskId;
@@ -137,14 +182,6 @@ public class TaskSummaryResource extends ResourceSupport {
 
     public void setCreator(String creator) {
         this.creator = creator;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getNote() {
@@ -233,14 +270,6 @@ public class TaskSummaryResource extends ResourceSupport {
 
     public void setTransferred(boolean isTransferred) {
         this.isTransferred = isTransferred;
-    }
-
-    public Map<String, String> getCustomAttributes() {
-        return customAttributes;
-    }
-
-    public void setCustomAttributes(Map<String, String> customAttributes) {
-        this.customAttributes = customAttributes;
     }
 
     public List<AttachmentSummaryResource> getAttachmentSummaries() {
@@ -392,7 +421,6 @@ public class TaskSummaryResource extends ResourceSupport {
             + "due= " + this.due
             + "name= " + this.name
             + "creator= " + this.creator
-            + "description= " + this.description
             + "priority= " + this.priority
             + "owner= " + this.owner
             + "]";

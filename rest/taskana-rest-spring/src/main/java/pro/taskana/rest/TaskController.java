@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -44,7 +43,7 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskResourceAssembler;
 import pro.taskana.rest.resource.TaskSummaryResource;
-import pro.taskana.rest.resource.TaskSummaryResourcesAssembler;
+import pro.taskana.rest.resource.TaskSummaryResourceAssembler;
 
 /**
  * Controller for all {@link Task} related endpoints.
@@ -81,14 +80,21 @@ public class TaskController extends AbstractPagingController {
     private static final String SORT_BY = "sort-by";
     private static final String SORT_DIRECTION = "order";
 
-    private static final String PAGING_PAGE = "page";
-    private static final String PAGING_PAGE_SIZE = "page-size";
-
-    @Autowired
     private TaskService taskService;
 
-    @Autowired
     private TaskResourceAssembler taskResourceAssembler;
+
+    private TaskSummaryResourceAssembler taskSummaryResourceAssembler;
+
+    TaskController(
+        TaskService taskService,
+        TaskResourceAssembler taskResourceAssembler,
+        TaskSummaryResourceAssembler taskSummaryResourceAssembler
+    ) {
+        this.taskService = taskService;
+        this.taskResourceAssembler = taskResourceAssembler;
+        this.taskSummaryResourceAssembler = taskSummaryResourceAssembler;
+    }
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -102,29 +108,10 @@ public class TaskController extends AbstractPagingController {
         query = applyFilterParams(query, params);
         query = applySortingParams(query, params);
 
-        PageMetadata pageMetadata = null;
-        List<TaskSummary> taskSummaries = null;
-        String page = params.getFirst(PAGING_PAGE);
-        String pageSize = params.getFirst(PAGING_PAGE_SIZE);
-        params.remove(PAGING_PAGE);
-        params.remove(PAGING_PAGE_SIZE);
-        validateNoInvalidParameterIsLeft(params);
-        if (page != null && pageSize != null) {
-            // paging
-            long totalElements = query.count();
-            pageMetadata = initPageMetadata(pageSize, page,
-                totalElements);
-            taskSummaries = query.listPage((int) pageMetadata.getNumber(),
-                (int) pageMetadata.getSize());
-        } else if (page == null && pageSize == null) {
-            // not paging
-            taskSummaries = query.list();
-        } else {
-            throw new InvalidArgumentException("Paging information is incomplete.");
-        }
+        PageMetadata pageMetadata = getPageMetadata(params, query);
+        List<TaskSummary> taskSummaries = (List<TaskSummary>) getQueryList(query, pageMetadata);
 
-        TaskSummaryResourcesAssembler taskSummaryResourcesAssembler = new TaskSummaryResourcesAssembler();
-        PagedResources<TaskSummaryResource> pagedResources = taskSummaryResourcesAssembler.toResources(taskSummaries,
+        PagedResources<TaskSummaryResource> pagedResources = taskSummaryResourceAssembler.toResources(taskSummaries,
             pageMetadata);
         ResponseEntity<PagedResources<TaskSummaryResource>> response = new ResponseEntity<>(pagedResources, HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {

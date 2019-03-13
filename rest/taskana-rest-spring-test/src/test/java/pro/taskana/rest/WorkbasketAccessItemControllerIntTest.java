@@ -70,7 +70,7 @@ public class WorkbasketAccessItemControllerIntTest {
 
     @Test
     public void testGetWorkbasketAccessItemsKeepingFilters() {
-        String parameters = "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=1&page-size=9&access-ids=user_1_1";
+        String parameters = "/v1/workbasket-access-items?sort-by=workbasket-key&order=asc&page=1&page-size=9&access-ids=user_1_1";
         ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = template.exchange(
             url + port + parameters, HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
@@ -100,7 +100,7 @@ public class WorkbasketAccessItemControllerIntTest {
 
     @Test
     public void testGetSecondPageSortedByWorkbasketKey() {
-        String parameters = "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=2&page-size=9&access-ids=user_1_1";
+        String parameters = "/v1/workbasket-access-items?sort-by=workbasket-key&order=asc&page=2&page-size=9&access-ids=user_1_1";
         ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = template.exchange(
             url + port + parameters, HttpMethod.GET, request,
             new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
@@ -134,7 +134,7 @@ public class WorkbasketAccessItemControllerIntTest {
 
     @Test
     public void testGetBadRequestIfTryingToDeleteAccessItemsForGroup() {
-        String parameters = "/v1/workbasket-access-items/?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
+        String parameters = "/v1/workbasket-access-items?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
         try {
             ResponseEntity<Void> response = template.exchange(
                 url + port + parameters, HttpMethod.DELETE, request,

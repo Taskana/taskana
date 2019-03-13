@@ -44,11 +44,7 @@ public class WorkbasketDefinitionResourceAssembler {
     public WorkbasketDefinitionResource toResource(Workbasket workbasket)
         throws NotAuthorizedException, WorkbasketNotFoundException {
 
-        WorkbasketResourceWithoutLinks basket = new WorkbasketResourceWithoutLinks();
-        BeanUtils.copyProperties(workbasket, basket);
-        basket.setWorkbasketId(workbasket.getId());
-        basket.setModified(workbasket.getModified().toString());
-        basket.setCreated(workbasket.getCreated().toString());
+        WorkbasketResourceWithoutLinks basket = new WorkbasketResourceWithoutLinks(workbasket);
 
         List<WorkbasketAccessItemImpl> authorizations = new ArrayList<>();
         for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(basket.getWorkbasketId())) {

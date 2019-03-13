@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +21,8 @@ import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.rest.resource.ReportAssembler;
 import pro.taskana.rest.resource.ReportResource;
+import pro.taskana.rest.resource.ReportResourceAssembler;
 
 /**
  * Controller for all monitoring endpoints.
@@ -34,11 +33,14 @@ public class MonitorController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorController.class);
 
-    @Autowired
     private TaskMonitorService taskMonitorService;
 
-    @Autowired
-    private ReportAssembler reportAssembler;
+    private ReportResourceAssembler reportResourceAssembler;
+
+    MonitorController(TaskMonitorService taskMonitorService, ReportResourceAssembler reportResourceAssembler) {
+        this.taskMonitorService = taskMonitorService;
+        this.reportResourceAssembler = reportResourceAssembler;
+    }
 
     @GetMapping(path = "/tasks-status-report")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -46,18 +48,14 @@ public class MonitorController {
         @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException,
         InvalidArgumentException {
         LOGGER.debug("Entry to getTasksStatusReport()");
-        ReportResource report = reportAssembler.toResource(
-            taskMonitorService.createTaskStatusReportBuilder()
-                .stateIn(states)
-                .domainIn(domains)
-                .buildReport(),
-            domains, states);
+        ResponseEntity<ReportResource> response = new ResponseEntity<>(reportResourceAssembler.toResource(
+            taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
+            domains, states), HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getTasksStatusReport(), returning {}", report);
+            LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(report);
+        return response;
     }
 
     @GetMapping(path = "/tasks-workbasket-report")
@@ -67,7 +65,7 @@ public class MonitorController {
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksWorkbasketReport()");
 
-        ReportResource report = reportAssembler.toResource(
+        ReportResource report = reportResourceAssembler.toResource(
             taskMonitorService.createWorkbasketReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
                 .buildReport(), states);
@@ -89,7 +87,7 @@ public class MonitorController {
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksWorkbasketPlannedDateReport()");
 
-        ReportResource report = reportAssembler.toResource(
+        ReportResource report = reportResourceAssembler.toResource(
             taskMonitorService.createWorkbasketReportBuilder()
                 .stateIn(states)
                 .withColumnHeaders(getDateTimeInterval(daysInPast)).buildPlannedDateBasedReport(),
@@ -103,13 +101,14 @@ public class MonitorController {
 
     }
 
+
     @GetMapping(path = "/tasks-classification-report")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ReportResource> getTasksClassificationReport()
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksClassificationReport()");
 
-        ReportResource report = reportAssembler.toResource(
+        ReportResource report = reportResourceAssembler.toResource(
             taskMonitorService.createClassificationReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
                 .buildReport());
@@ -130,7 +129,7 @@ public class MonitorController {
             .mapToObj(TimeIntervalColumnHeader.Date::new)
             .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK)
-            .body(reportAssembler.toResource(
+            .body(reportResourceAssembler.toResource(
                 taskMonitorService.createTimestampReportBuilder()
                     .withColumnHeaders(columnHeaders)
                     .buildReport()));

@@ -3,7 +3,10 @@ package pro.taskana.rest.resource;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import org.springframework.beans.BeanUtils;
+import java.util.List;
+
+import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.WorkbasketSummary;
@@ -15,21 +18,28 @@ import pro.taskana.rest.WorkbasketController;
  * Transforms WorkbasketSummary to its resource counterpart DistributionTargerResource and vice versa.
  */
 @Component
-public class DistributionTargetResourceAssembler {
+public class DistributionTargetResourceAssembler extends
+    ResourceAssemblerSupport<WorkbasketSummary, DistributionTargetResource> {
 
-    public DistributionTargetResource toResource(WorkbasketSummary summary)
-        throws WorkbasketNotFoundException, NotAuthorizedException {
-        DistributionTargetResource resource = new DistributionTargetResource();
-        BeanUtils.copyProperties(summary, resource);
-        // named different so needs to be set by hand
-        resource.setWorkbasketId(summary.getId());
-
-        return addLinks(resource, summary);
+    public DistributionTargetResourceAssembler() {
+        super(WorkbasketController.class, DistributionTargetResource.class);
     }
 
-    private DistributionTargetResource addLinks(DistributionTargetResource resource, WorkbasketSummary summary)
-        throws WorkbasketNotFoundException, NotAuthorizedException {
-        resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(summary.getId())).withSelfRel());
-        return resource;
+    public DistributionTargetResource toResource(WorkbasketSummary summary) {
+        return new DistributionTargetResource(summary);
     }
+
+    public Resources<DistributionTargetResource> toResources(String workbasketId,
+        List<WorkbasketSummary> distributionTargets) throws WorkbasketNotFoundException, NotAuthorizedException {
+        Resources<DistributionTargetResource> distributionTargetListResource = new Resources<>(super.toResources(distributionTargets));
+        distributionTargetListResource
+            .add(linkTo(methodOn(WorkbasketController.class).getDistributionTargets(workbasketId))
+                .withSelfRel());
+        distributionTargetListResource
+            .add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(workbasketId))
+                .withRel("workbasket"));
+
+        return distributionTargetListResource;
+    }
+
 }
