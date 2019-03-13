@@ -1,0 +1,9 @@
+<div class="row" *ngIf="reportData">
+  <div class="col-xs-12 col-md-7 col-md-offset-2">
+    <div style="display: block;">
+      <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+              [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType" ></canvas>
+    </div>
+  </div>
+</div>
+<taskana-report [reportData]="reportData"></taskana-report>

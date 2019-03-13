@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RestConnectorService} from '../services/restConnector/rest-connector.service';
 import {ReportData} from 'app/monitor/models/report-data';
+import {RequestInProgressService} from '../../services/requestInProgress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-monitor-tasks',
@@ -15,16 +16,22 @@ export class TasksComponent implements OnInit {
   pieChartType = 'pie';
   reportData: ReportData
 
-  constructor(private restConnectorService: RestConnectorService) {
+  constructor(
+    private restConnectorService: RestConnectorService,
+    private requestInProgressService: RequestInProgressService) {
   }
 
-  ngOnInit() {
-    this.restConnectorService.getTaskStatusReport().subscribe((data: ReportData) => {
-      this.reportData = data;
-      this.pieChartLabels = data.meta.header;
-      data.sumRow[0].cells.forEach(c => this.pieChartData.push(c));
-
+  async ngOnInit() {
+    this.requestInProgressService.setRequestInProgress(true);
+    this.reportData = await this.restConnectorService.getTaskStatusReport().toPromise()
+    this.pieChartLabels = this.reportData.meta.header;
+    this.reportData.sumRow[0].cells.forEach(c => {
+      this.pieChartData.push(c);
     })
+    this.requestInProgressService.setRequestInProgress(false);
+  }
 
+  getTitle(): string {
+    return 'Tasks status grouped by domain';
   }
 }

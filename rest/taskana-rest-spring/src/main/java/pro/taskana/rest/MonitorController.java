@@ -63,15 +63,15 @@ public class MonitorController {
     @GetMapping(path = "/tasks-workbasket-report")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<?> getTasksWorkbasketReport(
-        @RequestParam(value = "daysInPast") int daysInPast,
         @RequestParam(value = "states") List<TaskState> states)
         throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("Entry to getTasksWorkbasketReport()");
 
         ReportResource report = reportAssembler.toResource(
             taskMonitorService.createWorkbasketReportBuilder()
-                .stateIn(states)
-                .withColumnHeaders(getTasksWorkbasketsTimeInterval(daysInPast)).buildReport(), daysInPast, states);
+                .withColumnHeaders(getRangeTimeInterval())
+                .buildReport(), states);
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", report);
         }
@@ -92,7 +92,7 @@ public class MonitorController {
         ReportResource report = reportAssembler.toResource(
             taskMonitorService.createWorkbasketReportBuilder()
                 .stateIn(states)
-                .withColumnHeaders(getTasksWorkbasketsTimeInterval(daysInPast)).buildPlannedDateBasedReport(),
+                .withColumnHeaders(getDateTimeInterval(daysInPast)).buildPlannedDateBasedReport(),
             daysInPast, states);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasksWorkbasketPlannedDateReport(), returning {}", report);
@@ -111,7 +111,7 @@ public class MonitorController {
 
         ReportResource report = reportAssembler.toResource(
             taskMonitorService.createClassificationReportBuilder()
-                .withColumnHeaders(getTaskClassificationTimeInterval())
+                .withColumnHeaders(getRangeTimeInterval())
                 .buildReport());
 
         if (LOGGER.isDebugEnabled()) {
@@ -136,7 +136,7 @@ public class MonitorController {
                     .buildReport()));
     }
 
-    private List<TimeIntervalColumnHeader> getTaskClassificationTimeInterval() {
+    private List<TimeIntervalColumnHeader> getRangeTimeInterval() {
         return Stream.concat(Stream.concat(
             Stream.of(new TimeIntervalColumnHeader.Range(Integer.MIN_VALUE, -10),
                 new TimeIntervalColumnHeader.Range(-10, -5)
@@ -150,7 +150,7 @@ public class MonitorController {
             .collect(Collectors.toList());
     }
 
-    private List<TimeIntervalColumnHeader> getTasksWorkbasketsTimeInterval(int daysInPast) {
+    private List<TimeIntervalColumnHeader> getDateTimeInterval(int daysInPast) {
 
         List<TimeIntervalColumnHeader> columnHeaders = new ArrayList<>();
         for (int i = 0; i <= daysInPast; i++) {
