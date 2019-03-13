@@ -8,8 +8,11 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.impl.report.header.TaskStatusColumnHeader;
 import pro.taskana.impl.report.item.TaskQueryItem;
+import pro.taskana.impl.report.structure.Report;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.TaskStatusReport;
 
@@ -55,6 +58,12 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
             this.taskanaEngine.returnConnection();
             LOGGER.debug("exit from buildReport().");
         }
+    }
+
+    @Override
+    public Report<TaskQueryItem, TaskStatusColumnHeader> buildPlannedDateBasedReport()
+        throws NotAuthorizedException, InvalidArgumentException {
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
 }

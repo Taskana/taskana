@@ -60,6 +60,25 @@ public class WorkbasketReportBuilderImpl
     }
 
     @Override
+    public WorkbasketReport buildPlannedDateBasedReport() throws NotAuthorizedException, InvalidArgumentException {
+        LOGGER.debug("entry to buildPlannedDateReport(), this = {}", this);
+        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
+        try {
+            this.taskanaEngine.openConnection();
+            WorkbasketReport report = new WorkbasketReport(this.columnHeaders);
+            List<MonitorQueryItem> monitorQueryItems = this.taskMonitorMapper.getTaskCountOfWorkbasketsBasedOnPlannedDate(
+                    this.workbasketIds, this.states, this.categories, this.domains, this.classificationIds,
+                    this.excludedClassificationIds, this.customAttributeFilter, this.combinedClassificationFilter);
+            report.addItems(monitorQueryItems,
+                    new DaysToWorkingDaysPreProcessor<>(this.columnHeaders, this.inWorkingDays));
+            return report;
+        } finally {
+            this.taskanaEngine.returnConnection();
+            LOGGER.debug("exit from buildPlannedDateReport().");
+        }
+    }
+
+    @Override
     public WorkbasketReport.Builder combinedClassificationFilterIn(
         List<CombinedClassificationFilter> combinedClassificationFilter) {
         this.combinedClassificationFilter = combinedClassificationFilter;
