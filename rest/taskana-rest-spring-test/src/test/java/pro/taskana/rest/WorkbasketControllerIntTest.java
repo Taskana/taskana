@@ -117,17 +117,12 @@ public class WorkbasketControllerIntTest {
             new ParameterizedTypeReference<PagedResources<WorkbasketSummaryResource>>() {
             });
         assertEquals(5, response.getBody().getContent().size());
-        assertEquals("USER_1_1", response.getBody().getContent().iterator().next().key);
+        assertEquals("USER_1_1", response.getBody().getContent().iterator().next().getKey());
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith(parameters));
-        assertNotNull(response.getBody().getLink("allWorkbaskets"));
-        assertTrue(response.getBody()
-            .getLink("allWorkbaskets")
-            .getHref()
-            .endsWith("/v1/workbaskets"));
         assertNotNull(response.getBody().getLink(Link.REL_FIRST));
         assertNotNull(response.getBody().getLink(Link.REL_LAST));
         assertNotNull(response.getBody().getLink(Link.REL_NEXT));
@@ -150,7 +145,7 @@ public class WorkbasketControllerIntTest {
         assertEquals(HttpStatus.OK, response2.getStatusCode());
         Iterator<DistributionTargetResource> iterator = response2.getBody().getContent().iterator();
         while (iterator.hasNext()) {
-            assertNotEquals("WBI:100000000000000000000000000000000007", iterator.next().workbasketId);
+            assertNotEquals("WBI:100000000000000000000000000000000007", iterator.next().getWorkbasketId());
         }
     }
 

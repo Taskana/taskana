@@ -2,8 +2,10 @@ package pro.taskana.rest.resource;
 
 import org.springframework.hateoas.ResourceSupport;
 
+import pro.taskana.ClassificationSummary;
+
 /**
- * Resource class for {@link pro.taskana.Classification}.
+ * Resource class for {@link pro.taskana.ClassificationSummary}.
  */
 public class ClassificationSummaryResource extends ResourceSupport {
 
@@ -24,6 +26,29 @@ public class ClassificationSummaryResource extends ResourceSupport {
     public String custom6;
     public String custom7;
     public String custom8;
+
+    ClassificationSummaryResource() {
+    }
+
+    public ClassificationSummaryResource(ClassificationSummary classification) {
+        classificationId = classification.getId();
+        key = classification.getKey();
+        parentId = classification.getParentId();
+        parentKey = classification.getParentKey();
+        category = classification.getCategory();
+        type = classification.getType();
+        domain = classification.getDomain();
+        name = classification.getName();
+        priority = classification.getPriority();
+        custom1 = classification.getCustom1();
+        custom2 = classification.getCustom2();
+        custom3 = classification.getCustom3();
+        custom4 = classification.getCustom4();
+        custom5 = classification.getCustom5();
+        custom6 = classification.getCustom6();
+        custom7 = classification.getCustom7();
+        custom8 = classification.getCustom8();
+    }
 
     public String getClassificationId() {
         return classificationId;

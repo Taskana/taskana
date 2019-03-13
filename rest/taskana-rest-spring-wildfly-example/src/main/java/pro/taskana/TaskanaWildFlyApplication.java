@@ -1,14 +1,5 @@
 package pro.taskana;
 
-import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +10,12 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
-
 import pro.taskana.jobs.TransactionalJobsConfiguration;
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.ldap.LdapClient;
@@ -35,6 +24,14 @@ import pro.taskana.rest.AccessIdController;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.WebMvcConfig;
 import pro.taskana.sampledata.SampleDataGenerator;
+
+import javax.annotation.PostConstruct;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Example Application showing the implementation of taskana-rest-spring for jboss application server.

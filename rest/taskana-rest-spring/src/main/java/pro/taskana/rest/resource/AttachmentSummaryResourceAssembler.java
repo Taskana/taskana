@@ -1,6 +1,7 @@
 package pro.taskana.rest.resource;
 
-import org.springframework.beans.BeanUtils;
+import java.util.List;
+
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -20,19 +21,12 @@ public class AttachmentSummaryResourceAssembler
 
     @Override
     public AttachmentSummaryResource toResource(AttachmentSummary attachmentSummary) {
-        AttachmentSummaryResource resource = createResourceWithId(attachmentSummary.getId(),
-                attachmentSummary);
-        BeanUtils.copyProperties(attachmentSummary, resource);
-        if (attachmentSummary.getCreated() != null) {
-            resource.setCreated(attachmentSummary.getCreated().toString());
-        }
-        if (attachmentSummary.getModified() != null) {
-            resource.setModified(attachmentSummary.getModified().toString());
-        }
-        if (attachmentSummary.getReceived() != null) {
-            resource.setReceived(attachmentSummary.getReceived().toString());
-        }
-        resource.setAttachmentId(attachmentSummary.getId());
-        return resource;
+        return new AttachmentSummaryResource(attachmentSummary);
+    }
+
+    public List<AttachmentSummaryResource> toResources(
+        List<AttachmentSummary> attachmentSummaries) {
+        List<AttachmentSummaryResource> resources = super.toResources(attachmentSummaries);
+        return resources;
     }
 }

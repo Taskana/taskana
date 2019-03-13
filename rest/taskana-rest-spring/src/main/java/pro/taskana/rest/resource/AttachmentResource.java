@@ -5,12 +5,14 @@ import java.util.Map;
 
 import org.springframework.hateoas.ResourceSupport;
 
+import pro.taskana.Attachment;
 import pro.taskana.ObjectReference;
 
 /**
  * Resource class for {@link pro.taskana.Attachment}.
  */
 public class AttachmentResource extends ResourceSupport {
+
     private String attachmentId;
     private String taskId;
     private String created;
@@ -19,6 +21,21 @@ public class AttachmentResource extends ResourceSupport {
     private ObjectReference objectReference;
     private String channel;
     private String received;
+
+    public AttachmentResource() {
+    }
+
+    public AttachmentResource(Attachment attachment) {
+        this.attachmentId = attachment.getId();
+        this.taskId = attachment.getTaskId();
+        this.created = attachment.getCreated() != null ? attachment.getCreated().toString() : null;
+        this.modified = attachment.getModified() != null ? attachment.getModified().toString() : null;
+        this.classificationSummaryResource = new ClassificationSummaryResource(attachment.getClassificationSummary());
+        this.objectReference = attachment.getObjectReference();
+        this.channel = attachment.getChannel();
+        this.received = attachment.getReceived() != null ? attachment.getReceived().toString() : null;
+        this.customAttributes = attachment.getCustomAttributes();
+    }
 
     public String getCreated() {
         return created;

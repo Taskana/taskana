@@ -3,11 +3,14 @@ package pro.taskana.rest.resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.hateoas.ResourceSupport;
 
 import pro.taskana.ObjectReference;
+import pro.taskana.Task;
 import pro.taskana.TaskState;
+import pro.taskana.exceptions.InvalidArgumentException;
 
 /**
  * Resource class for {@link pro.taskana.Task}.
@@ -56,6 +59,64 @@ public class TaskResource extends ResourceSupport {
     private String custom14;
     private String custom15;
     private String custom16;
+
+    public TaskResource() {
+    }
+
+    public TaskResource(Task task) throws InvalidArgumentException {
+
+        taskId = task.getId();
+        externalId = task.getExternalId();
+        created = task.getCreated() != null ? task.getCreated().toString() : null;
+        claimed = task.getClaimed() != null ? task.getClaimed().toString() : null;
+        completed = task.getCompleted() != null ? task.getCompleted().toString() : null;
+        modified = task.getModified() != null ? task.getModified().toString() : null;
+        planned = task.getPlanned() != null ? task.getPlanned().toString() : null;
+        due = task.getDue() != null ? task.getDue().toString() : null;
+        name = task.getName();
+        creator = task.getCreator();
+        description = task.getDescription();
+        note = task.getNote();
+        priority = task.getPriority();
+        state = task.getState();
+        classificationSummaryResource = new ClassificationSummaryResource(task.getClassificationSummary());
+        workbasketSummaryResource = new WorkbasketSummaryResource(task.getWorkbasketSummary());
+        businessProcessId = task.getBusinessProcessId();
+        parentBusinessProcessId = task.getParentBusinessProcessId();
+        owner = task.getOwner();
+        primaryObjRef = task.getPrimaryObjRef();
+        isRead = task.isRead();
+        isTransferred = task.isTransferred();
+        customAttributes = task.getCustomAttributes().entrySet().stream()
+            .map(e -> new TaskResource.CustomAttribute(e.getKey(), e.getValue()))
+            .collect(Collectors.toList());
+        callbackInfo = task.getCallbackInfo().entrySet().stream()
+            .map(e -> new TaskResource.CustomAttribute(e.getKey(), e.getValue()))
+            .collect(Collectors.toList());
+
+        attachments =
+            task.getAttachments()
+                .stream()
+                .map(attachment -> new AttachmentResource(attachment))
+                .collect(Collectors.toList());
+        custom1 = task.getCustomAttribute("1");
+        custom2 = task.getCustomAttribute("2");
+        custom3 = task.getCustomAttribute("3");
+        custom4 = task.getCustomAttribute("4");
+        custom5 = task.getCustomAttribute("5");
+        custom6 = task.getCustomAttribute("6");
+        custom7 = task.getCustomAttribute("7");
+        custom8 = task.getCustomAttribute("8");
+        custom9 = task.getCustomAttribute("9");
+        custom10 = task.getCustomAttribute("10");
+        custom11 = task.getCustomAttribute("11");
+        custom12 = task.getCustomAttribute("12");
+        custom13 = task.getCustomAttribute("13");
+        custom14 = task.getCustomAttribute("14");
+        custom15 = task.getCustomAttribute("15");
+        custom16 = task.getCustomAttribute("16");
+
+    }
 
     public String getTaskId() {
         return taskId;

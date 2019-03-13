@@ -247,23 +247,21 @@ public class WorkbasketControllerRestDocumentation {
                 accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom11")),
             fieldWithPath("_embedded.accessItems[].permCustom12").description(
                 accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom12")),
-            fieldWithPath("_embedded.accessItems[]._links.workbasket.href").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems._links.workbasket.href")),
             fieldWithPath("_links.self.href").ignored(),
             fieldWithPath("_links.workbasket.href").ignored()
         };
 
         allWorkbasketAccessItemsFieldDescriptors = new FieldDescriptor[] {
             subsectionWithPath("_embedded.accessItems").description("An array of <<access-item, Access Items>>"),
-            fieldWithPath("_links.workbasket.href").description("Link to the workbasket"),
-            fieldWithPath("_links.self.href").ignored()
+            fieldWithPath("_links.self.href").ignored(),
+            fieldWithPath("_links.workbasket.href").ignored()
         };
 
         allDistributionTargetsFieldDescriptors = new FieldDescriptor[] {
             subsectionWithPath("_embedded.distributionTargets").description(
                 "An array of <<workbasket-subset, workbasket subsets>>"),
-            fieldWithPath("_links.workbasket.href").description("Link to the workbasket"),
-            fieldWithPath("_links.self.href").ignored()
+            fieldWithPath("_links.self.href").ignored(),
+            fieldWithPath("_links.workbasket.href").ignored()
         };
 
         createWorkbasketFieldDescriptors = new FieldDescriptor[] {
