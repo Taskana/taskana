@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { RestConnectorService } from 'app/monitor/services/restConnector/rest-connector.service';
-import { ReportData } from '../models/report-data';
-import { ChartData } from 'app/monitor/models/chart-data';
-import { ChartColorsDefinition } from '../models/chart-colors';
+import {Component, OnInit} from '@angular/core';
+import {RestConnectorService} from 'app/monitor/services/restConnector/rest-connector.service';
+import {ReportData} from '../models/report-data';
+import {ChartData} from 'app/monitor/models/chart-data';
+import {ChartColorsDefinition} from '../models/chart-colors';
+import {RequestInProgressService} from '../../services/requestInProgress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-monitor-classification-tasks',
@@ -22,14 +23,20 @@ export class ClassificationTasksComponent implements OnInit {
   };
   lineChartColors = ChartColorsDefinition.getColors();
 
-  constructor(private restConnectorService: RestConnectorService) {
+  constructor(
+    private restConnectorService: RestConnectorService,
+    private requestInProgressService: RequestInProgressService) {
   }
 
-  ngOnInit() {
-    this.restConnectorService.getClassificationTasksReport().subscribe((data: ReportData) => {
-      this.reportData = data;
-      this.lineChartData = this.restConnectorService.getChartData(data);
-      this.lineChartLabels = this.restConnectorService.getChartHeaders(data);
-    })
+  async ngOnInit() {
+    this.requestInProgressService.setRequestInProgress(true);
+    this.reportData = await this.restConnectorService.getClassificationTasksReport().toPromise()
+    this.lineChartData = this.restConnectorService.getChartData(this.reportData);
+    this.lineChartLabels = this.reportData.meta.header;
+    this.requestInProgressService.setRequestInProgress(false);
+  }
+
+  getTitle(): string {
+    return 'Tasks grouped by classification, querying by due date';
   }
 }

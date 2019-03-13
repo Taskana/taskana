@@ -44,7 +44,7 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   async getTask(id: string) {
     this.requestInProgress = true;
-    this.task = await this.taskService.getTask(id).toPromise()
+    this.task = await this.taskService.getTask(id).toPromise();
     const classification = await this.classificationService.getClassification
       (this.task.classificationSummaryResource.classificationId).toPromise();
     this.address = this.extractUrl(classification.applicationEntryPoint) || `${this.address}/?q=${this.task.name}`;

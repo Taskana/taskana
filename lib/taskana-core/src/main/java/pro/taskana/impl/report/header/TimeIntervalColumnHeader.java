@@ -89,6 +89,12 @@ public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
                 return "<" + this.getUpperAgeLimit();
             } else if (this.getUpperAgeLimit() == Integer.MAX_VALUE) {
                 return ">" + this.getLowerAgeLimit();
+            } else if (this.getLowerAgeLimit() == -1) {
+                return "-1 day";
+            } else if (this.getLowerAgeLimit() == 1) {
+                return "+1 day";
+            } else if (this.getLowerAgeLimit() == 0) {
+                return "today";
             } else if (this.getLowerAgeLimit() == this.getUpperAgeLimit()) {
                 return this.getUpperAgeLimit() + "";
             } else if (this.getLowerAgeLimit() != this.getUpperAgeLimit()) {

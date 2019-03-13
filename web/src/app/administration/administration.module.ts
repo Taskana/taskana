@@ -10,8 +10,8 @@ import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 /**
  * Components
  */
-import {WorkbasketListComponent} from './workbasket/master/list/workbasket-list.component';
-import {WorkbasketListToolbarComponent} from './workbasket/master/list/workbasket-list-toolbar/workbasket-list-toolbar.component'
+import {WorkbasketListComponent} from './workbasket/master/workbasket-list.component';
+import {WorkbasketListToolbarComponent} from './workbasket/master/workbasket-list-toolbar/workbasket-list-toolbar.component'
 import {WorkbasketDetailsComponent} from './workbasket/details/workbasket-details.component';
 import {WorkbasketInformationComponent} from './workbasket/details/information/workbasket-information.component';
 import {DistributionTargetsComponent} from './workbasket/details/distribution-targets/distribution-targets.component';

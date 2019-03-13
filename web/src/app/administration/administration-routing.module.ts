@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { WorkbasketListComponent } from 'app/administration/workbasket/master/list/workbasket-list.component';
+import { WorkbasketListComponent } from 'app/administration/workbasket/master/workbasket-list.component';
 import { WorkbasketDetailsComponent } from 'app/administration/workbasket/details/workbasket-details.component';
 import { MasterAndDetailComponent } from 'app/shared/master-and-detail/master-and-detail.component';
 import { ClassificationListComponent } from 'app/administration/classification/master/list/classification-list.component';
