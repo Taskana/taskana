@@ -1,7 +1,10 @@
 package pro.taskana.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -13,9 +16,6 @@ import pro.taskana.impl.report.preprocessor.DaysToWorkingDaysPreProcessor;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.ClassificationReport;
 import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
-import pro.taskana.report.Report;
-
-import java.util.List;
 
 /**
  * The implementation of ClassificationReportBuilder.
@@ -48,10 +48,10 @@ public class ClassificationReportBuilderImpl
             this.taskanaEngine.openConnection();
             ClassificationReport report = new ClassificationReport(this.columnHeaders);
             List<MonitorQueryItem> monitorQueryItems = this.taskMonitorMapper.getTaskCountOfClassifications(
-                    this.workbasketIds, this.states, this.categories, this.domains, this.classificationIds,
-                    this.excludedClassificationIds, this.customAttributeFilter);
+                this.workbasketIds, this.states, this.categories, this.domains, this.classificationIds,
+                this.excludedClassificationIds, this.customAttributeFilter);
             report.addItems(monitorQueryItems,
-                    new DaysToWorkingDaysPreProcessor<>(this.columnHeaders, this.inWorkingDays));
+                new DaysToWorkingDaysPreProcessor<>(this.columnHeaders, this.inWorkingDays));
             return report;
         } finally {
             this.taskanaEngine.returnConnection();
@@ -67,21 +67,16 @@ public class ClassificationReportBuilderImpl
             this.taskanaEngine.openConnection();
             DetailedClassificationReport report = new DetailedClassificationReport(this.columnHeaders);
             List<DetailedMonitorQueryItem> detailedMonitorQueryItems = this.taskMonitorMapper
-                    .getTaskCountOfDetailedClassifications(this.workbasketIds, this.states, this.categories, this.domains,
-                            this.classificationIds, this.excludedClassificationIds, this.customAttributeFilter);
+                .getTaskCountOfDetailedClassifications(this.workbasketIds, this.states, this.categories, this.domains,
+                    this.classificationIds, this.excludedClassificationIds, this.customAttributeFilter);
 
             report.addItems(detailedMonitorQueryItems,
-                    new DaysToWorkingDaysPreProcessor<>(this.columnHeaders, this.inWorkingDays));
+                new DaysToWorkingDaysPreProcessor<>(this.columnHeaders, this.inWorkingDays));
 
             return report;
         } finally {
             this.taskanaEngine.returnConnection();
             LOGGER.debug("exit from buildDetailedReport().");
         }
-    }
-
-    @Override
-    public Report<MonitorQueryItem, TimeIntervalColumnHeader> buildPlannedDateBasedReport() throws NotAuthorizedException, InvalidArgumentException {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 }

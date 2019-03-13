@@ -52,11 +52,20 @@ public class ReportAssembler {
         return resource;
     }
 
+    public ReportResource toResource(WorkbasketReport report, List<TaskState> states)
+        throws NotAuthorizedException, InvalidArgumentException {
+        ReportResource resource = toReportResource(report);
+        resource.add(
+            linkTo(methodOn(MonitorController.class).getTasksWorkbasketReport(states))
+                .withSelfRel().expand());
+        return resource;
+    }
+
     public ReportResource toResource(WorkbasketReport report, int daysInPast, List<TaskState> states)
         throws NotAuthorizedException, InvalidArgumentException {
         ReportResource resource = toReportResource(report);
         resource.add(
-            linkTo(methodOn(MonitorController.class).getTasksWorkbasketReport(daysInPast, states))
+            linkTo(methodOn(MonitorController.class).getTasksWorkbasketPlannedDateReport(daysInPast, states))
                 .withSelfRel().expand());
         return resource;
     }

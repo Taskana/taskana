@@ -36,7 +36,6 @@ public class WorkbasketReport extends Report<MonitorQueryItem, TimeIntervalColum
         /**
          * buildPlannedDateBasedReport is querying grouping by plannedDate instead of due date.
          */
-        @Override
         WorkbasketReport buildPlannedDateBasedReport() throws NotAuthorizedException, InvalidArgumentException;
 
         /**

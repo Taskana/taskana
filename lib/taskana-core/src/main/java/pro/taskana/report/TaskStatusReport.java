@@ -7,8 +7,8 @@ import java.util.stream.Stream;
 import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.item.TaskQueryItem;
 import pro.taskana.impl.report.header.TaskStatusColumnHeader;
+import pro.taskana.impl.report.item.TaskQueryItem;
 import pro.taskana.impl.report.structure.Report;
 
 /**
@@ -29,6 +29,9 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
      */
     public interface Builder extends Report.Builder<TaskQueryItem, TaskStatusColumnHeader> {
 
+        @Override
+        TaskStatusReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
+
         /**
          * Adds a list of states to the builder. The created report contains only tasks with a state in this list.
          *
@@ -46,8 +49,5 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
          * @return the Builder
          */
         Builder domainIn(List<String> domains);
-
-        @Override
-        TaskStatusReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
     }
 }

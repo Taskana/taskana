@@ -1,11 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'environments/environment';
-import { Observable } from 'rxjs';
-import { ReportData } from '../../models/report-data';
-import { ChartData } from 'app/monitor/models/chart-data';
-import { TaskanaDate } from 'app/shared/util/taskana.date';
-import { map } from 'rxjs/internal/operators/map';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {environment} from 'environments/environment';
+import {Observable} from 'rxjs';
+import {ReportData} from '../../models/report-data';
+import {ChartData} from 'app/monitor/models/chart-data';
 
 const monitorUrl = '/v1/monitor/';
 
@@ -21,9 +19,14 @@ export class RestConnectorService {
       + 'tasks-status-report?states=READY,CLAIMED,COMPLETED');
   }
 
-  getWorkbasketStatistics(): Observable<ReportData> {
+  getWorkbasketStatisticsQueryingByDueDate(): Observable<ReportData> {
     return this.httpClient.get<ReportData>(environment.taskanaRestUrl
-      + monitorUrl + 'tasks-workbasket-planned-date-report?daysInPast=5&states=READY,CLAIMED,COMPLETED');
+      + monitorUrl + 'tasks-workbasket-report?states=READY,CLAIMED,COMPLETED');
+  }
+
+  getWorkbasketStatisticsQueryingByPlannedDate(): Observable<ReportData> {
+    return this.httpClient.get<ReportData>(environment.taskanaRestUrl
+      + '/v1/monitor/tasks-workbasket-planned-date-report?daysInPast=7&states=READY,CLAIMED,COMPLETED');
   }
 
   getClassificationTasksReport(): Observable<ReportData> {
@@ -37,29 +40,11 @@ export class RestConnectorService {
   }
 
   getChartData(source: ReportData): Array<ChartData> {
-    const result = new Array<ChartData>();
-
-    Object.keys(source.rows).forEach(key => {
+    return source.rows.map(row => {
       const rowData = new ChartData();
-
-      rowData.label = key;
-      rowData.data = new Array<number>();
-
-      source.meta.header.forEach((headerValue: string) => {
-        rowData.data.push(source.rows[key].cells[headerValue]);
-      });
-
-      result.push(rowData)
+      rowData.label = row.desc[0];
+      rowData.data = row.cells;
+      return rowData;
     });
-
-    return result;
-  }
-
-  getChartHeaders(source: ReportData): Array<string> {
-    const result = new Array<string>();
-    source.meta.header.forEach((header: string) => {
-      result.push(header);
-    })
-    return result;
   }
 }

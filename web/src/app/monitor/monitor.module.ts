@@ -12,13 +12,20 @@ import {SharedModule} from '../shared/shared.module';
 import {ReportComponent} from './report/report.component';
 import {MonitorComponent} from './monitor.component';
 import {TasksComponent} from './tasks/tasks.component';
-import {WorkbasketComponent} from './workbasket/workbasket.component';
 import {ClassificationTasksComponent} from './classification-tasks/classification-tasks.component';
 import {TimestampComponent} from './timestamp/timestamp.component';
 
 import {RestConnectorService} from './services/restConnector/rest-connector.service';
 
 import {MapToIterable} from '../shared/pipes/mapToIterable/mapToIterable';
+import {MonitorWorkbasketsComponent} from './workbasket/monitor-workbaskets.component';
+import {MonitorWorkbasketPlannedDateComponent} from './workbasket/workbasket-planned-date/monitor-workbasket-planned-date.component';
+import {MonitorWorkbasketDueDateComponent} from './workbasket/monitor-workbasket-due-date/monitor-workbasket-due-date.component';
+import {
+  MonitorWorkbasketQuerySwitcherComponent
+} from './workbasket/monitor-workbasket-query-switcher/monitor-workbasket-query-switcher.component';
+
+
 
 const MODULES = [
   CommonModule,
@@ -32,12 +39,15 @@ const MODULES = [
   SharedModule
 ];
 const DECLARATIONS = [
-  TasksComponent,
-  WorkbasketComponent,
   ReportComponent,
   MonitorComponent,
+  TimestampComponent,
+  MonitorWorkbasketsComponent,
+  MonitorWorkbasketPlannedDateComponent,
+  MonitorWorkbasketDueDateComponent,
+  MonitorWorkbasketQuerySwitcherComponent,
+  TasksComponent,
   ClassificationTasksComponent,
-  TimestampComponent
 ];
 
 @NgModule({
