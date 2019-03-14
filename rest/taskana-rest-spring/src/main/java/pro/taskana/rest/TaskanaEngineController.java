@@ -1,17 +1,14 @@
 package pro.taskana.rest;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.impl.TaskanaEngineImpl;
@@ -19,18 +16,24 @@ import pro.taskana.rest.resource.TaskanaUserInfoResource;
 import pro.taskana.rest.resource.VersionResource;
 import pro.taskana.security.CurrentUserContext;
 
+import java.util.List;
+
 /**
  * Controller for TaskanaEngine related tasks.
  */
 @RestController
 public class TaskanaEngineController {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineController.class);
 
-    @Autowired
     TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-    @Autowired
-    TaskanaEngineImpl taskanaEngineImpl;
+    TaskanaEngine taskanaEngine;
+
+    TaskanaEngineController(TaskanaEngineConfiguration taskanaEngineConfiguration, TaskanaEngine taskanaEngine) {
+        this.taskanaEngineConfiguration = taskanaEngineConfiguration;
+        this.taskanaEngine = taskanaEngine;
+    }
 
     @Value("${version:Local build}")
     private String version;
@@ -43,7 +46,8 @@ public class TaskanaEngineController {
     @GetMapping(path = "/v1/classification-categories", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<String>> getClassificationCategories(String type) {
         if (type != null) {
-            return new ResponseEntity<>(taskanaEngineConfiguration.getClassificationCategoriesByType(type), HttpStatus.OK);
+            return new ResponseEntity<>(taskanaEngineConfiguration.getClassificationCategoriesByType(type),
+                HttpStatus.OK);
         }
         return new ResponseEntity<>(taskanaEngineConfiguration.getAllClassificationCategories(), HttpStatus.OK);
     }
@@ -60,7 +64,7 @@ public class TaskanaEngineController {
         resource.setUserId(CurrentUserContext.getUserid());
         resource.setGroupIds(CurrentUserContext.getGroupIds());
         for (TaskanaRole role : taskanaEngineConfiguration.getRoleMap().keySet()) {
-            if (taskanaEngineImpl.isUserInRole(role)) {
+            if (taskanaEngine.isUserInRole(role)) {
                 resource.getRoles().add(role);
             }
         }
@@ -73,7 +77,8 @@ public class TaskanaEngineController {
 
     @GetMapping(path = "/v1/history-provider-enabled", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Boolean> getIsHistoryProviderEnabled() {
-        return new ResponseEntity<>(taskanaEngineImpl.getHistoryEventProducer().isEnabled(), HttpStatus.OK);
+        return new ResponseEntity<>(((TaskanaEngineImpl) taskanaEngine).getHistoryEventProducer().isEnabled(),
+            HttpStatus.OK);
     }
 
     /**
