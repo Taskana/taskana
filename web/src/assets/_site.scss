@@ -88,6 +88,13 @@
     }
 }
 
+.dark-green{
+  color: $dark-green;
+  & svg {
+    fill: $dark-green;
+  }
+}
+
 .grey {
     color:$grey;
     & svg {
@@ -320,8 +327,8 @@ taskana-task-details, taskana-classification-details, taskana-access-items-manag
 }
 
 taskana-task-query {
-    & .panel{ 
-        &> .panel-body { 
+    & .panel{
+        &> .panel-body {
             height: calc(100vh - 105px);
             max-height: calc(100vh - 105px);
         }
