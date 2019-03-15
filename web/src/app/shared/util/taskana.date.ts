@@ -1,12 +1,12 @@
 import { DatePipe } from '@angular/common';
 
 export class TaskanaDate {
+  public static dateFormat = 'yyyy-MM-ddTHH:mm:ss.sss';
   public static getDate(): string {
-    const dateFormat = 'yyyy-MM-ddTHH:mm:ss.sss';
     const dateLocale = 'en-US';
     const datePipe = new DatePipe(dateLocale);
 
-    return datePipe.transform(Date.now(), dateFormat) + 'Z';
+    return datePipe.transform(Date.now(), this.dateFormat) + 'Z';
   }
 
   public static convertSimpleDate(date: Date): string {
@@ -20,7 +20,7 @@ export class TaskanaDate {
     return this.applyTimeZone(date);
   }
 
-  public static applyTimeZone(date: string): string | null {
+  private static applyTimeZone(date: string): string | null {
     const dateFormat = 'yyyy-MM-dd HH:mm:ss';
     const dateLocale = 'en-US';
     const datePipe = new DatePipe(dateLocale);
