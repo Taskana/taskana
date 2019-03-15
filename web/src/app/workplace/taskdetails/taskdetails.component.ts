@@ -131,29 +131,6 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['./'], {relativeTo: this.route.parent});
   }
 
-
-  private applyTaskDatesTimeZone(task: Task): Task {
-    if (task.due) {
-      task.due = TaskanaDate.applyTimeZone(task.due);
-    }
-    if (task.modified) {
-      task.modified = TaskanaDate.applyTimeZone(task.modified);
-    }
-    if (task.completed) {
-      task.completed = TaskanaDate.applyTimeZone(task.completed);
-    }
-    if (task.planned) {
-      task.planned = TaskanaDate.applyTimeZone(task.planned);
-    }
-    if (task.claimed) {
-      task.claimed = TaskanaDate.applyTimeZone(task.claimed);
-    }
-    if (task.created) {
-      task.created = TaskanaDate.applyTimeZone(task.created);
-    }
-    return task;
-  }
-
   private onSave() {
     this.currentId === 'new-task' ? this.createTask() : this.updateTask();
   }
@@ -199,8 +176,6 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.taskClone.customAttributes = this.task.customAttributes.slice(0);
     this.taskClone.callbackInfo = this.task.callbackInfo.slice(0);
     this.taskClone.primaryObjRef = {...this.task.primaryObjRef};
-    this.taskClone = this.applyTaskDatesTimeZone(this.taskClone);
-
   }
 
   ngOnDestroy(): void {
