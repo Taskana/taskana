@@ -1,4 +1,5 @@
-<div class="input-icon-wrap">
+<div class="input-group">
+
   <input type="text"
           placeholder="{{placeholder}}"
           class="form-control input-with-icon"
@@ -7,6 +8,7 @@
           (bsValueChange)="dateChange($event)"
           [bsValue]="valueDate"
           name="{{name}}"
-          id="{{id}}">
-  <span class="input-icon"><span class="material-icons md-24 black">date_range</span></span>
+          id="{{id}}"
+          #datePickerElement="bsDatepicker">
+  <span class="input-icon-addon material-icons md-24 dark-green" (click)="datePickerElement.toggle()">date_range</span>
 </div>

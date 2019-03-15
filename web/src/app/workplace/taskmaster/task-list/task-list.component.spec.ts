@@ -8,6 +8,8 @@ import { Routes } from '@angular/router';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { SvgIconComponent, SvgIconRegistryService } from 'angular-svg-icon';
+import {DateTimeZonePipe} from '../../../shared/pipes/date-time-zone/date-time-zone.pipe';
+
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -30,7 +32,12 @@ describe('TaskListComponent', () => {
         FormsModule,
         RouterTestingModule.withRoutes(routes),
         HttpClientModule],
-      declarations: [TaskListComponent, DummyDetailComponent, SvgIconComponent],
+      declarations: [
+        TaskListComponent,
+        DummyDetailComponent,
+        SvgIconComponent,
+        DateTimeZonePipe
+      ],
       providers: [
         WorkplaceService,
         ChangeDetectorRef,

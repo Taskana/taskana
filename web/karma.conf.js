@@ -17,7 +17,7 @@ module.exports = function (config) {
     ],
     client: {
       jasmine: {
-        //seed: 80185,  // Specify if you need to re-run the same seed
+        // seed: '56124',  // Specify if you need to re-run the same seed
       },
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },

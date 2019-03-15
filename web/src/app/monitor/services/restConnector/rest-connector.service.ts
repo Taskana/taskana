@@ -14,14 +14,7 @@ export class RestConnectorService {
   }
 
   getTaskStatusReport(): Observable<ReportData> {
-    return this.httpClient.get<ReportData>(environment.taskanaRestUrl + '/v1/monitor/tasks-status-report?states=READY,CLAIMED,COMPLETED')
-    .pipe(map(
-      (response: ReportData) => {
-        if (response.meta.date) {
-          response.meta.date = TaskanaDate.applyTimeZone(response.meta.date);
-         }
-        return response;
-      }));
+    return this.httpClient.get<ReportData>(environment.taskanaRestUrl + '/v1/monitor/tasks-status-report?states=READY,CLAIMED,COMPLETED');
   }
 
   getWorkbasketStatistics(): Observable<ReportData> {

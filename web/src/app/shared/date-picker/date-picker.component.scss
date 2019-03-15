@@ -1,10 +1,10 @@
-.input-icon-wrap {
+.input-group {
   display: flex;
   flex-direction: row;
-  border: 1px solid #ccc;
   border-radius: 4px;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   height: 35px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .input-with-icon {
@@ -12,7 +12,6 @@
   height: 33px;
 }
 
-.input-icon span {
-  padding-top: 5px;
-  padding-right: 6px;
+.input-icon-addon {
+  padding-top: 4px;
 }

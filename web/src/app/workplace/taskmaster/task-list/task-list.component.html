@@ -21,7 +21,7 @@
           <dd data-toggle="tooltip" title="{{task.state}}">{{task.state}}</dd>
         </dl>
         <dl class="pull-right padding-right">
-          <i data-toggle="tooltip" title="{{task.due}}">Due: {{displayDate(task.due)}}</i>
+          <i data-toggle="tooltip" title="{{task.due}}">Due: {{task.due | dateTimeZone}}</i>
         </dl>
 
       </div>

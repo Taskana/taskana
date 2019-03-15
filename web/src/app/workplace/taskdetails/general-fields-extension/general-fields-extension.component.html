@@ -2,12 +2,12 @@
   <div class="col-md-6">
     <div *ngIf="task.taskId" class="form-group">
       <label for="task-modified" class="control-label">Modification date</label>
-      <input type="text" disabled class="form-control" id="task-modified" placeholder="Modified" [(ngModel)]="task.modified"
+      <input type="text" disabled class="form-control" id="task-modified" placeholder="Modified" [value]="task.modified | dateTimeZone"
         name="task.modified">
     </div>
     <div *ngIf="task.taskId" class="form-group">
       <label for="task-completed" class="control-label">Completion date</label>
-      <input type="text" disabled class="form-control" id="task-completed" placeholder="Complete date" [(ngModel)]="task.completed"
+      <input type="text" disabled class="form-control" id="task-completed" placeholder="Complete date" [value]="task.completed | dateTimeZone"
         name="task.completed">
     </div>
     <div *ngIf="task.taskId" class="form-group">
@@ -23,17 +23,17 @@
   <div class="col-md-6">
     <div *ngIf="task.taskId" class="form-group">
       <label for="task-claimed" class="control-label">Claim date</label>
-      <input type="text" disabled class="form-control" id="task-claimed" placeholder="Claimed date" [(ngModel)]="task.claimed"
+      <input type="text" disabled class="form-control" id="task-claimed" placeholder="Claimed date" [value]="task.claimed | dateTimeZone"
         name="task.claimed">
     </div>
     <div *ngIf="task.taskId" class="form-group">
       <label for="task-planned" class="control-label">Planned date</label>
-      <input type="text" disabled class="form-control" id="task-planned" placeholder="Planned date" [(ngModel)]="task.planned"
+      <input type="text" disabled class="form-control" id="task-planned" placeholder="Planned date" [value]="task.planned | dateTimeZone"
         name="task.planned">
     </div>
     <div *ngIf="task.taskId" class="form-group">
       <label for="task-created" class="control-label">Creation date</label>
-      <input type="text" disabled class="form-control" id="task-created" placeholder="Created" [(ngModel)]="task.created"
+      <input type="text" disabled class="form-control" id="task-created" placeholder="Created" [value]="task.created | dateTimeZone"
         name="task.created">
     </div>
     <div *ngIf="task.taskId" class="form-group">
