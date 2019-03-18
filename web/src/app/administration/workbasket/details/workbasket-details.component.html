@@ -4,7 +4,7 @@
         <ul class="nav nav-tabs" role="tablist">
             <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
                 <a (click)="backClicked()">
-                    <span class="material-icons md-20 blue" title="back">arrow_back_ios</span>
+                    <span class="material-icons md-20 blue" title="back">arrow_back</span>
                 </a>
             </li>
             <li role="presentation" (click)="selectTab('information')" [ngClass]="{'active':tabSelected === 'information'}">
