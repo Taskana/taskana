@@ -42,8 +42,7 @@ import pro.taskana.rest.resource.WorkbasketAccessItemResource;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = {"devMode=true"})
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WorkbasketAccessItemControllerIntTest {
 
     String url = "http://127.0.0.1:";
@@ -123,6 +122,7 @@ public class WorkbasketAccessItemControllerIntTest {
 
     @Test
     public void testRemoveWorkbasketAccessItemsOfUser() {
+
         String parameters = "/v1/workbasket-access-items/?access-id=user_1_1";
         ResponseEntity<Void> response = template.exchange(
             url + port + parameters, HttpMethod.DELETE, request,
