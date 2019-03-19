@@ -2,19 +2,19 @@ import { Page } from './page';
 
 export class TaskHistoryEventData {
     taskHistoryId = 0;
-    taskId = '';
     parentBusinessProcessId = '';
     businessProcessId = '';
-    eventType = '';
     created = '';
     userId = '';
-    domain = '';
+    eventType = '';
     workbasketKey = '';
+    porType = '';
+    porValue = '';
+    domain = '';
+    taskId = '';
     porCompany = '';
     porSystem = '';
     porInstance = '';
-    porType = '';
-    porValue = '';
     taskClassificationKey = '';
     taskClassificationCategory = '';
     attachmentClassificationKey = '';

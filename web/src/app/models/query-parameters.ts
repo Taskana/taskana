@@ -32,7 +32,7 @@ export class QueryParametersModel {
     PARENT_BUSINESS_PROCESS_ID_LIKE: string;
     BUSINESS_PROCESS_ID_LIKE: string;
     EVENT_TYPE_LIKE: string;
-    CREATED_LIKE: string;
+    CREATED: string;
     USER_ID_LIKE: string;
     POR_COMPANY_LIKE: string;
     POR_SYSTEM_LIKE: string;

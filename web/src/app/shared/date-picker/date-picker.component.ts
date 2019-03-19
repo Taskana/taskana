@@ -15,7 +15,7 @@ export class DatePickerComponent implements OnInit {
   valueDate: Date;
 
   ngOnInit(): void {
-    this.valueDate = this.value ? new Date(this.value) : new Date();
+    this.valueDate = this.value ? new Date(this.value) : undefined;
   }
 
   dateChange(newValue: Date) {

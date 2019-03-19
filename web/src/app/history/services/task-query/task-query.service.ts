@@ -17,7 +17,7 @@ export class TaskQueryService {
     constructor(private httpClient: HttpClient) { }
 
     queryTask(
-        orderBy: string = 'task-id',
+        orderBy: string = 'created',
         sortDirection: string = Direction.ASC,
         taskId: string,
         parentBPI: string,
@@ -38,6 +38,7 @@ export class TaskQueryService {
         custom2: string,
         custom3: string,
         custom4: string,
+        created: string,
         allPages: boolean = false
     ): Observable<TaskHistoryEventResourceData> {
 
@@ -63,6 +64,7 @@ export class TaskQueryService {
             custom2,
             custom3,
             custom4,
+            created,
             allPages
         )}`);
 
@@ -90,6 +92,7 @@ export class TaskQueryService {
         custom2: string,
         custom3: string,
         custom4: string,
+        created: string,
         allPages: boolean = false): string {
 
         const parameters = new QueryParametersModel();
@@ -114,6 +117,7 @@ export class TaskQueryService {
         parameters.CUSTOM_2_LIKE = custom2;
         parameters.CUSTOM_3_LIKE = custom3;
         parameters.CUSTOM_4_LIKE = custom4;
+        parameters.CREATED = created;
 
         if (allPages) { TaskanaQueryParameters.page = undefined; TaskanaQueryParameters.pageSize = undefined; }
 

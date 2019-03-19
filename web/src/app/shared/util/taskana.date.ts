@@ -16,12 +16,11 @@ export class TaskanaDate {
     return datePipe.transform(date, dateFormat);
   }
 
-  public static getDateToDisplay(date: string): string {
-    return this.applyTimeZone(date);
+  public static getDateToDisplay(date: string, dateFormat: string = this.dateFormat): string {
+    return this.applyTimeZone(date, dateFormat);
   }
 
-  private static applyTimeZone(date: string): string | null {
-    const dateFormat = 'yyyy-MM-dd HH:mm:ss';
+  public static applyTimeZone(date: string, dateFormat): string | null {
     const dateLocale = 'en-US';
     const datePipe = new DatePipe(dateLocale);
 

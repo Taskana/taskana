@@ -22,9 +22,10 @@ export class TaskQueryComponent implements OnInit {
   taskQueryResource: TaskHistoryEventResourceData;
   taskQuery: Array<TaskHistoryEventData>
   taskQueryHeader = new TaskHistoryEventData();
-  orderBy = new SortingModel(TaskanaQueryParameters.parameters.WORKBASKET_KEY);
+  orderBy = new SortingModel(TaskanaQueryParameters.parameters.CREATED);
   orientationSubscription: Subscription;
   taskQuerySubscription: Subscription;
+  created = undefined;
 
   taskQueryForm = new FormGroup({
   });
@@ -99,6 +100,11 @@ export class TaskQueryComponent implements OnInit {
         return property;
     }
   }
+
+  isDate(fieldName: string): boolean {
+      return (fieldName === 'created')
+  }
+
   filterFieldsToAllowQuerying(fieldName: string): boolean {
     if (!fieldName || fieldName === 'oldData' || fieldName === 'newData' || fieldName === 'comment'
       || fieldName === 'oldValue' || fieldName === 'newValue') {
@@ -109,7 +115,7 @@ export class TaskQueryComponent implements OnInit {
   }
 
   filterFieldsToShow(fieldName: string): boolean {
-    if (fieldName === 'taskHistoryId' || fieldName === 'page' || fieldName === 'created' || fieldName === '_links') {
+    if (fieldName === 'taskHistoryId' || fieldName === 'page' || fieldName === '_links') {
       return false;
     }
     return true;
@@ -194,6 +200,7 @@ export class TaskQueryComponent implements OnInit {
       this.taskQueryForm.get('custom2') ? this.taskQueryForm.get('custom2').value : undefined,
       this.taskQueryForm.get('custom3') ? this.taskQueryForm.get('custom3').value : undefined,
       this.taskQueryForm.get('custom4') ? this.taskQueryForm.get('custom4').value : undefined,
+      this.created ? this.created.toISOString().substring(0, 10) : undefined,
       false).subscribe(taskQueryResource => {
         this.requestInProgressService.setRequestInProgress(false);
         if (!taskQueryResource._embedded) {
@@ -221,6 +228,11 @@ export class TaskQueryComponent implements OnInit {
     const cards = Math.round((totalHeight - (unusedHeight)) / rowHeight);
     TaskanaQueryParameters.page ? TaskanaQueryParameters.page = TaskanaQueryParameters.page : TaskanaQueryParameters.page = 1;
     cards > 0 ? TaskanaQueryParameters.pageSize = cards : TaskanaQueryParameters.pageSize = 1;
+  }
+
+  updateDate($event: string) {
+      this.created = new Date($event);
+      this.performRequest();
   }
 
   onDestroy() {
