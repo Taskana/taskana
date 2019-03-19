@@ -13,6 +13,7 @@ export class TaskanaQueryParameters {
     OWNERLIKE: 'owner-like',
     TYPE: 'type',
     KEY: 'key',
+    CREATED: 'created',
     WORKBASKET_KEY: 'workbasket-key',
     KEYLIKE: 'key-like',
     PRIORITY: 'priority',
