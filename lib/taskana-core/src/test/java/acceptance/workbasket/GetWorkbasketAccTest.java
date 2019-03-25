@@ -129,6 +129,11 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         assertEquals("abteilung", workbasketSummary.getOrgLevel2());
         assertEquals("projekt", workbasketSummary.getOrgLevel3());
         assertEquals("team", workbasketSummary.getOrgLevel4());
+        assertEquals("custom1", workbasketSummary.getCustom1());
+        assertEquals("custom2", workbasketSummary.getCustom2());
+        assertEquals("custom3", workbasketSummary.getCustom3());
+        assertEquals("custom4", workbasketSummary.getCustom4());
+        assertEquals(false, workbasketSummary.isMarkedForDeletion());
     }
 
     @Test(expected = WorkbasketNotFoundException.class)
@@ -146,10 +151,27 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
     }
 
     @Test(expected = NotAuthorizedException.class)
-    public void testThrowsExceptionIfNotAuthorized()
+    public void testGetByIdNotAuthorized()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
+    }
+
+    @Test(expected = NotAuthorizedException.class)
+    public void testGetByKeyDomainNotAuthorized()
+        throws NotAuthorizedException, WorkbasketNotFoundException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void testGetWorkbasketByIdNotExisting()
+        throws NotAuthorizedException, WorkbasketNotFoundException {
+        WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+        workbasketService.getWorkbasket("NOT EXISTING ID");
     }
 
 }

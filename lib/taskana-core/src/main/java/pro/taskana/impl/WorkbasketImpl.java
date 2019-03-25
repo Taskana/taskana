@@ -217,6 +217,10 @@ public class WorkbasketImpl implements Workbasket {
         result.setOwner(this.getOwner());
         result.setDomain(this.getDomain());
         result.setType(this.getType());
+        result.setCustom1(this.getCustom1());
+        result.setCustom2(this.getCustom2());
+        result.setCustom3(this.getCustom3());
+        result.setCustom4(this.getCustom4());
         result.setOrgLevel1(this.getOrgLevel1());
         result.setOrgLevel2(this.getOrgLevel2());
         result.setOrgLevel3(this.getOrgLevel3());
@@ -238,6 +242,7 @@ public class WorkbasketImpl implements Workbasket {
         result = prime * result + ((domain == null) ? 0 : domain.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result + (markedForDeletion ? 1231 : 1237);
         result = prime * result + ((modified == null) ? 0 : modified.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((orgLevel1 == null) ? 0 : orgLevel1.hashCode());
@@ -322,6 +327,9 @@ public class WorkbasketImpl implements Workbasket {
                 return false;
             }
         } else if (!key.equals(other.key)) {
+            return false;
+        }
+        if (markedForDeletion != other.markedForDeletion) {
             return false;
         }
         if (modified == null) {

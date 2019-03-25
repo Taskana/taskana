@@ -236,10 +236,15 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((custom1 == null) ? 0 : custom1.hashCode());
+        result = prime * result + ((custom2 == null) ? 0 : custom2.hashCode());
+        result = prime * result + ((custom3 == null) ? 0 : custom3.hashCode());
+        result = prime * result + ((custom4 == null) ? 0 : custom4.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((domain == null) ? 0 : domain.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result + (markedForDeletion ? 1231 : 1237);
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((orgLevel1 == null) ? 0 : orgLevel1.hashCode());
         result = prime * result + ((orgLevel2 == null) ? 0 : orgLevel2.hashCode());
@@ -262,6 +267,34 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
             return false;
         }
         WorkbasketSummaryImpl other = (WorkbasketSummaryImpl) obj;
+        if (custom1 == null) {
+            if (other.custom1 != null) {
+                return false;
+            }
+        } else if (!custom1.equals(other.custom1)) {
+            return false;
+        }
+        if (custom2 == null) {
+            if (other.custom2 != null) {
+                return false;
+            }
+        } else if (!custom2.equals(other.custom2)) {
+            return false;
+        }
+        if (custom3 == null) {
+            if (other.custom3 != null) {
+                return false;
+            }
+        } else if (!custom3.equals(other.custom3)) {
+            return false;
+        }
+        if (custom4 == null) {
+            if (other.custom4 != null) {
+                return false;
+            }
+        } else if (!custom4.equals(other.custom4)) {
+            return false;
+        }
         if (description == null) {
             if (other.description != null) {
                 return false;
@@ -288,6 +321,9 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
                 return false;
             }
         } else if (!key.equals(other.key)) {
+            return false;
+        }
+        if (markedForDeletion != other.markedForDeletion) {
             return false;
         }
         if (name == null) {
