@@ -2,6 +2,7 @@ package acceptance.workbasket;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -57,6 +58,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         Workbasket createdWorkbasket = workbasketService.getWorkbasket("NT1234", "DOMAIN_A");
         assertNotNull(createdWorkbasket);
         assertNotNull(createdWorkbasket.getId());
+        assertTrue(createdWorkbasket.getId().startsWith("WBI"));
         assertEquals(workbasket, createdWorkbasket);
         Workbasket createdWorkbasket2 = workbasketService.getWorkbasket(createdWorkbasket.getId());
         assertNotNull(createdWorkbasket);
@@ -140,6 +142,26 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setOrgLevel1("company");
         try {  // missing domain
+            workbasketService.createWorkbasket(workbasket);
+            fail("InvalidWorkbasketException was expected");
+        } catch (InvalidWorkbasketException e) {
+        }
+
+        workbasket = workbasketService.newWorkbasket("", "novatec");
+        workbasket.setName("Megabasket");
+        workbasket.setType(WorkbasketType.GROUP);
+        workbasket.setOrgLevel1("company");
+        try {  // empty key
+            workbasketService.createWorkbasket(workbasket);
+            fail("InvalidWorkbasketException was expected");
+        } catch (InvalidWorkbasketException e) {
+        }
+
+        workbasket = workbasketService.newWorkbasket("key", "novatec");
+        workbasket.setName("");
+        workbasket.setType(WorkbasketType.GROUP);
+        workbasket.setOrgLevel1("company");
+        try {  // empty name
             workbasketService.createWorkbasket(workbasket);
             fail("InvalidWorkbasketException was expected");
         } catch (InvalidWorkbasketException e) {
