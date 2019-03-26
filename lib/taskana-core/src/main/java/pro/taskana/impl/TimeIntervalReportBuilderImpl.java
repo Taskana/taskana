@@ -92,7 +92,7 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
 
     @Override
     public B excludedClassificationIdIn(List<String> excludedClassificationIds) {
-        this.excludedClassificationIds = excludedClassificationIds;
+        this.excludedClassificationIds = new ArrayList<>(excludedClassificationIds);
         return _this();
     }
 
