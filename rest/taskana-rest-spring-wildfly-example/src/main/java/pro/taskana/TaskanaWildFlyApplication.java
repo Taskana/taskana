@@ -41,7 +41,6 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 @SpringBootApplication
 @EnableScheduling
-@ComponentScan(basePackages = "pro.taskana")
 @Import({TransactionalJobsConfiguration.class, LdapConfiguration.class, RestConfiguration.class, WebMvcConfig.class})
 public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
 
