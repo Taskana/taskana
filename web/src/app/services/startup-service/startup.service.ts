@@ -27,12 +27,12 @@ export class StartupService {
         ).then(
             () => this.taskanaEngineService.getUserInformation()
         ).catch(error => {
-            this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
+             this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
         });
     }
 
     getEnvironmentFilePromise() {
-        return this.httpClient.get<any>('/environments/data-sources/environment-information.json').pipe(map(jsonFile => {
+        return this.httpClient.get<any>('environments/data-sources/environment-information.json').pipe(map(jsonFile => {
             if (jsonFile && environment.taskanaRestUrl === '') {
                 environment.taskanaRestUrl = jsonFile.taskanaRestUrl === '' ?
                     window.location.protocol + '//' + window.location.host : jsonFile.taskanaRestUrl;

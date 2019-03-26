@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ViewController {
 
-    @RequestMapping({"", "/administration*/**", "/workplace*/**", "/monitor*/**", "/history*/**", "/no-role*/**"})
+    @RequestMapping({"", "taskana/**"})
     public String index() {
         return "forward:/index.html";
     }

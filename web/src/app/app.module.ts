@@ -50,7 +50,6 @@ import { DomainGuard } from './guards/domain.guard';
 import { BusinessAdminGuard } from './guards/business-admin.guard';
 import { MonitorGuard } from './guards/monitor.guard';
 import { UserGuard } from './guards/user.guard';
-import { APP_BASE_HREF } from '@angular/common';
 
 
 const MODULES = [
@@ -86,7 +85,6 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
   imports: MODULES,
   providers: [
     WindowRefService,
-    { provide: APP_BASE_HREF, useValue: '/' },
     DomainService,
     GeneralModalService,
     RequestInProgressService,
@@ -111,7 +109,7 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     TaskanaEngineService,
     RemoveConfirmationService,
     FormsValidatorService,
-    UploadService
+    UploadService,
   ],
   bootstrap: [AppComponent]
 })

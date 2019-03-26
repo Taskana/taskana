@@ -9,39 +9,46 @@ import { NoAccessComponent } from './components/no-access/no-access.component';
 
 const appRoutes: Routes = [
     {
-        canActivate: [BusinessAdminGuard],
-        path: 'administration',
-        loadChildren: './administration/administration.module#AdministrationModule',
+      path: 'taskana',
+      children: [
+        {
+          canActivate: [BusinessAdminGuard],
+          path: 'administration',
+          loadChildren: './administration/administration.module#AdministrationModule',
+        },
+        {
+          canActivate: [MonitorGuard],
+          path: 'monitor',
+          loadChildren: './monitor/monitor.module#MonitorModule',
+        },
+        {
+          canActivate: [UserGuard],
+          path: 'workplace',
+          loadChildren: './workplace/workplace.module#WorkplaceModule'
+        },
+        {
+          canActivate: [HistoryGuard],
+          path: 'history',
+          loadChildren: './history/history.module#HistoryModule'
+        },
+        {
+          path: 'no-role',
+          component: NoAccessComponent
+        },
+        {
+          path: 'administration',
+          redirectTo: 'administration/workbaskets',
+        },
+        {
+          path: '**',
+          redirectTo: 'workplace'
+        },
+      ],
     },
-    {
-        canActivate: [MonitorGuard],
-        path: 'monitor',
-        loadChildren: './monitor/monitor.module#MonitorModule',
-    },
-    {
-        canActivate: [UserGuard],
-        path: 'workplace',
-        loadChildren: './workplace/workplace.module#WorkplaceModule'
-    },
-    {
-        canActivate: [HistoryGuard],
-        path: 'history',
-        loadChildren: './history/history.module#HistoryModule'
-    },
-    {
-        path: 'no-role',
-        component: NoAccessComponent
-    },
-    {
-        path: '',
-        redirectTo: 'workplace',
-        pathMatch: 'full'
-    },
-    {
-        path: 'administration',
-        redirectTo: 'administration/workbaskets',
-    }
-
+  {
+    path: '**',
+    redirectTo: 'taskana/workplace'
+  },
 ];
 @NgModule({
     imports: [
