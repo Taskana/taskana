@@ -45,18 +45,18 @@
     <div class="nav-content">
       <taskana-user-information></taskana-user-information>
       <div *ngIf="administrationAccess" class="row menu">
-        <span (click)="toogleNavBar()" routerLink="administration/workbaskets" aria-controls="administration"
+        <span (click)="toogleNavBar()" routerLink="taskana/administration/workbaskets" aria-controls="administration"
           routerLinkActive="active">Administration</span>
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('workbaskets') !== -1 }">
-          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="administration/workbaskets" aria-controls="Workbaskets"
+          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="taskana/administration/workbaskets" aria-controls="Workbaskets"
             routerLinkActive="active">Workbaskets</span>
         </div>
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('classifications') !== -1}">
-          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="administration/classifications" aria-controls="Classifications"
+          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="taskana/administration/classifications" aria-controls="Classifications"
             routerLinkActive="active">Classifications</span>
         </div>
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('access-items-management') !== -1}">
-          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="administration/access-items-management"
+          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="taskana/administration/access-items-management"
             aria-controls="Access items" routerLinkActive="active">Access items</span>
         </div>
       </div>
