@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import pro.taskana.TaskMonitorService;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.item.DailyEntryExitQueryItem;
 import pro.taskana.impl.report.row.DailyEntryExitRow;
@@ -27,7 +26,7 @@ import pro.taskana.security.WithAccessId;
  * Test class for {@link pro.taskana.report.DailyEntryExitReport}.
  */
 @RunWith(JAASRunner.class)
-public class GetDailyEntryExitReportAccTest extends AbstractReportAccTest {
+public class ProvideDailyEntryExitReportAccTest extends AbstractReportAccTest {
 
     /**
      * This test covers every insert operation of the DailyEntryExitReport.
@@ -41,7 +40,6 @@ public class GetDailyEntryExitReportAccTest extends AbstractReportAccTest {
     @WithAccessId(userName = "monitor")
     @Test
     public void testProperInsertionOfQueryItems() throws Exception {
-        taskanaEngine.setConnectionManagementMode(TaskanaEngine.ConnectionManagementMode.AUTOCOMMIT);
         TaskMonitorService mapper = taskanaEngine.getTaskMonitorService();
 
         //last 14 days. Today excluded.

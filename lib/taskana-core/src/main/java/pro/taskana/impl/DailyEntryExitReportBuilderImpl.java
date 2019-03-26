@@ -46,11 +46,9 @@ public class DailyEntryExitReportBuilderImpl extends
         return this;
     }
 
-    // since this method is not documented I have no idea what the proper groupedBy should be,
-    // thus this method is not supported on this builder.
     @Override
     public List<String> listTaskIdsForSelectedItems(List<SelectedItem> selectedItems) {
-        throw new UnsupportedOperationException("");
+        throw new UnsupportedOperationException();
     }
 
     @Override

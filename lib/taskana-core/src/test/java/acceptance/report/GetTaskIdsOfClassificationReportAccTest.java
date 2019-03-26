@@ -27,8 +27,6 @@ public class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTe
     public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
         List<SelectedItem> selectedItems = new ArrayList<>();
 
         SelectedItem s1 = new SelectedItem();
