@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  taskanaRestUrl: 'http://localhost:8080'
+  taskanaRestUrl: 'http://localhost:8080',
+  taskanaLogoutUrl: 'http://localhost:8080/logout'
 };
