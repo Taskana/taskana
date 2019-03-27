@@ -40,7 +40,7 @@ export class TaskanaEngineService {
 
   logout(): Observable<string> {
     return this.httpClient
-      .post<string>(`${environment.taskanaRestUrl}/logout`, '');
+      .post<string>(`${environment.taskanaLogoutUrl}`, '');
 
   }
 
