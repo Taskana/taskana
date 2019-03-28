@@ -17,13 +17,13 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.row.FoldableRow;
 import pro.taskana.impl.report.row.SingleRow;
 import pro.taskana.report.ClassificationReport;
-import pro.taskana.report.DailyEntryExitReport;
+import pro.taskana.report.TimestampReport;
 import pro.taskana.report.TaskStatusReport;
 import pro.taskana.report.WorkbasketReport;
-import pro.taskana.report.structure.ColumnHeader;
-import pro.taskana.report.structure.QueryItem;
-import pro.taskana.report.structure.Report;
-import pro.taskana.report.structure.Row;
+import pro.taskana.impl.report.structure.ColumnHeader;
+import pro.taskana.impl.report.structure.QueryItem;
+import pro.taskana.impl.report.structure.Report;
+import pro.taskana.impl.report.structure.Row;
 import pro.taskana.rest.MonitorController;
 
 /**
@@ -59,7 +59,7 @@ public class ReportAssembler {
         return resource;
     }
 
-    public ReportResource toResource(DailyEntryExitReport report)
+    public ReportResource toResource(TimestampReport report)
         throws NotAuthorizedException, InvalidArgumentException {
         ReportResource resource = toReportResource(report);
         resource.add(linkTo(methodOn(MonitorController.class).getDailyEntryExitReport()).withSelfRel().expand());
@@ -74,7 +74,7 @@ public class ReportAssembler {
         Report<I, H> report, Instant time) {
         String[] header = report.getColumnHeaders()
             .stream()
-            .map(ColumnHeader::getDisplayName)
+            .map(H::getDisplayName)
             .toArray(String[]::new);
         ReportResource.MetaInformation meta = new ReportResource.MetaInformation(
             report.getClass().getSimpleName(),

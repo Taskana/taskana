@@ -6,7 +6,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.item.MonitorQueryItem;
-import pro.taskana.report.structure.Report;
+import pro.taskana.impl.report.structure.Report;
 
 /**
  * A CategoryReport contains the total numbers of tasks of the respective category as well as the total number of

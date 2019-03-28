@@ -1,4 +1,4 @@
-package pro.taskana.report.structure;
+package pro.taskana.impl.report.structure;
 
 /**
  * A ColumnHeader is an element of a {@link Report}.

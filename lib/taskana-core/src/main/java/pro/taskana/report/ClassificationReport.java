@@ -8,10 +8,10 @@ import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.impl.report.row.DetailedClassificationRow;
-import pro.taskana.report.structure.Report;
+import pro.taskana.impl.report.structure.Report;
 
 /**
- * The ClassificationReport extends the Report. The {@link pro.taskana.report.structure.Row}s of the ClassificationReport are grouped by
+ * The ClassificationReport extends the Report. The {@link pro.taskana.impl.report.structure.Row}s of the ClassificationReport are grouped by
  * classifications.
  */
 public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
@@ -32,7 +32,7 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
          * Returns a {@link DetailedClassificationReport} containing all tasks after applying the filters. If the column
          * headers are set the report is subdivided into clusters. Its
          * {@link pro.taskana.impl.report.row.FoldableRow}s contain an additional list of
-         * {@link pro.taskana.report.structure.Row}s for the classifications of the attachments of the tasks.
+         * {@link pro.taskana.impl.report.structure.Row}s for the classifications of the attachments of the tasks.
          *
          * @throws InvalidArgumentException
          *             if the column headers are not initialized
@@ -45,7 +45,7 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
 
     /**
      * The DetailedClassificationReport is a functional extension of the {@link ClassificationReport}.
-     * Its {@link pro.taskana.impl.report.row.FoldableRow}s contain an additional list of {@link pro.taskana.report.structure.Row}s
+     * Its {@link pro.taskana.impl.report.row.FoldableRow}s contain an additional list of {@link pro.taskana.impl.report.structure.Row}s
      * for the classifications of the attachments of the tasks.
      */
     public static class DetailedClassificationReport

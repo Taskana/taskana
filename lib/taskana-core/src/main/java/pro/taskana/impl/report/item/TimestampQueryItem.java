@@ -1,15 +1,15 @@
 package pro.taskana.impl.report.item;
 
-import pro.taskana.TaskStatus;
+import pro.taskana.report.Timestamp;
 
 /**
- * The DailyEntryExitQueryItem contains the necessary information for the {@link pro.taskana.report.DailyEntryExitReport}.
+ * The TimestampQueryItem contains the necessary information for the {@link pro.taskana.report.TimestampReport}.
  */
-public class DailyEntryExitQueryItem implements DateQueryItem {
+public class TimestampQueryItem implements AgeQueryItem {
 
     private static final String N_A = "N/A";
     private int count;
-    private TaskStatus status;
+    private Timestamp status;
     private int ageInDays;
     private String orgLevel1;
     private String orgLevel2;

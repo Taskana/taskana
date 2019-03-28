@@ -19,7 +19,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TaskStatusColumnHeader;
 import pro.taskana.impl.report.item.TaskQueryItem;
-import pro.taskana.report.structure.Row;
+import pro.taskana.impl.report.structure.Row;
 import pro.taskana.report.TaskStatusReport;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;

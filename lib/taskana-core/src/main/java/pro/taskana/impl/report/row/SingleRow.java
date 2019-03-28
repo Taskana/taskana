@@ -1,13 +1,13 @@
 package pro.taskana.impl.report.row;
 
-import pro.taskana.report.structure.QueryItem;
-import pro.taskana.report.structure.Row;
+import pro.taskana.impl.report.structure.QueryItem;
+import pro.taskana.impl.report.structure.Row;
 
 /**
- * A SingleRow represents a single row in a {@link pro.taskana.report.structure.Report}.
- * It contains an array of cells whose index corresponds to the {@link pro.taskana.report.structure.ColumnHeader} index in the {@link pro.taskana.report.structure.Report}.
+ * A SingleRow represents a single row in a {@link pro.taskana.impl.report.structure.Report}.
+ * It contains an array of cells whose index corresponds to the {@link pro.taskana.impl.report.structure.ColumnHeader} index in the {@link pro.taskana.impl.report.structure.Report}.
  *
- * @param <I> {@link QueryItem} on which the {@link pro.taskana.report.structure.Report} is based on.
+ * @param <I> {@link QueryItem} on which the {@link pro.taskana.impl.report.structure.Report} is based on.
  */
 public class SingleRow<I extends QueryItem> implements Row<I> {
 

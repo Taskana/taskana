@@ -1,4 +1,4 @@
-package pro.taskana.report.structure;
+package pro.taskana.impl.report.structure;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
