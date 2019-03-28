@@ -9,16 +9,16 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.impl.report.item.DateQueryItem;
-import pro.taskana.report.structure.Report;
+import pro.taskana.impl.report.item.AgeQueryItem;
+import pro.taskana.impl.report.structure.Report;
 
 /**
  * "Super" Interface for all TimeIntervalReportBuilders.
  * @param <B> the true Builder behind this Interface.
- * @param <I> the DateQueryItem which will be inserted into the Report.
+ * @param <I> the AgeQueryItem which will be inserted into the Report.
  * @param <H> the column Header
  */
-public interface TimeIntervalReportBuilder<B extends TimeIntervalReportBuilder<B, I, H>, I extends DateQueryItem, H extends TimeIntervalColumnHeader>
+public interface TimeIntervalReportBuilder<B extends TimeIntervalReportBuilder<B, I, H>, I extends AgeQueryItem, H extends TimeIntervalColumnHeader>
     extends Report.Builder<I, H> {
 
     /**

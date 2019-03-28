@@ -9,7 +9,7 @@ import org.springframework.hateoas.ResourceSupport;
 import pro.taskana.impl.util.LoggerUtils;
 
 /**
- * Resource class for {@link pro.taskana.report.structure.Report}.
+ * Resource class for {@link pro.taskana.impl.report.structure.Report}.
  */
 public class ReportResource extends ResourceSupport {
 
@@ -38,7 +38,7 @@ public class ReportResource extends ResourceSupport {
     }
 
     /**
-     * Resource Interface for {@link pro.taskana.report.structure.Row}.
+     * Resource Interface for {@link pro.taskana.impl.report.structure.Row}.
      */
     public interface RowResource {
 

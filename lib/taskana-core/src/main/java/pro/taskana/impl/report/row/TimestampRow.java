@@ -1,16 +1,16 @@
 package pro.taskana.impl.report.row;
 
-import pro.taskana.impl.report.item.DailyEntryExitQueryItem;
-import pro.taskana.report.structure.Row;
+import pro.taskana.impl.report.item.TimestampQueryItem;
+import pro.taskana.impl.report.structure.Row;
 
 /**
- * A single Row inside the {@link pro.taskana.report.DailyEntryExitReport}.
+ * A single Row inside the {@link pro.taskana.report.TimestampReport}.
  * It contains 4 sub-rows for each org level respectively.
  */
-public class DailyEntryExitRow extends FoldableRow<DailyEntryExitQueryItem> {
+public class TimestampRow extends FoldableRow<TimestampQueryItem> {
 
-    public DailyEntryExitRow(int columnSize) {
-        super(columnSize, DailyEntryExitQueryItem::getOrgLevel1);
+    public TimestampRow(int columnSize) {
+        super(columnSize, TimestampQueryItem::getOrgLevel1);
     }
 
     @Override
@@ -24,13 +24,13 @@ public class DailyEntryExitRow extends FoldableRow<DailyEntryExitQueryItem> {
     }
 
     /**
-     * Row inside the {@link pro.taskana.report.DailyEntryExitReport} containing
+     * Row inside the {@link pro.taskana.report.TimestampReport} containing
      * the information regarding a specific org level 1.
      */
-    public static final class OrgLevel1Row extends FoldableRow<DailyEntryExitQueryItem> {
+    public static final class OrgLevel1Row extends FoldableRow<TimestampQueryItem> {
 
         private OrgLevel1Row(int columnSize) {
-            super(columnSize, DailyEntryExitQueryItem::getOrgLevel2);
+            super(columnSize, TimestampQueryItem::getOrgLevel2);
         }
 
         @Override
@@ -45,13 +45,13 @@ public class DailyEntryExitRow extends FoldableRow<DailyEntryExitQueryItem> {
     }
 
     /**
-     * Row inside the {@link pro.taskana.report.DailyEntryExitReport} containing
+     * Row inside the {@link pro.taskana.report.TimestampReport} containing
      * the information regarding a specific org level 2.
      */
-    public static final class OrgLevel2Row extends FoldableRow<DailyEntryExitQueryItem> {
+    public static final class OrgLevel2Row extends FoldableRow<TimestampQueryItem> {
 
         private OrgLevel2Row(int columnSize) {
-            super(columnSize, DailyEntryExitQueryItem::getOrgLevel3);
+            super(columnSize, TimestampQueryItem::getOrgLevel3);
         }
 
         @Override
@@ -66,23 +66,23 @@ public class DailyEntryExitRow extends FoldableRow<DailyEntryExitQueryItem> {
     }
 
     /**
-     * Row inside the {@link pro.taskana.report.DailyEntryExitReport} containing
+     * Row inside the {@link pro.taskana.report.TimestampReport} containing
      * the information regarding a specific org level 3.
      */
-    public static final class OrgLevel3Row extends FoldableRow<DailyEntryExitQueryItem> {
+    public static final class OrgLevel3Row extends FoldableRow<TimestampQueryItem> {
 
         private OrgLevel3Row(int columnSize) {
-            super(columnSize, DailyEntryExitQueryItem::getOrgLevel4);
+            super(columnSize, TimestampQueryItem::getOrgLevel4);
         }
 
         @Override
-        Row<DailyEntryExitQueryItem> buildRow(int columnSize) {
+        Row<TimestampQueryItem> buildRow(int columnSize) {
             return new SingleRow<>(columnSize);
         }
 
         @Override
-        public SingleRow<DailyEntryExitQueryItem> getFoldableRow(String key) {
-            return (SingleRow<DailyEntryExitQueryItem>) super.getFoldableRow(key);
+        public SingleRow<TimestampQueryItem> getFoldableRow(String key) {
+            return (SingleRow<TimestampQueryItem>) super.getFoldableRow(key);
         }
     }
 

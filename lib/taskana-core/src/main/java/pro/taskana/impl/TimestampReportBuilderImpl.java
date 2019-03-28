@@ -10,39 +10,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskState;
-import pro.taskana.TaskStatus;
+import pro.taskana.impl.report.item.TimestampQueryItem;
+import pro.taskana.report.Timestamp;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.impl.report.item.DailyEntryExitQueryItem;
 import pro.taskana.impl.report.preprocessor.DaysToWorkingDaysPreProcessor;
 import pro.taskana.mappings.TaskMonitorMapper;
-import pro.taskana.report.DailyEntryExitReport;
+import pro.taskana.report.TimestampReport;
 
 /**
- * The implementation of {@link DailyEntryExitReport.Builder}.
+ * The implementation of {@link TimestampReport.Builder}.
  */
-public class DailyEntryExitReportBuilderImpl extends
-    TimeIntervalReportBuilderImpl<DailyEntryExitReport.Builder, DailyEntryExitQueryItem, TimeIntervalColumnHeader.Date>
-    implements DailyEntryExitReport.Builder {
+public class TimestampReportBuilderImpl extends
+    TimeIntervalReportBuilderImpl<TimestampReport.Builder, TimestampQueryItem, TimeIntervalColumnHeader.Date>
+    implements TimestampReport.Builder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DailyEntryExitReport.Builder.class);
-    private List<TaskStatus> status = Arrays.asList(TaskStatus.CREATED, TaskStatus.COMPLETED);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TimestampReport.Builder.class);
+    private List<Timestamp> status = Arrays.asList(Timestamp.CREATED, Timestamp.COMPLETED);
 
-    DailyEntryExitReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    TimestampReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super(taskanaEngine, taskMonitorMapper);
     }
 
     @Override
-    public DailyEntryExitReport.Builder stateIn(List<TaskState> states) {
+    public TimestampReport.Builder stateIn(List<TaskState> states) {
         throw new UnsupportedOperationException(
-            "The states have no influence regarding this report. Use statusIn instead");
+            "The states have no influence regarding this report. Use withTimestamps instead");
     }
 
     @Override
-    protected DailyEntryExitReport.Builder _this() {
+    protected TimestampReport.Builder _this() {
         return this;
     }
 
@@ -57,19 +57,19 @@ public class DailyEntryExitReportBuilderImpl extends
     }
 
     @Override
-    public DailyEntryExitReport.Builder statusIn(List<TaskStatus> statuses) {
+    public TimestampReport.Builder withTimestamps(List<Timestamp> statuses) {
         this.status = new ArrayList<>(statuses);
         return _this();
     }
 
     @Override
-    public DailyEntryExitReport buildReport() throws NotAuthorizedException, InvalidArgumentException {
+    public TimestampReport buildReport() throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("entry to buildDetailedReport(), this = {}", this);
         this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
         try {
             this.taskanaEngine.openConnection();
-            DailyEntryExitReport report = new DailyEntryExitReport(this.columnHeaders);
-            List<DailyEntryExitQueryItem> items = status.stream()
+            TimestampReport report = new TimestampReport(this.columnHeaders);
+            List<TimestampQueryItem> items = status.stream()
                 // This can also be implemented into a single sql query which combines all statuses with the union
                 // operator. That would reduce the readability of the sql template. That's why "the loop" is done
                 // outside of mybatis.
@@ -86,7 +86,7 @@ public class DailyEntryExitReportBuilderImpl extends
         }
     }
 
-    private List<DailyEntryExitQueryItem> getTasksCountForStatusGroupedByOrgLevel(TaskStatus s) {
+    private List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(Timestamp s) {
         return taskMonitorMapper.getTasksCountForStatusGroupedByOrgLevel(s, categories, classificationIds,
             excludedClassificationIds, domains, customAttributeFilter);
     }

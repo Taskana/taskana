@@ -25,7 +25,7 @@ import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.row.FoldableRow;
 import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
-import pro.taskana.report.structure.Row;
+import pro.taskana.impl.report.structure.Row;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 

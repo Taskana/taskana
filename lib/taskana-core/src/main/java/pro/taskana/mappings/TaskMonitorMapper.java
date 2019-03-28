@@ -10,10 +10,10 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
-import pro.taskana.TaskStatus;
+import pro.taskana.report.Timestamp;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.CombinedClassificationFilter;
-import pro.taskana.impl.report.item.DailyEntryExitQueryItem;
+import pro.taskana.impl.report.item.TimestampQueryItem;
 import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.impl.report.item.TaskQueryItem;
@@ -426,7 +426,7 @@ public interface TaskMonitorMapper {
         @Result(column = "ORG_LEVEL_3", property = "orgLevel3"),
         @Result(column = "ORG_LEVEL_4", property = "orgLevel4")
     })
-    List<DailyEntryExitQueryItem> getTasksCountForStatusGroupedByOrgLevel(@Param("status") TaskStatus status,
+    List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(@Param("status") Timestamp status,
         @Param("categories") List<String> categories, @Param("classificationIds") List<String> classificationIds,
         @Param("excludedClassificationIds") List<String> excludedClassificationIds,
         @Param("domains") List<String> domains,

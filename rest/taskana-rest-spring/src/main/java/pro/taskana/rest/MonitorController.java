@@ -100,7 +100,7 @@ public class MonitorController {
             .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK)
             .body(reportAssembler.toResource(
-                taskMonitorService.createDailyEntryExitReportBuilder()
+                taskMonitorService.createTimestampReportBuilder()
                     .withColumnHeaders(columnHeaders)
                     .buildReport()));
     }
