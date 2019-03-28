@@ -6,7 +6,7 @@ set -e # fail fast
 #H
 #H prints this help and exits
 #H
-#H test.sh <database>
+#H test.sh <database> <project>
 #H
 #H   tests the taskana application
 #H
@@ -31,18 +31,19 @@ function main {
   [[ $# -eq 0 || "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
   REL=`dirname "$0"`
   eval "$REL/prepare_db.sh '$1'"
-  if [[ "$1" == "H2" && "$2" == "LIB" ]]; then
-    mvn clean install -q -f $REL/../lib/ -B
-  elif [[ "$1" == "H2" && "$2" == "REST" ]]; then
-   (cd $REL/../web && npm run test)
+  #main stage H2 && REST it requires to package rest again because documentation is included in test phase
+  if [[ "$1" == "H2" && "$2" == "REST" ]]; then
+    (cd $REL/../web && npm run test)
     mvn clean install -q -f $REL/../rest/ -B
     mvn clean verify -q -f $REL/../rest/ -B -pl taskana-rest-spring-example -P history.plugin
+  elif [[ "$1" == "H2" && "$2" == "LIB" ]]; then
+    mvn clean install -q -f $REL/../lib/ -B -Dmaven.javadoc.skip
   elif [[ "$1" == "POSTGRES_10_4" && "$2" == "CORE" ]]; then
     mvn clean verify -q -f $REL/../lib/taskana-core -B
   elif [[ "$1" == "POSTGRES_10_4" && "$2" == "WILDFLY" ]]; then
-    mvn clean install -q -f $REL/../lib/ -B -DskipTests=true -Dmaven.javadoc.skip=true
-    mvn clean install -q -f $REL/../rest/ -B -DskipTests=true -pl !taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip=true
-    mvn clean install -q -f $REL/../rest/ -B -pl taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip=true -P postgres
+    mvn clean install -q -f $REL/../lib/ -B -DskipTests -Dmaven.javadoc.skip
+    mvn clean install -q -f $REL/../rest/ -B -DskipTests -pl !taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip
+    mvn clean install -q -f $REL/../rest/ -B -pl taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip -P postgres
   else
     mvn clean verify -q -f $REL/../lib/taskana-core -B
   fi
