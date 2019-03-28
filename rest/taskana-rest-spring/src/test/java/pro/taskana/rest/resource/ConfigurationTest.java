@@ -5,6 +5,9 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Tests for Taskana lib configuration.
+ */
 public class ConfigurationTest {
 
     @Test
