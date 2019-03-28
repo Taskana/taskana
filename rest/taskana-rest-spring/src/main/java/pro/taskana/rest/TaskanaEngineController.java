@@ -2,7 +2,6 @@ package pro.taskana.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +33,6 @@ public class TaskanaEngineController {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         this.taskanaEngine = taskanaEngine;
     }
-
-    @Value("${version:Local build}")
-    private String version;
 
     @GetMapping(path = "/v1/domains", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<String>> getDomains() {
@@ -90,7 +86,7 @@ public class TaskanaEngineController {
     public ResponseEntity<VersionResource> currentVersion() {
         LOGGER.debug("Entry to currentVersion()");
         VersionResource resource = new VersionResource();
-        resource.setVersion(version);
+        resource.setVersion(TaskanaEngineConfiguration.class.getPackage().getImplementationVersion());
         LOGGER.debug("Exit from currentVersion(), returning {}", new ResponseEntity<>(resource, HttpStatus.OK));
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
