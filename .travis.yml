@@ -48,8 +48,8 @@ jobs:
           && ci/change_version.sh -m "lib/ rest/" -swarm lib/taskana-cdi/src/test/java/pro/taskana/TaskanaProducersTest.java
       script:
         - (cd web && npm run build:prod)
-          && mvn clean install -q -f lib -DskipTests -Dmaven.javadoc.skip=true
-          && mvn clean install -q -f rest -DskipTests -Dmaven.javadoc.skip=true -P history.plugin
+          && mvn clean install -q -f lib -DskipTests -Dmaven.javadoc.skip
+          && mvn clean install -q -f rest -DskipTests -Dmaven.javadoc.skip -P history.plugin
     - stage: "Release / Deploy"
       name: "Release stage"
       script:
