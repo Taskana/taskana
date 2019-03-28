@@ -3,7 +3,7 @@ package pro.taskana.impl.report.item;
 /**
  * The MonitorQueryItem entity contains the number of tasks for a key (e.g. workbasketKey) and age in days.
  */
-public class MonitorQueryItem implements DateQueryItem {
+public class MonitorQueryItem implements AgeQueryItem {
 
     private String key;
     private int ageInDays;

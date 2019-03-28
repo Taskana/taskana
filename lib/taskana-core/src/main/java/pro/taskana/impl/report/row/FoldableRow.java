@@ -6,15 +6,15 @@ import java.util.Set;
 import java.util.function.Function;
 
 import pro.taskana.impl.util.LoggerUtils;
-import pro.taskana.report.structure.QueryItem;
-import pro.taskana.report.structure.Row;
+import pro.taskana.impl.report.structure.QueryItem;
+import pro.taskana.impl.report.structure.Row;
 
 /**
  * The FoldableRow extends the {@link SingleRow}.
  * In contrast to the {@link SingleRow} the FoldableRow contains rows which can be collapsed or expanded.
  * The FoldableRow itself displays the sum of all foldable rows.
  *
- * @param <I> the {@link QueryItem} on which the {@link pro.taskana.report.structure.Report} is based on.
+ * @param <I> the {@link QueryItem} on which the {@link pro.taskana.impl.report.structure.Report} is based on.
  */
 public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
 

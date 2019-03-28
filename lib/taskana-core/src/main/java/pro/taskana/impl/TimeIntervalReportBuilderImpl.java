@@ -16,7 +16,7 @@ import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.impl.report.item.DateQueryItem;
+import pro.taskana.impl.report.item.AgeQueryItem;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.ClassificationReport;
@@ -25,10 +25,10 @@ import pro.taskana.report.TimeIntervalReportBuilder;
 /**
  * Implementation of {@link TimeIntervalReportBuilder}.
  * @param <B> the true Builder behind this Interface
- * @param <I> the true DateQueryItem inside the Report
+ * @param <I> the true AgeQueryItem inside the Report
  * @param <H> the column header
  */
-abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder<B, I, H>, I extends DateQueryItem, H extends TimeIntervalColumnHeader>
+abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder<B, I, H>, I extends AgeQueryItem, H extends TimeIntervalColumnHeader>
     implements TimeIntervalReportBuilder<B, I, H> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeIntervalReportBuilder.class);

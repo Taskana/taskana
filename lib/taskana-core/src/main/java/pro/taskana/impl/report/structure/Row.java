@@ -1,4 +1,4 @@
-package pro.taskana.report.structure;
+package pro.taskana.impl.report.structure;
 
 /**
  * Representation of a row in a {@link Report}.

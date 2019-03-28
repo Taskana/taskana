@@ -1,4 +1,4 @@
-package pro.taskana.report.structure;
+package pro.taskana.impl.report.structure;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

@@ -5,14 +5,14 @@ import java.util.List;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.impl.DaysToWorkingDaysConverter;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.impl.report.item.DateQueryItem;
-import pro.taskana.report.structure.QueryItemPreprocessor;
+import pro.taskana.impl.report.item.AgeQueryItem;
+import pro.taskana.impl.report.structure.QueryItemPreprocessor;
 
 /**
  * Uses {@link DaysToWorkingDaysConverter} to convert an &lt;I&gt;s age to working days.
  * @param <I> QueryItem which is being processed
  */
-public class DaysToWorkingDaysPreProcessor<I extends DateQueryItem> implements QueryItemPreprocessor<I> {
+public class DaysToWorkingDaysPreProcessor<I extends AgeQueryItem> implements QueryItemPreprocessor<I> {
 
     private DaysToWorkingDaysConverter instance;
 

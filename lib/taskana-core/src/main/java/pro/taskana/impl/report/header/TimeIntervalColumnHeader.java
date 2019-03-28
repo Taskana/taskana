@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import pro.taskana.impl.report.item.DateQueryItem;
-import pro.taskana.report.structure.ColumnHeader;
+import pro.taskana.impl.report.item.AgeQueryItem;
+import pro.taskana.impl.report.structure.ColumnHeader;
 
 /**
  * A TimeIntervalColumnHeader has a lower and an upper age limit which subdivide the count of tasks into different
@@ -15,7 +15,7 @@ import pro.taskana.report.structure.ColumnHeader;
  * upperAgeLimit have to be equal. The outer cluster of a report should have open ends. These open ends are represented
  * with Integer.MIN_VALUE and Integer.MAX_VALUE.
  */
-public class TimeIntervalColumnHeader implements ColumnHeader<DateQueryItem> {
+public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
 
     private final int lowerAgeLimit;
     private final int upperAgeLimit;
@@ -49,7 +49,7 @@ public class TimeIntervalColumnHeader implements ColumnHeader<DateQueryItem> {
     }
 
     @Override
-    public boolean fits(DateQueryItem item) {
+    public boolean fits(AgeQueryItem item) {
         return lowerAgeLimit <= item.getAgeInDays() && upperAgeLimit >= item.getAgeInDays();
     }
 

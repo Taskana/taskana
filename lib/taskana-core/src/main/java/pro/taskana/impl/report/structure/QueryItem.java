@@ -1,4 +1,4 @@
-package pro.taskana.report.structure;
+package pro.taskana.impl.report.structure;
 
 /**
  * A QueryItem is en entity on which a {@link Report} is based on.

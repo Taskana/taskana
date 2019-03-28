@@ -2,7 +2,7 @@ package pro.taskana.impl.report.header;
 
 import pro.taskana.TaskState;
 import pro.taskana.impl.report.item.TaskQueryItem;
-import pro.taskana.report.structure.ColumnHeader;
+import pro.taskana.impl.report.structure.ColumnHeader;
 
 /**
  * The TaskStatusColumnHeader represents a column for each {@link TaskState}.

@@ -6,7 +6,7 @@ import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.CategoryReport;
 import pro.taskana.report.ClassificationReport;
 import pro.taskana.report.CustomFieldValueReport;
-import pro.taskana.report.DailyEntryExitReport;
+import pro.taskana.report.TimestampReport;
 import pro.taskana.report.TaskStatusReport;
 import pro.taskana.report.WorkbasketReport;
 
@@ -50,8 +50,8 @@ public class TaskMonitorServiceImpl implements TaskMonitorService {
     }
 
     @Override
-    public DailyEntryExitReport.Builder createDailyEntryExitReportBuilder() {
-        return new DailyEntryExitReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
+    public TimestampReport.Builder createTimestampReportBuilder() {
+        return new TimestampReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
     }
 
 }

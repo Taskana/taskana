@@ -1,7 +1,7 @@
 package pro.taskana.impl.report.item;
 
 import pro.taskana.TaskState;
-import pro.taskana.report.structure.QueryItem;
+import pro.taskana.impl.report.structure.QueryItem;
 
 /**
  * The TaskQueryItem entity contains the number of tasks for a domain which have a specific state.

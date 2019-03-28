@@ -1,7 +1,7 @@
 package pro.taskana.impl.report.row;
 
 import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
-import pro.taskana.report.structure.Row;
+import pro.taskana.impl.report.structure.Row;
 
 /**
  * Represents a single Row inside {@link pro.taskana.report.ClassificationReport.DetailedClassificationReport}.
