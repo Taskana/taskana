@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RestConnectorService } from 'app/monitor/services/restConnector/rest-connector.service';
 import { ChartColorsDefinition } from '../models/chart-colors';
 import { ReportData } from 'app/monitor/models/report-data';
-import { ReportType } from 'app/monitor/report/reportType';
-import { ChartData } from 'app/monitor/models/chart-data';
+import {ChartData} from 'app/monitor/models/chart-data';
 
 @Component({
   selector: 'taskana-monitor-workbaskets',
@@ -13,7 +12,6 @@ import { ChartData } from 'app/monitor/models/chart-data';
 })
 export class WorkbasketComponent implements OnInit {
 
-  reportType = ReportType.WorkbasketStatus;
   reportData: ReportData;
 
 
