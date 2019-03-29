@@ -1,0 +1,11 @@
+<ng-container *ngIf="headers && row">
+    <div (click)="toggleFold()" class="table-cell table-cell--justify">
+        {{row.key}}
+    </div>
+    <div *ngFor="let header of headers" class="table-cell">
+        {{row.val.cells[header]}}
+    </div>
+    <div class="table-cell--bold">
+        {{row.val.total}}
+    </div>
+</ng-container>

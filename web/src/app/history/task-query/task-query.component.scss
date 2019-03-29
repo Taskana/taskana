@@ -1,13 +1,19 @@
-.divTable{
+@import './src/assets/_colors';
+
+.table {
 	max-height: calc(100vh - 152px);
 	padding-right: 15px;
 }
 
-.divTableFoot {
+.table-header {
+	background-color: $light-grey;
+}
+
+.table-footer {
 	display: block;
 }
 
-.divTableCell {
+.table-cell {
 	height: 34px;
 	max-height: 34px;
 }
@@ -19,14 +25,15 @@
 .btn-xs{
 	padding: 0px;
 }
-.divTable .btn {
+
+.table .btn {
 	border: none;
 }
 
-.icon-space{
+.icon-space {
 	margin-right: 20px;
 }
 
 .divTablePagination {
-  	margin: 0 auto;
+	margin: 0 auto;
 }

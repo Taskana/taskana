@@ -1,55 +1,67 @@
-.divTable{
+.table {
+	width: 100%;
 	display: table;
 }
 
-.divTableRow {
+.table-striped div.table-body div.table-row:nth-of-type(odd) {
+	background-color: #f9f9f9;
+}
+
+.table-caption {
+	display: table-caption;
+}
+
+.table-header, .table-footer {
+	display: table-header-group;
+	cursor: pointer;
+}
+
+.table-header > .table-row:last-child > .table-cell--bold {
+	border-bottom: 2px solid #ddd;
+}
+
+.table-footer > .table-row > .table-cell--bold, .table-header > .table-row > .table-cell--bold {
+	border-bottom: none;
+}
+
+.table-body {
+	display: table-row-group;
+}
+
+.table-row {
 	display: table-row;
 }
-.divTable .divTableHeading > .divTableRow:last-child > .divTableHeader  {
-	background-color: #f9f9f9;
-	border-bottom:  1px solid $grey
-}
 
-.divTable.table-striped .divTableBody > .divTableRow:nth-of-type(odd) {
-    background-color: #f9f9f9;
-}
-
-.divTableCell, .divTableHeader {
+.table-cell, .table-cell--bold {
 	display: table-cell;
-	padding: 3px 3px;
+	padding: 5px;
 	white-space: nowrap;
 	min-width: 50px;
 	vertical-align: middle;
-}
-.divTableCell{ 
-	padding: 0px 3px;
+	text-align: center;
+	border-bottom: 1px solid #ddd;
 }
 
-.divTableHeaderSeparator, .divTableCellSeparator{ 
-	border-left: 1px solid $grey;
-	border-right: 1px solid $grey;
+.table-cell--justify {
+	text-align: justify;
+}
+
+.table-cell--bold {
+	font-weight: bold;
+}
+
+.table-cell--separator {
+	border-left: 2px solid #ddd;
+	border-right: 2px solid #ddd;
 	background-color: $light-grey;
+
 	&.zoom-in {
 		cursor: zoom-in;
 	}
+
 	&.zoom-out {
 		cursor: zoom-out;
 	}
-	min-width: 0px;
-}
 
-.divTableHeading {
-	background-color: $light-grey;
-	display: table-header-group;
-	font-weight: bold;
-	cursor: pointer;
-}
-.divTableFoot {
-	background-color: $light-grey;
-	display: table-footer-group;
-	font-weight: bold;
-}
-
-.divTableBody {
-	display: table-row-group;
+	min-width: 0;
 }

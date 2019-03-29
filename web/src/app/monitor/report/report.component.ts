@@ -1,7 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ReportType } from './reportType';
-import { ReportData } from 'app/monitor/models/report-data';
-import { RestConnectorService } from 'app/monitor/services/restConnector/rest-connector.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {ReportData} from 'app/monitor/models/report-data';
 
 @Component({
   selector: 'taskana-report',
@@ -11,16 +9,12 @@ import { RestConnectorService } from 'app/monitor/services/restConnector/rest-co
 export class ReportComponent implements OnInit {
 
   @Input()
-  type: ReportType;
-  @Input()
-  reportData: ReportData
+  reportData: ReportData;
 
-  reportType = ReportType;
-
-  constructor(private restConnector: RestConnectorService) {
+  constructor() {
   }
 
   ngOnInit(): void {
-
   }
+
 }
