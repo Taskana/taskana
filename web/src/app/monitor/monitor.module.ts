@@ -16,6 +16,7 @@ import { WorkbasketComponent } from './workbasket/workbasket.component';
 import { ClassificationTasksComponent } from './classification-tasks/classification-tasks.component';
 
 import { RestConnectorService } from './services/restConnector/rest-connector.service';
+import {ReportRowComponent} from "./report/row/row.component";
 
 const MODULES = [
   CommonModule,
@@ -27,13 +28,14 @@ const MODULES = [
   HttpClientModule,
   AngularSvgIconModule,
   SharedModule
-]
+];
 const DECLARATIONS = [
   TasksComponent,
   WorkbasketComponent,
   ReportComponent,
   MonitorComponent,
-  ClassificationTasksComponent
+  ClassificationTasksComponent,
+  ReportRowComponent
 ];
 
 @NgModule({

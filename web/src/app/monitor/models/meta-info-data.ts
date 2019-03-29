@@ -4,5 +4,5 @@ export class MetaInfoData {
     header: Array<string>;
     name: string;
     rowDesc: string;
-    TotalDesc: string;
+    totalDesc: string;
 }

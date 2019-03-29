@@ -1,28 +1,27 @@
-<div class="row report" *ngIf="reportData">
-  <div class="col-sm-12" style="margin-bottom: 10px">
-    <table class="table table-responsive table-condensed table-striped">
-      <thead>
-        <tr>
-          <th>{{reportData.meta.rowDesc}}</th>
-          <th class="align-center" *ngFor="let header of reportData.meta.header">
-            {{header}}</th>
-          <th class="align-center">{{reportData.meta.totalDesc}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of reportData.rows | mapToIterable | orderBy:['key']">
-          <td>{{row.key}}</td>
-          <td *ngFor="let header of reportData.meta.header" class="align-center">{{row.val.cells[header]}}</td>
-          <th class="align-center">{{row.val.total}}</th>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <th>{{reportData.meta.totalDesc}}</th>
-          <th *ngFor="let header of reportData.meta.header" class="align-center">{{reportData.sumRow.cells[header]}}</th>
-          <th class="align-center">{{reportData.sumRow.total}}</th>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
+<div *ngIf="reportData" class="report table table-striped">
+    <div class="table-header">
+        <div class="table-row">
+            <div class="table-cell--bold table-cell--justify">{{reportData.meta.rowDesc}}</div>
+            <div *ngFor="let header of reportData.meta.header" class="table-cell--bold">{{header}}</div>
+            <div class="table-cell--bold">{{reportData.meta.totalDesc}}</div>
+        </div>
+    </div>
+    <div class="table-body">
+        <div *ngFor="let row of reportData.rows | mapToIterable | orderBy:['key']" [headers]="reportData.meta.header"
+             [row]="row" class="table-row" monitor-report-row>
+        </div>
+    </div>
+    <div class="table-footer">
+        <div class="table-row">
+            <div class="table-cell--bold table-cell--justify">
+                {{reportData.meta.totalDesc}}
+            </div>
+            <div *ngFor="let header of reportData.meta.header" class="table-cell--bold">
+                {{reportData.sumRow.cells[header]}}
+            </div>
+            <div class="table-cell--bold">
+                {{reportData.sumRow.total}}
+            </div>
+        </div>
+    </div>
 </div>
